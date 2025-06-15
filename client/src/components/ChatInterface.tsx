@@ -43,39 +43,19 @@ export default function ChatInterface({ agent }: ChatInterfaceProps) {
       const response = await apiRequest("POST", "/api/conversations", { agentId: agent.id });
       return response.json();
     },
-    onSuccess: (data) => {
-      setConversation(data);
-    },
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
+
+  // Set conversation when data is available
+  useEffect(() => {
+    if (conversationData) {
+      setConversation(conversationData);
+    }
+  }, [conversationData]);
 
   // Get messages for conversation
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/conversations/${conversation?.id}/messages`],
     enabled: !!conversation?.id,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   // Send message mutation
@@ -86,8 +66,8 @@ export default function ChatInterface({ agent }: ChatInterfaceProps) {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries([`/api/conversations/${conversation?.id}/messages`]);
-      queryClient.invalidateQueries(["/api/conversations"]);
+      queryClient.invalidateQueries({ queryKey: [`/api/conversations/${conversation?.id}/messages`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       setMessage("");
       
       if (data.usedDocuments && data.usedDocuments.length > 0) {
@@ -120,6 +100,12 @@ export default function ChatInterface({ agent }: ChatInterfaceProps) {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || sendMessageMutation.isPending) return;
+    
+    console.log('Sending message:', {
+      message: message.trim(),
+      conversationId: conversation?.id,
+      hasConversation: !!conversation
+    });
     
     sendMessageMutation.mutate(message.trim());
   };
