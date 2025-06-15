@@ -3,6 +3,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { X, FileText, Download, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
@@ -17,6 +28,8 @@ interface FileUploadModalProps {
 export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -193,9 +206,16 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
     }
   };
 
-  const handleDelete = (documentId: number) => {
-    if (confirm("정말로 이 문서를 삭제하시겠습니까?")) {
-      deleteMutation.mutate(documentId);
+  const handleDelete = (document: Document) => {
+    setDocumentToDelete(document);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (documentToDelete) {
+      deleteMutation.mutate(documentToDelete.id);
+      setDeleteDialogOpen(false);
+      setDocumentToDelete(null);
     }
   };
 
@@ -318,16 +338,38 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
                       <Download className="w-4 h-4 mr-1" />
                       다운로드
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(document.id)}
-                      disabled={deleteMutation.isPending}
-                      className="korean-text"
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      삭제
-                    </Button>
+                    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDelete(document)}
+                          disabled={deleteMutation.isPending}
+                          className="korean-text"
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          삭제
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="korean-text">문서 삭제 확인</AlertDialogTitle>
+                          <AlertDialogDescription className="korean-text">
+                            '{documentToDelete?.originalName}' 문서를 정말로 삭제하시겠습니까? 
+                            이 작업은 되돌릴 수 없습니다.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="korean-text">취소</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={confirmDelete}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 korean-text"
+                          >
+                            삭제
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               ))}
