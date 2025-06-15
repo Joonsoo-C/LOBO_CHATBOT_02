@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import AgentList from "@/components/AgentList";
 import AgentManagement from "@/components/AgentManagement";
 import type { Agent, Conversation } from "@/types/agent";
@@ -15,42 +16,35 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
-  const { data: agents, isLoading: agentsLoading } = useQuery<Agent[]>({
+  const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
-  const { data: conversations } = useQuery<Conversation[]>({
+  const { data: conversations = [] } = useQuery<Conversation[]>({
     queryKey: ["/api/conversations"],
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/logout");
+    },
+    onSuccess: () => {
+      queryClient.clear();
+      window.location.href = "/auth";
+    },
     onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
+      toast({
+        title: "로그아웃 실패",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
-  const filteredAgents = agents?.filter(agent =>
+  const filteredAgents = agents.filter((agent: Agent) =>
     agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     agent.description.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  );
 
   if (agentsLoading) {
     return (
@@ -70,6 +64,21 @@ export default function Home() {
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="px-4 py-3">
+          {/* Header with logout button */}
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-lg font-semibold korean-text">LoBo 챗봇</h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              className="korean-text"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
+            </Button>
+          </div>
+          
           {/* Tab Navigation */}
           <div className="flex bg-muted rounded-xl p-1 mb-4">
             <Button
@@ -116,7 +125,7 @@ export default function Home() {
         {activeTab === "chat" && (
           <AgentList 
             agents={filteredAgents} 
-            conversations={conversations || []}
+            conversations={conversations}
           />
         )}
         {activeTab === "management" && (
