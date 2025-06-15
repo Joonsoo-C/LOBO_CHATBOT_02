@@ -226,6 +226,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/agents/:id/documents', isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.id);
+      
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
       const documents = await storage.getAgentDocuments(agentId);
       res.json(documents);
     } catch (error) {
@@ -237,6 +242,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/agents/:id/documents', isAuthenticated, upload.single('file'), async (req: any, res) => {
     try {
       const agentId = parseInt(req.params.id);
+      
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
       const userId = req.user.claims.sub;
       const file = req.file;
 
