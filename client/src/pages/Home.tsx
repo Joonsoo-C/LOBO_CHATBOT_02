@@ -133,17 +133,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* Logout Button (for testing) */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.location.href = "/api/logout"}
-          className="korean-text"
-        >
-          로그아웃
-        </Button>
-      </div>
+
     </div>
   );
 }
