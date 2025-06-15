@@ -35,7 +35,7 @@ export interface IStorage {
   getAgentsByManager(managerId: string): Promise<Agent[]>;
 
   // Conversation operations
-  getOrCreateConversation(userId: string, agentId: number): Promise<Conversation>;
+  getOrCreateConversation(userId: string, agentId: number, type?: string): Promise<Conversation>;
   getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
 
   // Message operations
@@ -109,11 +109,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Conversation operations
-  async getOrCreateConversation(userId: string, agentId: number): Promise<Conversation> {
+  async getOrCreateConversation(userId: string, agentId: number, type: string = "general"): Promise<Conversation> {
     const [existing] = await db
       .select()
       .from(conversations)
-      .where(and(eq(conversations.userId, userId), eq(conversations.agentId, agentId)));
+      .where(and(
+        eq(conversations.userId, userId), 
+        eq(conversations.agentId, agentId),
+        eq(conversations.type, type)
+      ));
 
     if (existing) {
       return existing;
@@ -121,7 +125,7 @@ export class DatabaseStorage implements IStorage {
 
     const [newConversation] = await db
       .insert(conversations)
-      .values({ userId, agentId })
+      .values({ userId, agentId, type })
       .returning();
     return newConversation;
   }
