@@ -25,26 +25,28 @@ export interface IStorage {
   // User operations (IMPORTANT: mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
-  
+
   // Agent operations
   getAllAgents(): Promise<Agent[]>;
   getAgent(id: number): Promise<Agent | undefined>;
   createAgent(agent: InsertAgent): Promise<Agent>;
   getAgentsByManager(managerId: string): Promise<Agent[]>;
-  
+
   // Conversation operations
   getOrCreateConversation(userId: string, agentId: number): Promise<Conversation>;
   getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
-  
+
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
-  
+
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
   getAgentDocuments(agentId: number): Promise<Document[]>;
   getDocument(id: number): Promise<Document | undefined>;
-  
+  //delete document operations
+  deleteDocument(id: number): Promise<void>;
+
   // Stats operations
   getAgentStats(agentId: number): Promise<AgentStats | undefined>;
   updateAgentStats(agentId: number, stats: Partial<AgentStats>): Promise<void>;
@@ -152,7 +154,7 @@ export class DatabaseStorage implements IStorage {
 
   async createMessage(message: InsertMessage): Promise<Message> {
     const [newMessage] = await db.insert(messages).values(message).returning();
-    
+
     // Update conversation last message time
     await db
       .update(conversations)
@@ -179,6 +181,17 @@ export class DatabaseStorage implements IStorage {
   async getDocument(id: number): Promise<Document | undefined> {
     const [document] = await db.select().from(documents).where(eq(documents.id, id));
     return document;
+  }
+
+  async deleteDocument(id: number): Promise<void> {
+    try {
+      await db
+        .delete(documents)
+        .where(eq(documents.id, id));
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      throw error;
+    }
   }
 
   // Stats operations

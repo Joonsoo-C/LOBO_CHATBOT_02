@@ -322,6 +322,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete('/api/documents/:id', isAuthenticated, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(documentId);
+
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      await storage.deleteDocument(documentId);
+      res.json({ message: "Document deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
   // Stats routes
   app.get('/api/agents/:id/stats', isAuthenticated, async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { X, FileText, Download, Upload } from "lucide-react";
+import { X, FileText, Download, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -124,6 +124,47 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
     }
   };
 
+  const deleteMutation = useMutation({
+    mutationFn: async (documentId: number) => {
+      const response = await fetch(`/api/documents/${documentId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`${response.status}: ${errorText}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([`/api/agents/${agent.id}/documents`]);
+      toast({
+        title: "삭제 완료",
+        description: "문서가 성공적으로 삭제되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "인증 오류",
+          description: "다시 로그인해주세요.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+      } else {
+        toast({
+          title: "삭제 실패",
+          description: error.message || "파일 삭제에 실패했습니다.",
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
   const handleDownload = async (documentId: number, filename: string) => {
     try {
       const response = await fetch(`/api/documents/${documentId}/download`, {
@@ -149,6 +190,12 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
         description: "파일 다운로드에 실패했습니다.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleDelete = (documentId: number) => {
+    if (confirm("정말로 이 문서를 삭제하시겠습니까?")) {
+      deleteMutation.mutate(documentId);
     }
   };
 
@@ -262,14 +309,26 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
                       </div>
                     </div>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={() => handleDownload(document.id, document.originalName)}
-                    className="korean-text"
-                  >
-                    <Download className="w-4 h-4 mr-1" />
-                    다운로드
-                  </Button>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleDownload(document.id, document.originalName)}
+                      className="korean-text"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      다운로드
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(document.id)}
+                      disabled={deleteMutation.isPending}
+                      className="korean-text"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      삭제
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
