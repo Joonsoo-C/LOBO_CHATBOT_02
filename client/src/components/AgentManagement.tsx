@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import type { Agent, AgentStats } from "@/types/agent";
 
 interface ManagedAgent extends Agent {
@@ -12,10 +13,15 @@ interface ManagedAgent extends Agent {
 
 export default function AgentManagement() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
   });
+
+  const handleAgentClick = (agentId: number) => {
+    setLocation(`/chat/${agentId}`);
+  };
 
   if (isLoading) {
     return (
@@ -42,7 +48,11 @@ export default function AgentManagement() {
       ) : (
         <div className="space-y-4">
           {managedAgents.map((agent) => (
-            <div key={agent.id} className="bg-white rounded-2xl p-6 shadow-sm border">
+            <div 
+              key={agent.id} 
+              className="bg-white rounded-2xl p-6 shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => handleAgentClick(agent.id)}
+            >
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -54,7 +64,14 @@ export default function AgentManagement() {
                     <p className="text-sm text-gray-600 korean-text">{agent.description}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Settings functionality can be added here later
+                  }}
+                >
                   <Settings className="text-gray-400 w-5 h-5" />
                 </Button>
               </div>
