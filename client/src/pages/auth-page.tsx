@@ -163,6 +163,44 @@ export default function AuthPage() {
               </TabsList>
 
               <TabsContent value="login" className="space-y-4">
+                {/* 데모 계정 섹션 */}
+                <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => {
+                        loginForm.setValue("username", "2024001234");
+                        loginForm.setValue("password", "student123");
+                      }}
+                    >
+                      👨‍🎓 학생 계정
+                      <br />
+                      <span className="text-xs text-muted-foreground">2024001234</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => {
+                        loginForm.setValue("username", "F2024001");
+                        loginForm.setValue("password", "faculty123");
+                      }}
+                    >
+                      👨‍🏫 교직원 계정
+                      <br />
+                      <span className="text-xs text-muted-foreground">F2024001</span>
+                    </Button>
+                  </div>
+                  <p className="text-xs text-blue-700">
+                    계정이 없는 경우 자동으로 생성됩니다
+                  </p>
+                </div>
+
                 <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="login-username">학번/교번</Label>
