@@ -23,11 +23,25 @@ function Router() {
   return (
     <Switch>
       {!isAuthenticated ? (
-        <Route path="/" component={AuthPage} />
+        <>
+          <Route path="/auth" component={AuthPage} />
+          <Route path="*">
+            {() => {
+              window.location.replace("/auth");
+              return null;
+            }}
+          </Route>
+        </>
       ) : (
         <>
           <Route path="/" component={Home} />
           <Route path="/chat/:agentId" component={Chat} />
+          <Route path="/auth">
+            {() => {
+              window.location.replace("/");
+              return null;
+            }}
+          </Route>
         </>
       )}
       <Route component={NotFound} />

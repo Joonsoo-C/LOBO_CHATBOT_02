@@ -30,14 +30,13 @@ export default function Home() {
     },
     onSuccess: () => {
       queryClient.clear();
-      window.location.href = "/auth";
+      // Force a complete page reload to clear all state
+      window.location.replace("/auth");
     },
     onError: (error: Error) => {
-      toast({
-        title: "로그아웃 실패",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Even if logout fails, redirect to auth page
+      queryClient.clear();
+      window.location.replace("/auth");
     },
   });
 
