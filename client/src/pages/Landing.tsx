@@ -61,7 +61,7 @@ export default function Landing() {
               <h3 className="text-sm font-medium text-foreground mb-3 korean-text">데모 계정</h3>
               <div className="space-y-2 text-xs text-muted-foreground korean-text">
                 <div><span className="font-medium">학생:</span> student1 / 123#$%People</div>
-                <div><span className="font-medium">컴일환 교수:</span> manager1 / 456#$%People</div>
+                <div><span className="font-medium">김일환 교수:</span> manager1 / 456#$%People</div>
                 <div><span className="font-medium">관리자:</span> admin1 / 789#$%People</div>
               </div>
             </div>
