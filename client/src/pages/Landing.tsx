@@ -3,10 +3,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap } from "lucide-react";
+import { useState } from "react";
 
 export default function Landing() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleLogin = () => {
     window.location.href = "/api/login";
+  };
+
+  const handleDemoAccountClick = (demoUsername: string, demoPassword: string) => {
+    setUsername(demoUsername);
+    setPassword(demoPassword);
   };
 
   return (
@@ -36,6 +45,8 @@ export default function Landing() {
                   type="text" 
                   placeholder="예: 2024001 또는 prof001"
                   className="korean-text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               
@@ -45,6 +56,8 @@ export default function Landing() {
                   type="password" 
                   placeholder="비밀번호를 입력하세요"
                   className="korean-text"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
@@ -60,9 +73,24 @@ export default function Landing() {
             <div className="mt-6 p-4 bg-muted rounded-xl">
               <h3 className="text-sm font-medium text-foreground mb-3 korean-text">데모 계정</h3>
               <div className="space-y-2 text-xs text-muted-foreground korean-text">
-                <div><span className="font-medium">학생:</span> student1 / 123#$%People</div>
-                <div><span className="font-medium">김일환 교수:</span> manager1 / 456#$%People</div>
-                <div><span className="font-medium">관리자:</span> admin1 / 789#$%People</div>
+                <div 
+                  className="cursor-pointer hover:text-foreground transition-colors p-1 rounded hover:bg-background"
+                  onClick={() => handleDemoAccountClick("student1", "123#$%People")}
+                >
+                  <span className="font-medium">학생:</span> student1 / 123#$%People
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-foreground transition-colors p-1 rounded hover:bg-background"
+                  onClick={() => handleDemoAccountClick("manager1", "456#$%People")}
+                >
+                  <span className="font-medium">김일환 교수:</span> manager1 / 456#$%People
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-foreground transition-colors p-1 rounded hover:bg-background"
+                  onClick={() => handleDemoAccountClick("admin1", "789#$%People")}
+                >
+                  <span className="font-medium">관리자:</span> admin1 / 789#$%People
+                </div>
               </div>
             </div>
           </CardContent>
