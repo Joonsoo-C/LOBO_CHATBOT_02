@@ -307,10 +307,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Document not found" });
       }
 
+      // Properly encode filename for Korean characters
+      const encodedFilename = encodeURIComponent(document.originalName);
+      
       // In a real implementation, you'd serve the actual file
       // For now, we'll serve the extracted content
       res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${document.originalName}"`);
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodedFilename}`);
       res.send(document.content || "No content available");
     } catch (error) {
       console.error("Error downloading document:", error);
