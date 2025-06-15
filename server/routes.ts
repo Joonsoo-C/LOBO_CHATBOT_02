@@ -152,7 +152,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get conversation and agent info
       const messages = await storage.getConversationMessages(conversationId);
-      const conversation = await storage.getOrCreateConversation(userId, 0); // This will get existing
+      
+      // Get the conversation by ID to find the correct agentId
+      const conversations = await storage.getUserConversations(userId);
+      const conversation = conversations.find(conv => conv.id === conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
       const agent = await storage.getAgent(conversation.agentId);
       
       if (!agent) {
