@@ -37,11 +37,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Get or create conversation
+  // Get or create conversation based on mode
   const { data: conversationData } = useQuery<Conversation>({
-    queryKey: [`/api/conversations`, agent.id],
+    queryKey: [`/api/conversations${isManagementMode ? '/management' : ''}`, agent.id],
     queryFn: async () => {
-      const response = await apiRequest("POST", "/api/conversations", { agentId: agent.id });
+      const endpoint = isManagementMode ? "/api/conversations/management" : "/api/conversations";
+      const response = await apiRequest("POST", endpoint, { agentId: agent.id });
       return response.json();
     },
   });

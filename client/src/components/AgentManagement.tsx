@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, MessageSquare, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -19,8 +19,12 @@ export default function AgentManagement() {
     queryKey: ["/api/agents/managed"],
   });
 
-  const handleAgentClick = (agentId: number) => {
+  const handleGeneralChat = (agentId: number) => {
     setLocation(`/chat/${agentId}`);
+  };
+
+  const handleManagementChat = (agentId: number) => {
+    setLocation(`/management/${agentId}`);
   };
 
   if (isLoading) {
@@ -50,8 +54,7 @@ export default function AgentManagement() {
           {managedAgents.map((agent) => (
             <div 
               key={agent.id} 
-              className="bg-white rounded-2xl p-6 shadow-sm border cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => handleAgentClick(agent.id)}
+              className="bg-white rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow"
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
@@ -118,6 +121,30 @@ export default function AgentManagement() {
                   </div>
                 </>
               )}
+
+              {/* Action Buttons */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex space-x-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 korean-text"
+                    onClick={() => handleGeneralChat(agent.id)}
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    일반 대화
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="flex-1 korean-text"
+                    onClick={() => handleManagementChat(agent.id)}
+                  >
+                    <Wrench className="w-4 h-4 mr-2" />
+                    관리 대화
+                  </Button>
+                </div>
+              </div>
             </div>
           ))}
         </div>

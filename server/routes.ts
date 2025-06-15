@@ -107,13 +107,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const { agentId } = req.body;
+      const { agentId, type = "general" } = req.body;
       
-      const conversation = await storage.getOrCreateConversation(userId, agentId);
+      const conversation = await storage.getOrCreateConversation(userId, agentId, type);
       res.json(conversation);
     } catch (error) {
       console.error("Error creating conversation:", error);
       res.status(500).json({ message: "Failed to create conversation" });
+    }
+  });
+
+  // Management conversation route
+  app.post('/api/conversations/management', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { agentId } = req.body;
+      
+      // Check if user is the manager of this agent
+      const agent = await storage.getAgent(agentId);
+      if (!agent || agent.managerId !== userId) {
+        return res.status(403).json({ message: "You are not authorized to manage this agent" });
+      }
+      
+      const conversation = await storage.getOrCreateConversation(userId, agentId, "management");
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error creating management conversation:", error);
+      res.status(500).json({ message: "Failed to create management conversation" });
     }
   });
 
