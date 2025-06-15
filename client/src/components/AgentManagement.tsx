@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings, MessageSquare, Wrench } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,10 +18,6 @@ export default function AgentManagement() {
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
   });
-
-  const handleGeneralChat = (agentId: number) => {
-    setLocation(`/chat/${agentId}`);
-  };
 
   const handleManagementChat = (agentId: number) => {
     setLocation(`/management/${agentId}`);
@@ -123,35 +119,7 @@ export default function AgentManagement() {
                 </>
               )}
 
-              {/* Action Buttons - Always show these */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex space-x-3">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 korean-text"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleGeneralChat(agent.id);
-                    }}
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    일반 대화
-                  </Button>
-                  <Button 
-                    variant="default" 
-                    size="sm" 
-                    className="flex-1 korean-text"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleManagementChat(agent.id);
-                    }}
-                  >
-                    <Wrench className="w-4 h-4 mr-2" />
-                    관리 대화
-                  </Button>
-                </div>
-              </div>
+
             </div>
           ))}
         </div>
