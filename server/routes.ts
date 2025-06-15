@@ -1,0 +1,443 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { generateChatResponse, analyzeDocument, extractTextFromContent } from "./openai";
+import { insertMessageSchema, insertDocumentSchema } from "@shared/schema";
+
+// Configure multer for file uploads
+const upload = multer({
+  dest: "uploads/",
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'text/plain',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/msword',
+      'application/vnd.ms-powerpoint',
+    ];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, PPT 파일만 업로드 가능합니다.'));
+    }
+  },
+});
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Initialize default agents if they don't exist
+  await initializeDefaultAgents();
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Agent routes
+  app.get('/api/agents', isAuthenticated, async (req, res) => {
+    try {
+      const agents = await storage.getAllAgents();
+      res.json(agents);
+    } catch (error) {
+      console.error("Error fetching agents:", error);
+      res.status(500).json({ message: "Failed to fetch agents" });
+    }
+  });
+
+  app.get('/api/agents/:id', isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const agent = await storage.getAgent(agentId);
+      
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent:", error);
+      res.status(500).json({ message: "Failed to fetch agent" });
+    }
+  });
+
+  app.get('/api/agents/managed', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const agents = await storage.getAgentsByManager(userId);
+      
+      // Get stats for each agent
+      const agentsWithStats = await Promise.all(
+        agents.map(async (agent) => {
+          const stats = await storage.getAgentStats(agent.id);
+          return { ...agent, stats };
+        })
+      );
+      
+      res.json(agentsWithStats);
+    } catch (error) {
+      console.error("Error fetching managed agents:", error);
+      res.status(500).json({ message: "Failed to fetch managed agents" });
+    }
+  });
+
+  // Conversation routes
+  app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const conversations = await storage.getUserConversations(userId);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
+  app.post('/api/conversations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { agentId } = req.body;
+      
+      const conversation = await storage.getOrCreateConversation(userId, agentId);
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      res.status(500).json({ message: "Failed to create conversation" });
+    }
+  });
+
+  // Message routes
+  app.get('/api/conversations/:id/messages', isAuthenticated, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const messages = await storage.getConversationMessages(conversationId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const { content } = req.body;
+      const userId = req.user.claims.sub;
+
+      // Validate input
+      const validatedMessage = insertMessageSchema.parse({
+        conversationId,
+        content,
+        isFromUser: true,
+      });
+
+      // Save user message
+      const userMessage = await storage.createMessage(validatedMessage);
+
+      // Get conversation and agent info
+      const messages = await storage.getConversationMessages(conversationId);
+      const conversation = await storage.getOrCreateConversation(userId, 0); // This will get existing
+      const agent = await storage.getAgent(conversation.agentId);
+      
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // Get agent documents for context
+      const documents = await storage.getAgentDocuments(agent.id);
+      const documentContext = documents.map(doc => ({
+        filename: doc.originalName,
+        content: doc.content || "",
+      }));
+
+      // Prepare conversation history
+      const conversationHistory = messages.slice(-10).map(msg => ({
+        role: msg.isFromUser ? "user" as const : "assistant" as const,
+        content: msg.content,
+      }));
+
+      // Generate AI response
+      const aiResponse = await generateChatResponse(
+        content,
+        agent.name,
+        agent.description,
+        conversationHistory,
+        documentContext
+      );
+
+      // Save AI message
+      const aiMessage = await storage.createMessage({
+        conversationId,
+        content: aiResponse.message,
+        isFromUser: false,
+      });
+
+      res.json({
+        userMessage,
+        aiMessage,
+        usedDocuments: aiResponse.usedDocuments,
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Document routes
+  app.get('/api/agents/:id/documents', isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const documents = await storage.getAgentDocuments(agentId);
+      res.json(documents);
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      res.status(500).json({ message: "Failed to fetch documents" });
+    }
+  });
+
+  app.post('/api/agents/:id/documents', isAuthenticated, upload.single('file'), async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Read file content
+      const fileContent = fs.readFileSync(file.path, 'utf-8');
+      
+      // Extract text content based on file type
+      const extractedText = await extractTextFromContent(fileContent, file.mimetype);
+      
+      // Analyze document
+      const analysis = await analyzeDocument(extractedText, file.originalname);
+
+      // Save document to database
+      const documentData = insertDocumentSchema.parse({
+        agentId,
+        filename: file.filename,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        content: analysis.extractedText,
+        uploadedBy: userId,
+      });
+
+      const document = await storage.createDocument(documentData);
+
+      // Clean up temporary file
+      fs.unlinkSync(file.path);
+
+      res.json({
+        document,
+        analysis,
+      });
+    } catch (error) {
+      console.error("Error uploading document:", error);
+      
+      // Clean up temporary file if it exists
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error("Error cleaning up file:", cleanupError);
+        }
+      }
+      
+      res.status(500).json({ message: "Failed to upload document" });
+    }
+  });
+
+  app.get('/api/documents/:id/download', isAuthenticated, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const document = await storage.getDocument(documentId);
+
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // In a real implementation, you'd serve the actual file
+      // For now, we'll serve the extracted content
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Disposition', `attachment; filename="${document.originalName}"`);
+      res.send(document.content || "No content available");
+    } catch (error) {
+      console.error("Error downloading document:", error);
+      res.status(500).json({ message: "Failed to download document" });
+    }
+  });
+
+  // Stats routes
+  app.get('/api/agents/:id/stats', isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const stats = await storage.getAgentStats(agentId);
+      res.json(stats || {});
+    } catch (error) {
+      console.error("Error fetching agent stats:", error);
+      res.status(500).json({ message: "Failed to fetch agent stats" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
+
+async function initializeDefaultAgents() {
+  try {
+    const existingAgents = await storage.getAllAgents();
+    if (existingAgents.length > 0) {
+      return; // Agents already exist
+    }
+
+    const defaultAgents = [
+      {
+        name: "학교 종합 안내",
+        description: "대학교 전반적인 안내와 정보를 제공하는 에이전트입니다",
+        category: "학교",
+        icon: "fas fa-graduation-cap",
+        backgroundColor: "bg-slate-800",
+        managerId: null,
+      },
+      {
+        name: "컴퓨터공학과",
+        description: "컴퓨터공학과 관련 정보와 수업 안내를 제공합니다",
+        category: "학과",
+        icon: "fas fa-code",
+        backgroundColor: "bg-primary",
+        managerId: null,
+      },
+      {
+        name: "범용 AI 어시스턴트",
+        description: "다양한 질문에 대한 일반적인 AI 도움을 제공합니다",
+        category: "기능",
+        icon: "fas fa-robot",
+        backgroundColor: "bg-orange-500",
+        managerId: null,
+      },
+      {
+        name: "노지후 에이전트",
+        description: "노지후 교수의 수업적 상표 과목을 답변하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-user",
+        backgroundColor: "bg-gray-600",
+        managerId: "manager1", // Will be updated with actual manager ID
+      },
+      {
+        name: "비즈니스 실험실",
+        description: "비즈니스 관련 실험과 연구를 지원하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-flask",
+        backgroundColor: "bg-gray-600",
+        managerId: null,
+      },
+      {
+        name: "신입생 가이드",
+        description: "신입생을 위한 가이드와 정보를 제공합니다",
+        category: "학교",
+        icon: "fas fa-map",
+        backgroundColor: "bg-blue-500",
+        managerId: null,
+      },
+      {
+        name: "영어학습 도우미",
+        description: "영어 학습을 도와주는 AI 튜터입니다",
+        category: "기능",
+        icon: "fas fa-language",
+        backgroundColor: "bg-green-500",
+        managerId: null,
+      },
+      {
+        name: "운동/다이어트 코치",
+        description: "건강한 운동과 다이어트를 지도해주는 코치입니다",
+        category: "기능",
+        icon: "fas fa-dumbbell",
+        backgroundColor: "bg-orange-500",
+        managerId: null,
+      },
+      {
+        name: "프로그래밍 튜터",
+        description: "프로그래밍 학습을 도와주는 전문 튜터입니다",
+        category: "기능",
+        icon: "fas fa-code",
+        backgroundColor: "bg-purple-500",
+        managerId: null,
+      },
+      {
+        name: "디비디비딥 에이전트",
+        description: "데이터베이스 관련 질문과 도움을 제공합니다",
+        category: "교수",
+        icon: "fas fa-database",
+        backgroundColor: "bg-gray-600",
+        managerId: null,
+      },
+      {
+        name: "세영의 생각 실험실",
+        description: "창의적 사고와 실험을 지원하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-lightbulb",
+        backgroundColor: "bg-yellow-500",
+        managerId: null,
+      },
+      {
+        name: "학생 상담 센터",
+        description: "학생들의 고민과 상담을 도와주는 센터입니다",
+        category: "학교",
+        icon: "fas fa-heart",
+        backgroundColor: "bg-pink-500",
+        managerId: null,
+      },
+      {
+        name: "과제 관리 & 플래너",
+        description: "과제와 일정을 효율적으로 관리해주는 도구입니다",
+        category: "기능",
+        icon: "fas fa-calendar",
+        backgroundColor: "bg-indigo-500",
+        managerId: null,
+      },
+      {
+        name: "글쓰기 코치",
+        description: "효과적인 글쓰기를 도와주는 전문 코치입니다",
+        category: "기능",
+        icon: "fas fa-pen",
+        backgroundColor: "bg-teal-500",
+        managerId: null,
+      },
+      {
+        name: "논문 작성 도우미",
+        description: "학술 논문 작성을 지원하는 전문 도우미입니다",
+        category: "기능",
+        icon: "fas fa-file-alt",
+        backgroundColor: "bg-red-500",
+        managerId: null,
+      },
+    ];
+
+    for (const agentData of defaultAgents) {
+      await storage.createAgent(agentData);
+    }
+
+    console.log("Default agents initialized successfully");
+  } catch (error) {
+    console.error("Error initializing default agents:", error);
+  }
+}
