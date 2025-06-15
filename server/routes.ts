@@ -146,9 +146,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
+      console.log('Message send attempt:', {
+        params: req.params,
+        body: req.body,
+        conversationId: req.params.id,
+        user: req.user?.claims?.sub
+      });
+      
       const conversationId = parseInt(req.params.id);
       
       if (isNaN(conversationId)) {
+        console.log('Invalid conversation ID:', req.params.id);
         return res.status(400).json({ message: "Invalid conversation ID" });
       }
       
