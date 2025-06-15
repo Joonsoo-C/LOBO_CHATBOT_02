@@ -4,7 +4,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { generateChatResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema } from "@shared/schema";
 
@@ -38,17 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize default agents if they don't exist
   await initializeDefaultAgents();
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Note: Auth routes are now handled in setupAuth() function
 
   // Agent routes
   app.get('/api/agents', isAuthenticated, async (req, res) => {
@@ -105,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Conversation routes
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const conversations = await storage.getUserConversations(userId);
       res.json(conversations);
     } catch (error) {
@@ -116,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { agentId } = req.body;
       
       const conversation = await storage.getOrCreateConversation(userId, agentId);
@@ -153,7 +143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const { content } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
 
       // Validate input
       const validatedMessage = insertMessageSchema.parse({
