@@ -23,14 +23,6 @@ const upload = multer({
       'application/vnd.ms-powerpoint',
     ];
     
-    // Fix file name encoding for Korean characters
-    try {
-      file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
-    } catch (err) {
-      // If conversion fails, keep original name
-      console.warn('File name encoding conversion failed:', err);
-    }
-    
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -261,9 +253,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // Fix file name encoding for Korean characters
-      const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
-
       // Read file content
       const fileContent = fs.readFileSync(file.path, 'utf-8');
       
@@ -271,13 +260,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const extractedText = await extractTextFromContent(fileContent, file.mimetype);
       
       // Analyze document
-      const analysis = await analyzeDocument(extractedText, originalName);
+      const analysis = await analyzeDocument(extractedText, file.originalname);
 
       // Save document to database
       const documentData = insertDocumentSchema.parse({
         agentId,
         filename: file.filename,
-        originalName: originalName,
+        originalName: file.originalname,
         mimeType: file.mimetype,
         size: file.size,
         content: analysis.extractedText,
