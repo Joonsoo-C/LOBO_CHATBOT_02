@@ -53,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/agents/managed', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const agents = await storage.getAgentsByManager(userId);
       
       // Get stats for each agent
@@ -236,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const file = req.file;
 
       if (!file) {
