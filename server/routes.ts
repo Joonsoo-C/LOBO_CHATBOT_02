@@ -61,22 +61,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/agents/:id', isAuthenticated, async (req, res) => {
-    try {
-      const agentId = parseInt(req.params.id);
-      const agent = await storage.getAgent(agentId);
-      
-      if (!agent) {
-        return res.status(404).json({ message: "Agent not found" });
-      }
-      
-      res.json(agent);
-    } catch (error) {
-      console.error("Error fetching agent:", error);
-      res.status(500).json({ message: "Failed to fetch agent" });
-    }
-  });
-
   app.get('/api/agents/managed', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -94,6 +78,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching managed agents:", error);
       res.status(500).json({ message: "Failed to fetch managed agents" });
+    }
+  });
+
+  app.get('/api/agents/:id', isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      const agent = await storage.getAgent(agentId);
+      
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+      
+      res.json(agent);
+    } catch (error) {
+      console.error("Error fetching agent:", error);
+      res.status(500).json({ message: "Failed to fetch agent" });
     }
   });
 
@@ -126,6 +131,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/conversations/:id/messages', isAuthenticated, async (req, res) => {
     try {
       const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
       const messages = await storage.getConversationMessages(conversationId);
       res.json(messages);
     } catch (error) {
@@ -137,6 +147,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
       const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
       const { content } = req.body;
       const userId = req.user.claims.sub;
 
