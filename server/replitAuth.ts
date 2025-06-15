@@ -129,13 +129,30 @@ export async function setupAuth(app: Express) {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
+  
+  console.log('Auth check:', {
+    isAuthenticated: req.isAuthenticated(),
+    hasUser: !!user,
+    hasClaims: !!(user?.claims),
+    hasAccessToken: !!(user?.access_token),
+    expires_at: user?.expires_at,
+    now: Math.floor(Date.now() / 1000)
+  });
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user) {
+    console.log('Auth failed: no user or not authenticated');
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  // Check if user has claims and access token
+  if (!user.claims || !user.access_token) {
+    console.log('Auth failed: missing claims or access token');
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
+    console.log('Auth success: token valid');
     return next();
   }
 
