@@ -115,39 +115,19 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Hero Section */}
-        <div className="space-y-6 text-center md:text-left">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900">
-              LoBo
-            </h1>
-            <h2 className="text-2xl font-semibold text-gray-700">
-              대학교 AI 챗봇 시스템
-            </h2>
-          </div>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            학교 생활에 필요한 모든 정보를 AI 챗봇과 함께 쉽고 빠르게 찾아보세요.
-            전공별 맞춤 상담부터 학사 정보까지, 똑똑한 AI가 도와드립니다.
-          </p>
-          <div className="space-y-3 text-sm text-gray-500">
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>24시간 언제든지 이용 가능</span>
-            </div>
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>학과별 전문 상담 제공</span>
-            </div>
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>문서 업로드 및 분석 기능</span>
-            </div>
-          </div>
+      <div className="w-full max-w-md mx-auto space-y-6">
+        {/* Logo Section */}
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold text-gray-900">
+            LoBo
+          </h1>
+          <h2 className="text-xl font-semibold text-gray-700">
+            대학교 AI 챗봇 시스템
+          </h2>
         </div>
 
         {/* Auth Form */}
-        <Card className="w-full max-w-md mx-auto">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>로그인</CardTitle>
           </CardHeader>
