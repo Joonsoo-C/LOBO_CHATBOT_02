@@ -54,7 +54,8 @@ export default function AgentManagement() {
           {managedAgents.map((agent) => (
             <div 
               key={agent.id} 
-              className="bg-white rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow"
+              className="bg-white rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => handleManagementChat(agent.id)}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
@@ -112,7 +113,7 @@ export default function AgentManagement() {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">사용률</span>
                       <span className="text-sm font-medium text-gray-900">{agent.stats.usagePercentage}%</span>
@@ -122,14 +123,17 @@ export default function AgentManagement() {
                 </>
               )}
 
-              {/* Action Buttons */}
+              {/* Action Buttons - Always show these */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <div className="flex space-x-3">
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="flex-1 korean-text"
-                    onClick={() => handleGeneralChat(agent.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGeneralChat(agent.id);
+                    }}
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
                     일반 대화
@@ -138,7 +142,10 @@ export default function AgentManagement() {
                     variant="default" 
                     size="sm" 
                     className="flex-1 korean-text"
-                    onClick={() => handleManagementChat(agent.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleManagementChat(agent.id);
+                    }}
                   >
                     <Wrench className="w-4 h-4 mr-2" />
                     관리 대화
