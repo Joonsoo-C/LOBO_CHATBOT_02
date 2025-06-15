@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
@@ -150,200 +149,86 @@ export default function AuthPage() {
         {/* Auth Form */}
         <Card className="w-full max-w-md mx-auto">
           <CardHeader>
-            <CardTitle>로그인 / 회원가입</CardTitle>
+            <CardTitle>로그인</CardTitle>
             <CardDescription>
-              학번/교번으로 로그인하거나 새 계정을 만드세요
+              학번/교번으로 로그인하세요. 계정이 없으면 자동으로 생성됩니다.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">로그인</TabsTrigger>
-                <TabsTrigger value="register">회원가입</TabsTrigger>
-              </TabsList>
+          <CardContent className="space-y-4">
+            {/* 데모 계정 섹션 */}
+            <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    loginForm.setValue("username", "2024001234");
+                    loginForm.setValue("password", "student123");
+                  }}
+                >
+                  👨‍🎓 학생 계정
+                  <br />
+                  <span className="text-xs text-muted-foreground">2024001234</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    loginForm.setValue("username", "F2024001");
+                    loginForm.setValue("password", "faculty123");
+                  }}
+                >
+                  👨‍🏫 교직원 계정
+                  <br />
+                  <span className="text-xs text-muted-foreground">F2024001</span>
+                </Button>
+              </div>
+              <p className="text-xs text-blue-700">
+                계정이 없는 경우 자동으로 생성됩니다
+              </p>
+            </div>
 
-              <TabsContent value="login" className="space-y-4">
-                {/* 데모 계정 섹션 */}
-                <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="text-xs"
-                      onClick={() => {
-                        loginForm.setValue("username", "2024001234");
-                        loginForm.setValue("password", "student123");
-                      }}
-                    >
-                      👨‍🎓 학생 계정
-                      <br />
-                      <span className="text-xs text-muted-foreground">2024001234</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="text-xs"
-                      onClick={() => {
-                        loginForm.setValue("username", "F2024001");
-                        loginForm.setValue("password", "faculty123");
-                      }}
-                    >
-                      👨‍🏫 교직원 계정
-                      <br />
-                      <span className="text-xs text-muted-foreground">F2024001</span>
-                    </Button>
-                  </div>
-                  <p className="text-xs text-blue-700">
-                    계정이 없는 경우 자동으로 생성됩니다
+            <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="login-username">학번/교번</Label>
+                <Input
+                  id="login-username"
+                  type="text"
+                  placeholder="예: 2024001234 또는 F2024001"
+                  {...loginForm.register("username")}
+                />
+                {loginForm.formState.errors.username && (
+                  <p className="text-sm text-red-500">
+                    {loginForm.formState.errors.username.message}
                   </p>
-                </div>
-
-                <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-username">학번/교번</Label>
-                    <Input
-                      id="login-username"
-                      type="text"
-                      placeholder="예: 2024001234 또는 F2024001"
-                      {...loginForm.register("username")}
-                    />
-                    {loginForm.formState.errors.username && (
-                      <p className="text-sm text-red-500">
-                        {loginForm.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">비밀번호</Label>
-                    <Input
-                      id="login-password"
-                      type="password"
-                      {...loginForm.register("password")}
-                    />
-                    {loginForm.formState.errors.password && (
-                      <p className="text-sm text-red-500">
-                        {loginForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loginMutation.isPending}
-                  >
-                    {loginMutation.isPending ? "로그인 중..." : "로그인"}
-                  </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="register" className="space-y-4">
-                <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="register-username">학번/교번</Label>
-                    <Input
-                      id="register-username"
-                      type="text"
-                      placeholder="예: 2024001234 또는 F2024001"
-                      {...registerForm.register("username")}
-                    />
-                    {registerForm.formState.errors.username && (
-                      <p className="text-sm text-red-500">
-                        {registerForm.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="register-lastName">성</Label>
-                      <Input
-                        id="register-lastName"
-                        type="text"
-                        placeholder="김"
-                        {...registerForm.register("lastName")}
-                      />
-                      {registerForm.formState.errors.lastName && (
-                        <p className="text-sm text-red-500">
-                          {registerForm.formState.errors.lastName.message}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-firstName">이름</Label>
-                      <Input
-                        id="register-firstName"
-                        type="text"
-                        placeholder="철수"
-                        {...registerForm.register("firstName")}
-                      />
-                      {registerForm.formState.errors.firstName && (
-                        <p className="text-sm text-red-500">
-                          {registerForm.formState.errors.firstName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email">이메일 (선택사항)</Label>
-                    <Input
-                      id="register-email"
-                      type="email"
-                      placeholder="example@university.ac.kr"
-                      {...registerForm.register("email")}
-                    />
-                    {registerForm.formState.errors.email && (
-                      <p className="text-sm text-red-500">
-                        {registerForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>구분</Label>
-                    <RadioGroup
-                      defaultValue="student"
-                      onValueChange={(value) => registerForm.setValue("userType", value as "student" | "faculty")}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="student" id="student" />
-                        <Label htmlFor="student">학생</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="faculty" id="faculty" />
-                        <Label htmlFor="faculty">교직원</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password">비밀번호</Label>
-                    <Input
-                      id="register-password"
-                      type="password"
-                      placeholder="6자 이상 입력"
-                      {...registerForm.register("password")}
-                    />
-                    {registerForm.formState.errors.password && (
-                      <p className="text-sm text-red-500">
-                        {registerForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={registerMutation.isPending}
-                  >
-                    {registerMutation.isPending ? "계정 생성 중..." : "회원가입"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="login-password">비밀번호</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  {...loginForm.register("password")}
+                />
+                {loginForm.formState.errors.password && (
+                  <p className="text-sm text-red-500">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loginMutation.isPending}
+              >
+                {loginMutation.isPending ? "로그인 중..." : "로그인"}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
