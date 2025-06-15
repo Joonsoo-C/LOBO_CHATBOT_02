@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthPage from "@/pages/auth-page";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
+import Management from "@/pages/Management";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -36,6 +37,7 @@ function Router() {
         <>
           <Route path="/" component={Home} />
           <Route path="/chat/:agentId" component={Chat} />
+          <Route path="/management/:agentId" component={Management} />
           <Route path="/auth">
             {() => {
               window.location.replace("/");
