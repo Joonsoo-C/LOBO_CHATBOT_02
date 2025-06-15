@@ -152,6 +152,43 @@ export default function AuthPage() {
             <CardTitle>로그인</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="login-username">학번/교번</Label>
+                <Input
+                  id="login-username"
+                  type="text"
+                  placeholder="예: 2024001234 또는 F2024001"
+                  {...loginForm.register("username")}
+                />
+                {loginForm.formState.errors.username && (
+                  <p className="text-sm text-red-500">
+                    {loginForm.formState.errors.username.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="login-password">비밀번호</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  {...loginForm.register("password")}
+                />
+                {loginForm.formState.errors.password && (
+                  <p className="text-sm text-red-500">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loginMutation.isPending}
+              >
+                {loginMutation.isPending ? "로그인 중..." : "로그인"}
+              </Button>
+            </form>
+
             {/* 데모 계정 섹션 */}
             <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
@@ -189,43 +226,6 @@ export default function AuthPage() {
                 계정이 없는 경우 자동으로 생성됩니다
               </p>
             </div>
-
-            <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="login-username">학번/교번</Label>
-                <Input
-                  id="login-username"
-                  type="text"
-                  placeholder="예: 2024001234 또는 F2024001"
-                  {...loginForm.register("username")}
-                />
-                {loginForm.formState.errors.username && (
-                  <p className="text-sm text-red-500">
-                    {loginForm.formState.errors.username.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="login-password">비밀번호</Label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  {...loginForm.register("password")}
-                />
-                {loginForm.formState.errors.password && (
-                  <p className="text-sm text-red-500">
-                    {loginForm.formState.errors.password.message}
-                  </p>
-                )}
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loginMutation.isPending}
-              >
-                {loginMutation.isPending ? "로그인 중..." : "로그인"}
-              </Button>
-            </form>
           </CardContent>
         </Card>
       </div>
