@@ -113,6 +113,14 @@ Changelog:
   * Added proper parameter validation to prevent database errors
   * Corrected route ordering to prevent NaN parsing issues
   * Message sending now works correctly with OpenAI integration
+- June 15, 2025. Implemented separate conversation types:
+  * Added conversation type field to database schema ("general" vs "management")
+  * Created separate API endpoints for general and management conversations
+  * Updated ChatInterface to support dual modes with different UI features
+  * Added Management page with authorization checks for faculty users
+  * General chat mode never shows management features, even for managers
+  * Management chat mode provides full agent configuration capabilities
+  * Each conversation type maintains completely separate message history
 ```
 
 ## User Preferences

@@ -15,8 +15,8 @@ export default function Chat() {
     enabled: !!agentId,
   });
 
-  // Check if user is the manager of this agent
-  const isManagementMode = Boolean(agent && user && agent.managerId === user.id);
+  // Regular chat should never use management mode, even for managers
+  const isManagementMode = false;
 
   if (isLoading) {
     return (
