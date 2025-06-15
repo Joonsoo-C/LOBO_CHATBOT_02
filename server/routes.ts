@@ -262,11 +262,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Analyze document
       const analysis = await analyzeDocument(extractedText, file.originalname);
 
-      // Save document to database
+      // Save document to database with properly encoded filename
       const documentData = insertDocumentSchema.parse({
         agentId,
         filename: file.filename,
-        originalName: file.originalname,
+        originalName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
         mimeType: file.mimetype,
         size: file.size,
         content: analysis.extractedText,
@@ -308,12 +308,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Properly encode filename for Korean characters
+      const safeFilename = document.originalName.replace(/[^\w\s.-]/g, '_');
       const encodedFilename = encodeURIComponent(document.originalName);
       
       // In a real implementation, you'd serve the actual file
       // For now, we'll serve the extracted content
       res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodedFilename}`);
+      res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodedFilename}`);
       res.send(document.content || "No content available");
     } catch (error) {
       console.error("Error downloading document:", error);

@@ -251,7 +251,7 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-foreground korean-text">
-                        {document.originalName}
+                        {decodeURIComponent(document.originalName || "")}
                       </h4>
                       <div className="flex items-center space-x-4 text-xs text-muted-foreground mt-1">
                         <span className="korean-text">{formatDate(document.createdAt)}</span>
