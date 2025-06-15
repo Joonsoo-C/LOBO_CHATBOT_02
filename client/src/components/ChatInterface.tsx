@@ -166,10 +166,10 @@ export default function ChatInterface({ agent }: ChatInterfaceProps) {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="p-2"
+                  className="px-3 py-2 korean-text"
                   onClick={() => setShowMenu(!showMenu)}
                 >
-                  <Menu className="w-5 h-5" />
+                  기능선택
                 </Button>
                 
                 {/* Dropdown Menu */}
