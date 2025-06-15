@@ -107,6 +107,12 @@ LoBo is a Korean university AI chatbot system that provides students and faculty
 ```
 Changelog:
 - June 15, 2025. Initial setup
+- June 15, 2025. Fixed message sending functionality:
+  * Resolved React Query v5 compatibility issues with onSuccess/onError callbacks
+  * Fixed session cookie security settings for development environment
+  * Added proper parameter validation to prevent database errors
+  * Corrected route ordering to prevent NaN parsing issues
+  * Message sending now works correctly with OpenAI integration
 ```
 
 ## User Preferences

@@ -101,12 +101,6 @@ export default function ChatInterface({ agent }: ChatInterfaceProps) {
     e.preventDefault();
     if (!message.trim() || sendMessageMutation.isPending) return;
     
-    console.log('Sending message:', {
-      message: message.trim(),
-      conversationId: conversation?.id,
-      hasConversation: !!conversation
-    });
-    
     sendMessageMutation.mutate(message.trim());
   };
 
