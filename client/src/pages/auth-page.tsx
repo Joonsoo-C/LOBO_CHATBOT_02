@@ -150,9 +150,6 @@ export default function AuthPage() {
         <Card className="w-full max-w-md mx-auto">
           <CardHeader>
             <CardTitle>로그인</CardTitle>
-            <CardDescription>
-              학번/교번으로 로그인하세요. 계정이 없으면 자동으로 생성됩니다.
-            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* 데모 계정 섹션 */}
