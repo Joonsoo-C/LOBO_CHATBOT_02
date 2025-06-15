@@ -8,23 +8,15 @@ import type { Agent } from "@/types/agent";
 export default function Chat() {
   const { agentId } = useParams<{ agentId: string }>();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const { data: agent, isLoading } = useQuery<Agent>({
     queryKey: [`/api/agents/${agentId}`],
     enabled: !!agentId,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
+
+  // Check if user is the manager of this agent
+  const isManagementMode = Boolean(agent && user && agent.managerId === user.id);
 
   if (isLoading) {
     return (
@@ -51,5 +43,5 @@ export default function Chat() {
     );
   }
 
-  return <ChatInterface agent={agent} />;
+  return <ChatInterface agent={agent} isManagementMode={isManagementMode || false} />;
 }
