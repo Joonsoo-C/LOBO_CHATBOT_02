@@ -332,6 +332,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Agent not found" });
       }
 
+      // Debug log to check agent data
+      console.log("Agent data for chat:", {
+        id: agent.id,
+        name: agent.name,
+        speakingStyle: (agent as any).speakingStyle,
+        personalityTraits: (agent as any).personalityTraits,
+        chatbotType: (agent as any).chatbotType
+      });
+
       // Get agent documents for context
       const documents = await storage.getAgentDocuments(agent.id);
       const documentContext = documents.map(doc => ({
