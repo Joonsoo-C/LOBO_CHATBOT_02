@@ -102,16 +102,10 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                   </div>
-                  {/* Real notification badge based on unread count */}
-                  {conversation && conversation.unreadCount && conversation.unreadCount > 0 && (
-                    <div className="mt-1">
+                  {/* Notification badge based on unread count */}
+                  {conversation?.unreadCount > 0 && (
+                    <div className="absolute -top-1 -right-1">
                       <span className="notification-badge">{conversation.unreadCount}</span>
-                    </div>
-                  )}
-                  {/* Debug: Show conversation data */}
-                  {conversation && (
-                    <div className="text-xs text-gray-500">
-                      ID: {conversation.id}, Unread: {conversation.unreadCount || 0}
                     </div>
                   )}
                 </div>
