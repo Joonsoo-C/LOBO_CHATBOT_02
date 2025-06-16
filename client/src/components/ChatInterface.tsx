@@ -162,7 +162,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Management function handlers
   const handlePersonaEdit = () => {
-    setShowPersonaModal(true);
+    setIsPersonaModalOpen(true);
     setShowMenu(false);
     addSystemMessage("🎭 페르소나 편집 모드가 시작되었습니다.\n\n에이전트의 성격, 말투, 전문 분야 등을 설정할 수 있습니다.");
   };
@@ -179,7 +179,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   const handleFileUpload = () => {
-    setShowFileModal(true);
+    setIsFileModalOpen(true);
     setShowMenu(false);
     addSystemMessage("📁 문서 업로드 기능이 열렸습니다.\n\n에이전트가 참고할 문서를 업로드하여 더 정확한 답변을 제공할 수 있도록 도와주세요.");
   };
@@ -298,27 +298,53 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                     : "bg-muted mr-4"
                 }`}
               >
-                <p className="whitespace-pre-line">{msg.content}</p>
+                <p className="whitespace-pre-line korean-text">{msg.content}</p>
                 <p className="text-xs opacity-70 mt-1">
                   {format(new Date(msg.createdAt), "HH:mm", { locale: ko })}
                 </p>
               </div>
             </div>
           ))}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-muted rounded-lg p-3 mr-4">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
 
       {/* Input */}
       <div className="border-t p-4">
+        {isAnnouncementMode && pendingAnnouncement && (
+          <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-sm text-amber-800 korean-text">공지사항 준비: {pendingAnnouncement}</p>
+          </div>
+        )}
         <form onSubmit={handleSendMessage} className="flex space-x-2">
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="메시지를 입력하세요..."
+            placeholder={isAnnouncementMode ? "공지사항을 입력하세요..." : "메시지를 입력하세요..."}
             disabled={sendMessageMutation.isPending}
-            className="flex-1"
+            className="flex-1 korean-text"
           />
+          {isAnnouncementMode && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              className="korean-text"
+            >
+              취소
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={!message.trim() || sendMessageMutation.isPending}
