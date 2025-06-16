@@ -179,15 +179,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             variant="ghost" 
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => setShowMenu(false)}
-                          >
-                            <Edit className="w-4 h-4 mr-2" />
-                            닉네임 변경
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
                               setShowFileModal(true);
                               setShowMenu(false);
