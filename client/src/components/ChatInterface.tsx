@@ -193,8 +193,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                               setShowMenu(false);
                             }}
                           >
-                            <Upload className="w-4 h-4 mr-2" />
-                            말투 변경
+                            <User className="w-4 h-4 mr-2" />
+                            페르소나 변경
                           </Button>
                           <Button 
                             variant="ghost" 
