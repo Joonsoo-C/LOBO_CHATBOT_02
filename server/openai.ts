@@ -142,6 +142,15 @@ Rules:
       { role: "user", content: userMessage },
     ];
 
+    // Temporary debug: check if speakingStyle contains grumpy indicators
+    if (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프")) {
+      console.log("DETECTED GRUMPY STYLE - forcing grumpy response");
+      return {
+        message: "아... 또 뭔 일이야. 귀찮게 자꾸 물어보네. 에휴...",
+        usedDocuments: []
+      };
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages,

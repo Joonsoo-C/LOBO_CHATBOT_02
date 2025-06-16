@@ -333,13 +333,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Debug log to check agent data
-      console.log("Agent data for chat:", {
-        id: agent.id,
-        name: agent.name,
-        speakingStyle: (agent as any).speakingStyle,
-        personalityTraits: (agent as any).personalityTraits,
-        chatbotType: (agent as any).chatbotType
-      });
+      console.log("FULL Agent data for chat:", agent);
+      console.log("Speaking style specifically:", (agent as any).speakingStyle);
+      console.log("Chatbot type specifically:", (agent as any).chatbotType);
 
       // Get agent documents for context
       const documents = await storage.getAgentDocuments(agent.id);
@@ -354,6 +350,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content,
       }));
 
+      // Extract persona parameters with detailed logging
+      const chatbotType = (agent as any).chatbotType || "general-llm";
+      const speakingStyle = (agent as any).speakingStyle || "친근하고 도움이 되는 말투";
+      const personalityTraits = (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공";
+      const prohibitedWordResponse = (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.";
+
+      console.log("PARAMETERS BEING SENT TO OPENAI:", {
+        chatbotType,
+        speakingStyle,
+        personalityTraits,
+        agentName: agent.name
+      });
+
       // Generate AI response with chatbot type and persona
       const aiResponse = await generateChatResponse(
         content,
@@ -361,10 +370,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         agent.description,
         conversationHistory,
         documentContext,
-        (agent as any).chatbotType || "general-llm",
-        (agent as any).speakingStyle || "친근하고 도움이 되는 말투",
-        (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-        (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+        chatbotType,
+        speakingStyle,
+        personalityTraits,
+        prohibitedWordResponse
       );
 
       // Save AI message
