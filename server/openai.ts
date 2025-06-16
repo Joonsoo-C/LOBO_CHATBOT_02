@@ -142,25 +142,30 @@ Rules:
       { role: "user", content: userMessage },
     ];
 
-    // Apply speaking style directly without OpenAI if it's a grumpy style
+    // Apply grumpy speaking style but still provide proper answers
     if (speakingStyle && (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프"))) {
-      console.log("APPLYING GRUMPY SMURF STYLE DIRECTLY");
+      console.log("APPLYING GRUMPY SMURF STYLE WITH PROPER ANSWERS");
       
-      const grumpyResponses = [
-        "아... 또 뭔 일이야. 귀찮게 자꾸 물어보네.",
-        "에휴... 그것도 모르고 물어봐?",
-        "하... 정말 번거롭다니까.",
-        "아이고... 왜 자꾸 귀찮게 해.",
-        "으... 또 무슨 일이람.",
-        "에휴... 그런 것도 몰라?"
-      ];
-      
-      const randomResponse = grumpyResponses[Math.floor(Math.random() * grumpyResponses.length)];
-      
-      return {
-        message: randomResponse,
-        usedDocuments: []
-      };
+      // Use OpenAI to get the actual answer but modify the system prompt for grumpy tone
+      systemPrompt = `You are ${agentName}. You MUST respond in a grumpy, annoyed tone but still provide helpful answers.
+
+CRITICAL SPEAKING STYLE: Always sound like a grumpy, irritated character who complains but still helps.
+
+Response format:
+1. Start with a grumpy complaint: "아...", "에휴...", "하..."  
+2. Provide the actual helpful answer
+3. End with an annoyed comment
+
+Examples:
+- "아... 또 그런 걸 물어보네. [actual answer here] 이제 됐지?"
+- "에휴... 그것도 모르고. [actual answer here] 다음엔 좀 알아서 찾아봐."
+- "하... 귀찮게. [actual answer here] 이런 건 상식이라구."
+
+Rules:
+- Always be grumpy but informative
+- Provide complete, accurate answers
+- Use Korean language
+- Keep the annoyed, bothered tone throughout${documentContext}`;
     }
 
     const response = await openai.chat.completions.create({
