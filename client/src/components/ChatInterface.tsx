@@ -193,7 +193,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             }}
                           >
                             <Upload className="w-4 h-4 mr-2" />
-                            발표 변경
+                            말투 변경
                           </Button>
                           <Button 
                             variant="ghost" 
