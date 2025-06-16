@@ -307,6 +307,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { content } = req.body;
       const userId = req.user.id;
 
+      // Debug logging
+      console.log("Message request body:", req.body);
+      console.log("Conversation ID:", conversationId);
+      console.log("Content:", content);
+
       // Validate input
       const validatedMessage = insertMessageSchema.parse({
         conversationId,
@@ -320,15 +325,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get conversation and agent info
       const messages = await storage.getConversationMessages(conversationId);
       
-      // Get the conversation directly by ID using storage method
-      const allConversations = await storage.getAllUserConversations(userId);
-      const conversation = allConversations.find((conv: any) => conv.id === conversationId);
+      // Get the conversation directly from database
+      const [conversationResult] = await db
+        .select()
+        .from(conversations)
+        .where(and(
+          eq(conversations.id, conversationId),
+          eq(conversations.userId, userId)
+        ));
       
-      if (!conversation) {
+      if (!conversationResult) {
         return res.status(404).json({ message: "Conversation not found" });
       }
       
-      const agent = await storage.getAgent(conversation.agentId);
+      const agent = await storage.getAgent(conversationResult.agentId);
       
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
