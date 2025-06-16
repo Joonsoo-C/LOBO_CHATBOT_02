@@ -148,7 +148,10 @@ export class DatabaseStorage implements IStorage {
       })
       .from(conversations)
       .innerJoin(agents, eq(conversations.agentId, agents.id))
-      .where(eq(conversations.userId, userId))
+      .where(and(
+        eq(conversations.userId, userId),
+        eq(conversations.type, "general") // Only show general conversations in the main list
+      ))
       .orderBy(desc(conversations.lastMessageAt));
 
     // Get last message for each conversation
