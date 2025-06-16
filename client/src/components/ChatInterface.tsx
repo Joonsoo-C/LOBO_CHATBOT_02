@@ -232,11 +232,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
                               setShowMenu(false);
-                              addSystemMessage("모델 변경 기능을 선택하셨습니다. 현재 GPT-4o 모델을 사용하고 있으며, 필요에 따라 다른 AI 모델로 변경할 수 있습니다.");
+                              addSystemMessage("챗봇 설정 기능을 선택하셨습니다. AI 모델, 응답 스타일, 대화 설정 등을 조정할 수 있습니다.");
                             }}
                           >
                             <Settings className="w-4 h-4 mr-2" />
-                            모델 변경
+                            챗봇 설정
                           </Button>
                           <Button 
                             variant="ghost" 
