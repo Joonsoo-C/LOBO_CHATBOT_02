@@ -38,6 +38,18 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+
+  // Function to add system message from agent
+  const addSystemMessage = (content: string) => {
+    const systemMessage: Message = {
+      id: Date.now(),
+      conversationId: conversation?.id || 0,
+      content,
+      isFromUser: false,
+      createdAt: new Date().toISOString(),
+    };
+    setOptimisticMessages(prev => [...prev, systemMessage]);
+  };
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -208,6 +220,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             onClick={() => {
                               setShowPersonaModal(true);
                               setShowMenu(false);
+                              addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
                             }}
                           >
                             <User className="w-4 h-4 mr-2" />
@@ -217,7 +230,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             variant="ghost" 
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => setShowMenu(false)}
+                            onClick={() => {
+                              setShowMenu(false);
+                              addSystemMessage("모델 변경 기능을 선택하셨습니다. 현재 GPT-4o 모델을 사용하고 있으며, 필요에 따라 다른 AI 모델로 변경할 수 있습니다.");
+                            }}
                           >
                             <Settings className="w-4 h-4 mr-2" />
                             모델 변경
@@ -226,7 +242,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             variant="ghost" 
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => setShowMenu(false)}
+                            onClick={() => {
+                              setShowMenu(false);
+                              addSystemMessage("공지 보내기 기능을 실행했습니다. 중요한 알림이나 공지사항을 모든 사용자에게 전달할 수 있습니다.");
+                            }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
                             공지 보내기
@@ -238,6 +257,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             onClick={() => {
                               setShowFileModal(true);
                               setShowMenu(false);
+                              addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
                             }}
                           >
                             <FileText className="w-4 h-4 mr-2" />
@@ -247,7 +267,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             variant="ghost" 
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => setShowMenu(false)}
+                            onClick={() => {
+                              setShowMenu(false);
+                              addSystemMessage("에이전트 성과 분석을 실행했습니다. 현재 활성 사용자 수, 총 메시지 수, 사용률, 순위 등의 통계를 확인할 수 있습니다.");
+                            }}
                           >
                             <BarChart3 className="w-4 h-4 mr-2" />
                             에이전트 성과
