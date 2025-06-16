@@ -153,14 +153,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
             <div className="flex items-center space-x-2">
               {isManagementMode && (
                 <>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="p-2 hidden"
-                    onClick={() => setShowFileModal(true)}
-                  >
-                    <Paperclip className="w-5 h-5" />
-                  </Button>
                   <div className="relative">
                     <Button 
                       variant="ghost" 
