@@ -307,15 +307,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { content } = req.body;
       const userId = req.user.id;
 
-      // Debug logging
-      console.log("Message request body:", req.body);
-      console.log("Conversation ID:", conversationId);
-      console.log("Content:", content);
+      if (!content || content.trim() === "") {
+        return res.status(400).json({ message: "Content is required" });
+      }
 
       // Validate input
       const validatedMessage = insertMessageSchema.parse({
         conversationId,
-        content,
+        content: content.trim(),
         isFromUser: true,
       });
 
