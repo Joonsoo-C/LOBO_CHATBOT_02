@@ -109,10 +109,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   });
 
   // Get messages for the conversation
-  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
+  const { data: messagesData = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/conversations/${conversation?.id}/messages`],
     enabled: !!conversation?.id,
   });
+
+  const messages = messagesData;
 
   // Set conversation when data is available and mark as read (only once)
   useEffect(() => {
