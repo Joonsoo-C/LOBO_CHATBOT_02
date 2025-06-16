@@ -148,7 +148,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/agents/${agent.id}/documents`] });
+      queryClient.invalidateQueries([`/api/agents/${agent.id}/documents`]);
       toast({
         title: "삭제 완료",
         description: "문서가 성공적으로 삭제되었습니다.",

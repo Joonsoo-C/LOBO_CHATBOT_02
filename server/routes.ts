@@ -15,9 +15,6 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Fix Korean filename encoding
-    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
-    
     const allowedTypes = [
       'text/plain',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -361,30 +358,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // Extract text content from the uploaded file
-      let extractedText = "";
-
-      try {
-        const fileBuffer = fs.readFileSync(file.path);
-        extractedText = await extractTextFromContent(fileBuffer, file.mimetype);
-      } catch (error) {
-        console.error("Text extraction failed:", error);
-        // Fallback for extraction failure
-        const fileStats = fs.statSync(file.path);
-        extractedText = `${file.originalname} (${file.mimetype}) - ${Math.round(fileStats.size / 1024)}KB 문서 파일`;
-      }
+      // Read file content
+      const fileContent = fs.readFileSync(file.path, 'utf-8');
       
-      // Analyze document with the extracted content
+      // Extract text content based on file type
+      const extractedText = await extractTextFromContent(fileContent, file.mimetype);
+      
+      // Analyze document
       const analysis = await analyzeDocument(extractedText, file.originalname);
 
-      // Save document to database - store the full extracted text content
+      // Save document to database with properly encoded filename
       const documentData = insertDocumentSchema.parse({
         agentId,
         filename: file.filename,
-        originalName: file.originalname,
+        originalName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
         mimeType: file.mimetype,
         size: file.size,
-        content: extractedText, // Store the actual extracted text content
+        content: analysis.extractedText,
         uploadedBy: userId,
       });
 

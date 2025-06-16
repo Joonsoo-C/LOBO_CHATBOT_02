@@ -60,8 +60,8 @@ export async function generateChatResponse(
   try {
     // Prepare context from documents
     const documentContext = availableDocuments.length > 0 
-      ? `\n\n업로드된 참고 문서:\n${availableDocuments.map(doc => 
-          `[${doc.filename}]\n${doc.content}`
+      ? `\n\n참고 문서:\n${availableDocuments.map(doc => 
+          `[${doc.filename}]\n${doc.content.slice(0, 2000)}...`
         ).join('\n\n')}`
       : "";
 
@@ -70,12 +70,9 @@ export async function generateChatResponse(
 다음 지침을 따라주세요:
 1. 한국어로 대답하세요
 2. 친근하고 도움이 되는 톤으로 대화하세요
-3. ${availableDocuments.length > 0 ? 
-   '업로드된 문서 내용을 반드시 참고하여 답변하세요. 문서에서 관련 정보를 찾아 구체적으로 인용하며 설명하세요.' : 
-   '일반적인 지식을 바탕으로 답변하세요.'}
+3. 제공된 문서 내용을 기반으로 답변하되, 문서에 없는 내용은 일반적인 지식으로 보완하세요
 4. 수식이 포함된 경우 LaTeX 형식으로 표현하세요
-5. 구체적이고 실용적인 답변을 제공하세요
-6. 답변 시 어떤 문서를 참고했는지 명시하세요${documentContext}`;
+5. 구체적이고 실용적인 답변을 제공하세요${documentContext}`;
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
@@ -105,40 +102,15 @@ export async function generateChatResponse(
   }
 }
 
-export async function extractTextFromContent(content: Buffer, mimeType: string): Promise<string> {
-  try {
-    if (mimeType.includes('text/plain')) {
-      return content.toString('utf-8');
-    }
-    
-    // Extract text from DOCX files using mammoth
-    if (mimeType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-      const mammoth = await import('mammoth');
-      const result = await mammoth.extractRawText({ buffer: content });
-      return result.value || "DOCX 파일에서 텍스트를 추출할 수 없습니다.";
-    }
-    
-    // For older DOC files, try to extract what we can
-    if (mimeType.includes('application/msword')) {
-      // DOC files are more complex, but we can try basic text extraction
-      const textContent = content.toString('utf-8').replace(/[^\x20-\x7E\uAC00-\uD7AF]/g, ' ');
-      const cleanedText = textContent.replace(/\s+/g, ' ').trim();
-      if (cleanedText.length > 50) {
-        return cleanedText;
-      }
-      return "DOC 파일 형식은 제한적으로 지원됩니다. DOCX 형식으로 변환하여 업로드해주세요.";
-    }
-    
-    // For PPT/PPTX files - basic support
-    if (mimeType.includes('application/vnd.ms-powerpoint') || 
-        mimeType.includes('application/vnd.openxmlformats-officedocument.presentationml.presentation')) {
-      return "PowerPoint 파일이 업로드되었습니다. 현재 텍스트 추출은 제한적으로 지원됩니다.";
-    }
-    
-    // For other file types, return a descriptive message
-    return `${mimeType} 형식의 문서입니다. 내용 분석을 위해 업로드되었습니다.`;
-  } catch (error) {
-    console.error("Text extraction failed:", error);
-    return "문서 내용을 추출하는 중 오류가 발생했습니다.";
+export async function extractTextFromContent(content: string, mimeType: string): Promise<string> {
+  // This is a simple text extraction - in production you might want to use specific libraries
+  // for different file types like pdf-parse, mammoth (for docx), etc.
+  
+  if (mimeType.includes('text/plain')) {
+    return content;
   }
+  
+  // For now, we'll assume the content is already text
+  // In production, you'd implement proper parsers for different file types
+  return content;
 }

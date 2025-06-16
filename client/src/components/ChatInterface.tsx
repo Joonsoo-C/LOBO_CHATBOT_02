@@ -1,21 +1,29 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { 
+  ChevronLeft, 
+  Paperclip, 
+  Menu, 
+  Send, 
+  Edit, 
+  Upload, 
+  Settings, 
+  Ban, 
+  FileText, 
+  BarChart3,
+  X,
+  User,
+  Bell
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
-import { Agent, Message, ChatResponse } from "@/types/agent";
-import { Send, Upload, Settings, MoreVertical, Bot, FileText, MessageSquare, Users, TrendingUp, BarChart3 } from "lucide-react";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
+import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
   agent: Agent;
@@ -24,350 +32,397 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
   const [message, setMessage] = useState("");
-  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
-  const [isPersonaModalOpen, setIsPersonaModalOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);
-  const [pendingAnnouncement, setPendingAnnouncement] = useState("");
-  const [systemMessages, setSystemMessages] = useState<Message[]>([]);
+  const [showFileModal, setShowFileModal] = useState(false);
+  const [showPersonaModal, setShowPersonaModal] = useState(false);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const conversationType = isManagementMode ? "management" : "general";
-  const conversationKey = `/api/conversations/${agent.id}/${conversationType}`;
-
-  // Fetch conversation messages
-  const { data: conversation, isLoading } = useQuery({
-    queryKey: [conversationKey],
-    queryFn: async () => {
-      const response = await fetch(conversationKey);
-      if (!response.ok) throw new Error('대화를 불러올 수 없습니다');
-      return response.json();
-    },
-  });
-
-  const messages = [...systemMessages, ...(conversation || []), ...optimisticMessages];
-
-  // Add system message helper
+  // Function to add system message from agent
   const addSystemMessage = (content: string) => {
     const systemMessage: Message = {
       id: Date.now(),
-      conversationId: 0,
+      conversationId: conversation?.id || 0,
       content,
       isFromUser: false,
       createdAt: new Date().toISOString(),
     };
-    setSystemMessages(prev => [...prev, systemMessage]);
+    setOptimisticMessages(prev => [...prev, systemMessage]);
   };
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Get or create conversation based on mode
+  const { data: conversationData } = useQuery<Conversation>({
+    queryKey: [`/api/conversations${isManagementMode ? '/management' : ''}`, agent.id],
+    queryFn: async () => {
+      const endpoint = isManagementMode ? "/api/conversations/management" : "/api/conversations";
+      const response = await apiRequest("POST", endpoint, { agentId: agent.id });
+      return response.json();
+    },
+  });
+
+  // Set conversation when data is available
+  useEffect(() => {
+    if (conversationData) {
+      setConversation(conversationData);
+    }
+  }, [conversationData]);
+
+  // Get messages for the conversation
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
+    queryKey: [`/api/conversations/${conversation?.id}/messages`],
+    enabled: !!conversation?.id,
+  });
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: async (content: string): Promise<ChatResponse> => {
-      const response = await fetch(`/api/conversations/${agent.id}/${conversationType}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content }),
+    mutationFn: async (content: string) => {
+      if (!conversation?.id) {
+        throw new Error("No conversation found");
+      }
+      
+      const response = await apiRequest("POST", `/api/conversations/${conversation.id}/messages`, {
+        content,
+        isFromUser: true,
       });
-      if (!response.ok) throw new Error('메시지 전송에 실패했습니다');
       return response.json();
     },
     onMutate: async (content: string) => {
-      // Add optimistic message
-      setOptimisticMessages(prev => [...prev, {
-        id: Date.now(),
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: [`/api/conversations/${conversation?.id}/messages`]
+      });
+
+      // Create optimistic user message
+      const optimisticUserMessage: Message = {
+        id: Date.now(), // temporary ID
         conversationId: conversation?.id || 0,
         content,
         isFromUser: true,
         createdAt: new Date().toISOString(),
-      }]);
-      setIsTyping(true);
-      setMessage("");
+      };
+
+      // Add optimistic user message immediately
+      setOptimisticMessages(prev => [...prev, optimisticUserMessage]);
+      setIsTyping(true); // Show typing indicator for AI response
+      setMessage(""); // Clear input immediately
     },
     onSuccess: (data: ChatResponse) => {
-      // Clear optimistic messages and typing
+      // Clear optimistic messages and typing indicator
       setOptimisticMessages([]);
       setIsTyping(false);
       
-      // Invalidate query to refetch
-      queryClient.invalidateQueries({ queryKey: [conversationKey] });
+      // Invalidate messages to refresh with real data
+      queryClient.invalidateQueries({
+        queryKey: [`/api/conversations/${conversation?.id}/messages`]
+      });
     },
     onError: (error: Error) => {
+      // Clear optimistic messages and typing indicator on error
       setOptimisticMessages([]);
       setIsTyping(false);
-      toast({
-        title: "메시지 전송 실패",
-        description: error.message,
-        variant: "destructive",
-      });
+      
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "인증 오류",
+          description: "다시 로그인해주세요.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth";
+        }, 500);
+      } else {
+        toast({
+          title: "메시지 전송 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendMessage = () => {
     if (!message.trim() || sendMessageMutation.isPending) return;
+    sendMessageMutation.mutate(message.trim());
+  };
 
-    // Handle announcement mode
-    if (isAnnouncementMode) {
-      if (pendingAnnouncement) {
-        setPendingAnnouncement(message);
-        setMessage("");
-        addSystemMessage(`📢 공지사항이 설정되었습니다: "${message}"\n\n이 메시지가 사용자들에게 표시됩니다.`);
-        return;
-      }
+  // Combine real messages with optimistic messages
+  const allMessages = [...(messages || []), ...optimisticMessages];
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
-
-    // Regular message sending
-    sendMessageMutation.mutate(message);
-    addSystemMessage(pendingAnnouncement ? `📢 공지: ${pendingAnnouncement}\n\n사용자 메시지: ${message}` : message);
-    setIsAnnouncementMode(false);
-    setPendingAnnouncement("");
   };
 
-  const handleCancel = () => {
-    setMessage("");
-    addSystemMessage("❌ 작업이 취소되었습니다.");
-    setIsAnnouncementMode(false);
-    setPendingAnnouncement("");
-  };
-
-  const handleStop = () => {
-    setMessage("");
-    addSystemMessage("⏹️ 대화가 중단되었습니다.");
-  };
-
-  const handleReset = () => {
-    setMessage("");
-    addSystemMessage("🔄 대화가 초기화되었습니다. 새로운 대화를 시작하세요.");
-  };
-
-  const scrollToBottom = () => {
+  // Auto scroll to bottom when new messages arrive or typing state changes
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [allMessages, isTyping]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Initialize management mode with welcome message
-  useEffect(() => {
-    if (isManagementMode && systemMessages.length === 0 && (!conversation || conversation.length === 0)) {
-      addSystemMessage(`안녕하세요! ${agent.name} 에이전트 관리 모드입니다.\n\n다음 기능을 사용할 수 있습니다:\n• 🎭 페르소나 편집: 에이전트의 성격과 말투를 설정\n• 📁 문서 업로드: 에이전트가 참고할 자료 추가\n• 📊 성능 분석: 에이전트 사용량 및 통계 확인\n• 💬 대화 테스트: 설정한 페르소나로 대화 확인\n\n원하는 기능을 선택하거나 자유롭게 대화해보세요!`);
-    }
-  }, [isManagementMode, systemMessages.length, conversation]);
-
-  // Management function handlers
-  const handlePersonaEdit = () => {
-    setIsPersonaModalOpen(true);
-    setShowMenu(false);
-    addSystemMessage("🎭 페르소나 편집 모드가 시작되었습니다.\n\n에이전트의 성격, 말투, 전문 분야 등을 설정할 수 있습니다.");
-  };
-
-  const handlePerformanceAnalysis = () => {
-    setShowMenu(false);
-    addSystemMessage(`📊 ${agent.name} 에이전트 성능 분석\n\n• 활성 사용자: 24명 (전일 대비 +12%)\n• 총 대화 수: 156회\n• 평균 응답 시간: 2.3초\n• 사용자 만족도: 4.2/5.0\n• 주요 질문 카테고리:\n  - 학사 일정: 35%\n  - 수강 신청: 28%\n  - 시설 안내: 20%\n  - 기타: 17%\n\n📈 지난 7일간 사용량이 꾸준히 증가하고 있습니다.`);
-  };
-
-  const handleAnnouncementMode = () => {
-    setShowMenu(false);
-    setIsAnnouncementMode(true);
-    addSystemMessage("📢 공지사항 모드가 활성화되었습니다.\n\n다음 메시지가 사용자들에게 공지사항으로 전달됩니다.");
-  };
-
-  const handleFileUpload = () => {
-    setIsFileModalOpen(true);
-    setShowMenu(false);
-    addSystemMessage("📁 문서 업로드 기능이 열렸습니다.\n\n에이전트가 참고할 문서를 업로드하여 더 정확한 답변을 제공할 수 있도록 도와주세요.");
-  };
-
-  const handleViewDocuments = () => {
-    setShowMenu(false);
-    addSystemMessage("📋 업로드된 문서 목록을 확인합니다.\n\n현재 등록된 문서들을 통해 에이전트가 전문적인 답변을 제공할 수 있습니다.");
-  };
-
-  const handleFileUploadSuccess = (message: string) => {
-    addSystemMessage(`✅ ${message}\n\n업로드된 문서가 에이전트의 지식베이스에 추가되었습니다. 이제 이 정보를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`);
-  };
-
-  const handlePersonaEditSuccess = (message: string) => {
-    addSystemMessage(`✅ ${message}\n\n페르소나 설정이 완료되었습니다. 새로운 설정으로 대화를 시작해보세요!`);
-    addSystemMessage("대화 테스트를 통해 새로운 페르소나가 잘 적용되었는지 확인해보세요!");
-  };
-
-  if (isLoading) {
+  if (messagesLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">대화를 불러오는 중...</p>
+      <div className="mobile-container">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center korean-text">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">대화를 불러오는 중...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full">
-      {/* Header */}
-      <div className="border-b p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-10 w-10" style={{ backgroundColor: agent.backgroundColor }}>
-              <AvatarFallback className="text-white text-lg">
-                {agent.icon}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className="font-semibold korean-text">{agent.name}</h2>
-              <p className="text-sm text-muted-foreground korean-text">{agent.description}</p>
+    <div className="mobile-container flex flex-col">
+      {/* Chat Header */}
+      <header className="bg-card border-b border-border sticky top-0 z-50">
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Link href={isManagementMode ? "/management" : "/"}>
+                <Button variant="ghost" size="sm" className="p-2">
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+              <div className="w-10 h-10 bg-gray-600 rounded-2xl flex items-center justify-center">
+                <User className="text-white w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Badge variant="outline">{agent.category}</Badge>
-            {isManagementMode && (
-              <Badge variant="secondary" className="korean-text">관리 모드</Badge>
-            )}
-            {isManagementMode && (
-              <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={handlePersonaEdit} className="korean-text">
-                    <Bot className="mr-2 h-4 w-4" />
-                    페르소나 편집
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleFileUpload} className="korean-text">
-                    <Upload className="mr-2 h-4 w-4" />
-                    문서 업로드
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleViewDocuments} className="korean-text">
-                    <FileText className="mr-2 h-4 w-4" />
-                    문서 관리
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handlePerformanceAnalysis} className="korean-text">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    성능 분석
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleAnnouncementMode} className="korean-text">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    공지사항 모드
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        </div>
+            <div className="flex items-center space-x-2">
+              {isManagementMode && (
+                <>
+                  <div className="relative">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="px-3 py-2 korean-text"
+                      onClick={() => setShowMenu(!showMenu)}
+                    >
+                      기능선택
+                    </Button>
+                  
+                    {/* Dropdown Menu */}
+                    {showMenu && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50">
+                        <div className="py-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={() => {
+                              setShowPersonaModal(true);
+                              setShowMenu(false);
+                              addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+                            }}
+                          >
+                            <User className="w-4 h-4 mr-2" />
+                            페르소나 변경
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={() => {
+                              setShowMenu(false);
+                              addSystemMessage("모델 변경 기능을 선택하셨습니다. 현재 GPT-4o 모델을 사용하고 있으며, 필요에 따라 다른 AI 모델로 변경할 수 있습니다.");
+                            }}
+                          >
+                            <Settings className="w-4 h-4 mr-2" />
+                            모델 변경
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={() => {
+                              setShowMenu(false);
+                              addSystemMessage("공지 보내기 기능을 실행했습니다. 중요한 알림이나 공지사항을 모든 사용자에게 전달할 수 있습니다.");
+                            }}
+                          >
+                            <Bell className="w-4 h-4 mr-2" />
+                            공지 보내기
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={() => {
+                              setShowFileModal(true);
+                              setShowMenu(false);
+                              addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+                            }}
+                          >
+                            <FileText className="w-4 h-4 mr-2" />
+                            문서 업로드
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={async () => {
+                              setShowMenu(false);
+                              addSystemMessage("에이전트 성과 분석을 실행합니다...");
+                              
+                              try {
+                                const response = await fetch(`/api/agents/${agent.id}/performance`, {
+                                  credentials: 'include'
+                                });
+                                
+                                if (response.ok) {
+                                  const data = await response.json();
+                                  const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
 
-        {/* Management Status */}
-        {isManagementMode && (
-          <>
-            <Separator className="my-3" />
-            <div className="space-y-2">
-              {isAnnouncementMode && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm font-medium text-amber-800 korean-text">공지사항 모드 활성</span>
+📈 주요 지표:
+
+• 총 메시지 수: ${data.metrics.totalMessages}개
+
+• 활성 사용자: ${data.metrics.activeUsers}명
+
+• 업로드 문서: ${data.metrics.documentsCount}개
+
+• 최근 활동: ${data.metrics.recentActivity}건
+
+• 응답률: ${data.metrics.responseRate}
+
+• 평균 응답시간: ${data.metrics.avgResponseTime}
+
+• 만족도: ${data.metrics.satisfaction}
+
+📊 성장 추세:
+
+• 메시지 증가율: ${data.trends.messageGrowth}
+
+• 사용자 증가율: ${data.trends.userGrowth}
+
+• 참여율: ${data.trends.engagementRate}`;
+                                  
+                                  addSystemMessage(performanceMessage);
+                                } else {
+                                  addSystemMessage("성과 분석 데이터를 불러오는데 실패했습니다.");
+                                }
+                              } catch (error) {
+                                addSystemMessage("성과 분석 중 오류가 발생했습니다.");
+                              }
+                            }}
+                          >
+                            <BarChart3 className="w-4 h-4 mr-2" />
+                            에이전트 성과
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-xs text-amber-700 mt-1 korean-text">다음 메시지가 공지사항으로 전송됩니다.</p>
-                </div>
+                </>
               )}
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      </header>
 
-      {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
-          {messages.map((msg: Message) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[70%] rounded-lg p-3 ${
-                  msg.isFromUser
-                    ? "bg-primary text-primary-foreground ml-4"
-                    : "bg-muted mr-4"
-                }`}
-              >
-                <p className="whitespace-pre-line korean-text">{msg.content}</p>
-                <p className="text-xs opacity-70 mt-1">
-                  {format(new Date(msg.createdAt), "HH:mm", { locale: ko })}
-                </p>
-              </div>
+      {/* Chat Messages */}
+      <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll">
+        {allMessages.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="text-white w-8 h-8" />
             </div>
-          ))}
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg p-3 mr-4">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <h3 className="text-lg font-medium text-foreground mb-2 korean-text">
+              {agent.name}과 대화하세요
+            </h3>
+            <p className="text-muted-foreground text-sm korean-text">
+              궁금한 것이 있으면 언제든지 물어보세요.
+            </p>
+          </div>
+        ) : (
+          <>
+            {allMessages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
+                    msg.isFromUser
+                      ? "bg-primary text-primary-foreground ml-auto"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  <p className="text-sm leading-relaxed">{msg.content}</p>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-      </ScrollArea>
-
-      {/* Input */}
-      <div className="border-t p-4">
-        {isAnnouncementMode && pendingAnnouncement && (
-          <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-800 korean-text">공지사항 준비: {pendingAnnouncement}</p>
-          </div>
+            ))}
+            
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="max-w-[75%] px-4 py-3 rounded-2xl bg-muted text-muted-foreground">
+                  <div className="flex items-center space-x-1">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-500 ml-2 korean-text">메시지 작성 중...</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
-        <form onSubmit={handleSendMessage} className="flex space-x-2">
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={isAnnouncementMode ? "공지사항을 입력하세요..." : "메시지를 입력하세요..."}
-            disabled={sendMessageMutation.isPending}
-            className="flex-1 korean-text"
-          />
-          {isAnnouncementMode && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              className="korean-text"
-            >
-              취소
-            </Button>
-          )}
-          <Button
-            type="submit"
-            disabled={!message.trim() || sendMessageMutation.isPending}
-            size="icon"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Modals */}
-      <FileUploadModal
-        agent={agent}
-        isOpen={isFileModalOpen}
-        onClose={() => setIsFileModalOpen(false)}
-        onSuccess={handleFileUploadSuccess}
-      />
-      <PersonaEditModal
-        agent={agent}
-        isOpen={isPersonaModalOpen}
-        onClose={() => setIsPersonaModalOpen(false)}
-        onSuccess={handlePersonaEditSuccess}
-      />
+      {/* Message Input */}
+      <div className="px-4 py-4 border-t border-border bg-card">
+        <div className="flex items-center space-x-3">
+          <div className="flex-1 relative">
+            <Input
+              type="text"
+              placeholder="메시지를 입력하세요..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="pr-12 korean-text"
+              disabled={sendMessageMutation.isPending}
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2"
+              onClick={handleSendMessage}
+              disabled={!message.trim() || sendMessageMutation.isPending}
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* File Upload Modal */}
+      {showFileModal && (
+        <FileUploadModal
+          agent={agent}
+          isOpen={showFileModal}
+          onClose={() => setShowFileModal(false)}
+          onSuccess={addSystemMessage}
+        />
+      )}
+
+      {/* Persona Edit Modal */}
+      {showPersonaModal && (
+        <PersonaEditModal
+          agent={agent}
+          isOpen={showPersonaModal}
+          onClose={() => setShowPersonaModal(false)}
+          onSuccess={addSystemMessage}
+          onCancel={addSystemMessage}
+        />
+      )}
     </div>
   );
 }
