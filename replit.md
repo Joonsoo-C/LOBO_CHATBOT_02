@@ -127,6 +127,13 @@ Changelog:
   * Implemented completion messages for persona editing and document uploads
   * Both initial guidance and success confirmation messages appear in conversation
   * Enhanced user experience with real-time feedback for all management functions
+- June 16, 2025. Fixed document upload system and added performance analysis:
+  * Resolved PostgreSQL UTF-8 encoding errors for binary file uploads (DOCX, PPT)
+  * Implemented safe binary file handling by storing metadata summaries
+  * Added Korean filename encoding support to prevent character corruption
+  * Created comprehensive agent performance analysis with real-time metrics
+  * Performance data includes usage statistics, growth trends, and activity tracking
+  * Enhanced chat message formatting with whitespace-pre-line for proper line breaks
 ```
 
 ## User Preferences

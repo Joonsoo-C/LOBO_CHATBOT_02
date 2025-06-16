@@ -15,6 +15,9 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
   fileFilter: (req, file, cb) => {
+    // Fix Korean filename encoding
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    
     const allowedTypes = [
       'text/plain',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
