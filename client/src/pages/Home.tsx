@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { LogOut } from "lucide-react";
+import { Search, ChevronDown, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,7 @@ import AgentManagement from "@/components/AgentManagement";
 import type { Agent, Conversation } from "@/types/agent";
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   
   // Set active tab based on current URL
@@ -42,6 +43,11 @@ export default function Home() {
       window.location.replace("/auth");
     },
   });
+
+  const filteredAgents = agents.filter((agent: Agent) =>
+    agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    agent.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (agentsLoading) {
     return (
@@ -96,7 +102,24 @@ export default function Home() {
             </Button>
           </div>
 
-          
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="에이전트 검색"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-20 bg-muted border-none korean-text"
+            />
+            <Button
+              variant="default"
+              size="sm"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
+            >
+              전체 <ChevronDown className="ml-1 w-3 h-3" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -104,7 +127,7 @@ export default function Home() {
       <main className="flex-1">
         {activeTab === "chat" && (
           <AgentList 
-            agents={agents} 
+            agents={filteredAgents} 
             conversations={conversations}
           />
         )}
