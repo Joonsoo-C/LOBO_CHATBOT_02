@@ -59,6 +59,20 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // Broadcast notification mutation
+  const broadcastMutation = useMutation({
+    mutationFn: async ({ agentId, message }: { agentId: number; message: string }) => {
+      const response = await apiRequest("POST", `/api/agents/${agentId}/broadcast`, { message });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자 ${data.totalRecipients}명\n시간: ${new Date().toLocaleString('ko-KR')}`);
+    },
+    onError: () => {
+      addSystemMessage("알림 전송에 실패했습니다.");
+    }
+  });
+
   // Get or create conversation based on mode
   const { data: conversationData } = useQuery<Conversation>({
     queryKey: [`/api/conversations${isManagementMode ? '/management' : ''}`, agent.id],
@@ -168,10 +182,16 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     if (notificationState === "waiting_approval") {
       const lowerMessage = messageContent.toLowerCase();
       if (lowerMessage === "승인" || lowerMessage === "네" || lowerMessage === "yes") {
-        // Execute notification
+        // Execute notification - broadcast to all users
         setNotificationState("idle");
         setMessage("");
-        addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자\n시간: ${new Date().toLocaleString('ko-KR')}`);
+        
+        // Execute broadcast using mutation
+        broadcastMutation.mutate({
+          agentId: agent.id,
+          message: pendingNotification
+        });
+        
         setPendingNotification("");
         return;
       } else if (lowerMessage === "취소" || lowerMessage === "아니오" || lowerMessage === "no") {
