@@ -1,474 +1,284 @@
-import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";import { useState, useRef, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";import { Link } from "wouter";
-import { 
-  ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft,   ChevronLeft, 
-  Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip,   Paperclip, 
-  Menu, 
-  Send, 
-  Edit, 
-  Upload, 
-  Settings, 
-  Ban, 
-  FileText, 
-  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,  BarChart3,
-  X,
-  User,
-  Bell
-} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";} from "lucide-react";
-import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";import { useToast } from "@/hooks/use-toast";
-import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";import { isUnauthorizedError } from "@/lib/authUtils";
-import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";import { apiRequest } from "@/lib/queryClient";
-import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";import FileUploadModal from "./FileUploadModal";
-import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";import PersonaEditModal from "./PersonaEditModal";
-import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
+import { useState, useRef, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { Agent, Message, ChatResponse } from "@/types/agent";
+import { Send, Upload, Settings } from "lucide-react";
+import FileUploadModal from "./FileUploadModal";
+import PersonaEditModal from "./PersonaEditModal";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 
-interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {interface ChatInterfaceProps {
-  agent: Agent;  agent: Agent;  agent: Agent;  agent: Agent;  agent: Agent;  agent: Agent;  agent: Agent;  agent: Agent;
-  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;  isManagementMode?: boolean;
+interface ChatInterfaceProps {
+  agent: Agent;
+  isManagementMode?: boolean;
 }
 
-export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
-  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");  const [message, setMessage] = useState("");
-  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);  const [showMenu, setShowMenu] = useState(false);
-  const [showFileModal, setShowFileModal] = useState(false);  const [showFileModal, setShowFileModal] = useState(false);  const [showFileModal, setShowFileModal] = useState(false);  const [showFileModal, setShowFileModal] = useState(false);
-  const [showPersonaModal, setShowPersonaModal] = useState(false);  const [showPersonaModal, setShowPersonaModal] = useState(false);  const [showPersonaModal, setShowPersonaModal] = useState(false);  const [showPersonaModal, setShowPersonaModal] = useState(false);
-  const [conversation, setConversation] = useState<Conversation | null>(null);  const [conversation, setConversation] = useState(null);  const [conversation, setConversation] = useState(null);  const [conversation, setConversation] = useState(null);
-  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);  const [optimisticMessages, setOptimisticMessages] = useState([]);  const [optimisticMessages, setOptimisticMessages] = useState([]);  const [optimisticMessages, setOptimisticMessages] = useState([]);
-  const [systemMessages, setSystemMessages] = useState<Message[]>([]); // Persistent system messages  const [systemMessages, setSystemMessages] = useState([]); // Persistent system messages  const [systemMessages, setSystemMessages] = useState([]); // Persistent system messages  const [systemMessages, setSystemMessages] = useState([]); // Persistent system messages
-  const [isTyping, setIsTyping] = useState(false);  const [isTyping, setIsTyping] = useState(false);  const [isTyping, setIsTyping] = useState(false);  const [isTyping, setIsTyping] = useState(false);
-  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);
-  const [pendingAnnouncement, setPendingAnnouncement] = useState<string>("");  const [pendingAnnouncement, setPendingAnnouncement] = useState("");  const [pendingAnnouncement, setPendingAnnouncement] = useState("");  const [pendingAnnouncement, setPendingAnnouncement] = useState("");
+export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
+  const [message, setMessage] = useState("");
+  const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+  const [isPersonaModalOpen, setIsPersonaModalOpen] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Function to add system message from agent - now persistent  // Function to add system message from agent - now persistent  // Function to add system message from agent - now persistent  // Function to add system message from agent - now persistent
-  const addSystemMessage = (content: string) => {  const addSystemMessage = (content: string) => {  const addSystemMessage = (content: string) => {  const addSystemMessage = (content: string) => {
-    const systemMessage: Message = {    const systemMessage: Message = {    const systemMessage: Message = {    const systemMessage: Message = {
-      id: Date.now(),      id: Date.now(),
-      conversationId: conversation?.id || 0,      conversationId: conversation?.id || 0,
-      content,
-      isFromUser: false,      isFromUser: false,
-      createdAt: new Date().toISOString(),      createdAt: new Date().toISOString(),
-    };
-    setSystemMessages(prev => [...prev, systemMessage]);    setSystemMessages(prev => [...prev, systemMessage]);
-  };
-  const messagesEndRef = useRef<HTMLDivElement>(null);  const messagesEndRef = useRef(null);
-  const queryClient = useQueryClient();  const queryClient = useQueryClient();
-  const { toast } = useToast();  const { toast } = useToast();
+  const conversationType = isManagementMode ? "management" : "general";
+  const conversationKey = `/api/conversations/${agent.id}/${conversationType}`;
 
-  // Get or create conversation based on mode  // Get or create conversation based on mode
-  const { data: conversationData } = useQuery<Conversation>({  const { data: conversationData } = useQuery({
-    queryKey: [`/api/conversations${isManagementMode ? '/management' : ''}`, agent.id],    queryKey: [`/api/conversations${isManagementMode ? '/management' : ''}`, agent.id],
-    queryFn: async () => {    queryFn: async () => {
-      const endpoint = isManagementMode ? "/api/conversations/management" : "/api/conversations";      const endpoint = isManagementMode ? "/api/conversations/management" : "/api/conversations";
-      const response = await apiRequest("POST", endpoint, { agentId: agent.id });      const response = await apiRequest("POST", endpoint, { agentId: agent.id });
-      return response.json();      return response.json();
+  // Fetch conversation messages
+  const { data: messages = [], isLoading } = useQuery({
+    queryKey: [conversationKey],
+    queryFn: async () => {
+      const response = await fetch(conversationKey);
+      if (!response.ok) throw new Error('대화를 불러올 수 없습니다');
+      return response.json();
     },
-  });
-
-  // Set conversation when data is available  // Set conversation when data is available
-  useEffect(() => {  useEffect(() => {
-    if (conversationData) {    if (conversationData) {
-      setConversation(conversationData);      setConversation(conversationData);
-    }
-  }, [conversationData]);
-
-  // Get messages for the conversation
-  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
-    queryKey: [`/api/conversations/${conversation?.id}/messages`],
-    enabled: !!conversation?.id,
   });
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: async (content: string) => {
-      if (!conversation?.id) {
-        throw new Error("No conversation found");
-      }
-      
-      const response = await apiRequest("POST", `/api/conversations/${conversation.id}/messages`, {
-        content,
-        isFromUser: true,
+    mutationFn: async (content: string): Promise<ChatResponse> => {
+      const response = await fetch(`/api/conversations/${agent.id}/${conversationType}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
       });
+      if (!response.ok) throw new Error('메시지 전송에 실패했습니다');
       return response.json();
     },
     onMutate: async (content: string) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({
-        queryKey: [`/api/conversations/${conversation?.id}/messages`]
-      });
+      await queryClient.cancelQueries({ queryKey: [conversationKey] });
 
-      // Create optimistic user message
+      // Snapshot the previous value
+      const previousMessages = queryClient.getQueryData([conversationKey]);
+
+      // Add system message for management mode guidance
+      if (isManagementMode && messages.length === 0) {
+        const systemMessage: Message = {
+          id: Date.now() - 1,
+          conversationId: 0,
+          content: `안녕하세요! ${agent.name} 에이전트 관리 모드입니다.\n\n다음 기능을 사용할 수 있습니다:\n• 🎭 페르소나 편집: 에이전트의 성격과 말투를 설정\n• 📁 문서 업로드: 에이전트가 참고할 자료 추가\n• 💬 대화 테스트: 설정한 페르소나로 대화 확인\n\n원하는 기능을 선택하거나 자유롭게 대화해보세요!`,
+          isFromUser: false,
+          createdAt: new Date().toISOString(),
+        };
+        queryClient.setQueryData([conversationKey], [systemMessage]);
+      }
+
+      // Optimistically add user message
       const optimisticUserMessage: Message = {
-        id: Date.now(), // temporary ID
-        conversationId: conversation?.id || 0,
+        id: Date.now(),
+        conversationId: 0,
         content,
         isFromUser: true,
         createdAt: new Date().toISOString(),
       };
 
-      // Add optimistic user message immediately
-      setOptimisticMessages(prev => [...prev, optimisticUserMessage]);
-      setIsTyping(true); // Show typing indicator for AI response
-      setMessage(""); // Clear input immediately
+      queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
+        ...old,
+        optimisticUserMessage,
+      ]);
+
+      return previousMessages;
     },
     onSuccess: (data: ChatResponse) => {
-      // Clear optimistic messages and typing indicator
-      setOptimisticMessages([]);
-      setIsTyping(false);
-      
-      // Invalidate messages to refresh with real data
-      queryClient.invalidateQueries({
-        queryKey: [`/api/conversations/${conversation?.id}/messages`]
+      // Replace optimistic message with real data
+      queryClient.setQueryData([conversationKey], (old: Message[] = []) => {
+        const withoutOptimistic = old.slice(0, -1);
+        return [...withoutOptimistic, data.userMessage, data.aiMessage];
       });
     },
-    onError: (error: Error) => {
-      // Clear optimistic messages and typing indicator on error
-      setOptimisticMessages([]);
-      setIsTyping(false);
-      
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/auth";
-        }, 500);
-      } else {
-        toast({
-          title: "메시지 전송 실패",
-          description: error.message,
-          variant: "destructive",
-        });
+    onError: (error: Error, variables, context) => {
+      // Rollback to previous state
+      if (context) {
+        queryClient.setQueryData([conversationKey], context as Message[]);
       }
+      toast({
+        title: "메시지 전송 실패",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!message.trim() || sendMessageMutation.isPending) return;
-    
-    // Handle announcement mode
-    if (isAnnouncementMode) {
-      if (!pendingAnnouncement) {
-        // First message in announcement mode - store the announcement and ask for approval
-        setPendingAnnouncement(message.trim());
-        setMessage("");
-        addSystemMessage(`📋 알림 내용을 확인해주세요:\n\n"${message.trim()}"\n\n이 내용으로 알림을 발송하시겠습니까?\n\n• 발송하려면 "승인" 또는 "발송"을 입력해주세요\n• 취소하려면 "취소"를 입력해주세요`);
-        return;
-      } else {
-        // Second message in announcement mode - handle approval/cancellation
-        const userResponse = message.trim().toLowerCase();
-        if (userResponse === "승인" || userResponse === "발송") {
-          // Send announcement
-          setMessage("");
-          addSystemMessage(`✅ 알림이 성공적으로 발송되었습니다!\n\n발송된 내용: "${pendingAnnouncement}"\n발송 시간: ${new Date().toLocaleString('ko-KR')}\n대상: 전체 사용자\n상태: 발송 완료`);
-          setIsAnnouncementMode(false);
-          setPendingAnnouncement("");
-          return;
-        } else if (userResponse === "취소") {
-          // Cancel announcement
-          setMessage("");
-          addSystemMessage("❌ 알림 발송이 취소되었습니다.");
-          setIsAnnouncementMode(false);
-          setPendingAnnouncement("");
-          return;
-        } else {
-          // Invalid response
-          setMessage("");
-          addSystemMessage("⚠️ 올바른 응답을 입력해주세요.\n\n• 발송하려면 \"승인\" 또는 \"발송\"\n• 취소하려면 \"취소\"를 입력해주세요");
-          return;
-        }
-      }
-    }
-    
-    // Normal message handling
-    sendMessageMutation.mutate(message.trim());
+
+    sendMessageMutation.mutate(message);
+    setMessage("");
   };
 
-  // Combine real messages, system messages, and optimistic messages
-  const allMessages = [...(messages || []), ...systemMessages, ...optimisticMessages];
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  // Auto scroll to bottom when new messages arrive or typing state changes
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages, isTyping]);
+  };
 
-  if (messagesLoading) {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleFileUploadSuccess = (message: string) => {
+    // Add system message about successful upload
+    const systemMessage: Message = {
+      id: Date.now(),
+      conversationId: 0,
+      content: `✅ ${message}\n\n업로드된 문서가 에이전트의 지식베이스에 추가되었습니다. 이제 이 정보를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`,
+      isFromUser: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
+      ...old,
+      systemMessage,
+    ]);
+  };
+
+  const handlePersonaEditSuccess = (message: string) => {
+    // Add system message about successful persona edit
+    const systemMessage: Message = {
+      id: Date.now(),
+      conversationId: 0,
+      content: `✅ ${message}\n\n페르소나 설정이 완료되었습니다. 새로운 설정으로 대화를 시작해보세요!`,
+      isFromUser: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
+      ...old,
+      systemMessage,
+    ]);
+  };
+
+  if (isLoading) {
     return (
-      <div className="mobile-container">
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center korean-text">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-muted-foreground">대화를 불러오는 중...</p>
-          </div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">대화를 불러오는 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mobile-container flex flex-col h-screen">
-      {/* Chat Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Link href={isManagementMode ? "/management" : "/"}>
-                <Button variant="ghost" size="sm" className="p-2">
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div className="w-10 h-10 bg-gray-600 rounded-2xl flex items-center justify-center">
-                <User className="text-white w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
-              </div>
+    <div className="flex-1 flex flex-col h-full">
+      {/* Header */}
+      <div className="border-b p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Avatar className="h-10 w-10" style={{ backgroundColor: agent.backgroundColor }}>
+              <AvatarFallback className="text-white text-lg">
+                {agent.icon}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h2 className="font-semibold">{agent.name}</h2>
+              <p className="text-sm text-muted-foreground">{agent.description}</p>
             </div>
-            <div className="flex items-center space-x-2">
-              {isManagementMode && (
-                <>
-                  <div className="relative">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="px-3 py-2 korean-text"
-                      onClick={() => setShowMenu(!showMenu)}
-                    >
-                      기능선택
-                    </Button>
-                  
-                    {/* Dropdown Menu */}
-                    {showMenu && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50">
-                        <div className="py-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => {
-                              setShowPersonaModal(true);
-                              setShowMenu(false);
-                              addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
-                            }}
-                          >
-                            <User className="w-4 h-4 mr-2" />
-                            페르소나 변경
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => {
-                              setShowMenu(false);
-                              addSystemMessage("모델 변경 기능을 선택하셨습니다. 현재 GPT-4o 모델을 사용하고 있으며, 필요에 따라 다른 AI 모델로 변경할 수 있습니다.");
-                            }}
-                          >
-                            <Settings className="w-4 h-4 mr-2" />
-                            모델 변경
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => {
-                              setShowMenu(false);
-                              setIsAnnouncementMode(true);
-                              addSystemMessage("🔔 알림 보내기 기능을 실행했습니다.\n\n아래에 알림 내용을 입력하고 메시지 보내기를 눌러주세요.");
-                            }}
-                          >
-                            <Bell className="w-4 h-4 mr-2" />
-                            알림 보내기
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => {
-                              setShowFileModal(true);
-                              setShowMenu(false);
-                              addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
-                            }}
-                          >
-                            <FileText className="w-4 h-4 mr-2" />
-                            문서 업로드
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={async () => {
-                              setShowMenu(false);
-                              addSystemMessage("에이전트 성과 분석을 실행합니다...");
-                              
-                              try {
-                                const response = await fetch(`/api/agents/${agent.id}/performance`, {
-                                  credentials: 'include'
-                                });
-                                
-                                if (response.ok) {
-                                  const data = await response.json();
-                                  const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
-
-
-📈 주요 지표:
-
-• 총 메시지 수: ${data.metrics.totalMessages}개
-
-• 활성 사용자: ${data.metrics.activeUsers}명
-
-• 업로드 문서: ${data.metrics.documentsCount}개
-
-• 최근 활동: ${data.metrics.recentActivity}건
-
-• 응답률: ${data.metrics.responseRate}
-
-• 평균 응답시간: ${data.metrics.avgResponseTime}
-
-• 만족도: ${data.metrics.satisfaction}
-
-
-📊 성장 추세:
-
-• 메시지 증가율: ${data.trends.messageGrowth}
-
-• 사용자 증가율: ${data.trends.userGrowth}
-
-• 참여율: ${data.trends.engagementRate}`;
-                                  
-                                  addSystemMessage(performanceMessage);
-                                } else {
-                                  addSystemMessage("성과 분석 데이터를 불러오는데 실패했습니다.");
-                                }
-                              } catch (error) {
-                                addSystemMessage("성과 분석 중 오류가 발생했습니다.");
-                              }
-                            }}
-                          >
-                            <BarChart3 className="w-4 h-4 mr-2" />
-                            에이전트 성과
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
+          </div>
+          <div className="flex space-x-2">
+            <Badge variant="outline">{agent.category}</Badge>
+            {isManagementMode && (
+              <Badge variant="secondary">관리 모드</Badge>
+            )}
           </div>
         </div>
-      </header>
 
-      {/* Chat Messages */}
-      <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll min-h-0">
-        {allMessages.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <User className="text-white w-8 h-8" />
-            </div>
-            <h3 className="text-lg font-medium text-foreground mb-2 korean-text">
-              {agent.name}과 대화하세요
-            </h3>
-            <p className="text-muted-foreground text-sm korean-text">
-              궁금한 것이 있으면 언제든지 물어보세요.
-            </p>
-          </div>
-        ) : (
+        {/* Management Tools */}
+        {isManagementMode && (
           <>
-            {allMessages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
-                    msg.isFromUser
-                      ? "bg-primary text-primary-foreground ml-auto"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
-                </div>
-              </div>
-            ))}
-            
-            {/* Typing Indicator */}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="max-w-[75%] px-4 py-3 rounded-2xl bg-muted text-muted-foreground">
-                  <div className="flex items-center space-x-1">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                    <span className="text-xs text-gray-500 ml-2 korean-text">메시지 작성 중...</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            <Separator className="my-4" />
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsPersonaModalOpen(true)}
+                className="flex items-center space-x-1"
+              >
+                <Settings className="h-4 w-4" />
+                <span>페르소나 편집</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFileModalOpen(true)}
+                className="flex items-center space-x-1"
+              >
+                <Upload className="h-4 w-4" />
+                <span>문서 업로드</span>
+              </Button>
+            </div>
           </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input - Fixed at bottom */}
-      <div className="flex-shrink-0 px-4 py-4 border-t border-border bg-card">
-        <div className="flex items-center space-x-3">
-          <div className="flex-1 relative">
-            <Input
-              type="text"
-              placeholder={
-                isAnnouncementMode 
-                  ? (pendingAnnouncement ? "승인/취소를 입력하세요..." : "알림 내용을 입력하세요...")
-                  : "메시지를 입력하세요..."
-              }
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="pr-12 korean-text"
-              disabled={sendMessageMutation.isPending}
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2"
-              onClick={handleSendMessage}
-              disabled={!message.trim() || sendMessageMutation.isPending}
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((msg: Message) => (
+            <div
+              key={msg.id}
+              className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}
             >
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
+              <div
+                className={`max-w-[70%] rounded-lg p-3 ${
+                  msg.isFromUser
+                    ? "bg-primary text-primary-foreground ml-4"
+                    : "bg-muted mr-4"
+                }`}
+              >
+                <p className="whitespace-pre-line">{msg.content}</p>
+                <p className="text-xs opacity-70 mt-1">
+                  {format(new Date(msg.createdAt), "HH:mm", { locale: ko })}
+                </p>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
+      </ScrollArea>
+
+      {/* Input */}
+      <div className="border-t p-4">
+        <form onSubmit={handleSendMessage} className="flex space-x-2">
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="메시지를 입력하세요..."
+            disabled={sendMessageMutation.isPending}
+            className="flex-1"
+          />
+          <Button
+            type="submit"
+            disabled={!message.trim() || sendMessageMutation.isPending}
+            size="icon"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
       </div>
 
-      {/* File Upload Modal */}
-      {showFileModal && (
-        <FileUploadModal
-          agent={agent}
-          isOpen={showFileModal}
-          onClose={() => setShowFileModal(false)}
-          onSuccess={addSystemMessage}
-        />
-      )}
-
-      {/* Persona Edit Modal */}
-      {showPersonaModal && (
-        <PersonaEditModal
-          agent={agent}
-          isOpen={showPersonaModal}
-          onClose={() => setShowPersonaModal(false)}
-          onSuccess={addSystemMessage}
-          onCancel={addSystemMessage}
-        />
-      )}
+      {/* Modals */}
+      <FileUploadModal
+        agent={agent}
+        isOpen={isFileModalOpen}
+        onClose={() => setIsFileModalOpen(false)}
+        onSuccess={handleFileUploadSuccess}
+      />
+      <PersonaEditModal
+        agent={agent}
+        isOpen={isPersonaModalOpen}
+        onClose={() => setIsPersonaModalOpen(false)}
+        onSuccess={handlePersonaEditSuccess}
+      />
     </div>
   );
 }
