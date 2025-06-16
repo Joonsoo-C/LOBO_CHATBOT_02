@@ -138,7 +138,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link href="/">
+              <Link href={isManagementMode ? "/management" : "/"}>
                 <Button variant="ghost" size="sm" className="p-2">
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
