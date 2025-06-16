@@ -42,6 +42,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     },
     onSuccess: (data) => {
       console.log(`Document upload notification sent to ${data.totalRecipients} users`);
+      
+      // Invalidate conversation cache to refresh the conversation list
+      queryClient.invalidateQueries({
+        queryKey: ["/api/conversations"]
+      });
     },
     onError: (error) => {
       console.error("Failed to broadcast document upload notification:", error);

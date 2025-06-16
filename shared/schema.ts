@@ -64,6 +64,8 @@ export const conversations = pgTable("conversations", {
   userId: varchar("user_id").references(() => users.id).notNull(),
   agentId: integer("agent_id").references(() => agents.id).notNull(),
   type: varchar("type").notNull().default("general"), // "general" or "management"
+  unreadCount: integer("unread_count").default(0),
+  lastReadAt: timestamp("last_read_at"),
   lastMessageAt: timestamp("last_message_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
