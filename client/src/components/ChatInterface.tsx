@@ -156,7 +156,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="p-2"
+                    className="p-2 hidden"
                     onClick={() => setShowFileModal(true)}
                   >
                     <Paperclip className="w-5 h-5" />
