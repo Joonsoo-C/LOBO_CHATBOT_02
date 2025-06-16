@@ -108,6 +108,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   });
 
+  // Get messages for the conversation
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
+    queryKey: [`/api/conversations/${conversation?.id}/messages`],
+    enabled: !!conversation?.id,
+  });
+
   // Set conversation when data is available and mark as read (only once)
   useEffect(() => {
     if (conversationData && (!conversation || conversation.id !== conversationData.id)) {
@@ -142,12 +148,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       }, 500);
     }
   }, [isManagementMode, messages?.length, conversation?.id, agent.name]);
-
-  // Get messages for the conversation
-  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
-    queryKey: [`/api/conversations/${conversation?.id}/messages`],
-    enabled: !!conversation?.id,
-  });
 
   // Send message mutation
   const sendMessageMutation = useMutation({
