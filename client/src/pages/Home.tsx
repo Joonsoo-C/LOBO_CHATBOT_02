@@ -96,9 +96,6 @@ export default function Home() {
               </Button>
             </div>
             
-            {/* Theme Selector */}
-            <ThemeSelector />
-            
             {/* Settings Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -115,6 +112,11 @@ export default function Home() {
                   <Settings className="w-4 h-4 mr-2" />
                   계정설정
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1">
+                  <div className="text-sm text-muted-foreground mb-2 korean-text">테마 설정</div>
+                  <ThemeSelector />
+                </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   className="korean-text cursor-pointer"

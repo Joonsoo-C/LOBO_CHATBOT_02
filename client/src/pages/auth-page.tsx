@@ -3,10 +3,17 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ThemeSelector } from "@/components/ThemeSelector";
 
 import { useToast } from "@/hooks/use-toast";
@@ -116,9 +123,21 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      {/* Theme Selector - positioned in top right */}
+      {/* Settings dropdown in top right */}
       <div className="fixed top-4 right-4 z-50">
-        <ThemeSelector />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Settings className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1">
+              <div className="text-sm text-muted-foreground mb-2 korean-text">테마 설정</div>
+              <ThemeSelector />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       
       <div className="w-full max-w-md mx-auto space-y-6">
