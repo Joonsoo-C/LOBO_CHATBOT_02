@@ -379,6 +379,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           isOpen={showPersonaModal}
           onClose={() => setShowPersonaModal(false)}
           onSuccess={addSystemMessage}
+          onCancel={addSystemMessage}
         />
       )}
     </div>

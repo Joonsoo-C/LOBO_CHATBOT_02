@@ -14,6 +14,7 @@ interface PersonaEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (message: string) => void;
+  onCancel?: (message: string) => void;
 }
 
 interface PersonaData {
@@ -24,7 +25,7 @@ interface PersonaData {
   prohibitedWordResponse: string;
 }
 
-export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess }: PersonaEditModalProps) {
+export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, onCancel }: PersonaEditModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -49,14 +50,13 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess }: 
       
       // Send completion message to chat
       if (onSuccess) {
-        onSuccess(`페르소나 변경이 완료되었습니다! 
-닉네임: ${personaData.nickname}
-말투 스타일: ${personaData.speakingStyle}
-지식 분야: ${personaData.knowledgeArea}
-성격 특성: ${personaData.personalityTraits}
-금칙어 반응: ${personaData.prohibitedWordResponse}
-
-새로운 설정으로 대화를 시작해보세요! 😊`);
+        const changes = [];
+        if (personaData.nickname !== agent.name) changes.push(`닉네임: ${personaData.nickname}`);
+        if (personaData.knowledgeArea !== agent.description) changes.push(`지식 분야: ${personaData.knowledgeArea}`);
+        if (personaData.speakingStyle !== "친근하고 도움이 되는 말투") changes.push(`말투 스타일: ${personaData.speakingStyle}`);
+        
+        const changeText = changes.length > 0 ? changes.join(', ') + ' 변경됨. ' : '';
+        onSuccess(`${changeText}페르소나 설정이 저장되었습니다.`);
       }
       
       // Invalidate agent data to refresh
@@ -87,6 +87,13 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess }: 
     }));
   };
 
+  const handleClose = () => {
+    if (onCancel) {
+      onCancel("페르소나 편집을 취소하였습니다.");
+    }
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -95,7 +102,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess }: 
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-lg font-medium korean-text">페르소나 편집</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
           </Button>
         </div>

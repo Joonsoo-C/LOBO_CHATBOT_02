@@ -69,13 +69,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       
       // Send completion message to chat
       if (onSuccess) {
-        onSuccess(`문서 업로드가 완료되었습니다! 📄
-
-파일명: ${data.originalName || selectedFile?.name}
-크기: ${data.size ? (data.size / 1024).toFixed(1) + 'KB' : '알 수 없음'}
-형식: ${data.mimeType || '알 수 없음'}
-
-업로드된 문서를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`);
+        onSuccess(`${data.originalName || selectedFile?.name} 문서 업로드가 저장되었습니다.`);
       }
     },
     onError: (error: Error) => {
