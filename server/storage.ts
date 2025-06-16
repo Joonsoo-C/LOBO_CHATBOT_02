@@ -32,7 +32,7 @@ export interface IStorage {
   getAllAgents(): Promise<Agent[]>;
   getAgent(id: number): Promise<Agent | undefined>;
   createAgent(agent: InsertAgent): Promise<Agent>;
-  updateAgent(id: number, updates: Partial<Agent>): Promise<Agent>;
+  updateAgent(id: number, updates: any): Promise<Agent>;
   getAgentsByManager(managerId: string): Promise<Agent[]>;
 
   // Conversation operations
@@ -103,6 +103,15 @@ export class DatabaseStorage implements IStorage {
   async createAgent(agent: InsertAgent): Promise<Agent> {
     const [newAgent] = await db.insert(agents).values(agent).returning();
     return newAgent;
+  }
+
+  async updateAgent(id: number, updates: any): Promise<Agent> {
+    const [updatedAgent] = await db
+      .update(agents)
+      .set(updates)
+      .where(eq(agents.id, id))
+      .returning();
+    return updatedAgent;
   }
 
   async getAgentsByManager(managerId: string): Promise<Agent[]> {
