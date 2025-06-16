@@ -328,24 +328,22 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button
-                      size="sm"
+                      size="icon"
+                      variant="ghost"
                       onClick={() => handleDownload(document.id, document.originalName)}
-                      className="korean-text"
                     >
-                      <Download className="w-4 h-4 mr-1" />
-                      다운로드
+                      <Download className="w-4 h-4" />
                     </Button>
                     <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                       <AlertDialogTrigger asChild>
                         <Button
-                          size="sm"
-                          variant="destructive"
+                          size="icon"
+                          variant="ghost"
                           onClick={() => handleDelete(document)}
                           disabled={deleteMutation.isPending}
-                          className="korean-text"
+                          className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
                         >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          삭제
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
