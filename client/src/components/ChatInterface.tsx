@@ -161,7 +161,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       setMessage("");
       
       // Show approval message
-      addSystemMessage(`다음 알림을 전송하시겠습니까?\n\n📢 알림 내용:\n"${messageContent}"\n\n이 알림은 현재 에이전트를 사용하는 모든 사용자에게 전달됩니다.\n\n✅ 승인하려면 "승인" 또는 "네"라고 입력하세요.\n❌ 취소하려면 "취소" 또는 "아니오"라고 입력하세요.`);
+      addSystemMessage(`알림 내용: "${messageContent}"\n\n전송하시겠습니까? (승인/취소)`);
       return;
     }
     
@@ -171,19 +171,19 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         // Execute notification
         setNotificationState("idle");
         setMessage("");
-        addSystemMessage(`✅ 알림이 성공적으로 전송되었습니다!\n\n📤 전송된 알림: "${pendingNotification}"\n👥 대상: ${agent.name} 사용자 전체\n⏰ 전송 시간: ${new Date().toLocaleString('ko-KR')}\n\n알림이 모든 활성 사용자에게 즉시 전달되었습니다.`);
+        addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자\n시간: ${new Date().toLocaleString('ko-KR')}`);
         setPendingNotification("");
         return;
       } else if (lowerMessage === "취소" || lowerMessage === "아니오" || lowerMessage === "no") {
         // Cancel notification
         setNotificationState("idle");
         setMessage("");
-        addSystemMessage("❌ 알림 전송이 취소되었습니다.");
+        addSystemMessage("알림 전송이 취소되었습니다.");
         setPendingNotification("");
         return;
       } else {
         setMessage("");
-        addSystemMessage("승인 또는 취소 여부를 명확히 입력해주세요.\n✅ 승인: '승인' 또는 '네'\n❌ 취소: '취소' 또는 '아니오'");
+        addSystemMessage("'승인' 또는 '취소'를 입력해주세요.");
         return;
       }
     }
@@ -289,7 +289,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             onClick={() => {
                               setShowMenu(false);
                               setNotificationState("waiting_input");
-                              addSystemMessage("📢 알림보내기 기능을 시작합니다.\n\n사용자에게 전달할 알림 내용을 입력해주세요. 알림은 현재 에이전트를 사용하는 모든 사용자에게 실시간으로 전송됩니다.\n\n💡 예시: '시스템 점검으로 인해 오늘 오후 3시부터 1시간 동안 서비스가 일시 중단됩니다.'");
+                              addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
                             }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
@@ -423,19 +423,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Notification Status Indicator */}
-      {notificationState !== "idle" && (
-        <div className="px-4 py-2 bg-orange-100 border-t border-orange-200">
-          <div className="flex items-center space-x-2">
-            <Bell className="w-4 h-4 text-orange-600" />
-            <span className="text-sm font-medium text-orange-800 korean-text">
-              {notificationState === "waiting_input" 
-                ? "1단계: 알림 내용 입력 중..." 
-                : "2단계: 전송 승인 대기 중..."}
-            </span>
-          </div>
-        </div>
-      )}
+
 
       {/* Message Input */}
       <div className="px-4 py-4 border-t border-border bg-card">
@@ -443,21 +431,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           <div className="flex-1 relative">
             <Input
               type="text"
-              placeholder={
-                notificationState === "waiting_input" 
-                  ? "📢 알림 내용을 입력하세요..." 
-                  : notificationState === "waiting_approval"
-                  ? "✅ '승인' 또는 ❌ '취소'를 입력하세요..."
-                  : "메시지를 입력하세요..."
-              }
+              placeholder="메시지를 입력하세요..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              className={`pr-12 korean-text ${
-                notificationState !== "idle" 
-                  ? "border-orange-300 focus:border-orange-500 bg-orange-50" 
-                  : ""
-              }`}
+              className="pr-12 korean-text"
               disabled={sendMessageMutation.isPending}
             />
             <Button
