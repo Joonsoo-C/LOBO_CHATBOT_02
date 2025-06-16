@@ -121,6 +121,12 @@ Changelog:
   * General chat mode never shows management features, even for managers
   * Management chat mode provides full agent configuration capabilities
   * Each conversation type maintains completely separate message history
+- June 16, 2025. Enhanced function selection feedback system:
+  * Added system message functionality to provide immediate chat feedback
+  * Function selections now trigger informative agent responses in chat
+  * Implemented completion messages for persona editing and document uploads
+  * Both initial guidance and success confirmation messages appear in conversation
+  * Enhanced user experience with real-time feedback for all management functions
 ```
 
 ## User Preferences

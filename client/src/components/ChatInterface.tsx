@@ -368,6 +368,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           agent={agent}
           isOpen={showFileModal}
           onClose={() => setShowFileModal(false)}
+          onSuccess={addSystemMessage}
         />
       )}
 
