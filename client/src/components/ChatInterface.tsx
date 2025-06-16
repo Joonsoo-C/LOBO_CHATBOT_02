@@ -155,7 +155,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         // First message in announcement mode - store the announcement and ask for approval
         setPendingAnnouncement(message.trim());
         setMessage("");
-        addSystemMessage(`📋 공지 내용을 확인해주세요:\n\n"${message.trim()}"\n\n이 내용으로 공지를 발송하시겠습니까?\n\n• 발송하려면 "승인" 또는 "발송"을 입력해주세요\n• 취소하려면 "취소"를 입력해주세요`);
+        addSystemMessage(`📋 알림 내용을 확인해주세요:\n\n"${message.trim()}"\n\n이 내용으로 알림을 발송하시겠습니까?\n\n• 발송하려면 "승인" 또는 "발송"을 입력해주세요\n• 취소하려면 "취소"를 입력해주세요`);
         return;
       } else {
         // Second message in announcement mode - handle approval/cancellation
@@ -163,14 +163,14 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         if (userResponse === "승인" || userResponse === "발송") {
           // Send announcement
           setMessage("");
-          addSystemMessage(`✅ 공지가 성공적으로 발송되었습니다!\n\n발송된 내용: "${pendingAnnouncement}"\n발송 시간: ${new Date().toLocaleString('ko-KR')}\n대상: 전체 사용자\n상태: 발송 완료`);
+          addSystemMessage(`✅ 알림이 성공적으로 발송되었습니다!\n\n발송된 내용: "${pendingAnnouncement}"\n발송 시간: ${new Date().toLocaleString('ko-KR')}\n대상: 전체 사용자\n상태: 발송 완료`);
           setIsAnnouncementMode(false);
           setPendingAnnouncement("");
           return;
         } else if (userResponse === "취소") {
           // Cancel announcement
           setMessage("");
-          addSystemMessage("❌ 공지 발송이 취소되었습니다.");
+          addSystemMessage("❌ 알림 발송이 취소되었습니다.");
           setIsAnnouncementMode(false);
           setPendingAnnouncement("");
           return;
@@ -283,11 +283,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             onClick={() => {
                               setShowMenu(false);
                               setIsAnnouncementMode(true);
-                              addSystemMessage("📢 공지 보내기 기능을 실행했습니다.\n\n아래에 공지 내용을 입력하고 메시지 보내기를 눌러주세요.");
+                              addSystemMessage("🔔 알림 보내기 기능을 실행했습니다.\n\n아래에 알림 내용을 입력하고 메시지 보내기를 눌러주세요.");
                             }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
-                            공지 보내기
+                            알림 보내기
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -426,7 +426,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
               type="text"
               placeholder={
                 isAnnouncementMode 
-                  ? (pendingAnnouncement ? "승인/취소를 입력하세요..." : "공지 내용을 입력하세요...")
+                  ? (pendingAnnouncement ? "승인/취소를 입력하세요..." : "알림 내용을 입력하세요...")
                   : "메시지를 입력하세요..."
               }
               value={message}
