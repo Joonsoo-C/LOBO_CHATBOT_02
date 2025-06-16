@@ -122,6 +122,27 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [conversationData?.id, isManagementMode, hasMarkedAsRead]);
 
+  // Show welcome message for management mode when conversation is empty
+  useEffect(() => {
+    if (isManagementMode && messages && messages.length === 0 && conversation?.id) {
+      // Add welcome message for management mode
+      setTimeout(() => {
+        addSystemMessage(`🔧 ${agent.name} 관리자 모드에 오신 것을 환영합니다!
+
+대화를 통해 다음 기능들을 실행할 수 있습니다:
+
+• "페르소나" - 에이전트 성격 및 말투 설정
+• "챗봇 설정" - LLM 모델 및 동작 방식 변경  
+• "문서 업로드" - 지식베이스 확장용 문서 추가
+• "알림보내기" - 사용자들에게 공지사항 전송
+• "성과 분석" - 에이전트 사용 통계 및 분석
+• "도움말" - 명령어 목록 다시 보기
+
+원하는 기능을 메시지로 입력하거나, 일반 대화도 가능합니다.`);
+      }, 500);
+    }
+  }, [isManagementMode, messages?.length, conversation?.id, agent.name]);
+
   // Get messages for the conversation
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/conversations/${conversation?.id}/messages`],
@@ -215,6 +236,95 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     
     const messageContent = message.trim();
     
+    // Handle management commands in management mode
+    if (isManagementMode && notificationState === "idle") {
+      const lowerMessage = messageContent.toLowerCase();
+      
+      // Check for feature selection commands
+      if (lowerMessage.includes("페르소나") || lowerMessage.includes("persona") || lowerMessage.includes("성격")) {
+        setShowPersonaModal(true);
+        setMessage("");
+        addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+        return;
+      }
+      
+      if (lowerMessage.includes("챗봇") || lowerMessage.includes("설정") || lowerMessage.includes("모델")) {
+        setShowSettingsModal(true);
+        setMessage("");
+        addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+        return;
+      }
+      
+      if (lowerMessage.includes("알림") || lowerMessage.includes("notification") || lowerMessage.includes("브로드캐스트")) {
+        setNotificationState("waiting_input");
+        setMessage("");
+        addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+        return;
+      }
+      
+      if (lowerMessage.includes("문서") || lowerMessage.includes("업로드") || lowerMessage.includes("파일")) {
+        setShowFileModal(true);
+        setMessage("");
+        addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+        return;
+      }
+      
+      if (lowerMessage.includes("성과") || lowerMessage.includes("분석") || lowerMessage.includes("통계") || lowerMessage.includes("performance")) {
+        setMessage("");
+        addSystemMessage("에이전트 성과 분석을 실행합니다...");
+        
+        // Execute performance analysis
+        setTimeout(async () => {
+          try {
+            const response = await fetch(`/api/agents/${agent.id}/performance`, {
+              credentials: 'include'
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
+
+📈 주요 지표:
+
+• 총 메시지 수: ${data.metrics.totalMessages}개
+
+• 활성 사용자: ${data.metrics.activeUsers}명
+
+• 사용률: ${data.metrics.usagePercentage}%
+
+• 랭킹: ${data.metrics.ranking}위
+
+• 평균 응답 시간: ${data.metrics.avgResponseTime}초
+
+${data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.insights.map((insight: string) => `• ${insight}`).join('\n') : ''}`;
+              
+              addSystemMessage(performanceMessage);
+            } else {
+              addSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다.");
+            }
+          } catch (error) {
+            addSystemMessage("성과 분석 실행 중 오류가 발생했습니다.");
+          }
+        }, 1000);
+        return;
+      }
+      
+      if (lowerMessage.includes("도움말") || lowerMessage.includes("명령어") || lowerMessage.includes("기능") || lowerMessage.includes("help")) {
+        setMessage("");
+        addSystemMessage(`🔧 에이전트 관리 명령어:
+
+• "페르소나" - 에이전트 성격 및 말투 설정
+• "챗봇 설정" - LLM 모델 및 동작 방식 변경  
+• "문서 업로드" - 지식베이스 확장용 문서 추가
+• "알림보내기" - 사용자들에게 공지사항 전송
+• "성과 분석" - 에이전트 사용 통계 및 분석
+• "도움말" - 이 명령어 목록 표시
+
+일반 대화를 원하시면 평소처럼 메시지를 보내주세요.`);
+        return;
+      }
+    }
+
     // Handle notification workflow
     if (notificationState === "waiting_input") {
       setPendingNotification(messageContent);
