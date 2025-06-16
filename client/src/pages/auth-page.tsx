@@ -184,6 +184,20 @@ export default function AuthPage() {
                     {loginForm.formState.errors.password.message}
                   </p>
                 )}
+                <div className="text-right">
+                  <button
+                    type="button"
+                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    onClick={() => {
+                      toast({
+                        title: "비밀번호 찾기",
+                        description: "관리자에게 문의하여 비밀번호를 재설정해주세요.",
+                      });
+                    }}
+                  >
+                    비밀번호를 잊으셨나요?
+                  </button>
+                </div>
               </div>
               <Button
                 type="submit"
