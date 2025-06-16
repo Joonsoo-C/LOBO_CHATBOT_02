@@ -34,6 +34,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -74,14 +76,41 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       });
       return response.json();
     },
+    onMutate: async (content: string) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: [`/api/conversations/${conversation?.id}/messages`]
+      });
+
+      // Create optimistic user message
+      const optimisticUserMessage: Message = {
+        id: Date.now(), // temporary ID
+        conversationId: conversation?.id || 0,
+        content,
+        isFromUser: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Add optimistic user message immediately
+      setOptimisticMessages(prev => [...prev, optimisticUserMessage]);
+      setIsTyping(true); // Show typing indicator for AI response
+      setMessage(""); // Clear input immediately
+    },
     onSuccess: (data: ChatResponse) => {
-      // Invalidate messages to refresh the chat
+      // Clear optimistic messages and typing indicator
+      setOptimisticMessages([]);
+      setIsTyping(false);
+      
+      // Invalidate messages to refresh with real data
       queryClient.invalidateQueries({
         queryKey: [`/api/conversations/${conversation?.id}/messages`]
       });
-      setMessage("");
     },
     onError: (error: Error) => {
+      // Clear optimistic messages and typing indicator on error
+      setOptimisticMessages([]);
+      setIsTyping(false);
+      
       if (isUnauthorizedError(error)) {
         toast({
           title: "인증 오류",
@@ -106,6 +135,9 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     sendMessageMutation.mutate(message.trim());
   };
 
+  // Combine real messages with optimistic messages
+  const allMessages = [...(messages || []), ...optimisticMessages];
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -113,10 +145,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   };
 
-  // Auto scroll to bottom when new messages arrive
+  // Auto scroll to bottom when new messages arrive or typing state changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [allMessages, isTyping]);
 
   if (messagesLoading) {
     return (
@@ -231,7 +263,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
       {/* Chat Messages */}
       <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll">
-        {messages.length === 0 ? (
+        {allMessages.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="text-white w-8 h-8" />
@@ -244,19 +276,37 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
             </p>
           </div>
         ) : (
-          messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
-                  msg.isFromUser
-                    ? "bg-primary text-primary-foreground ml-auto"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                <p className="text-sm leading-relaxed">{msg.content}</p>
+          <>
+            {allMessages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
+                    msg.isFromUser
+                      ? "bg-primary text-primary-foreground ml-auto"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  <p className="text-sm leading-relaxed">{msg.content}</p>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+            
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="max-w-[75%] px-4 py-3 rounded-2xl bg-muted text-muted-foreground">
+                  <div className="flex items-center space-x-1">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-500 ml-2 korean-text">메시지 작성 중...</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
         <div ref={messagesEndRef} />
       </div>
