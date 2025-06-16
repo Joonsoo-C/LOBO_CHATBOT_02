@@ -148,6 +148,13 @@ Changelog:
   * Created approval system with "승인/취소" confirmation process
   * Notification system works seamlessly within management chat interface
   * All messages kept concise and practical per user preference
+- June 16, 2025. Implemented real-time conversation list updates:
+  * Added automatic polling every 3 seconds for conversation list refresh
+  * Fixed message cache updates when new messages are sent or received
+  * Improved broadcast notification system to immediately refresh conversation list
+  * Enhanced unread count tracking with proper notification badges
+  * Fixed TypeScript null safety issues in server-side conversation handling
+  * Notification badges now correctly appear and disappear when visiting conversations
 ```
 
 ## User Preferences
