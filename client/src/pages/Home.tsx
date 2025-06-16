@@ -12,9 +12,13 @@ import AgentManagement from "@/components/AgentManagement";
 import type { Agent, Conversation } from "@/types/agent";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<"chat" | "management">("chat");
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  
+  // Set active tab based on current URL
+  const [activeTab, setActiveTab] = useState<"chat" | "management">(
+    window.location.pathname === "/management" ? "management" : "chat"
+  );
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
