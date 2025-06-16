@@ -267,9 +267,40 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             variant="ghost" 
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
-                            onClick={() => {
+                            onClick={async () => {
                               setShowMenu(false);
-                              addSystemMessage("에이전트 성과 분석을 실행했습니다. 현재 활성 사용자 수, 총 메시지 수, 사용률, 순위 등의 통계를 확인할 수 있습니다.");
+                              addSystemMessage("에이전트 성과 분석을 실행합니다...");
+                              
+                              try {
+                                const response = await fetch(`/api/agents/${agent.id}/performance`, {
+                                  credentials: 'include'
+                                });
+                                
+                                if (response.ok) {
+                                  const data = await response.json();
+                                  const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
+
+📈 주요 지표:
+• 총 메시지 수: ${data.metrics.totalMessages}개
+• 활성 사용자: ${data.metrics.activeUsers}명
+• 업로드 문서: ${data.metrics.documentsCount}개
+• 최근 활동: ${data.metrics.recentActivity}건
+• 응답률: ${data.metrics.responseRate}
+• 평균 응답시간: ${data.metrics.avgResponseTime}
+• 만족도: ${data.metrics.satisfaction}
+
+📊 성장 추세:
+• 메시지 증가율: ${data.trends.messageGrowth}
+• 사용자 증가율: ${data.trends.userGrowth}
+• 참여율: ${data.trends.engagementRate}`;
+                                  
+                                  addSystemMessage(performanceMessage);
+                                } else {
+                                  addSystemMessage("성과 분석 데이터를 불러오는데 실패했습니다.");
+                                }
+                              } catch (error) {
+                                addSystemMessage("성과 분석 중 오류가 발생했습니다.");
+                              }
                             }}
                           >
                             <BarChart3 className="w-4 h-4 mr-2" />
