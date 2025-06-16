@@ -38,6 +38,7 @@ export interface IStorage {
   // Conversation operations
   getOrCreateConversation(userId: string, agentId: number, type?: string): Promise<Conversation>;
   getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
+  getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
 
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
@@ -163,6 +164,40 @@ export class DatabaseStorage implements IStorage {
           .where(eq(messages.conversationId, conversation.id))
           .orderBy(desc(messages.createdAt))
           .limit(1);
+
+        return {
+          ...conversation,
+          agent,
+          lastMessage,
+        };
+      })
+    );
+
+    return conversationsWithMessages;
+  }
+
+  async getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
+    const result = await db
+      .select({
+        conversation: conversations,
+        agent: agents,
+      })
+      .from(conversations)
+      .innerJoin(agents, eq(conversations.agentId, agents.id))
+      .where(eq(conversations.userId, userId))
+      .orderBy(desc(conversations.lastMessageAt));
+
+    // Get last message for each conversation
+    const conversationsWithMessages = await Promise.all(
+      result.map(async ({ conversation, agent }) => {
+        const lastMessages = await db
+          .select()
+          .from(messages)
+          .where(eq(messages.conversationId, conversation.id))
+          .orderBy(desc(messages.createdAt))
+          .limit(1);
+
+        const lastMessage = lastMessages[0] || undefined;
 
         return {
           ...conversation,

@@ -6,7 +6,9 @@ import fs from "fs";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { generateChatResponse, analyzeDocument, extractTextFromContent } from "./openai";
-import { insertMessageSchema, insertDocumentSchema } from "@shared/schema";
+import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -318,9 +320,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get conversation and agent info
       const messages = await storage.getConversationMessages(conversationId);
       
-      // Get the conversation by ID to find the correct agentId
-      const conversations = await storage.getUserConversations(userId);
-      const conversation = conversations.find(conv => conv.id === conversationId);
+      // Get the conversation directly by ID using storage method
+      const allConversations = await storage.getAllUserConversations(userId);
+      const conversation = allConversations.find((conv: any) => conv.id === conversationId);
       
       if (!conversation) {
         return res.status(404).json({ message: "Conversation not found" });
