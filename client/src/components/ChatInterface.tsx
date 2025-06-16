@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
+import { ThemeSelector } from "./ThemeSelector";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
@@ -199,6 +200,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <ThemeSelector />
               {isManagementMode && (
                 <>
                   <div className="relative">

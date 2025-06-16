@@ -96,6 +96,9 @@ export default function Home() {
               </Button>
             </div>
             
+            {/* Theme Selector */}
+            <ThemeSelector />
+            
             {/* Settings Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -112,6 +115,7 @@ export default function Home() {
                   <Settings className="w-4 h-4 mr-2" />
                   계정설정
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   className="korean-text cursor-pointer"
                   onClick={() => logoutMutation.mutate()}

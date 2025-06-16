@@ -135,6 +135,13 @@ Changelog:
     - general-llm: Free conversation with document context when available
   * Updated OpenAI integration to respect chatbot type settings
   * Added comprehensive validation and error handling for different response modes
+- June 16, 2025. Implemented Adaptive Color Scheme Selector:
+  * Created ThemeContext with support for light, dark, and system themes
+  * Built ThemeSelector component with Korean language interface
+  * Added theme switching capability across all pages (Home, Chat, Management, Auth)
+  * Integrated system preference detection with automatic theme updates
+  * Enhanced CSS with proper dark mode support and responsive design
+  * Positioned theme selector in headers for easy access throughout the application
 ```
 
 ## User Preferences
