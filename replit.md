@@ -142,6 +142,12 @@ Changelog:
   * Integrated system preference detection with automatic theme updates
   * Enhanced CSS with proper dark mode support and responsive design
   * Positioned theme selector in headers for easy access throughout the application
+- June 16, 2025. Completed comprehensive notification system ("알림보내기"):
+  * Implemented three-stage workflow: content input → approval confirmation → execution
+  * Added simple, practical messaging without visual interface changes
+  * Created approval system with "승인/취소" confirmation process
+  * Notification system works seamlessly within management chat interface
+  * All messages kept concise and practical per user preference
 ```
 
 ## User Preferences
