@@ -34,6 +34,20 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // Broadcast notification mutation for document uploads
+  const broadcastMutation = useMutation({
+    mutationFn: async ({ agentId, message }: { agentId: number; message: string }) => {
+      const response = await apiRequest("POST", `/api/agents/${agentId}/broadcast`, { message });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log(`Document upload notification sent to ${data.totalRecipients} users`);
+    },
+    onError: (error) => {
+      console.error("Failed to broadcast document upload notification:", error);
+    }
+  });
+
   const { data: documents = [], isLoading } = useQuery<Document[]>({
     queryKey: [`/api/agents/${agent.id}/documents`],
     enabled: isOpen,
@@ -71,6 +85,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       if (onSuccess) {
         onSuccess(`${data.originalName || selectedFile?.name} 문서 업로드가 저장되었습니다.`);
       }
+
+      // Broadcast document upload notification to all users
+      broadcastMutation.mutate({
+        agentId: agent.id,
+        message: `📄 새로운 문서가 업로드되었습니다: ${data.originalName || selectedFile?.name}`
+      });
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
@@ -148,7 +168,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([`/api/agents/${agent.id}/documents`]);
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
       toast({
         title: "삭제 완료",
         description: "문서가 성공적으로 삭제되었습니다.",
