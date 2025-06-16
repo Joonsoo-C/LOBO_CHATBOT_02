@@ -76,58 +76,60 @@ export async function generateChatResponse(
         ).join('\n\n')}`
       : "";
 
-    // Generate different system prompts based on chatbot type
+    // Create a very direct and simple system prompt focused on speaking style
     let systemPrompt = "";
+    
+    // Create examples for grumpy Smurf style to make it crystal clear
+    const grumpyExamples = speakingStyle.includes("투덜이") || speakingStyle.includes("스머프") ? 
+      `\n\nExamples of how to respond:
+- "아 또 뭔 일이야... 귀찮게"
+- "에휴... 왜 자꾸 물어봐"
+- "하... 그것도 모르고..."
+- "아이고... 정말 번거롭네"` : "";
     
     switch (chatbotType) {
       case "strict-doc":
         if (availableDocuments.length === 0) {
           return {
-            message: "죄송합니다. 현재 업로드된 문서가 없어 질문에 답변드릴 수 없습니다. 관련 문서를 업로드해 주시면 도움드리겠습니다.",
+            message: "아... 문서도 없는데 뭘 물어봐. 문서부터 올려.",
             usedDocuments: []
           };
         }
         
-        // Check if question relates to documents
-        const hasRelevantContent = availableDocuments.some(doc => 
-          doc.content.toLowerCase().includes(userMessage.toLowerCase().split(' ').find(word => word.length > 2) || '')
-        );
-        
-        if (!hasRelevantContent) {
-          return {
-            message: "죄송합니다. 업로드된 문서에서 해당 질문과 관련된 내용을 찾을 수 없습니다. 문서에 포함된 내용에 대해서만 답변이 가능합니다.",
-            usedDocuments: []
-          };
-        }
-        
-        systemPrompt = `당신은 "${agentName}"입니다. 반드시 "${speakingStyle}" 말투로 대답하세요.
+        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 
-간단한 규칙:
-- 한국어로 대답
-- 짧고 간결하게 답변
-- "${speakingStyle}" 방식으로 말하기
-- 문서 내용만 사용, 없으면 "문서에 없음" 답변${documentContext}`;
+CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+
+Rules:
+- Only use document content
+- Be grumpy and annoyed
+- Keep responses very short
+- Sound like you're bothered by questions${documentContext}`;
         break;
 
       case "doc-fallback-llm":
-        systemPrompt = `당신은 "${agentName}"입니다. 반드시 "${speakingStyle}" 말투로 대답하세요.
+        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 
-간단한 규칙:
-- 한국어로 대답
-- 짧고 간결하게 답변
-- "${speakingStyle}" 방식으로 말하기
-- 문서 내용 우선, 없으면 일반 지식 사용${documentContext}`;
+CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+
+Rules:
+- Use documents first, general knowledge if needed
+- Be grumpy and annoyed
+- Keep responses very short
+- Sound like you're bothered by questions${documentContext}`;
         break;
 
       case "general-llm":
       default:
-        systemPrompt = `당신은 "${agentName}"입니다. 반드시 "${speakingStyle}" 말투로 대답하세요.
+        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 
-간단한 규칙:
-- 한국어로 대답
-- 짧고 간결하게 답변
-- "${speakingStyle}" 방식으로 말하기
-- 문서 내용 우선, 없으면 일반 지식 사용${documentContext}`;
+CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+
+Rules:
+- Answer any questions
+- Be grumpy and annoyed
+- Keep responses very short
+- Sound like you're bothered by questions${documentContext}`;
         break;
     }
 
