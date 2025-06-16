@@ -248,11 +248,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
                               setShowMenu(false);
-                              addSystemMessage("공지 보내기 기능을 실행했습니다. 중요한 알림이나 공지사항을 모든 사용자에게 전달할 수 있습니다.");
+                              addSystemMessage("알림보내기 기능을 실행했습니다. 중요한 알림이나 메시지를 사용자에게 전달할 수 있습니다.");
                             }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
-                            공지 보내기
+                            알림보내기
                           </Button>
                           <Button 
                             variant="ghost" 
