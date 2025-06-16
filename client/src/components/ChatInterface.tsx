@@ -38,6 +38,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);
+  const [pendingAnnouncement, setPendingAnnouncement] = useState<string>("");
 
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
@@ -146,6 +148,42 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   const handleSendMessage = () => {
     if (!message.trim() || sendMessageMutation.isPending) return;
+    
+    // Handle announcement mode
+    if (isAnnouncementMode) {
+      if (!pendingAnnouncement) {
+        // First message in announcement mode - store the announcement and ask for approval
+        setPendingAnnouncement(message.trim());
+        setMessage("");
+        addSystemMessage(`📋 공지 내용을 확인해주세요:\n\n"${message.trim()}"\n\n이 내용으로 공지를 발송하시겠습니까?\n\n• 발송하려면 "승인" 또는 "발송"을 입력해주세요\n• 취소하려면 "취소"를 입력해주세요`);
+        return;
+      } else {
+        // Second message in announcement mode - handle approval/cancellation
+        const userResponse = message.trim().toLowerCase();
+        if (userResponse === "승인" || userResponse === "발송") {
+          // Send announcement
+          setMessage("");
+          addSystemMessage(`✅ 공지가 성공적으로 발송되었습니다!\n\n발송된 내용: "${pendingAnnouncement}"\n발송 시간: ${new Date().toLocaleString('ko-KR')}\n대상: 전체 사용자\n상태: 발송 완료`);
+          setIsAnnouncementMode(false);
+          setPendingAnnouncement("");
+          return;
+        } else if (userResponse === "취소") {
+          // Cancel announcement
+          setMessage("");
+          addSystemMessage("❌ 공지 발송이 취소되었습니다.");
+          setIsAnnouncementMode(false);
+          setPendingAnnouncement("");
+          return;
+        } else {
+          // Invalid response
+          setMessage("");
+          addSystemMessage("⚠️ 올바른 응답을 입력해주세요.\n\n• 발송하려면 \"승인\" 또는 \"발송\"\n• 취소하려면 \"취소\"를 입력해주세요");
+          return;
+        }
+      }
+    }
+    
+    // Normal message handling
     sendMessageMutation.mutate(message.trim());
   };
 
@@ -244,7 +282,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
                               setShowMenu(false);
-                              addSystemMessage("📢 공지 보내기 기능을 실행했습니다.\n\n공지사항 작성 방법:\n1. 제목을 명확하게 작성해주세요\n2. 내용은 간결하고 정확하게 작성해주세요\n3. 긴급도를 표시해주세요 (일반/중요/긴급)\n4. 전송 대상을 선택해주세요 (전체/특정 그룹)\n\n아래에 공지사항을 입력해주시면 모든 사용자에게 전달됩니다. 어떤 공지를 보내시겠습니까?");
+                              setIsAnnouncementMode(true);
+                              addSystemMessage("📢 공지 보내기 기능을 실행했습니다.\n\n아래에 공지 내용을 입력하고 메시지 보내기를 눌러주세요.");
                             }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
@@ -385,7 +424,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           <div className="flex-1 relative">
             <Input
               type="text"
-              placeholder="메시지를 입력하세요..."
+              placeholder={
+                isAnnouncementMode 
+                  ? (pendingAnnouncement ? "승인/취소를 입력하세요..." : "공지 내용을 입력하세요...")
+                  : "메시지를 입력하세요..."
+              }
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
