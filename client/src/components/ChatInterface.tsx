@@ -354,7 +354,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                       : "bg-muted text-muted-foreground"
                   }`}
                 >
-                  <p className="text-sm leading-relaxed">{msg.content}</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
                 </div>
               </div>
             ))}
