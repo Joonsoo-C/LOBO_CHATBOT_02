@@ -280,6 +280,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                                   const data = await response.json();
                                   const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
 
+
 📈 주요 지표:
 
 • 총 메시지 수: ${data.metrics.totalMessages}개
@@ -295,6 +296,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 • 평균 응답시간: ${data.metrics.avgResponseTime}
 
 • 만족도: ${data.metrics.satisfaction}
+
 
 📊 성장 추세:
 
