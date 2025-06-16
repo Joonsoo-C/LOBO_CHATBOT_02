@@ -73,8 +73,28 @@ export default function Home() {
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="px-4 py-3">
-          {/* Header with settings dropdown */}
-          <div className="flex justify-end items-center mb-4">
+          {/* Header with search and settings */}
+          <div className="flex items-center gap-3 mb-4">
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="에이전트 검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-20 bg-muted border-none korean-text"
+              />
+              <Button
+                variant="default"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
+              >
+                전체 <ChevronDown className="ml-1 w-3 h-3" />
+              </Button>
+            </div>
+            
+            {/* Settings Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -122,24 +142,7 @@ export default function Home() {
             </Button>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="에이전트 검색"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-20 bg-muted border-none korean-text"
-            />
-            <Button
-              variant="default"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
-            >
-              전체 <ChevronDown className="ml-1 w-3 h-3" />
-            </Button>
-          </div>
+          
         </div>
       </header>
 
