@@ -181,7 +181,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             onClick={() => setShowMenu(false)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
-                            대화 변경
+                            닉네임 변경
                           </Button>
                           <Button 
                             variant="ghost" 
