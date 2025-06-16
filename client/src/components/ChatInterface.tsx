@@ -37,11 +37,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
+  const [systemMessages, setSystemMessages] = useState<Message[]>([]); // Persistent system messages
   const [isTyping, setIsTyping] = useState(false);
   const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);
   const [pendingAnnouncement, setPendingAnnouncement] = useState<string>("");
 
-  // Function to add system message from agent
+  // Function to add system message from agent - now persistent
   const addSystemMessage = (content: string) => {
     const systemMessage: Message = {
       id: Date.now(),
@@ -50,7 +51,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       isFromUser: false,
       createdAt: new Date().toISOString(),
     };
-    setOptimisticMessages(prev => [...prev, systemMessage]);
+    setSystemMessages(prev => [...prev, systemMessage]);
   };
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -187,8 +188,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     sendMessageMutation.mutate(message.trim());
   };
 
-  // Combine real messages with optimistic messages
-  const allMessages = [...(messages || []), ...optimisticMessages];
+  // Combine real messages, system messages, and optimistic messages
+  const allMessages = [...(messages || []), ...systemMessages, ...optimisticMessages];
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -216,7 +217,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   }
 
   return (
-    <div className="mobile-container flex flex-col">
+    <div className="mobile-container flex flex-col h-screen">
       {/* Chat Header */}
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="px-4 py-3">
@@ -369,7 +370,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       </header>
 
       {/* Chat Messages */}
-      <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll">
+      <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll min-h-0">
         {allMessages.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -418,8 +419,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input */}
-      <div className="px-4 py-4 border-t border-border bg-card">
+      {/* Message Input - Fixed at bottom */}
+      <div className="flex-shrink-0 px-4 py-4 border-t border-border bg-card">
         <div className="flex items-center space-x-3">
           <div className="flex-1 relative">
             <Input
