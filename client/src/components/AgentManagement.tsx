@@ -50,7 +50,7 @@ export default function AgentManagement() {
           {managedAgents.map((agent) => (
             <div 
               key={agent.id} 
-              className="bg-white rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all duration-150 cursor-pointer active:shadow-sm active:scale-[0.98] active:bg-gray-50"
               onClick={() => handleManagementChat(agent.id)}
             >
               {/* Header */}
