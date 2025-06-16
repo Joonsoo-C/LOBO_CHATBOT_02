@@ -568,10 +568,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           // Increment unread count for the conversation
+          const currentUnreadCount = conversation.unreadCount ?? 0;
           await db
             .update(conversations)
             .set({ 
-              unreadCount: (conversation.unreadCount || 0) + 1,
+              unreadCount: currentUnreadCount + 1,
               lastMessageAt: new Date()
             })
             .where(eq(conversations.id, conversation.id));

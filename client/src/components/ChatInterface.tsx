@@ -69,12 +69,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     onSuccess: (data) => {
       addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자 ${data.totalRecipients}명\n시간: ${new Date().toLocaleString('ko-KR')}`);
       
-      // Update conversation list cache with optimistic updates
-      setTimeout(() => {
-        queryClient.invalidateQueries({
-          queryKey: ["/api/conversations"]
-        });
-      }, 1000);
+      // Immediately invalidate conversations cache to show new notifications
+      queryClient.invalidateQueries({
+        queryKey: ["/api/conversations"]
+      });
     },
     onError: () => {
       addSystemMessage("알림 전송에 실패했습니다.");
