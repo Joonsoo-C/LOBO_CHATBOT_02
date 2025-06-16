@@ -39,6 +39,7 @@ export interface IStorage {
   getOrCreateConversation(userId: string, agentId: number, type?: string): Promise<Conversation>;
   getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
   getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
+  getAllConversations(): Promise<Conversation[]>;
 
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
@@ -208,6 +209,13 @@ export class DatabaseStorage implements IStorage {
     );
 
     return conversationsWithMessages;
+  }
+
+  async getAllConversations(): Promise<Conversation[]> {
+    return await db
+      .select()
+      .from(conversations)
+      .orderBy(desc(conversations.lastMessageAt));
   }
 
   // Message operations

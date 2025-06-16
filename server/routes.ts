@@ -530,6 +530,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Broadcast message to all users of an agent
+  app.post('/api/agents/:id/broadcast', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+      const { message } = req.body;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      const agent = await storage.getAgent(agentId);
+      if (!agent || agent.managerId !== userId) {
+        return res.status(403).json({ message: "You are not authorized to manage this agent" });
+      }
+
+      // Get all users who have conversations with this agent
+      const allConversations = await storage.getAllConversations();
+      const agentConversations = allConversations.filter(conv => 
+        conv.agentId === agentId && conv.type === "general"
+      );
+
+      const broadcastResults = [];
+
+      // Send message to each user's general conversation with this agent
+      for (const conversation of agentConversations) {
+        try {
+          const broadcastMessage = await storage.createMessage({
+            conversationId: conversation.id,
+            content: message,
+            isFromUser: false,
+          });
+          broadcastResults.push({
+            userId: conversation.userId,
+            messageId: broadcastMessage.id,
+            success: true
+          });
+        } catch (error) {
+          console.error(`Failed to send message to user ${conversation.userId}:`, error);
+          broadcastResults.push({
+            userId: conversation.userId,
+            success: false,
+            error: String(error)
+          });
+        }
+      }
+
+      res.json({
+        message: "Broadcast completed",
+        totalRecipients: agentConversations.length,
+        results: broadcastResults
+      });
+    } catch (error) {
+      console.error("Error broadcasting message:", error);
+      res.status(500).json({ message: "Failed to broadcast message" });
+    }
+  });
+
   // Stats routes
   app.get('/api/agents/:id/stats', isAuthenticated, async (req, res) => {
     try {
