@@ -43,6 +43,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [isTyping, setIsTyping] = useState(false);
   const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
   const [pendingNotification, setPendingNotification] = useState("");
+  const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
 
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
@@ -68,10 +69,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     onSuccess: (data) => {
       addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자 ${data.totalRecipients}명\n시간: ${new Date().toLocaleString('ko-KR')}`);
       
-      // Invalidate conversation cache to refresh the conversation list
-      queryClient.invalidateQueries({
-        queryKey: ["/api/conversations"]
-      });
+      // Update conversation list cache with optimistic updates
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ["/api/conversations"]
+        });
+      }, 1000);
     },
     onError: () => {
       addSystemMessage("알림 전송에 실패했습니다.");
@@ -95,24 +98,31 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       return response.json();
     },
     onSuccess: () => {
-      // Invalidate conversations cache to update unread counts
-      queryClient.invalidateQueries({
-        queryKey: ["/api/conversations"]
+      // Update conversation list cache directly without invalidation to prevent loops
+      queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
+        if (!oldData) return oldData;
+        return oldData.map(conv => 
+          conv.id === conversation?.id 
+            ? { ...conv, unreadCount: 0 }
+            : conv
+        );
       });
     }
   });
 
-  // Set conversation when data is available and mark as read
+  // Set conversation when data is available and mark as read (only once)
   useEffect(() => {
-    if (conversationData) {
+    if (conversationData && (!conversation || conversation.id !== conversationData.id)) {
       setConversation(conversationData);
+      setHasMarkedAsRead(false);
       
-      // Mark conversation as read when opened
-      if (!isManagementMode) {
+      // Mark conversation as read when opened (only for new conversations with unread messages)
+      if (!isManagementMode && conversationData.unreadCount > 0 && !hasMarkedAsRead) {
+        setHasMarkedAsRead(true);
         markAsReadMutation.mutate(conversationData.id);
       }
     }
-  }, [conversationData, isManagementMode]);
+  }, [conversationData?.id, isManagementMode, hasMarkedAsRead]);
 
   // Get messages for the conversation
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
