@@ -323,9 +323,6 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
                       <div className="flex items-center space-x-4 text-xs text-muted-foreground mt-1">
                         <span className="korean-text">{formatDate(document.createdAt)}</span>
                         <span>{formatFileSize(document.size)}</span>
-                        <span className="bg-red-100 text-red-600 px-2 py-1 rounded">
-                          {getFileTypeLabel(document.mimeType)}
-                        </span>
                       </div>
                     </div>
                   </div>
