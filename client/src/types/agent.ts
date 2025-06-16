@@ -7,6 +7,11 @@ export interface Agent {
   backgroundColor: string;
   isActive: boolean;
   managerId?: string;
+  llmModel?: string;
+  chatbotType?: string;
+  speakingStyle?: string;
+  personalityTraits?: string;
+  prohibitedWordResponse?: string;
   createdAt: string;
   updatedAt: string;
 }

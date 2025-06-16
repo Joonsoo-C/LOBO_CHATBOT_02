@@ -345,14 +345,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content,
       }));
 
-      // Generate AI response with chatbot type
+      // Generate AI response with chatbot type and persona
       const aiResponse = await generateChatResponse(
         content,
         agent.name,
         agent.description,
         conversationHistory,
         documentContext,
-        (agent as any).chatbotType || "general-llm"
+        (agent as any).chatbotType || "general-llm",
+        (agent as any).speakingStyle || "친근하고 도움이 되는 말투",
+        (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+        (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
       );
 
       // Save AI message
