@@ -23,9 +23,10 @@ interface FileUploadModalProps {
   agent: Agent;
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (message: string) => void;
 }
 
-export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadModalProps) {
+export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: FileUploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -36,18 +37,6 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
   const { data: documents = [], isLoading } = useQuery<Document[]>({
     queryKey: [`/api/agents/${agent.id}/documents`],
     enabled: isOpen,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    },
   });
 
   const uploadMutation = useMutation({
@@ -68,13 +57,26 @@ export default function FileUploadModal({ agent, isOpen, onClose }: FileUploadMo
 
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries([`/api/agents/${agent.id}/documents`]);
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
       setSelectedFile(null);
       toast({
         title: "업로드 완료",
         description: "문서가 성공적으로 업로드되었습니다.",
       });
+      
+      // Send completion message to chat
+      if (onSuccess) {
+        onSuccess(`문서 업로드가 완료되었습니다! 📄
+
+파일명: ${data.originalName || selectedFile?.name}
+크기: ${data.size ? (data.size / 1024).toFixed(1) + 'KB' : '알 수 없음'}
+형식: ${data.mimeType || '알 수 없음'}
+
+업로드된 문서를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`);
+      }
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {

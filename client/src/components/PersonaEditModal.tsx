@@ -13,6 +13,7 @@ interface PersonaEditModalProps {
   agent: Agent;
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (message: string) => void;
 }
 
 interface PersonaData {
@@ -23,7 +24,7 @@ interface PersonaData {
   prohibitedWordResponse: string;
 }
 
-export default function PersonaEditModal({ agent, isOpen, onClose }: PersonaEditModalProps) {
+export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess }: PersonaEditModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -45,6 +46,18 @@ export default function PersonaEditModal({ agent, isOpen, onClose }: PersonaEdit
         title: "페르소나 업데이트 완료",
         description: "에이전트 페르소나가 성공적으로 업데이트되었습니다.",
       });
+      
+      // Send completion message to chat
+      if (onSuccess) {
+        onSuccess(`페르소나 변경이 완료되었습니다! 
+닉네임: ${personaData.nickname}
+말투 스타일: ${personaData.speakingStyle}
+지식 분야: ${personaData.knowledgeArea}
+성격 특성: ${personaData.personalityTraits}
+금칙어 반응: ${personaData.prohibitedWordResponse}
+
+새로운 설정으로 대화를 시작해보세요! 😊`);
+      }
       
       // Invalidate agent data to refresh
       queryClient.invalidateQueries({
