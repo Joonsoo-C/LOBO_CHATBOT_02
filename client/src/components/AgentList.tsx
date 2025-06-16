@@ -102,15 +102,10 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                   </div>
-                  {/* Message count badge for some agents */}
-                  {agent.name.includes("노지후") && (
+                  {/* Real notification badge based on unread count */}
+                  {conversation && conversation.unreadCount > 0 && (
                     <div className="mt-1">
-                      <span className="notification-badge">5</span>
-                    </div>
-                  )}
-                  {agent.name.includes("비즈니스") && (
-                    <div className="mt-1">
-                      <span className="notification-badge">31</span>
+                      <span className="notification-badge">{conversation.unreadCount}</span>
                     </div>
                   )}
                 </div>

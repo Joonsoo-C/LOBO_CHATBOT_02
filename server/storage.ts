@@ -18,7 +18,7 @@ import {
   type AgentStats,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -44,6 +44,7 @@ export interface IStorage {
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
+  markConversationAsRead(conversationId: number): Promise<void>;
 
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
@@ -230,13 +231,36 @@ export class DatabaseStorage implements IStorage {
   async createMessage(message: InsertMessage): Promise<Message> {
     const [newMessage] = await db.insert(messages).values(message).returning();
 
-    // Update conversation last message time
-    await db
-      .update(conversations)
-      .set({ lastMessageAt: new Date() })
-      .where(eq(conversations.id, message.conversationId));
+    // Update conversation last message time and increment unread count for AI messages
+    const updateData: any = { lastMessageAt: new Date() };
+    
+    // If it's an AI message (not from user), increment unread count
+    if (!message.isFromUser) {
+      await db
+        .update(conversations)
+        .set({ 
+          lastMessageAt: new Date(),
+          unreadCount: sql`unread_count + 1`
+        })
+        .where(eq(conversations.id, message.conversationId));
+    } else {
+      await db
+        .update(conversations)
+        .set({ lastMessageAt: new Date() })
+        .where(eq(conversations.id, message.conversationId));
+    }
 
     return newMessage;
+  }
+
+  async markConversationAsRead(conversationId: number): Promise<void> {
+    await db
+      .update(conversations)
+      .set({ 
+        unreadCount: 0,
+        lastReadAt: new Date()
+      })
+      .where(eq(conversations.id, conversationId));
   }
 
   // Document operations

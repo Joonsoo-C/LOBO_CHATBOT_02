@@ -30,6 +30,8 @@ export interface Conversation {
   id: number;
   userId: string;
   agentId: number;
+  unreadCount: number;
+  lastReadAt?: string;
   lastMessageAt: string;
   createdAt: string;
   agent: Agent;

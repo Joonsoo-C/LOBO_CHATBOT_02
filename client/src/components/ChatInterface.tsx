@@ -88,12 +88,31 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     },
   });
 
-  // Set conversation when data is available
+  // Mark conversation as read mutation
+  const markAsReadMutation = useMutation({
+    mutationFn: async (conversationId: number) => {
+      const response = await apiRequest("POST", `/api/conversations/${conversationId}/read`);
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate conversations cache to update unread counts
+      queryClient.invalidateQueries({
+        queryKey: ["/api/conversations"]
+      });
+    }
+  });
+
+  // Set conversation when data is available and mark as read
   useEffect(() => {
     if (conversationData) {
       setConversation(conversationData);
+      
+      // Mark conversation as read when opened
+      if (!isManagementMode) {
+        markAsReadMutation.mutate(conversationData.id);
+      }
     }
-  }, [conversationData]);
+  }, [conversationData, isManagementMode]);
 
   // Get messages for the conversation
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({

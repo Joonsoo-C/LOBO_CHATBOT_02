@@ -592,6 +592,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mark conversation as read
+  app.post('/api/conversations/:id/read', isAuthenticated, async (req: any, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const userId = req.user.id;
+
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+
+      // Verify user owns this conversation
+      const conversation = await storage.getOrCreateConversation(userId, 0);
+      
+      await storage.markConversationAsRead(conversationId);
+      res.json({ message: "Conversation marked as read" });
+    } catch (error) {
+      console.error("Error marking conversation as read:", error);
+      res.status(500).json({ message: "Failed to mark conversation as read" });
+    }
+  });
+
   // Stats routes
   app.get('/api/agents/:id/stats', isAuthenticated, async (req, res) => {
     try {
