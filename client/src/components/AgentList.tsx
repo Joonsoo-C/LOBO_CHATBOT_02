@@ -80,7 +80,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`}>
-            <div className="bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div className="relative bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center space-x-3">
                 <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0`}>
                   <IconComponent className="text-white w-5 h-5" />
@@ -102,12 +102,12 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                   </div>
-                  {/* Notification badge based on unread count */}
-                  {conversation?.unreadCount > 0 && (
-                    <div className="absolute -top-1 -right-1">
-                      <span className="notification-badge">{conversation.unreadCount}</span>
-                    </div>
-                  )}
+              {/* Notification badge based on unread count */}
+              {conversation && conversation.unreadCount > 0 && (
+                <div className="absolute -top-2 -right-2">
+                  <span className="notification-badge">{conversation.unreadCount}</span>
+                </div>
+              )}
                 </div>
               </div>
             </div>
