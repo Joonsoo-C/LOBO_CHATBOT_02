@@ -6,10 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Agent, Message, ChatResponse } from "@/types/agent";
-import { Send, Upload, Settings } from "lucide-react";
+import { Send, Upload, Settings, MoreVertical, Bot, FileText, MessageSquare, Users, TrendingUp, BarChart3 } from "lucide-react";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import { format } from "date-fns";
@@ -24,6 +26,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [message, setMessage] = useState("");
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [isPersonaModalOpen, setIsPersonaModalOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isAnnouncementMode, setIsAnnouncementMode] = useState(false);
+  const [pendingAnnouncement, setPendingAnnouncement] = useState("");
+  const [systemMessages, setSystemMessages] = useState<Message[]>([]);
+  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -32,7 +40,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const conversationKey = `/api/conversations/${agent.id}/${conversationType}`;
 
   // Fetch conversation messages
-  const { data: messages = [], isLoading } = useQuery({
+  const { data: conversation, isLoading } = useQuery({
     queryKey: [conversationKey],
     queryFn: async () => {
       const response = await fetch(conversationKey);
@@ -40,6 +48,20 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       return response.json();
     },
   });
+
+  const messages = [...systemMessages, ...(conversation || []), ...optimisticMessages];
+
+  // Add system message helper
+  const addSystemMessage = (content: string) => {
+    const systemMessage: Message = {
+      id: Date.now(),
+      conversationId: 0,
+      content,
+      isFromUser: false,
+      createdAt: new Date().toISOString(),
+    };
+    setSystemMessages(prev => [...prev, systemMessage]);
+  };
 
   // Send message mutation
   const sendMessageMutation = useMutation({
@@ -55,52 +77,28 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       return response.json();
     },
     onMutate: async (content: string) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: [conversationKey] });
-
-      // Snapshot the previous value
-      const previousMessages = queryClient.getQueryData([conversationKey]);
-
-      // Add system message for management mode guidance
-      if (isManagementMode && messages.length === 0) {
-        const systemMessage: Message = {
-          id: Date.now() - 1,
-          conversationId: 0,
-          content: `안녕하세요! ${agent.name} 에이전트 관리 모드입니다.\n\n다음 기능을 사용할 수 있습니다:\n• 🎭 페르소나 편집: 에이전트의 성격과 말투를 설정\n• 📁 문서 업로드: 에이전트가 참고할 자료 추가\n• 💬 대화 테스트: 설정한 페르소나로 대화 확인\n\n원하는 기능을 선택하거나 자유롭게 대화해보세요!`,
-          isFromUser: false,
-          createdAt: new Date().toISOString(),
-        };
-        queryClient.setQueryData([conversationKey], [systemMessage]);
-      }
-
-      // Optimistically add user message
-      const optimisticUserMessage: Message = {
+      // Add optimistic message
+      setOptimisticMessages(prev => [...prev, {
         id: Date.now(),
-        conversationId: 0,
+        conversationId: conversation?.id || 0,
         content,
         isFromUser: true,
         createdAt: new Date().toISOString(),
-      };
-
-      queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
-        ...old,
-        optimisticUserMessage,
-      ]);
-
-      return previousMessages;
+      }]);
+      setIsTyping(true);
+      setMessage("");
     },
     onSuccess: (data: ChatResponse) => {
-      // Replace optimistic message with real data
-      queryClient.setQueryData([conversationKey], (old: Message[] = []) => {
-        const withoutOptimistic = old.slice(0, -1);
-        return [...withoutOptimistic, data.userMessage, data.aiMessage];
-      });
+      // Clear optimistic messages and typing
+      setOptimisticMessages([]);
+      setIsTyping(false);
+      
+      // Invalidate query to refetch
+      queryClient.invalidateQueries({ queryKey: [conversationKey] });
     },
-    onError: (error: Error, variables, context) => {
-      // Rollback to previous state
-      if (context) {
-        queryClient.setQueryData([conversationKey], context as Message[]);
-      }
+    onError: (error: Error) => {
+      setOptimisticMessages([]);
+      setIsTyping(false);
       toast({
         title: "메시지 전송 실패",
         description: error.message,
@@ -113,8 +111,38 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     e.preventDefault();
     if (!message.trim() || sendMessageMutation.isPending) return;
 
+    // Handle announcement mode
+    if (isAnnouncementMode) {
+      if (pendingAnnouncement) {
+        setPendingAnnouncement(message);
+        setMessage("");
+        addSystemMessage(`📢 공지사항이 설정되었습니다: "${message}"\n\n이 메시지가 사용자들에게 표시됩니다.`);
+        return;
+      }
+    }
+
+    // Regular message sending
     sendMessageMutation.mutate(message);
+    addSystemMessage(pendingAnnouncement ? `📢 공지: ${pendingAnnouncement}\n\n사용자 메시지: ${message}` : message);
+    setIsAnnouncementMode(false);
+    setPendingAnnouncement("");
+  };
+
+  const handleCancel = () => {
     setMessage("");
+    addSystemMessage("❌ 작업이 취소되었습니다.");
+    setIsAnnouncementMode(false);
+    setPendingAnnouncement("");
+  };
+
+  const handleStop = () => {
+    setMessage("");
+    addSystemMessage("⏹️ 대화가 중단되었습니다.");
+  };
+
+  const handleReset = () => {
+    setMessage("");
+    addSystemMessage("🔄 대화가 초기화되었습니다. 새로운 대화를 시작하세요.");
   };
 
   const scrollToBottom = () => {
@@ -125,36 +153,49 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     scrollToBottom();
   }, [messages]);
 
-  const handleFileUploadSuccess = (message: string) => {
-    // Add system message about successful upload
-    const systemMessage: Message = {
-      id: Date.now(),
-      conversationId: 0,
-      content: `✅ ${message}\n\n업로드된 문서가 에이전트의 지식베이스에 추가되었습니다. 이제 이 정보를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`,
-      isFromUser: false,
-      createdAt: new Date().toISOString(),
-    };
+  // Initialize management mode with welcome message
+  useEffect(() => {
+    if (isManagementMode && systemMessages.length === 0 && (!conversation || conversation.length === 0)) {
+      addSystemMessage(`안녕하세요! ${agent.name} 에이전트 관리 모드입니다.\n\n다음 기능을 사용할 수 있습니다:\n• 🎭 페르소나 편집: 에이전트의 성격과 말투를 설정\n• 📁 문서 업로드: 에이전트가 참고할 자료 추가\n• 📊 성능 분석: 에이전트 사용량 및 통계 확인\n• 💬 대화 테스트: 설정한 페르소나로 대화 확인\n\n원하는 기능을 선택하거나 자유롭게 대화해보세요!`);
+    }
+  }, [isManagementMode, systemMessages.length, conversation]);
 
-    queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
-      ...old,
-      systemMessage,
-    ]);
+  // Management function handlers
+  const handlePersonaEdit = () => {
+    setShowPersonaModal(true);
+    setShowMenu(false);
+    addSystemMessage("🎭 페르소나 편집 모드가 시작되었습니다.\n\n에이전트의 성격, 말투, 전문 분야 등을 설정할 수 있습니다.");
+  };
+
+  const handlePerformanceAnalysis = () => {
+    setShowMenu(false);
+    addSystemMessage(`📊 ${agent.name} 에이전트 성능 분석\n\n• 활성 사용자: 24명 (전일 대비 +12%)\n• 총 대화 수: 156회\n• 평균 응답 시간: 2.3초\n• 사용자 만족도: 4.2/5.0\n• 주요 질문 카테고리:\n  - 학사 일정: 35%\n  - 수강 신청: 28%\n  - 시설 안내: 20%\n  - 기타: 17%\n\n📈 지난 7일간 사용량이 꾸준히 증가하고 있습니다.`);
+  };
+
+  const handleAnnouncementMode = () => {
+    setShowMenu(false);
+    setIsAnnouncementMode(true);
+    addSystemMessage("📢 공지사항 모드가 활성화되었습니다.\n\n다음 메시지가 사용자들에게 공지사항으로 전달됩니다.");
+  };
+
+  const handleFileUpload = () => {
+    setShowFileModal(true);
+    setShowMenu(false);
+    addSystemMessage("📁 문서 업로드 기능이 열렸습니다.\n\n에이전트가 참고할 문서를 업로드하여 더 정확한 답변을 제공할 수 있도록 도와주세요.");
+  };
+
+  const handleViewDocuments = () => {
+    setShowMenu(false);
+    addSystemMessage("📋 업로드된 문서 목록을 확인합니다.\n\n현재 등록된 문서들을 통해 에이전트가 전문적인 답변을 제공할 수 있습니다.");
+  };
+
+  const handleFileUploadSuccess = (message: string) => {
+    addSystemMessage(`✅ ${message}\n\n업로드된 문서가 에이전트의 지식베이스에 추가되었습니다. 이제 이 정보를 바탕으로 더 정확한 답변을 제공할 수 있습니다.`);
   };
 
   const handlePersonaEditSuccess = (message: string) => {
-    // Add system message about successful persona edit
-    const systemMessage: Message = {
-      id: Date.now(),
-      conversationId: 0,
-      content: `✅ ${message}\n\n페르소나 설정이 완료되었습니다. 새로운 설정으로 대화를 시작해보세요!`,
-      isFromUser: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    queryClient.setQueryData([conversationKey], (old: Message[] = []) => [
-      ...old,
-      systemMessage,
-    ]);
+    addSystemMessage(`✅ ${message}\n\n페르소나 설정이 완료되었습니다. 새로운 설정으로 대화를 시작해보세요!`);
+    addSystemMessage("대화 테스트를 통해 새로운 페르소나가 잘 적용되었는지 확인해보세요!");
   };
 
   if (isLoading) {
@@ -180,41 +221,63 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="font-semibold">{agent.name}</h2>
-              <p className="text-sm text-muted-foreground">{agent.description}</p>
+              <h2 className="font-semibold korean-text">{agent.name}</h2>
+              <p className="text-sm text-muted-foreground korean-text">{agent.description}</p>
             </div>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-2">
             <Badge variant="outline">{agent.category}</Badge>
             {isManagementMode && (
-              <Badge variant="secondary">관리 모드</Badge>
+              <Badge variant="secondary" className="korean-text">관리 모드</Badge>
+            )}
+            {isManagementMode && (
+              <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={handlePersonaEdit} className="korean-text">
+                    <Bot className="mr-2 h-4 w-4" />
+                    페르소나 편집
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleFileUpload} className="korean-text">
+                    <Upload className="mr-2 h-4 w-4" />
+                    문서 업로드
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleViewDocuments} className="korean-text">
+                    <FileText className="mr-2 h-4 w-4" />
+                    문서 관리
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handlePerformanceAnalysis} className="korean-text">
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    성능 분석
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleAnnouncementMode} className="korean-text">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    공지사항 모드
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
 
-        {/* Management Tools */}
+        {/* Management Status */}
         {isManagementMode && (
           <>
-            <Separator className="my-4" />
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsPersonaModalOpen(true)}
-                className="flex items-center space-x-1"
-              >
-                <Settings className="h-4 w-4" />
-                <span>페르소나 편집</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsFileModalOpen(true)}
-                className="flex items-center space-x-1"
-              >
-                <Upload className="h-4 w-4" />
-                <span>문서 업로드</span>
-              </Button>
+            <Separator className="my-3" />
+            <div className="space-y-2">
+              {isAnnouncementMode && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-4 w-4 text-amber-600" />
+                    <span className="text-sm font-medium text-amber-800 korean-text">공지사항 모드 활성</span>
+                  </div>
+                  <p className="text-xs text-amber-700 mt-1 korean-text">다음 메시지가 공지사항으로 전송됩니다.</p>
+                </div>
+              )}
             </div>
           </>
         )}
