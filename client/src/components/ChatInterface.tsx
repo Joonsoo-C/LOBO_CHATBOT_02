@@ -23,6 +23,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
+import ChatbotSettingsModal from "./ChatbotSettingsModal";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
@@ -35,6 +36,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -231,8 +233,9 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
+                              setShowSettingsModal(true);
                               setShowMenu(false);
-                              addSystemMessage("챗봇 설정 기능을 선택하셨습니다. AI 모델, 응답 스타일, 대화 설정 등을 조정할 수 있습니다.");
+                              addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
                             }}
                           >
                             <Settings className="w-4 h-4 mr-2" />
@@ -419,6 +422,17 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           agent={agent}
           isOpen={showPersonaModal}
           onClose={() => setShowPersonaModal(false)}
+          onSuccess={addSystemMessage}
+          onCancel={addSystemMessage}
+        />
+      )}
+
+      {/* Chatbot Settings Modal */}
+      {showSettingsModal && (
+        <ChatbotSettingsModal
+          agent={agent}
+          isOpen={showSettingsModal}
+          onClose={() => setShowSettingsModal(false)}
           onSuccess={addSystemMessage}
           onCancel={addSystemMessage}
         />
