@@ -68,7 +68,8 @@ export default function Home() {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="px-4 py-3">
           {/* Header with logout button */}
-          <div className="flex justify-end items-center mb-4">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-lg font-semibold korean-text">LoBo 챗봇</h1>
             <Button
               variant="outline"
               size="sm"
