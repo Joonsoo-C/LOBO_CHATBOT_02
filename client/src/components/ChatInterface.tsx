@@ -281,17 +281,27 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                                   const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
 
 📈 주요 지표:
+
 • 총 메시지 수: ${data.metrics.totalMessages}개
+
 • 활성 사용자: ${data.metrics.activeUsers}명
+
 • 업로드 문서: ${data.metrics.documentsCount}개
+
 • 최근 활동: ${data.metrics.recentActivity}건
+
 • 응답률: ${data.metrics.responseRate}
+
 • 평균 응답시간: ${data.metrics.avgResponseTime}
+
 • 만족도: ${data.metrics.satisfaction}
 
 📊 성장 추세:
+
 • 메시지 증가율: ${data.trends.messageGrowth}
+
 • 사용자 증가율: ${data.trends.userGrowth}
+
 • 참여율: ${data.trends.engagementRate}`;
                                   
                                   addSystemMessage(performanceMessage);
