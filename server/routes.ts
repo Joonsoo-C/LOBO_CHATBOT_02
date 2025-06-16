@@ -350,17 +350,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content,
       }));
 
+      // Force refresh agent data to ensure persona fields are loaded
+      const refreshedAgent = await storage.getAgent(agent.id);
+      
       // Extract persona parameters with detailed logging
-      const chatbotType = (agent as any).chatbotType || "general-llm";
-      const speakingStyle = (agent as any).speakingStyle || "친근하고 도움이 되는 말투";
-      const personalityTraits = (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공";
-      const prohibitedWordResponse = (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.";
+      const chatbotType = refreshedAgent?.chatbotType || "general-llm";
+      const speakingStyle = refreshedAgent?.speakingStyle || "친근하고 도움이 되는 말투";
+      const personalityTraits = refreshedAgent?.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공";
+      const prohibitedWordResponse = refreshedAgent?.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.";
 
-      console.log("PARAMETERS BEING SENT TO OPENAI:", {
+      console.log("REFRESHED AGENT PERSONA DATA:", {
         chatbotType,
         speakingStyle,
         personalityTraits,
-        agentName: agent.name
+        agentName: refreshedAgent?.name
       });
 
       // Generate AI response with chatbot type and persona

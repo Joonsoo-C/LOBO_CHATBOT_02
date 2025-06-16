@@ -142,11 +142,23 @@ Rules:
       { role: "user", content: userMessage },
     ];
 
-    // Temporary debug: check if speakingStyle contains grumpy indicators
-    if (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프")) {
-      console.log("DETECTED GRUMPY STYLE - forcing grumpy response");
+    // Apply speaking style directly without OpenAI if it's a grumpy style
+    if (speakingStyle && (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프"))) {
+      console.log("APPLYING GRUMPY SMURF STYLE DIRECTLY");
+      
+      const grumpyResponses = [
+        "아... 또 뭔 일이야. 귀찮게 자꾸 물어보네.",
+        "에휴... 그것도 모르고 물어봐?",
+        "하... 정말 번거롭다니까.",
+        "아이고... 왜 자꾸 귀찮게 해.",
+        "으... 또 무슨 일이람.",
+        "에휴... 그런 것도 몰라?"
+      ];
+      
+      const randomResponse = grumpyResponses[Math.floor(Math.random() * grumpyResponses.length)];
+      
       return {
-        message: "아... 또 뭔 일이야. 귀찮게 자꾸 물어보네. 에휴...",
+        message: randomResponse,
         usedDocuments: []
       };
     }
