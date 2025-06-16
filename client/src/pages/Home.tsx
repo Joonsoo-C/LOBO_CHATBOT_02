@@ -9,12 +9,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import AgentList from "@/components/AgentList";
 import AgentManagement from "@/components/AgentManagement";
+import { ThemeSelector } from "@/components/ThemeSelector";
 import type { Agent, Conversation } from "@/types/agent";
 
 export default function Home() {
