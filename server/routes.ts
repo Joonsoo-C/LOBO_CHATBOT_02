@@ -342,13 +342,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content,
       }));
 
-      // Generate AI response
+      // Generate AI response with chatbot type
       const aiResponse = await generateChatResponse(
         content,
         agent.name,
         agent.description,
         conversationHistory,
-        documentContext
+        documentContext,
+        (agent as any).chatbotType || "general-llm"
       );
 
       // Save AI message

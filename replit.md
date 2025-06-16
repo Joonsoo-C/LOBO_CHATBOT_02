@@ -127,6 +127,14 @@ Changelog:
   * Implemented completion messages for persona editing and document uploads
   * Both initial guidance and success confirmation messages appear in conversation
   * Enhanced user experience with real-time feedback for all management functions
+- June 16, 2025. Implemented comprehensive chatbot settings system:
+  * Added LLM model selection (GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-3.5 Turbo)
+  * Implemented three chatbot types with distinct behaviors:
+    - strict-doc: Only document-based responses, rejects non-document questions
+    - doc-fallback-llm: Prioritizes documents, falls back to general LLM when needed
+    - general-llm: Free conversation with document context when available
+  * Updated OpenAI integration to respect chatbot type settings
+  * Added comprehensive validation and error handling for different response modes
 ```
 
 ## User Preferences
