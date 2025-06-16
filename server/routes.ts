@@ -92,6 +92,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent persona update route
+  app.put('/api/agents/:id/persona', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+      
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      // Check if user is the manager of this agent
+      const agent = await storage.getAgent(agentId);
+      if (!agent || agent.managerId !== userId) {
+        return res.status(403).json({ message: "You are not authorized to manage this agent" });
+      }
+      
+      const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse } = req.body;
+      
+      // Update agent with new persona data
+      const updatedAgent = await storage.updateAgent(agentId, {
+        name: nickname,
+        description: knowledgeArea,
+        // Store persona data in a JSON field if needed
+        persona: {
+          speakingStyle,
+          personalityTraits,
+          prohibitedWordResponse
+        }
+      });
+      
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent persona:", error);
+      res.status(500).json({ message: "Failed to update agent persona" });
+    }
+  });
+
   // Conversation routes
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {

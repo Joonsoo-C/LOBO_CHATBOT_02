@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
 import FileUploadModal from "./FileUploadModal";
+import PersonaEditModal from "./PersonaEditModal";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
@@ -33,6 +34,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [message, setMessage] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
+  const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -204,7 +206,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             size="sm" 
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => {
-                              setShowFileModal(true);
+                              setShowPersonaModal(true);
                               setShowMenu(false);
                             }}
                           >
@@ -343,6 +345,15 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           agent={agent}
           isOpen={showFileModal}
           onClose={() => setShowFileModal(false)}
+        />
+      )}
+
+      {/* Persona Edit Modal */}
+      {showPersonaModal && (
+        <PersonaEditModal
+          agent={agent}
+          isOpen={showPersonaModal}
+          onClose={() => setShowPersonaModal(false)}
         />
       )}
     </div>

@@ -32,6 +32,7 @@ export interface IStorage {
   getAllAgents(): Promise<Agent[]>;
   getAgent(id: number): Promise<Agent | undefined>;
   createAgent(agent: InsertAgent): Promise<Agent>;
+  updateAgent(id: number, updates: Partial<Agent>): Promise<Agent>;
   getAgentsByManager(managerId: string): Promise<Agent[]>;
 
   // Conversation operations
