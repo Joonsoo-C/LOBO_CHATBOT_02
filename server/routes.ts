@@ -8,7 +8,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { generateChatResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -566,6 +566,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             content: message,
             isFromUser: false,
           });
+
+          // Increment unread count for the conversation
+          await db
+            .update(conversations)
+            .set({ 
+              unreadCount: conversation.unreadCount + 1,
+              lastMessageAt: new Date()
+            })
+            .where(eq(conversations.id, conversation.id));
+
           broadcastResults.push({
             userId: conversation.userId,
             messageId: broadcastMessage.id,
