@@ -13,7 +13,8 @@ import {
   FileText, 
   BarChart3,
   X,
-  User
+  User,
+  Bell
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -210,8 +211,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                             className="w-full justify-start px-4 py-2 korean-text"
                             onClick={() => setShowMenu(false)}
                           >
-                            <Ban className="w-4 h-4 mr-2" />
-                            고치 차단기
+                            <Bell className="w-4 h-4 mr-2" />
+                            공지 보내기
                           </Button>
                           <Button 
                             variant="ghost" 
