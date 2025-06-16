@@ -200,7 +200,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <ThemeSelector />
               {isManagementMode && (
                 <>
                   <div className="relative">
@@ -327,6 +326,25 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                   </div>
                 </>
               )}
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-2"
+                  onClick={() => setShowMenu(!showMenu)}
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              
+                {/* Settings Dropdown Menu */}
+                {showMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50">
+                    <div className="py-2">
+                      <ThemeSelector />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
