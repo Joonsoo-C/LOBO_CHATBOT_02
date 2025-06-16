@@ -51,6 +51,10 @@ export const agents = pgTable("agents", {
   managerId: varchar("manager_id").references(() => users.id),
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
   chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
+  // Persona fields
+  speakingStyle: text("speaking_style").default("친근하고 도움이 되는 말투"),
+  personalityTraits: text("personality_traits").default("친절하고 전문적인 성격으로 정확한 정보를 제공"),
+  prohibitedWordResponse: text("prohibited_word_response").default("죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

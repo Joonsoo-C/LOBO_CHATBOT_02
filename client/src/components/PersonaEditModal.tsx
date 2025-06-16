@@ -31,11 +31,22 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
   
   const [personaData, setPersonaData] = useState<PersonaData>({
     nickname: agent.name || "",
-    speakingStyle: "친근하고 도움이 되는 말투",
+    speakingStyle: (agent as any).speakingStyle || "친근하고 도움이 되는 말투",
     knowledgeArea: agent.description || "",
-    personalityTraits: "친절하고 전문적인 성격으로 정확한 정보를 제공",
-    prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+    personalityTraits: (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+    prohibitedWordResponse: (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
   });
+
+  // Update form data when agent changes
+  useEffect(() => {
+    setPersonaData({
+      nickname: agent.name || "",
+      speakingStyle: (agent as any).speakingStyle || "친근하고 도움이 되는 말투",
+      knowledgeArea: agent.description || "",
+      personalityTraits: (agent as any).personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+      prohibitedWordResponse: (agent as any).prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+    });
+  }, [agent]);
 
   const updatePersonaMutation = useMutation({
     mutationFn: async (data: PersonaData) => {

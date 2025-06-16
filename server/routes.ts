@@ -110,10 +110,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse } = req.body;
       
-      // Update agent with new persona data (basic fields only for now)
+      // Update agent with complete persona data
       const updatedAgent = await storage.updateAgent(agentId, {
         name: nickname,
-        description: knowledgeArea
+        description: knowledgeArea,
+        speakingStyle,
+        personalityTraits,
+        prohibitedWordResponse
       });
       
       res.json(updatedAgent);

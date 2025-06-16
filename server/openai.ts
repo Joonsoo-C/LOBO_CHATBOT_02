@@ -56,7 +56,10 @@ export async function generateChatResponse(
   agentDescription: string,
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
   availableDocuments: Array<{ filename: string; content: string }> = [],
-  chatbotType: string = "general-llm"
+  chatbotType: string = "general-llm",
+  speakingStyle: string = "친근하고 도움이 되는 말투",
+  personalityTraits: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
+  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
 ): Promise<ChatResponse> {
   try {
     // Prepare context from documents
