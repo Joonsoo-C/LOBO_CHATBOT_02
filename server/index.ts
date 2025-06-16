@@ -1,5 +1,4 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { sql } from "drizzle-orm";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -38,16 +37,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Test database connection
-  try {
-    const { db } = await import("./db");
-    await db.execute(sql`SELECT 1`);
-    log("Database connection successful");
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    process.exit(1);
-  }
-
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
