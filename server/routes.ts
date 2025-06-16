@@ -187,6 +187,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent settings update route
+  app.put('/api/agents/:id/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+      
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+      
+      const agent = await storage.getAgent(agentId);
+      if (!agent || agent.managerId !== userId) {
+        return res.status(403).json({ message: "You are not authorized to manage this agent" });
+      }
+      
+      const { llmModel, chatbotType } = req.body;
+      
+      // Validate settings
+      const validModels = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
+      const validTypes = ["strict-doc", "doc-fallback-llm", "general-llm"];
+      
+      if (!validModels.includes(llmModel)) {
+        return res.status(400).json({ message: "Invalid LLM model" });
+      }
+      
+      if (!validTypes.includes(chatbotType)) {
+        return res.status(400).json({ message: "Invalid chatbot type" });
+      }
+      
+      // Update agent settings
+      const updatedAgent = await storage.updateAgent(agentId, {
+        llmModel,
+        chatbotType
+      });
+      
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent settings:", error);
+      res.status(500).json({ message: "Failed to update agent settings" });
+    }
+  });
+
   // Conversation routes
   app.get('/api/conversations', isAuthenticated, async (req: any, res) => {
     try {

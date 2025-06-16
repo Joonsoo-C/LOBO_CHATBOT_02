@@ -49,6 +49,8 @@ export const agents = pgTable("agents", {
   backgroundColor: text("background_color").notNull(),
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
+  llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
+  chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

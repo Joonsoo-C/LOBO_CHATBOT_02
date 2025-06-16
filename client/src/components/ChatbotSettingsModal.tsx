@@ -1,0 +1,206 @@
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { X, Save, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import type { Agent } from "@/types/agent";
+
+interface ChatbotSettingsModalProps {
+  agent: Agent;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: (message: string) => void;
+  onCancel?: (message: string) => void;
+}
+
+interface ChatbotSettings {
+  llmModel: string;
+  chatbotType: string;
+}
+
+const LLM_MODELS = [
+  { value: "gpt-4o", label: "GPT-4o (추천)" },
+  { value: "gpt-4o-mini", label: "GPT-4o Mini (빠름)" },
+  { value: "gpt-4-turbo", label: "GPT-4 Turbo" },
+  { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo (경제적)" }
+];
+
+const CHATBOT_TYPES = [
+  { 
+    value: "strict-doc", 
+    label: "문서 기반 전용",
+    description: "문서 기반 응답만 가능, 문서 외 질문은 부드럽게 거절"
+  },
+  { 
+    value: "doc-fallback-llm", 
+    label: "문서 우선 + LLM",
+    description: "문서를 우선 사용하고 없으면 일반 LLM 결과 출력"
+  },
+  { 
+    value: "general-llm", 
+    label: "일반 챗봇",
+    description: "일반 LLM 챗봇처럼 자유 대화"
+  }
+];
+
+export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess, onCancel }: ChatbotSettingsModalProps) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const [settings, setSettings] = useState<ChatbotSettings>({
+    llmModel: (agent as any).llmModel || "gpt-4o",
+    chatbotType: (agent as any).chatbotType || "general-llm"
+  });
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (data: ChatbotSettings) => {
+      const response = await apiRequest("PUT", `/api/agents/${agent.id}/settings`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "챗봇 설정 업데이트 완료",
+        description: "챗봇 설정이 성공적으로 업데이트되었습니다.",
+      });
+      
+      // Send completion message to chat
+      if (onSuccess) {
+        const modelLabel = LLM_MODELS.find(m => m.value === settings.llmModel)?.label || settings.llmModel;
+        const typeLabel = CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label || settings.chatbotType;
+        onSuccess(`챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}`);
+      }
+      
+      // Invalidate agent data to refresh
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}`]
+      });
+      
+      onClose();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "설정 업데이트 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateSettingsMutation.mutate(settings);
+  };
+
+  const handleClose = () => {
+    if (onCancel) {
+      onCancel("챗봇 설정 변경을 취소하였습니다.");
+    }
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b">
+          <div className="flex items-center space-x-3">
+            <Settings className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-medium korean-text">챗봇 설정</h2>
+          </div>
+          <Button variant="ghost" size="sm" onClick={handleClose}>
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Current Settings Info */}
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <h3 className="font-medium korean-text text-sm">현재 설정</h3>
+            <div className="text-sm text-gray-600 korean-text">
+              <p>LLM 모델: {LLM_MODELS.find(m => m.value === settings.llmModel)?.label}</p>
+              <p>챗봇 유형: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
+            </div>
+          </div>
+
+          {/* LLM Model Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="llmModel" className="korean-text">LLM 모델 선택</Label>
+            <Select
+              value={settings.llmModel}
+              onValueChange={(value) => setSettings(prev => ({ ...prev, llmModel: value }))}
+            >
+              <SelectTrigger className="korean-text">
+                <SelectValue placeholder="LLM 모델을 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {LLM_MODELS.map((model) => (
+                  <SelectItem key={model.value} value={model.value} className="korean-text">
+                    {model.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Chatbot Type Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="chatbotType" className="korean-text">챗봇 유형 선택</Label>
+            <Select
+              value={settings.chatbotType}
+              onValueChange={(value) => setSettings(prev => ({ ...prev, chatbotType: value }))}
+            >
+              <SelectTrigger className="korean-text">
+                <SelectValue placeholder="챗봇 유형을 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {CHATBOT_TYPES.map((type) => (
+                  <SelectItem key={type.value} value={type.value} className="korean-text">
+                    <div>
+                      <div className="font-medium">{type.label}</div>
+                      <div className="text-xs text-gray-500">{type.description}</div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-3 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="flex-1 korean-text"
+            >
+              취소
+            </Button>
+            <Button
+              type="submit"
+              disabled={updateSettingsMutation.isPending}
+              className="flex-1 korean-text"
+            >
+              {updateSettingsMutation.isPending ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>저장 중...</span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Save className="w-4 h-4" />
+                  <span>설정 저장</span>
+                </div>
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
