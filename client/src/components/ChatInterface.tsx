@@ -172,6 +172,21 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       queryClient.invalidateQueries({
         queryKey: [`/api/conversations/${conversation?.id}/messages`]
       });
+      
+      // Update conversation list cache with new message data
+      queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
+        if (!oldData) return oldData;
+        return oldData.map(conv => 
+          conv.id === conversation?.id 
+            ? { 
+                ...conv, 
+                lastMessage: data.aiMessage,
+                lastMessageAt: data.aiMessage.createdAt,
+                unreadCount: isManagementMode ? conv.unreadCount : 0 // Don't increment unread for current user
+              }
+            : conv
+        );
+      });
     },
     onError: (error: Error) => {
       // Clear optimistic messages and typing indicator on error

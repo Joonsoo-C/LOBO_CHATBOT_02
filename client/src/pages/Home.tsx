@@ -34,6 +34,8 @@ export default function Home() {
 
   const { data: conversations = [] } = useQuery<Conversation[]>({
     queryKey: ["/api/conversations"],
+    refetchInterval: 3000, // Poll every 3 seconds for new messages
+    refetchIntervalInBackground: true, // Continue polling when tab is not focused
   });
 
   const logoutMutation = useMutation({

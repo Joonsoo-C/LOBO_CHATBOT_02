@@ -571,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           await db
             .update(conversations)
             .set({ 
-              unreadCount: conversation.unreadCount + 1,
+              unreadCount: (conversation.unreadCount || 0) + 1,
               lastMessageAt: new Date()
             })
             .where(eq(conversations.id, conversation.id));
