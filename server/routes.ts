@@ -361,32 +361,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // For binary files, we'll store metadata and generate a summary instead of raw content
+      // Extract text content from the uploaded file
       let extractedText = "";
-      let documentSummary = "";
 
-      if (file.mimetype.includes('text/plain')) {
-        // Read text files directly
-        extractedText = fs.readFileSync(file.path, 'utf-8');
-        documentSummary = extractedText.substring(0, 500) + (extractedText.length > 500 ? "..." : "");
-      } else {
-        // For binary files (DOCX, PPT, etc.), create a descriptive summary
+      try {
+        const fileBuffer = fs.readFileSync(file.path);
+        extractedText = await extractTextFromContent(fileBuffer, file.mimetype);
+      } catch (error) {
+        console.error("Text extraction failed:", error);
+        // Fallback for extraction failure
         const fileStats = fs.statSync(file.path);
         extractedText = `${file.originalname} (${file.mimetype}) - ${Math.round(fileStats.size / 1024)}KB 문서 파일`;
-        documentSummary = extractedText;
       }
       
-      // Analyze document with the extracted or generated content
+      // Analyze document with the extracted content
       const analysis = await analyzeDocument(extractedText, file.originalname);
 
-      // Save document to database - store only safe UTF-8 content
+      // Save document to database - store the full extracted text content
       const documentData = insertDocumentSchema.parse({
         agentId,
         filename: file.filename,
         originalName: file.originalname,
         mimeType: file.mimetype,
         size: file.size,
-        content: documentSummary, // Store safe summary instead of raw binary
+        content: extractedText, // Store the actual extracted text content
         uploadedBy: userId,
       });
 
