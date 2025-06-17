@@ -177,6 +177,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   const messages = messagesData;
 
+  // Get agent documents for file list
+  const { data: documents = [] } = useQuery({
+    queryKey: [`/api/agents/${agent.id}/documents`],
+    enabled: showFileListModal
+  });
+
   // Set conversation when data is available and mark as read (only once)
   useEffect(() => {
     if (conversationData && (!conversation || conversation.id !== conversationData.id)) {
@@ -797,6 +803,68 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           onClose={() => setShowIconModal(false)}
           onSuccess={addSystemMessage}
         />
+      )}
+
+      {/* File List Modal */}
+      {showFileListModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowFileListModal(false)}>
+          <div className="bg-card rounded-xl p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold korean-text">업로드된 파일</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowFileListModal(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            {documents && documents.length > 0 ? (
+              <div className="space-y-3">
+                {documents.map((doc: any) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                  >
+                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium korean-text truncate">
+                          {doc.filename}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(doc.createdAt).toLocaleDateString('ko-KR')}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-2 flex-shrink-0"
+                      onClick={() => {
+                        // Download file
+                        const link = document.createElement('a');
+                        link.href = `/uploads/${doc.filename}`;
+                        link.download = doc.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground korean-text">업로드된 파일이 없습니다</p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
