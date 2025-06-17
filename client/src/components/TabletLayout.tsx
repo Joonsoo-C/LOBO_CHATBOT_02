@@ -578,18 +578,11 @@ export default function TabletLayout() {
       {/* Right Panel - Chat Interface */}
       <div className="flex-1 flex flex-col bg-muted/30">
         {selectedAgent ? (
-          <>
-            {/* Chat Header for Tablet */}
-            <TabletChatHeader 
-              agent={selectedAgent} 
-              isManagementMode={activeTab === "management"} 
-            />
-            {activeTab === "chat" ? (
-              <ChatInterface agent={selectedAgent} isManagementMode={false} />
-            ) : (
-              <ChatInterface agent={selectedAgent} isManagementMode={true} />
-            )}
-          </>
+          activeTab === "chat" ? (
+            <ChatInterface agent={selectedAgent} isManagementMode={false} />
+          ) : (
+            <ChatInterface agent={selectedAgent} isManagementMode={true} />
+          )
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center korean-text">

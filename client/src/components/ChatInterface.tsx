@@ -500,7 +500,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
   return (
     <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
-      {/* Chat Header - Only show on mobile */}
+      {/* Chat Header - Mobile version with back button */}
       {!isTablet && (
         <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
@@ -702,6 +702,202 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             </div>
           </div>
         </div>
+        </header>
+      )}
+
+      {/* Tablet Header - Simplified version without back button */}
+      {isTablet && (
+        <header className="relative bg-background border-b border-border">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div 
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
+                  style={{ backgroundColor: agent.backgroundColor }}
+                >
+                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
+                    <img 
+                      src={agent.icon} 
+                      alt={`${agent.name} icon`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.log(`Failed to load custom icon: ${agent.icon}`);
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : (
+                    <User className="text-white w-5 h-5" />
+                  )}
+                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
+                    <User className="text-white w-5 h-5 hidden" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
+                  <p className="text-sm text-muted-foreground korean-text">
+                    {isManagementMode ? "관리자 모드" : "일반 대화"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                {/* Files Button - Only visible in general mode */}
+                {!isManagementMode && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="p-2"
+                    onClick={() => setShowFileListModal(true)}
+                  >
+                    <Files className="w-4 h-4" />
+                  </Button>
+                )}
+                
+                {isManagementMode && (
+                  <div className="relative">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="px-3 py-2 korean-text"
+                      onClick={() => setShowMenu(!showMenu)}
+                    >
+                      기능선택
+                    </Button>
+                  
+                    {/* Dropdown Menu */}
+                    {showMenu && (
+                      <>
+                        {/* Invisible overlay to catch outside clicks */}
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-xl shadow-lg z-50">
+                          <div className="py-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowPersonaModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+                              }}
+                            >
+                              <User className="w-4 h-4 mr-2" />
+                              페르소나 변경
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowIconModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("아이콘 변경 창을 열었습니다. 에이전트의 아이콘과 배경색을 변경할 수 있습니다.");
+                              }}
+                            >
+                              <Edit className="w-4 h-4 mr-2" />
+                              아이콘 변경
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowSettingsModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+                              }}
+                            >
+                              <Settings className="w-4 h-4 mr-2" />
+                              챗봇 설정
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowMenu(false);
+                                setNotificationState("waiting_input");
+                                addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+                              }}
+                            >
+                              <Bell className="w-4 h-4 mr-2" />
+                              알림보내기
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowFileModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+                              }}
+                            >
+                              <FileText className="w-4 h-4 mr-2" />
+                              문서 업로드
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={async () => {
+                                setShowMenu(false);
+                                addSystemMessage("에이전트 성과 분석을 실행합니다...");
+                                
+                                // Execute performance analysis
+                                setTimeout(async () => {
+                                  try {
+                                    const response = await fetch(`/api/agents/${agent.id}/performance`, {
+                                      credentials: 'include'
+                                    });
+                                    
+                                    if (response.ok) {
+                                      const data = await response.json();
+                                      const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
+
+📈 주요 지표:
+
+• 총 대화 수: ${data.metrics.totalMessages}개
+• 활성 사용자: ${data.metrics.activeUsers}명  
+• 업로드된 문서: ${data.metrics.documentsCount}개
+• 최근 활동: ${data.metrics.recentActivity}건
+• 사용률: ${data.metrics.usagePercentage}%
+• 랭킹: ${data.metrics.ranking}위
+• 평균 응답시간: ${data.metrics.avgResponseTime}초
+
+${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.insights.map((insight: string) => `• ${insight}`).join('\n') : ''}
+
+📊 성장 트렌드:
+• 메시지 증가율: ${data.trends.messageGrowth}
+• 사용자 증가율: ${data.trends.userGrowth}  
+• 참여율: ${data.trends.engagementRate}`;
+                                      
+                                      addSystemMessage(performanceMessage);
+                                    } else {
+                                      addSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다. 다시 시도해주세요.");
+                                    }
+                                  } catch (error) {
+                                    addSystemMessage("성과 분석 실행 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                                  }
+                                }, 1000);
+                              }}
+                            >
+                              <BarChart3 className="w-4 h-4 mr-2" />
+                              성과 분석
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </header>
       )}
 
