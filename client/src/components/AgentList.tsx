@@ -81,26 +81,13 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         const IconComponent = iconMap[agent.icon] || User;
         const bgColor = backgroundColorMap[agent.backgroundColor] || "bg-gray-600";
         
-        // Check if this is the professor agent
-        const isProfessorAgent = agent.name === "노지후 교수의 미나미";
-        
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`}>
             <div className="relative bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center space-x-3">
-                {isProfessorAgent ? (
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden flex-shrink-0">
-                    <img 
-                      src="/professor-icon.png" 
-                      alt="노지후 교수" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0`}>
-                    <IconComponent className="text-white w-5 h-5" />
-                  </div>
-                )}
+                <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0`}>
+                  <IconComponent className="text-white w-5 h-5" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center space-x-2">
