@@ -239,6 +239,8 @@ Changelog:
   * Simplified tablet UI by hiding redundant header when agent info is already displayed in sidebar
   * Fixed welcome message layout shifts by adjusting padding and adding CSS flex constraints
   * Welcome UI now appears consistently at top of chat area without jumping from center
+  * Repositioned loading state to prevent center-to-top layout jumping during chat initialization
+  * Loading spinner now appears at top position where welcome message will display
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST
