@@ -2,7 +2,7 @@ export interface Agent {
   id: number;
   name: string;
   description: string;
-  category: "학교" | "교수" | "기능" | "학과";
+  category: "학교" | "교수" | "학생" | "그룹" | "기능형";
   icon: string;
   backgroundColor: string;
   isActive: boolean;
