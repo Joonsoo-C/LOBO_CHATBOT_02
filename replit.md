@@ -222,6 +222,7 @@ Changelog:
   * Changed logout from API request to direct window redirect to /api/logout
   * Fixed "Unexpected token" error caused by trying to parse HTML as JSON
   * Updated both Home.tsx and TabletLayout.tsx logout implementations
+  * Fixed 404 error by updating post_logout_redirect_uri to point to /auth page
   * Logout now properly redirects through Replit Auth external logout flow
 ```
 
