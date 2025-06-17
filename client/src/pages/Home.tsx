@@ -195,7 +195,7 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 main-content">
+      <main className="flex-1 main-content md:pt-0 md:col-span-12">
         {activeTab === "chat" && (
           <AgentList 
             agents={filteredAgents} 

@@ -484,19 +484,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   }
 
   return (
-    <div className="mobile-container chat-container no-scroll-bounce">
+    <div className="mobile-container chat-container no-scroll-bounce md:max-w-4xl md:mx-auto md:my-4 md:rounded-xl md:shadow-lg md:overflow-hidden">
       {/* Chat Header */}
-      <header className="fixed-header">
-        <div className="px-4 py-3">
+      <header className="fixed-header md:static md:bg-transparent md:shadow-none">
+        <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 md:space-x-4">
               <Link href={isManagementMode ? "/management" : "/"}>
-                <Button variant="ghost" size="sm" className="p-2">
-                  <ChevronLeft className="w-5 h-5" />
+                <Button variant="ghost" size="sm" className="p-2 md:p-3">
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
                 </Button>
               </Link>
               <div 
-                className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
+                className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden md:w-12 md:h-12"
                 style={{ backgroundColor: agent.backgroundColor }}
               >
                 {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
@@ -519,10 +519,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 )}
               </div>
               <div>
-                <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
+                <h3 className="font-medium text-foreground korean-text md:text-lg">{agent.name}</h3>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 md:space-x-3">
               {/* Files Button - Only visible in general mode */}
               {!isManagementMode && (
                 <Button 

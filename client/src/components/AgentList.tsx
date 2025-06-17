@@ -113,7 +113,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   });
 
   return (
-    <div className="px-4 py-2 space-y-3">
+    <div className="px-4 py-2 space-y-3 md:px-6 md:py-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3">
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
@@ -121,9 +121,9 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`}>
-            <div className="relative bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-              <div className="flex items-center space-x-3">
-                <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden`}>
+            <div className="relative bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer md:p-5">
+              <div className="flex items-center space-x-3 md:space-x-4">
+                <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14`}>
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                     <img 
                       src={agent.icon} 
@@ -145,9 +145,9 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center space-x-2">
-                      <h3 className="font-medium text-foreground truncate korean-text">
+                  <div className="flex items-center justify-between mb-1 md:mb-2">
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <h3 className="font-medium text-foreground truncate korean-text md:text-lg">
                         {agent.name}
                       </h3>
                       <span className={getCategoryBadgeStyle(agent.category)}>
@@ -155,13 +155,13 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       </span>
                     </div>
                     {conversation?.lastMessageAt && (
-                      <span className="text-xs text-muted-foreground korean-text">
+                      <span className="text-xs text-muted-foreground korean-text md:text-sm">
                         {getTimeAgo(conversation.lastMessageAt)}
                       </span>
                     )}
                   </div>
                   <div className="flex items-center justify-between space-x-2">
-                    <p className="text-sm text-muted-foreground truncate korean-text flex-1">
+                    <p className="text-sm text-muted-foreground truncate korean-text flex-1 md:text-base">
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                     {conversation && conversation.unreadCount > 0 && (
