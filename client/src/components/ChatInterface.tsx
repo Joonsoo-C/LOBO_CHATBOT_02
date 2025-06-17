@@ -475,9 +475,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   }
 
   return (
-    <div className="mobile-container flex flex-col">
+    <div className="mobile-container chat-container no-scroll-bounce">
       {/* Chat Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
+      <header className="fixed-header backdrop-blur-header">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -661,7 +661,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       </header>
 
       {/* Chat Messages */}
-      <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto chat-scroll">
+      <div className="flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages" style={{ paddingTop: '5rem', paddingBottom: '1rem' }}>
         {allMessages.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
