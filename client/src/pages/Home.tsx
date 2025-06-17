@@ -21,12 +21,23 @@ import type { Agent, Conversation } from "@/types/agent";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const { toast } = useToast();
   
   // Set active tab based on current URL
   const [activeTab, setActiveTab] = useState<"chat" | "management">(
     window.location.pathname === "/management" ? "management" : "chat"
   );
+
+  // Category options
+  const categories = [
+    "전체",
+    "학교",
+    "교수", 
+    "학생",
+    "그룹",
+    "기능형"
+  ];
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
@@ -54,10 +65,22 @@ export default function Home() {
     },
   });
 
-  const filteredAgents = agents.filter((agent: Agent) =>
-    agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    agent.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAgents = agents.filter((agent: Agent) => {
+    // Category filtering
+    let categoryMatch = true;
+    if (selectedCategory !== "전체") {
+      categoryMatch = agent.category === selectedCategory;
+    }
+    
+    // Search query filtering
+    let searchMatch = true;
+    if (searchQuery.trim()) {
+      searchMatch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   agent.description.toLowerCase().includes(searchQuery.toLowerCase());
+    }
+    
+    return categoryMatch && searchMatch;
+  });
 
   if (agentsLoading) {
     return (
@@ -89,13 +112,28 @@ export default function Home() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-20 bg-muted border-none korean-text"
               />
-              <Button
-                variant="default"
-                size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
-              >
-                전체 <ChevronDown className="ml-1 w-3 h-3" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
+                  >
+                    {selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
+                  {categories.map((category) => (
+                    <DropdownMenuItem
+                      key={category}
+                      className="korean-text cursor-pointer"
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             
             {/* Settings Dropdown */}

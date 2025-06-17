@@ -177,6 +177,13 @@ Changelog:
   * Applied consistent scroll improvements across Home, Chat, and Management pages
   * Fixed content overflow above header during fast scrolling with clip-path and masking
   * Removed backdrop blur per user request for completely opaque headers
+  * Fixed dropdown menu z-index issues to prevent UI clipping
+- June 17, 2025. Implemented agent category filtering system:
+  * Added category filter dropdown in search bar with 6 options (전체, 학교, 교수, 학생, 그룹, 기능형)
+  * Implemented dual filtering logic for both search query and category selection
+  * Dynamic dropdown button text updates to show selected category
+  * Category-only filtering when no search query is entered
+  * Combined search and category filtering for refined results
 ```
 
 ## User Preferences
