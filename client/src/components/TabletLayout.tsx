@@ -444,14 +444,6 @@ export default function TabletLayout() {
               <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
-                  onClick={() => setActiveTab("management")}
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  에이전트 관리
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="korean-text cursor-pointer"
                   onClick={() => {
                     // Account settings functionality - placeholder for now
                     toast({
