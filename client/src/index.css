@@ -161,8 +161,7 @@
 
   /* Fixed header styling */
   .fixed-header {
-    @apply fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-border;
-    background-color: hsl(var(--background) / 0.95);
+    @apply fixed top-0 left-0 right-0 z-50 border-b border-border bg-background;
   }
 
   /* Main content with header padding */

@@ -477,7 +477,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   return (
     <div className="mobile-container chat-container no-scroll-bounce">
       {/* Chat Header */}
-      <header className="fixed-header backdrop-blur-header">
+      <header className="fixed-header">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">

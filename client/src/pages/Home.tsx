@@ -75,7 +75,7 @@ export default function Home() {
   return (
     <div className="mobile-container no-scroll-bounce">
       {/* Header */}
-      <header className="fixed-header backdrop-blur-header">
+      <header className="fixed-header">
         <div className="px-4 py-3">
           {/* Header with search and settings */}
           <div className="flex items-center gap-3 mb-4">
