@@ -486,7 +486,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   }
 
   return (
-    <div className="chat-interface-container flex flex-col h-full bg-transparent">
+    <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
       {/* Chat Header */}
       <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
@@ -697,7 +697,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         className="chat-interface-messages flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" 
         style={{ 
           paddingTop: isTablet ? '1rem' : '5rem', 
-          paddingBottom: isTablet ? '1rem' : '6rem' 
+          paddingBottom: '1rem'
         }}
       >
         {allMessages.length === 0 ? (
@@ -757,7 +757,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className={`px-4 py-4 border-t border-border bg-card md:px-6 md:py-5 ${isTablet ? "tablet-message-input" : "fixed bottom-0 left-0 right-0 z-10"}`}>
+      <div className="chat-input-area flex-shrink-0 px-4 py-4 border-t border-border bg-card md:px-6 md:py-5">
         <div className="flex items-center space-x-3 md:space-x-4">
           <div className="flex-1 relative">
             <Input

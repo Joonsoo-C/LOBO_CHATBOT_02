@@ -159,6 +159,32 @@
     @apply shadow-sm;
   }
 
+  /* Chat interface layout - Mobile first */
+  .chat-interface-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+  }
+  
+  .chat-interface-header {
+    flex-shrink: 0;
+  }
+  
+  .chat-interface-messages {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .chat-input-area {
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+
   /* Responsive tablet adjustments */
   @media (min-width: 768px) {
     .mobile-container {
@@ -199,17 +225,21 @@
       flex-direction: column;
       height: 100%;
       background: transparent;
+      overflow: hidden;
     }
     
     .chat-interface-header {
       position: static;
       background: transparent;
       box-shadow: none;
+      flex-shrink: 0;
     }
     
     .chat-interface-messages {
       padding-top: 1rem;
       padding-bottom: 1rem;
+      flex: 1;
+      overflow-y: auto;
     }
   }
 

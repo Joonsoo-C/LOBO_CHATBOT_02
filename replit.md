@@ -229,6 +229,9 @@ Changelog:
   * Fixed message input positioning - static in tablet mode, fixed at bottom in mobile mode
   * Added chat-interface CSS classes for consistent tablet behavior
   * Improved useIsTablet hook with immediate window size detection
+  * Fixed chat container overflow and message input visibility issues
+  * Added flex-shrink-0 and sticky positioning to ensure input area stays visible
+  * Implemented proper height constraints to prevent unwanted scrolling beyond chat boundaries
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST
