@@ -523,15 +523,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              {/* Files Button - Always visible */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="p-2"
-                onClick={() => setShowFileListModal(true)}
-              >
-                <Files className="w-4 h-4" />
-              </Button>
+              {/* Files Button - Only visible in general mode */}
+              {!isManagementMode && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-2"
+                  onClick={() => setShowFileListModal(true)}
+                >
+                  <Files className="w-4 h-4" />
+                </Button>
+              )}
               
               {isManagementMode && (
                 <>

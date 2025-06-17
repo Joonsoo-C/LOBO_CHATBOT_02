@@ -192,6 +192,7 @@ Changelog:
   * Added proper styling and responsive design for mobile devices
   * Fixed white box UI overlay issue by adjusting z-index values in CSS
   * Resolved modal background conflicts affecting both file list and upload modals
+  * Restricted Files button to general chat mode only (hidden in management mode)
 ```
 
 ## User Preferences
