@@ -116,12 +116,24 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/logout", (req, res) => {
-    req.logout(() => {
-      // Clear session and redirect to auth page directly
-      req.session.destroy((err) => {
-        if (err) console.error("Session destroy error:", err);
-        res.clearCookie('connect.sid');
-        res.redirect('/auth');
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      
+      // Destroy session completely
+      req.session.destroy((destroyErr) => {
+        if (destroyErr) {
+          console.error("Session destroy error:", destroyErr);
+        }
+        
+        // Clear all cookies
+        res.clearCookie('connect.sid', { path: '/' });
+        res.clearCookie('connect.sid', { path: '/', domain: req.hostname });
+        
+        // Send JSON response instead of redirect to avoid 404
+        res.json({ success: true, redirect: '/auth' });
       });
     });
   });

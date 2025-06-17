@@ -225,6 +225,9 @@ Changelog:
   * Simplified logout to clear session and redirect directly to /auth instead of external flow
   * Fixed 404 error by making /auth route available regardless of authentication status
   * Removed duplicate auth routes and ensured proper routing structure
+  * Updated logout endpoint to return JSON response instead of HTML redirect
+  * Added proper session destruction and cookie clearing on server side
+  * Fixed frontend to use fetch with JSON response handling instead of window redirect
 ```
 
 ## User Preferences
