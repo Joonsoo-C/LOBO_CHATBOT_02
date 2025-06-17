@@ -241,6 +241,8 @@ Changelog:
   * Welcome UI now appears consistently at top of chat area without jumping from center
   * Repositioned loading state to prevent center-to-top layout jumping during chat initialization
   * Loading spinner now appears at top position where welcome message will display
+  * Removed loading state flash by showing welcome message immediately when no messages exist
+  * Eliminated visual transition between loading spinner and welcome UI for smoother experience
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST

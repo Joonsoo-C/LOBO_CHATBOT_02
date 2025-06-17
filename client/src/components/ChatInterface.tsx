@@ -472,67 +472,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allMessages, isTyping]);
 
-  if (messagesLoading) {
-    return (
-      <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
-        {/* Chat Header - Only show on mobile */}
-        {!isTablet && (
-          <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
-          <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 md:space-x-4">
-                <Link href={isManagementMode ? "/management" : "/"}>
-                  <Button variant="ghost" size="sm" className="p-2 md:p-3">
-                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                  </Button>
-                </Link>
-                <div 
-                  className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden md:w-12 md:h-12"
-                  style={{ backgroundColor: agent.backgroundColor }}
-                >
-                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
-                    <img 
-                      src={agent.icon} 
-                      alt={`${agent.name} icon`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                  ) : (
-                    <User className="text-white w-5 h-5" />
-                  )}
-                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                    <User className="text-white w-5 h-5 hidden" />
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-medium text-foreground korean-text md:text-lg">{agent.name}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-          </header>
-        )}
-        
-        {/* Loading state positioned at top */}
-        <div 
-          className="chat-interface-messages flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" 
-          style={{ 
-            paddingTop: isTablet ? '1rem' : '5rem', 
-            paddingBottom: isTablet ? '1rem' : '6rem'
-          }}
-        >
-          <div className="text-center pt-4 pb-8 md:pt-6 md:pb-12">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-muted-foreground korean-text">대화를 불러오는 중...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Skip loading state and show welcome message immediately if no messages exist yet
+  // This prevents the loading spinner flash before welcome message appears
 
   return (
     <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
