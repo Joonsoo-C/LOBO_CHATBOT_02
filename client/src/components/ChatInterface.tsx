@@ -487,18 +487,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
   return (
     <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
-      {/* Chat Header */}
-      <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
+      {/* Chat Header - Only show on mobile */}
+      {!isTablet && (
+        <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 md:space-x-4">
-              {!isTablet && (
-                <Link href={isManagementMode ? "/management" : "/"}>
-                  <Button variant="ghost" size="sm" className="p-2 md:p-3">
-                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                  </Button>
-                </Link>
-              )}
+              <Link href={isManagementMode ? "/management" : "/"}>
+                <Button variant="ghost" size="sm" className="p-2 md:p-3">
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                </Button>
+              </Link>
               <div 
                 className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden md:w-12 md:h-12"
                 style={{ backgroundColor: agent.backgroundColor }}
@@ -690,7 +689,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             </div>
           </div>
         </div>
-      </header>
+        </header>
+      )}
 
       {/* Chat Messages */}
       <div 

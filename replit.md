@@ -235,6 +235,8 @@ Changelog:
   * Separated message input as fixed frame at screen bottom for mobile devices
   * Added CSS media queries for proper mobile vs tablet input positioning
   * Enhanced mobile UX with always-visible input UI regardless of content length
+  * Removed chat room header information in tablet mode since left panel shows agent list
+  * Simplified tablet UI by hiding redundant header when agent info is already displayed in sidebar
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST
