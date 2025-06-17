@@ -243,6 +243,8 @@ Changelog:
   * Loading spinner now appears at top position where welcome message will display
   * Removed loading state flash by showing welcome message immediately when no messages exist
   * Eliminated visual transition between loading spinner and welcome UI for smoother experience
+  * Fixed blank screen issue after login by improving authentication state synchronization
+  * Added proper query refetch and timing delay to ensure auth state updates before navigation
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST

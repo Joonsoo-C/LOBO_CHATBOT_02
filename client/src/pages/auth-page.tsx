@@ -74,13 +74,20 @@ export default function AuthPage() {
       const response = await apiRequest("POST", "/api/login", data);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+    onSuccess: async () => {
+      // Invalidate and refetch user data to ensure proper authentication state
+      await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/user"] });
+      
       toast({
         title: "로그인 성공",
         description: "환영합니다!",
       });
-      setLocation("/");
+      
+      // Small delay to ensure auth state is updated before navigation
+      setTimeout(() => {
+        setLocation("/");
+      }, 100);
     },
     onError: (error: Error) => {
       toast({
@@ -96,13 +103,20 @@ export default function AuthPage() {
       const response = await apiRequest("POST", "/api/register", data);
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+    onSuccess: async () => {
+      // Invalidate and refetch user data to ensure proper authentication state
+      await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/user"] });
+      
       toast({
         title: "회원가입 성공",
         description: "계정이 생성되었습니다. 로그인되었습니다.",
       });
-      setLocation("/");
+      
+      // Small delay to ensure auth state is updated before navigation
+      setTimeout(() => {
+        setLocation("/");
+      }, 100);
     },
     onError: (error: Error) => {
       toast({
