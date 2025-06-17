@@ -90,17 +90,19 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-medium text-foreground truncate korean-text">
-                      {agent.name}
-                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-medium text-foreground truncate korean-text">
+                        {agent.name}
+                      </h3>
+                      <span className={getCategoryBadgeStyle(agent.category)}>
+                        {agent.category}
+                      </span>
+                    </div>
                     <span className="text-xs text-muted-foreground korean-text">
                       {conversation?.lastMessageAt ? getTimeAgo(conversation.lastMessageAt) : "새로운"}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className={getCategoryBadgeStyle(agent.category)}>
-                      {agent.category}
-                    </span>
                     <p className="text-sm text-muted-foreground truncate korean-text">
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
