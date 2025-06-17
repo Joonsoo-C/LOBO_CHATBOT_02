@@ -223,7 +223,8 @@ Changelog:
   * Fixed "Unexpected token" error caused by trying to parse HTML as JSON
   * Updated both Home.tsx and TabletLayout.tsx logout implementations
   * Simplified logout to clear session and redirect directly to /auth instead of external flow
-  * Fixed 404 error by avoiding complex Replit Auth external logout redirect
+  * Fixed 404 error by making /auth route available regardless of authentication status
+  * Removed duplicate auth routes and ensured proper routing structure
 ```
 
 ## User Preferences

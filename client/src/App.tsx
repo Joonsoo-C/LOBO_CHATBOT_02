@@ -54,14 +54,9 @@ function Router() {
               <Route path="/management/:agentId" component={Management} />
             </>
           )}
-          <Route path="/auth">
-            {() => {
-              window.location.replace("/");
-              return null;
-            }}
-          </Route>
         </>
       )}
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
