@@ -132,21 +132,14 @@ export default function TabletLayout() {
 
   const logout = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/auth/logout");
-      return response.json();
-    },
-    onSuccess: () => {
+      // For Replit Auth, directly redirect to logout endpoint
       queryClient.clear();
-      window.location.href = "/auth";
+      window.location.href = "/api/logout";
     },
-    onError: (error: Error) => {
-      if (!isUnauthorizedError(error)) {
-        toast({
-          title: "로그아웃 실패",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+    onError: () => {
+      // Fallback: redirect to auth page
+      queryClient.clear();
+      window.location.replace("/auth");
     },
   });
 

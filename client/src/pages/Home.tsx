@@ -51,15 +51,12 @@ export default function Home() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
+      // For Replit Auth, directly redirect to logout endpoint
       queryClient.clear();
-      // Force a complete page reload to clear all state
-      window.location.replace("/auth");
+      window.location.href = "/api/logout";
     },
-    onError: (error: Error) => {
-      // Even if logout fails, redirect to auth page
+    onError: () => {
+      // Fallback: redirect to auth page
       queryClient.clear();
       window.location.replace("/auth");
     },

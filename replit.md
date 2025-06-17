@@ -218,6 +218,11 @@ Changelog:
   * Automatic route handling for tablet vs mobile layouts in App.tsx
   * Proper icon rendering and category badges integrated from AgentList component
   * Empty state guidance when no agent is selected on tablet layout
+- June 17, 2025. Fixed logout functionality for Replit Auth:
+  * Changed logout from API request to direct window redirect to /api/logout
+  * Fixed "Unexpected token" error caused by trying to parse HTML as JSON
+  * Updated both Home.tsx and TabletLayout.tsx logout implementations
+  * Logout now properly redirects through Replit Auth external logout flow
 ```
 
 ## User Preferences
