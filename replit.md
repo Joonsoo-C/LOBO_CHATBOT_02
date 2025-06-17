@@ -209,6 +209,15 @@ Changelog:
   * All text sizes, buttons, and spacing scale appropriately for tablet viewports
   * Fixed headers become static on tablet with proper border and background adjustments
   * Maintains full mobile functionality while providing enhanced tablet experience
+- June 17, 2025. Implemented KakaoTalk-style two-panel tablet layout:
+  * Created TabletLayout component with left agent list panel and right chat interface panel
+  * Added useIsTablet hook for responsive breakpoint detection at 768px
+  * Left panel (384px width) contains search, category filter, tab navigation, and agent list
+  * Right panel shows selected agent's chat interface or management interface
+  * Agent selection highlights with border and background color change
+  * Automatic route handling for tablet vs mobile layouts in App.tsx
+  * Proper icon rendering and category badges integrated from AgentList component
+  * Empty state guidance when no agent is selected on tablet layout
 ```
 
 ## User Preferences
