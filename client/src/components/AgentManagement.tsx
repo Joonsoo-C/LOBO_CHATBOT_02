@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,6 +9,20 @@ import type { Agent, AgentStats } from "@/types/agent";
 
 interface ManagedAgent extends Agent {
   stats?: AgentStats;
+}
+
+function getIconComponent(iconName: string) {
+  const iconMap: { [key: string]: any } = {
+    'users': Users,
+    'user': User,
+    'book-open': BookOpen,
+    'graduation-cap': GraduationCap,
+    'lightbulb': Lightbulb,
+    'heart': Heart,
+    'message-circle': MessageCircle,
+  };
+  
+  return iconMap[iconName] || Users;
 }
 
 export default function AgentManagement() {
@@ -56,8 +70,34 @@ export default function AgentManagement() {
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gray-600 rounded-2xl flex items-center justify-center">
-                    <Users className="text-white w-5 h-5" />
+                  <div 
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden"
+                    style={{ backgroundColor: agent.backgroundColor }}
+                  >
+                    {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
+                      <img 
+                        src={agent.icon} 
+                        alt={`${agent.name} icon`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.log(`Failed to load custom icon: ${agent.icon}`);
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : (
+                      (() => {
+                        const IconComponent = getIconComponent(agent.icon);
+                        return <IconComponent className="text-white w-5 h-5" />;
+                      })()
+                    )}
+                    {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
+                      (() => {
+                        const IconComponent = getIconComponent(agent.icon);
+                        return <IconComponent className="text-white w-5 h-5 hidden" />;
+                      })()
+                    )}
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900 korean-text">{agent.name}</h3>
