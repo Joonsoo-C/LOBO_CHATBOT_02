@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ThemeSelector } from "@/components/ThemeSelector";
-import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText, Files, Edit } from "lucide-react";
+import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText, Files, Edit, Bell, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -92,6 +92,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
   const [showIconModal, setShowIconModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
+  const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
 
   // Add system message function (simplified version)
   const addSystemMessage = (message: string) => {
@@ -212,6 +213,19 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           size="sm" 
                           className="w-full justify-start px-4 py-2 korean-text"
                           onClick={() => {
+                            setShowMenu(false);
+                            setNotificationState("waiting_input");
+                            addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+                          }}
+                        >
+                          <Bell className="w-4 h-4 mr-2" />
+                          알림보내기
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
                             setShowFileModal(true);
                             setShowMenu(false);
                             addSystemMessage("문서 업로드 창을 열었습니다.");
@@ -219,6 +233,50 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                         >
                           <FileText className="w-4 h-4 mr-2" />
                           문서 업로드
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={async () => {
+                            setShowMenu(false);
+                            addSystemMessage("에이전트 성과 분석을 실행합니다...");
+                            
+                            try {
+                              const response = await fetch(`/api/agents/${agent.id}/performance`, {
+                                credentials: 'include'
+                              });
+                              
+                              if (response.ok) {
+                                const data = await response.json();
+                                const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
+
+📈 주요 지표:
+
+• 총 메시지 수: ${data.metrics.totalMessages}개
+• 활성 사용자: ${data.metrics.activeUsers}명
+• 업로드 문서: ${data.metrics.documentsCount}개
+• 최근 활동: ${data.metrics.recentActivity}건
+• 응답률: ${data.metrics.responseRate}
+• 평균 응답시간: ${data.metrics.avgResponseTime}
+• 만족도: ${data.metrics.satisfaction}
+
+📊 성장 추세:
+• 메시지 증가율: ${data.trends.messageGrowth}
+• 사용자 증가율: ${data.trends.userGrowth}
+• 참여율: ${data.trends.engagementRate}`;
+                                
+                                addSystemMessage(performanceMessage);
+                              } else {
+                                addSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다. 다시 시도해주세요.");
+                              }
+                            } catch (error) {
+                              addSystemMessage("성과 분석 실행 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                            }
+                          }}
+                        >
+                          <BarChart3 className="w-4 h-4 mr-2" />
+                          성과 분석
                         </Button>
                       </div>
                     </div>
