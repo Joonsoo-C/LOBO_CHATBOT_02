@@ -183,7 +183,7 @@ export default function TabletLayout() {
   return (
     <div className="flex h-screen bg-background">
       {/* Left Panel - Agent List */}
-      <div className="w-96 border-r border-border bg-card flex flex-col">
+      <div className="w-96 border-r border-border bg-muted/50 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-border">
           {/* Search and Settings */}
@@ -362,7 +362,7 @@ export default function TabletLayout() {
       </div>
 
       {/* Right Panel - Chat Interface */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-muted/30">
         {selectedAgent ? (
           activeTab === "chat" ? (
             <ChatInterface agent={selectedAgent} isManagementMode={false} />
@@ -370,7 +370,7 @@ export default function TabletLayout() {
             <ChatInterface agent={selectedAgent} isManagementMode={true} />
           )
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-muted/20">
+          <div className="flex-1 flex items-center justify-center">
             <div className="text-center korean-text">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Settings className="text-white w-10 h-10" />
