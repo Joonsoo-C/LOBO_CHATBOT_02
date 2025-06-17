@@ -73,9 +73,9 @@ export default function Home() {
   }
 
   return (
-    <div className="mobile-container">
+    <div className="mobile-container no-scroll-bounce">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
+      <header className="fixed-header backdrop-blur-header">
         <div className="px-4 py-3">
           {/* Header with search and settings */}
           <div className="flex items-center gap-3 mb-4">
@@ -157,7 +157,7 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <main className="flex-1">
+      <main className="flex-1 main-content">
         {activeTab === "chat" && (
           <AgentList 
             agents={filteredAgents} 

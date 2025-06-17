@@ -166,8 +166,15 @@ Changelog:
   * Supports JPG, PNG, GIF, WEBP formats with 5MB file size limit
   * Real-time image preview and validation with error handling
   * Database schema updated with is_custom_icon field for proper icon type tracking
-  * AgentList and ChatInterface components support both standard and custom icons
+  * AgentList, ChatInterface, and AgentManagement components support both standard and custom icons
   * Automatic fallback to default icons if custom images fail to load
+- June 17, 2025. Enhanced mobile scroll behavior and UI positioning:
+  * Implemented fixed headers with backdrop blur for better visual layering
+  * Added overscroll-behavior CSS to prevent scroll bouncing on iOS devices
+  * Created proper z-index layering to prevent content showing behind headers
+  * Added main-content padding to ensure content doesn't overlap with fixed headers
+  * Improved touch scrolling with -webkit-overflow-scrolling for smoother performance
+  * Applied consistent scroll improvements across Home, Chat, and Management pages
 ```
 
 ## User Preferences

@@ -167,7 +167,7 @@
 
   /* Main content with header padding */
   .main-content {
-    @apply pt-16; /* Adjust based on header height */
+    padding-top: 9rem; /* Increased to account for header + tabs + search */
   }
 
   /* Chat container with proper scrolling */
