@@ -222,6 +222,19 @@
     -webkit-backdrop-filter: blur(8px);
   }
 
+  /* Dropdown menu z-index fix */
+  [data-radix-popper-content-wrapper] {
+    z-index: 99999 !important;
+  }
+
+  /* Ensure dropdown content appears above all elements */
+  .dropdown-content,
+  [role="menu"],
+  [data-state="open"][data-side] {
+    z-index: 99999 !important;
+    position: relative;
+  }
+
   .system-message::before {
     content: "⚙️";
     @apply mr-2;

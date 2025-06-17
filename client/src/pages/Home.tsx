@@ -109,7 +109,7 @@ export default function Home() {
                   <Settings className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
                 <DropdownMenuItem className="korean-text cursor-pointer">
                   <Settings className="w-4 h-4 mr-2" />
                   계정설정
