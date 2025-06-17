@@ -86,12 +86,13 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
             <div className="relative bg-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center space-x-3">
                 <div className={`w-12 h-12 ${bgColor} rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden`}>
-                  {agent.isCustomIcon ? (
+                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                     <img 
                       src={agent.icon} 
                       alt={`${agent.name} icon`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
+                        console.log(`Failed to load custom icon: ${agent.icon}`);
                         // Fallback to default icon if image fails to load
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
@@ -101,7 +102,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                   ) : (
                     <IconComponent className="text-white w-5 h-5" />
                   )}
-                  {agent.isCustomIcon && (
+                  {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
                     <IconComponent className="text-white w-5 h-5 hidden" />
                   )}
                 </div>

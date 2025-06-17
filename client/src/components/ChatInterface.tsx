@@ -490,12 +490,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
                 style={{ backgroundColor: agent.backgroundColor }}
               >
-                {agent.isCustomIcon ? (
+                {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                   <img 
                     src={agent.icon} 
                     alt={`${agent.name} icon`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
+                      console.log(`Failed to load custom icon: ${agent.icon}`);
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
                       target.nextElementSibling?.classList.remove('hidden');
@@ -504,7 +505,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 ) : (
                   <User className="text-white w-5 h-5" />
                 )}
-                {agent.isCustomIcon && (
+                {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
                   <User className="text-white w-5 h-5 hidden" />
                 )}
               </div>

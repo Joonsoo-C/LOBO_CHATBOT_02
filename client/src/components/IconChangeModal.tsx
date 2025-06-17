@@ -102,9 +102,16 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       }
     },
     onSuccess: () => {
+      // Force refresh all related queries
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents", agent.id] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      
+      // Force refetch to ensure immediate update
+      queryClient.refetchQueries({ queryKey: ["/api/agents"] });
+      queryClient.refetchQueries({ queryKey: ["/api/agents", agent.id] });
+      queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
       
       toast({
         title: "아이콘 변경 완료",
@@ -113,6 +120,11 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       
       onSuccess?.("아이콘과 배경색이 성공적으로 변경되었습니다.");
       onClose();
+      
+      // Force page reload if cache isn't updating properly
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
     onError: (error: Error) => {
       toast({
