@@ -178,7 +178,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const messages = messagesData;
 
   // Get agent documents for file list
-  const { data: documents = [] } = useQuery({
+  const { data: documents = [] } = useQuery<any[]>({
     queryKey: [`/api/agents/${agent.id}/documents`],
     enabled: showFileListModal
   });
@@ -808,7 +808,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       {/* File List Modal */}
       {showFileListModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowFileListModal(false)}>
-          <div className="bg-card rounded-xl p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-background border border-border rounded-xl p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto shadow-lg" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold korean-text">업로드된 파일</h3>
               <Button
@@ -820,7 +820,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               </Button>
             </div>
             
-            {documents && documents.length > 0 ? (
+            {Array.isArray(documents) && documents.length > 0 ? (
               <div className="space-y-3">
                 {documents.map((doc: any) => (
                   <div
@@ -831,7 +831,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium korean-text truncate">
-                          {doc.filename}
+                          {doc.originalName || doc.filename}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(doc.createdAt).toLocaleDateString('ko-KR')}

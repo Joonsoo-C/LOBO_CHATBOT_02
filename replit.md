@@ -184,6 +184,12 @@ Changelog:
   * Dynamic dropdown button text updates to show selected category
   * Category-only filtering when no search query is entered
   * Combined search and category filtering for refined results
+- June 17, 2025. Implemented file list functionality in chat interface:
+  * Added Files button to chat header for viewing uploaded documents
+  * Created file list modal displaying document names and upload dates
+  * Implemented file download functionality for all uploaded documents
+  * Fixed filename display to show original names instead of hash strings
+  * Added proper styling and responsive design for mobile devices
 ```
 
 ## User Preferences
