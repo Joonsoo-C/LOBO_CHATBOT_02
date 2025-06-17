@@ -154,9 +154,11 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                         {agent.category}
                       </span>
                     </div>
-                    <span className="text-xs text-muted-foreground korean-text">
-                      {conversation?.lastMessageAt ? getTimeAgo(conversation.lastMessageAt) : "새로운"}
-                    </span>
+                    {conversation?.lastMessageAt && (
+                      <span className="text-xs text-muted-foreground korean-text">
+                        {getTimeAgo(conversation.lastMessageAt)}
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center justify-between space-x-2">
                     <p className="text-sm text-muted-foreground truncate korean-text flex-1">

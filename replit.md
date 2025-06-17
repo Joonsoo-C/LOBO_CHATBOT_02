@@ -196,10 +196,11 @@ Changelog:
   * Added click-outside functionality to management dropdown menu
   * Repositioned notification badges to appear on the right side of message content line
 - June 17, 2025. Implemented intelligent agent list sorting system:
-  * Agents with recent conversations appear at top sorted by most recent message first
-  * Agents without conversations maintain category order: 학교, 교수, 그룹, 학생, 기능형
+  * Agents with recent messages appear at top sorted by most recent message receive time
+  * Agents without messages maintain category order: 학교, 교수, 그룹, 학생, 기능형
+  * Time information only displayed for agents with messages (empty for unused agents)
   * Dynamic real-time reordering when new messages are sent or received
-  * Preserves initial category hierarchy while prioritizing active conversations
+  * Preserves initial category hierarchy while prioritizing message activity
 ```
 
 ## User Preferences
