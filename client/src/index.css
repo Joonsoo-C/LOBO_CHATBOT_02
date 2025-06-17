@@ -171,9 +171,9 @@
     }
     
     .fixed-header {
-      position: static;
-      background: transparent;
-      box-shadow: none;
+      position: static !important;
+      background: transparent !important;
+      box-shadow: none !important;
     }
     
     .main-content {
@@ -182,6 +182,34 @@
     
     .chat-messages {
       padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+    
+    /* Tablet message input should not be fixed */
+    .tablet-message-input {
+      position: relative !important;
+      bottom: auto !important;
+      left: auto !important;
+      right: auto !important;
+    }
+    
+    /* Prevent layout flash on tablet by applying styles immediately */
+    .chat-interface-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: transparent;
+    }
+    
+    .chat-interface-header {
+      position: static;
+      background: transparent;
+      box-shadow: none;
+    }
+    
+    .chat-interface-messages {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
     }
   }
 
