@@ -132,11 +132,15 @@ export default function TabletLayout() {
 
   const logout = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/logout");
-      const data = await response.json();
-      return data;
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.ok;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.clear();
       window.location.replace("/auth");
     },
