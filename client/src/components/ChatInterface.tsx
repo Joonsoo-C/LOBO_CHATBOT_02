@@ -472,6 +472,29 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allMessages, isTyping]);
 
+  // Immediately scroll to bottom when messages are first loaded (without animation)
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+      });
+    }
+  }, [messages.length]);
+
+  // Also scroll to bottom when conversation changes
+  useEffect(() => {
+    if (conversation?.id && messages.length > 0) {
+      // Force immediate scroll to bottom when entering a chat room
+      requestAnimationFrame(() => {
+        const messagesContainer = document.querySelector('.chat-interface-messages');
+        if (messagesContainer) {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      });
+    }
+  }, [conversation?.id, messages.length]);
+
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
 
