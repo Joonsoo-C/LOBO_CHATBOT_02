@@ -10,7 +10,7 @@ import { insertMessageSchema, insertDocumentSchema, conversations, agents } from
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
-// Configure multer for file uploads
+// Configure multer for document uploads
 const upload = multer({
   dest: "uploads/",
   limits: {
@@ -29,6 +29,28 @@ const upload = multer({
       cb(null, true);
     } else {
       cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, PPT 파일만 업로드 가능합니다.'));
+    }
+  },
+});
+
+// Configure multer for image uploads
+const imageUpload = multer({
+  dest: "uploads/agent-icons/",
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit for images
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp'
+    ];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('지원하지 않는 이미지 형식입니다. JPG, PNG, GIF, WEBP 파일만 업로드 가능합니다.'));
     }
   },
 });
@@ -531,6 +553,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting document:", error);
       res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
+  // Agent icon upload endpoint
+  app.post('/api/agents/:id/icon-upload', isAuthenticated, imageUpload.single('image'), async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      // Check if user has permission to manage this agent
+      const agent = await storage.getAgent(agentId);
+      if (!agent || agent.managerId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to modify this agent" });
+      }
+
+      // Generate unique filename
+      const fileExtension = path.extname(req.file.originalname);
+      const uniqueFilename = `agent-${agentId}-${Date.now()}${fileExtension}`;
+      const imagePath = `/uploads/agent-icons/${uniqueFilename}`;
+      const fullPath = path.join(process.cwd(), 'uploads', 'agent-icons', uniqueFilename);
+
+      // Move uploaded file to permanent location with unique name
+      fs.renameSync(req.file.path, fullPath);
+
+      res.json({
+        imagePath,
+        message: "Image uploaded successfully"
+      });
+    } catch (error) {
+      console.error("Error uploading agent icon:", error);
+      res.status(500).json({ message: "Failed to upload image" });
+    }
+  });
+
+  // Serve uploaded agent icons
+  app.get('/uploads/agent-icons/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(process.cwd(), 'uploads', 'agent-icons', filename);
+    
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      res.status(404).json({ message: "Image not found" });
     }
   });
 

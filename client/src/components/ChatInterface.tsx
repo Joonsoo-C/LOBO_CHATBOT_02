@@ -486,8 +486,27 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
               </Link>
-              <div className="w-10 h-10 bg-gray-600 rounded-2xl flex items-center justify-center">
-                <User className="text-white w-5 h-5" />
+              <div 
+                className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
+                style={{ backgroundColor: agent.backgroundColor }}
+              >
+                {agent.isCustomIcon ? (
+                  <img 
+                    src={agent.icon} 
+                    alt={`${agent.name} icon`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : (
+                  <User className="text-white w-5 h-5" />
+                )}
+                {agent.isCustomIcon && (
+                  <User className="text-white w-5 h-5 hidden" />
+                )}
               </div>
               <div>
                 <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
