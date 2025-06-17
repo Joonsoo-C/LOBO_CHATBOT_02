@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ThemeSelector } from "@/components/ThemeSelector";
-import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText } from "lucide-react";
+import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText, Files, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -77,6 +77,162 @@ function getCategoryBadgeStyle(category: string) {
     default:
       return "category-badge school";
   }
+}
+
+// TabletChatHeader component for file/management controls
+interface TabletChatHeaderProps {
+  agent: any;
+  isManagementMode: boolean;
+}
+
+function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
+  const [showMenu, setShowMenu] = useState(false);
+  const [showFileListModal, setShowFileListModal] = useState(false);
+  const [showPersonaModal, setShowPersonaModal] = useState(false);
+  const [showIconModal, setShowIconModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showFileModal, setShowFileModal] = useState(false);
+
+  // Add system message function (simplified version)
+  const addSystemMessage = (message: string) => {
+    // This will be handled by the ChatInterface component
+    console.log("System message:", message);
+  };
+
+  return (
+    <>
+      {/* Header Bar */}
+      <div className="border-b border-border bg-background px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div 
+              className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
+              style={{ backgroundColor: agent.backgroundColor }}
+            >
+              {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
+                <img 
+                  src={agent.icon} 
+                  alt={`${agent.name} icon`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : (
+                <User className="text-white w-5 h-5" />
+              )}
+              {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
+                <User className="text-white w-5 h-5 hidden" />
+              )}
+            </div>
+            <div>
+              <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
+              <p className="text-sm text-muted-foreground korean-text">
+                {isManagementMode ? "관리자 모드" : "일반 대화"}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {/* Files Button - Only visible in general mode */}
+            {!isManagementMode && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-2"
+                onClick={() => setShowFileListModal(true)}
+              >
+                <Files className="w-4 h-4" />
+              </Button>
+            )}
+            
+            {isManagementMode && (
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="px-3 py-2 korean-text"
+                  onClick={() => setShowMenu(!showMenu)}
+                >
+                  기능선택
+                </Button>
+              
+                {/* Dropdown Menu */}
+                {showMenu && (
+                  <>
+                    {/* Invisible overlay to catch outside clicks */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setShowMenu(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-xl shadow-lg z-50">
+                      <div className="py-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
+                            setShowPersonaModal(true);
+                            setShowMenu(false);
+                            addSystemMessage("페르소나 편집 창을 열었습니다.");
+                          }}
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          페르소나 변경
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
+                            setShowIconModal(true);
+                            setShowMenu(false);
+                            addSystemMessage("아이콘 변경 창을 열었습니다.");
+                          }}
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          아이콘 변경
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
+                            setShowSettingsModal(true);
+                            setShowMenu(false);
+                            addSystemMessage("챗봇 설정 창을 열었습니다.");
+                          }}
+                        >
+                          <Settings className="w-4 h-4 mr-2" />
+                          챗봇 설정
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
+                            setShowFileModal(true);
+                            setShowMenu(false);
+                            addSystemMessage("문서 업로드 창을 열었습니다.");
+                          }}
+                        >
+                          <FileText className="w-4 h-4 mr-2" />
+                          문서 업로드
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Note: Modals would need to be properly imported and implemented */}
+    </>
+  );
 }
 
 export default function TabletLayout() {
@@ -364,11 +520,18 @@ export default function TabletLayout() {
       {/* Right Panel - Chat Interface */}
       <div className="flex-1 flex flex-col bg-muted/30">
         {selectedAgent ? (
-          activeTab === "chat" ? (
-            <ChatInterface agent={selectedAgent} isManagementMode={false} />
-          ) : (
-            <ChatInterface agent={selectedAgent} isManagementMode={true} />
-          )
+          <>
+            {/* Chat Header for Tablet */}
+            <TabletChatHeader 
+              agent={selectedAgent} 
+              isManagementMode={activeTab === "management"} 
+            />
+            {activeTab === "chat" ? (
+              <ChatInterface agent={selectedAgent} isManagementMode={false} />
+            ) : (
+              <ChatInterface agent={selectedAgent} isManagementMode={true} />
+            )}
+          </>
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center korean-text">
