@@ -116,13 +116,13 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                         {agent.category}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      {conversation && conversation.unreadCount > 0 && (
-                        <span className="notification-badge">{conversation.unreadCount}</span>
-                      )}
+                    <div className="flex flex-col items-end space-y-1">
                       <span className="text-xs text-muted-foreground korean-text">
                         {conversation?.lastMessageAt ? getTimeAgo(conversation.lastMessageAt) : "새로운"}
                       </span>
+                      {conversation && conversation.unreadCount > 0 && (
+                        <span className="notification-badge">{conversation.unreadCount}</span>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
