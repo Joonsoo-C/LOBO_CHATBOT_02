@@ -47,6 +47,7 @@ export const agents = pgTable("agents", {
   category: text("category").notNull(), // 학교, 교수, 학생, 그룹, 기능형
   icon: text("icon").notNull(),
   backgroundColor: text("background_color").notNull(),
+  isCustomIcon: boolean("is_custom_icon").default(false), // Whether using custom uploaded image
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model

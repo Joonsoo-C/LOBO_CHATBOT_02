@@ -59,13 +59,47 @@ const colorOptions = [
 export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: IconChangeModalProps) {
   const [selectedIcon, setSelectedIcon] = useState(agent.icon || "User");
   const [selectedColor, setSelectedColor] = useState(agent.backgroundColor || "#3b82f6");
+  const [customImage, setCustomImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const updateIconMutation = useMutation({
-    mutationFn: async (data: { icon: string; backgroundColor: string }) => {
-      const response = await apiRequest("PATCH", `/api/agents/${agent.id}`, data);
-      return response;
+    mutationFn: async (data: { icon?: string; backgroundColor: string; customImageFile?: File }) => {
+      if (data.customImageFile) {
+        // Upload custom image first
+        const formData = new FormData();
+        formData.append('image', data.customImageFile);
+        
+        const uploadResponse = await fetch(`/api/agents/${agent.id}/icon-upload`, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+        
+        if (!uploadResponse.ok) {
+          throw new Error('이미지 업로드에 실패했습니다.');
+        }
+        
+        const uploadResult = await uploadResponse.json();
+        
+        // Update agent with custom image path
+        const response = await apiRequest("PATCH", `/api/agents/${agent.id}`, {
+          icon: uploadResult.imagePath,
+          backgroundColor: data.backgroundColor,
+          isCustomIcon: true
+        });
+        return response;
+      } else {
+        // Update with standard icon
+        const response = await apiRequest("PATCH", `/api/agents/${agent.id}`, {
+          icon: data.icon,
+          backgroundColor: data.backgroundColor,
+          isCustomIcon: false
+        });
+        return response;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
@@ -89,11 +123,53 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
     },
   });
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "잘못된 파일 형식",
+          description: "이미지 파일만 업로드할 수 있습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "파일 크기 초과",
+          description: "이미지 파일은 5MB 이하여야 합니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setImageFile(file);
+      setIsUsingCustomImage(true);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCustomImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = () => {
-    updateIconMutation.mutate({
-      icon: selectedIcon,
-      backgroundColor: selectedColor
-    });
+    if (isUsingCustomImage && imageFile) {
+      updateIconMutation.mutate({
+        backgroundColor: selectedColor,
+        customImageFile: imageFile
+      });
+    } else {
+      updateIconMutation.mutate({
+        icon: selectedIcon,
+        backgroundColor: selectedColor
+      });
+    }
   };
 
   const selectedIconComponent = availableIcons.find(icon => icon.value === selectedIcon)?.icon || User;
@@ -110,33 +186,98 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           {/* Preview */}
           <div className="flex justify-center">
             <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              className="w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden"
               style={{ backgroundColor: selectedColor }}
             >
-              <SelectedIconComponent className="w-8 h-8 text-white" />
+              {isUsingCustomImage && customImage ? (
+                <img 
+                  src={customImage} 
+                  alt="Custom icon preview" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <SelectedIconComponent className="w-8 h-8 text-white" />
+              )}
             </div>
           </div>
 
-          {/* Icon Selection */}
+          {/* Upload Type Selection */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium">아이콘 선택</Label>
-            <div className="grid grid-cols-5 gap-2">
-              {availableIcons.map((iconOption) => {
-                const IconComponent = iconOption.icon;
-                return (
-                  <Button
-                    key={iconOption.value}
-                    variant={selectedIcon === iconOption.value ? "default" : "outline"}
-                    size="sm"
-                    className="h-12 w-12 p-0"
-                    onClick={() => setSelectedIcon(iconOption.value)}
-                  >
-                    <IconComponent className="w-5 h-5" />
-                  </Button>
-                );
-              })}
+            <Label className="text-sm font-medium">아이콘 유형</Label>
+            <div className="flex gap-2">
+              <Button
+                variant={!isUsingCustomImage ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setIsUsingCustomImage(false);
+                  setCustomImage(null);
+                  setImageFile(null);
+                }}
+                className="flex-1"
+              >
+                기본 아이콘
+              </Button>
+              <Button
+                variant={isUsingCustomImage ? "default" : "outline"}
+                size="sm"
+                onClick={() => setIsUsingCustomImage(true)}
+                className="flex-1"
+              >
+                이미지 업로드
+              </Button>
             </div>
           </div>
+
+          {/* Custom Image Upload */}
+          {isUsingCustomImage && (
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">이미지 파일 선택</Label>
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label 
+                  htmlFor="image-upload" 
+                  className="cursor-pointer flex flex-col items-center space-y-2"
+                >
+                  <Camera className="w-8 h-8 text-muted-foreground" />
+                  <div className="text-sm text-muted-foreground">
+                    {imageFile ? imageFile.name : "클릭하여 이미지 선택"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    JPG, PNG, GIF (최대 5MB)
+                  </div>
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* Icon Selection - Only show for basic icons */}
+          {!isUsingCustomImage && (
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">아이콘 선택</Label>
+              <div className="grid grid-cols-5 gap-2">
+                {availableIcons.map((iconOption) => {
+                  const IconComponent = iconOption.icon;
+                  return (
+                    <Button
+                      key={iconOption.value}
+                      variant={selectedIcon === iconOption.value ? "default" : "outline"}
+                      size="sm"
+                      className="h-12 w-12 p-0"
+                      onClick={() => setSelectedIcon(iconOption.value)}
+                    >
+                      <IconComponent className="w-5 h-5" />
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Color Selection */}
           <div className="space-y-3">
