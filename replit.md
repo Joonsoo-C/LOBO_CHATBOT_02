@@ -161,6 +161,13 @@ Changelog:
   * Created robust detection for Korean notification patterns (입니다, 됩니다, 결과, 기능, 추가 등)
   * System messages now consistently appear with visual indicators (🔧 prefix, ⚙️ icon, amber styling)
   * All administrative notifications, file uploads, and management responses properly styled
+- June 17, 2025. Implemented custom image upload for agent icons:
+  * Added complete image upload system with server-side endpoint and client-side UI
+  * Supports JPG, PNG, GIF, WEBP formats with 5MB file size limit
+  * Real-time image preview and validation with error handling
+  * Database schema updated with is_custom_icon field for proper icon type tracking
+  * AgentList and ChatInterface components support both standard and custom icons
+  * Automatic fallback to default icons if custom images fail to load
 ```
 
 ## User Preferences
