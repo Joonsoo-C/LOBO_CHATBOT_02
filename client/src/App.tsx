@@ -5,14 +5,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsTablet } from "@/hooks/use-tablet";
 import AuthPage from "@/pages/auth-page";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
 import Management from "@/pages/Management";
+import TabletLayout from "@/components/TabletLayout";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+  const isTablet = useIsTablet();
 
   if (isLoading) {
     return (
@@ -36,10 +39,21 @@ function Router() {
         </>
       ) : (
         <>
-          <Route path="/" component={Home} />
-          <Route path="/chat/:agentId" component={Chat} />
-          <Route path="/management" component={Home} />
-          <Route path="/management/:agentId" component={Management} />
+          {isTablet ? (
+            <>
+              <Route path="/" component={TabletLayout} />
+              <Route path="/chat/:agentId" component={TabletLayout} />
+              <Route path="/management" component={TabletLayout} />
+              <Route path="/management/:agentId" component={TabletLayout} />
+            </>
+          ) : (
+            <>
+              <Route path="/" component={Home} />
+              <Route path="/chat/:agentId" component={Chat} />
+              <Route path="/management" component={Home} />
+              <Route path="/management/:agentId" component={Management} />
+            </>
+          )}
           <Route path="/auth">
             {() => {
               window.location.replace("/");
