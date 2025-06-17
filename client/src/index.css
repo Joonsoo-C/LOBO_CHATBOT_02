@@ -68,6 +68,8 @@
     height: 100%;
     /* Prevent viewport zoom on input focus */
     -webkit-text-size-adjust: 100%;
+    /* Support for safe area insets */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   /* Mobile-first responsive design */
@@ -199,12 +201,13 @@
     /* Prevent viewport changes when keyboard appears */
     .chat-page-container {
       height: 100vh;
-      height: 100dvh; /* Dynamic viewport height */
+      height: 100svh; /* Small viewport height - excludes keyboard */
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       overflow: hidden;
+      max-width: 100%;
     }
     
     /* Fixed header that stays in place */
@@ -217,6 +220,8 @@
       background: var(--background) !important;
       border-bottom: 1px solid var(--border);
       backdrop-filter: none !important;
+      height: 60px; /* Fixed header height */
+      max-width: 100%;
     }
     
     /* Messages area with proper spacing */
@@ -228,6 +233,8 @@
       right: 0 !important;
       overflow-y: auto !important;
       padding: 1rem !important;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
     }
     
     /* Fixed input at screen bottom */
@@ -240,6 +247,17 @@
       background: var(--background) !important;
       border-top: 1px solid var(--border);
       height: 80px; /* Fixed height */
+      max-width: 100%;
+    }
+    
+    /* Alternative approach - use viewport units that exclude keyboard */
+    body.keyboard-open .chat-page-container {
+      height: 100vh;
+      height: 100svh; /* Always exclude keyboard from viewport */
+    }
+    
+    body.keyboard-open .mobile-messages-container {
+      bottom: 80px !important; /* Keep input area visible */
     }
     
     /* Prevent body scroll when keyboard is open */
@@ -247,6 +265,7 @@
       overflow: hidden;
       position: fixed;
       width: 100%;
+      height: 100%;
     }
   }
 

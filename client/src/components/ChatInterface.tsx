@@ -495,6 +495,68 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
+  // Mobile keyboard detection
+  useEffect(() => {
+    if (!isTablet) {
+      let initialViewportHeight = window.visualViewport?.height || window.innerHeight;
+      
+      const handleViewportChange = () => {
+        const currentHeight = window.visualViewport?.height || window.innerHeight;
+        const heightDifference = initialViewportHeight - currentHeight;
+        
+        // If viewport height decreases by more than 150px, assume keyboard is open
+        if (heightDifference > 150) {
+          document.body.classList.add('keyboard-open');
+        } else {
+          document.body.classList.remove('keyboard-open');
+        }
+      };
+
+      // Use Visual Viewport API if available, otherwise fall back to resize
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+      } else {
+        window.addEventListener('resize', handleViewportChange);
+      }
+
+      // Also listen for input focus/blur events
+      const inputs = document.querySelectorAll('input, textarea');
+      const handleFocus = () => {
+        // Small delay to allow viewport to adjust
+        setTimeout(() => {
+          const currentHeight = window.visualViewport?.height || window.innerHeight;
+          if (initialViewportHeight - currentHeight > 150) {
+            document.body.classList.add('keyboard-open');
+          }
+        }, 300);
+      };
+      
+      const handleBlur = () => {
+        setTimeout(() => {
+          document.body.classList.remove('keyboard-open');
+        }, 300);
+      };
+
+      inputs.forEach(input => {
+        input.addEventListener('focus', handleFocus);
+        input.addEventListener('blur', handleBlur);
+      });
+
+      return () => {
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', handleViewportChange);
+        } else {
+          window.removeEventListener('resize', handleViewportChange);
+        }
+        inputs.forEach(input => {
+          input.removeEventListener('focus', handleFocus);
+          input.removeEventListener('blur', handleBlur);
+        });
+        document.body.classList.remove('keyboard-open');
+      };
+    }
+  }, [isTablet]);
+
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
 
