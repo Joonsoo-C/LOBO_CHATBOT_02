@@ -155,6 +155,12 @@ Changelog:
   * Enhanced unread count tracking with proper notification badges
   * Fixed TypeScript null safety issues in server-side conversation handling
   * Notification badges now correctly appear and disappear when visiting conversations
+- June 17, 2025. Enhanced system message visual distinction:
+  * Implemented comprehensive system message detection using multiple pattern matching approaches
+  * Added distinct amber background styling for all system notifications and status messages
+  * Created robust detection for Korean notification patterns (입니다, 됩니다, 결과, 기능, 추가 등)
+  * System messages now consistently appear with visual indicators (🔧 prefix, ⚙️ icon, amber styling)
+  * All administrative notifications, file uploads, and management responses properly styled
 ```
 
 ## User Preferences

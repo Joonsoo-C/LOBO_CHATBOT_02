@@ -59,22 +59,58 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Function to check if a message is a system message
   const isSystemMessage = (content: string): boolean => {
-    return content.startsWith('🔧') || 
-           content.includes('업로드되었습니다') || 
-           content.includes('전송되었습니다') ||
-           content.includes('완료되었습니다') ||
-           content.includes('편집 창을 열었습니다') ||
-           content.includes('설정 창을 열었습니다') ||
-           content.includes('알림 내용을') ||
-           content.includes('성과 분석') ||
-           content.includes('관리자 모드') ||
-           content.includes('명령어:') ||
-           content.includes('Document upload notification') ||
-           content.includes('새로운 문서') ||
-           content.includes('브로드캐스트') ||
-           content.includes('📊') ||
-           content.includes('📈') ||
-           content.includes('🔍');
+    // System prefix indicators
+    if (content.startsWith('🔧') || content.startsWith('⚙️') || content.startsWith('📋')) {
+      return true;
+    }
+    
+    // Notification keywords
+    const notificationKeywords = [
+      '업로드되었습니다', '전송되었습니다', '완료되었습니다', '편집 창을 열었습니다',
+      '설정 창을 열었습니다', '알림 내용을', '성과 분석', '관리자 모드', '명령어:',
+      '새로운 문서', '새로운 기능이', '추가 되었습니다', '결과입니다', '브로드캐스트',
+      '세 결과', 'Document upload notification'
+    ];
+    
+    // Check for notification keywords
+    for (const keyword of notificationKeywords) {
+      if (content.includes(keyword)) {
+        return true;
+      }
+    }
+    
+    // System icons
+    const systemIcons = ['📊', '📈', '🔍', '⚙️', '🔧', '📋', '✅', '⚠️', '📄'];
+    for (const icon of systemIcons) {
+      if (content.includes(icon)) {
+        return true;
+      }
+    }
+    
+    // Short system messages (likely notifications)
+    if (content.length < 100) {
+      const systemPatterns = [
+        /입니다\.?$/,     // ends with "입니다"
+        /됩니다\.?$/,     // ends with "됩니다"
+        /했습니다\.?$/,   // ends with "했습니다"
+        /있습니다\.?$/,   // ends with "있습니다"
+        /B\d+/,          // contains B followed by numbers
+        /결과/,          // contains "결과"
+        /알림/,          // contains "알림"
+        /기능/,          // contains "기능"
+        /추가/,          // contains "추가"
+        /변경/,          // contains "변경"
+        /설정/           // contains "설정"
+      ];
+      
+      for (const pattern of systemPatterns) {
+        if (pattern.test(content)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
   };
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
