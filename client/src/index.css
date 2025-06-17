@@ -161,7 +161,7 @@
 
   /* Fixed header styling */
   .fixed-header {
-    @apply fixed top-0 left-0 right-0 z-[9999] border-b border-border bg-background;
+    @apply fixed top-0 left-0 right-0 z-40 border-b border-border bg-background;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
 
@@ -195,7 +195,7 @@
     max-width: 28rem; /* md breakpoint */
     height: 9rem;
     background: var(--background);
-    z-index: 9998;
+    z-index: 40; /* Lower z-index to stay below modals */
     pointer-events: none;
   }
 

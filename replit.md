@@ -190,6 +190,8 @@ Changelog:
   * Implemented file download functionality for all uploaded documents
   * Fixed filename display to show original names instead of hash strings
   * Added proper styling and responsive design for mobile devices
+  * Fixed white box UI overlay issue by adjusting z-index values in CSS
+  * Resolved modal background conflicts affecting both file list and upload modals
 ```
 
 ## User Preferences
