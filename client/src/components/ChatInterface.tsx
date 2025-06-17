@@ -755,6 +755,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           onCancel={addSystemMessage}
         />
       )}
+
+      {/* Icon Change Modal */}
+      {showIconModal && (
+        <IconChangeModal
+          agent={agent}
+          isOpen={showIconModal}
+          onClose={() => setShowIconModal(false)}
+          onSuccess={addSystemMessage}
+        />
+      )}
     </div>
   );
 }
