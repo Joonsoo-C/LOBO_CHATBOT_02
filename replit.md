@@ -194,7 +194,7 @@ Changelog:
   * Resolved modal background conflicts affecting both file list and upload modals
   * Restricted Files button to general chat mode only (hidden in management mode)
   * Added click-outside functionality to management dropdown menu
-  * Repositioned notification badges to appear below message timestamps
+  * Repositioned notification badges to appear on the right side of message content line
 ```
 
 ## User Preferences

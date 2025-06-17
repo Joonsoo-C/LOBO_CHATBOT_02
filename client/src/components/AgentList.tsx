@@ -116,19 +116,17 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                         {agent.category}
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-xs text-muted-foreground korean-text">
-                        {conversation?.lastMessageAt ? getTimeAgo(conversation.lastMessageAt) : "새로운"}
-                      </span>
-                      {conversation && conversation.unreadCount > 0 && (
-                        <span className="notification-badge mt-1">{conversation.unreadCount}</span>
-                      )}
-                    </div>
+                    <span className="text-xs text-muted-foreground korean-text">
+                      {conversation?.lastMessageAt ? getTimeAgo(conversation.lastMessageAt) : "새로운"}
+                    </span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm text-muted-foreground truncate korean-text">
+                  <div className="flex items-center justify-between space-x-2">
+                    <p className="text-sm text-muted-foreground truncate korean-text flex-1">
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
+                    {conversation && conversation.unreadCount > 0 && (
+                      <span className="notification-badge ml-2 flex-shrink-0">{conversation.unreadCount}</span>
+                    )}
                   </div>
               
                 </div>
