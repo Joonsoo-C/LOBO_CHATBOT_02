@@ -14,7 +14,9 @@ import {
   BarChart3,
   X,
   User,
-  Bell
+  Bell,
+  Files,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +42,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showIconModal, setShowIconModal] = useState(false);
+  const [showFileListModal, setShowFileListModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -514,6 +517,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              {/* Files Button - Always visible */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-2"
+                onClick={() => setShowFileListModal(true)}
+              >
+                <Files className="w-4 h-4" />
+              </Button>
+              
               {isManagementMode && (
                 <>
                   <div className="relative">
