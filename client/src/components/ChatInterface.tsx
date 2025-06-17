@@ -25,6 +25,7 @@ import { ThemeSelector } from "./ThemeSelector";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
+import IconChangeModal from "./IconChangeModal";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
@@ -38,6 +39,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showFileModal, setShowFileModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showIconModal, setShowIconModal] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -520,6 +522,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           >
                             <User className="w-4 h-4 mr-2" />
                             페르소나 변경
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-start px-4 py-2 korean-text"
+                            onClick={() => {
+                              setShowIconModal(true);
+                              setShowMenu(false);
+                              addSystemMessage("아이콘 변경 창을 열었습니다. 에이전트의 아이콘과 배경색을 변경할 수 있습니다.");
+                            }}
+                          >
+                            <Edit className="w-4 h-4 mr-2" />
+                            아이콘 변경
                           </Button>
                           <Button 
                             variant="ghost" 
