@@ -528,7 +528,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="p-2"
+                  className="p-2 md:p-3"
                   onClick={() => setShowFileListModal(true)}
                 >
                   <Files className="w-4 h-4" />
@@ -689,16 +689,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       </header>
 
       {/* Chat Messages */}
-      <div className="flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages" style={{ paddingTop: '5rem', paddingBottom: '1rem' }}>
+      <div className="flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" style={{ paddingTop: '5rem', paddingBottom: '1rem' }}>
         {allMessages.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <User className="text-white w-8 h-8" />
+          <div className="text-center py-8 md:py-12">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:w-20 md:h-20 md:mb-6">
+              <User className="text-white w-8 h-8 md:w-10 md:h-10" />
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2 korean-text">
+            <h3 className="text-lg font-medium text-foreground mb-2 korean-text md:text-xl md:mb-3">
               {agent.name}과 대화하세요
             </h3>
-            <p className="text-muted-foreground text-sm korean-text">
+            <p className="text-muted-foreground text-sm korean-text md:text-base">
               궁금한 것이 있으면 언제든지 물어보세요.
             </p>
           </div>
@@ -710,7 +710,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
+                    className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                       msg.isFromUser
                         ? "bg-primary text-primary-foreground ml-auto"
                         : isSystem
@@ -718,7 +718,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed">{msg.content}</p>
+                    <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                   </div>
                 </div>
               );
@@ -747,8 +747,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className="px-4 py-4 border-t border-border bg-card">
-        <div className="flex items-center space-x-3">
+      <div className="px-4 py-4 border-t border-border bg-card md:px-6 md:py-5">
+        <div className="flex items-center space-x-3 md:space-x-4">
           <div className="flex-1 relative">
             <Input
               type="text"
@@ -756,17 +756,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pr-12 korean-text"
+              className="pr-12 korean-text md:h-12 md:text-base md:pr-14"
               disabled={sendMessageMutation.isPending}
             />
             <Button
               variant="ghost"
               size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 md:p-3 md:right-3"
               onClick={handleSendMessage}
               disabled={!message.trim() || sendMessageMutation.isPending}
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </div>
         </div>
