@@ -96,28 +96,28 @@ export default function Home() {
   }
 
   return (
-    <div className="mobile-container no-scroll-bounce scroll-container">
+    <div className="mobile-container no-scroll-bounce scroll-container md:max-w-6xl md:mx-auto md:grid md:grid-cols-12 md:gap-6 md:px-6 md:py-4">
       {/* Header */}
-      <header className="fixed-header">
-        <div className="px-4 py-3">
+      <header className="fixed-header md:static md:bg-transparent md:shadow-none md:col-span-12 md:mb-0">
+        <div className="px-4 py-3 md:px-0 md:py-0">
           {/* Header with search and settings */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
             {/* Search Bar */}
-            <div className="relative flex-1">
+            <div className="relative flex-1 md:max-w-lg">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
                 placeholder="에이전트 검색"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-20 bg-muted border-none korean-text"
+                className="pl-10 pr-20 bg-muted border-none korean-text md:h-11"
               />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="default"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text md:h-8 md:px-3"
                   >
                     {selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
@@ -142,7 +142,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="korean-text"
+                  className="korean-text md:h-11 md:px-4"
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
@@ -171,11 +171,11 @@ export default function Home() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="flex bg-muted rounded-xl p-1 mb-4">
+          <div className="flex bg-muted rounded-xl p-1 mb-4 md:mb-6 md:max-w-md">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="sm"
-              className="flex-1 korean-text"
+              className="flex-1 korean-text md:h-10"
               onClick={() => setActiveTab("chat")}
             >
               에이전트 채팅
@@ -183,7 +183,7 @@ export default function Home() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="sm"
-              className="flex-1 korean-text"
+              className="flex-1 korean-text md:h-10"
               onClick={() => setActiveTab("management")}
             >
               에이전트 관리
