@@ -180,9 +180,19 @@
 
   .chat-input-area {
     flex-shrink: 0;
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
+  }
+
+  /* Mobile: Fixed input at screen bottom */
+  @media (max-width: 767px) {
+    .fixed-chat-input {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 50 !important;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+    }
   }
 
   /* Responsive tablet adjustments */
