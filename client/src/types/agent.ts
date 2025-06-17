@@ -5,6 +5,7 @@ export interface Agent {
   category: "학교" | "교수" | "학생" | "그룹" | "기능형";
   icon: string;
   backgroundColor: string;
+  isCustomIcon?: boolean;
   isActive: boolean;
   managerId?: string;
   llmModel?: string;
