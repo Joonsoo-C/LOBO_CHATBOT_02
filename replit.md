@@ -256,6 +256,7 @@ Changelog:
   * Files button opens document list modal in general chat mode
   * Management dropdown provides access to persona editing, icon changes, settings, and file uploads
   * Proper modal integration with system message feedback for all management functions
+  * Added missing "계정 설정" (Account Settings) option to tablet mode settings dropdown menu
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST

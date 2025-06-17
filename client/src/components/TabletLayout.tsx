@@ -450,6 +450,20 @@ export default function TabletLayout() {
                   에이전트 관리
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="korean-text cursor-pointer"
+                  onClick={() => {
+                    // Account settings functionality - placeholder for now
+                    toast({
+                      title: "계정 설정",
+                      description: "계정 설정 기능이 곧 추가될 예정입니다.",
+                    });
+                  }}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  계정 설정
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem className="korean-text">
                   <ThemeSelector />
                 </DropdownMenuItem>
