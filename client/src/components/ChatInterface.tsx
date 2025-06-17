@@ -28,6 +28,7 @@ import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
 import IconChangeModal from "./IconChangeModal";
+import { useIsTablet } from "@/hooks/use-tablet";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
@@ -36,6 +37,7 @@ interface ChatInterfaceProps {
 }
 
 export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
+  const isTablet = useIsTablet();
   const [message, setMessage] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
@@ -486,15 +488,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   return (
     <div className="flex flex-col h-full bg-transparent">
       {/* Chat Header */}
-      <header className="fixed-header md:static md:bg-transparent md:shadow-none">
+      <header className={isTablet ? "static bg-transparent shadow-none" : "fixed-header md:static md:bg-transparent md:shadow-none"}>
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 md:space-x-4">
-              <Link href={isManagementMode ? "/management" : "/"}>
-                <Button variant="ghost" size="sm" className="p-2 md:p-3">
-                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                </Button>
-              </Link>
+              {!isTablet && (
+                <Link href={isManagementMode ? "/management" : "/"}>
+                  <Button variant="ghost" size="sm" className="p-2 md:p-3">
+                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                  </Button>
+                </Link>
+              )}
               <div 
                 className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden md:w-12 md:h-12"
                 style={{ backgroundColor: agent.backgroundColor }}
@@ -689,7 +693,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       </header>
 
       {/* Chat Messages */}
-      <div className="flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" style={{ paddingTop: '5rem', paddingBottom: '1rem' }}>
+      <div 
+        className="flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" 
+        style={{ 
+          paddingTop: isTablet ? '1rem' : '5rem', 
+          paddingBottom: '1rem' 
+        }}
+      >
         {allMessages.length === 0 ? (
           <div className="text-center py-8 md:py-12">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:w-20 md:h-20 md:mb-6">

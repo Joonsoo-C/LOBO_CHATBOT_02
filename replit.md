@@ -222,6 +222,9 @@ Changelog:
   * Darkened left panel background (bg-muted/50) for better dropdown menu visibility
   * Added subtle background to right panel (bg-muted/30) for improved visual separation
   * Improved overall contrast and visual hierarchy in two-panel layout
+  * Fixed ChatInterface layout flashing by adding tablet detection and conditional styling
+  * Removed back button and fixed header behavior in tablet mode for seamless integration
+  * Adjusted chat messages padding to prevent initial layout shifts
 - June 17, 2025. Fixed logout functionality for local authentication system:
   * Identified system uses local auth (./auth) not Replit Auth (./replitAuth)
   * Fixed HTTP method mismatch: frontend was using GET, server expects POST
