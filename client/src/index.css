@@ -66,11 +66,16 @@
     overscroll-behavior: none;
     /* Fix height for mobile browsers */
     height: 100%;
+    /* Prevent viewport zoom on input focus */
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Mobile-first responsive design */
   .mobile-container {
     @apply max-w-md mx-auto min-h-screen bg-background;
+    /* Use visual viewport height instead of 100vh to handle mobile keyboards */
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for modern browsers */
   }
 
   /* Custom scrollbar for chat */
@@ -189,16 +194,59 @@
     flex-shrink: 0;
   }
 
-  /* Mobile: Fixed input at screen bottom */
+  /* Mobile keyboard handling */
   @media (max-width: 767px) {
+    /* Prevent viewport changes when keyboard appears */
+    .chat-page-container {
+      height: 100vh;
+      height: 100dvh; /* Dynamic viewport height */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }
+    
+    /* Fixed header that stays in place */
+    .mobile-chat-header {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 60 !important;
+      background: var(--background) !important;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: none !important;
+    }
+    
+    /* Messages area with proper spacing */
+    .mobile-messages-container {
+      position: fixed !important;
+      top: 60px !important; /* Header height */
+      bottom: 80px !important; /* Input area height */
+      left: 0 !important;
+      right: 0 !important;
+      overflow-y: auto !important;
+      padding: 1rem !important;
+    }
+    
+    /* Fixed input at screen bottom */
     .fixed-chat-input {
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
       z-index: 50 !important;
-      background: var(--card);
+      background: var(--background) !important;
       border-top: 1px solid var(--border);
+      height: 80px; /* Fixed height */
+    }
+    
+    /* Prevent body scroll when keyboard is open */
+    body.keyboard-open {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
     }
   }
 

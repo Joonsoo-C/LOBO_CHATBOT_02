@@ -499,10 +499,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   // This prevents the loading spinner flash before welcome message appears
 
   return (
-    <div className="chat-interface-container flex flex-col h-full bg-transparent overflow-hidden">
+    <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`}>
       {/* Chat Header - Mobile version with back button */}
       {!isTablet && (
-        <header className="chat-interface-header fixed-header md:static md:bg-transparent md:shadow-none">
+        <header className={`chat-interface-header mobile-chat-header md:static md:bg-transparent md:shadow-none`}>
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 md:space-x-4">
@@ -903,10 +903,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
       {/* Chat Messages */}
       <div 
-        className="chat-interface-messages flex-1 px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5" 
+        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5`}
         style={{ 
-          paddingTop: isTablet ? '1rem' : '5rem', 
-          paddingBottom: isTablet ? '1rem' : '6rem'
+          paddingTop: isTablet ? '1rem' : '1rem', 
+          paddingBottom: isTablet ? '1rem' : '1rem'
         }}
       >
         {allMessages.length === 0 ? (
