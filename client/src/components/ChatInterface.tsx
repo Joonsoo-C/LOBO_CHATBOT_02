@@ -484,7 +484,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
   }
 
   return (
-    <div className="mobile-container chat-container no-scroll-bounce md:max-w-4xl md:mx-auto md:my-4 md:rounded-xl md:shadow-lg md:overflow-hidden">
+    <div className="flex flex-col h-full bg-transparent">
       {/* Chat Header */}
       <header className="fixed-header md:static md:bg-transparent md:shadow-none">
         <div className="px-4 py-3 md:px-6 md:py-4 md:border-b md:border-border">
