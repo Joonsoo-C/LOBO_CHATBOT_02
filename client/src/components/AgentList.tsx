@@ -74,9 +74,47 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
     }
   };
 
+  // Category priority order: 학교, 교수, 그룹, 학생, 기능
+  const getCategoryPriority = (category: string) => {
+    switch (category) {
+      case "학교": return 1;
+      case "교수": return 2;
+      case "그룹": return 3;
+      case "학생": return 4;
+      case "기능형": return 5;
+      default: return 6;
+    }
+  };
+
+  // Sort agents: first by category priority, then by recent message activity
+  const sortedAgents = [...agents].sort((a, b) => {
+    const conversationA = getConversationForAgent(a.id);
+    const conversationB = getConversationForAgent(b.id);
+    
+    // If either agent has recent messages, prioritize those
+    const hasRecentA = conversationA?.lastMessageAt;
+    const hasRecentB = conversationB?.lastMessageAt;
+    
+    if (hasRecentA && hasRecentB) {
+      // Both have messages - sort by most recent first
+      const timeA = new Date(conversationA.lastMessageAt).getTime();
+      const timeB = new Date(conversationB.lastMessageAt).getTime();
+      return timeB - timeA;
+    } else if (hasRecentA && !hasRecentB) {
+      // Only A has messages - A comes first
+      return -1;
+    } else if (!hasRecentA && hasRecentB) {
+      // Only B has messages - B comes first
+      return 1;
+    } else {
+      // Neither has messages - sort by category priority
+      return getCategoryPriority(a.category) - getCategoryPriority(b.category);
+    }
+  });
+
   return (
     <div className="px-4 py-2 space-y-3">
-      {agents.map((agent) => {
+      {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
         const bgColor = backgroundColorMap[agent.backgroundColor] || "bg-gray-600";

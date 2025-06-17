@@ -195,6 +195,11 @@ Changelog:
   * Restricted Files button to general chat mode only (hidden in management mode)
   * Added click-outside functionality to management dropdown menu
   * Repositioned notification badges to appear on the right side of message content line
+- June 17, 2025. Implemented intelligent agent list sorting system:
+  * Agents with recent conversations appear at top sorted by most recent message first
+  * Agents without conversations maintain category order: 학교, 교수, 그룹, 학생, 기능형
+  * Dynamic real-time reordering when new messages are sent or received
+  * Preserves initial category hierarchy while prioritizing active conversations
 ```
 
 ## User Preferences
