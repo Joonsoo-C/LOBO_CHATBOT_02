@@ -701,7 +701,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         }}
       >
         {allMessages.length === 0 ? (
-          <div className="text-center py-8 md:py-12">
+          <div className="text-center pt-4 pb-8 md:pt-6 md:pb-12">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:w-20 md:h-20 md:mb-6">
               <User className="text-white w-8 h-8 md:w-10 md:h-10" />
             </div>
