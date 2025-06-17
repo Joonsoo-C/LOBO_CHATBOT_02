@@ -98,6 +98,14 @@
     @apply bg-gray-100 text-gray-600;
   }
 
+  .category-badge.student {
+    @apply bg-green-100 text-green-600;
+  }
+
+  .category-badge.group {
+    @apply bg-purple-100 text-purple-600;
+  }
+
   .category-badge.feature {
     @apply bg-orange-100 text-orange-600;
   }

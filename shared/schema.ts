@@ -44,7 +44,7 @@ export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // 학교, 교수, 기능
+  category: text("category").notNull(), // 학교, 교수, 학생, 그룹, 기능형
   icon: text("icon").notNull(),
   backgroundColor: text("background_color").notNull(),
   isActive: boolean("is_active").default(true),

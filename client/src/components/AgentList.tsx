@@ -44,11 +44,14 @@ const backgroundColorMap: Record<string, string> = {
 function getCategoryBadgeStyle(category: string) {
   switch (category) {
     case "학교":
-    case "학과":
       return "category-badge school";
     case "교수":
       return "category-badge professor";
-    case "기능":
+    case "학생":
+      return "category-badge student";
+    case "그룹":
+      return "category-badge group";
+    case "기능형":
       return "category-badge feature";
     default:
       return "category-badge school";
