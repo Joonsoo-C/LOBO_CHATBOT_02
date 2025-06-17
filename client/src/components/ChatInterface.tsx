@@ -549,8 +549,14 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   
                     {/* Dropdown Menu */}
                     {showMenu && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-card rounded-xl shadow-lg border border-border z-50">
-                        <div className="py-2">
+                      <>
+                        {/* Invisible overlay to catch outside clicks */}
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-xl shadow-lg z-50">
+                          <div className="py-2">
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -669,8 +675,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             <BarChart3 className="w-4 h-4 mr-2" />
                             에이전트 성과
                           </Button>
+                          </div>
                         </div>
-                      </div>
+                      </>
                     )}
                   </div>
                 </>
