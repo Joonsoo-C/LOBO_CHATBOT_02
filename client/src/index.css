@@ -159,6 +159,32 @@
     @apply shadow-sm;
   }
 
+  /* Responsive tablet adjustments */
+  @media (min-width: 768px) {
+    .mobile-container {
+      min-height: auto;
+    }
+    
+    .chat-container {
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    
+    .fixed-header {
+      position: static;
+      background: transparent;
+      box-shadow: none;
+    }
+    
+    .main-content {
+      padding-top: 0;
+    }
+    
+    .chat-messages {
+      padding-top: 1rem !important;
+    }
+  }
+
   /* Fixed header styling */
   .fixed-header {
     @apply fixed top-0 left-0 right-0 z-40 border-b border-border bg-background;
