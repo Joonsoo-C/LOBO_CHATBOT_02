@@ -141,6 +141,18 @@
     @apply min-w-[1.25rem] px-1;
   }
 
+  /* System message styling */
+  .system-message {
+    @apply bg-amber-50 border border-amber-200 text-amber-800;
+    @apply dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300;
+    @apply shadow-sm;
+  }
+
+  .system-message::before {
+    content: "⚙️";
+    @apply mr-2;
+  }
+
   /* Loading animation */
   .typing-indicator {
     @apply flex space-x-1;

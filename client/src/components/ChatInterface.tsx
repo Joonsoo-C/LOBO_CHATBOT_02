@@ -50,11 +50,31 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     const systemMessage: Message = {
       id: Date.now(),
       conversationId: conversation?.id || 0,
-      content,
+      content: `🔧 ${content}`, // Add system indicator prefix
       isFromUser: false,
       createdAt: new Date().toISOString(),
     };
     setOptimisticMessages(prev => [...prev, systemMessage]);
+  };
+
+  // Function to check if a message is a system message
+  const isSystemMessage = (content: string): boolean => {
+    return content.startsWith('🔧') || 
+           content.includes('업로드되었습니다') || 
+           content.includes('전송되었습니다') ||
+           content.includes('완료되었습니다') ||
+           content.includes('편집 창을 열었습니다') ||
+           content.includes('설정 창을 열었습니다') ||
+           content.includes('알림 내용을') ||
+           content.includes('성과 분석') ||
+           content.includes('관리자 모드') ||
+           content.includes('명령어:') ||
+           content.includes('Document upload notification') ||
+           content.includes('새로운 문서') ||
+           content.includes('브로드캐스트') ||
+           content.includes('📊') ||
+           content.includes('📈') ||
+           content.includes('🔍');
   };
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -585,19 +605,25 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           </div>
         ) : (
           <>
-            {allMessages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
-                    msg.isFromUser
-                      ? "bg-primary text-primary-foreground ml-auto"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{msg.content}</p>
+            {allMessages.map((msg) => {
+              const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
+              
+              return (
+                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text ${
+                      msg.isFromUser
+                        ? "bg-primary text-primary-foreground ml-auto"
+                        : isSystem
+                          ? "system-message"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    <p className="text-sm leading-relaxed">{msg.content}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             
             {/* Typing Indicator */}
             {isTyping && (
