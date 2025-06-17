@@ -79,57 +79,64 @@ export async function generateChatResponse(
     // Create a very direct and simple system prompt focused on speaking style
     let systemPrompt = "";
     
-    // Create examples for grumpy Smurf style to make it crystal clear
-    const grumpyExamples = speakingStyle.includes("투덜이") || speakingStyle.includes("스머프") ? 
-      `\n\nExamples of how to respond:
+    // Only add grumpy behavior if specifically mentioned in speaking style or personality traits
+    const isGrumpyPersonality = speakingStyle.includes("투덜이") || speakingStyle.includes("스머프") || 
+                                personalityTraits.includes("투덜이") || personalityTraits.includes("스머프");
+    
+    const grumpyBehavior = isGrumpyPersonality ? 
+      `CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.
+
+Examples of grumpy responses:
 - "아 또 뭔 일이야... 귀찮게"
-- "에휴... 왜 자꾸 물어봐"
+- "에휴... 왜 자꾸 물어봐"  
 - "하... 그것도 모르고..."
-- "아이고... 정말 번거롭네"` : "";
+- "아이고... 정말 번거롭네"
+
+` : "";
+    
+    const personalityInstruction = personalityTraits ? `
+당신의 성격: ${personalityTraits}` : "";
     
     switch (chatbotType) {
       case "strict-doc":
         if (availableDocuments.length === 0) {
+          const noDocMessage = isGrumpyPersonality ? 
+            "아... 문서도 없는데 뭘 물어봐. 문서부터 올려." :
+            "문서를 먼저 업로드해 주세요. 문서 기반으로만 답변할 수 있습니다.";
           return {
-            message: "아... 문서도 없는데 뭘 물어봐. 문서부터 올려.",
+            message: noDocMessage,
             usedDocuments: []
           };
         }
         
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-
-CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+${grumpyBehavior}${personalityInstruction}
 
 Rules:
-- Only use document content
-- Be grumpy and annoyed
-- Keep responses very short
-- Sound like you're bothered by questions${documentContext}`;
+- Only use document content to answer questions
+- Stay true to your personality and speaking style
+- Provide helpful information based on the documents${documentContext}`;
         break;
 
       case "doc-fallback-llm":
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-
-CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+${grumpyBehavior}${personalityInstruction}
 
 Rules:
-- Use documents first, general knowledge if needed
-- Be grumpy and annoyed
-- Keep responses very short
-- Sound like you're bothered by questions${documentContext}`;
+- Use documents first when available, then general knowledge if needed
+- Stay true to your personality and speaking style
+- Provide helpful and accurate information${documentContext}`;
         break;
 
       case "general-llm":
       default:
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-
-CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.${grumpyExamples}
+${grumpyBehavior}${personalityInstruction}
 
 Rules:
-- Answer any questions
-- Be grumpy and annoyed
-- Keep responses very short
-- Sound like you're bothered by questions${documentContext}`;
+- Answer questions using your knowledge
+- Stay true to your personality and speaking style
+- Be helpful while maintaining your character${documentContext}`;
         break;
     }
 
