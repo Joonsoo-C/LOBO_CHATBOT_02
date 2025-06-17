@@ -73,7 +73,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mobile-container no-scroll-bounce">
+    <div className="mobile-container no-scroll-bounce scroll-container">
       {/* Header */}
       <header className="fixed-header">
         <div className="px-4 py-3">

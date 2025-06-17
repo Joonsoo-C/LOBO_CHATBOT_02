@@ -169,12 +169,14 @@ Changelog:
   * AgentList, ChatInterface, and AgentManagement components support both standard and custom icons
   * Automatic fallback to default icons if custom images fail to load
 - June 17, 2025. Enhanced mobile scroll behavior and UI positioning:
-  * Implemented fixed headers with backdrop blur for better visual layering
+  * Implemented fixed headers with backdrop blur for better visual layering (later changed to opaque)
   * Added overscroll-behavior CSS to prevent scroll bouncing on iOS devices
   * Created proper z-index layering to prevent content showing behind headers
   * Added main-content padding to ensure content doesn't overlap with fixed headers
   * Improved touch scrolling with -webkit-overflow-scrolling for smoother performance
   * Applied consistent scroll improvements across Home, Chat, and Management pages
+  * Fixed content overflow above header during fast scrolling with clip-path and masking
+  * Removed backdrop blur per user request for completely opaque headers
 ```
 
 ## User Preferences

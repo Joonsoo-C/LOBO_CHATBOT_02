@@ -161,12 +161,42 @@
 
   /* Fixed header styling */
   .fixed-header {
-    @apply fixed top-0 left-0 right-0 z-50 border-b border-border bg-background;
+    @apply fixed top-0 left-0 right-0 z-[9999] border-b border-border bg-background;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
 
   /* Main content with header padding */
   .main-content {
     padding-top: 9rem; /* Increased to account for header + tabs + search */
+    /* Ensure content stays below header */
+    position: relative;
+    z-index: 1;
+    /* Clip content to prevent overflow above header */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    min-height: calc(100vh - 9rem);
+  }
+
+  /* Container with proper overflow handling */
+  .mobile-container {
+    @apply max-w-md mx-auto min-h-screen bg-background;
+    /* Ensure container doesn't allow content to escape */
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Create a solid mask above the content area */
+  .mobile-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 28rem; /* md breakpoint */
+    height: 9rem;
+    background: var(--background);
+    z-index: 9998;
+    pointer-events: none;
   }
 
   /* Chat container with proper scrolling */
