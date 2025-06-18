@@ -495,77 +495,92 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Aggressive iPhone Safari scroll prevention
+  // Visual Viewport API for iPhone Chrome keyboard handling
   useEffect(() => {
     if (!isTablet) {
-      let scrollTop = 0;
+      let isKeyboardOpen = false;
       
-      // Force scroll position to stay at top
-      const lockScroll = () => {
-        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop !== 0) {
-          window.scrollTo(0, 0);
+      // Set initial viewport height
+      const setViewportHeight = () => {
+        let height;
+        
+        if (window.visualViewport) {
+          // Use Visual Viewport API for accurate measurement
+          height = window.visualViewport.height;
+        } else {
+          // Fallback for older browsers
+          height = window.innerHeight;
+        }
+        
+        document.documentElement.style.setProperty('--viewport-height', `${height}px`);
+        
+        // Detect keyboard state
+        const initialHeight = window.screen.height;
+        const currentHeight = height;
+        const keyboardThreshold = initialHeight * 0.75; // 25% keyboard area
+        
+        const wasKeyboardOpen = isKeyboardOpen;
+        isKeyboardOpen = currentHeight < keyboardThreshold;
+        
+        // Add/remove keyboard class
+        if (isKeyboardOpen && !wasKeyboardOpen) {
+          document.body.classList.add('keyboard-open');
+        } else if (!isKeyboardOpen && wasKeyboardOpen) {
+          document.body.classList.remove('keyboard-open');
         }
       };
 
-      // Lock scroll immediately and repeatedly
-      const forceScrollLock = () => {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+      // Initial setup
+      setViewportHeight();
+
+      // Visual Viewport API handlers
+      const handleViewportChange = () => {
+        setViewportHeight();
       };
 
-      // Set up aggressive scroll prevention
-      const preventAllScroll = (e: Event) => {
-        const target = e.target as HTMLElement;
-        
-        // Only allow scrolling within messages container
-        if (!target.closest('.mobile-messages-container')) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          forceScrollLock();
-          return false;
-        }
+      // Resize and orientation handlers
+      const handleResize = () => {
+        setTimeout(setViewportHeight, 100);
       };
 
-      // Input focus handler - prevent page movement
-      const handleInputFocus = () => {
+      const handleOrientationChange = () => {
+        setTimeout(setViewportHeight, 300);
+      };
+
+      // Input focus/blur handlers for additional keyboard detection
+      const handleFocusIn = () => {
         setTimeout(() => {
-          forceScrollLock();
-        }, 100);
-        
-        setTimeout(() => {
-          forceScrollLock();
+          setViewportHeight();
         }, 300);
-        
-        setTimeout(() => {
-          forceScrollLock();
-        }, 600);
       };
 
-      // Set initial position and lock
-      forceScrollLock();
-      
-      // Add all possible scroll prevention
-      window.addEventListener('scroll', lockScroll, { passive: false });
-      window.addEventListener('touchmove', preventAllScroll, { passive: false });
-      window.addEventListener('wheel', preventAllScroll, { passive: false });
-      document.addEventListener('scroll', lockScroll, { passive: false });
-      document.addEventListener('touchmove', preventAllScroll, { passive: false });
-      document.addEventListener('focusin', handleInputFocus);
+      const handleFocusOut = () => {
+        setTimeout(() => {
+          setViewportHeight();
+          document.body.classList.remove('keyboard-open');
+          isKeyboardOpen = false;
+        }, 100);
+      };
 
-      // Periodic scroll lock check
-      const scrollLockInterval = setInterval(forceScrollLock, 100);
+      // Add event listeners
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+      }
+      
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', handleOrientationChange);
+      document.addEventListener('focusin', handleFocusIn);
+      document.addEventListener('focusout', handleFocusOut);
 
       return () => {
-        window.removeEventListener('scroll', lockScroll);
-        window.removeEventListener('touchmove', preventAllScroll);
-        window.removeEventListener('wheel', preventAllScroll);
-        document.removeEventListener('scroll', lockScroll);
-        document.removeEventListener('touchmove', preventAllScroll);
-        document.removeEventListener('focusin', handleInputFocus);
-        clearInterval(scrollLockInterval);
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', handleViewportChange);
+        }
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleOrientationChange);
+        document.removeEventListener('focusin', handleFocusIn);
+        document.removeEventListener('focusout', handleFocusOut);
+        document.body.classList.remove('keyboard-open');
       };
     }
   }, [isTablet]);
