@@ -495,71 +495,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Aggressive mobile scroll and viewport blocking
+  // Minimal mobile handling - remove all complex viewport logic
   useEffect(() => {
     if (!isTablet) {
-      // Capture screen height (not window height which changes with keyboard)
-      const screenHeight = window.screen.height;
-      document.documentElement.style.setProperty('--mobile-height', `${screenHeight}px`);
-      
-      // Lock body position to prevent any movement
-      document.body.style.position = 'fixed';
-      document.body.style.top = '0';
-      document.body.style.left = '0';
-      document.body.style.width = '100%';
-      document.body.style.height = `${screenHeight}px`;
-      document.body.style.overflow = 'hidden';
-      
-      // Prevent all scroll behavior
-      const preventScroll = (e: Event) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      };
-      
-      // Add comprehensive scroll blocking but allow messages container
-      const preventScrollExceptMessages = (e: Event) => {
-        const target = e.target as HTMLElement;
-        // Allow scrolling only in messages container
-        if (!target.closest('.mobile-messages-container')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-      };
-      
-      document.addEventListener('scroll', preventScroll, { passive: false });
-      document.addEventListener('wheel', preventScroll, { passive: false });
-      document.addEventListener('touchmove', preventScrollExceptMessages, { passive: false });
-      window.addEventListener('scroll', preventScroll, { passive: false });
-      
-      // Force scroll position
-      const forcePosition = () => {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      };
-      
-      forcePosition();
-      const interval = setInterval(forcePosition, 50);
-      
-      return () => {
-        // Restore original styles
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
-        document.body.style.overflow = '';
-        
-        // Remove event listeners
-        document.removeEventListener('scroll', preventScroll);
-        document.removeEventListener('wheel', preventScroll);
-        document.removeEventListener('touchmove', preventScrollExceptMessages);
-        window.removeEventListener('scroll', preventScroll);
-        
-        clearInterval(interval);
-      };
+      // Do nothing - let browser handle naturally
     }
   }, [isTablet]);
 

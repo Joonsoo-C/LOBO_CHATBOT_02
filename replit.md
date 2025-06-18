@@ -264,15 +264,14 @@ Changelog:
   * Session destruction and cookie clearing already working correctly on server
   * Fixed both Home.tsx and TabletLayout.tsx logout implementations
   * Logout now properly clears session and redirects to /auth page
-- June 17, 2025. Implemented comprehensive mobile keyboard handling system:
-  * Added interactive-widget=resizes-content to viewport meta tag for modern browser support
-  * Implemented CSS custom properties (--vh, --keyboard-height, --available-height) for dynamic viewport calculation
-  * Added JavaScript Visual Viewport API integration with fallback to resize events
-  * Created keyboard detection system that prevents UI displacement when mobile keyboard appears
-  * Fixed chat container positioning using calc(var(--vh, 1vh) * 100) and 100dvh viewport units
-  * Added hardware acceleration (translateZ(0)) to all mobile chat components for smooth rendering
-  * Implemented body.keyboard-open class system with position:fixed to prevent page scrolling
-  * Enhanced mobile layout with flex-based header/messages/input structure for stable positioning
+- June 18, 2025. Simplified mobile keyboard handling to standard browser behavior:
+  * Removed all complex viewport manipulation and scroll blocking systems
+  * Restored standard flex layout (display: flex, flex-direction: column, height: 100vh)
+  * Eliminated position:fixed, Visual Viewport API, and aggressive scroll prevention
+  * Chat interface now uses browser's natural keyboard behavior
+  * Input area scrolls into view naturally when keyboard appears
+  * Removed all JavaScript-based height calculations and CSS custom properties
+  * Standard mobile web experience with header, scrollable messages, and input areas
 ```
 
 ## User Preferences
