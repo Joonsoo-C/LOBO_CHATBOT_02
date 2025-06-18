@@ -196,106 +196,151 @@
     flex-shrink: 0;
   }
 
-  /* Complete mobile keyboard lockdown approach */
+  /* iOS Safari keyboard prevention with environment variables */
   @media (max-width: 767px) {
-    /* Lock the entire page viewport */
-    html {
-      height: 100vh !important;
-      width: 100vw !important;
-      overflow: hidden !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
+    /* CSS Environment Variables for iOS keyboard handling */
+    :root {
+      --app-height: 100vh;
+      --safe-area-top: env(safe-area-inset-top, 0px);
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+      --keyboard-height: env(keyboard-inset-height, 0px);
+      --available-viewport: calc(var(--app-height) - var(--keyboard-height));
     }
     
-    body {
-      height: 100vh !important;
-      width: 100vw !important;
-      overflow: hidden !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
+    /* iOS Safari specific styling */
+    @supports (-webkit-touch-callout: none) {
+      html {
+        height: 100% !important;
+        height: -webkit-fill-available !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+      }
+      
+      body {
+        height: 100% !important;
+        height: -webkit-fill-available !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      #root {
+        height: 100% !important;
+        height: -webkit-fill-available !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+      }
+      
+      .chat-page-container {
+        height: 100% !important;
+        height: -webkit-fill-available !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      
+      .mobile-chat-header {
+        position: fixed !important;
+        top: var(--safe-area-top) !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 60px !important;
+        background: var(--background) !important;
+        border-bottom: 1px solid var(--border) !important;
+        z-index: 1000 !important;
+      }
+      
+      .mobile-messages-container {
+        position: fixed !important;
+        top: calc(var(--safe-area-top) + 60px) !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: calc(var(--safe-area-bottom) + 80px + var(--keyboard-height)) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding: 1rem !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      
+      .fixed-chat-input {
+        position: fixed !important;
+        bottom: calc(var(--safe-area-bottom) + var(--keyboard-height)) !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 80px !important;
+        background: var(--background) !important;
+        border-top: 1px solid var(--border) !important;
+        z-index: 1000 !important;
+      }
     }
     
-    #root {
-      height: 100vh !important;
-      width: 100vw !important;
+    /* Fallback for non-iOS browsers */
+    html:not([data-ios]) {
+      height: var(--app-height) !important;
       overflow: hidden !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
     }
     
-    /* Chat container with absolute positioning */
-    .chat-page-container {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
+    body:not([data-ios]) {
+      height: var(--app-height) !important;
       overflow: hidden !important;
-      z-index: 1 !important;
     }
     
-    /* Header - fixed at top */
-    .mobile-chat-header {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 60px !important;
+    #root:not([data-ios]) {
+      height: var(--app-height) !important;
+      overflow: hidden !important;
+    }
+    
+    .chat-page-container:not([data-ios]) {
+      height: var(--app-height) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+    
+    .mobile-chat-header:not([data-ios]) {
+      flex: 0 0 60px !important;
       background: var(--background) !important;
       border-bottom: 1px solid var(--border) !important;
-      z-index: 100 !important;
-      box-sizing: border-box !important;
     }
     
-    /* Messages area - scrollable middle section */
-    .mobile-messages-container {
-      position: fixed !important;
-      top: 60px !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: calc(100vh - 140px) !important; /* Total height minus header and input */
+    .mobile-messages-container:not([data-ios]) {
+      flex: 1 !important;
       overflow-y: auto !important;
-      overflow-x: hidden !important;
       padding: 1rem !important;
-      box-sizing: border-box !important;
       -webkit-overflow-scrolling: touch !important;
-      z-index: 10 !important;
     }
     
-    /* Input - fixed at bottom */
-    .fixed-chat-input {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 80px !important;
+    .fixed-chat-input:not([data-ios]) {
+      flex: 0 0 80px !important;
       background: var(--background) !important;
       border-top: 1px solid var(--border) !important;
-      z-index: 100 !important;
-      box-sizing: border-box !important;
     }
     
-    /* Disable all forms of scrolling on the main document */
-    body, html, #root {
+    /* Disable document scrolling but allow messages scrolling */
+    body, html {
       touch-action: none !important;
       -webkit-user-select: none !important;
       -webkit-touch-callout: none !important;
       -webkit-tap-highlight-color: transparent !important;
     }
     
-    /* Re-enable touch on the messages container only */
     .mobile-messages-container {
       touch-action: pan-y !important;
       -webkit-user-select: text !important;
     }
     
-    /* Re-enable touch on input elements */
-    .fixed-chat-input input, .fixed-chat-input textarea, .fixed-chat-input button {
+    .fixed-chat-input input, 
+    .fixed-chat-input textarea, 
+    .fixed-chat-input button {
       touch-action: manipulation !important;
       -webkit-user-select: text !important;
     }

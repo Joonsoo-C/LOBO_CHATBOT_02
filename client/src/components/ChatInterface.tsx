@@ -495,28 +495,77 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Mobile viewport lock for keyboard prevention
+  // Aggressive iPhone Safari scroll prevention
   useEffect(() => {
     if (!isTablet) {
-      // Simple function to prevent document scrolling except in allowed areas
-      const preventDocumentScroll = (e: Event) => {
+      let scrollTop = 0;
+      
+      // Force scroll position to stay at top
+      const lockScroll = () => {
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop !== 0) {
+          window.scrollTo(0, 0);
+        }
+      };
+
+      // Lock scroll immediately and repeatedly
+      const forceScrollLock = () => {
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      };
+
+      // Set up aggressive scroll prevention
+      const preventAllScroll = (e: Event) => {
         const target = e.target as HTMLElement;
         
-        // Allow scrolling only within the messages container
+        // Only allow scrolling within messages container
         if (!target.closest('.mobile-messages-container')) {
           e.preventDefault();
           e.stopPropagation();
+          e.stopImmediatePropagation();
+          forceScrollLock();
           return false;
         }
       };
 
-      // Add scroll prevention to document level
-      document.addEventListener('touchmove', preventDocumentScroll, { passive: false });
-      document.addEventListener('wheel', preventDocumentScroll, { passive: false });
+      // Input focus handler - prevent page movement
+      const handleInputFocus = () => {
+        setTimeout(() => {
+          forceScrollLock();
+        }, 100);
+        
+        setTimeout(() => {
+          forceScrollLock();
+        }, 300);
+        
+        setTimeout(() => {
+          forceScrollLock();
+        }, 600);
+      };
+
+      // Set initial position and lock
+      forceScrollLock();
+      
+      // Add all possible scroll prevention
+      window.addEventListener('scroll', lockScroll, { passive: false });
+      window.addEventListener('touchmove', preventAllScroll, { passive: false });
+      window.addEventListener('wheel', preventAllScroll, { passive: false });
+      document.addEventListener('scroll', lockScroll, { passive: false });
+      document.addEventListener('touchmove', preventAllScroll, { passive: false });
+      document.addEventListener('focusin', handleInputFocus);
+
+      // Periodic scroll lock check
+      const scrollLockInterval = setInterval(forceScrollLock, 100);
 
       return () => {
-        document.removeEventListener('touchmove', preventDocumentScroll);
-        document.removeEventListener('wheel', preventDocumentScroll);
+        window.removeEventListener('scroll', lockScroll);
+        window.removeEventListener('touchmove', preventAllScroll);
+        window.removeEventListener('wheel', preventAllScroll);
+        document.removeEventListener('scroll', lockScroll);
+        document.removeEventListener('touchmove', preventAllScroll);
+        document.removeEventListener('focusin', handleInputFocus);
+        clearInterval(scrollLockInterval);
       };
     }
   }, [isTablet]);
