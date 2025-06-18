@@ -196,98 +196,54 @@
     flex-shrink: 0;
   }
 
-  /* iPhone keyboard-resistant layout with CSS environment variables */
+  /* Dynamic mobile layout with JavaScript height calculation */
   @media (max-width: 767px) {
     :root {
-      --safe-area-top: env(safe-area-inset-top, 0px);
-      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-      --keyboard-height: env(keyboard-inset-height, 0px);
-    }
-    
-    html {
-      height: 100%;
-      height: 100vh;
-      height: -webkit-fill-available;
-      overflow: hidden;
-    }
-    
-    body {
-      height: 100%;
-      height: 100vh;
-      height: -webkit-fill-available;
-      overflow: hidden;
-      margin: 0;
-      padding: 0;
-    }
-    
-    #root {
-      height: 100%;
-      height: 100vh;
-      height: -webkit-fill-available;
-      overflow: hidden;
+      --mobile-height: 100vh;
     }
     
     .chat-page-container {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      height: -webkit-fill-available;
-      display: flex;
-      flex-direction: column;
+      width: 100%;
+      height: var(--mobile-height);
       background: var(--background);
       overflow: hidden;
     }
     
     .mobile-chat-header {
-      position: fixed;
-      top: var(--safe-area-top);
+      position: absolute;
+      top: 0;
       left: 0;
-      right: 0;
+      width: 100%;
       height: 60px;
       background: var(--background);
       border-bottom: 1px solid var(--border);
-      z-index: 1000;
+      z-index: 10;
     }
     
     .mobile-messages-container {
-      position: fixed;
-      top: calc(var(--safe-area-top) + 60px);
+      position: absolute;
+      top: 60px;
       left: 0;
-      right: 0;
-      bottom: calc(var(--safe-area-bottom) + 80px);
+      width: 100%;
+      bottom: 80px;
       overflow-y: auto;
       padding: 1rem;
+      box-sizing: border-box;
       -webkit-overflow-scrolling: touch;
-      z-index: 1;
     }
     
     .fixed-chat-input {
-      position: fixed;
-      bottom: var(--safe-area-bottom);
+      position: absolute;
+      bottom: 0;
       left: 0;
-      right: 0;
+      width: 100%;
       height: 80px;
       background: var(--background);
       border-top: 1px solid var(--border);
-      z-index: 1000;
-    }
-    
-    /* Disable elastic scroll bounce */
-    body {
-      overscroll-behavior: none;
-      -webkit-overflow-scrolling: auto;
-    }
-    
-    /* Only allow scrolling in messages area */
-    .mobile-messages-container {
-      touch-action: pan-y;
-    }
-    
-    /* Prevent scrolling everywhere else */
-    body, html, .chat-page-container, .mobile-chat-header, .fixed-chat-input {
-      touch-action: none;
+      z-index: 10;
     }
   }
 

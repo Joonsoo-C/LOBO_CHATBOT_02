@@ -495,7 +495,28 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // No special mobile keyboard handling - let browser handle it naturally
+  // Lock mobile height on page load to prevent keyboard viewport changes
+  useEffect(() => {
+    if (!isTablet) {
+      // Capture initial height before keyboard appears
+      const initialHeight = window.innerHeight;
+      document.documentElement.style.setProperty('--mobile-height', `${initialHeight}px`);
+      
+      // Prevent any height changes by locking the value
+      const preventHeightChange = () => {
+        document.documentElement.style.setProperty('--mobile-height', `${initialHeight}px`);
+      };
+      
+      // Block all resize events that could change our fixed height
+      window.addEventListener('resize', preventHeightChange);
+      window.addEventListener('orientationchange', preventHeightChange);
+      
+      return () => {
+        window.removeEventListener('resize', preventHeightChange);
+        window.removeEventListener('orientationchange', preventHeightChange);
+      };
+    }
+  }, [isTablet]);
 
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
