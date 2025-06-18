@@ -196,94 +196,35 @@
     flex-shrink: 0;
   }
 
-  /* iPhone Chrome keyboard handling with Visual Viewport API */
+  /* Simple mobile keyboard handling - no complex CSS */
   @media (max-width: 767px) {
-    /* Dynamic height calculation using JavaScript */
-    :root {
-      --app-height: 100vh;
-      --viewport-height: 100vh;
-      --keyboard-height: 0px;
-    }
-    
-    /* Reset all positioning for mobile */
-    html, body, #root {
-      height: 100vh !important;
-      overflow: hidden !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      position: relative !important;
-    }
-    
-    /* Chat container - flexible layout */
+    /* Basic responsive layout only */
     .chat-page-container {
-      display: flex !important;
-      flex-direction: column !important;
-      height: var(--viewport-height) !important;
-      min-height: var(--viewport-height) !important;
-      overflow: hidden !important;
-      position: relative !important;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
     
-    /* Header - always visible at top */
     .mobile-chat-header {
-      flex: 0 0 60px !important;
-      background: var(--background) !important;
-      border-bottom: 1px solid var(--border) !important;
-      z-index: 1000 !important;
-      position: relative !important;
+      flex: 0 0 60px;
+      background: var(--background);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
     }
     
-    /* Messages container - scrollable middle section */
     .mobile-messages-container {
-      flex: 1 1 auto !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      padding: 1rem !important;
-      -webkit-overflow-scrolling: touch !important;
-      min-height: 0 !important;
-      position: relative !important;
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      -webkit-overflow-scrolling: touch;
     }
     
-    /* Input - always visible at bottom */
     .fixed-chat-input {
-      flex: 0 0 80px !important;
-      background: var(--background) !important;
-      border-top: 1px solid var(--border) !important;
-      z-index: 1000 !important;
-      position: relative !important;
-      min-height: 80px !important;
-    }
-    
-    /* When keyboard is open, adjust container height */
-    .keyboard-open .chat-page-container {
-      height: var(--viewport-height) !important;
-      max-height: var(--viewport-height) !important;
-    }
-    
-    .keyboard-open .mobile-messages-container {
-      flex: 1 1 0px !important;
-      min-height: 0 !important;
-      max-height: calc(var(--viewport-height) - 140px) !important;
-    }
-    
-    /* Touch and scroll settings */
-    body, html {
-      touch-action: manipulation !important;
-      -webkit-user-select: none !important;
-      -webkit-touch-callout: none !important;
-      -webkit-tap-highlight-color: transparent !important;
-    }
-    
-    .mobile-messages-container {
-      touch-action: pan-y !important;
-      -webkit-user-select: text !important;
-    }
-    
-    .fixed-chat-input input, 
-    .fixed-chat-input textarea, 
-    .fixed-chat-input button {
-      touch-action: manipulation !important;
-      -webkit-user-select: text !important;
+      flex: 0 0 80px;
+      background: var(--background);
+      border-top: 1px solid var(--border);
+      z-index: 10;
     }
   }
 
