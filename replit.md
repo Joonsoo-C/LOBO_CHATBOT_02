@@ -283,6 +283,10 @@ Changelog:
   * Adjusted message container padding to prevent content overlap with fixed elements
   * Fixed welcome message display issues by improving loading state handling
   * Resolved message UI flickering when entering conversations with few messages
+- June 18, 2025. Added master account access button to login screen:
+  * Added master account button alongside student and faculty demo account buttons
+  * Master account button opens external admin system (https://university-ai-admin-hummings.replit.app/)
+  * Opens in new tab for seamless admin system access without affecting main application session
 ```
 
 ## User Preferences

@@ -255,6 +255,21 @@ export default function AuthPage() {
                   <span className="text-xs text-muted-foreground">F2024001</span>
                 </Button>
               </div>
+              <div className="mt-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={() => {
+                    window.open("https://university-ai-admin-hummings.replit.app/", "_blank");
+                  }}
+                >
+                  🔑 마스터 계정
+                  <br />
+                  <span className="text-xs text-muted-foreground">관리자 시스템</span>
+                </Button>
+              </div>
               <p className="text-xs text-blue-700">
                 계정이 없는 경우 자동으로 생성됩니다
               </p>
