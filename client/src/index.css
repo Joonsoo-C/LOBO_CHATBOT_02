@@ -196,32 +196,52 @@
     flex-shrink: 0;
   }
 
-  /* Simple mobile keyboard handling - no complex CSS */
+  /* Fixed mobile layout structure */
   @media (max-width: 767px) {
-    /* Basic responsive layout only */
-    .chat-page-container {
-      display: flex;
-      flex-direction: column;
+    html, body {
       height: 100vh;
       overflow: hidden;
     }
     
+    .chat-page-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--background);
+    }
+    
     .mobile-chat-header {
-      flex: 0 0 60px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
       background: var(--background);
       border-bottom: 1px solid var(--border);
       z-index: 10;
     }
     
     .mobile-messages-container {
-      flex: 1;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 80px;
       overflow-y: auto;
       padding: 1rem;
       -webkit-overflow-scrolling: touch;
     }
     
     .fixed-chat-input {
-      flex: 0 0 80px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
       background: var(--background);
       border-top: 1px solid var(--border);
       z-index: 10;
