@@ -916,8 +916,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           paddingBottom: isTablet ? '1rem' : '1rem'
         }}
       >
-        {allMessages.length === 0 ? (
-          <div className="text-center pt-4 pb-8 md:pt-6 md:pb-12">
+        {!messagesLoading && allMessages.length === 0 ? (
+          <div className="text-center pt-8 pb-12 px-4 md:pt-12 md:pb-16">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:w-20 md:h-20 md:mb-6">
               <User className="text-white w-8 h-8 md:w-10 md:h-10" />
             </div>

@@ -277,6 +277,12 @@ Changelog:
   * Multiple attempted solutions (Visual Viewport API, fixed positioning, height manipulation) failed
   * Restored stable version with standard browser keyboard behavior
   * Keyboard UI improvements deferred for future implementation with different approach
+- June 18, 2025. Implemented fixed header and input positioning for mobile:
+  * Added position: fixed for header (top: 0) and input area (bottom: 0) on mobile
+  * Set z-index: 1000 to ensure UI elements stay on top during scrolling
+  * Adjusted message container padding to prevent content overlap with fixed elements
+  * Fixed welcome message display issues by improving loading state handling
+  * Resolved message UI flickering when entering conversations with few messages
 ```
 
 ## User Preferences

@@ -215,7 +215,7 @@
     }
     
     .mobile-messages-container {
-      padding: 80px 1rem 100px 1rem; /* 상단 60px + 여유 20px, 하단 80px + 여유 20px */
+      padding: 80px 0 100px 0; /* 상단 60px + 여유 20px, 하단 80px + 여유 20px */
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       min-height: calc(100vh - 180px);
