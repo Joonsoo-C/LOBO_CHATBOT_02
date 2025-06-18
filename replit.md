@@ -287,6 +287,10 @@ Changelog:
   * Added master account button alongside student and faculty demo account buttons
   * Master account button opens external admin system (https://university-ai-admin-hummings.replit.app/)
   * Opens in new tab for seamless admin system access without affecting main application session
+- June 18, 2025. Improved demo account layout on login screen:
+  * Changed from 2-column grid to 3 separate rows for better mobile readability
+  * Applied consistent outline button styling to all three demo account options
+  * All buttons now have full width with uniform spacing and text alignment
 ```
 
 ## User Preferences

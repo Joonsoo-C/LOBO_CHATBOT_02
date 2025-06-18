@@ -225,12 +225,12 @@ export default function AuthPage() {
             {/* 데모 계정 섹션 */}
             <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="text-xs"
+                  className="w-full text-xs"
                   onClick={() => {
                     loginForm.setValue("username", "2024001234");
                     loginForm.setValue("password", "student123");
@@ -244,7 +244,7 @@ export default function AuthPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="text-xs"
+                  className="w-full text-xs"
                   onClick={() => {
                     loginForm.setValue("username", "F2024001");
                     loginForm.setValue("password", "faculty123");
@@ -254,11 +254,9 @@ export default function AuthPage() {
                   <br />
                   <span className="text-xs text-muted-foreground">F2024001</span>
                 </Button>
-              </div>
-              <div className="mt-2">
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
