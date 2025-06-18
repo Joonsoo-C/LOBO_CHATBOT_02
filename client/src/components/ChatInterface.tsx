@@ -495,15 +495,33 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Set actual device height to prevent keyboard layout changes
+  // iPhone Chrome Visual Viewport handling
   useEffect(() => {
     if (!isTablet) {
-      const actualHeight = window.screen.height;
-      const chatContainer = document.querySelector('.chat-page-container') as HTMLElement;
-      if (chatContainer) {
-        chatContainer.style.height = `${actualHeight}px`;
-        chatContainer.style.maxHeight = `${actualHeight}px`;
+      const setVH = () => {
+        let vh = window.innerHeight * 0.01;
+        if (window.visualViewport) {
+          vh = window.visualViewport.height * 0.01;
+        }
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+
+      // Set initial value
+      setVH();
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', setVH);
+      } else {
+        window.addEventListener('resize', setVH);
       }
+
+      return () => {
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', setVH);
+        } else {
+          window.removeEventListener('resize', setVH);
+        }
+      };
     }
   }, [isTablet]);
 
