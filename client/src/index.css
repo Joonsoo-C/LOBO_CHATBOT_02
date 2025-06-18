@@ -218,7 +218,13 @@
       padding: 80px 0 100px 0; /* 상단 60px + 여유 20px, 하단 80px + 여유 20px */
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      min-height: calc(100vh - 180px);
+      min-height: calc(100vh - 140px);
+    }
+    
+    /* Welcome message specific padding for mobile */
+    .mobile-messages-container .text-center {
+      padding-top: 40px !important;
+      padding-bottom: 40px !important;
     }
     
     .fixed-chat-input {
