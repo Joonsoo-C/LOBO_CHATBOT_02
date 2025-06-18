@@ -495,64 +495,105 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Mobile keyboard detection
+  // Enhanced mobile keyboard detection and viewport handling
   useEffect(() => {
     if (!isTablet) {
-      let initialViewportHeight = window.visualViewport?.height || window.innerHeight;
+      // Store initial dimensions
+      const initialHeight = window.innerHeight;
+      let isKeyboardOpen = false;
       
+      // Function to set viewport height custom property
+      const setViewportHeight = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+
+      // Set initial viewport height
+      setViewportHeight();
+
+      // Enhanced viewport change handler
       const handleViewportChange = () => {
-        const currentHeight = window.visualViewport?.height || window.innerHeight;
-        const heightDifference = initialViewportHeight - currentHeight;
+        const currentHeight = window.innerHeight;
+        const heightDiff = initialHeight - currentHeight;
         
-        // If viewport height decreases by more than 150px, assume keyboard is open
-        if (heightDifference > 150) {
+        // Update custom viewport height property
+        setViewportHeight();
+        
+        // Detect keyboard based on significant height change
+        if (heightDiff > 150 && !isKeyboardOpen) {
+          isKeyboardOpen = true;
           document.body.classList.add('keyboard-open');
-        } else {
+          document.documentElement.classList.add('keyboard-open');
+          
+          // Prevent page scrolling when keyboard opens
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+          document.body.style.height = '100%';
+          document.body.style.overflow = 'hidden';
+        } else if (heightDiff <= 50 && isKeyboardOpen) {
+          isKeyboardOpen = false;
           document.body.classList.remove('keyboard-open');
+          document.documentElement.classList.remove('keyboard-open');
+          
+          // Restore normal scrolling
+          document.body.style.position = '';
+          document.body.style.width = '';
+          document.body.style.height = '';
+          document.body.style.overflow = '';
         }
       };
 
-      // Use Visual Viewport API if available, otherwise fall back to resize
+      // Input focus/blur handlers for additional keyboard detection
+      const handleInputFocus = (e: Event) => {
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+          // Force viewport recalculation after a delay
+          setTimeout(() => {
+            handleViewportChange();
+            // Scroll input into view if needed
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        }
+      };
+
+      const handleInputBlur = () => {
+        setTimeout(() => {
+          handleViewportChange();
+        }, 300);
+      };
+
+      // Visual Viewport API support for better mobile browser compatibility
       if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', handleViewportChange);
-      } else {
-        window.addEventListener('resize', handleViewportChange);
       }
-
-      // Also listen for input focus/blur events
-      const inputs = document.querySelectorAll('input, textarea');
-      const handleFocus = () => {
-        // Small delay to allow viewport to adjust
-        setTimeout(() => {
-          const currentHeight = window.visualViewport?.height || window.innerHeight;
-          if (initialViewportHeight - currentHeight > 150) {
-            document.body.classList.add('keyboard-open');
-          }
-        }, 300);
-      };
       
-      const handleBlur = () => {
-        setTimeout(() => {
-          document.body.classList.remove('keyboard-open');
-        }, 300);
-      };
-
-      inputs.forEach(input => {
-        input.addEventListener('focus', handleFocus);
-        input.addEventListener('blur', handleBlur);
+      // Fallback resize listener
+      window.addEventListener('resize', handleViewportChange);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(handleViewportChange, 500);
       });
 
+      // Input event listeners
+      document.addEventListener('focusin', handleInputFocus);
+      document.addEventListener('focusout', handleInputBlur);
+
       return () => {
+        // Clean up all listeners
         if (window.visualViewport) {
           window.visualViewport.removeEventListener('resize', handleViewportChange);
-        } else {
-          window.removeEventListener('resize', handleViewportChange);
         }
-        inputs.forEach(input => {
-          input.removeEventListener('focus', handleFocus);
-          input.removeEventListener('blur', handleBlur);
-        });
+        window.removeEventListener('resize', handleViewportChange);
+        window.removeEventListener('orientationchange', handleViewportChange);
+        document.removeEventListener('focusin', handleInputFocus);
+        document.removeEventListener('focusout', handleInputBlur);
+        
+        // Reset body styles
         document.body.classList.remove('keyboard-open');
+        document.documentElement.classList.remove('keyboard-open');
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+        document.body.style.overflow = '';
       };
     }
   }, [isTablet]);
