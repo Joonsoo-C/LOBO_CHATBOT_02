@@ -196,12 +196,13 @@
     flex-shrink: 0;
   }
 
-  /* Standard mobile layout - no viewport manipulation */
+  /* Fixed pixel height to prevent keyboard viewport changes */
   @media (max-width: 767px) {
     .chat-page-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      height: 812px; /* iPhone 13/14 Pro Max height */
+      max-height: 812px;
     }
     
     .mobile-chat-header {
@@ -221,6 +222,21 @@
       flex: 0 0 80px;
       background: var(--background);
       border-top: 1px solid var(--border);
+    }
+  }
+  
+  /* Different heights for different iPhone models */
+  @media (max-width: 767px) and (max-height: 667px) {
+    .chat-page-container {
+      height: 667px; /* iPhone 6/7/8 */
+      max-height: 667px;
+    }
+  }
+  
+  @media (max-width: 767px) and (max-height: 736px) {
+    .chat-page-container {
+      height: 736px; /* iPhone 6/7/8 Plus */
+      max-height: 736px;
     }
   }
 

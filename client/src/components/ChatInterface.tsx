@@ -495,10 +495,15 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // Minimal mobile handling - remove all complex viewport logic
+  // Set actual device height to prevent keyboard layout changes
   useEffect(() => {
     if (!isTablet) {
-      // Do nothing - let browser handle naturally
+      const actualHeight = window.screen.height;
+      const chatContainer = document.querySelector('.chat-page-container') as HTMLElement;
+      if (chatContainer) {
+        chatContainer.style.height = `${actualHeight}px`;
+        chatContainer.style.maxHeight = `${actualHeight}px`;
+      }
     }
   }, [isTablet]);
 
