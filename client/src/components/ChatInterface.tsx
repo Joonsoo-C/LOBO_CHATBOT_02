@@ -495,9 +495,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
     }
   }, [conversation?.id, messages.length]);
 
-  // No viewport manipulation - rely on CSS positioning only
+  // Minimal mobile handling - remove all complex viewport logic
   useEffect(() => {
-    // Do nothing - CSS handles everything
+    if (!isTablet) {
+      // Do nothing - let browser handle naturally
+    }
   }, [isTablet]);
 
   // Skip loading state and show welcome message immediately if no messages exist yet

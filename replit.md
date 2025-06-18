@@ -272,6 +272,11 @@ Changelog:
   * Input area scrolls into view naturally when keyboard appears
   * Removed all JavaScript-based height calculations and CSS custom properties
   * Standard mobile web experience with header, scrollable messages, and input areas
+- June 18, 2025. Rolled back keyboard UI fixes after repeated failures:
+  * iPhone Chrome keyboard issues persist with header disappearing
+  * Multiple attempted solutions (Visual Viewport API, fixed positioning, height manipulation) failed
+  * Restored stable version with standard browser keyboard behavior
+  * Keyboard UI improvements deferred for future implementation with different approach
 ```
 
 ## User Preferences
