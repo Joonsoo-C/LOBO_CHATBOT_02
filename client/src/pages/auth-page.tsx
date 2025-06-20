@@ -296,13 +296,13 @@ export default function AuthPage() {
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="outline" 
-                className="bg-white dark:bg-gray-800 border shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors px-4 py-3 h-auto"
+                className="bg-white dark:bg-gray-800 border shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors px-4 py-3 h-auto w-[160px]"
               >
                 <Globe className="w-4 h-4 mr-2" />
                 <span className="text-sm font-medium">{languages.find(lang => lang.code === language)?.name}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="min-w-[160px]">
+            <DropdownMenuContent align="center" className="w-[160px]">
               {languages.map((lang) => (
                 <DropdownMenuItem
                   key={lang.code}
