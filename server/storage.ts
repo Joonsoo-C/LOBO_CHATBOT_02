@@ -5,6 +5,7 @@ import {
   messages,
   documents,
   agentStats,
+  messageReactions,
   type User,
   type UpsertUser,
   type Agent,
@@ -16,9 +17,11 @@ import {
   type Document,
   type InsertDocument,
   type AgentStats,
+  type MessageReaction,
+  type InsertMessageReaction,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, inArray } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -56,6 +59,11 @@ export interface IStorage {
   // Stats operations
   getAgentStats(agentId: number): Promise<AgentStats | undefined>;
   updateAgentStats(agentId: number, stats: Partial<AgentStats>): Promise<void>;
+
+  // Message reaction operations
+  createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction>;
+  deleteMessageReaction(messageId: number, userId: string): Promise<void>;
+  getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -307,6 +315,44 @@ export class DatabaseStorage implements IStorage {
         target: agentStats.agentId,
         set: { ...stats, updatedAt: new Date() },
       });
+  }
+
+  async createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction> {
+    // First delete any existing reaction from this user for this message
+    await db.delete(messageReactions)
+      .where(and(
+        eq(messageReactions.messageId, reaction.messageId),
+        eq(messageReactions.userId, reaction.userId)
+      ));
+
+    // Insert the new reaction
+    const [result] = await db.insert(messageReactions)
+      .values(reaction)
+      .returning();
+    return result;
+  }
+
+  async deleteMessageReaction(messageId: number, userId: string): Promise<void> {
+    await db.delete(messageReactions)
+      .where(and(
+        eq(messageReactions.messageId, messageId),
+        eq(messageReactions.userId, userId)
+      ));
+  }
+
+  async getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }> {
+    if (messageIds.length === 0) return {};
+    
+    const reactions = await db.select()
+      .from(messageReactions)
+      .where(inArray(messageReactions.messageId, messageIds));
+
+    const result: { [messageId: number]: MessageReaction | undefined } = {};
+    reactions.forEach(reaction => {
+      result[reaction.messageId] = reaction;
+    });
+    
+    return result;
   }
 }
 

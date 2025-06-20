@@ -735,6 +735,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  // Message reaction endpoints
+  app.post("/api/messages/:id/reactions", isAuthenticated, async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.id);
+      if (isNaN(messageId)) {
+        return res.status(400).json({ error: "Invalid message ID" });
+      }
+
+      const { reaction } = req.body;
+      if (!reaction || (reaction !== "👍" && reaction !== "👎")) {
+        return res.status(400).json({ error: "Invalid reaction" });
+      }
+
+      const userId = (req as any).user.id;
+      const reactionData = await storage.createMessageReaction({
+        messageId,
+        userId,
+        reaction
+      });
+
+      res.json(reactionData);
+    } catch (error) {
+      console.error("Error creating message reaction:", error);
+      res.status(500).json({ error: "Failed to create reaction" });
+    }
+  });
+
+  app.delete("/api/messages/:id/reactions", isAuthenticated, async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.id);
+      if (isNaN(messageId)) {
+        return res.status(400).json({ error: "Invalid message ID" });
+      }
+
+      const userId = (req as any).user.id;
+      await storage.deleteMessageReaction(messageId, userId);
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting message reaction:", error);
+      res.status(500).json({ error: "Failed to delete reaction" });
+    }
+  });
+
+  app.get("/api/conversations/:id/reactions", isAuthenticated, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ error: "Invalid conversation ID" });
+      }
+
+      // Get all message IDs for this conversation
+      const messages = await storage.getConversationMessages(conversationId);
+      const messageIds = messages.map(msg => msg.id);
+
+      // Get reactions for all messages
+      const reactions = await storage.getMessageReactions(messageIds);
+
+      res.json(reactions);
+    } catch (error) {
+      console.error("Error fetching conversation reactions:", error);
+      res.status(500).json({ error: "Failed to fetch reactions" });
+    }
+  });
+
   return httpServer;
 }
 
