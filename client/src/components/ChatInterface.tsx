@@ -927,8 +927,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           <>
             {allMessages.map((msg) => {
               const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
-              const showReactionOptions = hoveredMessageId === msg.id || longPressMessageId === msg.id;
-              console.log('Message', msg.id, 'showReactionOptions:', showReactionOptions, 'hoveredMessageId:', hoveredMessageId, 'longPressMessageId:', longPressMessageId);
+              const showReactionOptions = activeReactionMessageId === msg.id;
               const messageReaction = messageReactions[msg.id];
               
               return (
@@ -944,17 +943,15 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }`}
                       onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
-                          console.log('Setting hoveredMessageId to:', msg.id);
-                          setHoveredMessageId(msg.id);
+                          setActiveReactionMessageId(msg.id);
                         }
                       }}
                       onMouseLeave={() => {
                         if (!msg.isFromUser && !isSystem) {
-                          console.log('Clearing hoveredMessageId');
-                          setHoveredMessageId(null);
+                          setTimeout(() => setActiveReactionMessageId(null), 200);
                         }
                       }}
-                      onClick={() => !msg.isFromUser && !isSystem && handleMobileTap(msg.id)}
+                      onClick={() => !msg.isFromUser && !isSystem && handleReactionToggle(msg.id)}
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
@@ -971,9 +968,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     {/* Reaction Options Popup - Positioned to the right */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
-                        className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 flex gap-2 bg-background border border-border rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                        onMouseEnter={() => setHoveredMessageId(msg.id)}
-                        onMouseLeave={() => setHoveredMessageId(null)}
+                        className="reaction-popup absolute top-1/2 left-full transform -translate-y-1/2 ml-2 flex gap-2 bg-background border border-border rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                        onMouseEnter={() => setActiveReactionMessageId(msg.id)}
+                        onMouseLeave={() => setActiveReactionMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
                       >
                         {reactionOptions.map((option) => (
