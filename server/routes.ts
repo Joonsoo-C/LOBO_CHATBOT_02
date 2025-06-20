@@ -446,7 +446,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         userMessage,
-        aiMessage,
+        aiMessage: {
+          ...aiMessage,
+          triggerAction: aiResponse.triggerAction
+        },
         usedDocuments: aiResponse.usedDocuments,
       });
     } catch (error) {

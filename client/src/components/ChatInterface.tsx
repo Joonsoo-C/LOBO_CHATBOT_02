@@ -275,6 +275,26 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       setOptimisticMessages([]);
       setIsTyping(false);
       
+      // Handle trigger actions from AI response
+      if ((data as any).aiMessage?.triggerAction) {
+        setTimeout(() => {
+          switch ((data as any).aiMessage.triggerAction) {
+            case "openPersonaModal":
+              setShowPersonaModal(true);
+              break;
+            case "openSettingsModal":
+              setShowSettingsModal(true);
+              break;
+            case "openFileModal":
+              setShowFileModal(true);
+              break;
+            case "startNotification":
+              setNotificationState("waiting_input");
+              break;
+          }
+        }, 500);
+      }
+      
       // Invalidate messages to refresh with real data
       queryClient.invalidateQueries({
         queryKey: [`/api/conversations/${conversation?.id}/messages`]
