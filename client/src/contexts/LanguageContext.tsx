@@ -103,6 +103,12 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.settings': 'Settings',
     'auth.themeSettings': 'Theme Settings',
     'auth.languageSettings': 'Language Settings',
+    'auth.usernameRequired': 'Please enter your ID',
+    'auth.passwordRequired': 'Please enter password',
+    'auth.passwordMinLength': 'Password must be at least 6 characters',
+    'auth.firstNameRequired': 'Please enter first name',
+    'auth.lastNameRequired': 'Please enter last name',
+    'auth.emailInvalid': 'Please enter a valid email address',
     
     // Common UI elements
     'common.home': 'Home',
@@ -155,6 +161,12 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.settings': '设置',
     'auth.themeSettings': '主题设置',
     'auth.languageSettings': '语言设置',
+    'auth.usernameRequired': '请输入学号/工号',
+    'auth.passwordRequired': '请输入密码',
+    'auth.passwordMinLength': '密码至少需要6个字符',
+    'auth.firstNameRequired': '请输入姓名',
+    'auth.lastNameRequired': '请输入姓氏',
+    'auth.emailInvalid': '请输入有效的邮箱地址',
     
     // 通用UI元素
     'common.home': '首页',
@@ -207,6 +219,12 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.settings': 'Cài đặt',
     'auth.themeSettings': 'Cài đặt giao diện',
     'auth.languageSettings': 'Cài đặt ngôn ngữ',
+    'auth.usernameRequired': 'Vui lòng nhập mã số',
+    'auth.passwordRequired': 'Vui lòng nhập mật khẩu',
+    'auth.passwordMinLength': 'Mật khẩu phải có ít nhất 6 ký tự',
+    'auth.firstNameRequired': 'Vui lòng nhập tên',
+    'auth.lastNameRequired': 'Vui lòng nhập họ',
+    'auth.emailInvalid': 'Vui lòng nhập địa chỉ email hợp lệ',
     
     // Các phần tử UI chung
     'common.home': 'Trang chủ',
@@ -259,6 +277,12 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.settings': '設定',
     'auth.themeSettings': 'テーマ設定',
     'auth.languageSettings': '言語設定',
+    'auth.usernameRequired': '学籍番号/職員番号を入力してください',
+    'auth.passwordRequired': 'パスワードを入力してください',
+    'auth.passwordMinLength': 'パスワードは6文字以上である必要があります',
+    'auth.firstNameRequired': '名前を入力してください',
+    'auth.lastNameRequired': '姓を入力してください',
+    'auth.emailInvalid': '有効なメールアドレスを入力してください',
     
     // 共通UI要素
     'common.home': 'ホーム',
