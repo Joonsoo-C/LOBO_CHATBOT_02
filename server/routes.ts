@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
-import { generateChatResponse, analyzeDocument, extractTextFromContent } from "./openai";
+import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -406,19 +406,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user's language preference from request body or default to Korean
       const userLanguage = req.body.userLanguage || "ko";
 
-      // Generate AI response with chatbot type and persona
-      const aiResponse = await generateChatResponse(
-        content,
-        agent.name,
-        agent.description,
-        conversationHistory,
-        documentContext,
-        chatbotType,
-        speakingStyle,
-        personalityTraits,
-        prohibitedWordResponse,
-        userLanguage
-      );
+      // Check if this is a management conversation and handle management commands
+      let aiResponse;
+      if (conversationResult.type === "management") {
+        aiResponse = await generateManagementResponse(
+          content,
+          agent.name,
+          agent.description,
+          conversationHistory,
+          documentContext,
+          chatbotType,
+          speakingStyle,
+          personalityTraits,
+          prohibitedWordResponse,
+          userLanguage
+        );
+      } else {
+        // Generate AI response with chatbot type and persona
+        aiResponse = await generateChatResponse(
+          content,
+          agent.name,
+          agent.description,
+          conversationHistory,
+          documentContext,
+          chatbotType,
+          speakingStyle,
+          personalityTraits,
+          prohibitedWordResponse,
+          userLanguage
+        );
+      }
 
       // Save AI message
       const aiMessage = await storage.createMessage({

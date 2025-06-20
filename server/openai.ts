@@ -8,6 +8,7 @@ const openai = new OpenAI({
 export interface ChatResponse {
   message: string;
   usedDocuments?: string[];
+  triggerAction?: string;
 }
 
 export interface DocumentAnalysis {
@@ -48,6 +49,96 @@ export async function analyzeDocument(content: string, filename: string): Promis
       extractedText: content,
     };
   }
+}
+
+export async function generateManagementResponse(
+  userMessage: string,
+  agentName: string,
+  agentDescription: string,
+  conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
+  availableDocuments: Array<{ filename: string; content: string }>,
+  chatbotType: string = "general-llm",
+  speakingStyle: string = "친근하고 도움이 되는 말투",
+  personalityTraits: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
+  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+  userLanguage: string = "ko"
+): Promise<ChatResponse> {
+  const lowerMessage = userMessage.toLowerCase();
+  
+  // Check for management commands with typo tolerance
+  if (lowerMessage.includes("페르소나") || lowerMessage.includes("persona") || lowerMessage.includes("성격") || 
+      lowerMessage.includes("말투") || lowerMessage.includes("캐릭터") || lowerMessage.includes("개성") ||
+      lowerMessage.includes("닉네임") || lowerMessage.includes("특성") || lowerMessage.includes("변경") ||
+      lowerMessage.includes("수정") || lowerMessage.includes("편집")) {
+    return {
+      message: "🔧 페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.",
+      usedDocuments: [],
+      triggerAction: "openPersonaModal"
+    };
+  }
+  
+  if (lowerMessage.includes("챗봇") || lowerMessage.includes("설정") || lowerMessage.includes("모델") ||
+      lowerMessage.includes("llm") || lowerMessage.includes("gpt") || lowerMessage.includes("ai설정") ||
+      lowerMessage.includes("봇설정") || lowerMessage.includes("동작") || lowerMessage.includes("유형")) {
+    return {
+      message: "🔧 챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.",
+      usedDocuments: [],
+      triggerAction: "openSettingsModal"
+    };
+  }
+  
+  if (lowerMessage.includes("문서") || lowerMessage.includes("업로드") || lowerMessage.includes("파일") ||
+      lowerMessage.includes("자료") || lowerMessage.includes("첨부") || lowerMessage.includes("지식") ||
+      lowerMessage.includes("학습") || lowerMessage.includes("데이터") || lowerMessage.includes("정보")) {
+    return {
+      message: "🔧 문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.",
+      usedDocuments: [],
+      triggerAction: "openFileModal"
+    };
+  }
+  
+  if (lowerMessage.includes("알림") || lowerMessage.includes("notification") || lowerMessage.includes("브로드캐스트") ||
+      lowerMessage.includes("공지") || lowerMessage.includes("메시지") || lowerMessage.includes("전송") ||
+      lowerMessage.includes("안내") || lowerMessage.includes("소식")) {
+    return {
+      message: "🔧 알림 기능을 시작합니다. 알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.",
+      usedDocuments: [],
+      triggerAction: "startNotification"
+    };
+  }
+  
+  if (lowerMessage.includes("도움말") || lowerMessage.includes("명령어") || lowerMessage.includes("기능") || 
+      lowerMessage.includes("help") || lowerMessage.includes("사용법") || lowerMessage.includes("메뉴") ||
+      lowerMessage.includes("옵션") || lowerMessage.includes("가이드")) {
+    return {
+      message: `🔧 에이전트 관리 명령어:
+
+📝 주요 기능:
+• "페르소나" / "성격" / "말투" - 에이전트 성격 및 말투 설정
+• "챗봇 설정" / "모델" / "AI설정" - LLM 모델 및 동작 방식 변경  
+• "문서 업로드" / "파일" / "자료" - 지식베이스 확장용 문서 추가
+• "알림보내기" / "공지" / "메시지" - 사용자들에게 공지사항 전송
+• "성과 분석" / "통계" / "현황" - 에이전트 사용 통계 및 분석
+
+💡 사용법: 위 키워드가 포함된 메시지를 보내면 해당 기능이 실행됩니다.
+일반 대화도 언제든 가능합니다!`,
+      usedDocuments: []
+    };
+  }
+  
+  // For regular messages in management mode, use normal chat response
+  return generateChatResponse(
+    userMessage,
+    agentName,
+    agentDescription,
+    conversationHistory,
+    availableDocuments,
+    chatbotType,
+    speakingStyle,
+    personalityTraits,
+    prohibitedWordResponse,
+    userLanguage
+  );
 }
 
 export async function generateChatResponse(
