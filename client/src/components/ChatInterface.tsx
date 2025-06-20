@@ -222,6 +222,20 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [isManagementMode, messages?.length, conversation?.id, agent.name]);
 
+  // Auto-mark conversation as read when new messages arrive while user is viewing
+  useEffect(() => {
+    if (conversation?.id && messages && messages.length > 0) {
+      // Get current conversation data from cache
+      const conversations = queryClient.getQueryData(["/api/conversations"]) as any[];
+      const currentConv = conversations?.find((conv: any) => conv.id === conversation.id);
+      
+      // Only mark as read if there are unread messages
+      if (currentConv && currentConv.unreadCount > 0) {
+        markAsReadMutation.mutate(conversation.id);
+      }
+    }
+  }, [messages?.length, conversation?.id, queryClient, markAsReadMutation]);
+
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
@@ -275,7 +289,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                 ...conv, 
                 lastMessage: data.aiMessage,
                 lastMessageAt: data.aiMessage.createdAt,
-                unreadCount: isManagementMode ? conv.unreadCount : 0 // Don't increment unread for current user
+                unreadCount: 0 // Always set to 0 since user is actively viewing this conversation
               }
             : conv
         );

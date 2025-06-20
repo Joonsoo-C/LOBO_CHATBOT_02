@@ -339,6 +339,11 @@ Changelog:
   * Enhanced user message with explicit language enforcement and reminders
   * Added multilingual error message fallbacks for consistent language experience
   * Implemented double language instruction (system prompt + user message) for maximum compliance
+- June 20, 2025. Fixed unread message badge notification system:
+  * Prevented badge notifications when user is actively viewing conversation
+  * Automatically mark conversations as read when user receives new messages while in chat
+  * Optimized read status updates to only trigger when there are actually unread messages
+  * Eliminated false notification badges during real-time chat conversations
 ```
 
 ## User Preferences
