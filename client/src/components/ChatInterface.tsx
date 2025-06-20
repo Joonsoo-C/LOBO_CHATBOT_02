@@ -59,9 +59,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
   const [pendingNotification, setPendingNotification] = useState("");
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
-  const [hoveredMessageId, setHoveredMessageId] = useState<number | null>(null);
-  const [longPressMessageId, setLongPressMessageId] = useState<number | null>(null);
-  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
 
   // Function to add system message from agent
@@ -133,9 +131,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   // Reaction handlers
-  const handleMobileTap = (messageId: number) => {
-    console.log('Mobile tap on message:', messageId);
-    setLongPressMessageId(prev => prev === messageId ? null : messageId);
+  const handleReactionToggle = (messageId: number) => {
+    setActiveReactionMessageId(prev => prev === messageId ? null : messageId);
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
@@ -143,8 +140,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       ...prev,
       [messageId]: reaction
     }));
-    setHoveredMessageId(null);
-    setLongPressMessageId(null);
+    setActiveReactionMessageId(null);
   };
 
   const reactionOptions = [
@@ -481,16 +477,18 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Click outside to close reaction popup
   useEffect(() => {
-    const handleClickOutside = () => {
-      setHoveredMessageId(null);
-      setLongPressMessageId(null);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.reaction-popup') && !target.closest('.message-content')) {
+        setActiveReactionMessageId(null);
+      }
     };
 
-    if (hoveredMessageId || longPressMessageId) {
+    if (activeReactionMessageId) {
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
-  }, [hoveredMessageId, longPressMessageId]);
+  }, [activeReactionMessageId]);
 
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
@@ -930,13 +928,14 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             {allMessages.map((msg) => {
               const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
               const showReactionOptions = hoveredMessageId === msg.id || longPressMessageId === msg.id;
+              console.log('Message', msg.id, 'showReactionOptions:', showReactionOptions, 'hoveredMessageId:', hoveredMessageId, 'longPressMessageId:', longPressMessageId);
               const messageReaction = messageReactions[msg.id];
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
                   <div className="relative">
                     <div
-                      className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
+                      className={`message-content max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -945,13 +944,15 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }`}
                       onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
-                          console.log('Mouse enter on message:', msg.id);
+                          console.log('Setting hoveredMessageId to:', msg.id);
                           setHoveredMessageId(msg.id);
                         }
                       }}
                       onMouseLeave={() => {
-                        console.log('Mouse leave');
-                        setHoveredMessageId(null);
+                        if (!msg.isFromUser && !isSystem) {
+                          console.log('Clearing hoveredMessageId');
+                          setHoveredMessageId(null);
+                        }
                       }}
                       onClick={() => !msg.isFromUser && !isSystem && handleMobileTap(msg.id)}
                     >
