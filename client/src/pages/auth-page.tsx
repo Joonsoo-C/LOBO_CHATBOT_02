@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Settings } from "lucide-react";
+import { Settings, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -37,11 +38,19 @@ const createRegisterSchema = (t: (key: string) => string) => z.object({
   userType: z.enum(["student", "faculty"]),
 });
 
+const languages: { code: 'ko' | 'en' | 'zh' | 'vi' | 'ja'; flag: string; name: string }[] = [
+  { code: 'ko', flag: '🇰🇷', name: '한국어' },
+  { code: 'en', flag: '🇺🇸', name: 'English' },
+  { code: 'zh', flag: '🇨🇳', name: '中文' },
+  { code: 'vi', flag: '🇻🇳', name: 'Tiếng Việt' },
+  { code: 'ja', flag: '🇯🇵', name: '日本語' },
+];
+
 export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   // Redirect if already logged in
   if (user) {
@@ -284,12 +293,30 @@ export default function AuthPage() {
         {/* 언어 선택 섹션 - 하단 */}
         <div className="flex justify-center">
           <div className="bg-white dark:bg-gray-800 rounded-lg border shadow-sm overflow-hidden">
-            <div className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors min-w-[160px]">
-              <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{t('auth.languageSettings')}:</span>
-              <div className="flex-1">
-                <LanguageSelector />
-              </div>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors min-w-[160px] w-full">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{t('auth.languageSettings')}:</span>
+                  <div className="flex items-center gap-2 flex-1">
+                    <Globe className="w-4 h-4" />
+                    <span className="text-sm">{languages.find(lang => lang.code === language)?.flag}</span>
+                    <span className="text-sm font-medium">{languages.find(lang => lang.code === language)?.name}</span>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="min-w-[160px]">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`cursor-pointer ${language === lang.code ? 'bg-accent' : ''}`}
+                  >
+                    <span className="mr-2">{lang.flag}</span>
+                    <span>{lang.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
