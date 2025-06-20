@@ -53,7 +53,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
       const response = await apiRequest("PUT", `/api/agents/${agent.id}/persona`, data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (updatedAgent) => {
       toast({
         title: "페르소나 업데이트 완료",
         description: "에이전트 페르소나가 성공적으로 업데이트되었습니다.",
@@ -64,15 +64,23 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
         const changes = [];
         if (personaData.nickname !== agent.name) changes.push(`닉네임: ${personaData.nickname}`);
         if (personaData.knowledgeArea !== agent.description) changes.push(`지식 분야: ${personaData.knowledgeArea}`);
-        if (personaData.speakingStyle !== "친근하고 도움이 되는 말투") changes.push(`말투 스타일: ${personaData.speakingStyle}`);
+        if (personaData.speakingStyle !== agent.speakingStyle) changes.push(`말투 스타일: ${personaData.speakingStyle}`);
         
         const changeText = changes.length > 0 ? changes.join(', ') + ' 변경됨. ' : '';
         onSuccess(`${changeText}페르소나 설정이 저장되었습니다.`);
       }
       
-      // Invalidate agent data to refresh
+      // Immediately update the cache with the fresh data from server
+      queryClient.setQueryData(["/api/agents"], (oldAgents: Agent[] | undefined) => {
+        if (!oldAgents) return oldAgents;
+        return oldAgents.map(a => 
+          a.id === agent.id ? updatedAgent : a
+        );
+      });
+      
+      // Force a fresh fetch to ensure consistency
       queryClient.invalidateQueries({
-        queryKey: [`/api/agents/${agent.id}`]
+        queryKey: ["/api/agents"]
       });
       
       onClose();
