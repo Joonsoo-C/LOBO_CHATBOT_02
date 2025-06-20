@@ -39,7 +39,7 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
   const isTablet = useIsTablet();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [message, setMessage] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
@@ -232,6 +232,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       const response = await apiRequest("POST", `/api/conversations/${conversation.id}/messages`, {
         content,
         isFromUser: true,
+        userLanguage: language,
       });
       return response.json();
     },
