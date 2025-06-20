@@ -344,6 +344,11 @@ Changelog:
   * Automatically mark conversations as read when user receives new messages while in chat
   * Optimized read status updates to only trigger when there are actually unread messages
   * Eliminated false notification badges during real-time chat conversations
+- June 20, 2025. Fixed management mode message persistence issue:
+  * User messages in management mode now properly saved to conversation history before triggering features
+  * All management commands (페르소나, 챗봇 설정, 알림보내기, 문서 업로드, 성과 분석, 도움말) preserve user input
+  * Fixed conversation history disappearing when leaving and returning to management chat rooms
+  * Enhanced user experience with proper message flow: user message → system response → feature execution
 ```
 
 ## User Preferences

@@ -332,36 +332,60 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       if (lowerMessage.includes("페르소나") || lowerMessage.includes("persona") || lowerMessage.includes("성격") || 
           lowerMessage.includes("말투") || lowerMessage.includes("캐릭터") || lowerMessage.includes("개성") ||
           lowerMessage.includes("닉네임") || lowerMessage.includes("특성")) {
-        setShowPersonaModal(true);
-        setMessage("");
-        addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then open the modal and add system message
+        setTimeout(() => {
+          setShowPersonaModal(true);
+          addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+        }, 100);
         return;
       }
       
       if (lowerMessage.includes("챗봇") || lowerMessage.includes("설정") || lowerMessage.includes("모델") ||
           lowerMessage.includes("llm") || lowerMessage.includes("gpt") || lowerMessage.includes("ai설정") ||
           lowerMessage.includes("봇설정") || lowerMessage.includes("동작") || lowerMessage.includes("유형")) {
-        setShowSettingsModal(true);
-        setMessage("");
-        addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then open the modal and add system message
+        setTimeout(() => {
+          setShowSettingsModal(true);
+          addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+        }, 100);
         return;
       }
       
       if (lowerMessage.includes("알림") || lowerMessage.includes("notification") || lowerMessage.includes("브로드캐스트") ||
           lowerMessage.includes("공지") || lowerMessage.includes("메시지") || lowerMessage.includes("전송") ||
           lowerMessage.includes("안내") || lowerMessage.includes("소식")) {
-        setNotificationState("waiting_input");
-        setMessage("");
-        addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then start notification process
+        setTimeout(() => {
+          setNotificationState("waiting_input");
+          addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+        }, 100);
         return;
       }
       
       if (lowerMessage.includes("문서") || lowerMessage.includes("업로드") || lowerMessage.includes("파일") ||
           lowerMessage.includes("자료") || lowerMessage.includes("첨부") || lowerMessage.includes("지식") ||
           lowerMessage.includes("학습") || lowerMessage.includes("데이터") || lowerMessage.includes("정보")) {
-        setShowFileModal(true);
-        setMessage("");
-        addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then open the modal and add system message
+        setTimeout(() => {
+          setShowFileModal(true);
+          addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+        }, 100);
         return;
       }
       
@@ -369,8 +393,14 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
           lowerMessage.includes("performance") || lowerMessage.includes("리포트") || lowerMessage.includes("report") ||
           lowerMessage.includes("현황") || lowerMessage.includes("상태") || lowerMessage.includes("지표") ||
           lowerMessage.includes("활동") || lowerMessage.includes("사용량")) {
-        setMessage("");
-        addSystemMessage("에이전트 성과 분석을 실행합니다...");
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then start performance analysis
+        setTimeout(() => {
+          addSystemMessage("에이전트 성과 분석을 실행합니다...");
+        }, 100);
         
         // Execute performance analysis
         setTimeout(async () => {
@@ -414,8 +444,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       if (lowerMessage.includes("도움말") || lowerMessage.includes("명령어") || lowerMessage.includes("기능") || 
           lowerMessage.includes("help") || lowerMessage.includes("사용법") || lowerMessage.includes("메뉴") ||
           lowerMessage.includes("옵션") || lowerMessage.includes("가이드")) {
-        setMessage("");
-        addSystemMessage(`🔧 에이전트 관리 명령어:
+        
+        // First send the user message to conversation
+        sendMessageMutation.mutate(messageContent);
+        
+        // Then show help message
+        setTimeout(() => {
+          addSystemMessage(`🔧 에이전트 관리 명령어:
 
 📝 주요 기능:
 • "페르소나" / "성격" / "말투" - 에이전트 성격 및 말투 설정
@@ -426,6 +461,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 💡 사용법: 위 키워드가 포함된 메시지를 보내면 해당 기능이 실행됩니다.
 일반 대화도 언제든 가능합니다!`);
+        }, 100);
         return;
       }
     }
