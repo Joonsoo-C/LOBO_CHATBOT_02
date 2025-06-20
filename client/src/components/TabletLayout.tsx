@@ -302,6 +302,7 @@ export default function TabletLayout() {
   const [activeTab, setActiveTab] = useState<"chat" | "management">("chat");
   const [location, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Parse URL to get selected agent
   useEffect(() => {
@@ -326,14 +327,14 @@ export default function TabletLayout() {
     }
   }, [location]);
 
-  // Category options
+  // Category options with translations
   const categories = [
-    "전체",
-    "학교",
-    "교수", 
-    "학생",
-    "그룹",
-    "기능형"
+    { value: "전체", label: t('home.categoryAll') },
+    { value: "학교", label: t('home.categorySchool') },
+    { value: "교수", label: t('home.categoryProfessor') },
+    { value: "학생", label: t('home.categoryStudent') },
+    { value: "그룹", label: t('home.categoryGroup') },
+    { value: "기능형", label: t('home.categoryFunction') }
   ];
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
@@ -408,7 +409,7 @@ export default function TabletLayout() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
-                placeholder="에이전트 검색"
+                placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-20 bg-muted border-none korean-text h-11"
@@ -420,17 +421,17 @@ export default function TabletLayout() {
                     size="sm"
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 text-xs korean-text"
                   >
-                    {selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
+                    {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
                   {categories.map((category) => (
                     <DropdownMenuItem
-                      key={category}
+                      key={category.value}
                       className="korean-text cursor-pointer"
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => setSelectedCategory(category.value)}
                     >
-                      {category}
+                      {category.label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
