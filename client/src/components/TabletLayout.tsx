@@ -88,6 +88,7 @@ interface TabletChatHeaderProps {
 }
 
 function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
+  const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
   const [showFileListModal, setShowFileListModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
@@ -182,7 +183,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <User className="w-4 h-4 mr-2" />
-                          페르소나 변경
+                          {t('agent.persona')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -195,7 +196,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <Edit className="w-4 h-4 mr-2" />
-                          아이콘 변경
+                          {t('agent.iconChange')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -208,7 +209,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <Settings className="w-4 h-4 mr-2" />
-                          챗봇 설정
+                          {t('agent.settings')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -221,7 +222,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <Bell className="w-4 h-4 mr-2" />
-                          알림보내기
+                          {t('agent.notification')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -234,7 +235,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <FileText className="w-4 h-4 mr-2" />
-                          문서 업로드
+                          {t('agent.upload')}
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -278,7 +279,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           }}
                         >
                           <BarChart3 className="w-4 h-4 mr-2" />
-                          성과 분석
+                          {t('agent.performance')}
                         </Button>
                       </div>
                     </div>

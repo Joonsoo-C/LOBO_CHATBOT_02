@@ -59,7 +59,8 @@ export async function generateChatResponse(
   chatbotType: string = "general-llm",
   speakingStyle: string = "친근하고 도움이 되는 말투",
   personalityTraits: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
-  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+  userLanguage: string = "ko"
 ): Promise<ChatResponse> {
   try {
     // Debug log to check if persona parameters are received
