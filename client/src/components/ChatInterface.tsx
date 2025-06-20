@@ -133,18 +133,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   // Reaction handlers
-  const handleLongPressStart = (messageId: number) => {
-    const timer = setTimeout(() => {
-      setLongPressMessageId(messageId);
-    }, 500);
-    setLongPressTimer(timer);
-  };
-
-  const handleLongPressEnd = () => {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      setLongPressTimer(null);
-    }
+  const handleMobileTap = (messageId: number) => {
+    setLongPressMessageId(messageId);
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
@@ -158,11 +148,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   const reactionOptions = [
     { emoji: '👍', icon: ThumbsUp, label: 'Like' },
-    { emoji: '❤️', icon: Heart, label: 'Love' },
-    { emoji: '😊', icon: Smile, label: 'Happy' },
-    { emoji: '😂', icon: Laugh, label: 'Laugh' },
-    { emoji: '👎', icon: ThumbsDown, label: 'Dislike' },
-    { emoji: '😠', icon: Angry, label: 'Angry' }
+    { emoji: '👎', icon: ThumbsDown, label: 'Dislike' }
   ];
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -480,14 +466,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [isTablet]);
 
-  // Clean up long press timer on unmount
+  // Detect device type for interaction
+  const [isTouch, setIsTouch] = useState(false);
+  
   useEffect(() => {
-    return () => {
-      if (longPressTimer) {
-        clearTimeout(longPressTimer);
-      }
-    };
-  }, [longPressTimer]);
+    setIsTouch('ontouchstart' in window);
+  }, []);
 
   // Click outside to close reaction popup
   useEffect(() => {
@@ -943,21 +927,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const messageReaction = messageReactions[msg.id];
               
               return (
-                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
-                  <div className="relative">
+                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
+                  <div className="relative flex items-start gap-2 max-w-[85%]">
                     <div
-                      className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
+                      className={`px-4 py-3 rounded-2xl korean-text md:px-5 md:py-4 ${
                         msg.isFromUser
-                          ? "bg-primary text-primary-foreground ml-auto"
+                          ? "bg-primary text-primary-foreground"
                           : isSystem
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
-                      onMouseEnter={() => !msg.isFromUser && !isSystem && setHoveredMessageId(msg.id)}
-                      onMouseLeave={() => setHoveredMessageId(null)}
-                      onTouchStart={() => !msg.isFromUser && !isSystem && handleLongPressStart(msg.id)}
-                      onTouchEnd={handleLongPressEnd}
-                      onTouchCancel={handleLongPressEnd}
+                      onMouseEnter={() => !isTouch && !msg.isFromUser && !isSystem && setHoveredMessageId(msg.id)}
+                      onMouseLeave={() => !isTouch && setHoveredMessageId(null)}
+                      onClick={() => isTouch && !msg.isFromUser && !isSystem && handleMobileTap(msg.id)}
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
@@ -971,10 +953,12 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       )}
                     </div>
 
-                    {/* Reaction Options Popup */}
+                    {/* Reaction Options Popup - Positioned to the right */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
-                        className="absolute top-0 left-0 transform -translate-y-full z-50 bg-background border border-border rounded-lg shadow-lg p-2 flex gap-1 animate-in fade-in-0 zoom-in-95 duration-150"
+                        className="flex flex-col gap-1 bg-background border border-border rounded-lg shadow-lg p-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                        onMouseEnter={() => !isTouch && setHoveredMessageId(msg.id)}
+                        onMouseLeave={() => !isTouch && setHoveredMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
                       >
                         {reactionOptions.map((option) => (
@@ -982,7 +966,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             key={option.emoji}
                             variant="ghost"
                             size="sm"
-                            className="p-2 hover:bg-muted transition-colors"
+                            className="p-2 hover:bg-muted transition-colors min-w-0 h-8 w-8"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleReactionSelect(msg.id, option.emoji);
