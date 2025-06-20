@@ -324,11 +324,12 @@ Changelog:
   * Strengthened language instruction with "CRITICAL LANGUAGE REQUIREMENT" directive
   * Converted Korean personality instructions to English to avoid language conflicts
   * AI now consistently responds in the user's selected language across all chatbot types
-- June 20, 2025. Updated AI response language policy per user request:
-  * Modified system to always respond in Korean regardless of UI language selection
-  * Separated UI language (multilingual) from AI response language (Korean only)
-  * This ensures consistent Korean communication while maintaining multilingual interface
-  * AI agents now always use Korean for responses even when UI is in other languages
+- June 20, 2025. Reverted to multilingual AI response system per user clarification:
+  * Restored original functionality where AI responds in the same language as user's question
+  * System now correctly detects user's selected language and responds accordingly
+  * UI language and AI response language are synchronized again
+  * Final rule: AI must respond in the language the user asks their question in
+  * Supports Korean, English, Chinese, Vietnamese, and Japanese responses
 ```
 
 ## User Preferences
