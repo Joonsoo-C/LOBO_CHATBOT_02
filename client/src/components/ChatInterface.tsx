@@ -961,7 +961,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
-                      {/* Message Reaction Display - Mobile: below message */}
+                      {/* Message Reaction Display - Mobile: below message left */}
                       {messageReaction && (
                         <div className="mt-2 flex justify-start md:hidden">
                           <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
@@ -974,9 +974,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     {/* PC: Reaction system right next to message */}
                     {!msg.isFromUser && !isSystem && (
                       <>
-                        {/* Message Reaction Display - PC: next to message */}
+                        {/* Message Reaction Display - PC: bottom left of message */}
                         {messageReaction && (
-                          <div className="hidden md:flex">
+                          <div className="hidden md:block absolute bottom-0 left-0 transform translate-y-full mt-1">
                             <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
                               {messageReaction}
                             </span>
@@ -1013,9 +1013,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       </>
                     )}
 
-                    {/* Mobile: Reaction Options bottom right of message */}
+                    {/* Mobile: Reaction Options below message on left */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
-                      <div className="md:hidden absolute top-full right-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                      <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
                         {reactionOptions.map((option) => (
                           <button
                             key={option.emoji}
