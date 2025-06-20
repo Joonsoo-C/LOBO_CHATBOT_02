@@ -32,14 +32,14 @@ export default function Home() {
     window.location.pathname === "/management" ? "management" : "chat"
   );
 
-  // Category options
+  // Category options with translations
   const categories = [
-    "전체",
-    "학교",
-    "교수", 
-    "학생",
-    "그룹",
-    "기능형"
+    { value: "전체", label: t('home.categoryAll') },
+    { value: "학교", label: t('home.categorySchool') },
+    { value: "교수", label: t('home.categoryProfessor') },
+    { value: "학생", label: t('home.categoryStudent') },
+    { value: "그룹", label: t('home.categoryGroup') },
+    { value: "기능형", label: t('home.categoryFunction') }
   ];
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
@@ -95,7 +95,7 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center korean-text">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-muted-foreground">로딩 중...</p>
+            <p className="text-muted-foreground">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function Home() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
-                placeholder="에이전트 검색"
+                placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-20 bg-muted border-none korean-text md:h-11"
@@ -126,17 +126,17 @@ export default function Home() {
                     size="sm"
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text md:h-8 md:px-3"
                   >
-                    {selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
+                    {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
                   {categories.map((category) => (
                     <DropdownMenuItem
-                      key={category}
+                      key={category.value}
                       className="korean-text cursor-pointer"
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => setSelectedCategory(category.value)}
                     >
-                      {category}
+                      {category.label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -157,11 +157,16 @@ export default function Home() {
               <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
                 <DropdownMenuItem className="korean-text cursor-pointer">
                   <Settings className="w-4 h-4 mr-2" />
-                  계정설정
+                  {t('home.accountSettings')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <div className="px-2 py-1">
-                  <div className="text-sm text-muted-foreground mb-2 korean-text">테마 설정</div>
+                  <div className="text-sm text-muted-foreground mb-2 korean-text">{t('auth.languageSettings')}</div>
+                  <LanguageSelector />
+                </div>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1">
+                  <div className="text-sm text-muted-foreground mb-2 korean-text">{t('auth.themeSettings')}</div>
                   <ThemeSelector />
                 </div>
                 <DropdownMenuSeparator />
@@ -171,7 +176,7 @@ export default function Home() {
                   disabled={logoutMutation.isPending}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
-                  {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
+                  {logoutMutation.isPending ? t('common.loading') : t('common.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -185,7 +190,7 @@ export default function Home() {
               className="flex-1 korean-text md:h-10"
               onClick={() => setActiveTab("chat")}
             >
-              에이전트 채팅
+              {t('common.chat')}
             </Button>
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
@@ -193,7 +198,7 @@ export default function Home() {
               className="flex-1 korean-text md:h-10"
               onClick={() => setActiveTab("management")}
             >
-              에이전트 관리
+              {t('common.management')}
             </Button>
           </div>
 
