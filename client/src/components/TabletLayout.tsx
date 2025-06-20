@@ -468,7 +468,7 @@ export default function TabletLayout() {
                   onClick={() => logout.mutate()}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  로그아웃
+                  {t('common.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -485,7 +485,7 @@ export default function TabletLayout() {
                 navigate("/");
               }}
             >
-              에이전트 채팅
+              {t('agent.generalChat')}
             </Button>
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
@@ -496,7 +496,7 @@ export default function TabletLayout() {
                 navigate("/management");
               }}
             >
-              에이전트 관리
+              {t('agent.management')}
             </Button>
           </div>
         </div>
@@ -599,12 +599,12 @@ export default function TabletLayout() {
                 <Settings className="text-white w-10 h-10" />
               </div>
               <h3 className="text-xl font-medium text-foreground mb-3">
-                {activeTab === "chat" ? "에이전트를 선택하세요" : "관리할 에이전트를 선택하세요"}
+                {activeTab === "chat" ? t('home.selectAgent') : t('home.manageAgent')}
               </h3>
               <p className="text-muted-foreground">
                 {activeTab === "chat" 
-                  ? "왼쪽에서 대화하고 싶은 에이전트를 선택하면 여기에 채팅창이 나타납니다."
-                  : "왼쪽에서 관리하고 싶은 에이전트를 선택하면 여기에 관리 인터페이스가 나타납니다."
+                  ? t('home.selectAgentDesc')
+                  : t('home.manageAgentDesc')
                 }
               </p>
             </div>

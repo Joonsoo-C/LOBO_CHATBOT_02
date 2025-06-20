@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, AgentStats } from "@/types/agent";
 
 interface ManagedAgent extends Agent {
@@ -28,6 +29,7 @@ function getIconComponent(iconName: string) {
 export default function AgentManagement() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { t } = useLanguage();
 
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
@@ -42,7 +44,7 @@ export default function AgentManagement() {
       <div className="px-4 py-6">
         <div className="text-center korean-text">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">로딩 중...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -51,8 +53,8 @@ export default function AgentManagement() {
   return (
     <div className="px-4 py-6">
       <div className="text-center mb-6">
-        <h2 className="text-xl font-medium text-foreground mb-2 korean-text">에이전트 관리</h2>
-        <p className="text-muted-foreground text-sm korean-text">관리 중인 에이전트를 선택하여 설정하세요</p>
+        <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
+        <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
       </div>
 
       {managedAgents.length === 0 ? (
@@ -118,8 +120,8 @@ export default function AgentManagement() {
 
               {/* Badges */}
               <div className="flex space-x-2 mb-4">
-                <Badge variant="secondary" className="text-xs">교수</Badge>
-                <Badge className="text-xs bg-green-100 text-green-700 hover:bg-green-100">활성</Badge>
+                <Badge variant="secondary" className="text-xs">{agent.category}</Badge>
+                <Badge className="text-xs bg-green-100 text-green-700 hover:bg-green-100">{t('agent.active')}</Badge>
               </div>
 
               {/* Statistics Grid */}
@@ -128,22 +130,22 @@ export default function AgentManagement() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center space-x-2">
                       <Users className="text-gray-500 w-4 h-4" />
-                      <span className="text-sm text-gray-600">활성 사용자:</span>
+                      <span className="text-sm text-gray-600">사용자:</span>
                       <span className="font-medium text-gray-900">{agent.stats.activeUsers}명</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MessageCircle className="text-gray-500 w-4 h-4" />
-                      <span className="text-sm text-gray-600">총 메시지:</span>
+                      <span className="text-sm text-gray-600">{t('agent.totalUsers')}:</span>
                       <span className="font-medium text-gray-900">{agent.stats.totalMessages}개</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <TrendingUp className="text-gray-500 w-4 h-4" />
-                      <span className="text-sm text-gray-600">사용률:</span>
+                      <span className="text-sm text-gray-600">{t('agent.satisfaction')}:</span>
                       <span className="font-medium text-gray-900">{agent.stats.usagePercentage}%</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Trophy className="text-gray-500 w-4 h-4" />
-                      <span className="text-sm text-gray-600">순위:</span>
+                      <span className="text-sm text-gray-600">{t('agent.ranking')}:</span>
                       <span className="font-medium text-gray-900">#{agent.stats.ranking}</span>
                     </div>
                   </div>
