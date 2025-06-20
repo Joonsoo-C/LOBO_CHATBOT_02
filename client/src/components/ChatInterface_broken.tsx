@@ -932,7 +932,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
-                  <div className="relative flex items-center gap-1">
+                  <div className="flex items-center gap-1">
                     <div
                       className={`message-content max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                         msg.isFromUser
@@ -953,6 +953,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
+                          console.log('Message clicked, toggling reactions for message:', msg.id);
                           handleReactionToggle(msg.id);
                         }
                       }}
@@ -969,7 +970,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       )}
                     </div>
 
-                    {/* PC: Reaction system right next to message */}
+                    {/* PC: Reaction buttons right next to message */}
                     {!msg.isFromUser && !isSystem && (
                       <>
                         {/* Message Reaction Display - PC: next to message */}
