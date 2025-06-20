@@ -134,7 +134,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Reaction handlers
   const handleMobileTap = (messageId: number) => {
-    setLongPressMessageId(messageId);
+    console.log('Mobile tap on message:', messageId);
+    setLongPressMessageId(prev => prev === messageId ? null : messageId);
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
@@ -470,7 +471,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [isTouch, setIsTouch] = useState(false);
   
   useEffect(() => {
-    setIsTouch('ontouchstart' in window);
+    const checkTouch = () => {
+      setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouch();
+    window.addEventListener('touchstart', checkTouch, { once: true });
+    return () => window.removeEventListener('touchstart', checkTouch);
   }, []);
 
   // Click outside to close reaction popup
@@ -937,9 +943,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
-                      onMouseEnter={() => !isTouch && !msg.isFromUser && !isSystem && setHoveredMessageId(msg.id)}
-                      onMouseLeave={() => !isTouch && setHoveredMessageId(null)}
-                      onClick={() => isTouch && !msg.isFromUser && !isSystem && handleMobileTap(msg.id)}
+                      onMouseEnter={() => {
+                        if (!msg.isFromUser && !isSystem) {
+                          console.log('Mouse enter on message:', msg.id);
+                          setHoveredMessageId(msg.id);
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        console.log('Mouse leave');
+                        setHoveredMessageId(null);
+                      }}
+                      onClick={() => !msg.isFromUser && !isSystem && handleMobileTap(msg.id)}
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
@@ -957,8 +971,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
                         className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 flex gap-2 bg-background border border-border rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                        onMouseEnter={() => !isTouch && setHoveredMessageId(msg.id)}
-                        onMouseLeave={() => !isTouch && setHoveredMessageId(null)}
+                        onMouseEnter={() => setHoveredMessageId(msg.id)}
+                        onMouseLeave={() => setHoveredMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
                       >
                         {reactionOptions.map((option) => (
