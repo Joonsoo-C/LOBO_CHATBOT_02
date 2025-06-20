@@ -351,10 +351,12 @@ Changelog:
   * Enhanced user experience with proper message flow: user message → system response → feature execution
 - June 20, 2025. Implemented comprehensive message reaction system:
   * Added reaction UI for AI agent responses (not for user messages or system messages)
-  * Mobile interaction: long-press message for 500ms to show reaction options
-  * Desktop interaction: hover over message to display reaction selector
-  * Six reaction options: 👍 Like, ❤️ Love, 😊 Happy, 😂 Laugh, 👎 Dislike, 😠 Angry
+  * Mobile interaction: tap message to show reaction options (simplified from long-press)
+  * Desktop interaction: hover over message to display reaction selector positioned to the right
+  * Two reaction options: 👍 Like, 👎 Dislike (simplified from six options)
   * Reactions display below message content with background styling
+  * Fixed PC hover issue where message width would change - reactions now appear to the right without affecting message layout
+  * Redesigned reaction buttons as small circular icons with subtle muted background and icon styling
   * Automatic popup dismissal with click-outside detection and proper cleanup
   * Smooth animations with fade-in and zoom effects for reaction popup
   * Supports both mobile and tablet layouts with responsive design

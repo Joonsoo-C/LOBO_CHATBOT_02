@@ -928,9 +928,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
-                  <div className="relative flex items-start gap-2 max-w-[85%]">
+                  <div className="relative">
                     <div
-                      className={`px-4 py-3 rounded-2xl korean-text md:px-5 md:py-4 ${
+                      className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -956,25 +956,27 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     {/* Reaction Options Popup - Positioned to the right */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
-                        className="flex flex-col gap-1 bg-background border border-border rounded-lg shadow-lg p-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                        className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 flex gap-2 bg-background border border-border rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
                         onMouseEnter={() => !isTouch && setHoveredMessageId(msg.id)}
                         onMouseLeave={() => !isTouch && setHoveredMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
                       >
                         {reactionOptions.map((option) => (
-                          <Button
+                          <button
                             key={option.emoji}
-                            variant="ghost"
-                            size="sm"
-                            className="p-2 hover:bg-muted transition-colors min-w-0 h-8 w-8"
+                            className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleReactionSelect(msg.id, option.emoji);
                             }}
                             title={option.label}
                           >
-                            <span className="text-lg">{option.emoji}</span>
-                          </Button>
+                            {option.emoji === '👍' ? (
+                              <ThumbsUp className="w-4 h-4 text-muted-foreground" />
+                            ) : (
+                              <ThumbsDown className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </button>
                         ))}
                       </div>
                     )}
