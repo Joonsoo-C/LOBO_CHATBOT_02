@@ -403,6 +403,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         agentName: refreshedAgent?.name
       });
 
+      // Get user's language preference from request body or default to Korean
+      const userLanguage = req.body.userLanguage || "ko";
+
       // Generate AI response with chatbot type and persona
       const aiResponse = await generateChatResponse(
         content,
@@ -413,7 +416,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         chatbotType,
         speakingStyle,
         personalityTraits,
-        prohibitedWordResponse
+        prohibitedWordResponse,
+        userLanguage
       );
 
       // Save AI message

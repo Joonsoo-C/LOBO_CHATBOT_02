@@ -77,6 +77,17 @@ export async function generateChatResponse(
         ).join('\n\n')}`
       : "";
 
+    // Language mapping for responses
+    const languageInstructions = {
+      'ko': '한국어로 응답하세요.',
+      'en': 'Respond in English.',
+      'zh': '请用中文回复。',
+      'vi': 'Hãy trả lời bằng tiếng Việt.',
+      'ja': '日本語で応答してください。'
+    };
+    
+    const responseLanguage = languageInstructions[userLanguage as keyof typeof languageInstructions] || languageInstructions['ko'];
+    
     // Create a very direct and simple system prompt focused on speaking style
     let systemPrompt = "";
     
@@ -85,18 +96,15 @@ export async function generateChatResponse(
                                 personalityTraits.includes("투덜이") || personalityTraits.includes("스머프");
     
     const grumpyBehavior = isGrumpyPersonality ? 
-      `CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated Korean responses.
-
-Examples of grumpy responses:
-- "아 또 뭔 일이야... 귀찮게"
-- "에휴... 왜 자꾸 물어봐"  
-- "하... 그것도 모르고..."
-- "아이고... 정말 번거롭네"
+      `CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated responses.
 
 ` : "";
     
     const personalityInstruction = personalityTraits ? `
 당신의 성격: ${personalityTraits}` : "";
+    
+    const languageInstruction = `
+IMPORTANT: ${responseLanguage} Always detect the user's language and respond in the same language they used.`;
     
     switch (chatbotType) {
       case "strict-doc":
@@ -111,6 +119,7 @@ Examples of grumpy responses:
         }
         
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
+${languageInstruction}
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
@@ -121,6 +130,7 @@ Rules:
 
       case "doc-fallback-llm":
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
+${languageInstruction}
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
@@ -132,6 +142,7 @@ Rules:
       case "general-llm":
       default:
         systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
+${languageInstruction}
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
