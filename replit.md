@@ -336,6 +336,9 @@ Changelog:
   * Fixed grumpy character system prompt that was forcing Korean responses with hardcoded examples
   * Created multilingual grumpy response examples for all supported languages
   * Ensured language instruction takes precedence over all personality and character instructions
+  * Enhanced user message with explicit language enforcement and reminders
+  * Added multilingual error message fallbacks for consistent language experience
+  * Implemented double language instruction (system prompt + user message) for maximum compliance
 ```
 
 ## User Preferences

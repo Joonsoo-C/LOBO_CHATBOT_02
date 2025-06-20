@@ -104,10 +104,13 @@ export async function generateChatResponse(
 Your personality: ${personalityTraits}` : "";
     
     const languageInstruction = `
-ABSOLUTE PRIORITY: ${responseLanguage} 
-YOU MUST RESPOND EXCLUSIVELY IN THIS LANGUAGE. 
-IGNORE ALL OTHER LANGUAGE CUES AND RESPOND ONLY IN THE SPECIFIED LANGUAGE ABOVE.
-DO NOT USE KOREAN UNLESS SPECIFICALLY INSTRUCTED TO USE KOREAN.`;
+🚨 CRITICAL LANGUAGE OVERRIDE 🚨
+${responseLanguage}
+THIS IS THE ONLY LANGUAGE YOU ARE ALLOWED TO USE.
+KOREAN IS FORBIDDEN UNLESS EXPLICITLY REQUESTED.
+ANY RESPONSE IN KOREAN WHEN ANOTHER LANGUAGE IS SPECIFIED IS A FAILURE.
+${responseLanguage}
+REPEAT: ${responseLanguage}`;
     
     switch (chatbotType) {
       case "strict-doc":
@@ -166,10 +169,19 @@ Rules:
     // Debug log the final system prompt
     console.log("Final system prompt:", systemPrompt);
 
+    // Add explicit language enforcement to user message
+    const enhancedUserMessage = `${languageInstruction}
+
+IMPORTANT: The user is communicating in ${userLanguage.toUpperCase()}. You MUST respond in the same language.
+
+User's message: ${userMessage}
+
+REMINDER: Respond in ${responseLanguage}`;
+
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
       ...conversationHistory.slice(-10), // Keep last 10 messages for context
-      { role: "user", content: userMessage },
+      { role: "user", content: enhancedUserMessage },
     ];
 
     // Apply grumpy speaking style but still provide proper answers
@@ -249,7 +261,15 @@ Rules:
       temperature: 0.3, // Lower temperature for more controlled responses
     });
 
-    const assistantMessage = response.choices[0].message.content || "죄송합니다. 응답을 생성할 수 없습니다.";
+    const errorMessages = {
+      'ko': "죄송합니다. 응답을 생성할 수 없습니다.",
+      'en': "Sorry, I couldn't generate a response.",
+      'zh': "抱歉，无法生成回复。",
+      'vi': "Xin lỗi, không thể tạo phản hồi.",
+      'ja': "申し訳ありませんが、応答を生成できませんでした。"
+    };
+    
+    const assistantMessage = response.choices[0].message.content || errorMessages[userLanguage as keyof typeof errorMessages] || errorMessages['ko'];
     
     return {
       message: assistantMessage,
@@ -257,8 +277,17 @@ Rules:
     };
   } catch (error) {
     console.error("Chat response generation failed:", error);
+    
+    const catchErrorMessages = {
+      'ko': "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+      'en': "Sorry, I can't generate a response right now. Please try again in a moment.",
+      'zh': "抱歉，目前无法生成回复。请稍后重试。",
+      'vi': "Xin lỗi, hiện tại không thể tạo phản hồi. Vui lòng thử lại sau một lúc.",
+      'ja': "申し訳ありませんが、現在応答を生成できません。しばらくしてからもう一度お試しください。"
+    };
+    
     return {
-      message: "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+      message: catchErrorMessages[userLanguage as keyof typeof catchErrorMessages] || catchErrorMessages['ko'],
       usedDocuments: [],
     };
   }
