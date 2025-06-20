@@ -17,12 +17,15 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import AgentList from "@/components/AgentList";
 import AgentManagement from "@/components/AgentManagement";
 import { ThemeSelector } from "@/components/ThemeSelector";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, Conversation } from "@/types/agent";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   // Set active tab based on current URL
   const [activeTab, setActiveTab] = useState<"chat" | "management">(

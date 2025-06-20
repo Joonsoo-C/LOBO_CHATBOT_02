@@ -70,6 +70,16 @@ const translations: Record<Language, Record<string, string>> = {
     'common.error': '오류',
     'common.success': '성공',
     
+    // 홈페이지
+    'home.searchPlaceholder': '에이전트 검색...',
+    'home.categoryAll': '전체',
+    'home.categorySchool': '학교',
+    'home.categoryProfessor': '교수',
+    'home.categoryStudent': '학생',
+    'home.categoryGroup': '그룹',
+    'home.categoryFunction': '기능형',
+    'home.accountSettings': '계정 설정',
+    
     // 언어 이름
     'language.ko': '한국어',
     'language.en': 'English',
@@ -127,6 +137,16 @@ const translations: Record<Language, Record<string, string>> = {
     'common.loading': 'Loading...',
     'common.error': 'Error',
     'common.success': 'Success',
+    
+    // Homepage
+    'home.searchPlaceholder': 'Search agents...',
+    'home.categoryAll': 'All',
+    'home.categorySchool': 'School',
+    'home.categoryProfessor': 'Professor',
+    'home.categoryStudent': 'Student',
+    'home.categoryGroup': 'Group',
+    'home.categoryFunction': 'Function',
+    'home.accountSettings': 'Account Settings',
     
     // Language names
     'language.ko': '한국어',
@@ -186,6 +206,16 @@ const translations: Record<Language, Record<string, string>> = {
     'common.error': '错误',
     'common.success': '成功',
     
+    // 首页
+    'home.searchPlaceholder': '搜索智能助手...',
+    'home.categoryAll': '全部',
+    'home.categorySchool': '学校',
+    'home.categoryProfessor': '教授',
+    'home.categoryStudent': '学生',
+    'home.categoryGroup': '群组',
+    'home.categoryFunction': '功能型',
+    'home.accountSettings': '账户设置',
+    
     // 语言名称
     'language.ko': '한국어',
     'language.en': 'English',
@@ -244,6 +274,16 @@ const translations: Record<Language, Record<string, string>> = {
     'common.error': 'Lỗi',
     'common.success': 'Thành công',
     
+    // Trang chủ
+    'home.searchPlaceholder': 'Tìm kiếm trợ lý AI...',
+    'home.categoryAll': 'Tất cả',
+    'home.categorySchool': 'Trường học',
+    'home.categoryProfessor': 'Giáo sư',
+    'home.categoryStudent': 'Sinh viên',
+    'home.categoryGroup': 'Nhóm',
+    'home.categoryFunction': 'Chức năng',
+    'home.accountSettings': 'Cài đặt tài khoản',
+    
     // Tên ngôn ngữ
     'language.ko': '한국어',
     'language.en': 'English',
@@ -301,6 +341,16 @@ const translations: Record<Language, Record<string, string>> = {
     'common.loading': '読み込み中...',
     'common.error': 'エラー',
     'common.success': '成功',
+    
+    // ホームページ
+    'home.searchPlaceholder': 'エージェント検索...',
+    'home.categoryAll': 'すべて',
+    'home.categorySchool': '学校',
+    'home.categoryProfessor': '教授',
+    'home.categoryStudent': '学生',
+    'home.categoryGroup': 'グループ',
+    'home.categoryFunction': '機能型',
+    'home.accountSettings': 'アカウント設定',
     
     // 言語名
     'language.ko': '한국어',
