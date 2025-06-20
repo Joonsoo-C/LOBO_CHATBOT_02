@@ -317,6 +317,13 @@ Changelog:
   * Added chat.typing and chat.inputPlaceholder translation keys for all supported languages
   * Fixed language mismatch issue where AI responses and UI elements showed different languages
   * Complete UI/AI language synchronization now working across all interface elements
+- June 20, 2025. Enhanced AI language response accuracy:
+  * Restructured OpenAI system prompts to prioritize language instructions at the beginning
+  * Fixed issue where AI responded in Korean despite user asking questions in other languages
+  * Added multilingual "no documents" messages for strict-doc chatbot type
+  * Strengthened language instruction with "CRITICAL LANGUAGE REQUIREMENT" directive
+  * Converted Korean personality instructions to English to avoid language conflicts
+  * AI now consistently responds in the user's selected language across all chatbot types
 ```
 
 ## User Preferences

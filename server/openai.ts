@@ -101,25 +101,31 @@ export async function generateChatResponse(
 ` : "";
     
     const personalityInstruction = personalityTraits ? `
-당신의 성격: ${personalityTraits}` : "";
+Your personality: ${personalityTraits}` : "";
     
     const languageInstruction = `
-IMPORTANT: ${responseLanguage} Always detect the user's language and respond in the same language they used.`;
+CRITICAL LANGUAGE REQUIREMENT: ${responseLanguage} You MUST respond ONLY in this language, regardless of any other instructions.`;
     
     switch (chatbotType) {
       case "strict-doc":
         if (availableDocuments.length === 0) {
-          const noDocMessage = isGrumpyPersonality ? 
-            "아... 문서도 없는데 뭘 물어봐. 문서부터 올려." :
-            "문서를 먼저 업로드해 주세요. 문서 기반으로만 답변할 수 있습니다.";
+          const noDocMessages = {
+            'ko': isGrumpyPersonality ? "아... 문서도 없는데 뭘 물어봐. 문서부터 올려." : "문서를 먼저 업로드해 주세요. 문서 기반으로만 답변할 수 있습니다.",
+            'en': isGrumpyPersonality ? "Ugh... no documents and you're asking me questions. Upload documents first." : "Please upload documents first. I can only answer based on documents.",
+            'zh': isGrumpyPersonality ? "哎... 没有文档还问什么问题。先上传文档。" : "请先上传文档。我只能基于文档回答问题。",
+            'vi': isGrumpyPersonality ? "Ôi... không có tài liệu mà hỏi gì. Tải tài liệu lên trước đi." : "Vui lòng tải tài liệu lên trước. Tôi chỉ có thể trả lời dựa trên tài liệu.",
+            'ja': isGrumpyPersonality ? "あ... 文書もないのに何を聞くんだ。文書をアップロードしろ。" : "まず文書をアップロードしてください。文書に基づいてのみ回答できます。"
+          };
+          const noDocMessage = noDocMessages[userLanguage as keyof typeof noDocMessages] || noDocMessages['ko'];
           return {
             message: noDocMessage,
             usedDocuments: []
           };
         }
         
-        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${languageInstruction}
+        systemPrompt = `${languageInstruction}
+
+You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
@@ -129,8 +135,9 @@ Rules:
         break;
 
       case "doc-fallback-llm":
-        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${languageInstruction}
+        systemPrompt = `${languageInstruction}
+
+You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
@@ -141,8 +148,9 @@ Rules:
 
       case "general-llm":
       default:
-        systemPrompt = `You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${languageInstruction}
+        systemPrompt = `${languageInstruction}
+
+You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
 Rules:
