@@ -16,7 +16,13 @@ import {
   User,
   Bell,
   Files,
-  Download
+  Download,
+  Smile,
+  Heart,
+  ThumbsUp,
+  ThumbsDown,
+  Laugh,
+  Angry
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +59,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
   const [pendingNotification, setPendingNotification] = useState("");
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
+  const [hoveredMessageId, setHoveredMessageId] = useState<number | null>(null);
+  const [longPressMessageId, setLongPressMessageId] = useState<number | null>(null);
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
 
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
@@ -121,6 +131,40 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     
     return false;
   };
+
+  // Reaction handlers
+  const handleLongPressStart = (messageId: number) => {
+    const timer = setTimeout(() => {
+      setLongPressMessageId(messageId);
+    }, 500);
+    setLongPressTimer(timer);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleReactionSelect = (messageId: number, reaction: string) => {
+    setMessageReactions(prev => ({
+      ...prev,
+      [messageId]: reaction
+    }));
+    setHoveredMessageId(null);
+    setLongPressMessageId(null);
+  };
+
+  const reactionOptions = [
+    { emoji: '👍', icon: ThumbsUp, label: 'Like' },
+    { emoji: '❤️', icon: Heart, label: 'Love' },
+    { emoji: '😊', icon: Smile, label: 'Happy' },
+    { emoji: '😂', icon: Laugh, label: 'Laugh' },
+    { emoji: '👎', icon: ThumbsDown, label: 'Dislike' },
+    { emoji: '😠', icon: Angry, label: 'Angry' }
+  ];
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -873,19 +917,55 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           <>
             {allMessages.map((msg) => {
               const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
+              const showReactionOptions = hoveredMessageId === msg.id || longPressMessageId === msg.id;
+              const messageReaction = messageReactions[msg.id];
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
-                      msg.isFromUser
-                        ? "bg-primary text-primary-foreground ml-auto"
-                        : isSystem
-                          ? "system-message"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
+                  <div className="relative">
+                    <div
+                      className={`max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
+                        msg.isFromUser
+                          ? "bg-primary text-primary-foreground ml-auto"
+                          : isSystem
+                            ? "system-message"
+                            : "bg-muted text-muted-foreground"
+                      }`}
+                      onMouseEnter={() => !msg.isFromUser && !isSystem && setHoveredMessageId(msg.id)}
+                      onMouseLeave={() => setHoveredMessageId(null)}
+                      onTouchStart={() => !msg.isFromUser && !isSystem && handleLongPressStart(msg.id)}
+                      onTouchEnd={handleLongPressEnd}
+                      onTouchCancel={handleLongPressEnd}
+                    >
+                      <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
+                      
+                      {/* Message Reaction Display */}
+                      {messageReaction && (
+                        <div className="mt-2 flex justify-start">
+                          <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
+                            {messageReaction}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Reaction Options Popup */}
+                    {showReactionOptions && !msg.isFromUser && !isSystem && (
+                      <div className="absolute top-0 left-0 transform -translate-y-full z-50 bg-background border border-border rounded-lg shadow-lg p-2 flex gap-1">
+                        {reactionOptions.map((option) => (
+                          <Button
+                            key={option.emoji}
+                            variant="ghost"
+                            size="sm"
+                            className="p-2 hover:bg-muted"
+                            onClick={() => handleReactionSelect(msg.id, option.emoji)}
+                            title={option.label}
+                          >
+                            <span className="text-lg">{option.emoji}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
