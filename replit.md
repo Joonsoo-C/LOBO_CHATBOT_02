@@ -349,6 +349,15 @@ Changelog:
   * All management commands (페르소나, 챗봇 설정, 알림보내기, 문서 업로드, 성과 분석, 도움말) preserve user input
   * Fixed conversation history disappearing when leaving and returning to management chat rooms
   * Enhanced user experience with proper message flow: user message → system response → feature execution
+- June 20, 2025. Implemented comprehensive message reaction system:
+  * Added reaction UI for AI agent responses (not for user messages or system messages)
+  * Mobile interaction: long-press message for 500ms to show reaction options
+  * Desktop interaction: hover over message to display reaction selector
+  * Six reaction options: 👍 Like, ❤️ Love, 😊 Happy, 😂 Laugh, 👎 Dislike, 😠 Angry
+  * Reactions display below message content with background styling
+  * Automatic popup dismissal with click-outside detection and proper cleanup
+  * Smooth animations with fade-in and zoom effects for reaction popup
+  * Supports both mobile and tablet layouts with responsive design
 ```
 
 ## User Preferences

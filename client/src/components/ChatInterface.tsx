@@ -480,6 +480,28 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [isTablet]);
 
+  // Clean up long press timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
+    };
+  }, [longPressTimer]);
+
+  // Click outside to close reaction popup
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setHoveredMessageId(null);
+      setLongPressMessageId(null);
+    };
+
+    if (hoveredMessageId || longPressMessageId) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [hoveredMessageId, longPressMessageId]);
+
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
 
@@ -951,14 +973,20 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
                     {/* Reaction Options Popup */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
-                      <div className="absolute top-0 left-0 transform -translate-y-full z-50 bg-background border border-border rounded-lg shadow-lg p-2 flex gap-1">
+                      <div 
+                        className="absolute top-0 left-0 transform -translate-y-full z-50 bg-background border border-border rounded-lg shadow-lg p-2 flex gap-1 animate-in fade-in-0 zoom-in-95 duration-150"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {reactionOptions.map((option) => (
                           <Button
                             key={option.emoji}
                             variant="ghost"
                             size="sm"
-                            className="p-2 hover:bg-muted"
-                            onClick={() => handleReactionSelect(msg.id, option.emoji)}
+                            className="p-2 hover:bg-muted transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleReactionSelect(msg.id, option.emoji);
+                            }}
                             title={option.label}
                           >
                             <span className="text-lg">{option.emoji}</span>
