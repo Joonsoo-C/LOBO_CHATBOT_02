@@ -450,13 +450,13 @@ export default function TabletLayout() {
                   onClick={() => {
                     // Account settings functionality - placeholder for now
                     toast({
-                      title: "계정 설정",
+                      title: t('home.accountSettings'),
                       description: "계정 설정 기능이 곧 추가될 예정입니다.",
                     });
                   }}
                 >
                   <User className="mr-2 h-4 w-4" />
-                  계정 설정
+                  {t('home.accountSettings')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="korean-text">
