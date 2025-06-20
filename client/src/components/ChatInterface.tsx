@@ -932,7 +932,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
-                  <div className="relative">
+                  <div className="flex items-center gap-1">
                     <div
                       className={`message-content max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                         msg.isFromUser
@@ -951,13 +951,18 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           setTimeout(() => setActiveReactionMessageId(null), 200);
                         }
                       }}
-                      onClick={() => !msg.isFromUser && !isSystem && handleReactionToggle(msg.id)}
+                      onClick={() => {
+                        if (!msg.isFromUser && !isSystem) {
+                          console.log('Message clicked, toggling reactions for message:', msg.id);
+                          handleReactionToggle(msg.id);
+                        }
+                      }}
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
-                      {/* Message Reaction Display */}
+                      {/* Message Reaction Display - Mobile: below message */}
                       {messageReaction && (
-                        <div className="mt-2 flex justify-start">
+                        <div className="mt-2 flex justify-start md:hidden">
                           <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
                             {messageReaction}
                           </span>
@@ -965,16 +970,51 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       )}
                     </div>
 
-                    {/* Reaction Options Popup - PC: right side, Mobile: bottom */}
+                    {/* PC: Reaction buttons right next to message */}
+                    {!msg.isFromUser && !isSystem && (
+                      <>
+                        {/* Message Reaction Display - PC: next to message */}
+                        {messageReaction && (
+                          <div className="hidden md:flex">
+                            <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
+                              {messageReaction}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Reaction Options - PC: right next to message */}
+                        {showReactionOptions && (
+                          <div 
+                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                            onMouseEnter={() => setActiveReactionMessageId(msg.id)}
+                            onMouseLeave={() => setActiveReactionMessageId(null)}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {reactionOptions.map((option) => (
+                              <button
+                                key={option.emoji}
+                                className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleReactionSelect(msg.id, option.emoji);
+                                }}
+                                title={option.label}
+                              >
+                                {option.emoji === '👍' ? (
+                                  <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                                ) : (
+                                  <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* Mobile: Reaction Options below message */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
-                      <div 
-                        className="reaction-popup absolute flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 
-                                   md:top-1/2 md:left-full md:-translate-y-1/2 md:ml-1
-                                   top-full left-0 mt-2"
-                        onMouseEnter={() => setActiveReactionMessageId(msg.id)}
-                        onMouseLeave={() => setActiveReactionMessageId(null)}
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                      <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
                         {reactionOptions.map((option) => (
                           <button
                             key={option.emoji}
