@@ -932,7 +932,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
-                  <div className="relative flex items-center gap-1">
+                  <div 
+                    className="relative flex items-center gap-1"
+                    onMouseEnter={() => {
+                      if (!msg.isFromUser && !isSystem) {
+                        setActiveReactionMessageId(msg.id);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!msg.isFromUser && !isSystem) {
+                        setTimeout(() => setActiveReactionMessageId(null), 200);
+                      }
+                    }}
+                  >
                     <div
                       className={`message-content max-w-[75%] px-4 py-3 rounded-2xl korean-text md:max-w-[80%] md:px-5 md:py-4 ${
                         msg.isFromUser
@@ -941,16 +953,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
-                      onMouseEnter={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          setActiveReactionMessageId(msg.id);
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          setTimeout(() => setActiveReactionMessageId(null), 200);
-                        }
-                      }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
                           handleReactionToggle(msg.id);
@@ -1011,9 +1013,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       </>
                     )}
 
-                    {/* Mobile: Reaction Options below message */}
+                    {/* Mobile: Reaction Options bottom right of message */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
-                      <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                      <div className="md:hidden absolute top-full right-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
                         {reactionOptions.map((option) => (
                           <button
                             key={option.emoji}
