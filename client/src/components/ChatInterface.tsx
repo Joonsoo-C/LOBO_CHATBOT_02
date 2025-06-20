@@ -29,6 +29,7 @@ import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
 import IconChangeModal from "./IconChangeModal";
 import { useIsTablet } from "@/hooks/use-tablet";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
 
 interface ChatInterfaceProps {
@@ -38,6 +39,7 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
   const isTablet = useIsTablet();
+  const { t } = useLanguage();
   const [message, setMessage] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
@@ -591,7 +593,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <User className="w-4 h-4 mr-2" />
-                            페르소나 변경
+                            {t('agent.persona')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -604,7 +606,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <Edit className="w-4 h-4 mr-2" />
-                            아이콘 변경
+                            {t('agent.iconChange')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -617,7 +619,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <Settings className="w-4 h-4 mr-2" />
-                            챗봇 설정
+                            {t('agent.settings')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -630,7 +632,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <Bell className="w-4 h-4 mr-2" />
-                            알림보내기
+                            {t('agent.notification')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -643,7 +645,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <FileText className="w-4 h-4 mr-2" />
-                            문서 업로드
+                            {t('agent.upload')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -696,7 +698,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                           >
                             <BarChart3 className="w-4 h-4 mr-2" />
-                            에이전트 성과
+                            {t('agent.performance')}
                           </Button>
                           </div>
                         </div>
