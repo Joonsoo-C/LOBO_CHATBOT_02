@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeSelector } from "@/components/ThemeSelector";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -42,6 +44,7 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Redirect if already logged in
   if (user) {
@@ -80,8 +83,8 @@ export default function AuthPage() {
       await queryClient.refetchQueries({ queryKey: ["/api/user"] });
       
       toast({
-        title: "로그인 성공",
-        description: "환영합니다!",
+        title: t('auth.loginSuccess'),
+        description: t('auth.welcome'),
       });
       
       // Small delay to ensure auth state is updated before navigation
@@ -91,8 +94,8 @@ export default function AuthPage() {
     },
     onError: (error: Error) => {
       toast({
-        title: "로그인 실패",
-        description: "학번/교번 또는 비밀번호를 확인해주세요.",
+        title: t('auth.loginFailed'),
+        description: t('auth.loginError'),
         variant: "destructive",
       });
     },
