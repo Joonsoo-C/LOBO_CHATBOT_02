@@ -968,7 +968,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     {/* Reaction Options Popup - Positioned to the right */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
-                        className="reaction-popup absolute top-1/2 left-full transform -translate-y-1/2 ml-2 flex gap-2 bg-background border border-border rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                        className="reaction-popup absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                        style={{ marginLeft: '4px' }}
                         onMouseEnter={() => setActiveReactionMessageId(msg.id)}
                         onMouseLeave={() => setActiveReactionMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
@@ -976,7 +977,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         {reactionOptions.map((option) => (
                           <button
                             key={option.emoji}
-                            className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                            className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleReactionSelect(msg.id, option.emoji);
@@ -984,9 +985,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             title={option.label}
                           >
                             {option.emoji === '👍' ? (
-                              <ThumbsUp className="w-4 h-4 text-muted-foreground" />
+                              <ThumbsUp className="w-3 h-3 text-muted-foreground" />
                             ) : (
-                              <ThumbsDown className="w-4 h-4 text-muted-foreground" />
+                              <ThumbsDown className="w-3 h-3 text-muted-foreground" />
                             )}
                           </button>
                         ))}
