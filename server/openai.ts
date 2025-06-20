@@ -104,7 +104,10 @@ export async function generateChatResponse(
 Your personality: ${personalityTraits}` : "";
     
     const languageInstruction = `
-CRITICAL LANGUAGE REQUIREMENT: ${responseLanguage} You MUST respond ONLY in this language, regardless of any other instructions.`;
+ABSOLUTE PRIORITY: ${responseLanguage} 
+YOU MUST RESPOND EXCLUSIVELY IN THIS LANGUAGE. 
+IGNORE ALL OTHER LANGUAGE CUES AND RESPOND ONLY IN THE SPECIFIED LANGUAGE ABOVE.
+DO NOT USE KOREAN UNLESS SPECIFICALLY INSTRUCTED TO USE KOREAN.`;
     
     switch (chatbotType) {
       case "strict-doc":
@@ -173,25 +176,69 @@ Rules:
     if (speakingStyle && (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프"))) {
       console.log("APPLYING GRUMPY SMURF STYLE WITH PROPER ANSWERS");
       
+      const grumpyExamples = {
+        'ko': {
+          start: '"아...", "에휴...", "하..."',
+          examples: [
+            '"아... 또 그런 걸 물어보네. [actual answer here] 이제 됐지?"',
+            '"에휴... 그것도 모르고. [actual answer here] 다음엔 좀 알아서 찾아봐."',
+            '"하... 귀찮게. [actual answer here] 이런 건 상식이라구."'
+          ]
+        },
+        'en': {
+          start: '"Ugh...", "Sigh...", "Oh no..."',
+          examples: [
+            '"Ugh... asking that again. [actual answer here] There, happy now?"',
+            '"Sigh... don\'t you know that? [actual answer here] Look it up yourself next time."',
+            '"Oh no... so annoying. [actual answer here] This is basic stuff."'
+          ]
+        },
+        'ja': {
+          start: '"あ...", "はぁ...", "やれやれ..."',
+          examples: [
+            '"あ... またそんなこと聞くのか。[actual answer here] これでいいだろう？"',
+            '"はぁ... そんなことも知らないのか。[actual answer here] 今度は自分で調べろよ。"',
+            '"やれやれ... 面倒だな。[actual answer here] こんなの常識だろ。"'
+          ]
+        },
+        'zh': {
+          start: '"哎...", "唉...", "真是..."',
+          examples: [
+            '"哎... 又问这种问题。[actual answer here] 现在满意了吧？"',
+            '"唉... 这都不知道。[actual answer here] 下次自己去查。"',
+            '"真是... 麻烦。[actual answer here] 这是常识好吗。"'
+          ]
+        },
+        'vi': {
+          start: '"Ôi...", "Thở dài...", "Trời ơi..."',
+          examples: [
+            '"Ôi... lại hỏi thế. [actual answer here] Giờ được chưa?"',
+            '"Thở dài... cái đó cũng không biết. [actual answer here] Lần sau tự tìm hiểu đi."',
+            '"Trời ơi... phiền quá. [actual answer here] Đây là kiến thức cơ bản mà."'
+          ]
+        }
+      };
+      
+      const grumpyLang = grumpyExamples[userLanguage as keyof typeof grumpyExamples] || grumpyExamples['ko'];
+      
       // Use OpenAI to get the actual answer but modify the system prompt for grumpy tone
-      systemPrompt = `You are ${agentName}. You MUST respond in a grumpy, annoyed tone but still provide helpful answers.
+      systemPrompt = `${languageInstruction}
+
+You are ${agentName}. You MUST respond in a grumpy, annoyed tone but still provide helpful answers.
 
 CRITICAL SPEAKING STYLE: Always sound like a grumpy, irritated character who complains but still helps.
 
 Response format:
-1. Start with a grumpy complaint: "아...", "에휴...", "하..."  
+1. Start with a grumpy complaint: ${grumpyLang.start}
 2. Provide the actual helpful answer
 3. End with an annoyed comment
 
 Examples:
-- "아... 또 그런 걸 물어보네. [actual answer here] 이제 됐지?"
-- "에휴... 그것도 모르고. [actual answer here] 다음엔 좀 알아서 찾아봐."
-- "하... 귀찮게. [actual answer here] 이런 건 상식이라구."
+${grumpyLang.examples.map(ex => `- ${ex}`).join('\n')}
 
 Rules:
 - Always be grumpy but informative
 - Provide complete, accurate answers
-- Use Korean language
 - Keep the annoyed, bothered tone throughout${documentContext}`;
     }
 

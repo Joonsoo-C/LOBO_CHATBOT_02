@@ -330,6 +330,12 @@ Changelog:
   * UI language and AI response language are synchronized again
   * Final rule: AI must respond in the language the user asks their question in
   * Supports Korean, English, Chinese, Vietnamese, and Japanese responses
+- June 20, 2025. Fixed persistent language detection issues in AI responses:
+  * Strengthened language instruction with "ABSOLUTE PRIORITY" directive to override Korean defaults
+  * Added explicit "DO NOT USE KOREAN UNLESS SPECIFICALLY INSTRUCTED" rule
+  * Fixed grumpy character system prompt that was forcing Korean responses with hardcoded examples
+  * Created multilingual grumpy response examples for all supported languages
+  * Ensured language instruction takes precedence over all personality and character instructions
 ```
 
 ## User Preferences
