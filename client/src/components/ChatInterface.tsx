@@ -136,10 +136,21 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
-    setMessageReactions(prev => ({
-      ...prev,
-      [messageId]: reaction
-    }));
+    setMessageReactions(prev => {
+      const currentReaction = prev[messageId];
+      if (currentReaction === reaction) {
+        // Remove reaction if same reaction is clicked
+        const newReactions = { ...prev };
+        delete newReactions[messageId];
+        return newReactions;
+      } else {
+        // Set new reaction
+        return {
+          ...prev,
+          [messageId]: reaction
+        };
+      }
+    });
     setActiveReactionMessageId(null);
   };
 
@@ -941,7 +952,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                     onMouseLeave={() => {
                       if (!msg.isFromUser && !isSystem) {
-                        setTimeout(() => setActiveReactionMessageId(null), 200);
+                        setTimeout(() => setActiveReactionMessageId(null), 300);
                       }
                     }}
                   >
@@ -961,22 +972,15 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     >
                       <p className="text-sm leading-relaxed md:text-base md:leading-relaxed">{msg.content}</p>
                       
-                      {/* Message Reaction Display - Mobile: below message left */}
-                      {messageReaction && (
-                        <div className="mt-2 flex justify-start md:hidden">
-                          <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
-                            {messageReaction}
-                          </span>
-                        </div>
-                      )}
+
                     </div>
 
                     {/* PC: Reaction system right next to message */}
                     {!msg.isFromUser && !isSystem && (
                       <>
-                        {/* Message Reaction Display - PC: bottom left of message */}
+                        {/* Message Reaction Display - below message for both PC and mobile */}
                         {messageReaction && (
-                          <div className="hidden md:block absolute bottom-0 left-0 transform translate-y-full mt-1">
+                          <div className="absolute bottom-0 left-0 transform translate-y-full mt-1">
                             <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
                               {messageReaction}
                             </span>
@@ -987,8 +991,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         {showReactionOptions && (
                           <div 
                             className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                            onMouseEnter={() => setActiveReactionMessageId(msg.id)}
-                            onMouseLeave={() => setActiveReactionMessageId(null)}
                             onClick={(e) => e.stopPropagation()}
                           >
                             {reactionOptions.map((option) => (

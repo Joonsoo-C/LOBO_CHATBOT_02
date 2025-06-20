@@ -350,16 +350,13 @@ Changelog:
   * Fixed conversation history disappearing when leaving and returning to management chat rooms
   * Enhanced user experience with proper message flow: user message → system response → feature execution
 - June 20, 2025. Implemented comprehensive message reaction system:
-  * Added reaction UI for AI agent responses (not for user messages or system messages)
-  * Mobile interaction: tap message to show reaction options (simplified from long-press)
-  * Desktop interaction: hover over message to display reaction selector positioned to the right
-  * Two reaction options: 👍 Like, 👎 Dislike (simplified from six options)
-  * Reactions display below message content with background styling
-  * Fixed PC hover issue where message width would change - reactions now appear to the right without affecting message layout
-  * Redesigned reaction buttons as small circular icons with subtle muted background and icon styling
-  * Automatic popup dismissal with click-outside detection and proper cleanup
-  * Smooth animations with fade-in and zoom effects for reaction popup
-  * Supports both mobile and tablet layouts with responsive design
+  * Added reaction UI for AI agent responses with toggle functionality (click same reaction to remove)
+  * PC: Extended hover area across message and reaction UI to prevent flickering
+  * Mobile: Tap message to show reaction options below message on left side
+  * Two reaction options: 👍 Like, 👎 Dislike with circular button design
+  * Reaction results display below message bubble on both PC and mobile platforms
+  * Improved hover stability with 300ms delay and simplified event handling
+  * Fixed positioning consistency between PC and mobile for unified user experience
 ```
 
 ## User Preferences
