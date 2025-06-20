@@ -101,6 +101,14 @@ export const agentStats = pgTable("agent_stats", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const messageReactions = pgTable("message_reactions", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").references(() => messages.id).notNull(),
+  userId: text("user_id").references(() => users.id).notNull(),
+  reaction: text("reaction").notNull(), // "👍" or "👎"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
@@ -133,11 +141,12 @@ export const conversationsRelations = relations(conversations, ({ one, many }) =
   messages: many(messages),
 }));
 
-export const messagesRelations = relations(messages, ({ one }) => ({
+export const messagesRelations = relations(messages, ({ one, many }) => ({
   conversation: one(conversations, {
     fields: [messages.conversationId],
     references: [conversations.id],
   }),
+  reactions: many(messageReactions),
 }));
 
 export const documentsRelations = relations(documents, ({ one }) => ({
@@ -155,6 +164,17 @@ export const agentStatsRelations = relations(agentStats, ({ one }) => ({
   agent: one(agents, {
     fields: [agentStats.agentId],
     references: [agents.id],
+  }),
+}));
+
+export const messageReactionsRelations = relations(messageReactions, ({ one }) => ({
+  message: one(messages, {
+    fields: [messageReactions.messageId],
+    references: [messages.id],
+  }),
+  user: one(users, {
+    fields: [messageReactions.userId],
+    references: [users.id],
   }),
 }));
 
@@ -181,6 +201,11 @@ export const insertDocumentSchema = createInsertSchema(documents).omit({
   createdAt: true,
 });
 
+export const insertMessageReactionSchema = createInsertSchema(messageReactions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -193,3 +218,5 @@ export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type AgentStats = typeof agentStats.$inferSelect;
+export type MessageReaction = typeof messageReactions.$inferSelect;
+export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
