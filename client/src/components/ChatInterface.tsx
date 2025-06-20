@@ -965,11 +965,12 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       )}
                     </div>
 
-                    {/* Reaction Options Popup - Positioned to the right */}
+                    {/* Reaction Options Popup - PC: right side, Mobile: bottom */}
                     {showReactionOptions && !msg.isFromUser && !isSystem && (
                       <div 
-                        className="reaction-popup absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                        style={{ marginLeft: '4px' }}
+                        className="reaction-popup absolute flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 
+                                   md:top-1/2 md:left-full md:-translate-y-1/2 md:ml-1
+                                   top-full left-0 mt-2"
                         onMouseEnter={() => setActiveReactionMessageId(msg.id)}
                         onMouseLeave={() => setActiveReactionMessageId(null)}
                         onClick={(e) => e.stopPropagation()}
