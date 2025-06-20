@@ -23,9 +23,10 @@ export function LanguageSelector() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          <Globe className="w-4 h-4 mr-1" />
-          <span className="text-sm">{currentLang?.flag}</span>
+        <Button variant="ghost" size="sm" className="h-8 px-3 w-full justify-start hover:bg-transparent">
+          <Globe className="w-4 h-4 mr-2" />
+          <span className="text-sm mr-1">{currentLang?.flag}</span>
+          <span className="text-sm font-medium">{currentLang?.name}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[160px]">

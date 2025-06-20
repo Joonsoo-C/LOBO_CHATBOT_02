@@ -283,10 +283,12 @@ export default function AuthPage() {
 
         {/* 언어 선택 섹션 - 하단 */}
         <div className="flex justify-center">
-          <div className="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border shadow-sm">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t('auth.languageSettings')}:</span>
-              <LanguageSelector />
+          <div className="bg-white dark:bg-gray-800 rounded-lg border shadow-sm overflow-hidden">
+            <div className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors min-w-[160px]">
+              <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{t('auth.languageSettings')}:</span>
+              <div className="flex-1">
+                <LanguageSelector />
+              </div>
             </div>
           </div>
         </div>
