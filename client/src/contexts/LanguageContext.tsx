@@ -376,6 +376,10 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': 'Chế độ quản lý',
     'agent.generalChat': 'Trò chuyện thường',
     
+    // Chat interface
+    'chat.typing': 'Đang nhập...',
+    'chat.inputPlaceholder': 'Nhập tin nhắn...',
+    
     // Tên ngôn ngữ
     'language.ko': '한국어',
     'language.en': 'English',
@@ -463,6 +467,10 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.ranking': 'ランキング',
     'agent.managementMode': '管理モード',
     'agent.generalChat': '一般チャット',
+    
+    // Chat interface
+    'chat.typing': '入力中...',
+    'chat.inputPlaceholder': 'メッセージを入力...',
     
     // 言語名
     'language.ko': '한국어',

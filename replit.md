@@ -311,6 +311,12 @@ Changelog:
   * AI agents now automatically respond in the same language as the user's question
   * Language instruction integrated into all chatbot types: strict-doc, doc-fallback-llm, general-llm
   * System maintains agent personality while adapting to user's preferred language
+- June 20, 2025. Fixed multilingual chat interface UI consistency:
+  * Updated typing indicator to display language-appropriate text ("메시지 작성 중...", "Typing...", etc.)
+  * Made message input placeholder multilingual to match selected language
+  * Added chat.typing and chat.inputPlaceholder translation keys for all supported languages
+  * Fixed language mismatch issue where AI responses and UI elements showed different languages
+  * Complete UI/AI language synchronization now working across all interface elements
 ```
 
 ## User Preferences

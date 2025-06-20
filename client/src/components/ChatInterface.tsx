@@ -988,7 +988,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           <div className="flex-1 relative">
             <Input
               type="text"
-              placeholder="메시지를 입력하세요..."
+              placeholder={t('chat.inputPlaceholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
