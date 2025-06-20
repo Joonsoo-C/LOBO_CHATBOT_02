@@ -23,22 +23,19 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 
-const loginSchema = z.object({
-  username: z.string().min(1, "학번/교번을 입력해주세요"),
-  password: z.string().min(1, "비밀번호를 입력해주세요"),
+const createLoginSchema = (t: (key: string) => string) => z.object({
+  username: z.string().min(1, t('auth.usernameRequired') || "Username is required"),
+  password: z.string().min(1, t('auth.passwordRequired') || "Password is required"),
 });
 
-const registerSchema = z.object({
-  username: z.string().min(1, "학번/교번을 입력해주세요"),
-  password: z.string().min(6, "비밀번호는 6자 이상이어야 합니다"),
-  firstName: z.string().min(1, "이름을 입력해주세요"),
-  lastName: z.string().min(1, "성을 입력해주세요"),
-  email: z.string().email("올바른 이메일 주소를 입력해주세요").optional().or(z.literal("")),
+const createRegisterSchema = (t: (key: string) => string) => z.object({
+  username: z.string().min(1, t('auth.usernameRequired') || "Username is required"),
+  password: z.string().min(6, t('auth.passwordMinLength') || "Password must be at least 6 characters"),
+  firstName: z.string().min(1, t('auth.firstNameRequired') || "First name is required"),
+  lastName: z.string().min(1, t('auth.lastNameRequired') || "Last name is required"),
+  email: z.string().email(t('auth.emailInvalid') || "Invalid email").optional().or(z.literal("")),
   userType: z.enum(["student", "faculty"]),
 });
-
-type LoginData = z.infer<typeof loginSchema>;
-type RegisterData = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
@@ -51,6 +48,12 @@ export default function AuthPage() {
     setLocation("/");
     return null;
   }
+
+  const loginSchema = createLoginSchema(t);
+  const registerSchema = createRegisterSchema(t);
+
+  type LoginData = z.infer<typeof loginSchema>;
+  type RegisterData = z.infer<typeof registerSchema>;
 
   const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -150,7 +153,12 @@ export default function AuthPage() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <div className="px-2 py-1">
-              <div className="text-sm text-muted-foreground mb-2 korean-text">테마 설정</div>
+              <div className="text-sm text-muted-foreground mb-2">{t('auth.languageSettings')}</div>
+              <LanguageSelector />
+            </div>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1">
+              <div className="text-sm text-muted-foreground mb-2">{t('auth.themeSettings')}</div>
               <ThemeSelector />
             </div>
           </DropdownMenuContent>
@@ -161,26 +169,26 @@ export default function AuthPage() {
         {/* Logo Section */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            LoBo
+            {t('auth.title')}
           </h1>
           <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-            대학교 AI 챗봇 시스템
+            {t('auth.subtitle')}
           </h2>
         </div>
 
         {/* Auth Form */}
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>로그인</CardTitle>
+            <CardTitle>{t('auth.login')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-username">학번/교번</Label>
+                <Label htmlFor="login-username">{t('auth.username')}</Label>
                 <Input
                   id="login-username"
                   type="text"
-                  placeholder="예: 2024001234 또는 F2024001"
+                  placeholder={t('auth.usernamePlaceholder')}
                   {...loginForm.register("username")}
                 />
                 {loginForm.formState.errors.username && (
@@ -190,7 +198,7 @@ export default function AuthPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password">비밀번호</Label>
+                <Label htmlFor="login-password">{t('auth.password')}</Label>
                 <Input
                   id="login-password"
                   type="password"
@@ -207,12 +215,12 @@ export default function AuthPage() {
                     className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
                     onClick={() => {
                       toast({
-                        title: "비밀번호 찾기",
-                        description: "관리자에게 문의하여 비밀번호를 재설정해주세요.",
+                        title: t('auth.forgotPassword'),
+                        description: t('auth.forgotPasswordMessage'),
                       });
                     }}
                   >
-                    비밀번호를 잊으셨나요?
+                    {t('auth.forgotPassword')}
                   </button>
                 </div>
               </div>
@@ -221,13 +229,13 @@ export default function AuthPage() {
                 className="w-full"
                 disabled={loginMutation.isPending}
               >
-                {loginMutation.isPending ? "로그인 중..." : "로그인"}
+                {loginMutation.isPending ? t('auth.loggingIn') : t('auth.loginButton')}
               </Button>
             </form>
 
             {/* 데모 계정 섹션 */}
             <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm font-medium text-blue-900">데모 계정으로 빠른 로그인</p>
+              <p className="text-sm font-medium text-blue-900">{t('auth.demoAccounts')}</p>
               <div className="space-y-2">
                 <Button
                   type="button"
@@ -239,7 +247,7 @@ export default function AuthPage() {
                     loginForm.setValue("password", "student123");
                   }}
                 >
-                  👨‍🎓 학생 계정
+                  {t('auth.studentAccount')}
                   <br />
                   <span className="text-xs text-muted-foreground">2024001234</span>
                 </Button>
@@ -253,7 +261,7 @@ export default function AuthPage() {
                     loginForm.setValue("password", "faculty123");
                   }}
                 >
-                  👨‍🏫 교직원 계정
+                  {t('auth.facultyAccount')}
                   <br />
                   <span className="text-xs text-muted-foreground">F2024001</span>
                 </Button>
@@ -266,13 +274,13 @@ export default function AuthPage() {
                     window.open("https://university-ai-admin-hummings.replit.app/", "_blank");
                   }}
                 >
-                  🔑 마스터 계정
+                  {t('auth.masterAccount')}
                   <br />
-                  <span className="text-xs text-muted-foreground">관리자 시스템</span>
+                  <span className="text-xs text-muted-foreground">{t('auth.adminSystem')}</span>
                 </Button>
               </div>
               <p className="text-xs text-blue-700">
-                계정이 없는 경우 자동으로 생성됩니다
+                {t('auth.autoCreate')}
               </p>
             </div>
           </CardContent>

@@ -45,6 +45,12 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.settings': '설정',
     'auth.themeSettings': '테마 설정',
     'auth.languageSettings': '언어 설정',
+    'auth.usernameRequired': '학번/교번을 입력해주세요',
+    'auth.passwordRequired': '비밀번호를 입력해주세요',
+    'auth.passwordMinLength': '비밀번호는 6자 이상이어야 합니다',
+    'auth.firstNameRequired': '이름을 입력해주세요',
+    'auth.lastNameRequired': '성을 입력해주세요',
+    'auth.emailInvalid': '올바른 이메일 주소를 입력해주세요',
     
     // 공통 UI 요소
     'common.home': '홈',
