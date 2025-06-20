@@ -100,6 +100,10 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': '관리자 모드',
     'agent.generalChat': '일반 대화',
     
+    // Chat interface
+    'chat.typing': '메시지 작성 중...',
+    'chat.inputPlaceholder': '메시지를 입력하세요...',
+    
     // 언어 이름
     'language.ko': '한국어',
     'language.en': 'English',
@@ -188,6 +192,10 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': 'Management Mode',
     'agent.generalChat': 'General Chat',
     
+    // Chat interface
+    'chat.typing': 'Typing...',
+    'chat.inputPlaceholder': 'Type a message...',
+    
     // Language names
     'language.ko': '한국어',
     'language.en': 'English',
@@ -275,6 +283,10 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.ranking': '排名',
     'agent.managementMode': '管理模式',
     'agent.generalChat': '一般对话',
+    
+    // Chat interface
+    'chat.typing': '正在输入...',
+    'chat.inputPlaceholder': '输入消息...',
     
     // 语言名称
     'language.ko': '한국어',

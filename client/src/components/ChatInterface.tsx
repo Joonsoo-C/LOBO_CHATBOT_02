@@ -970,7 +970,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                     </div>
-                    <span className="text-xs text-gray-500 ml-2 korean-text">메시지 작성 중...</span>
+                    <span className="text-xs text-gray-500 ml-2">{t('chat.typing')}</span>
                   </div>
                 </div>
               </div>
