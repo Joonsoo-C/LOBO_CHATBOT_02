@@ -62,6 +62,54 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
 
+  // Fetch reactions for conversation
+  const { data: conversationReactions } = useQuery({
+    queryKey: [`/api/conversations/${conversation?.id}/reactions`],
+    enabled: !!conversation?.id,
+  });
+
+  // Update local state when reactions are fetched
+  useEffect(() => {
+    if (conversationReactions) {
+      const reactionMap: Record<number, string> = {};
+      Object.entries(conversationReactions).forEach(([messageId, reaction]) => {
+        if (reaction) {
+          reactionMap[parseInt(messageId)] = (reaction as any).reaction;
+        }
+      });
+      setMessageReactions(reactionMap);
+    }
+  }, [conversationReactions]);
+
+  // Reaction mutations
+  const createReactionMutation = useMutation({
+    mutationFn: async ({ messageId, reaction }: { messageId: number; reaction: string }) => {
+      const response = await fetch(`/api/messages/${messageId}/reactions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reaction }),
+      });
+      if (!response.ok) throw new Error('Failed to create reaction');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/conversations/${conversation?.id}/reactions`] });
+    },
+  });
+
+  const deleteReactionMutation = useMutation({
+    mutationFn: async (messageId: number) => {
+      const response = await fetch(`/api/messages/${messageId}/reactions`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete reaction');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/conversations/${conversation?.id}/reactions`] });
+    },
+  });
+
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
     const systemMessage: Message = {
@@ -136,21 +184,25 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
-    setMessageReactions(prev => {
-      const currentReaction = prev[messageId];
-      if (currentReaction === reaction) {
-        // Remove reaction if same reaction is clicked
+    const currentReaction = messageReactions[messageId];
+    
+    if (currentReaction === reaction) {
+      // Remove reaction if same reaction is clicked
+      deleteReactionMutation.mutate(messageId);
+      setMessageReactions(prev => {
         const newReactions = { ...prev };
         delete newReactions[messageId];
         return newReactions;
-      } else {
-        // Set new reaction
-        return {
-          ...prev,
-          [messageId]: reaction
-        };
-      }
-    });
+      });
+    } else {
+      // Set new reaction
+      createReactionMutation.mutate({ messageId, reaction });
+      setMessageReactions(prev => ({
+        ...prev,
+        [messageId]: reaction
+      }));
+    }
+    
     setActiveReactionMessageId(null);
   };
 

@@ -357,6 +357,10 @@ Changelog:
   * Reaction results display below message bubble on both PC and mobile platforms
   * Improved hover stability with 300ms delay and simplified event handling
   * Fixed positioning consistency between PC and mobile for unified user experience
+  * Implemented database persistence with messageReactions table and API endpoints
+  * Reactions now persist when leaving and re-entering chat rooms
+  * Added proper reaction cancellation functionality (same icon click removes reaction)
+  * Enhanced mobile display to match PC layout with reactions below message bubbles
 ```
 
 ## User Preferences
