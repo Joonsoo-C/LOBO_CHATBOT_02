@@ -211,7 +211,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     { emoji: '👎', icon: ThumbsDown, label: 'Dislike' }
   ];
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -491,33 +491,26 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   };
 
-  // Auto scroll to bottom when new messages arrive or typing state changes
+  // Only scroll to bottom when initially entering a conversation (one time only)
+  const [hasInitialScrolled, setHasInitialScrolled] = useState(false);
+  
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages, isTyping]);
-
-  // Immediately scroll to bottom when messages are first loaded (without animation)
-  useEffect(() => {
-    if (messages.length > 0) {
-      // Use requestAnimationFrame to ensure DOM is ready
-      requestAnimationFrame(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
-      });
-    }
-  }, [messages.length]);
-
-  // Also scroll to bottom when conversation changes
-  useEffect(() => {
-    if (conversation?.id && messages.length > 0) {
-      // Force immediate scroll to bottom when entering a chat room
+    if (conversation?.id && messages && messages.length > 0 && !hasInitialScrolled) {
+      // Only scroll once when first entering a conversation
       requestAnimationFrame(() => {
         const messagesContainer = document.querySelector('.chat-interface-messages');
         if (messagesContainer) {
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          setHasInitialScrolled(true);
         }
       });
     }
-  }, [conversation?.id, messages.length]);
+  }, [conversation?.id, messages, hasInitialScrolled]);
+
+  // Reset scroll flag when conversation changes
+  useEffect(() => {
+    setHasInitialScrolled(false);
+  }, [conversation?.id]);
 
   // Minimal mobile handling - remove all complex viewport logic
   useEffect(() => {
@@ -1111,7 +1104,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             )}
           </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
 

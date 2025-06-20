@@ -361,6 +361,12 @@ Changelog:
   * Reactions now persist when leaving and re-entering chat rooms
   * Added proper reaction cancellation functionality (same icon click removes reaction)
   * Enhanced mobile display to match PC layout with reactions below message bubbles
+- June 20, 2025. Fixed mobile layout and auto-scroll issues:
+  * Increased mobile bottom padding from 120px to 140px to prevent message cutoff
+  * Removed automatic scrolling behavior that moved screen without user interaction
+  * Chat interface now only scrolls once when initially entering a conversation
+  * Users maintain full control over scroll position during conversations
+  * Fixed last message visibility on mobile devices with proper spacing for reactions
 ```
 
 ## User Preferences
