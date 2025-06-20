@@ -292,32 +292,29 @@ export default function AuthPage() {
 
         {/* 언어 선택 섹션 - 하단 */}
         <div className="flex justify-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg border shadow-sm overflow-hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors min-w-[160px] w-full">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{t('auth.languageSettings')}:</span>
-                  <div className="flex items-center gap-2 flex-1">
-                    <Globe className="w-4 h-4" />
-                    <span className="text-sm">{languages.find(lang => lang.code === language)?.flag}</span>
-                    <span className="text-sm font-medium">{languages.find(lang => lang.code === language)?.name}</span>
-                  </div>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="min-w-[160px]">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => setLanguage(lang.code)}
-                    className={`cursor-pointer ${language === lang.code ? 'bg-accent' : ''}`}
-                  >
-                    <span className="mr-2">{lang.flag}</span>
-                    <span>{lang.name}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="bg-white dark:bg-gray-800 border shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors px-4 py-3 h-auto"
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">{languages.find(lang => lang.code === language)?.name}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="min-w-[160px]">
+              {languages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={`cursor-pointer ${language === lang.code ? 'bg-accent' : ''}`}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  <span>{lang.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
