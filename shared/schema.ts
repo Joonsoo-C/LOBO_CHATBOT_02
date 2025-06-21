@@ -242,7 +242,14 @@ export const insertOrganizationSchema = createInsertSchema(organizations).omit({
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
-export type Agent = typeof agents.$inferSelect;
+export type Agent = typeof agents.$inferSelect & {
+  managerFirstName?: string | null;
+  managerLastName?: string | null;
+  managerUsername?: string | null;
+  organizationName?: string | null;
+  organizationType?: string | null;
+  messageCount?: number;
+};
 export type InsertAgent = z.infer<typeof insertAgentSchema>;
 export type Organization = typeof organizations.$inferSelect;
 export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;

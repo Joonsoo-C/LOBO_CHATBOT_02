@@ -76,11 +76,9 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다"),
   description: z.string().min(1, "설명은 필수입니다"),
   category: z.string().min(1, "카테고리를 선택해주세요"),
-  icon: z.string().min(1, "아이콘을 선택해주세요"),
-  backgroundColor: z.string().min(1, "배경색을 선택해주세요"),
   personality: z.string().optional(),
-  managerId: z.string().optional(),
-  organizationId: z.string().optional(),
+  managerId: z.string().min(1, "관리자를 선택해주세요"),
+  organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;
@@ -90,6 +88,10 @@ export default function MasterAdmin() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
+  const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
+  const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
+  const [selectedIcon, setSelectedIcon] = useState("User");
+  const [selectedBgColor, setSelectedBgColor] = useState("blue");
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -150,8 +152,6 @@ export default function MasterAdmin() {
       name: "",
       description: "",
       category: "",
-      icon: "",
-      backgroundColor: "",
       personality: "",
       managerId: "",
       organizationId: "",
@@ -163,8 +163,10 @@ export default function MasterAdmin() {
     mutationFn: async (data: AgentFormData) => {
       const payload = {
         ...data,
-        managerId: data.managerId === "none" ? null : data.managerId || null,
-        organizationId: data.organizationId === "none" ? null : (data.organizationId ? parseInt(data.organizationId) : null),
+        icon: "User", // 기본 아이콘
+        backgroundColor: "blue", // 기본 배경색
+        managerId: data.managerId,
+        organizationId: parseInt(data.organizationId),
       };
       const response = await apiRequest("POST", "/api/admin/agents", payload);
       return response.json();
@@ -187,6 +189,48 @@ export default function MasterAdmin() {
       });
     },
   });
+
+  // 아이콘 변경 뮤테이션
+  const changeIconMutation = useMutation({
+    mutationFn: async ({ agentId, icon, backgroundColor }: { agentId: number, icon: string, backgroundColor: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/agents/${agentId}/icon`, { icon, backgroundColor });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      toast({
+        title: "성공",
+        description: "아이콘이 변경되었습니다.",
+      });
+      setIsIconChangeDialogOpen(false);
+      setIconChangeAgent(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "아이콘 변경에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleIconChange = () => {
+    if (iconChangeAgent) {
+      changeIconMutation.mutate({
+        agentId: iconChangeAgent.id,
+        icon: selectedIcon,
+        backgroundColor: selectedBgColor
+      });
+    }
+  };
+
+  const openIconChangeDialog = (agent: Agent) => {
+    setIconChangeAgent(agent);
+    setSelectedIcon(agent.icon);
+    setSelectedBgColor(agent.backgroundColor);
+    setIsIconChangeDialogOpen(true);
+  };
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -534,69 +578,10 @@ export default function MasterAdmin() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={agentForm.control}
-                          name="icon"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>아이콘</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="아이콘 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="User">👤 사용자</SelectItem>
-                                  <SelectItem value="Bot">🤖 봇</SelectItem>
-                                  <SelectItem value="BookOpen">📖 책</SelectItem>
-                                  <SelectItem value="GraduationCap">🎓 졸업모</SelectItem>
-                                  <SelectItem value="Users">👥 그룹</SelectItem>
-                                  <SelectItem value="Settings">⚙️ 설정</SelectItem>
-                                  <SelectItem value="MessageSquare">💬 메시지</SelectItem>
-                                  <SelectItem value="Heart">❤️ 하트</SelectItem>
-                                  <SelectItem value="Star">⭐ 별</SelectItem>
-                                  <SelectItem value="Globe">🌍 지구</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={agentForm.control}
-                          name="backgroundColor"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>배경색</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="배경색 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="blue">🔵 파란색</SelectItem>
-                                  <SelectItem value="green">🟢 초록색</SelectItem>
-                                  <SelectItem value="purple">🟣 보라색</SelectItem>
-                                  <SelectItem value="red">🔴 빨간색</SelectItem>
-                                  <SelectItem value="yellow">🟡 노란색</SelectItem>
-                                  <SelectItem value="pink">🩷 분홍색</SelectItem>
-                                  <SelectItem value="orange">🟠 주황색</SelectItem>
-                                  <SelectItem value="gray">⚫ 회색</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={agentForm.control}
                           name="managerId"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>에이전트 관리자 (선택사항)</FormLabel>
+                              <FormLabel>에이전트 관리자</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -604,7 +589,6 @@ export default function MasterAdmin() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="none">관리자 없음</SelectItem>
                                   {managers?.map((manager) => (
                                     <SelectItem key={manager.id} value={manager.id}>
                                       {manager.firstName} {manager.lastName} ({manager.username})
@@ -621,7 +605,7 @@ export default function MasterAdmin() {
                           name="organizationId"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>소속 조직 (선택사항)</FormLabel>
+                              <FormLabel>소속 조직</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -629,7 +613,6 @@ export default function MasterAdmin() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="none">조직 없음</SelectItem>
                                   {organizations?.map((org) => (
                                     <>
                                       <SelectItem key={org.id} value={org.id.toString()}>
@@ -710,22 +693,22 @@ export default function MasterAdmin() {
                       <span>메시지 수:</span>
                       <span className="font-medium">{agent.messageCount}</span>
                     </div>
-                    {agent.managerFirstName && (
+                    {(agent as any).managerFirstName && (
                       <div className="flex items-center justify-between text-sm">
                         <span>관리자:</span>
-                        <span className="font-medium">{agent.managerFirstName} {agent.managerLastName}</span>
+                        <span className="font-medium">{(agent as any).managerFirstName} {(agent as any).managerLastName}</span>
                       </div>
                     )}
-                    {agent.organizationName && (
+                    {(agent as any).organizationName && (
                       <div className="flex items-center justify-between text-sm">
                         <span>소속:</span>
-                        <span className="font-medium">{agent.organizationName}</span>
+                        <span className="font-medium">{(agent as any).organizationName}</span>
                       </div>
                     )}
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openIconChangeDialog(agent)}>
                         <Edit className="w-4 h-4 mr-1" />
-                        편집
+                        아이콘 변경
                       </Button>
                       <Button variant="outline" size="sm" className="flex-1">
                         <BarChart3 className="w-4 h-4 mr-1" />
