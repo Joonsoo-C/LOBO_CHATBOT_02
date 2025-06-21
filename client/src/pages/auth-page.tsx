@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,15 +53,10 @@ export default function AuthPage() {
   const { t, language, setLanguage } = useLanguage();
 
   // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      if (user.username === "master_admin") {
-        setLocation("/master-admin");
-      } else {
-        setLocation("/");
-      }
-    }
-  }, [user, setLocation]);
+  if (user) {
+    setLocation("/");
+    return null;
+  }
 
   const loginSchema = createLoginSchema(t);
   const registerSchema = createRegisterSchema(t);

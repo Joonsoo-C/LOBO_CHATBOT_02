@@ -1,32 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { storage } from "./storage";
-import bcrypt from "bcrypt";
 
 const app = express();
-
-// Initialize master admin account
-async function initializeMasterAdmin() {
-  try {
-    const existingAdmin = await storage.getUserByUsername("master_admin");
-    if (!existingAdmin) {
-      const hashedPassword = await bcrypt.hash("master123", 10);
-      await storage.createUser({
-        id: "master_admin",
-        username: "master_admin",
-        password: hashedPassword,
-        firstName: "Master",
-        lastName: "Admin",
-        email: "admin@university.edu",
-        userType: "admin"
-      });
-      log("Master admin account created");
-    }
-  } catch (error) {
-    console.error("Failed to initialize master admin:", error);
-  }
-}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -61,9 +37,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize master admin account
-  await initializeMasterAdmin();
-  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

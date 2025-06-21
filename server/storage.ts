@@ -64,11 +64,6 @@ export interface IStorage {
   createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction>;
   deleteMessageReaction(messageId: number, userId: string): Promise<void>;
   getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }>;
-
-  // Master Admin operations
-  getSystemStats(): Promise<any>;
-  getAllUsers(): Promise<User[]>;
-  getAgentsWithStats(): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -358,76 +353,6 @@ export class DatabaseStorage implements IStorage {
     });
     
     return result;
-  }
-
-  // Master Admin operations
-  async getSystemStats(): Promise<any> {
-    const totalUsers = await db.select({ count: sql<number>`count(*)` }).from(users);
-    const activeUsers = await db.select({ count: sql<number>`count(*)` }).from(users);
-    const totalAgents = await db.select({ count: sql<number>`count(*)` }).from(agents);
-    const activeAgents = await db.select({ count: sql<number>`count(*)` }).from(agents).where(eq(agents.isActive, true));
-    const totalConversations = await db.select({ count: sql<number>`count(*)` }).from(conversations);
-    const totalMessages = await db.select({ count: sql<number>`count(*)` }).from(messages);
-    
-    // Get today's messages
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayMessages = await db.select({ count: sql<number>`count(*)` })
-      .from(messages)
-      .where(sql`${messages.createdAt} >= ${today}`);
-
-    // Calculate weekly growth (placeholder - would need historical data)
-    const weeklyGrowth = 15; // Mock data for now
-
-    return {
-      totalUsers: totalUsers[0]?.count || 0,
-      activeUsers: activeUsers[0]?.count || 0,
-      totalAgents: totalAgents[0]?.count || 0,
-      activeAgents: activeAgents[0]?.count || 0,
-      totalConversations: totalConversations[0]?.count || 0,
-      totalMessages: totalMessages[0]?.count || 0,
-      todayMessages: todayMessages[0]?.count || 0,
-      weeklyGrowth
-    };
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users).orderBy(desc(users.createdAt));
-  }
-
-  async getAgentsWithStats(): Promise<any[]> {
-    const agentsData = await db.select().from(agents).orderBy(desc(agents.createdAt));
-    
-    const agentsWithStats = await Promise.all(agentsData.map(async (agent) => {
-      // Get message count for this agent
-      const messageCount = await db.select({ count: sql<number>`count(*)` })
-        .from(messages)
-        .leftJoin(conversations, eq(messages.conversationId, conversations.id))
-        .where(eq(conversations.agentId, agent.id));
-
-      // Get average rating (from reactions - assuming positive reactions = good rating)
-      const reactions = await db.select({ 
-        likes: sql<number>`count(case when ${messageReactions.reaction} = 'like' then 1 end)`,
-        dislikes: sql<number>`count(case when ${messageReactions.reaction} = 'dislike' then 1 end)`
-      })
-        .from(messageReactions)
-        .leftJoin(messages, eq(messageReactions.messageId, messages.id))
-        .leftJoin(conversations, eq(messages.conversationId, conversations.id))
-        .where(eq(conversations.agentId, agent.id));
-
-      const likes = reactions[0]?.likes || 0;
-      const dislikes = reactions[0]?.dislikes || 0;
-      const totalReactions = likes + dislikes;
-      const averageRating = totalReactions > 0 ? (likes / totalReactions) * 5 : undefined;
-
-      return {
-        ...agent,
-        messageCount: messageCount[0]?.count || 0,
-        averageRating
-      };
-    }));
-
-    return agentsWithStats;
   }
 }
 

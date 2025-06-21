@@ -46,7 +46,7 @@ function Home() {
 
   const categories = [
     { value: "전체", label: t('home.categories.all') },
-    { value: "에이전트 카테고리", label: t('home.categories.school') },
+    { value: "학교", label: t('home.categories.school') },
     { value: "교수", label: t('home.categories.professor') },
     { value: "학생", label: t('home.categories.student') },
     { value: "그룹", label: t('home.categories.group') },

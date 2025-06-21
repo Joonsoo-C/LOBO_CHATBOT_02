@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,10 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { queryClient } from "@/lib/queryClient";
 import { 
   Users, 
   MessageSquare, 
@@ -61,20 +56,6 @@ interface Agent {
   averageRating?: number;
 }
 
-// Form schema for creating new agent
-const createAgentSchema = z.object({
-  name: z.string().min(1, "에이전트 이름을 입력해주세요"),
-  description: z.string().min(1, "에이전트 설명을 입력해주세요"),
-  category: z.string().min(1, "카테고리를 선택해주세요"),
-  icon: z.string().min(1, "아이콘을 선택해주세요"),
-  backgroundColor: z.string().min(1, "배경색을 선택해주세요"),
-  personality: z.string().optional(),
-  chatbotType: z.string().default("general-llm"),
-  llmModel: z.string().default("gpt-4o"),
-});
-
-type CreateAgentData = z.infer<typeof createAgentSchema>;
-
 interface SystemStats {
   totalUsers: number;
   activeUsers: number;
@@ -90,169 +71,14 @@ export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
-  const [showCreateAgentDialog, setShowCreateAgentDialog] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
-
-  // Form for creating new agent
-  const createAgentForm = useForm<CreateAgentData>({
-    resolver: zodResolver(createAgentSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      category: "",
-      icon: "",
-      backgroundColor: "",
-      personality: "",
-      chatbotType: "general-llm",
-      llmModel: "gpt-4o",
-    },
-  });
-
-  // Category selection state
-  const [categoryType, setCategoryType] = useState<"hierarchical" | "simple">("hierarchical");
-  const [selectedUniversity, setSelectedUniversity] = useState("");
-  const [selectedCollege, setSelectedCollege] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-
-  // Category hierarchy data
-  const universityOptions = [
-    { value: "대학교", label: "대학교" },
-    { value: "대학원", label: "대학원" },
-  ];
-
-  const collegeOptions: Record<string, Array<{ value: string; label: string }>> = {
-    "대학교": [
-      { value: "공과대학", label: "공과대학" },
-      { value: "경영대학", label: "경영대학" },
-      { value: "인문대학", label: "인문대학" },
-      { value: "자연과학대학", label: "자연과학대학" },
-      { value: "사회과학대학", label: "사회과학대학" },
-      { value: "예술대학", label: "예술대학" },
-      { value: "의과대학", label: "의과대학" },
-      { value: "법과대학", label: "법과대학" },
-    ],
-    "대학원": [
-      { value: "일반대학원", label: "일반대학원" },
-      { value: "전문대학원", label: "전문대학원" },
-      { value: "특수대학원", label: "특수대학원" },
-    ],
-  };
-
-  const departmentOptions: Record<string, Array<{ value: string; label: string }>> = {
-    "공과대학": [
-      { value: "컴퓨터공학과", label: "컴퓨터공학과" },
-      { value: "전자공학과", label: "전자공학과" },
-      { value: "기계공학과", label: "기계공학과" },
-      { value: "화학공학과", label: "화학공학과" },
-      { value: "건축학과", label: "건축학과" },
-    ],
-    "경영대학": [
-      { value: "경영학과", label: "경영학과" },
-      { value: "회계학과", label: "회계학과" },
-      { value: "마케팅학과", label: "마케팅학과" },
-      { value: "국제경영학과", label: "국제경영학과" },
-    ],
-    "인문대학": [
-      { value: "국어국문학과", label: "국어국문학과" },
-      { value: "영어영문학과", label: "영어영문학과" },
-      { value: "역사학과", label: "역사학과" },
-      { value: "철학과", label: "철학과" },
-    ],
-    "자연과학대학": [
-      { value: "수학과", label: "수학과" },
-      { value: "물리학과", label: "물리학과" },
-      { value: "화학과", label: "화학과" },
-      { value: "생물학과", label: "생물학과" },
-    ],
-    "사회과학대학": [
-      { value: "심리학과", label: "심리학과" },
-      { value: "사회학과", label: "사회학과" },
-      { value: "정치외교학과", label: "정치외교학과" },
-      { value: "경제학과", label: "경제학과" },
-    ],
-    "예술대학": [
-      { value: "음악학과", label: "음악학과" },
-      { value: "미술학과", label: "미술학과" },
-      { value: "연극영화학과", label: "연극영화학과" },
-    ],
-    "의과대학": [
-      { value: "의학과", label: "의학과" },
-      { value: "간호학과", label: "간호학과" },
-      { value: "약학과", label: "약학과" },
-    ],
-    "법과대학": [
-      { value: "법학과", label: "법학과" },
-    ],
-    "일반대학원": [
-      { value: "인문사회계열", label: "인문사회계열" },
-      { value: "자연과학계열", label: "자연과학계열" },
-      { value: "공학계열", label: "공학계열" },
-      { value: "예체능계열", label: "예체능계열" },
-    ],
-    "전문대학원": [
-      { value: "경영전문대학원", label: "경영전문대학원" },
-      { value: "법학전문대학원", label: "법학전문대학원" },
-      { value: "의학전문대학원", label: "의학전문대학원" },
-    ],
-    "특수대학원": [
-      { value: "교육대학원", label: "교육대학원" },
-      { value: "행정대학원", label: "행정대학원" },
-      { value: "산업대학원", label: "산업대학원" },
-    ],
-  };
-
-  // Legacy category options for existing agents
-  const categoryOptions = [
-    { value: "에이전트 카테고리", label: "에이전트 카테고리" },
-    { value: "교수", label: "교수" },
-    { value: "학생", label: "학생" },
-    { value: "그룹", label: "그룹" },
-    { value: "기능형", label: "기능형" },
-  ];
-
-  const iconOptions = [
-    { value: "GraduationCap", label: "졸업모자" },
-    { value: "Users", label: "사용자들" },
-    { value: "BookOpen", label: "책" },
-    { value: "Calculator", label: "계산기" },
-    { value: "Globe", label: "지구본" },
-    { value: "Heart", label: "하트" },
-    { value: "Star", label: "별" },
-    { value: "Zap", label: "번개" },
-  ];
-
-  const backgroundColorOptions = [
-    { value: "blue", label: "파란색" },
-    { value: "green", label: "초록색" },
-    { value: "purple", label: "보라색" },
-    { value: "red", label: "빨간색" },
-    { value: "orange", label: "주황색" },
-    { value: "pink", label: "분홍색" },
-    { value: "indigo", label: "남색" },
-    { value: "gray", label: "회색" },
-  ];
-
-  const chatbotTypeOptions = [
-    { value: "strict-doc", label: "문서 전용" },
-    { value: "doc-fallback-llm", label: "문서 우선" },
-    { value: "general-llm", label: "일반 대화" },
-  ];
-
-  const llmModelOptions = [
-    { value: "gpt-4o", label: "GPT-4o" },
-    { value: "gpt-4o-mini", label: "GPT-4o Mini" },
-    { value: "gpt-4-turbo", label: "GPT-4 Turbo" },
-    { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
-  ];
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
     queryKey: ['/api/admin/stats'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/stats', {
-        credentials: 'include'
-      });
+      const response = await fetch('/api/admin/stats');
       if (!response.ok) throw new Error('Failed to fetch stats');
       return response.json();
     }
@@ -262,9 +88,7 @@ export default function MasterAdmin() {
   const { data: users } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/users', {
-        credentials: 'include'
-      });
+      const response = await fetch('/api/admin/users');
       if (!response.ok) throw new Error('Failed to fetch users');
       return response.json();
     }
@@ -274,77 +98,11 @@ export default function MasterAdmin() {
   const { data: agents } = useQuery<Agent[]>({
     queryKey: ['/api/admin/agents'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/agents', {
-        credentials: 'include'
-      });
+      const response = await fetch('/api/admin/agents');
       if (!response.ok) throw new Error('Failed to fetch agents');
       return response.json();
     }
   });
-
-  // Create agent mutation
-  const createAgentMutation = useMutation({
-    mutationFn: async (data: CreateAgentData) => {
-      const response = await fetch('/api/admin/agents', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error('Failed to create agent');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "에이전트 생성 완료",
-        description: "새로운 에이전트가 성공적으로 생성되었습니다.",
-      });
-      setShowCreateAgentDialog(false);
-      createAgentForm.reset();
-      // Reset category selections
-      setCategoryType("hierarchical");
-      setSelectedUniversity("");
-      setSelectedCollege("");
-      setSelectedDepartment("");
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "에이전트 생성 실패",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onCreateAgent = (data: CreateAgentData) => {
-    // Validate category selection based on type
-    if (categoryType === "hierarchical") {
-      if (!selectedUniversity || !selectedCollege || !selectedDepartment) {
-        toast({
-          title: "카테고리 선택 필요",
-          description: "대학교/대학원, 단과대학, 학과를 모두 선택해주세요.",
-          variant: "destructive",
-        });
-        return;
-      }
-      // Ensure hierarchical category format
-      data.category = `${selectedUniversity} > ${selectedCollege} > ${selectedDepartment}`;
-    } else if (categoryType === "simple") {
-      if (!data.category) {
-        toast({
-          title: "카테고리 선택 필요",
-          description: "기본 카테고리를 선택해주세요.",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-
-    createAgentMutation.mutate(data);
-  };
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -622,384 +380,10 @@ export default function MasterAdmin() {
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <Dialog 
-                open={showCreateAgentDialog} 
-                onOpenChange={(open) => {
-                  setShowCreateAgentDialog(open);
-                  if (!open) {
-                    // Reset form and category selections when dialog closes
-                    createAgentForm.reset();
-                    setCategoryType("hierarchical");
-                    setSelectedUniversity("");
-                    setSelectedCollege("");
-                    setSelectedDepartment("");
-                  }
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    새 에이전트 추가
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>새 에이전트 생성</DialogTitle>
-                  </DialogHeader>
-                  <Form {...createAgentForm}>
-                    <form onSubmit={createAgentForm.handleSubmit(onCreateAgent)} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={createAgentForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>에이전트 이름</FormLabel>
-                              <FormControl>
-                                <Input placeholder="예: 학사 도우미" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <div className="space-y-4">
-                          {/* 카테고리 타입 선택 */}
-                          <div>
-                            <Label className="text-sm font-medium mb-3 block">카테고리 타입</Label>
-                            <div className="flex space-x-4">
-                              <label className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="categoryType"
-                                  value="hierarchical"
-                                  checked={categoryType === "hierarchical"}
-                                  onChange={(e) => {
-                                    setCategoryType("hierarchical");
-                                    setSelectedUniversity("");
-                                    setSelectedCollege("");
-                                    setSelectedDepartment("");
-                                    createAgentForm.setValue("category", "");
-                                  }}
-                                  className="text-blue-600"
-                                />
-                                <span className="text-sm">계층형 (대학교 {'>'} 단과대학 {'>'} 학과)</span>
-                              </label>
-                              <label className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="categoryType"
-                                  value="simple"
-                                  checked={categoryType === "simple"}
-                                  onChange={(e) => {
-                                    setCategoryType("simple");
-                                    setSelectedUniversity("");
-                                    setSelectedCollege("");
-                                    setSelectedDepartment("");
-                                    createAgentForm.setValue("category", "");
-                                  }}
-                                  className="text-blue-600"
-                                />
-                                <span className="text-sm">기본 카테고리</span>
-                              </label>
-                            </div>
-                          </div>
-
-                          {/* 계층형 카테고리 선택 */}
-                          {categoryType === "hierarchical" && (
-                            <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                              {/* 대학교/대학원 */}
-                              <div>
-                                <Label className="text-sm font-medium">대학교/대학원</Label>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
-                                  {universityOptions.map((option) => (
-                                    <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
-                                      <input
-                                        type="radio"
-                                        name="university"
-                                        value={option.value}
-                                        checked={selectedUniversity === option.value}
-                                        onChange={(e) => {
-                                          setSelectedUniversity(e.target.value);
-                                          setSelectedCollege("");
-                                          setSelectedDepartment("");
-                                          createAgentForm.setValue("category", "");
-                                        }}
-                                        className="text-blue-600"
-                                      />
-                                      <span className="text-sm">{option.label}</span>
-                                    </label>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* 단과대학 */}
-                              {selectedUniversity && (
-                                <div>
-                                  <Label className="text-sm font-medium">단과대학</Label>
-                                  <div className="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto">
-                                    {collegeOptions[selectedUniversity]?.map((option) => (
-                                      <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
-                                        <input
-                                          type="radio"
-                                          name="college"
-                                          value={option.value}
-                                          checked={selectedCollege === option.value}
-                                          onChange={(e) => {
-                                            setSelectedCollege(e.target.value);
-                                            setSelectedDepartment("");
-                                            createAgentForm.setValue("category", "");
-                                          }}
-                                          className="text-blue-600"
-                                        />
-                                        <span className="text-sm">{option.label}</span>
-                                      </label>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* 학과 */}
-                              {selectedCollege && (
-                                <div>
-                                  <Label className="text-sm font-medium">학과</Label>
-                                  <div className="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto">
-                                    {departmentOptions[selectedCollege]?.map((option) => (
-                                      <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
-                                        <input
-                                          type="radio"
-                                          name="department"
-                                          value={option.value}
-                                          checked={selectedDepartment === option.value}
-                                          onChange={(e) => {
-                                            setSelectedDepartment(e.target.value);
-                                            const fullCategory = `${selectedUniversity} > ${selectedCollege} > ${e.target.value}`;
-                                            createAgentForm.setValue("category", fullCategory);
-                                          }}
-                                          className="text-blue-600"
-                                        />
-                                        <span className="text-sm">{option.label}</span>
-                                      </label>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* 선택된 계층 표시 */}
-                              {selectedUniversity && selectedCollege && selectedDepartment && (
-                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
-                                  <div className="text-xs font-medium text-blue-700 dark:text-blue-300">선택된 카테고리:</div>
-                                  <div className="text-sm text-blue-600 dark:text-blue-400">
-                                    {selectedUniversity} › {selectedCollege} › {selectedDepartment}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {/* 기본 카테고리 선택 */}
-                          {categoryType === "simple" && (
-                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                              <Label className="text-sm font-medium mb-3 block">에이전트 카테고리</Label>
-                              <div className="grid grid-cols-2 gap-2">
-                                {categoryOptions.map((option) => (
-                                  <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
-                                    <input
-                                      type="radio"
-                                      name="simpleCategory"
-                                      value={option.value}
-                                      onChange={(e) => createAgentForm.setValue("category", e.target.value)}
-                                      className="text-blue-600"
-                                    />
-                                    <span className="text-sm">{option.label}</span>
-                                  </label>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Hidden form field */}
-                          <FormField
-                            control={createAgentForm.control}
-                            name="category"
-                            render={({ field }) => (
-                              <FormItem className="hidden">
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      <FormField
-                        control={createAgentForm.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>에이전트 설명</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="에이전트가 수행할 역할과 기능을 설명해주세요"
-                                className="min-h-[100px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={createAgentForm.control}
-                          name="icon"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>아이콘</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="아이콘 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {iconOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={createAgentForm.control}
-                          name="backgroundColor"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>배경색</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="배경색 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {backgroundColorOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <FormField
-                        control={createAgentForm.control}
-                        name="personality"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>성격/어조 (선택사항)</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="에이전트의 말투나 성격을 설정해주세요 (예: 친근하고 도움이 되는, 전문적이고 정확한)"
-                                className="min-h-[80px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={createAgentForm.control}
-                          name="chatbotType"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>챗봇 유형</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="챗봇 유형 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {chatbotTypeOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={createAgentForm.control}
-                          name="llmModel"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>LLM 모델</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="모델 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {llmModelOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="flex justify-end space-x-2 pt-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setShowCreateAgentDialog(false);
-                            createAgentForm.reset();
-                            setCategoryType("hierarchical");
-                            setSelectedUniversity("");
-                            setSelectedCollege("");
-                            setSelectedDepartment("");
-                          }}
-                        >
-                          취소
-                        </Button>
-                        <Button 
-                          type="submit" 
-                          disabled={createAgentMutation.isPending}
-                        >
-                          {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                새 에이전트 추가
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1017,22 +401,9 @@ export default function MasterAdmin() {
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {agent.description}
                     </p>
-                    <div className="space-y-2">
-                      <div className="text-sm text-gray-500">카테고리:</div>
-                      <div className="text-sm">
-                        {agent.category.includes(" > ") ? (
-                          <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-xs">
-                            {agent.category.split(" > ").map((part, index, array) => (
-                              <span key={index}>
-                                {part}
-                                {index < array.length - 1 && <span className="text-gray-400 mx-1">›</span>}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <Badge variant="outline">{agent.category}</Badge>
-                        )}
-                      </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span>카테고리: {agent.category}</span>
+                      <Badge variant="outline">{agent.category}</Badge>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span>메시지 수:</span>

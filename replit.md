@@ -400,31 +400,6 @@ Changelog:
   * PC/tablet tabs: 64px height, 18px font size for enhanced desktop experience
   * Full width implementation ensures tabs span entire container width
   * Applied consistent styling across Home.tsx and TabletLayout.tsx components
-- June 21, 2025. Implemented master administrator management system:
-  * Created comprehensive MasterAdmin page with dashboard, user management, agent management tabs
-  * Added master admin account auto-creation (master_admin/master123) with authentication
-  * Implemented new agent creation functionality with detailed form validation
-  * Added system statistics display and real-time monitoring capabilities
-  * Fixed React hooks rendering issues with proper useEffect-based redirects
-  * Database category migration: "학교" renamed to "에이전트 카테고리" across all components
-  * Master admin can create agents with full configuration (name, description, category, icon, background, personality, chatbot type, LLM model)
-- June 21, 2025. Implemented hierarchical category selection system for new agent creation:
-  * Added three-tier category structure: 대학교/대학원 → 단과대학 → 학과
-  * Created comprehensive category hierarchy with 8 colleges under 대학교 and 3 types under 대학원
-  * Implemented cascading dropdown selection with automatic form field updates
-  * Added visual category confirmation display showing full hierarchy path
-  * Integrated form validation to ensure all three category levels are selected
-  * Enhanced agent display cards to show hierarchical categories with proper formatting
-  * Category values stored as combined string format: "대학교 > 공과대학 > 컴퓨터공학과"
-  * Maintains backward compatibility with existing simple category values
-- June 21, 2025. Redesigned category selection with fixed layout to prevent UI disruption:
-  * Replaced dropdown menus with radio button grid layout to prevent layout shifting
-  * Added dual category type selection: hierarchical vs simple categories
-  * Implemented fixed-position selection areas with proper scrolling for long lists
-  * Created visual feedback with hover effects and selection confirmation boxes
-  * Grid layout prevents UI jumping and provides consistent user experience
-  * Both category types properly validated with specific error messages
-  * Category selection state properly reset when dialog opens/closes or type changes
 ```
 
 ## User Preferences
