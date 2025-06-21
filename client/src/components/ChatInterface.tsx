@@ -61,6 +61,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -312,6 +313,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [isManagementMode, messages?.length, conversation?.id, agent.name]);
 
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   // Auto-mark conversation as read when new messages arrive while user is viewing
   useEffect(() => {
     if (conversation?.id && messages && messages.length > 0) {
@@ -323,6 +329,9 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       if (currentConv && currentConv.unreadCount > 0) {
         markAsReadMutation.mutate(conversation.id);
       }
+      
+      // Scroll to bottom when new messages arrive
+      setTimeout(() => scrollToBottom(), 100);
     }
   }, [messages?.length, conversation?.id, queryClient, markAsReadMutation]);
 
@@ -479,6 +488,10 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     
     // Normal message sending
     sendMessageMutation.mutate(messageContent);
+    setMessage("");
+    
+    // Scroll to bottom after sending message
+    setTimeout(() => scrollToBottom(), 100);
   };
 
   // Combine real messages with optimistic messages
@@ -987,9 +1000,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const messageReaction = messageReactions[msg.id];
               
               return (
-                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end" : "justify-start"} group`}>
+                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end pr-2" : "justify-start"} group`}>
                   <div 
-                    className="relative flex items-center gap-1"
+                    className="relative flex items-center gap-1 max-w-[90%]"
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
                         setActiveReactionMessageId(msg.id);
@@ -1104,6 +1117,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 </div>
               </div>
             )}
+            
+            {/* Auto-scroll anchor */}
+            <div ref={messagesEndRef} />
           </>
         )}
       </div>

@@ -148,6 +148,8 @@
     overflow-wrap: normal;
     hyphens: none;
     width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* Allow wrapping for longer messages */
@@ -155,6 +157,7 @@
     white-space: normal;
     word-break: keep-all;
     overflow-wrap: break-word;
+    width: auto;
   }
 
   /* Status indicators */
