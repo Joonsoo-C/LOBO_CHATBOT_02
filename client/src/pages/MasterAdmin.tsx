@@ -410,12 +410,14 @@ export default function MasterAdmin() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  <Home className="w-4 h-4 mr-2" />
-                  메인 서비스
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.open('/', '_blank')}
+              >
+                <Home className="w-4 h-4 mr-2" />
+                메인 서비스
+              </Button>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
                 로그아웃
