@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Settings, Globe } from "lucide-react";
+import { Settings, Globe, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,6 +51,7 @@ export default function AuthPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if already logged in
   if (user) {
@@ -208,11 +209,25 @@ export default function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="login-password">{t('auth.password')}</Label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  {...loginForm.register("password")}
-                />
+                <div className="relative">
+                  <Input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    {...loginForm.register("password")}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
                 {loginForm.formState.errors.password && (
                   <p className="text-sm text-red-500">
                     {loginForm.formState.errors.password.message}
@@ -281,7 +296,7 @@ export default function AuthPage() {
                   className="w-full text-xs"
                   onClick={() => {
                     loginForm.setValue("username", "master_admin");
-                    loginForm.setValue("password", "master123");
+                    loginForm.setValue("password", "MasterAdmin2024!");
                   }}
                 >
                   {t('auth.masterAccount')}
