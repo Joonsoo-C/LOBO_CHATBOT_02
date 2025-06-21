@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,11 +79,16 @@ export default function AuthPage() {
     },
   });
 
-  // Redirect if already logged in - moved after all hooks
-  if (user) {
-    setLocation("/");
-    return null;
-  }
+  // Handle redirect with useEffect to avoid hooks issue
+  useEffect(() => {
+    if (user) {
+      if (user.username === "master_admin") {
+        setLocation("/master-admin");
+      } else {
+        setLocation("/");
+      }
+    }
+  }, [user, setLocation]);
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
