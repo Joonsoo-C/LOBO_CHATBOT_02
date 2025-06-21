@@ -1903,99 +1903,6 @@ export default function MasterAdmin() {
               </Card>
             </div>
 
-            {/* 문서 검색 및 필터링 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
-              
-              {/* 카테고리 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>문서 카테고리</Label>
-                  <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="lecture">강의 자료</SelectItem>
-                      <SelectItem value="policy">정책 문서</SelectItem>
-                      <SelectItem value="manual">매뉴얼</SelectItem>
-                      <SelectItem value="form">양식</SelectItem>
-                      <SelectItem value="notice">공지사항</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>파일 형식</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="pdf">PDF</SelectItem>
-                      <SelectItem value="word">Word</SelectItem>
-                      <SelectItem value="excel">Excel</SelectItem>
-                      <SelectItem value="ppt">PowerPoint</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>업로드 기간</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="today">오늘</SelectItem>
-                      <SelectItem value="week">1주일</SelectItem>
-                      <SelectItem value="month">1개월</SelectItem>
-                      <SelectItem value="year">1년</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={() => {
-                    setSelectedDocumentCategory('all');
-                    setDocumentSearchQuery('');
-                    setHasDocumentSearched(false);
-                  }}>
-                    범위 적용
-                  </Button>
-                </div>
-              </div>
-
-              {/* 문서 검색 */}
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="문서명, 내용으로 검색..."
-                      value={documentSearchQuery}
-                      onChange={(e) => setDocumentSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
-                    />
-                  </div>
-                  <Button onClick={() => setHasDocumentSearched(true)}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    문서 검색
-                  </Button>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 카테고리 범위에서 전체 문서를 조회할 수 있습니다.
-                </p>
-              </div>
-              
-              {/* 검색 결과 표시 */}
-              {hasDocumentSearched && (
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: 2개 문서
-                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
-                </div>
-              )}
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
@@ -2064,6 +1971,99 @@ export default function MasterAdmin() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* 문서 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
+              
+              {/* 카테고리 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>문서 카테고리</Label>
+                  <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="lecture">강의 자료</SelectItem>
+                      <SelectItem value="policy">정책 문서</SelectItem>
+                      <SelectItem value="manual">매뉴얼</SelectItem>
+                      <SelectItem value="form">양식</SelectItem>
+                      <SelectItem value="notice">공지사항</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>파일 형식</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="pdf">PDF</SelectItem>
+                      <SelectItem value="word">Word</SelectItem>
+                      <SelectItem value="excel">Excel</SelectItem>
+                      <SelectItem value="ppt">PowerPoint</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>업로드 기간</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">1주일</SelectItem>
+                      <SelectItem value="month">1개월</SelectItem>
+                      <SelectItem value="year">1년</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={() => {
+                    setSelectedDocumentCategory('all');
+                    setDocumentSearchQuery('');
+                    setHasDocumentSearched(false);
+                  }}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 문서 검색 */}
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="문서명, 내용으로 검색..."
+                      value={documentSearchQuery}
+                      onChange={(e) => setDocumentSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
+                    />
+                  </div>
+                  <Button onClick={() => setHasDocumentSearched(true)}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    문서 검색
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 카테고리 범위에서 전체 문서를 조회할 수 있습니다.
+                </p>
+              </div>
+              
+              {/* 검색 결과 표시 */}
+              {hasDocumentSearched && (
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  검색 결과: 2개 문서
+                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
+                </div>
+              )}
             </div>
 
             <Card>
