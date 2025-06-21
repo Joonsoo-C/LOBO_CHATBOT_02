@@ -420,7 +420,7 @@ export default function TabletLayout() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 text-sm korean-text bg-background border-border"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text bg-background border-border"
                   >
                     {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
@@ -476,11 +476,11 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="flex bg-muted rounded-lg p-1 w-full">
+          <div className="flex bg-muted rounded-xl p-1">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="flex-1 korean-text h-14 text-sm font-medium"
+              className="flex-1 korean-text h-14"
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -491,7 +491,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="flex-1 korean-text h-14 text-sm font-medium"
+              className="flex-1 korean-text h-14"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");
