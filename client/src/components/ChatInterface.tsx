@@ -1003,8 +1003,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               return (
                 <div key={msg.id} className={`flex group`} style={{ 
-                  justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start',
-                  paddingRight: msg.isFromUser ? '8px' : '0'
+                  justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start'
                 }}>
                   <div 
                     className="relative flex items-start gap-1 max-w-[90%]"
