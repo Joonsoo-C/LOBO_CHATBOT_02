@@ -200,12 +200,20 @@ export default function MasterAdmin() {
     // 검색어 필터링
     if (userSearchQuery.trim()) {
       const query = userSearchQuery.toLowerCase();
-      filtered = filtered.filter(user => 
-        user.username.toLowerCase().includes(query) ||
-        user.firstName?.toLowerCase().includes(query) ||
-        user.lastName?.toLowerCase().includes(query) ||
-        user.email?.toLowerCase().includes(query)
-      );
+      
+      // * 입력시 전체 검색 (조직 필터만 적용)
+      if (query === '*') {
+        // 전체 사용자 반환 (조직 필터는 아래에서 적용)
+        filtered = users;
+      } else {
+        // 일반 검색 (이름, 학번, 교번, 이메일)
+        filtered = filtered.filter(user => 
+          user.username.toLowerCase().includes(query) ||
+          user.firstName?.toLowerCase().includes(query) ||
+          user.lastName?.toLowerCase().includes(query) ||
+          user.email?.toLowerCase().includes(query)
+        );
+      }
     }
     
     // 조직 필터링 (현재는 기본 구현, 실제로는 사용자 테이블에 조직 정보가 필요)
@@ -656,19 +664,24 @@ export default function MasterAdmin() {
               </div>
 
               {/* 사용자 검색 */}
-              <div className="flex space-x-2">
-                <div className="flex-1">
-                  <Input
-                    placeholder="이름, 학번, 교번으로 검색..."
-                    value={userSearchQuery}
-                    onChange={(e) => setUserSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
-                  />
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="이름, 학번, 교번으로 검색..."
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                    />
+                  </div>
+                  <Button onClick={executeSearch}>
+                    <Users className="w-4 h-4 mr-2" />
+                    사용자 검색
+                  </Button>
                 </div>
-                <Button onClick={executeSearch}>
-                  <Users className="w-4 h-4 mr-2" />
-                  사용자 검색
-                </Button>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 조직 범위에서 전체 사용자를 조회할 수 있습니다.
+                </p>
               </div>
               
               {/* 검색 결과 표시 */}
