@@ -1004,7 +1004,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               return (
                 <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end pr-2" : "justify-start"} group`}>
                   <div 
-                    className="relative flex items-center gap-1 max-w-[90%]"
+                    className="relative flex items-start gap-1 max-w-[90%]"
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
                         setActiveReactionMessageId(msg.id);
@@ -1017,13 +1017,20 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`chat-message-bubble ${msg.content.length > 30 ? "allow-wrap" : ""} max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`message-bubble-reset ${msg.content.length > 40 ? "long-text" : ""} inline-block max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
+                      style={{
+                        textAlign: 'left',
+                        direction: 'ltr',
+                        whiteSpace: msg.content.length > 40 ? 'normal' : 'nowrap',
+                        wordBreak: msg.content.length > 40 ? 'keep-all' : 'normal',
+                        overflowWrap: msg.content.length > 40 ? 'break-word' : 'normal'
+                      }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
                           handleReactionToggle(msg.id);

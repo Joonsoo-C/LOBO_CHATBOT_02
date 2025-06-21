@@ -140,27 +140,35 @@
     letter-spacing: -0.02em;
   }
 
-  /* Force left alignment and prevent line breaks for message bubbles */
-  .chat-message-bubble {
-    text-align: left !important;
+  /* Complete reset with explicit text alignment */
+  .message-bubble-reset {
+    all: unset;
     display: inline-block !important;
-    width: auto !important;
+    text-align: start !important;
+    direction: ltr !important;
     white-space: nowrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-  }
-  
-  .chat-message-bubble * {
-    text-align: left !important;
-    white-space: inherit !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    unicode-bidi: normal !important;
+    text-indent: 0 !important;
+    writing-mode: horizontal-tb !important;
   }
 
-  /* Allow wrapping only for very long messages */
-  .chat-message-bubble.allow-wrap {
+  /* Text wrapping for longer content */
+  .message-bubble-reset.long-text {
     white-space: normal !important;
     word-break: keep-all !important;
     overflow-wrap: break-word !important;
+  }
+
+  /* Ensure no inherited text alignment affects bubbles */
+  .message-bubble-reset,
+  .message-bubble-reset * {
+    text-align: start !important;
+    direction: ltr !important;
   }
 
   /* Status indicators */
@@ -182,11 +190,13 @@
     @apply min-w-[1.25rem] px-1;
   }
 
-  /* System message styling */
+  /* System message styling with text alignment reset */
   .system-message {
     @apply bg-amber-50 border border-amber-200 text-amber-800;
     @apply dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300;
     @apply shadow-sm;
+    text-align: start !important;
+    direction: ltr !important;
   }
 
   /* Chat interface layout - Mobile first */

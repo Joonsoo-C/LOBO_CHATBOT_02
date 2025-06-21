@@ -381,9 +381,12 @@ Changelog:
   * Improved user message positioning with right margin to prevent screen edge cutoff
   * Fixed text alignment in user message bubbles by removing CSS class conflicts and using inline styles
   * Ensured all message text aligns to the left side of speech bubbles regardless of message length
-  * Completely resolved short message line breaking by implementing white-space: nowrap with !important
-  * Messages 30 characters or less now display on single line without any unwanted breaks
-  * Created conditional wrapping system: short messages stay on one line, long messages wrap naturally
+  * Implemented fundamental CSS reset solution for message text alignment and line breaking
+  * Applied 'all: unset' CSS reset with explicit text-align: start and direction: ltr properties
+  * Added inline style attributes in React components for maximum style precedence
+  * Messages 40 characters or less display on single line, longer messages wrap naturally
+  * Eliminated all inherited style conflicts through comprehensive reset approach
+  * Fixed persistent text alignment issues with dual CSS class and inline style protection
 ```
 
 ## User Preferences
