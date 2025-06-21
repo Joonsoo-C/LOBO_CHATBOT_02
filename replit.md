@@ -379,6 +379,8 @@ Changelog:
   * Fixed message overflow issues with max-width constraints and proper margin handling
   * Added automatic scroll to bottom when new messages are sent or received
   * Improved user message positioning with right margin to prevent screen edge cutoff
+  * Fixed text alignment in user message bubbles by removing CSS class conflicts and using inline styles
+  * Ensured all message text aligns to the left side of speech bubbles regardless of message length
 ```
 
 ## User Preferences

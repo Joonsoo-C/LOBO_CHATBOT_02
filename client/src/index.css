@@ -140,9 +140,9 @@
     letter-spacing: -0.02em;
   }
 
-  /* Message content styling - prevent unwanted line breaks */
+  /* Message content styling - force left alignment */
   .message-content {
-    display: block;
+    display: block !important;
     word-break: normal;
     white-space: nowrap;
     overflow-wrap: normal;
@@ -150,7 +150,11 @@
     width: fit-content;
     max-width: 100%;
     box-sizing: border-box;
-    text-align: left;
+    margin: 0 !important;
+    text-align: left !important;
+    direction: ltr !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
   }
 
   /* Allow wrapping for longer messages */
@@ -159,7 +163,12 @@
     word-break: keep-all;
     overflow-wrap: break-word;
     width: auto;
-    text-align: left;
+    text-align: left !important;
+  }
+
+  /* Override any inherited text alignment */
+  .message-content * {
+    text-align: inherit !important;
   }
 
   /* Status indicators */
