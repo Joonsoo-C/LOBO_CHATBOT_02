@@ -83,11 +83,11 @@ function Home() {
       const aConv = agentConversationMap.get(a.id);
       const bConv = agentConversationMap.get(b.id);
       
-      if (aConv && bConv) {
+      if (aConv && bConv && aConv.lastMessage && bConv.lastMessage) {
         return new Date(bConv.lastMessage.createdAt).getTime() - new Date(aConv.lastMessage.createdAt).getTime();
-      } else if (aConv) {
+      } else if (aConv && aConv.lastMessage) {
         return -1;
-      } else if (bConv) {
+      } else if (bConv && bConv.lastMessage) {
         return 1;
       } else {
         const categoryOrder: Record<string, number> = { "학교": 0, "교수": 1, "그룹": 2, "학생": 3, "기능형": 4 };
