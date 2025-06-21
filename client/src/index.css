@@ -140,35 +140,32 @@
     letter-spacing: -0.02em;
   }
 
-  /* Complete reset with explicit text alignment */
-  .message-bubble-reset {
-    all: unset;
-    display: inline-block !important;
-    text-align: start !important;
+  /* Absolute override for message text alignment */
+  .message-container {
+    text-align: left !important;
+  }
+  
+  .message-container,
+  .message-container *,
+  .message-container div,
+  .message-container span,
+  .message-container p {
+    text-align: left !important;
     direction: ltr !important;
-    white-space: nowrap !important;
-    box-sizing: border-box !important;
-    font-family: inherit !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    color: inherit !important;
     unicode-bidi: normal !important;
-    text-indent: 0 !important;
-    writing-mode: horizontal-tb !important;
   }
-
-  /* Text wrapping for longer content */
-  .message-bubble-reset.long-text {
-    white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: break-word !important;
+  
+  /* Target specific message bubble classes */
+  .bg-primary,
+  .bg-muted,
+  .system-message {
+    text-align: left !important;
   }
-
-  /* Ensure no inherited text alignment affects bubbles */
-  .message-bubble-reset,
-  .message-bubble-reset * {
-    text-align: start !important;
-    direction: ltr !important;
+  
+  .bg-primary *,
+  .bg-muted *,
+  .system-message * {
+    text-align: left !important;
   }
 
   /* Status indicators */
