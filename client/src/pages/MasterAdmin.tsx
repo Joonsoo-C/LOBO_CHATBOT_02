@@ -518,25 +518,14 @@ export default function MasterAdmin() {
           <TabsContent value="users" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">사용자 관리</h2>
-              <div className="flex space-x-2">
-                <Button variant="outline" onClick={() => setIsLmsDialogOpen(true)}>
-                  <Database className="w-4 h-4 mr-2" />
-                  LMS 연동
-                </Button>
-                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(true)}>
-                  <FileText className="w-4 h-4 mr-2" />
-                  파일 업로드
-                </Button>
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
-                  새 사용자 추가
-                </Button>
-              </div>
             </div>
 
             {/* 사용자 관리 방법 안내 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsLmsDialogOpen(true)}
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Database className="w-5 h-5 mr-2 text-blue-600" />
@@ -550,7 +539,10 @@ export default function MasterAdmin() {
                 </CardContent>
               </Card>
 
-              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsFileUploadDialogOpen(true)}
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
@@ -564,7 +556,7 @@ export default function MasterAdmin() {
                 </CardContent>
               </Card>
 
-              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 cursor-pointer hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Plus className="w-5 h-5 mr-2 text-orange-600" />
