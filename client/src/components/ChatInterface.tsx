@@ -1006,7 +1006,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start'
                 }}>
                   <div 
-                    className="relative flex items-start gap-1 max-w-[90%]"
+                    className="relative flex items-start gap-1 w-fit max-w-[85%]"
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
                         setActiveReactionMessageId(msg.id);
@@ -1019,7 +1019,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`relative px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -1041,50 +1041,47 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                     >
                       {msg.content}
+                      
+                      {/* Reaction Options - absolute positioning to prevent layout shifts */}
+                      {!msg.isFromUser && !isSystem && showReactionOptions && (
+                        <div 
+                          className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {reactionOptions.map((option) => (
+                            <button
+                              key={option.emoji}
+                              className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReactionSelect(msg.id, option.emoji);
+                              }}
+                              title={option.label}
+                            >
+                              {option.emoji === '👍' ? (
+                                <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                              ) : (
+                                <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Message Reaction Display - absolute positioning */}
+                      {!msg.isFromUser && !isSystem && messageReaction && (
+                        <div className="absolute -bottom-2 left-0 transform translate-y-full">
+                          <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
+                            {messageReaction}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* PC: Reaction system right next to message */}
-                    {!msg.isFromUser && !isSystem && (
-                      <>
-                        {/* Message Reaction Display - below message for both PC and mobile */}
-                        {messageReaction && (
-                          <div className="absolute bottom-0 left-0 transform translate-y-full mt-1">
-                            <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
-                              {messageReaction}
-                            </span>
-                          </div>
-                        )}
-                        
-                        {/* Reaction Options - PC: right next to message */}
-                        {showReactionOptions && (
-                          <div 
-                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {reactionOptions.map((option) => (
-                              <button
-                                key={option.emoji}
-                                className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleReactionSelect(msg.id, option.emoji);
-                                }}
-                                title={option.label}
-                              >
-                                {option.emoji === '👍' ? (
-                                  <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                ) : (
-                                  <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                )}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
+
 
                     {/* Mobile: Reaction Options below message on left */}
-                    {showReactionOptions && !msg.isFromUser && !isSystem && (
+                    {!msg.isFromUser && !isSystem && showReactionOptions && (
                       <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
                         {reactionOptions.map((option) => (
                           <button
