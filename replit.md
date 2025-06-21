@@ -376,6 +376,9 @@ Changelog:
   * Messages 20 characters or less display on single line with white-space: nowrap
   * Longer messages use natural wrapping with word-break: keep-all for Korean text
   * Applied width: fit-content for proper message bubble sizing
+  * Fixed message overflow issues with max-width constraints and proper margin handling
+  * Added automatic scroll to bottom when new messages are sent or received
+  * Improved user message positioning with right margin to prevent screen edge cutoff
 ```
 
 ## User Preferences

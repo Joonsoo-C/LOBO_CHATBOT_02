@@ -486,9 +486,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       }
     }
     
+    // Clear message first for immediate UI feedback
+    setMessage("");
+    
     // Normal message sending
     sendMessageMutation.mutate(messageContent);
-    setMessage("");
     
     // Scroll to bottom after sending message
     setTimeout(() => scrollToBottom(), 100);
