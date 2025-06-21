@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Override Tailwind text utilities with highest specificity */
-.text-left {
-  text-align: left !important;
+@layer utilities {
+  .text-left {
+    text-align: left !important;
+  }
+  
+  .text-center {
+    text-align: left !important;
+  }
+  
+  .text-right {
+    text-align: left !important;
+  }
+  
+  .text-justify {
+    text-align: left !important;
+  }
+  
+  /* Force all elements to left align */
+  * {
+    text-align: left !important;
+  }
 }
 
 :root {
@@ -145,17 +163,13 @@
     letter-spacing: -0.02em;
   }
 
-  /* Force text alignment with highest specificity */
-  div.message-container[class*="bg-primary"],
-  div.message-container[class*="bg-muted"],
-  div.message-container[class*="system-message"] {
+  /* Force left alignment for all message elements */
+  .message-container {
     text-align: left !important;
     white-space: nowrap !important;
   }
   
-  div.message-container.long-text[class*="bg-primary"],
-  div.message-container.long-text[class*="bg-muted"],
-  div.message-container.long-text[class*="system-message"] {
+  .message-container.long-text {
     white-space: normal !important;
     word-break: keep-all !important;
   }

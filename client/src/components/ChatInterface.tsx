@@ -1017,7 +1017,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`message-container ${msg.content.length > 30 ? "long-text" : ""} max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 text-left ${
+                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -1026,7 +1026,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }`}
                       style={{
                         textAlign: 'left',
-                        direction: 'ltr'
+                        direction: 'ltr',
+                        whiteSpace: msg.content.length > 30 ? 'normal' : 'nowrap',
+                        wordBreak: msg.content.length > 30 ? 'keep-all' : 'normal',
+                        overflowWrap: msg.content.length > 30 ? 'break-word' : 'normal'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
@@ -1034,7 +1037,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                      {msg.content}
+                      <span style={{ 
+                        textAlign: 'left', 
+                        display: 'block',
+                        width: '100%' 
+                      }}>
+                        {msg.content}
+                      </span>
                       
 
                     </div>

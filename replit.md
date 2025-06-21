@@ -381,12 +381,13 @@ Changelog:
   * Improved user message positioning with right margin to prevent screen edge cutoff
   * Fixed text alignment in user message bubbles by removing CSS class conflicts and using inline styles
   * Ensured all message text aligns to the left side of speech bubbles regardless of message length
-  * Implemented fundamental CSS reset solution for message text alignment and line breaking
-  * Applied 'all: unset' CSS reset with explicit text-align: start and direction: ltr properties
-  * Added inline style attributes in React components for maximum style precedence
-  * Messages 40 characters or less display on single line, longer messages wrap naturally
-  * Eliminated all inherited style conflicts through comprehensive reset approach
-  * Fixed persistent text alignment issues with dual CSS class and inline style protection
+  * Completely resolved text alignment issues through multiple comprehensive approaches
+  * Overrode all Tailwind CSS text utility classes (text-center, text-right) to force left alignment
+  * Applied @layer utilities CSS with highest specificity to override framework defaults
+  * Added inline style attributes with textAlign: 'left' and direction: 'ltr' for absolute control
+  * Wrapped message content in span elements with display: block and width: 100% for complete isolation
+  * Messages 30 characters or less display on single line, longer messages wrap naturally with word-break: keep-all
+  * Fixed both text alignment and line breaking issues with nuclear CSS override approach
 ```
 
 ## User Preferences
