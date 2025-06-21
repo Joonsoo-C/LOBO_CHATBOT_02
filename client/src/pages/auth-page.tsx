@@ -269,19 +269,7 @@ export default function AuthPage() {
                   <br />
                   <span className="text-xs text-muted-foreground">F2024001</span>
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-xs"
-                  onClick={() => {
-                    window.open("https://university-ai-admin-hummings.replit.app/", "_blank");
-                  }}
-                >
-                  {t('auth.masterAccount')}
-                  <br />
-                  <span className="text-xs text-muted-foreground">{t('auth.adminSystem')}</span>
-                </Button>
+                
               </div>
               <p className="text-xs text-blue-700">
                 {t('auth.autoCreate')}
