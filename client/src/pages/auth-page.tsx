@@ -275,7 +275,8 @@ export default function AuthPage() {
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
-                    window.open("https://university-ai-admin-hummings.replit.app/", "_blank");
+                    loginForm.setValue("username", "admin");
+                    loginForm.setValue("password", "admin123");
                   }}
                 >
                   {t('auth.masterAccount')}
