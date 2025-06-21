@@ -138,6 +138,22 @@
   .korean-text {
     font-family: 'Noto Sans KR', sans-serif;
     letter-spacing: -0.02em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: auto;
+    hyphens: none;
+  }
+
+  /* Message content styling for better text flow */
+  .message-content p {
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-align: left;
+    hyphens: none;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    line-height: 1.6;
   }
 
   /* Status indicators */
