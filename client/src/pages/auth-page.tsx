@@ -89,7 +89,7 @@ export default function AuthPage() {
       const response = await apiRequest("POST", "/api/login", data);
       return response.json();
     },
-    onSuccess: async () => {
+    onSuccess: async (userData) => {
       // Invalidate and refetch user data to ensure proper authentication state
       await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       await queryClient.refetchQueries({ queryKey: ["/api/user"] });
@@ -101,7 +101,12 @@ export default function AuthPage() {
       
       // Small delay to ensure auth state is updated before navigation
       setTimeout(() => {
-        setLocation("/");
+        // Check if user is master admin and redirect accordingly
+        if (userData?.username === "master_admin") {
+          setLocation("/master-admin");
+        } else {
+          setLocation("/");
+        }
       }, 100);
     },
     onError: (error: Error) => {
@@ -275,13 +280,13 @@ export default function AuthPage() {
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
-                    loginForm.setValue("username", "admin");
-                    loginForm.setValue("password", "admin123");
+                    loginForm.setValue("username", "master_admin");
+                    loginForm.setValue("password", "master123");
                   }}
                 >
                   {t('auth.masterAccount')}
                   <br />
-                  <span className="text-xs text-muted-foreground">{t('auth.adminSystem')}</span>
+                  <span className="text-xs text-muted-foreground">master_admin</span>
                 </Button>
               </div>
               <p className="text-xs text-blue-700">

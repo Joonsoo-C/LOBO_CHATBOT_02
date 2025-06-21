@@ -11,6 +11,7 @@ import AuthPage from "@/pages/auth-page";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
 import Management from "@/pages/Management";
+import MasterAdmin from "@/pages/MasterAdmin";
 import TabletLayout from "@/components/TabletLayout";
 import NotFound from "@/pages/not-found";
 
@@ -40,6 +41,7 @@ function Router() {
         </>
       ) : (
         <>
+          <Route path="/master-admin" component={MasterAdmin} />
           {isTablet ? (
             <>
               <Route path="/" component={TabletLayout} />
