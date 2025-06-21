@@ -284,6 +284,17 @@
     }
   }
 
+  /* Search bar full width styling */
+  .search-container {
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .search-input {
+    width: 100% !important;
+  }
+
   /* Fixed header and input positioning */
   @media (max-width: 767px) {
     .chat-page-container {
