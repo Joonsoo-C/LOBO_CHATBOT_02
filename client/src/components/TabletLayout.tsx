@@ -405,40 +405,42 @@ export default function TabletLayout() {
         {/* Header */}
         <div className="p-4 border-b border-border">
           {/* Search and Settings */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative" style={{ flex: '1 1 0%', minWidth: '0', width: '100%' }}>
+          <div className="flex items-center gap-2 mb-4">
+            {/* Search Bar */}
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-20 bg-muted border-none korean-text h-11"
-                style={{ width: '100%' }}
+                className="pl-10 pr-3 bg-muted border-none korean-text h-11"
               />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text bg-background border-border"
-                  >
-                    {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
-                  {categories.map((category) => (
-                    <DropdownMenuItem
-                      key={category.value}
-                      className="korean-text cursor-pointer"
-                      onClick={() => setSelectedCategory(category.value)}
-                    >
-                      {category.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
+            
+            {/* Category Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-11 px-4 text-sm korean-text flex-shrink-0"
+                >
+                  {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
+                {categories.map((category) => (
+                  <DropdownMenuItem
+                    key={category.value}
+                    className="korean-text cursor-pointer"
+                    onClick={() => setSelectedCategory(category.value)}
+                  >
+                    {category.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
