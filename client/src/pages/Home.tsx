@@ -124,7 +124,7 @@ export default function Home() {
                   <Button
                     variant="default"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-2 text-xs korean-text md:h-8 md:px-3"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 text-sm korean-text md:h-9 md:px-4"
                   >
                     {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
@@ -183,11 +183,11 @@ export default function Home() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="tab-navigation grid grid-cols-2 bg-muted rounded-lg p-1 mb-4 md:mb-6 w-full gap-1">
+          <div className="flex bg-muted rounded-lg p-1 mb-4 md:mb-6 w-full">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-14 text-base font-medium"
+              className="flex-1 korean-text h-12 text-sm font-medium"
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
@@ -195,7 +195,7 @@ export default function Home() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-14 text-base font-medium"
+              className="flex-1 korean-text h-12 text-sm font-medium"
               onClick={() => setActiveTab("management")}
             >
               {t('common.management')}
