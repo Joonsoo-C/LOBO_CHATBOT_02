@@ -106,6 +106,7 @@ export default function MasterAdmin() {
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -176,9 +177,23 @@ export default function MasterAdmin() {
     }
   });
 
-  // 필터링된 사용자 목록 계산
+  // 검색 실행 함수
+  const executeSearch = () => {
+    setHasSearched(true);
+  };
+
+  // 필터 초기화 함수
+  const resetFilters = () => {
+    setSelectedUniversity('all');
+    setSelectedCollege('all');
+    setSelectedDepartment('all');
+    setUserSearchQuery('');
+    setHasSearched(false);
+  };
+
+  // 필터링된 사용자 목록 계산 (검색이 실행된 경우에만)
   const filteredUsers = useMemo(() => {
-    if (!users) return [];
+    if (!users || !hasSearched) return [];
     
     let filtered = users;
     
@@ -197,7 +212,7 @@ export default function MasterAdmin() {
     // TODO: 사용자 스키마에 조직 정보 추가 후 실제 필터링 구현
     
     return filtered;
-  }, [users, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+  }, [users, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, hasSearched]);
 
   // 에이전트 생성 폼
   const agentForm = useForm<AgentFormData>({
@@ -634,12 +649,7 @@ export default function MasterAdmin() {
                   </Select>
                 </div>
                 <div className="flex items-end">
-                  <Button variant="outline" onClick={() => {
-                    setSelectedUniversity('all');
-                    setSelectedCollege('all');
-                    setSelectedDepartment('all');
-                    setUserSearchQuery('');
-                  }}>
+                  <Button variant="outline" onClick={resetFilters}>
                     필터 초기화
                   </Button>
                 </div>
@@ -652,19 +662,22 @@ export default function MasterAdmin() {
                     placeholder="이름, 학번, 교번으로 검색..."
                     value={userSearchQuery}
                     onChange={(e) => setUserSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                   />
                 </div>
-                <Button>
+                <Button onClick={executeSearch}>
                   <Users className="w-4 h-4 mr-2" />
-                  새 사용자 추가
+                  사용자 검색
                 </Button>
               </div>
               
               {/* 검색 결과 표시 */}
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                전체 {filteredUsers?.length || 0}명의 사용자
-                {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
-              </div>
+              {hasSearched && (
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  검색 결과: {filteredUsers?.length || 0}명
+                  {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
+                </div>
+              )}
             </div>
 
             <Card>
@@ -691,44 +704,70 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {filteredUsers?.map((user) => (
-                        <tr key={user.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {user.firstName} {user.lastName}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {user.username}
-                              </div>
+                      {!hasSearched ? (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">사용자 검색</p>
+                              <p className="text-sm">
+                                위의 검색 조건을 설정하고 "사용자 검색" 버튼을 클릭하여 사용자를 찾아보세요.
+                              </p>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant={user.role === 'faculty' ? 'default' : 'secondary'}>
-                              {user.role === 'faculty' ? '교직원' : '학생'}
-                            </Badge>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                              {user.isActive ? '활성' : '비활성'}
-                            </Badge>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('ko-KR') : '-'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                            <Button variant="outline" size="sm">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                        </tr>
+                      ) : filteredUsers?.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                              <p className="text-sm">
+                                검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.
+                              </p>
+                            </div>
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        filteredUsers?.map((user) => (
+                          <tr key={user.id}>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {user.firstName} {user.lastName}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {user.username}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant={user.userType === 'faculty' ? 'default' : 'secondary'}>
+                                {user.userType === 'faculty' ? '교직원' : 
+                                 user.userType === 'admin' ? '관리자' :
+                                 user.userType === 'student' ? '학생' : '기타'}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              2025. 6. 21.
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
