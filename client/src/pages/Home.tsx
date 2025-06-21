@@ -114,7 +114,7 @@ function Home() {
   };
 
   return (
-    <div className="mobile-container no-scroll-bounce scroll-container md:grid md:grid-cols-1 md:gap-6 md:px-6 md:py-4">
+    <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">
       {/* Header */}
       <header className="fixed-header md:static md:bg-transparent md:shadow-none md:mb-0">
         <div className="px-6 py-3 md:px-0 md:py-0">

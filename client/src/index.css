@@ -130,6 +130,13 @@
     min-height: 100dvh; /* Dynamic viewport height for modern browsers */
   }
 
+  /* Full width for desktop */
+  @media (min-width: 768px) {
+    .mobile-container {
+      @apply max-w-none mx-0 w-full;
+    }
+  }
+
   /* Custom scrollbar for chat */
   .chat-scroll {
     scrollbar-width: none;
