@@ -417,6 +417,14 @@ Changelog:
   * Enhanced agent display cards to show hierarchical categories with proper formatting
   * Category values stored as combined string format: "대학교 > 공과대학 > 컴퓨터공학과"
   * Maintains backward compatibility with existing simple category values
+- June 21, 2025. Redesigned category selection with fixed layout to prevent UI disruption:
+  * Replaced dropdown menus with radio button grid layout to prevent layout shifting
+  * Added dual category type selection: hierarchical vs simple categories
+  * Implemented fixed-position selection areas with proper scrolling for long lists
+  * Created visual feedback with hover effects and selection confirmation boxes
+  * Grid layout prevents UI jumping and provides consistent user experience
+  * Both category types properly validated with specific error messages
+  * Category selection state properly reset when dialog opens/closes or type changes
 ```
 
 ## User Preferences
