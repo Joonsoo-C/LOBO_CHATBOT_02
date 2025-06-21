@@ -217,17 +217,17 @@ function Home() {
 
       {/* Content */}
       <main className="flex-1 main-content md:pt-0 md:col-span-12">
-        <div className="px-6 md:px-0">
-          {activeTab === "chat" && (
-            <AgentList 
-              agents={filteredAgents as any} 
-              conversations={conversations as any}
-            />
-          )}
-          {activeTab === "management" && (
+        {activeTab === "chat" && (
+          <AgentList 
+            agents={filteredAgents as any} 
+            conversations={conversations as any}
+          />
+        )}
+        {activeTab === "management" && (
+          <div className="px-6 md:px-0">
             <AgentManagement />
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );
