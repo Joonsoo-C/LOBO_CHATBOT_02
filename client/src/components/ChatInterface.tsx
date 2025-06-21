@@ -1043,16 +1043,21 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                     >
                       <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
                         textAlign: 'center',
                         direction: 'ltr',
-                        width: '100%',
-                        display: 'block',
                         margin: 0,
-                        padding: 0,
-                        writingMode: 'horizontal-tb',
-                        unicodeBidi: 'normal'
+                        padding: 0
                       }}>
-                        {msg.content}
+                        <span style={{
+                          display: 'inline-block',
+                          textAlign: 'center'
+                        }}>
+                          {msg.content}
+                        </span>
                       </div>
                       
 
