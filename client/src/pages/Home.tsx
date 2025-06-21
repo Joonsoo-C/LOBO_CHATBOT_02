@@ -140,7 +140,13 @@ function Home() {
                   size="sm"
                   className="h-9 px-3 text-xs korean-text md:h-11 md:px-4 md:text-sm flex-shrink-0"
                 >
-                  {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
+                  {selectedCategory === "전체" ? t('home.categories.all') :
+                   selectedCategory === "학교" ? t('home.categories.school') :
+                   selectedCategory === "교수" ? t('home.categories.professor') :
+                   selectedCategory === "학생" ? t('home.categories.student') :
+                   selectedCategory === "그룹" ? t('home.categories.group') :
+                   selectedCategory === "기능형" ? t('home.categories.function') :
+                   selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
