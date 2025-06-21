@@ -409,6 +409,16 @@ Changelog:
   * Master admin automatically redirects to /master-admin page after login
   * Logout from admin page returns to login screen (/auth)
   * Admin dashboard includes real-time statistics, user activity, and system status monitoring
+- June 21, 2025. Enhanced agent management with organizational hierarchy and icon customization:
+  * Added agent manager assignment functionality with faculty user selection
+  * Implemented organizational hierarchy system (university/graduate school → college → department)
+  * Created organizations table with hierarchical relationships and sample data (로보대학교, 공과대학, 컴퓨터공학과 등)
+  * Added 5 faculty accounts (prof001-003, dean001-002) for manager assignment
+  * Made manager and organization selection mandatory for new agent creation
+  * Implemented icon change functionality with modal interface matching existing chatbot design
+  * Added icon change API endpoint with support for 10 different icons and 10 background colors
+  * Agent creation now uses default icon/color, with separate icon customization available
+  * Enhanced agent list display to show manager name and organizational affiliation
 ```
 
 ## User Preferences

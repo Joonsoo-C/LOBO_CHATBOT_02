@@ -792,6 +792,123 @@ export default function MasterAdmin() {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* 아이콘 변경 다이얼로그 */}
+        <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>아이콘 변경</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 아이콘 미리보기 */}
+              <div className="flex justify-center">
+                <div className={`w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl bg-${selectedBgColor}-500`}>
+                  {selectedIcon === "User" && "👤"}
+                  {selectedIcon === "Bot" && "🤖"}
+                  {selectedIcon === "BookOpen" && "📖"}
+                  {selectedIcon === "GraduationCap" && "🎓"}
+                  {selectedIcon === "Users" && "👥"}
+                  {selectedIcon === "Settings" && "⚙️"}
+                  {selectedIcon === "MessageSquare" && "💬"}
+                  {selectedIcon === "Heart" && "❤️"}
+                  {selectedIcon === "Star" && "⭐"}
+                  {selectedIcon === "Globe" && "🌍"}
+                </div>
+              </div>
+
+              {/* 아이콘 유형 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant={selectedIcon !== "custom" ? "default" : "outline"} 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setSelectedIcon("User")}
+                  >
+                    기본 아이콘
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    disabled
+                  >
+                    이미지 업로드
+                  </Button>
+                </div>
+              </div>
+
+              {/* 아이콘 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { icon: "User", emoji: "👤" },
+                    { icon: "Bot", emoji: "🤖" },
+                    { icon: "BookOpen", emoji: "📖" },
+                    { icon: "GraduationCap", emoji: "🎓" },
+                    { icon: "Users", emoji: "👥" },
+                    { icon: "Settings", emoji: "⚙️" },
+                    { icon: "MessageSquare", emoji: "💬" },
+                    { icon: "Heart", emoji: "❤️" },
+                    { icon: "Star", emoji: "⭐" },
+                    { icon: "Globe", emoji: "🌍" }
+                  ].map(({ icon, emoji }) => (
+                    <Button
+                      key={icon}
+                      variant={selectedIcon === icon ? "default" : "outline"}
+                      size="sm"
+                      className="h-12 w-12 p-0"
+                      onClick={() => setSelectedIcon(icon)}
+                    >
+                      {emoji}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 배경색 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { color: "blue", class: "bg-blue-500" },
+                    { color: "green", class: "bg-green-500" },
+                    { color: "purple", class: "bg-purple-500" },
+                    { color: "red", class: "bg-red-500" },
+                    { color: "orange", class: "bg-orange-500" },
+                    { color: "pink", class: "bg-pink-500" },
+                    { color: "yellow", class: "bg-yellow-500" },
+                    { color: "cyan", class: "bg-cyan-500" },
+                    { color: "gray", class: "bg-gray-500" },
+                    { color: "indigo", class: "bg-indigo-500" }
+                  ].map(({ color, class: bgClass }) => (
+                    <Button
+                      key={color}
+                      variant="outline"
+                      size="sm"
+                      className={`h-12 w-12 p-0 border-2 ${selectedBgColor === color ? 'border-black' : 'border-gray-200'}`}
+                      onClick={() => setSelectedBgColor(color)}
+                    >
+                      <div className={`w-8 h-8 rounded ${bgClass}`}></div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 버튼 */}
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setIsIconChangeDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button onClick={handleIconChange} disabled={changeIconMutation.isPending}>
+                  {changeIconMutation.isPending ? "변경 중..." : "변경하기"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

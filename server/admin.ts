@@ -332,4 +332,35 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+  // Update agent icon and background color
+  app.patch("/api/admin/agents/:agentId/icon", requireMasterAdmin, async (req, res) => {
+    try {
+      const { agentId } = req.params;
+      const { icon, backgroundColor } = req.body;
+      
+      if (!icon || !backgroundColor) {
+        return res.status(400).json({ message: "Icon and backgroundColor are required" });
+      }
+
+      const updatedAgent = await db
+        .update(agents)
+        .set({ 
+          icon, 
+          backgroundColor,
+          isCustomIcon: false // Reset to default icon type
+        })
+        .where(eq(agents.id, parseInt(agentId)))
+        .returning();
+
+      if (updatedAgent.length === 0) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      res.json(updatedAgent[0]);
+    } catch (error) {
+      console.error("Error updating agent icon:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 }
