@@ -100,9 +100,18 @@ export function setupAdminRoutes(app: Express) {
           icon: agents.icon,
           backgroundColor: agents.backgroundColor,
           isActive: agents.isActive,
-          createdAt: agents.createdAt
+          managerId: agents.managerId,
+          organizationId: agents.organizationId,
+          createdAt: agents.createdAt,
+          managerFirstName: users.firstName,
+          managerLastName: users.lastName,
+          managerUsername: users.username,
+          organizationName: organizations.name,
+          organizationType: organizations.type
         })
         .from(agents)
+        .leftJoin(users, eq(agents.managerId, users.id))
+        .leftJoin(organizations, eq(agents.organizationId, organizations.id))
         .orderBy(desc(agents.createdAt));
 
       // Get message counts for each agent
@@ -116,8 +125,7 @@ export function setupAdminRoutes(app: Express) {
 
           return {
             ...agent,
-            messageCount: messageCount[0]?.count || 0,
-            averageRating: Math.random() * 2 + 3 // Mock rating between 3-5
+            messageCount: messageCount[0]?.count || 0
           };
         })
       );

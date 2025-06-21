@@ -163,8 +163,8 @@ export default function MasterAdmin() {
     mutationFn: async (data: AgentFormData) => {
       const payload = {
         ...data,
-        managerId: data.managerId || null,
-        organizationId: data.organizationId ? parseInt(data.organizationId) : null,
+        managerId: data.managerId === "none" ? null : data.managerId || null,
+        organizationId: data.organizationId === "none" ? null : (data.organizationId ? parseInt(data.organizationId) : null),
       };
       const response = await apiRequest("POST", "/api/admin/agents", payload);
       return response.json();
@@ -604,7 +604,7 @@ export default function MasterAdmin() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="">관리자 없음</SelectItem>
+                                  <SelectItem value="none">관리자 없음</SelectItem>
                                   {managers?.map((manager) => (
                                     <SelectItem key={manager.id} value={manager.id}>
                                       {manager.firstName} {manager.lastName} ({manager.username})
@@ -629,17 +629,17 @@ export default function MasterAdmin() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="">조직 없음</SelectItem>
+                                  <SelectItem value="none">조직 없음</SelectItem>
                                   {organizations?.map((org) => (
-                                    <div key={org.id}>
-                                      <SelectItem value={org.id.toString()}>
+                                    <>
+                                      <SelectItem key={org.id} value={org.id.toString()}>
                                         {org.name} ({org.type === 'university' ? '대학교' : 
                                           org.type === 'graduate_school' ? '대학원' : 
                                           org.type === 'college' ? '단과대학' : '학과'})
                                       </SelectItem>
                                       {org.children?.map((college: any) => (
-                                        <div key={college.id}>
-                                          <SelectItem value={college.id.toString()}>
+                                        <>
+                                          <SelectItem key={college.id} value={college.id.toString()}>
                                             └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
                                           </SelectItem>
                                           {college.children?.map((dept: any) => (
@@ -647,9 +647,9 @@ export default function MasterAdmin() {
                                               &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
                                             </SelectItem>
                                           ))}
-                                        </div>
+                                        </>
                                       ))}
-                                    </div>
+                                    </>
                                   ))}
                                 </SelectContent>
                               </Select>
@@ -710,10 +710,16 @@ export default function MasterAdmin() {
                       <span>메시지 수:</span>
                       <span className="font-medium">{agent.messageCount}</span>
                     </div>
-                    {agent.averageRating && (
+                    {agent.managerFirstName && (
                       <div className="flex items-center justify-between text-sm">
-                        <span>평균 평점:</span>
-                        <span className="font-medium">⭐ {agent.averageRating.toFixed(1)}</span>
+                        <span>관리자:</span>
+                        <span className="font-medium">{agent.managerFirstName} {agent.managerLastName}</span>
+                      </div>
+                    )}
+                    {agent.organizationName && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span>소속:</span>
+                        <span className="font-medium">{agent.organizationName}</span>
                       </div>
                     )}
                     <div className="flex space-x-2">
