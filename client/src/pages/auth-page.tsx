@@ -53,12 +53,6 @@ export default function AuthPage() {
   const { t, language, setLanguage } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect if already logged in
-  if (user) {
-    setLocation("/");
-    return null;
-  }
-
   const loginSchema = createLoginSchema(t);
   const registerSchema = createRegisterSchema(t);
 
@@ -84,6 +78,12 @@ export default function AuthPage() {
       userType: "student",
     },
   });
+
+  // Redirect if already logged in - moved after all hooks
+  if (user) {
+    setLocation("/");
+    return null;
+  }
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
