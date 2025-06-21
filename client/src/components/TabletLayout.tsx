@@ -66,7 +66,7 @@ const backgroundColorMap: Record<string, string> = {
 
 function getCategoryBadgeStyle(category: string) {
   switch (category) {
-    case "학교":
+    case "에이전트 카테고리":
       return "category-badge school";
     case "교수":
       return "category-badge professor";
@@ -331,7 +331,7 @@ export default function TabletLayout() {
   // Category options with translations
   const categories = [
     { value: "전체", label: t('home.categoryAll') },
-    { value: "학교", label: t('home.categorySchool') },
+    { value: "에이전트 카테고리", label: t('home.categorySchool') },
     { value: "교수", label: t('home.categoryProfessor') },
     { value: "학생", label: t('home.categoryStudent') },
     { value: "그룹", label: t('home.categoryGroup') },

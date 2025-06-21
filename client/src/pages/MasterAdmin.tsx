@@ -111,7 +111,7 @@ export default function MasterAdmin() {
 
   // Available options for form dropdowns
   const categoryOptions = [
-    { value: "학교", label: "학교" },
+    { value: "에이전트 카테고리", label: "에이전트 카테고리" },
     { value: "교수", label: "교수" },
     { value: "학생", label: "학생" },
     { value: "그룹", label: "그룹" },
@@ -534,7 +534,7 @@ export default function MasterAdmin() {
                           name="category"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>카테고리</FormLabel>
+                              <FormLabel>에이전트 카테고리</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
