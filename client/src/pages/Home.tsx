@@ -194,11 +194,11 @@ function Home() {
           </div>
 
           {/* Tab Navigation */}
-          <div className="grid grid-cols-2 gap-0 bg-muted rounded-lg p-1 tab-navigation">
+          <div className="flex w-full gap-0 bg-muted rounded-lg p-1 tab-navigation">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="flex-1 korean-text h-12 md:h-14"
+              className="flex-1 w-full korean-text h-12 md:h-14"
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
@@ -206,7 +206,7 @@ function Home() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="flex-1 korean-text h-12 md:h-14"
+              className="flex-1 w-full korean-text h-12 md:h-14"
               onClick={() => setActiveTab("management")}
             >
               {t('common.management')}
