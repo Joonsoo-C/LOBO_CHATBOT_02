@@ -1017,24 +1017,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
-                        msg.content.length > 20 ? "wrap-text" : ""
-                      } ${
+                      className={`chat-message-bubble max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
-                      style={{ 
-                        textAlign: 'left', 
-                        direction: 'ltr',
-                        display: 'block',
-                        width: 'fit-content',
-                        whiteSpace: msg.content.length > 20 ? 'normal' : 'nowrap',
-                        wordBreak: 'keep-all',
-                        overflowWrap: 'break-word'
-                      }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
                           handleReactionToggle(msg.id);

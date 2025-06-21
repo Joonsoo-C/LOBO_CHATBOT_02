@@ -140,35 +140,15 @@
     letter-spacing: -0.02em;
   }
 
-  /* Message content styling - force left alignment */
-  .message-content {
+  /* Force left alignment for all message bubbles */
+  .chat-message-bubble {
+    text-align: left !important;
     display: block !important;
-    word-break: normal;
-    white-space: nowrap;
-    overflow-wrap: normal;
-    hyphens: none;
-    width: fit-content;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin: 0 !important;
-    text-align: left !important;
-    direction: ltr !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
+    width: auto !important;
   }
-
-  /* Allow wrapping for longer messages */
-  .message-content.wrap-text {
-    white-space: normal;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    width: auto;
+  
+  .chat-message-bubble * {
     text-align: left !important;
-  }
-
-  /* Override any inherited text alignment */
-  .message-content * {
-    text-align: inherit !important;
   }
 
   /* Status indicators */
