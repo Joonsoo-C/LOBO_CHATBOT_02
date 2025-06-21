@@ -138,22 +138,23 @@
   .korean-text {
     font-family: 'Noto Sans KR', sans-serif;
     letter-spacing: -0.02em;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    line-break: auto;
-    hyphens: none;
   }
 
-  /* Message content styling for better text flow */
-  .message-content p {
-    word-spacing: normal;
-    letter-spacing: normal;
-    text-align: left;
+  /* Message content styling - prevent unwanted line breaks */
+  .message-content {
+    display: block;
+    word-break: normal;
+    white-space: nowrap;
+    overflow-wrap: normal;
     hyphens: none;
-    word-break: keep-all;
-    overflow-wrap: anywhere;
+    width: fit-content;
+  }
+
+  /* Allow wrapping for longer messages */
+  .message-content.wrap-text {
     white-space: normal;
-    line-height: 1.6;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   /* Status indicators */

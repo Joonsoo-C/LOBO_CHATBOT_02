@@ -1002,7 +1002,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`message-content max-w-[85%] px-4 py-3 rounded-2xl korean-text md:max-w-[85%] md:px-5 md:py-4 ${
+                      className={`message-content max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -1015,7 +1015,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                      <p className="text-sm leading-relaxed md:text-base md:leading-relaxed break-words">{msg.content}</p>
+                      {msg.content}
                       
 
                     </div>
