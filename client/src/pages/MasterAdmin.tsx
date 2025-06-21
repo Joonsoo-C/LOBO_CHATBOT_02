@@ -109,7 +109,99 @@ export default function MasterAdmin() {
     },
   });
 
-  // Available options for form dropdowns
+  // Hierarchical category structure
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+  const [selectedCollege, setSelectedCollege] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+
+  // Category hierarchy data
+  const universityOptions = [
+    { value: "대학교", label: "대학교" },
+    { value: "대학원", label: "대학원" },
+  ];
+
+  const collegeOptions: Record<string, Array<{ value: string; label: string }>> = {
+    "대학교": [
+      { value: "공과대학", label: "공과대학" },
+      { value: "경영대학", label: "경영대학" },
+      { value: "인문대학", label: "인문대학" },
+      { value: "자연과학대학", label: "자연과학대학" },
+      { value: "사회과학대학", label: "사회과학대학" },
+      { value: "예술대학", label: "예술대학" },
+      { value: "의과대학", label: "의과대학" },
+      { value: "법과대학", label: "법과대학" },
+    ],
+    "대학원": [
+      { value: "일반대학원", label: "일반대학원" },
+      { value: "전문대학원", label: "전문대학원" },
+      { value: "특수대학원", label: "특수대학원" },
+    ],
+  };
+
+  const departmentOptions: Record<string, Array<{ value: string; label: string }>> = {
+    "공과대학": [
+      { value: "컴퓨터공학과", label: "컴퓨터공학과" },
+      { value: "전자공학과", label: "전자공학과" },
+      { value: "기계공학과", label: "기계공학과" },
+      { value: "화학공학과", label: "화학공학과" },
+      { value: "건축학과", label: "건축학과" },
+    ],
+    "경영대학": [
+      { value: "경영학과", label: "경영학과" },
+      { value: "회계학과", label: "회계학과" },
+      { value: "마케팅학과", label: "마케팅학과" },
+      { value: "국제경영학과", label: "국제경영학과" },
+    ],
+    "인문대학": [
+      { value: "국어국문학과", label: "국어국문학과" },
+      { value: "영어영문학과", label: "영어영문학과" },
+      { value: "역사학과", label: "역사학과" },
+      { value: "철학과", label: "철학과" },
+    ],
+    "자연과학대학": [
+      { value: "수학과", label: "수학과" },
+      { value: "물리학과", label: "물리학과" },
+      { value: "화학과", label: "화학과" },
+      { value: "생물학과", label: "생물학과" },
+    ],
+    "사회과학대학": [
+      { value: "심리학과", label: "심리학과" },
+      { value: "사회학과", label: "사회학과" },
+      { value: "정치외교학과", label: "정치외교학과" },
+      { value: "경제학과", label: "경제학과" },
+    ],
+    "예술대학": [
+      { value: "음악학과", label: "음악학과" },
+      { value: "미술학과", label: "미술학과" },
+      { value: "연극영화학과", label: "연극영화학과" },
+    ],
+    "의과대학": [
+      { value: "의학과", label: "의학과" },
+      { value: "간호학과", label: "간호학과" },
+      { value: "약학과", label: "약학과" },
+    ],
+    "법과대학": [
+      { value: "법학과", label: "법학과" },
+    ],
+    "일반대학원": [
+      { value: "인문사회계열", label: "인문사회계열" },
+      { value: "자연과학계열", label: "자연과학계열" },
+      { value: "공학계열", label: "공학계열" },
+      { value: "예체능계열", label: "예체능계열" },
+    ],
+    "전문대학원": [
+      { value: "경영전문대학원", label: "경영전문대학원" },
+      { value: "법학전문대학원", label: "법학전문대학원" },
+      { value: "의학전문대학원", label: "의학전문대학원" },
+    ],
+    "특수대학원": [
+      { value: "교육대학원", label: "교육대학원" },
+      { value: "행정대학원", label: "행정대학원" },
+      { value: "산업대학원", label: "산업대학원" },
+    ],
+  };
+
+  // Legacy category options for existing agents
   const categoryOptions = [
     { value: "에이전트 카테고리", label: "에이전트 카테고리" },
     { value: "교수", label: "교수" },
@@ -210,6 +302,10 @@ export default function MasterAdmin() {
       });
       setShowCreateAgentDialog(false);
       createAgentForm.reset();
+      // Reset hierarchical category selections
+      setSelectedUniversity("");
+      setSelectedCollege("");
+      setSelectedDepartment("");
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
     },
     onError: (error: Error) => {
@@ -222,6 +318,21 @@ export default function MasterAdmin() {
   });
 
   const onCreateAgent = (data: CreateAgentData) => {
+    // Validate hierarchical category selection
+    if (!selectedUniversity || !selectedCollege || !selectedDepartment) {
+      toast({
+        title: "카테고리 선택 필요",
+        description: "대학교/대학원, 단과대학, 학과를 모두 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Ensure the category field has the proper hierarchical value
+    if (!data.category || !data.category.includes(" > ")) {
+      data.category = `${selectedUniversity} > ${selectedCollege} > ${selectedDepartment}`;
+    }
+
     createAgentMutation.mutate(data);
   };
 
@@ -501,7 +612,19 @@ export default function MasterAdmin() {
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <Dialog open={showCreateAgentDialog} onOpenChange={setShowCreateAgentDialog}>
+              <Dialog 
+                open={showCreateAgentDialog} 
+                onOpenChange={(open) => {
+                  setShowCreateAgentDialog(open);
+                  if (!open) {
+                    // Reset form and category selections when dialog closes
+                    createAgentForm.reset();
+                    setSelectedUniversity("");
+                    setSelectedCollege("");
+                    setSelectedDepartment("");
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="w-4 h-4 mr-2" />
@@ -529,30 +652,109 @@ export default function MasterAdmin() {
                           )}
                         />
                         
-                        <FormField
-                          control={createAgentForm.control}
-                          name="category"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>에이전트 카테고리</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="카테고리 선택" />
-                                  </SelectTrigger>
-                                </FormControl>
+                        <div className="space-y-4">
+                          {/* 대학교/대학원 선택 */}
+                          <div>
+                            <Label className="text-sm font-medium">대학교/대학원</Label>
+                            <Select
+                              value={selectedUniversity}
+                              onValueChange={(value) => {
+                                setSelectedUniversity(value);
+                                setSelectedCollege("");
+                                setSelectedDepartment("");
+                                createAgentForm.setValue("category", "");
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="대학교/대학원 선택" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {universityOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* 단과대학 선택 */}
+                          {selectedUniversity && (
+                            <div>
+                              <Label className="text-sm font-medium">단과대학</Label>
+                              <Select
+                                value={selectedCollege}
+                                onValueChange={(value) => {
+                                  setSelectedCollege(value);
+                                  setSelectedDepartment("");
+                                  createAgentForm.setValue("category", "");
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="단과대학 선택" />
+                                </SelectTrigger>
                                 <SelectContent>
-                                  {categoryOptions.map((option) => (
+                                  {collegeOptions[selectedUniversity]?.map((option) => (
                                     <SelectItem key={option.value} value={option.value}>
                                       {option.label}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
-                            </FormItem>
+                            </div>
                           )}
-                        />
+
+                          {/* 학과 선택 */}
+                          {selectedCollege && (
+                            <div>
+                              <Label className="text-sm font-medium">학과</Label>
+                              <Select
+                                value={selectedDepartment}
+                                onValueChange={(value) => {
+                                  setSelectedDepartment(value);
+                                  // 최종 카테고리 값을 조합하여 설정
+                                  const fullCategory = `${selectedUniversity} > ${selectedCollege} > ${value}`;
+                                  createAgentForm.setValue("category", fullCategory);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="학과 선택" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {departmentOptions[selectedCollege]?.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
+
+                          {/* Hidden form field to store the combined category value */}
+                          <FormField
+                            control={createAgentForm.control}
+                            name="category"
+                            render={({ field }) => (
+                              <FormItem className="hidden">
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* 선택된 카테고리 표시 */}
+                          {selectedUniversity && selectedCollege && selectedDepartment && (
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border">
+                              <div className="text-sm font-medium text-blue-700 dark:text-blue-300">선택된 카테고리:</div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {selectedUniversity} &gt; {selectedCollege} &gt; {selectedDepartment}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       <FormField
@@ -699,7 +901,13 @@ export default function MasterAdmin() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setShowCreateAgentDialog(false)}
+                          onClick={() => {
+                            setShowCreateAgentDialog(false);
+                            createAgentForm.reset();
+                            setSelectedUniversity("");
+                            setSelectedCollege("");
+                            setSelectedDepartment("");
+                          }}
                         >
                           취소
                         </Button>
