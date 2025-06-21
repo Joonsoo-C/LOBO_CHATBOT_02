@@ -40,6 +40,15 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// 조직 구조 테이블
+export const organizations = pgTable("organizations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  type: varchar("type").notNull(), // "university", "graduate_school", "college", "department"
+  parentId: integer("parent_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -50,6 +59,7 @@ export const agents = pgTable("agents", {
   isCustomIcon: boolean("is_custom_icon").default(false), // Whether using custom uploaded image
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
+  organizationId: integer("organization_id").references(() => organizations.id),
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
   chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
   // Persona fields
@@ -116,10 +126,26 @@ export const usersRelations = relations(users, ({ many }) => ({
   uploadedDocuments: many(documents),
 }));
 
+export const organizationsRelations = relations(organizations, ({ one, many }) => ({
+  parent: one(organizations, {
+    fields: [organizations.parentId],
+    references: [organizations.id],
+    relationName: "parentChild",
+  }),
+  children: many(organizations, {
+    relationName: "parentChild",
+  }),
+  agents: many(agents),
+}));
+
 export const agentsRelations = relations(agents, ({ one, many }) => ({
   manager: one(users, {
     fields: [agents.managerId],
     references: [users.id],
+  }),
+  organization: one(organizations, {
+    fields: [agents.organizationId],
+    references: [organizations.id],
   }),
   conversations: many(conversations),
   documents: many(documents),
@@ -206,11 +232,18 @@ export const insertMessageReactionSchema = createInsertSchema(messageReactions).
   createdAt: true,
 });
 
+export const insertOrganizationSchema = createInsertSchema(organizations).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type Agent = typeof agents.$inferSelect;
 export type InsertAgent = z.infer<typeof insertAgentSchema>;
+export type Organization = typeof organizations.$inferSelect;
+export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
 export type Conversation = typeof conversations.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Message = typeof messages.$inferSelect;
