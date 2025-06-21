@@ -78,7 +78,9 @@ export default function MasterAdmin() {
   const { data: stats } = useQuery<SystemStats>({
     queryKey: ['/api/admin/stats'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/stats');
+      const response = await fetch('/api/admin/stats', {
+        credentials: 'include'
+      });
       if (!response.ok) throw new Error('Failed to fetch stats');
       return response.json();
     }
@@ -88,7 +90,9 @@ export default function MasterAdmin() {
   const { data: users } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/users');
+      const response = await fetch('/api/admin/users', {
+        credentials: 'include'
+      });
       if (!response.ok) throw new Error('Failed to fetch users');
       return response.json();
     }
@@ -98,7 +102,9 @@ export default function MasterAdmin() {
   const { data: agents } = useQuery<Agent[]>({
     queryKey: ['/api/admin/agents'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/agents');
+      const response = await fetch('/api/admin/agents', {
+        credentials: 'include'
+      });
       if (!response.ok) throw new Error('Failed to fetch agents');
       return response.json();
     }
