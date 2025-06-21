@@ -43,6 +43,15 @@
     writing-mode: horizontal-tb !important;
     unicode-bidi: normal !important;
   }
+  
+  /* User message bubble minimum width */
+  .bg-primary {
+    min-width: 100px !important;
+  }
+  
+  .bg-primary:has(+ *:not(:empty)) {
+    width: auto !important;
+  }
 }
 
 :root {

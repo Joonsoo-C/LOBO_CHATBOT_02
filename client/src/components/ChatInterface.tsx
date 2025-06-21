@@ -1035,7 +1035,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         display: 'flex',
                         justifyContent: 'flex-start',
                         alignItems: 'flex-start',
-                        minWidth: '120px'
+                        minWidth: msg.isFromUser ? '100px' : 'auto',
+                        width: msg.isFromUser && msg.content.length < 8 ? '120px' : 'auto'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {

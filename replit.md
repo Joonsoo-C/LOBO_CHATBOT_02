@@ -388,6 +388,11 @@ Changelog:
   * Wrapped message content in span elements with display: block and width: 100% for complete isolation
   * Messages 30 characters or less display on single line, longer messages wrap naturally with word-break: keep-all
   * Fixed both text alignment and line breaking issues with nuclear CSS override approach
+- June 21, 2025. Implemented user message bubble consistent width system:
+  * Added minimum width (100px) for user message bubbles to maintain visual consistency
+  * Short messages (8 characters or less) display with fixed 120px width
+  * Long messages automatically expand to fit content while respecting maximum width
+  * CSS backup rules ensure consistent sizing across all user messages
 ```
 
 ## User Preferences
