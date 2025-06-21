@@ -1017,7 +1017,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`message-content max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`message-content max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 text-left ${
                         msg.content.length > 20 ? "wrap-text" : ""
                       } ${
                         msg.isFromUser

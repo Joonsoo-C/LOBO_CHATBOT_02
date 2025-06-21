@@ -150,6 +150,7 @@
     width: fit-content;
     max-width: 100%;
     box-sizing: border-box;
+    text-align: left;
   }
 
   /* Allow wrapping for longer messages */
@@ -158,6 +159,7 @@
     word-break: keep-all;
     overflow-wrap: break-word;
     width: auto;
+    text-align: left;
   }
 
   /* Status indicators */
