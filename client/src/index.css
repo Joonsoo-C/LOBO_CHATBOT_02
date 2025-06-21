@@ -36,6 +36,13 @@
     direction: ltr !important;
   }
   
+  /* Ensure button text is centered */
+  button, [role="button"], .btn {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  
   /* Force every possible element selector */
   .bg-primary, .bg-primary *,
   .bg-muted, .bg-muted *,
