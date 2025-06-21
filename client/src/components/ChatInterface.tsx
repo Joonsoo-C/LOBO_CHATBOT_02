@@ -1019,7 +1019,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
@@ -1028,14 +1028,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }`}
                       style={{
                         textAlign: 'left',
-                        direction: 'ltr',
-                        display: 'inline-block',
-                        minWidth: msg.isFromUser ? '70px' : 'auto',
-                        maxWidth: '100%',
-                        width: 'auto',
-                        wordWrap: 'break-word',
+                        minWidth: msg.isFromUser ? '60px' : '40px',
+                        width: 'fit-content',
                         overflowWrap: 'break-word',
-                        whiteSpace: 'pre-wrap'
+                        wordBreak: 'keep-all',
+                        whiteSpace: msg.content.length <= 8 ? 'nowrap' : 'normal'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
@@ -1044,8 +1041,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                     >
                       {msg.content}
-                      
-
                     </div>
 
                     {/* PC: Reaction system right next to message */}

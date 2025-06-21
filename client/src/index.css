@@ -44,19 +44,11 @@
     unicode-bidi: normal !important;
   }
   
-  /* Message bubble sizing and text handling */
+  /* Clean message bubble styling */
   .bg-primary, .bg-muted, .system-message {
     display: inline-block !important;
-    max-width: 85% !important;
-    width: auto !important;
-    min-width: 60px !important;
-    word-wrap: break-word !important;
+    width: fit-content !important;
     overflow-wrap: break-word !important;
-    white-space: pre-wrap !important;
-  }
-  
-  .bg-primary {
-    min-width: 80px !important;
   }
 }
 
