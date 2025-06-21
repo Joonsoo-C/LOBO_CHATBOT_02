@@ -418,9 +418,9 @@ export default function TabletLayout() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 text-xs korean-text"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 px-3 text-xs korean-text bg-background border-border"
                   >
                     {categories.find(cat => cat.value === selectedCategory)?.label || selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
                   </Button>
@@ -476,11 +476,11 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="flex bg-muted rounded-xl p-1">
+          <div className="flex bg-muted rounded-lg p-1">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
-              size="sm"
-              className="flex-1 korean-text h-10"
+              size="lg"
+              className="flex-1 korean-text h-12"
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -490,8 +490,8 @@ export default function TabletLayout() {
             </Button>
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
-              size="sm"
-              className="flex-1 korean-text h-10"
+              size="lg"
+              className="flex-1 korean-text h-12"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");
@@ -535,13 +535,13 @@ export default function TabletLayout() {
                         ) : (
                           (() => {
                             const IconComponent = iconMap[agent.icon] || User;
-                            return <IconComponent className="text-white w-5 h-5" />;
+                            return <IconComponent className="text-white w-6 h-6" />;
                           })()
                         )}
                         {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
                           (() => {
                             const IconComponent = iconMap[agent.icon] || User;
-                            return <IconComponent className="text-white w-5 h-5 hidden" />;
+                            return <IconComponent className="text-white w-6 h-6 hidden" />;
                           })()
                         )}
                       </div>

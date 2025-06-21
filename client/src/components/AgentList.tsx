@@ -138,10 +138,10 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       }}
                     />
                   ) : (
-                    <IconComponent className="text-white w-5 h-5" />
+                    <IconComponent className="text-white w-6 h-6" />
                   )}
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                    <IconComponent className="text-white w-5 h-5 hidden" />
+                    <IconComponent className="text-white w-6 h-6 hidden" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
