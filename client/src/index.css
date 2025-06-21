@@ -27,8 +27,11 @@
     unicode-bidi: normal !important;
   }
   
-  /* Override ALL possible alignment classes */
-  [class*="text-"], [class*="justify-"], [class*="items-"], [class*="content-"] {
+  /* Override ALL possible alignment classes except buttons */
+  [class*="text-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="justify-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="items-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="content-"]:not(button):not([role="button"]):not(.btn) {
     text-align: left !important;
     direction: ltr !important;
   }
