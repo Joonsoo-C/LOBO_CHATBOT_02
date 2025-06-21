@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,8 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { queryClient } from "@/lib/queryClient";
 import { 
   Users, 
   MessageSquare, 
@@ -56,6 +61,20 @@ interface Agent {
   averageRating?: number;
 }
 
+// Form schema for creating new agent
+const createAgentSchema = z.object({
+  name: z.string().min(1, "에이전트 이름을 입력해주세요"),
+  description: z.string().min(1, "에이전트 설명을 입력해주세요"),
+  category: z.string().min(1, "카테고리를 선택해주세요"),
+  icon: z.string().min(1, "아이콘을 선택해주세요"),
+  backgroundColor: z.string().min(1, "배경색을 선택해주세요"),
+  personality: z.string().optional(),
+  chatbotType: z.string().default("general-llm"),
+  llmModel: z.string().default("gpt-4o"),
+});
+
+type CreateAgentData = z.infer<typeof createAgentSchema>;
+
 interface SystemStats {
   totalUsers: number;
   activeUsers: number;
@@ -71,8 +90,68 @@ export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [showCreateAgentDialog, setShowCreateAgentDialog] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  // Form for creating new agent
+  const createAgentForm = useForm<CreateAgentData>({
+    resolver: zodResolver(createAgentSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      category: "",
+      icon: "",
+      backgroundColor: "",
+      personality: "",
+      chatbotType: "general-llm",
+      llmModel: "gpt-4o",
+    },
+  });
+
+  // Available options for form dropdowns
+  const categoryOptions = [
+    { value: "학교", label: "학교" },
+    { value: "교수", label: "교수" },
+    { value: "학생", label: "학생" },
+    { value: "그룹", label: "그룹" },
+    { value: "기능형", label: "기능형" },
+  ];
+
+  const iconOptions = [
+    { value: "GraduationCap", label: "졸업모자" },
+    { value: "Users", label: "사용자들" },
+    { value: "BookOpen", label: "책" },
+    { value: "Calculator", label: "계산기" },
+    { value: "Globe", label: "지구본" },
+    { value: "Heart", label: "하트" },
+    { value: "Star", label: "별" },
+    { value: "Zap", label: "번개" },
+  ];
+
+  const backgroundColorOptions = [
+    { value: "blue", label: "파란색" },
+    { value: "green", label: "초록색" },
+    { value: "purple", label: "보라색" },
+    { value: "red", label: "빨간색" },
+    { value: "orange", label: "주황색" },
+    { value: "pink", label: "분홍색" },
+    { value: "indigo", label: "남색" },
+    { value: "gray", label: "회색" },
+  ];
+
+  const chatbotTypeOptions = [
+    { value: "strict-doc", label: "문서 전용" },
+    { value: "doc-fallback-llm", label: "문서 우선" },
+    { value: "general-llm", label: "일반 대화" },
+  ];
+
+  const llmModelOptions = [
+    { value: "gpt-4o", label: "GPT-4o" },
+    { value: "gpt-4o-mini", label: "GPT-4o Mini" },
+    { value: "gpt-4-turbo", label: "GPT-4 Turbo" },
+    { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
+  ];
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
@@ -109,6 +188,42 @@ export default function MasterAdmin() {
       return response.json();
     }
   });
+
+  // Create agent mutation
+  const createAgentMutation = useMutation({
+    mutationFn: async (data: CreateAgentData) => {
+      const response = await fetch('/api/admin/agents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to create agent');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "에이전트 생성 완료",
+        description: "새로운 에이전트가 성공적으로 생성되었습니다.",
+      });
+      setShowCreateAgentDialog(false);
+      createAgentForm.reset();
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "에이전트 생성 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onCreateAgent = (data: CreateAgentData) => {
+    createAgentMutation.mutate(data);
+  };
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -386,10 +501,219 @@ export default function MasterAdmin() {
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                새 에이전트 추가
-              </Button>
+              <Dialog open={showCreateAgentDialog} onOpenChange={setShowCreateAgentDialog}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    새 에이전트 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>새 에이전트 생성</DialogTitle>
+                  </DialogHeader>
+                  <Form {...createAgentForm}>
+                    <form onSubmit={createAgentForm.handleSubmit(onCreateAgent)} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={createAgentForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>에이전트 이름</FormLabel>
+                              <FormControl>
+                                <Input placeholder="예: 학사 도우미" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={createAgentForm.control}
+                          name="category"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>카테고리</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="카테고리 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {categoryOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={createAgentForm.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>에이전트 설명</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="에이전트가 수행할 역할과 기능을 설명해주세요"
+                                className="min-h-[100px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={createAgentForm.control}
+                          name="icon"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>아이콘</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="아이콘 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {iconOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={createAgentForm.control}
+                          name="backgroundColor"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>배경색</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="배경색 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {backgroundColorOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={createAgentForm.control}
+                        name="personality"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>성격/어조 (선택사항)</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="에이전트의 말투나 성격을 설정해주세요 (예: 친근하고 도움이 되는, 전문적이고 정확한)"
+                                className="min-h-[80px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={createAgentForm.control}
+                          name="chatbotType"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>챗봇 유형</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="챗봇 유형 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {chatbotTypeOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={createAgentForm.control}
+                          name="llmModel"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>LLM 모델</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="모델 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {llmModelOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex justify-end space-x-2 pt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowCreateAgentDialog(false)}
+                        >
+                          취소
+                        </Button>
+                        <Button 
+                          type="submit" 
+                          disabled={createAgentMutation.isPending}
+                        >
+                          {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

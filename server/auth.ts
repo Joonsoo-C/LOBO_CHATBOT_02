@@ -187,6 +187,38 @@ export function setupAuth(app: Express) {
       res.status(500).json({ message: "Failed to get agents" });
     }
   });
+
+  app.post("/api/admin/agents", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const user = req.user as SelectUser;
+    if (user.username !== "master_admin") return res.sendStatus(403);
+
+    try {
+      const { name, description, category, icon, backgroundColor, personality, chatbotType, llmModel } = req.body;
+      
+      if (!name || !description || !category || !icon || !backgroundColor) {
+        return res.status(400).json({ message: "Required fields missing" });
+      }
+
+      const agent = await storage.createAgent({
+        name,
+        description,
+        category,
+        icon,
+        backgroundColor,
+        personalityTraits: personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+        chatbotType: chatbotType || "general-llm",
+        llmModel: llmModel || "gpt-4o",
+        isActive: true,
+        managerId: user.id,
+      });
+
+      res.json(agent);
+    } catch (error) {
+      console.error("Failed to create agent:", error);
+      res.status(500).json({ message: "Failed to create agent" });
+    }
+  });
 }
 
 export const isAuthenticated = (req: any, res: any, next: any) => {
