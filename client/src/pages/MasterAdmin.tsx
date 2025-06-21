@@ -760,11 +760,11 @@ export default function MasterAdmin() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div 
-                          className={`w-10 h-10 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500`}
+                          className={`w-12 h-12 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500`}
                         >
-{(() => {
+                          {(() => {
                             const IconComponent = iconMap[agent.icon as keyof typeof iconMap] || User;
-                            return <IconComponent className="w-5 h-5 text-white" />;
+                            return <IconComponent className="w-6 h-6 text-white" />;
                           })()}
                         </div>
                         <CardTitle className="text-lg">{agent.name}</CardTitle>
@@ -1060,17 +1060,11 @@ export default function MasterAdmin() {
             <div className="space-y-6">
               {/* 아이콘 미리보기 */}
               <div className="flex justify-center">
-                <div className={`w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl bg-${selectedBgColor}-500`}>
-                  {selectedIcon === "User" && "👤"}
-                  {selectedIcon === "Bot" && "🤖"}
-                  {selectedIcon === "BookOpen" && "📖"}
-                  {selectedIcon === "GraduationCap" && "🎓"}
-                  {selectedIcon === "Users" && "👥"}
-                  {selectedIcon === "Settings" && "⚙️"}
-                  {selectedIcon === "MessageSquare" && "💬"}
-                  {selectedIcon === "Heart" && "❤️"}
-                  {selectedIcon === "Star" && "⭐"}
-                  {selectedIcon === "Globe" && "🌍"}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500`}>
+                  {(() => {
+                    const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
+                    return <IconComponent className="w-6 h-6 text-white" />;
+                  })()}
                 </div>
               </div>
 
@@ -1102,27 +1096,30 @@ export default function MasterAdmin() {
                 <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
                 <div className="grid grid-cols-5 gap-2">
                   {[
-                    { icon: "User", emoji: "👤" },
-                    { icon: "Bot", emoji: "🤖" },
-                    { icon: "BookOpen", emoji: "📖" },
-                    { icon: "GraduationCap", emoji: "🎓" },
-                    { icon: "Users", emoji: "👥" },
-                    { icon: "Settings", emoji: "⚙️" },
-                    { icon: "MessageSquare", emoji: "💬" },
-                    { icon: "Heart", emoji: "❤️" },
-                    { icon: "Star", emoji: "⭐" },
-                    { icon: "Globe", emoji: "🌍" }
-                  ].map(({ icon, emoji }) => (
-                    <Button
-                      key={icon}
-                      variant={selectedIcon === icon ? "default" : "outline"}
-                      size="sm"
-                      className="h-12 w-12 p-0"
-                      onClick={() => setSelectedIcon(icon)}
-                    >
-                      {emoji}
-                    </Button>
-                  ))}
+                    { icon: "User" },
+                    { icon: "GraduationCap" },
+                    { icon: "BookOpen" },
+                    { icon: "Shield" },
+                    { icon: "Brain" },
+                    { icon: "Zap" },
+                    { icon: "Target" },
+                    { icon: "Coffee" },
+                    { icon: "Music" },
+                    { icon: "Heart" }
+                  ].map(({ icon }) => {
+                    const IconComponent = iconMap[icon as keyof typeof iconMap];
+                    return (
+                      <Button
+                        key={icon}
+                        variant={selectedIcon === icon ? "default" : "outline"}
+                        size="sm"
+                        className="h-12 w-12 p-0"
+                        onClick={() => setSelectedIcon(icon)}
+                      >
+                        <IconComponent className="w-5 h-5" />
+                      </Button>
+                    );
+                  })}
                 </div>
               </div>
 
