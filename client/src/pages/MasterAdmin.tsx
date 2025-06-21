@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -102,6 +102,10 @@ export default function MasterAdmin() {
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
+  const [selectedUniversity, setSelectedUniversity] = useState('all');
+  const [selectedCollege, setSelectedCollege] = useState('all');
+  const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -171,6 +175,29 @@ export default function MasterAdmin() {
       return response.json();
     }
   });
+
+  // 필터링된 사용자 목록 계산
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    
+    let filtered = users;
+    
+    // 검색어 필터링
+    if (userSearchQuery.trim()) {
+      const query = userSearchQuery.toLowerCase();
+      filtered = filtered.filter(user => 
+        user.username.toLowerCase().includes(query) ||
+        user.firstName?.toLowerCase().includes(query) ||
+        user.lastName?.toLowerCase().includes(query) ||
+        user.email?.toLowerCase().includes(query)
+      );
+    }
+    
+    // 조직 필터링 (현재는 기본 구현, 실제로는 사용자 테이블에 조직 정보가 필요)
+    // TODO: 사용자 스키마에 조직 정보 추가 후 실제 필터링 구현
+    
+    return filtered;
+  }, [users, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
   // 에이전트 생성 폼
   const agentForm = useForm<AgentFormData>({
@@ -521,7 +548,7 @@ export default function MasterAdmin() {
             </div>
 
             {/* 사용자 관리 방법 안내 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Card 
                 className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => setIsLmsDialogOpen(true)}
@@ -555,20 +582,89 @@ export default function MasterAdmin() {
                   </p>
                 </CardContent>
               </Card>
+            </div>
 
-              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 cursor-pointer hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center">
-                    <Plus className="w-5 h-5 mr-2 text-orange-600" />
-                    수동 관리
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    개별 사용자를 직접 추가, 수정, 삭제하여 관리합니다.
-                  </p>
-                </CardContent>
-              </Card>
+            {/* 조직 필터링 및 검색 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
+              
+              {/* 조직 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>전체/대학원/대학교</Label>
+                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="graduate">대학원</SelectItem>
+                      <SelectItem value="undergraduate">대학교</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>단과대학</Label>
+                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="engineering">공과대학</SelectItem>
+                      <SelectItem value="business">경영대학</SelectItem>
+                      <SelectItem value="liberal">인문대학</SelectItem>
+                      <SelectItem value="science">자연과학대학</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>학과</Label>
+                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                      <SelectItem value="electrical">전자공학과</SelectItem>
+                      <SelectItem value="mechanical">기계공학과</SelectItem>
+                      <SelectItem value="business_admin">경영학과</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={() => {
+                    setSelectedUniversity('all');
+                    setSelectedCollege('all');
+                    setSelectedDepartment('all');
+                    setUserSearchQuery('');
+                  }}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 사용자 검색 */}
+              <div className="flex space-x-2">
+                <div className="flex-1">
+                  <Input
+                    placeholder="이름, 학번, 교번으로 검색..."
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Button>
+                  <Users className="w-4 h-4 mr-2" />
+                  새 사용자 추가
+                </Button>
+              </div>
+              
+              {/* 검색 결과 표시 */}
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                전체 {filteredUsers?.length || 0}명의 사용자
+                {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
+              </div>
             </div>
 
             <Card>
@@ -595,7 +691,7 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {users?.map((user) => (
+                      {filteredUsers?.map((user) => (
                         <tr key={user.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
