@@ -259,6 +259,31 @@
     flex-shrink: 0;
   }
 
+  /* Tab navigation full width and size */
+  .tab-navigation {
+    width: 100% !important;
+    min-height: 56px !important;
+  }
+
+  .tab-navigation .grid {
+    width: 100% !important;
+    gap: 4px !important;
+  }
+
+  .tab-navigation button {
+    width: 100% !important;
+    min-height: 56px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+  }
+
+  @media (min-width: 768px) {
+    .tab-navigation button {
+      min-height: 64px !important;
+      font-size: 18px !important;
+    }
+  }
+
   /* Fixed header and input positioning */
   @media (max-width: 767px) {
     .chat-page-container {

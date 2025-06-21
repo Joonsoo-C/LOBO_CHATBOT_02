@@ -393,6 +393,13 @@ Changelog:
   * Short messages (8 characters or less) display with fixed 120px width
   * Long messages automatically expand to fit content while respecting maximum width
   * CSS backup rules ensure consistent sizing across all user messages
+- June 21, 2025. Enhanced tab navigation layout and sizing:
+  * Changed from flex to grid grid-cols-2 layout for perfect 50:50 width distribution
+  * Added tab-navigation CSS class with !important rules to override framework defaults
+  * Mobile tabs: 56px height, 16px font size for better readability
+  * PC/tablet tabs: 64px height, 18px font size for enhanced desktop experience
+  * Full width implementation ensures tabs span entire container width
+  * Applied consistent styling across Home.tsx and TabletLayout.tsx components
 ```
 
 ## User Preferences
