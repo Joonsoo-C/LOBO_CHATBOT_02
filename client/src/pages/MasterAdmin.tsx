@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,8 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { 
   Users, 
   MessageSquare, 
@@ -67,10 +72,22 @@ interface SystemStats {
   weeklyGrowth: number;
 }
 
+const agentSchema = z.object({
+  name: z.string().min(1, "에이전트 이름은 필수입니다"),
+  description: z.string().min(1, "설명은 필수입니다"),
+  category: z.string().min(1, "카테고리를 선택해주세요"),
+  icon: z.string().min(1, "아이콘을 선택해주세요"),
+  backgroundColor: z.string().min(1, "배경색을 선택해주세요"),
+  personality: z.string().optional(),
+});
+
+type AgentFormData = z.infer<typeof agentSchema>;
+
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -102,6 +119,44 @@ export default function MasterAdmin() {
       if (!response.ok) throw new Error('Failed to fetch agents');
       return response.json();
     }
+  });
+
+  // 에이전트 생성 폼
+  const agentForm = useForm<AgentFormData>({
+    resolver: zodResolver(agentSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      category: "",
+      icon: "",
+      backgroundColor: "",
+      personality: "",
+    },
+  });
+
+  // 에이전트 생성 뮤테이션
+  const createAgentMutation = useMutation({
+    mutationFn: async (data: AgentFormData) => {
+      const response = await apiRequest("POST", "/api/admin/agents", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      toast({
+        title: "성공",
+        description: "새 에이전트가 생성되었습니다.",
+      });
+      setIsAgentDialogOpen(false);
+      agentForm.reset();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "에이전트 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
   });
 
   const logoutMutation = useMutation({
@@ -380,10 +435,158 @@ export default function MasterAdmin() {
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                새 에이전트 추가
-              </Button>
+              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    새 에이전트 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>새 에이전트 생성</DialogTitle>
+                  </DialogHeader>
+                  <Form {...agentForm}>
+                    <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={agentForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>에이전트 이름</FormLabel>
+                              <FormControl>
+                                <Input placeholder="예: 학사 도우미" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={agentForm.control}
+                          name="category"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>카테고리</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="카테고리 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="학교">학교</SelectItem>
+                                  <SelectItem value="교수">교수</SelectItem>
+                                  <SelectItem value="학생">학생</SelectItem>
+                                  <SelectItem value="그룹">그룹</SelectItem>
+                                  <SelectItem value="기능형">기능형</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <FormField
+                        control={agentForm.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>설명</FormLabel>
+                            <FormControl>
+                              <Textarea placeholder="에이전트의 역할과 기능을 설명해주세요" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={agentForm.control}
+                          name="icon"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>아이콘</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="아이콘 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="User">👤 사용자</SelectItem>
+                                  <SelectItem value="Bot">🤖 봇</SelectItem>
+                                  <SelectItem value="BookOpen">📖 책</SelectItem>
+                                  <SelectItem value="GraduationCap">🎓 졸업모</SelectItem>
+                                  <SelectItem value="Users">👥 그룹</SelectItem>
+                                  <SelectItem value="Settings">⚙️ 설정</SelectItem>
+                                  <SelectItem value="MessageSquare">💬 메시지</SelectItem>
+                                  <SelectItem value="Heart">❤️ 하트</SelectItem>
+                                  <SelectItem value="Star">⭐ 별</SelectItem>
+                                  <SelectItem value="Globe">🌍 지구</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={agentForm.control}
+                          name="backgroundColor"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>배경색</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="배경색 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="blue">🔵 파란색</SelectItem>
+                                  <SelectItem value="green">🟢 초록색</SelectItem>
+                                  <SelectItem value="purple">🟣 보라색</SelectItem>
+                                  <SelectItem value="red">🔴 빨간색</SelectItem>
+                                  <SelectItem value="yellow">🟡 노란색</SelectItem>
+                                  <SelectItem value="pink">🩷 분홍색</SelectItem>
+                                  <SelectItem value="orange">🟠 주황색</SelectItem>
+                                  <SelectItem value="gray">⚫ 회색</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={agentForm.control}
+                        name="personality"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>성격/말투 (선택사항)</FormLabel>
+                            <FormControl>
+                              <Textarea placeholder="에이전트의 성격이나 말투를 설명해주세요" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="flex justify-end space-x-2">
+                        <Button type="button" variant="outline" onClick={() => setIsAgentDialogOpen(false)}>
+                          취소
+                        </Button>
+                        <Button type="submit" disabled={createAgentMutation.isPending}>
+                          {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

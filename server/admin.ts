@@ -228,4 +228,34 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+  // Create new agent
+  app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
+    try {
+      const { name, description, category, icon, backgroundColor, personality } = req.body;
+      
+      if (!name || !description || !category || !icon || !backgroundColor) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const newAgent = await db
+        .insert(agents)
+        .values({
+          name,
+          description,
+          category,
+          icon,
+          backgroundColor,
+          isActive: true,
+          personality: personality || null,
+          isCustomIcon: false
+        })
+        .returning();
+
+      res.status(201).json(newAgent[0]);
+    } catch (error) {
+      console.error("Error creating agent:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 }
