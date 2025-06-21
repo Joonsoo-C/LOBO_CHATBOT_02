@@ -1006,8 +1006,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start'
                 }}>
                   <div 
-                    className="relative flex items-start gap-1 w-fit max-w-[85%]"
-                    style={{ paddingRight: showReactionOptions ? '80px' : '0' }}
+                    className="relative flex items-start gap-1 w-fit"
+                    style={{ 
+                      maxWidth: '85%', 
+                      marginRight: (!msg.isFromUser && !isSystem) ? '80px' : '0'
+                    }}
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
                         setActiveReactionMessageId(msg.id);
