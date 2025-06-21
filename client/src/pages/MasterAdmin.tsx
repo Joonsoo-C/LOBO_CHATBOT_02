@@ -1658,7 +1658,6 @@ export default function MasterAdmin() {
                     카테고리 검색
                   </Button>
                   <Button>
-                    <Plus className="w-4 h-4 mr-2" />
                     새 조직 추가
                   </Button>
                 </div>
