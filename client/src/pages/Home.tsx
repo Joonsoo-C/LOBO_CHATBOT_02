@@ -108,9 +108,9 @@ export default function Home() {
       <header className="fixed-header md:static md:bg-transparent md:shadow-none md:col-span-12 md:mb-0">
         <div className="px-6 py-3 md:px-0 md:py-0">
           {/* Header with search and settings */}
-          <div className="flex items-center mb-4 md:mb-6">
+          <div className="flex items-center gap-1 mb-4 md:mb-6">
             {/* Search Bar */}
-            <div className="relative flex-1 mr-2">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
