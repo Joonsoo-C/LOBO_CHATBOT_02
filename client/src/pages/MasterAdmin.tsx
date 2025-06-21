@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +32,16 @@ import {
   Trash2,
   Eye,
   LogOut,
-  Home
+  Home,
+  User,
+  GraduationCap,
+  BookOpen,
+  Brain,
+  Zap,
+  Target,
+  Coffee,
+  Music,
+  Heart
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -96,6 +105,19 @@ export default function MasterAdmin() {
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  const iconMap = {
+    User,
+    GraduationCap,
+    BookOpen,
+    Shield,
+    Brain,
+    Zap,
+    Target,
+    Coffee,
+    Music,
+    Heart
+  };
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
@@ -736,7 +758,17 @@ export default function MasterAdmin() {
                 <Card key={agent.id}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{agent.name}</CardTitle>
+                      <div className="flex items-center space-x-3">
+                        <div 
+                          className={`w-10 h-10 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500`}
+                        >
+{(() => {
+                            const IconComponent = iconMap[agent.icon as keyof typeof iconMap] || User;
+                            return <IconComponent className="w-5 h-5 text-white" />;
+                          })()}
+                        </div>
+                        <CardTitle className="text-lg">{agent.name}</CardTitle>
+                      </div>
                       <Badge variant={agent.isActive ? 'default' : 'secondary'}>
                         {agent.isActive ? '활성' : '비활성'}
                       </Badge>
@@ -1010,7 +1042,7 @@ export default function MasterAdmin() {
                       취소
                     </Button>
                     <Button type="submit" disabled={updateAgentMutation.isPending}>
-                      {updateAgentMutation.isPending ? "수정 중..." : "에이전트 생성"}
+                      {updateAgentMutation.isPending ? "수정 중..." : "에이전트 수정"}
                     </Button>
                   </div>
                 </div>
