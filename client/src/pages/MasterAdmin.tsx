@@ -88,7 +88,9 @@ export default function MasterAdmin() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
+  const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
@@ -147,6 +149,19 @@ export default function MasterAdmin() {
 
   // 에이전트 생성 폼
   const agentForm = useForm<AgentFormData>({
+    resolver: zodResolver(agentSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      category: "",
+      personality: "",
+      managerId: "",
+      organizationId: "",
+    },
+  });
+
+  // 에이전트 편집 폼
+  const editAgentForm = useForm<AgentFormData>({
     resolver: zodResolver(agentSchema),
     defaultValues: {
       name: "",
@@ -223,6 +238,52 @@ export default function MasterAdmin() {
         backgroundColor: selectedBgColor
       });
     }
+  };
+
+  // 에이전트 편집 뮤테이션
+  const updateAgentMutation = useMutation({
+    mutationFn: async (data: AgentFormData & { id: number }) => {
+      const payload = {
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        personality: data.personality,
+        managerId: data.managerId,
+        organizationId: parseInt(data.organizationId),
+      };
+      const response = await apiRequest("PATCH", `/api/admin/agents/${data.id}`, payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      toast({
+        title: "성공",
+        description: "에이전트 정보가 수정되었습니다.",
+      });
+      setIsEditAgentDialogOpen(false);
+      setEditingAgent(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "에이전트 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const openEditAgentDialog = (agent: Agent) => {
+    setEditingAgent(agent);
+    editAgentForm.reset({
+      name: agent.name,
+      description: agent.description,
+      category: agent.category,
+      personality: (agent as any).personalityTraits || "",
+      managerId: (agent as any).managerId || "",
+      organizationId: (agent as any).organizationId?.toString() || "",
+    });
+    setIsEditAgentDialogOpen(true);
   };
 
   const openIconChangeDialog = (agent: Agent) => {
@@ -706,9 +767,9 @@ export default function MasterAdmin() {
                       </div>
                     )}
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openIconChangeDialog(agent)}>
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openEditAgentDialog(agent)}>
                         <Edit className="w-4 h-4 mr-1" />
-                        아이콘 변경
+                        편집
                       </Button>
                       <Button variant="outline" size="sm" className="flex-1">
                         <BarChart3 className="w-4 h-4 mr-1" />
@@ -792,6 +853,171 @@ export default function MasterAdmin() {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* 에이전트 편집 다이얼로그 */}
+        <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>새 에이전트 설정</DialogTitle>
+            </DialogHeader>
+            <Form {...editAgentForm}>
+              <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>에이전트 이름</FormLabel>
+                        <FormControl>
+                          <Input placeholder="예: 학사 도우미" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>카테고리</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="카테고리 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={editAgentForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>설명</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 역할과 기능을 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="managerId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>에이전트 관리자</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="관리자 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {managers?.map((manager) => (
+                              <SelectItem key={manager.id} value={manager.id}>
+                                {manager.firstName} {manager.lastName} ({manager.username})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="organizationId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>소속 조직</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="조직 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {organizations?.map((org) => (
+                              <>
+                                <SelectItem key={org.id} value={org.id.toString()}>
+                                  {org.name} ({org.type === 'university' ? '대학교' : 
+                                    org.type === 'graduate_school' ? '대학원' : 
+                                    org.type === 'college' ? '단과대학' : '학과'})
+                                </SelectItem>
+                                {org.children?.map((college: any) => (
+                                  <>
+                                    <SelectItem key={college.id} value={college.id.toString()}>
+                                      └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
+                                    </SelectItem>
+                                    {college.children?.map((dept: any) => (
+                                      <SelectItem key={dept.id} value={dept.id.toString()}>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
+                                      </SelectItem>
+                                    ))}
+                                  </>
+                                ))}
+                              </>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={editAgentForm.control}
+                  name="personality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>성격/말투 (선택사항)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 성격이나 말투를 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-between">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => openIconChangeDialog(editingAgent!)}
+                  >
+                    아이콘 편집
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button type="button" variant="outline" onClick={() => setIsEditAgentDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button type="submit" disabled={updateAgentMutation.isPending}>
+                      {updateAgentMutation.isPending ? "수정 중..." : "에이전트 생성"}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
 
         {/* 아이콘 변경 다이얼로그 */}
         <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>

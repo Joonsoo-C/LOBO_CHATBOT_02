@@ -363,4 +363,48 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+  // Update agent information
+  app.patch("/api/admin/agents/:agentId", requireMasterAdmin, async (req, res) => {
+    try {
+      const { agentId } = req.params;
+      const { name, description, category, personality, managerId, organizationId } = req.body;
+      
+      if (!name || !description || !category) {
+        return res.status(400).json({ message: "Name, description, and category are required" });
+      }
+
+      const updateData: any = {
+        name,
+        description,
+        category,
+        updatedAt: new Date()
+      };
+
+      if (personality) {
+        updateData.personalityTraits = personality;
+      }
+      if (managerId) {
+        updateData.managerId = managerId;
+      }
+      if (organizationId) {
+        updateData.organizationId = organizationId;
+      }
+
+      const updatedAgent = await db
+        .update(agents)
+        .set(updateData)
+        .where(eq(agents.id, parseInt(agentId)))
+        .returning();
+
+      if (updatedAgent.length === 0) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      res.json(updatedAgent[0]);
+    } catch (error) {
+      console.error("Error updating agent:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 }
