@@ -1,6 +1,6 @@
 import { Express } from "express";
 import { db } from "./db";
-import { users, agents, conversations, messages } from "../shared/schema";
+import { users, agents, conversations, messages, organizations } from "../shared/schema";
 import { eq, sql, desc, count } from "drizzle-orm";
 
 // Middleware to check if user is master admin
@@ -232,29 +232,95 @@ export function setupAdminRoutes(app: Express) {
   // Create new agent
   app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
-      const { name, description, category, icon, backgroundColor, personality } = req.body;
+      const { name, description, category, icon, backgroundColor, personality, managerId, organizationId } = req.body;
       
       if (!name || !description || !category || !icon || !backgroundColor) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
+      const agentData: any = {
+        name,
+        description,
+        category,
+        icon,
+        backgroundColor,
+        isActive: true,
+        isCustomIcon: false
+      };
+
+      if (personality) {
+        agentData.personalityTraits = personality;
+      }
+      if (managerId) {
+        agentData.managerId = managerId;
+      }
+      if (organizationId) {
+        agentData.organizationId = organizationId;
+      }
+
       const newAgent = await db
         .insert(agents)
-        .values({
-          name,
-          description,
-          category,
-          icon,
-          backgroundColor,
-          isActive: true,
-          personality: personality || null,
-          isCustomIcon: false
-        })
+        .values(agentData)
         .returning();
 
       res.status(201).json(newAgent[0]);
     } catch (error) {
       console.error("Error creating agent:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get all managers (faculty users)
+  app.get("/api/admin/managers", requireMasterAdmin, async (req, res) => {
+    try {
+      const managers = await db
+        .select({
+          id: users.id,
+          username: users.username,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          email: users.email,
+          userType: users.userType
+        })
+        .from(users)
+        .where(eq(users.userType, "faculty"));
+
+      res.json(managers);
+    } catch (error) {
+      console.error("Error fetching managers:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get organizations with hierarchy
+  app.get("/api/admin/organizations", requireMasterAdmin, async (req, res) => {
+    try {
+      const allOrganizations = await db
+        .select()
+        .from(organizations);
+
+      // Build hierarchical structure
+      const orgMap = new Map<number, any>();
+      const rootOrgs: any[] = [];
+
+      // First pass: create map and identify roots
+      allOrganizations.forEach(org => {
+        orgMap.set(org.id, { ...org, children: [] });
+        if (!org.parentId) {
+          rootOrgs.push(orgMap.get(org.id));
+        }
+      });
+
+      // Second pass: build parent-child relationships
+      allOrganizations.forEach(org => {
+        if (org.parentId && orgMap.has(org.parentId)) {
+          orgMap.get(org.parentId)!.children.push(orgMap.get(org.id));
+        }
+      });
+
+      res.json(rootOrgs);
+    } catch (error) {
+      console.error("Error fetching organizations:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

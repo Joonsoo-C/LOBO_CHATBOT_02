@@ -209,6 +209,8 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  personality: z.string().optional(),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({

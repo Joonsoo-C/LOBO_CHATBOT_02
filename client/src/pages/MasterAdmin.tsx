@@ -79,6 +79,8 @@ const agentSchema = z.object({
   icon: z.string().min(1, "아이콘을 선택해주세요"),
   backgroundColor: z.string().min(1, "배경색을 선택해주세요"),
   personality: z.string().optional(),
+  managerId: z.string().optional(),
+  organizationId: z.string().optional(),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;
@@ -121,6 +123,26 @@ export default function MasterAdmin() {
     }
   });
 
+  // 관리자 목록 조회
+  const { data: managers } = useQuery<User[]>({
+    queryKey: ['/api/admin/managers'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/managers');
+      if (!response.ok) throw new Error('Failed to fetch managers');
+      return response.json();
+    }
+  });
+
+  // 조직 목록 조회
+  const { data: organizations } = useQuery<any[]>({
+    queryKey: ['/api/admin/organizations'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organizations');
+      if (!response.ok) throw new Error('Failed to fetch organizations');
+      return response.json();
+    }
+  });
+
   // 에이전트 생성 폼
   const agentForm = useForm<AgentFormData>({
     resolver: zodResolver(agentSchema),
@@ -131,13 +153,20 @@ export default function MasterAdmin() {
       icon: "",
       backgroundColor: "",
       personality: "",
+      managerId: "",
+      organizationId: "",
     },
   });
 
   // 에이전트 생성 뮤테이션
   const createAgentMutation = useMutation({
     mutationFn: async (data: AgentFormData) => {
-      const response = await apiRequest("POST", "/api/admin/agents", data);
+      const payload = {
+        ...data,
+        managerId: data.managerId || null,
+        organizationId: data.organizationId ? parseInt(data.organizationId) : null,
+      };
+      const response = await apiRequest("POST", "/api/admin/agents", payload);
       return response.json();
     },
     onSuccess: () => {
@@ -553,6 +582,75 @@ export default function MasterAdmin() {
                                   <SelectItem value="pink">🩷 분홍색</SelectItem>
                                   <SelectItem value="orange">🟠 주황색</SelectItem>
                                   <SelectItem value="gray">⚫ 회색</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={agentForm.control}
+                          name="managerId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>에이전트 관리자 (선택사항)</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="관리자 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="">관리자 없음</SelectItem>
+                                  {managers?.map((manager) => (
+                                    <SelectItem key={manager.id} value={manager.id}>
+                                      {manager.firstName} {manager.lastName} ({manager.username})
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={agentForm.control}
+                          name="organizationId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>소속 조직 (선택사항)</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="조직 선택" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="">조직 없음</SelectItem>
+                                  {organizations?.map((org) => (
+                                    <div key={org.id}>
+                                      <SelectItem value={org.id.toString()}>
+                                        {org.name} ({org.type === 'university' ? '대학교' : 
+                                          org.type === 'graduate_school' ? '대학원' : 
+                                          org.type === 'college' ? '단과대학' : '학과'})
+                                      </SelectItem>
+                                      {org.children?.map((college: any) => (
+                                        <div key={college.id}>
+                                          <SelectItem value={college.id.toString()}>
+                                            └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
+                                          </SelectItem>
+                                          {college.children?.map((dept: any) => (
+                                            <SelectItem key={dept.id} value={dept.id.toString()}>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
+                                            </SelectItem>
+                                          ))}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ))}
                                 </SelectContent>
                               </Select>
                               <FormMessage />
