@@ -675,7 +675,6 @@ export default function MasterAdmin() {
                     />
                   </div>
                   <Button onClick={executeSearch}>
-                    <Users className="w-4 h-4 mr-2" />
                     사용자 검색
                   </Button>
                 </div>
