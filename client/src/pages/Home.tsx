@@ -183,19 +183,19 @@ export default function Home() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="flex bg-muted rounded-xl p-1 mb-4 md:mb-6 md:max-w-md">
+          <div className="flex bg-muted rounded-lg p-1 mb-4 md:mb-6 w-full">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
-              size="sm"
-              className="flex-1 korean-text md:h-10"
+              size="lg"
+              className="flex-1 korean-text h-12 md:h-14"
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
             </Button>
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
-              size="sm"
-              className="flex-1 korean-text md:h-10"
+              size="lg"
+              className="flex-1 korean-text h-12 md:h-14"
               onClick={() => setActiveTab("management")}
             >
               {t('common.management')}
