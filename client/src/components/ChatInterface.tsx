@@ -1007,6 +1007,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 }}>
                   <div 
                     className="relative flex items-start gap-1 w-fit max-w-[85%]"
+                    style={{ paddingRight: showReactionOptions ? '80px' : '0' }}
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
                         setActiveReactionMessageId(msg.id);
@@ -1047,6 +1048,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         <div 
                           className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
                           onClick={(e) => e.stopPropagation()}
+                          onMouseEnter={() => setActiveReactionMessageId(msg.id)}
+                          onMouseLeave={() => setTimeout(() => setActiveReactionMessageId(null), 300)}
                         >
                           {reactionOptions.map((option) => (
                             <button
