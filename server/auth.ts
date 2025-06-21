@@ -144,6 +144,49 @@ export function setupAuth(app: Express) {
       userType: user.userType
     });
   });
+
+  // Master Admin API endpoints
+  app.get("/api/admin/stats", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const user = req.user as SelectUser;
+    if (user.username !== "master_admin") return res.sendStatus(403);
+
+    try {
+      const stats = await storage.getSystemStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Failed to get system stats:", error);
+      res.status(500).json({ message: "Failed to get system stats" });
+    }
+  });
+
+  app.get("/api/admin/users", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const user = req.user as SelectUser;
+    if (user.username !== "master_admin") return res.sendStatus(403);
+
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Failed to get users:", error);
+      res.status(500).json({ message: "Failed to get users" });
+    }
+  });
+
+  app.get("/api/admin/agents", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const user = req.user as SelectUser;
+    if (user.username !== "master_admin") return res.sendStatus(403);
+
+    try {
+      const agents = await storage.getAgentsWithStats();
+      res.json(agents);
+    } catch (error) {
+      console.error("Failed to get agents:", error);
+      res.status(500).json({ message: "Failed to get agents" });
+    }
+  });
 }
 
 export const isAuthenticated = (req: any, res: any, next: any) => {
