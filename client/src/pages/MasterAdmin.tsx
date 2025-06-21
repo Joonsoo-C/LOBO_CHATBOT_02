@@ -2448,21 +2448,83 @@ export default function MasterAdmin() {
               </div>
 
               <div>
-                <Label>동기화 범위</Label>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="sync-students" className="rounded" />
-                    <Label htmlFor="sync-students">학생 정보</Label>
+                <Label>문서 카테고리</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="카테고리 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">전체/대학원/대학교</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="sync-faculty" className="rounded" />
-                    <Label htmlFor="sync-faculty">교수진 정보</Label>
+                  <div>
+                    <Label className="text-sm text-gray-600">단과대학</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="sync-courses" className="rounded" />
-                    <Label htmlFor="sync-courses">강의 정보</Label>
+                  <div>
+                    <Label className="text-sm text-gray-600">학과</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button className="w-full">
+                      적용
+                    </Button>
                   </div>
                 </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
