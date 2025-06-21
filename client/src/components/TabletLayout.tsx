@@ -405,15 +405,15 @@ export default function TabletLayout() {
         {/* Header */}
         <div className="p-4 border-b border-border">
           {/* Search and Settings */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative flex-1">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="relative" style={{ width: 'calc(100% - 60px)' }}>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-20 bg-muted border-none korean-text h-11"
+                className="pl-10 pr-20 bg-muted border-none korean-text h-11 w-full"
               />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
