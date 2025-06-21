@@ -8,15 +8,15 @@
   }
   
   .text-center {
-    text-align: left !important;
+    text-align: center !important;
   }
   
   .text-right {
-    text-align: left !important;
+    text-align: right !important;
   }
   
   .text-justify {
-    text-align: left !important;
+    text-align: justify !important;
   }
   
   /* Force all elements to left align with maximum specificity */
