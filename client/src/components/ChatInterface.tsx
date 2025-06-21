@@ -1017,28 +1017,24 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`message-container max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`message-container ${msg.content.length > 30 ? "long-text" : ""} max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 text-left ${
                         msg.isFromUser
                           ? "bg-primary text-primary-foreground"
                           : isSystem
                             ? "system-message"
                             : "bg-muted text-muted-foreground"
                       }`}
+                      style={{
+                        textAlign: 'left',
+                        direction: 'ltr'
+                      }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
                           handleReactionToggle(msg.id);
                         }
                       }}
                     >
-                      <div 
-                        style={{
-                          textAlign: 'left',
-                          whiteSpace: msg.content.length > 30 ? 'normal' : 'nowrap',
-                          wordBreak: msg.content.length > 30 ? 'keep-all' : 'normal'
-                        }}
-                      >
-                        {msg.content}
-                      </div>
+                      {msg.content}
                       
 
                     </div>

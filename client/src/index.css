@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Override Tailwind text utilities with highest specificity */
+.text-left {
+  text-align: left !important;
+}
+
 :root {
   --background: hsl(248, 50%, 99%);
   --foreground: hsl(240, 10%, 3.9%);
@@ -140,32 +145,19 @@
     letter-spacing: -0.02em;
   }
 
-  /* Absolute override for message text alignment */
-  .message-container {
+  /* Force text alignment with highest specificity */
+  div.message-container[class*="bg-primary"],
+  div.message-container[class*="bg-muted"],
+  div.message-container[class*="system-message"] {
     text-align: left !important;
+    white-space: nowrap !important;
   }
   
-  .message-container,
-  .message-container *,
-  .message-container div,
-  .message-container span,
-  .message-container p {
-    text-align: left !important;
-    direction: ltr !important;
-    unicode-bidi: normal !important;
-  }
-  
-  /* Target specific message bubble classes */
-  .bg-primary,
-  .bg-muted,
-  .system-message {
-    text-align: left !important;
-  }
-  
-  .bg-primary *,
-  .bg-muted *,
-  .system-message * {
-    text-align: left !important;
+  div.message-container.long-text[class*="bg-primary"],
+  div.message-container.long-text[class*="bg-muted"],
+  div.message-container.long-text[class*="system-message"] {
+    white-space: normal !important;
+    word-break: keep-all !important;
   }
 
   /* Status indicators */
