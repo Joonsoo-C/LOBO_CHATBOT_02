@@ -2532,11 +2532,11 @@ export default function MasterAdmin() {
                       <SelectItem value="university">전체 대학교</SelectItem>
                       <SelectItem value="graduate">대학원</SelectItem>
                       <SelectItem value="undergraduate">학부</SelectItem>
-                      <SelectItem value="college_engineering">공과대학</SelectItem>
-                      <SelectItem value="college_business">경영대학</SelectItem>
-                      <SelectItem value="dept_computer">컴퓨터공학과</SelectItem>
-                      <SelectItem value="dept_electrical">전자공학과</SelectItem>
-                      <SelectItem value="dept_business">경영학과</SelectItem>
+                      <SelectItem value="engineering">공과대학</SelectItem>
+                      <SelectItem value="business">경영대학</SelectItem>
+                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                      <SelectItem value="electrical">전자공학과</SelectItem>
+                      <SelectItem value="business_admin">경영학과</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
