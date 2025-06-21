@@ -2505,40 +2505,75 @@ export default function MasterAdmin() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>문서 카테고리</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="카테고리 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="lecture">강의 자료</SelectItem>
-                      <SelectItem value="policy">정책 문서</SelectItem>
-                      <SelectItem value="manual">매뉴얼</SelectItem>
-                      <SelectItem value="form">양식</SelectItem>
-                      <SelectItem value="notice">공지사항</SelectItem>
-                      <SelectItem value="curriculum">교육과정</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>적용 범위</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="적용 범위 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="university">전체 대학교</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="undergraduate">학부</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                      <SelectItem value="electrical">전자공학과</SelectItem>
-                      <SelectItem value="business_admin">경영학과</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div>
+                <Label>문서 카테고리</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="카테고리 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">전체/대학원/대학교</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">단과대학</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">학과</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button variant="outline" className="w-full">
+                      필터 초기화
+                    </Button>
+                  </div>
                 </div>
               </div>
 
