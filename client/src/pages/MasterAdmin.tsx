@@ -939,9 +939,22 @@ export default function MasterAdmin() {
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {agent.description}
                     </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>카테고리: {agent.category}</span>
-                      <Badge variant="outline">{agent.category}</Badge>
+                    <div className="space-y-2">
+                      <div className="text-sm text-gray-500">카테고리:</div>
+                      <div className="text-sm">
+                        {agent.category.includes(" > ") ? (
+                          <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-xs">
+                            {agent.category.split(" > ").map((part, index, array) => (
+                              <span key={index}>
+                                {part}
+                                {index < array.length - 1 && <span className="text-gray-400 mx-1">›</span>}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <Badge variant="outline">{agent.category}</Badge>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span>메시지 수:</span>
