@@ -340,6 +340,7 @@ export default function TabletLayout() {
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
+    refetchInterval: 30000, // Refetch every 30 seconds to catch admin changes
   });
 
   const { data: conversations = [] } = useQuery<Conversation[]>({

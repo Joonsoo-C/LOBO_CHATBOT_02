@@ -211,6 +211,7 @@ export default function MasterAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
       queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
       toast({
         title: "성공",
         description: "새 에이전트가 생성되었습니다.",
@@ -236,6 +237,7 @@ export default function MasterAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
       queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
       toast({
         title: "성공",
         description: "아이콘이 변경되었습니다.",
@@ -279,6 +281,7 @@ export default function MasterAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
       queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
       toast({
         title: "성공",
         description: "에이전트 정보가 수정되었습니다.",
