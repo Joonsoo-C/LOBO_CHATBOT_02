@@ -1548,159 +1548,313 @@ export default function MasterAdmin() {
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">카테고리 관리</h2>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                새 조직 추가
-              </Button>
             </div>
 
-            <Tabs defaultValue="university" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="university">대학교/대학원</TabsTrigger>
-                <TabsTrigger value="college">단과대학</TabsTrigger>
-                <TabsTrigger value="department">학과</TabsTrigger>
-              </TabsList>
+            {/* 카테고리 관리 방법 안내 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsLmsDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-blue-600" />
+                    LMS 연동 (권장)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    대학 LMS 시스템과 연동하여 조직 구조를 자동으로 동기화합니다.
+                  </p>
+                </CardContent>
+              </Card>
 
-              <TabsContent value="university" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>대학교/대학원 관리</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">로보대학교</h3>
-                          <p className="text-sm text-gray-500">대학교 • 설립일: 1980년</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">로보대학교 대학원</h3>
-                          <p className="text-sm text-gray-500">대학원 • 설립일: 1985년</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsFileUploadDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    파일 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
 
-              <TabsContent value="college" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>단과대학 관리</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">공과대학</h3>
-                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 8개</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">경영대학</h3>
-                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 5개</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">인문대학</h3>
-                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 6개</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+            {/* 카테고리 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">카테고리 검색 및 관리</h3>
+              
+              {/* 조직 유형 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>조직 유형</Label>
+                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="university">대학교</SelectItem>
+                      <SelectItem value="graduate">대학원</SelectItem>
+                      <SelectItem value="college">단과대학</SelectItem>
+                      <SelectItem value="department">학과</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>상위 조직</Label>
+                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="robo_univ">로보대학교</SelectItem>
+                      <SelectItem value="robo_grad">로보대학교 대학원</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>단과대학</Label>
+                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="engineering">공과대학</SelectItem>
+                      <SelectItem value="business">경영대학</SelectItem>
+                      <SelectItem value="liberal">인문대학</SelectItem>
+                      <SelectItem value="science">자연과학대학</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={resetFilters}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
 
-              <TabsContent value="department" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>학과 관리</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">컴퓨터공학과</h3>
-                          <p className="text-sm text-gray-500">공과대학 • 재학생: 320명</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">전자공학과</h3>
-                          <p className="text-sm text-gray-500">공과대학 • 재학생: 280명</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <h3 className="font-medium">경영학과</h3>
-                          <p className="text-sm text-gray-500">경영대학 • 재학생: 450명</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            편집
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+              {/* 카테고리 검색 */}
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="조직명으로 검색..."
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                    />
+                  </div>
+                  <Button onClick={executeSearch}>
+                    카테고리 검색
+                  </Button>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    새 조직 추가
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 필터 범위에서 전체 조직을 조회할 수 있습니다.
+                </p>
+              </div>
+              
+              {/* 검색 결과 표시 */}
+              {hasSearched && (
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  검색 결과: 12개 조직
+                  {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
+                </div>
+              )}
+            </div>
+
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          조직명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          조직 유형
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상위 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          하위 조직 수
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 인원
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {!hasSearched ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">카테고리 검색</p>
+                              <p className="text-sm">
+                                위의 검색 조건을 설정하고 "카테고리 검색" 버튼을 클릭하여 조직을 찾아보세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        <>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                로보대학교
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">대학교</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              4개 단과대학
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              12,500명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="하위 조직 보기">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                공과대학
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">단과대학</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              로보대학교
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              8개 학과
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              3,200명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="하위 조직 보기">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                컴퓨터공학과
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">학과</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              공과대학
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              320명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="소속 인원 보기">
+                                  <Users className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                경영학과
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">학과</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              경영대학
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              450명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="소속 인원 보기">
+                                  <Users className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        </>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* 문서 관리 */}
