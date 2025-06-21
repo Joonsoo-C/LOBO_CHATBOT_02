@@ -106,7 +106,7 @@ export default function Home() {
     <div className="mobile-container no-scroll-bounce scroll-container md:max-w-6xl md:mx-auto md:grid md:grid-cols-12 md:gap-6 md:px-6 md:py-4">
       {/* Header */}
       <header className="fixed-header md:static md:bg-transparent md:shadow-none md:col-span-12 md:mb-0">
-        <div className="px-4 py-3 md:px-0 md:py-0">
+        <div className="px-6 py-3 md:px-0 md:py-0">
           {/* Header with search and settings */}
           <div className="flex items-center gap-3 mb-4 md:mb-6">
             {/* Search Bar */}
@@ -208,15 +208,17 @@ export default function Home() {
 
       {/* Content */}
       <main className="flex-1 main-content md:pt-0 md:col-span-12">
-        {activeTab === "chat" && (
-          <AgentList 
-            agents={filteredAgents} 
-            conversations={conversations}
-          />
-        )}
-        {activeTab === "management" && (
-          <AgentManagement />
-        )}
+        <div className="px-6 md:px-0">
+          {activeTab === "chat" && (
+            <AgentList 
+              agents={filteredAgents} 
+              conversations={conversations}
+            />
+          )}
+          {activeTab === "management" && (
+            <AgentManagement />
+          )}
+        </div>
       </main>
 
 
