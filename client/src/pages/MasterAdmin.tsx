@@ -107,6 +107,10 @@ export default function MasterAdmin() {
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const [documentSearchQuery, setDocumentSearchQuery] = useState('');
+  const [hasDocumentSearched, setHasDocumentSearched] = useState(false);
+  const [isDocumentUploadDialogOpen, setIsDocumentUploadDialogOpen] = useState(false);
+  const [selectedDocumentCategory, setSelectedDocumentCategory] = useState('all');
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -1860,10 +1864,136 @@ export default function MasterAdmin() {
           <TabsContent value="documents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">문서 관리</h2>
-              <Button>
-                <Upload className="w-4 h-4 mr-2" />
-                문서 업로드
-              </Button>
+            </div>
+
+            {/* 문서 업로드 방법 안내 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsLmsDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-blue-600" />
+                    LMS 문서 연동
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    LMS 시스템에서 강의 자료 및 문서를 자동으로 가져옵니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsDocumentUploadDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    직접 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 문서 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
+              
+              {/* 카테고리 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>문서 카테고리</Label>
+                  <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="lecture">강의 자료</SelectItem>
+                      <SelectItem value="policy">정책 문서</SelectItem>
+                      <SelectItem value="manual">매뉴얼</SelectItem>
+                      <SelectItem value="form">양식</SelectItem>
+                      <SelectItem value="notice">공지사항</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>파일 형식</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="pdf">PDF</SelectItem>
+                      <SelectItem value="word">Word</SelectItem>
+                      <SelectItem value="excel">Excel</SelectItem>
+                      <SelectItem value="ppt">PowerPoint</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>업로드 기간</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">1주일</SelectItem>
+                      <SelectItem value="month">1개월</SelectItem>
+                      <SelectItem value="year">1년</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={() => {
+                    setSelectedDocumentCategory('all');
+                    setDocumentSearchQuery('');
+                    setHasDocumentSearched(false);
+                  }}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 문서 검색 */}
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="문서명, 내용으로 검색..."
+                      value={documentSearchQuery}
+                      onChange={(e) => setDocumentSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
+                    />
+                  </div>
+                  <Button onClick={() => setHasDocumentSearched(true)}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    문서 검색
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 카테고리 범위에서 전체 문서를 조회할 수 있습니다.
+                </p>
+              </div>
+              
+              {/* 검색 결과 표시 */}
+              {hasDocumentSearched && (
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  검색 결과: 2개 문서
+                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -2351,6 +2481,99 @@ export default function MasterAdmin() {
                 </Button>
                 <Button>
                   연동 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 업로드 다이얼로그 */}
+        <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>문서 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                </p>
+                <Button variant="outline">
+                  파일 선택
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>문서 카테고리</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="카테고리 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="lecture">강의 자료</SelectItem>
+                      <SelectItem value="policy">정책 문서</SelectItem>
+                      <SelectItem value="manual">매뉴얼</SelectItem>
+                      <SelectItem value="form">양식</SelectItem>
+                      <SelectItem value="notice">공지사항</SelectItem>
+                      <SelectItem value="curriculum">교육과정</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>적용 범위</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="적용 범위 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="university">전체 대학교</SelectItem>
+                      <SelectItem value="graduate">대학원</SelectItem>
+                      <SelectItem value="undergraduate">학부</SelectItem>
+                      <SelectItem value="college_engineering">공과대학</SelectItem>
+                      <SelectItem value="college_business">경영대학</SelectItem>
+                      <SelectItem value="dept_computer">컴퓨터공학과</SelectItem>
+                      <SelectItem value="dept_electrical">전자공학과</SelectItem>
+                      <SelectItem value="dept_business">경영학과</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">업로드 옵션</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="auto-categorize" className="rounded" />
+                    <Label htmlFor="auto-categorize">AI 자동 분류 활성화</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="extract-keywords" className="rounded" />
+                    <Label htmlFor="extract-keywords">키워드 자동 추출</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="notify-users" className="rounded" />
+                    <Label htmlFor="notify-users">해당 범위 사용자에게 알림 발송</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsDocumentUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button>
+                  업로드 시작
                 </Button>
               </div>
             </div>
