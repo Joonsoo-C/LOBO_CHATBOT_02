@@ -2570,8 +2570,8 @@ export default function MasterAdmin() {
                     </Select>
                   </div>
                   <div className="flex items-end">
-                    <Button variant="outline" className="w-full">
-                      필터 초기화
+                    <Button className="w-full">
+                      적용
                     </Button>
                   </div>
                 </div>
