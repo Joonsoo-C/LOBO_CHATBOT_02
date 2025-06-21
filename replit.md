@@ -372,6 +372,8 @@ Changelog:
   * Enhanced Korean text typography with word-break: keep-all and overflow-wrap: anywhere
   * Added proper line-height and text wrapping controls to prevent premature line breaks
   * Improved text flow for longer messages to utilize full available width before wrapping
+  * Fixed short message line breaking issue by removing white-space: pre-wrap setting
+  * Short messages like "안녕" now display properly on single line without unwanted breaks
 ```
 
 ## User Preferences

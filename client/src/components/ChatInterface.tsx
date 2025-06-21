@@ -1015,7 +1015,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                      <p className="text-sm leading-relaxed md:text-base md:leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                      <p className="text-sm leading-relaxed md:text-base md:leading-relaxed break-words">{msg.content}</p>
                       
 
                     </div>
