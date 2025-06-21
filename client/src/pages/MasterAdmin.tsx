@@ -41,7 +41,8 @@ import {
   Target,
   Coffee,
   Music,
-  Heart
+  Heart,
+  Upload
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -99,6 +100,8 @@ export default function MasterAdmin() {
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
   const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
+  const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
+  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -515,10 +518,65 @@ export default function MasterAdmin() {
           <TabsContent value="users" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">사용자 관리</h2>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                새 사용자 추가
-              </Button>
+              <div className="flex space-x-2">
+                <Button variant="outline" onClick={() => setIsLmsDialogOpen(true)}>
+                  <Database className="w-4 h-4 mr-2" />
+                  LMS 연동
+                </Button>
+                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(true)}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  파일 업로드
+                </Button>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  새 사용자 추가
+                </Button>
+              </div>
+            </div>
+
+            {/* 사용자 관리 방법 안내 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-blue-600" />
+                    LMS 연동 (권장)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    대학 LMS 시스템과 연동하여 사용자 정보를 자동으로 동기화합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    파일 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Plus className="w-5 h-5 mr-2 text-orange-600" />
+                    수동 관리
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    개별 사용자를 직접 추가, 수정, 삭제하여 관리합니다.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
 
             <Card>
@@ -1051,6 +1109,166 @@ export default function MasterAdmin() {
                 </div>
               </form>
             </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* LMS 연동 다이얼로그 */}
+        <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>LMS 연동 설정</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="lms-type">LMS 유형</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="LMS 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="blackboard">Blackboard</SelectItem>
+                      <SelectItem value="moodle">Moodle</SelectItem>
+                      <SelectItem value="canvas">Canvas</SelectItem>
+                      <SelectItem value="sakai">Sakai</SelectItem>
+                      <SelectItem value="d2l">D2L Brightspace</SelectItem>
+                      <SelectItem value="custom">사용자 정의</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="lms-url">LMS 서버 URL</Label>
+                  <Input 
+                    id="lms-url" 
+                    placeholder="https://lms.university.edu" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="api-key">API 키</Label>
+                  <Input 
+                    id="api-key" 
+                    type="password"
+                    placeholder="LMS API 키 입력" 
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sync-interval">동기화 주기</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="동기화 주기 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1h">1시간마다</SelectItem>
+                      <SelectItem value="6h">6시간마다</SelectItem>
+                      <SelectItem value="daily">매일</SelectItem>
+                      <SelectItem value="weekly">매주</SelectItem>
+                      <SelectItem value="manual">수동</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label>동기화 범위</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="sync-students" className="rounded" />
+                    <Label htmlFor="sync-students">학생 정보</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="sync-faculty" className="rounded" />
+                    <Label htmlFor="sync-faculty">교수진 정보</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="sync-courses" className="rounded" />
+                    <Label htmlFor="sync-courses">강의 정보</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연동 상태</h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  현재 LMS와 연동되지 않음. 위 설정을 완료한 후 연결 테스트를 진행하세요.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsLmsDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline">
+                  연결 테스트
+                </Button>
+                <Button>
+                  연동 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 파일 업로드 다이얼로그 */}
+        <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>사용자 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, XLSX 파일 지원 (최대 10MB)
+                </p>
+                <Button variant="outline">
+                  파일 선택
+                </Button>
+              </div>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (username, firstName, lastName, email, userType)</p>
+                  <p>• username: 학번/교번 (필수)</p>
+                  <p>• userType: "student" 또는 "faculty" (필수)</p>
+                  <p>• email: 이메일 주소 (선택)</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>업로드 옵션</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="overwrite-existing" className="rounded" />
+                    <Label htmlFor="overwrite-existing">기존 사용자 정보 덮어쓰기</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="send-welcome" className="rounded" />
+                    <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="validate-only" className="rounded" />
+                    <Label htmlFor="validate-only">검증만 수행 (실제 업로드 안함)</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline">
+                  샘플 파일 다운로드
+                </Button>
+                <Button>
+                  업로드 시작
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
 
