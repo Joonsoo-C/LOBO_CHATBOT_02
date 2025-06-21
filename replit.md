@@ -367,6 +367,11 @@ Changelog:
   * Chat interface now only scrolls once when initially entering a conversation
   * Users maintain full control over scroll position during conversations
   * Fixed last message visibility on mobile devices with proper spacing for reactions
+- June 20, 2025. Improved message text flow and readability:
+  * Increased message container width from 75%/80% to 85% on both mobile and desktop
+  * Enhanced Korean text typography with word-break: keep-all and overflow-wrap: anywhere
+  * Added proper line-height and text wrapping controls to prevent premature line breaks
+  * Improved text flow for longer messages to utilize full available width before wrapping
 ```
 
 ## User Preferences
