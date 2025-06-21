@@ -19,9 +19,29 @@
     text-align: left !important;
   }
   
-  /* Force all elements to left align */
-  * {
+  /* Force all elements to left align with maximum specificity */
+  html, body, div, span, p, h1, h2, h3, h4, h5, h6 {
     text-align: left !important;
+    direction: ltr !important;
+    writing-mode: horizontal-tb !important;
+    unicode-bidi: normal !important;
+  }
+  
+  /* Override ALL possible alignment classes */
+  [class*="text-"], [class*="justify-"], [class*="items-"], [class*="content-"] {
+    text-align: left !important;
+    direction: ltr !important;
+  }
+  
+  /* Force every possible element selector */
+  .bg-primary, .bg-primary *,
+  .bg-muted, .bg-muted *,
+  .system-message, .system-message *,
+  .text-primary-foreground, .text-muted-foreground {
+    text-align: left !important;
+    direction: ltr !important;
+    writing-mode: horizontal-tb !important;
+    unicode-bidi: normal !important;
   }
 }
 

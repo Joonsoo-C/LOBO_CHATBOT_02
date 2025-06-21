@@ -1002,7 +1002,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const messageReaction = messageReactions[msg.id];
               
               return (
-                <div key={msg.id} className={`flex ${msg.isFromUser ? "justify-end pr-2" : "justify-start"} group`} style={{ textAlign: 'left' }}>
+                <div key={msg.id} className={`flex group`} style={{ 
+                  justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start',
+                  paddingRight: msg.isFromUser ? '8px' : '0'
+                }}>
                   <div 
                     className="relative flex items-start gap-1 max-w-[90%]"
                     onMouseEnter={() => {
@@ -1029,7 +1032,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         direction: 'ltr',
                         whiteSpace: msg.content.length > 30 ? 'normal' : 'nowrap',
                         wordBreak: msg.content.length > 30 ? 'keep-all' : 'normal',
-                        overflowWrap: msg.content.length > 30 ? 'break-word' : 'normal'
+                        overflowWrap: msg.content.length > 30 ? 'break-word' : 'normal',
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
@@ -1037,13 +1043,18 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                      <span style={{ 
-                        textAlign: 'left', 
+                      <div style={{
+                        textAlign: 'left',
+                        direction: 'ltr',
+                        width: '100%',
                         display: 'block',
-                        width: '100%' 
+                        margin: 0,
+                        padding: 0,
+                        writingMode: 'horizontal-tb',
+                        unicodeBidi: 'normal'
                       }}>
                         {msg.content}
-                      </span>
+                      </div>
                       
 
                     </div>
