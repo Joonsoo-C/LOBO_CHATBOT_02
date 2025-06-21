@@ -439,7 +439,7 @@ export default function MasterAdmin() {
             </TabsTrigger>
             <TabsTrigger value="conversations">
               <MessageSquare className="w-4 h-4 mr-2" />
-              대화 모니터링
+              질문/응답 로그
             </TabsTrigger>
             <TabsTrigger value="tokens">
               <Shield className="w-4 h-4 mr-2" />
@@ -1052,20 +1052,397 @@ export default function MasterAdmin() {
             </div>
           </TabsContent>
 
-          {/* 대화 모니터링 */}
+          {/* 질문/응답 로그 */}
           <TabsContent value="conversations" className="space-y-6">
-            <h2 className="text-2xl font-bold">대화 모니터링</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">질문/응답 로그</h2>
+              <div className="flex space-x-2">
+                <Button variant="outline">
+                  <FileText className="w-4 h-4 mr-2" />
+                  로그 내보내기
+                </Button>
+                <Button variant="outline">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  분석 보고서
+                </Button>
+              </div>
+            </div>
+
+            {/* 필터링 옵션 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">로그 필터링</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>에이전트</Label>
+                  <Select defaultValue="all">
+                    <SelectTrigger>
+                      <SelectValue placeholder="에이전트 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체 에이전트</SelectItem>
+                      <SelectItem value="academic">학사 도우미</SelectItem>
+                      <SelectItem value="student">학생회 도우미</SelectItem>
+                      <SelectItem value="research">연구 지원 도우미</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>사용자 유형</Label>
+                  <Select defaultValue="all">
+                    <SelectTrigger>
+                      <SelectValue placeholder="사용자 유형" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="student">학생</SelectItem>
+                      <SelectItem value="faculty">교직원</SelectItem>
+                      <SelectItem value="admin">관리자</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>기간</Label>
+                  <Select defaultValue="today">
+                    <SelectTrigger>
+                      <SelectValue placeholder="기간 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">최근 1주일</SelectItem>
+                      <SelectItem value="month">최근 1개월</SelectItem>
+                      <SelectItem value="quarter">최근 3개월</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>키워드 검색</Label>
+                  <Input placeholder="질문 내용 검색..." />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  총 <strong>1,247</strong>개의 질문/응답 로그
+                </div>
+                <Button>
+                  필터 적용
+                </Button>
+              </div>
+            </div>
+
+            {/* 통계 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">오늘 질문 수</CardTitle>
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">247</div>
+                  <p className="text-xs text-muted-foreground">
+                    전일 대비 +12%
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">평균 응답 시간</CardTitle>
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">2.3초</div>
+                  <p className="text-xs text-muted-foreground">
+                    전일 대비 -0.3초
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">문서 활용률</CardTitle>
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">84%</div>
+                  <p className="text-xs text-muted-foreground">
+                    문서 기반 응답 비율
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">사용자 만족도</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">4.6/5</div>
+                  <p className="text-xs text-muted-foreground">
+                    평균 평가 점수
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader>
-                <CardTitle>실시간 대화 현황</CardTitle>
+                <CardTitle>최근 질문/응답 로그</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <MessageSquare className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-500">실시간 대화 모니터링 기능은 곧 출시됩니다.</p>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          시간
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          에이전트
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          질문
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          응답 유형
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          응답 시간
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:23
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024001</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            수강신청 기간이 언제인가요?
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          1.8초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:20
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">F2024002</div>
+                              <div className="text-xs text-gray-500">교수</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">연구 지원 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            연구비 신청 절차에 대해 알려주세요
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="outline" className="bg-blue-100 text-blue-800">하이브리드</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          3.2초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:18
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024003</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학생회 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            동아리 행사 예산은 어떻게 신청하나요?
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="secondary" className="bg-gray-100 text-gray-800">AI 생성</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2.1초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:15
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024004</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            졸업 요건을 확인하고 싶어요
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          1.5초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>
+
+            {/* 인기 질문 분석 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>인기 질문 TOP 10</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">수강신청 관련 문의</span>
+                      <Badge variant="outline">89건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">졸업 요건 확인</span>
+                      <Badge variant="outline">67건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">장학금 신청</span>
+                      <Badge variant="outline">54건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">학과 사무실 위치</span>
+                      <Badge variant="outline">43건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">연구실 배정</span>
+                      <Badge variant="outline">38건</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>응답 품질 분석</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">문서 기반 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-600 h-2 rounded-full" style={{width: '84%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">84%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">하이브리드 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{width: '12%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">12%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">AI 생성 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-gray-600 h-2 rounded-full" style={{width: '4%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">4%</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* 토큰 관리 */}
