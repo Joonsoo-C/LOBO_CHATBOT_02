@@ -1961,7 +1961,7 @@ export default function MasterAdmin() {
                     setDocumentSearchQuery('');
                     setHasDocumentSearched(false);
                   }}>
-                    필터 초기화
+                    범위 적용
                   </Button>
                 </div>
               </div>
