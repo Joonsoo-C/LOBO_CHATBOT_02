@@ -424,7 +424,7 @@ export default function MasterAdmin() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">
               <BarChart3 className="w-4 h-4 mr-2" />
               대시보드
@@ -440,6 +440,18 @@ export default function MasterAdmin() {
             <TabsTrigger value="conversations">
               <MessageSquare className="w-4 h-4 mr-2" />
               대화 모니터링
+            </TabsTrigger>
+            <TabsTrigger value="tokens">
+              <Shield className="w-4 h-4 mr-2" />
+              토큰 관리
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              <Database className="w-4 h-4 mr-2" />
+              카테고리 관리
+            </TabsTrigger>
+            <TabsTrigger value="documents">
+              <FileText className="w-4 h-4 mr-2" />
+              문서 관리
             </TabsTrigger>
             <TabsTrigger value="system">
               <Settings className="w-4 h-4 mr-2" />
@@ -1051,6 +1063,445 @@ export default function MasterAdmin() {
                 <div className="text-center py-8">
                   <MessageSquare className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                   <p className="text-gray-500">실시간 대화 모니터링 기능은 곧 출시됩니다.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 토큰 관리 */}
+          <TabsContent value="tokens" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">토큰 관리</h2>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                새 토큰 생성
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>OpenAI API 토큰</span>
+                    <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-sm">
+                    <p className="text-gray-500">사용량: 12,450 / 100,000 토큰</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '12.45%'}}></div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    마지막 사용: 2시간 전
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Edit className="w-4 h-4 mr-1" />
+                      편집
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Eye className="w-4 h-4 mr-1" />
+                      상세
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Claude API 토큰</span>
+                    <Badge variant="secondary">비활성</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-sm">
+                    <p className="text-gray-500">사용량: 0 / 50,000 토큰</p>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div className="bg-gray-400 h-2 rounded-full" style={{width: '0%'}}></div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    마지막 사용: 사용 안함
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Edit className="w-4 h-4 mr-1" />
+                      편집
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Eye className="w-4 h-4 mr-1" />
+                      상세
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>토큰 사용량 통계</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">15,234</div>
+                    <div className="text-sm text-gray-500">오늘 사용량</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">485,921</div>
+                    <div className="text-sm text-gray-500">이번 달 사용량</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-orange-600">2,341,234</div>
+                    <div className="text-sm text-gray-500">총 사용량</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-600">₩234,580</div>
+                    <div className="text-sm text-gray-500">이번 달 비용</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 카테고리 관리 */}
+          <TabsContent value="categories" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">카테고리 관리</h2>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                새 조직 추가
+              </Button>
+            </div>
+
+            <Tabs defaultValue="university" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="university">대학교/대학원</TabsTrigger>
+                <TabsTrigger value="college">단과대학</TabsTrigger>
+                <TabsTrigger value="department">학과</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="university" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>대학교/대학원 관리</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">로보대학교</h3>
+                          <p className="text-sm text-gray-500">대학교 • 설립일: 1980년</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">로보대학교 대학원</h3>
+                          <p className="text-sm text-gray-500">대학원 • 설립일: 1985년</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="college" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>단과대학 관리</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">공과대학</h3>
+                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 8개</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">경영대학</h3>
+                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 5개</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">인문대학</h3>
+                          <p className="text-sm text-gray-500">로보대학교 • 학과 수: 6개</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="department" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>학과 관리</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">컴퓨터공학과</h3>
+                          <p className="text-sm text-gray-500">공과대학 • 재학생: 320명</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">전자공학과</h3>
+                          <p className="text-sm text-gray-500">공과대학 • 재학생: 280명</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h3 className="font-medium">경영학과</h3>
+                          <p className="text-sm text-gray-500">경영대학 • 재학생: 450명</p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-1" />
+                            편집
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          {/* 문서 관리 */}
+          <TabsContent value="documents" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">문서 관리</h2>
+              <Button>
+                <Upload className="w-4 h-4 mr-2" />
+                문서 업로드
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">문서 통계</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm">전체 문서</span>
+                    <span className="font-medium">1,234</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">활성 문서</span>
+                    <span className="font-medium">1,180</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">비활성 문서</span>
+                    <span className="font-medium">54</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">총 용량</span>
+                    <span className="font-medium">2.3 GB</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">문서 종류별 분포</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm">PDF</span>
+                    <span className="font-medium">856 (69%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Word</span>
+                    <span className="font-medium">245 (20%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Excel</span>
+                    <span className="font-medium">98 (8%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">기타</span>
+                    <span className="font-medium">35 (3%)</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">최근 업로드</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm">
+                    <div className="font-medium">2024학년도 수강신청 안내.pdf</div>
+                    <div className="text-gray-500">2시간 전</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium">졸업요건 변경 안내.docx</div>
+                    <div className="text-gray-500">5시간 전</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium">학과 교육과정.xlsx</div>
+                    <div className="text-gray-500">1일 전</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>문서 목록</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          문서명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          종류
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          크기
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          업로드일
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            2024학년도 수강신청 안내.pdf
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="outline">PDF</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2.1 MB
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            졸업요건 변경 안내.docx
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="outline">Word</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          450 KB
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.20
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>
