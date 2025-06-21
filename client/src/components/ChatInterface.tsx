@@ -1034,7 +1034,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         overflowWrap: msg.content.length > 30 ? 'break-word' : 'normal',
                         display: 'flex',
                         justifyContent: 'flex-start',
-                        alignItems: 'flex-start'
+                        alignItems: 'flex-start',
+                        minWidth: '120px'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
