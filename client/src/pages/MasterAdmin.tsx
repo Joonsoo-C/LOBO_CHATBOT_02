@@ -109,7 +109,8 @@ export default function MasterAdmin() {
     },
   });
 
-  // Hierarchical category structure
+  // Category selection state
+  const [categoryType, setCategoryType] = useState<"hierarchical" | "simple">("hierarchical");
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [selectedCollege, setSelectedCollege] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -302,7 +303,8 @@ export default function MasterAdmin() {
       });
       setShowCreateAgentDialog(false);
       createAgentForm.reset();
-      // Reset hierarchical category selections
+      // Reset category selections
+      setCategoryType("hierarchical");
       setSelectedUniversity("");
       setSelectedCollege("");
       setSelectedDepartment("");
@@ -318,19 +320,27 @@ export default function MasterAdmin() {
   });
 
   const onCreateAgent = (data: CreateAgentData) => {
-    // Validate hierarchical category selection
-    if (!selectedUniversity || !selectedCollege || !selectedDepartment) {
-      toast({
-        title: "카테고리 선택 필요",
-        description: "대학교/대학원, 단과대학, 학과를 모두 선택해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Ensure the category field has the proper hierarchical value
-    if (!data.category || !data.category.includes(" > ")) {
+    // Validate category selection based on type
+    if (categoryType === "hierarchical") {
+      if (!selectedUniversity || !selectedCollege || !selectedDepartment) {
+        toast({
+          title: "카테고리 선택 필요",
+          description: "대학교/대학원, 단과대학, 학과를 모두 선택해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
+      // Ensure hierarchical category format
       data.category = `${selectedUniversity} > ${selectedCollege} > ${selectedDepartment}`;
+    } else if (categoryType === "simple") {
+      if (!data.category) {
+        toast({
+          title: "카테고리 선택 필요",
+          description: "기본 카테고리를 선택해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     createAgentMutation.mutate(data);
@@ -619,6 +629,7 @@ export default function MasterAdmin() {
                   if (!open) {
                     // Reset form and category selections when dialog closes
                     createAgentForm.reset();
+                    setCategoryType("hierarchical");
                     setSelectedUniversity("");
                     setSelectedCollege("");
                     setSelectedDepartment("");
@@ -653,85 +664,161 @@ export default function MasterAdmin() {
                         />
                         
                         <div className="space-y-4">
-                          {/* 대학교/대학원 선택 */}
+                          {/* 카테고리 타입 선택 */}
                           <div>
-                            <Label className="text-sm font-medium">대학교/대학원</Label>
-                            <Select
-                              value={selectedUniversity}
-                              onValueChange={(value) => {
-                                setSelectedUniversity(value);
-                                setSelectedCollege("");
-                                setSelectedDepartment("");
-                                createAgentForm.setValue("category", "");
-                              }}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="대학교/대학원 선택" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {universityOptions.map((option) => (
-                                  <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <Label className="text-sm font-medium mb-3 block">카테고리 타입</Label>
+                            <div className="flex space-x-4">
+                              <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name="categoryType"
+                                  value="hierarchical"
+                                  checked={categoryType === "hierarchical"}
+                                  onChange={(e) => {
+                                    setCategoryType("hierarchical");
+                                    setSelectedUniversity("");
+                                    setSelectedCollege("");
+                                    setSelectedDepartment("");
+                                    createAgentForm.setValue("category", "");
+                                  }}
+                                  className="text-blue-600"
+                                />
+                                <span className="text-sm">계층형 (대학교 {'>'} 단과대학 {'>'} 학과)</span>
+                              </label>
+                              <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name="categoryType"
+                                  value="simple"
+                                  checked={categoryType === "simple"}
+                                  onChange={(e) => {
+                                    setCategoryType("simple");
+                                    setSelectedUniversity("");
+                                    setSelectedCollege("");
+                                    setSelectedDepartment("");
+                                    createAgentForm.setValue("category", "");
+                                  }}
+                                  className="text-blue-600"
+                                />
+                                <span className="text-sm">기본 카테고리</span>
+                              </label>
+                            </div>
                           </div>
 
-                          {/* 단과대학 선택 */}
-                          {selectedUniversity && (
-                            <div>
-                              <Label className="text-sm font-medium">단과대학</Label>
-                              <Select
-                                value={selectedCollege}
-                                onValueChange={(value) => {
-                                  setSelectedCollege(value);
-                                  setSelectedDepartment("");
-                                  createAgentForm.setValue("category", "");
-                                }}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="단과대학 선택" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {collegeOptions[selectedUniversity]?.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
+                          {/* 계층형 카테고리 선택 */}
+                          {categoryType === "hierarchical" && (
+                            <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                              {/* 대학교/대학원 */}
+                              <div>
+                                <Label className="text-sm font-medium">대학교/대학원</Label>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                  {universityOptions.map((option) => (
+                                    <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
+                                      <input
+                                        type="radio"
+                                        name="university"
+                                        value={option.value}
+                                        checked={selectedUniversity === option.value}
+                                        onChange={(e) => {
+                                          setSelectedUniversity(e.target.value);
+                                          setSelectedCollege("");
+                                          setSelectedDepartment("");
+                                          createAgentForm.setValue("category", "");
+                                        }}
+                                        className="text-blue-600"
+                                      />
+                                      <span className="text-sm">{option.label}</span>
+                                    </label>
                                   ))}
-                                </SelectContent>
-                              </Select>
+                                </div>
+                              </div>
+
+                              {/* 단과대학 */}
+                              {selectedUniversity && (
+                                <div>
+                                  <Label className="text-sm font-medium">단과대학</Label>
+                                  <div className="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto">
+                                    {collegeOptions[selectedUniversity]?.map((option) => (
+                                      <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
+                                        <input
+                                          type="radio"
+                                          name="college"
+                                          value={option.value}
+                                          checked={selectedCollege === option.value}
+                                          onChange={(e) => {
+                                            setSelectedCollege(e.target.value);
+                                            setSelectedDepartment("");
+                                            createAgentForm.setValue("category", "");
+                                          }}
+                                          className="text-blue-600"
+                                        />
+                                        <span className="text-sm">{option.label}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* 학과 */}
+                              {selectedCollege && (
+                                <div>
+                                  <Label className="text-sm font-medium">학과</Label>
+                                  <div className="grid grid-cols-2 gap-2 mt-2 max-h-40 overflow-y-auto">
+                                    {departmentOptions[selectedCollege]?.map((option) => (
+                                      <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
+                                        <input
+                                          type="radio"
+                                          name="department"
+                                          value={option.value}
+                                          checked={selectedDepartment === option.value}
+                                          onChange={(e) => {
+                                            setSelectedDepartment(e.target.value);
+                                            const fullCategory = `${selectedUniversity} > ${selectedCollege} > ${e.target.value}`;
+                                            createAgentForm.setValue("category", fullCategory);
+                                          }}
+                                          className="text-blue-600"
+                                        />
+                                        <span className="text-sm">{option.label}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* 선택된 계층 표시 */}
+                              {selectedUniversity && selectedCollege && selectedDepartment && (
+                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                                  <div className="text-xs font-medium text-blue-700 dark:text-blue-300">선택된 카테고리:</div>
+                                  <div className="text-sm text-blue-600 dark:text-blue-400">
+                                    {selectedUniversity} › {selectedCollege} › {selectedDepartment}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
 
-                          {/* 학과 선택 */}
-                          {selectedCollege && (
-                            <div>
-                              <Label className="text-sm font-medium">학과</Label>
-                              <Select
-                                value={selectedDepartment}
-                                onValueChange={(value) => {
-                                  setSelectedDepartment(value);
-                                  // 최종 카테고리 값을 조합하여 설정
-                                  const fullCategory = `${selectedUniversity} > ${selectedCollege} > ${value}`;
-                                  createAgentForm.setValue("category", fullCategory);
-                                }}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="학과 선택" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {departmentOptions[selectedCollege]?.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                          {/* 기본 카테고리 선택 */}
+                          {categoryType === "simple" && (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                              <Label className="text-sm font-medium mb-3 block">에이전트 카테고리</Label>
+                              <div className="grid grid-cols-2 gap-2">
+                                {categoryOptions.map((option) => (
+                                  <label key={option.value} className="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-white dark:hover:bg-gray-700">
+                                    <input
+                                      type="radio"
+                                      name="simpleCategory"
+                                      value={option.value}
+                                      onChange={(e) => createAgentForm.setValue("category", e.target.value)}
+                                      className="text-blue-600"
+                                    />
+                                    <span className="text-sm">{option.label}</span>
+                                  </label>
+                                ))}
+                              </div>
                             </div>
                           )}
 
-                          {/* Hidden form field to store the combined category value */}
+                          {/* Hidden form field */}
                           <FormField
                             control={createAgentForm.control}
                             name="category"
@@ -744,16 +831,6 @@ export default function MasterAdmin() {
                               </FormItem>
                             )}
                           />
-
-                          {/* 선택된 카테고리 표시 */}
-                          {selectedUniversity && selectedCollege && selectedDepartment && (
-                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border">
-                              <div className="text-sm font-medium text-blue-700 dark:text-blue-300">선택된 카테고리:</div>
-                              <div className="text-sm text-blue-600 dark:text-blue-400">
-                                {selectedUniversity} &gt; {selectedCollege} &gt; {selectedDepartment}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       </div>
 
@@ -904,6 +981,7 @@ export default function MasterAdmin() {
                           onClick={() => {
                             setShowCreateAgentDialog(false);
                             createAgentForm.reset();
+                            setCategoryType("hierarchical");
                             setSelectedUniversity("");
                             setSelectedCollege("");
                             setSelectedDepartment("");
