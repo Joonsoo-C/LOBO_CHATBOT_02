@@ -1043,7 +1043,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                     >
                       <div style={{
-                        textAlign: 'left',
+                        textAlign: 'center',
                         direction: 'ltr',
                         width: '100%',
                         display: 'block',
