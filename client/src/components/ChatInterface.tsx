@@ -62,6 +62,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -1013,12 +1014,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {
+                        if (hoverTimeoutRef.current) {
+                          clearTimeout(hoverTimeoutRef.current);
+                          hoverTimeoutRef.current = null;
+                        }
                         setActiveReactionMessageId(msg.id);
                       }
                     }}
                     onMouseLeave={() => {
                       if (!msg.isFromUser && !isSystem) {
-                        setTimeout(() => setActiveReactionMessageId(null), 300);
+                        hoverTimeoutRef.current = setTimeout(() => {
+                          setActiveReactionMessageId(null);
+                          hoverTimeoutRef.current = null;
+                        }, 800);
                       }
                     }}
                   >
@@ -1051,8 +1059,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         <div 
                           className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
                           onClick={(e) => e.stopPropagation()}
-                          onMouseEnter={() => setActiveReactionMessageId(msg.id)}
-                          onMouseLeave={() => setTimeout(() => setActiveReactionMessageId(null), 300)}
+                          onMouseEnter={() => {
+                            if (hoverTimeoutRef.current) {
+                              clearTimeout(hoverTimeoutRef.current);
+                              hoverTimeoutRef.current = null;
+                            }
+                            setActiveReactionMessageId(msg.id);
+                          }}
+                          onMouseLeave={() => {
+                            hoverTimeoutRef.current = setTimeout(() => {
+                              setActiveReactionMessageId(null);
+                              hoverTimeoutRef.current = null;
+                            }, 800);
+                          }}
                         >
                           {reactionOptions.map((option) => (
                             <button
