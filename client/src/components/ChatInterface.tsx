@@ -1029,14 +1029,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       style={{
                         textAlign: 'left',
                         direction: 'ltr',
-                        whiteSpace: msg.content.length > 30 ? 'normal' : 'nowrap',
-                        wordBreak: msg.content.length > 30 ? 'keep-all' : 'normal',
-                        overflowWrap: msg.content.length > 30 ? 'break-word' : 'normal',
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        minWidth: msg.isFromUser ? '100px' : 'auto',
-                        width: msg.isFromUser && msg.content.length < 8 ? '120px' : 'auto'
+                        display: 'inline-block',
+                        minWidth: msg.isFromUser ? '70px' : 'auto',
+                        maxWidth: '100%',
+                        width: 'auto',
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'pre-wrap'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {
@@ -1044,23 +1043,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%',
-                        textAlign: 'center',
-                        direction: 'ltr',
-                        margin: 0,
-                        padding: 0
-                      }}>
-                        <span style={{
-                          display: 'inline-block',
-                          textAlign: 'center'
-                        }}>
-                          {msg.content}
-                        </span>
-                      </div>
+                      {msg.content}
                       
 
                     </div>
