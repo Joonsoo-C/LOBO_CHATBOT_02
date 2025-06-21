@@ -699,7 +699,16 @@ export default function MasterAdmin() {
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자
+                          사용자명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          학번/교번
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          학년/직급
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           역할
@@ -718,7 +727,7 @@ export default function MasterAdmin() {
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {!hasSearched ? (
                         <tr>
-                          <td colSpan={5} className="px-6 py-12 text-center">
+                          <td colSpan={8} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">사용자 검색</p>
@@ -730,7 +739,7 @@ export default function MasterAdmin() {
                         </tr>
                       ) : filteredUsers?.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="px-6 py-12 text-center">
+                          <td colSpan={8} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -744,38 +753,55 @@ export default function MasterAdmin() {
                         filteredUsers?.map((user) => (
                           <tr key={user.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div>
-                                <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {user.firstName} {user.lastName}
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                  {user.username}
-                                </div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.firstName} {user.lastName}
+                              </div>
+                              {user.email && (
+                                <div className="text-xs text-gray-500">{user.email}</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.username}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant={user.userType === 'faculty' ? 'default' : 'secondary'}>
+                              <div className="text-sm text-gray-500">
+                                {user.userType === 'faculty' ? '로보대학교 컴퓨터공학과' : 
+                                 user.userType === 'student' ? '컴퓨터공학과' : '시스템 관리'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {user.userType === 'faculty' ? '교수' : 
+                                 user.userType === 'student' ? '4학년' : 
+                                 user.userType === 'admin' ? '시스템관리자' : '-'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant={user.userType === 'faculty' ? 'default' : user.userType === 'admin' ? 'destructive' : 'secondary'}>
                                 {user.userType === 'faculty' ? '교직원' : 
                                  user.userType === 'admin' ? '관리자' :
                                  user.userType === 'student' ? '학생' : '기타'}
                               </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default">활성</Badge>
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                활성
+                              </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              2025. 6. 21.
+                              {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString('ko-KR') : '2025. 6. 21.'}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                              <Button variant="outline" size="sm">
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="계정 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" title="계정 삭제">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))
