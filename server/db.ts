@@ -29,13 +29,24 @@ export const db = drizzle(pool, { schema });
 export async function testDatabaseConnection(retries = 3): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
     try {
-      const result = await pool.query('SELECT 1 as test');
+      const client = await pool.connect();
+      const result = await client.query('SELECT 1 as test');
+      client.release();
+      
       if (result.rows[0]?.test === 1) {
         console.log('Database connection successful');
         return true;
       }
     } catch (error) {
-      console.warn(`Database connection attempt ${i + 1} failed:`, (error as Error).message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.warn(`Database connection attempt ${i + 1} failed:`, errorMessage);
+      
+      // If it's a Neon endpoint disabled error, don't retry
+      if (errorMessage.includes('endpoint is disabled')) {
+        console.error('Neon database endpoint is disabled - this requires manual intervention');
+        return false;
+      }
+      
       if (i === retries - 1) {
         console.error('All database connection attempts failed');
         return false;
@@ -45,4 +56,45 @@ export async function testDatabaseConnection(retries = 3): Promise<boolean> {
     }
   }
   return false;
+}
+
+// Initialize database schema if connection is available
+export async function initializeDatabase(): Promise<boolean> {
+  try {
+    const client = await pool.connect();
+    
+    // Create basic tables if they don't exist
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR(255) PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        first_name VARCHAR(255),
+        last_name VARCHAR(255),
+        email VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS agents (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        category VARCHAR(100),
+        icon VARCHAR(255) DEFAULT 'User',
+        background_color VARCHAR(50) DEFAULT 'blue',
+        is_active BOOLEAN DEFAULT true,
+        is_custom_icon BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    client.release();
+    console.log('Database schema initialized successfully');
+    return true;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Failed to initialize database schema:', errorMessage);
+    return false;
+  }
 }

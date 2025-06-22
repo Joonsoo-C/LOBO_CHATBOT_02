@@ -8,7 +8,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
-import { db, testDatabaseConnection } from "./db";
+import { db, testDatabaseConnection, initializeDatabase } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
 // Configure multer for document uploads
@@ -62,13 +62,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const dbConnected = await testDatabaseConnection();
   
   if (!dbConnected) {
-    console.warn('Database connection failed, application will run with limited functionality');
+    console.warn('Primary database connection failed, attempting to initialize fallback database...');
+    const fallbackInitialized = await initializeDatabase();
+    if (fallbackInitialized) {
+      console.log('Fallback database initialized successfully');
+    } else {
+      console.warn('Application will run with limited functionality due to database issues');
+    }
   }
 
   // Auth middleware
   await setupAuth(app);
 
-  // Initialize default agents if they don't exist (only if DB is connected)
+  // Initialize default agents if they don't exist
   if (dbConnected) {
     try {
       await initializeDefaultAgents();
