@@ -1033,24 +1033,42 @@ export default function MasterAdmin() {
                       {agents?.map((agent) => (
                         <tr 
                           key={agent.id}
-                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                          className={`cursor-pointer transition-all duration-200 ${
+                            agent.isActive 
+                              ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-sm' 
+                              : 'bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                          }`}
                           onClick={() => openEditAgentDialog(agent)}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              <div className={`text-sm font-medium ${
+                                agent.isActive 
+                                  ? 'text-gray-900 dark:text-white' 
+                                  : 'text-gray-600 dark:text-gray-400'
+                              }`}>
                                 {agent.name}
                               </div>
-                              <div className="text-xs text-gray-500">
+                              <div className={`text-xs ${
+                                agent.isActive 
+                                  ? 'text-green-600 dark:text-green-400' 
+                                  : 'text-gray-500 dark:text-gray-500'
+                              }`}>
                                 {agent.isActive ? '활성' : '비활성'}
                               </div>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant="outline">{agent.category}</Badge>
+                            <Badge variant={agent.isActive ? "outline" : "secondary"}>
+                              {agent.category}
+                            </Badge>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 dark:text-white">
+                            <div className={`text-sm ${
+                              agent.isActive 
+                                ? 'text-gray-900 dark:text-white' 
+                                : 'text-gray-600 dark:text-gray-400'
+                            }`}>
                               {(agent as any).managerFirstName && (agent as any).managerLastName 
                                 ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
                                 : '-'}
@@ -1062,12 +1080,20 @@ export default function MasterAdmin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 dark:text-white">
+                            <div className={`text-sm ${
+                              agent.isActive 
+                                ? 'text-gray-900 dark:text-white' 
+                                : 'text-gray-600 dark:text-gray-400'
+                            }`}>
                               {(agent as any).documentCount || 0}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 dark:text-white">
+                            <div className={`text-sm ${
+                              agent.isActive 
+                                ? 'text-gray-900 dark:text-white' 
+                                : 'text-gray-600 dark:text-gray-400'
+                            }`}>
                               {(agent as any).userCount || 0}
                             </div>
                           </td>
@@ -1081,6 +1107,7 @@ export default function MasterAdmin() {
                               variant="outline" 
                               size="sm" 
                               title="통계 보기"
+                              className={agent.isActive ? '' : 'opacity-60'}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 // 통계 보기 로직
