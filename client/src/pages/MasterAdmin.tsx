@@ -997,65 +997,108 @@ export default function MasterAdmin() {
               </Dialog>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {agents?.map((agent) => (
-                <Card key={agent.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div 
-                          className={`w-12 h-12 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500`}
-                        >
-                          {(() => {
-                            const IconComponent = iconMap[agent.icon as keyof typeof iconMap] || User;
-                            return <IconComponent className="w-6 h-6 text-white" />;
-                          })()}
-                        </div>
-                        <CardTitle className="text-lg">{agent.name}</CardTitle>
-                      </div>
-                      <Badge variant={agent.isActive ? 'default' : 'secondary'}>
-                        {agent.isActive ? '활성' : '비활성'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {agent.description}
-                    </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>카테고리: {agent.category}</span>
-                      <Badge variant="outline">{agent.category}</Badge>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>메시지 수:</span>
-                      <span className="font-medium">{agent.messageCount}</span>
-                    </div>
-                    {(agent as any).managerFirstName && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span>관리자:</span>
-                        <span className="font-medium">{(agent as any).managerFirstName} {(agent as any).managerLastName}</span>
-                      </div>
-                    )}
-                    {(agent as any).organizationName && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span>소속:</span>
-                        <span className="font-medium">{(agent as any).organizationName}</span>
-                      </div>
-                    )}
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openEditAgentDialog(agent)}>
-                        <Edit className="w-4 h-4 mr-1" />
-                        편집
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <BarChart3 className="w-4 h-4 mr-1" />
-                        통계
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          이름
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          에이전트 카테고리
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          관리자
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          문서 수
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자 수
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          최종 사용일
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {agents?.map((agent) => (
+                        <tr key={agent.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div 
+                                className={`w-10 h-10 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500 mr-3`}
+                              >
+                                {(() => {
+                                  const IconComponent = iconMap[agent.icon as keyof typeof iconMap] || User;
+                                  return <IconComponent className="w-5 h-5 text-white" />;
+                                })()}
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {agent.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {agent.isActive ? '활성' : '비활성'}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge variant="outline">{agent.category}</Badge>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 dark:text-white">
+                              {(agent as any).managerFirstName && (agent as any).managerLastName 
+                                ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
+                                : '-'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">
+                              {(agent as any).organizationName || '-'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 dark:text-white">
+                              {(agent as any).documentCount || 0}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 dark:text-white">
+                              {(agent as any).userCount || 0}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).lastUsedAt 
+                              ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR')
+                              : '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-1">
+                              <Button variant="outline" size="sm" onClick={() => openEditAgentDialog(agent)} title="에이전트 편집">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button variant="outline" size="sm" title="통계 보기">
+                                <BarChart3 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* 질문/응답 로그 */}
