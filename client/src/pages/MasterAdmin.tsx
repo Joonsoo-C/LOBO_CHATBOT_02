@@ -2338,72 +2338,99 @@ export default function MasterAdmin() {
                   )}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={editAgentForm.control}
-                    name="managerId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>에이전트 관리자</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="관리자 선택" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {managers?.map((manager) => (
-                              <SelectItem key={manager.id} value={manager.id}>
-                                {manager.firstName} {manager.lastName} ({manager.username})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editAgentForm.control}
-                    name="organizationId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>소속 조직</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="조직 선택" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {organizations?.map((org) => (
-                              <>
-                                <SelectItem key={org.id} value={org.id.toString()}>
-                                  {org.name} ({org.type === 'university' ? '대학교' : 
-                                    org.type === 'graduate_school' ? '대학원' : 
-                                    org.type === 'college' ? '단과대학' : '학과'})
-                                </SelectItem>
-                                {org.children?.map((college: any) => (
-                                  <>
-                                    <SelectItem key={college.id} value={college.id.toString()}>
-                                      └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
-                                    </SelectItem>
-                                    {college.children?.map((dept: any) => (
-                                      <SelectItem key={dept.id} value={dept.id.toString()}>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
-                                      </SelectItem>
-                                    ))}
-                                  </>
-                                ))}
-                              </>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* 소속 조직 선택 - 3단계 드롭다운 */}
+                <div className="space-y-4">
+                  <FormLabel className="text-base font-medium">소속 조직</FormLabel>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div>
+                      <Label className="text-sm text-gray-600">전체/대학원/대학교</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="대학교">대학교</SelectItem>
+                          <SelectItem value="대학원">대학원</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">단과대학</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">학과</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                          <SelectItem value="전자공학과">전자공학과</SelectItem>
+                          <SelectItem value="기계공학과">기계공학과</SelectItem>
+                          <SelectItem value="경영학과">경영학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button variant="default" className="h-11 px-6 bg-blue-600 hover:bg-blue-700">
+                        적용
+                      </Button>
+                    </div>
+                  </div>
                 </div>
+
+                {/* 에이전트 관리자 */}
+                <FormField
+                  control={editAgentForm.control}
+                  name="managerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>에이전트 관리자</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="관리자 선택" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {managers?.map((manager) => (
+                            <SelectItem key={manager.id} value={manager.id}>
+                              {manager.firstName} {manager.lastName} ({manager.username})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 숨겨진 조직 ID 필드 */}
+                <FormField
+                  control={editAgentForm.control}
+                  name="organizationId"
+                  render={({ field }) => (
+                    <FormItem style={{ display: 'none' }}>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={editAgentForm.control}
