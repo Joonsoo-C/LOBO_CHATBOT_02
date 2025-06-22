@@ -850,7 +850,7 @@ async function initializeDefaultAgents() {
       await storage.createUser({
         id: "master-admin-001",
         username: "master_admin",
-        password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // MasterAdmin2024!
+        password: "$2b$10$tj55VzDdQcxH4mknQW1mxe7SK2Q//fqrKaOEj10u7pfo7Rnn5YnTq", // MasterAdmin2024!
         userType: "admin",
         firstName: "Master",
         lastName: "Admin",
