@@ -885,8 +885,11 @@ async function initializeDefaultAgents() {
       }
     }
 
-    console.log("User initialization completed successfully");
+    // Skip agent creation for now - will be done through admin interface
+    console.log("Agent creation will be done through the master admin interface");
+
+    console.log("User and agent initialization completed successfully");
   } catch (error) {
-    console.error("Error initializing users:", error);
+    console.error("Error initializing users and agents:", error);
   }
 }
