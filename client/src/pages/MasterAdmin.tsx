@@ -1020,7 +1020,7 @@ export default function MasterAdmin() {
                 {/* 안내 메시지 */}
                 <div className="flex items-start space-x-2 text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
                   <div className="w-4 h-4 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold mt-0.5">!</div>
-                  <p>* 전 안례학교 검색하려면 선택된 조건에 따라 전체 사용자를 조회할 수 있습니다.</p>
+                  <p>검색 조건을 설정하고 검색 버튼을 클릭하여 에이전트를 조회할 수 있습니다.</p>
                 </div>
               </CardContent>
             </Card>
@@ -1033,22 +1033,22 @@ export default function MasterAdmin() {
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          사용자명
+                          에이전트명
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          학번/교번
+                          카테고리
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          담당자
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           소속 조직
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          학년/직급
+                          사용 통계
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          상태
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          마지막 로그인
+                          최근 사용일
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           작업
@@ -1060,10 +1060,10 @@ export default function MasterAdmin() {
                         <tr>
                           <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
-                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">사용자 검색</p>
+                              <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">에이전트 검색</p>
                               <p className="text-sm">
-                                위의 검색 조건을 설정하고 "사용자 검색" 버튼을 클릭하여 사용자를 찾아보세요.
+                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 에이전트를 찾아보세요.
                               </p>
                             </div>
                           </td>
@@ -1153,7 +1153,7 @@ export default function MasterAdmin() {
                                   title="에이전트 삭제"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteAgent(agent.id);
+                                    deleteAgentMutation.mutate(agent.id);
                                   }}
                                 >
                                   <Trash2 className="w-4 h-4" />
