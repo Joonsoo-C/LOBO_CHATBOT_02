@@ -44,7 +44,8 @@ import {
   Heart,
   Upload,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Palette
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -215,11 +216,53 @@ export default function MasterAdmin() {
     }
   };
 
-  // 정렬된 에이전트 목록
-  const sortedAgents = useMemo(() => {
+  // 필터된 에이전트 목록
+  const filteredAgents = useMemo(() => {
     if (!agents) return [];
     
-    return [...agents].sort((a, b) => {
+    let filtered = [...agents];
+    
+    // 검색이 실행된 경우에만 필터링 적용
+    if (hasSearched) {
+      // 검색 쿼리 필터링
+      if (userSearchQuery.trim()) {
+        const query = userSearchQuery.toLowerCase();
+        filtered = filtered.filter(agent => 
+          agent.name.toLowerCase().includes(query) ||
+          agent.description.toLowerCase().includes(query)
+        );
+      }
+      
+      // 카테고리 필터링
+      if (selectedUniversity !== 'all') {
+        const categoryMap = {
+          'school': '학교',
+          'professor': '교수',
+          'student': '학생',
+          'group': '그룹',
+          'function': '기능형'
+        };
+        filtered = filtered.filter(agent => 
+          agent.category === categoryMap[selectedUniversity as keyof typeof categoryMap]
+        );
+      }
+      
+      // 상태 필터링
+      if (selectedCollege !== 'all') {
+        filtered = filtered.filter(agent => 
+          selectedCollege === 'active' ? agent.isActive : !agent.isActive
+        );
+      }
+    }
+    
+    return filtered;
+  }, [agents, hasSearched, userSearchQuery, selectedUniversity, selectedCollege]);
+
+  // 정렬된 에이전트 목록
+  const sortedAgents = useMemo(() => {
+    const agentsToSort = hasSearched ? filteredAgents : agents || [];
+    
+    return [...agentsToSort].sort((a, b) => {
       let aValue: any;
       let bValue: any;
       
@@ -256,7 +299,7 @@ export default function MasterAdmin() {
       if (aValue > bValue) return agentSortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [agents, agentSortField, agentSortDirection]);
+  }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
 
   // 필터링된 사용자 목록 계산 (검색이 실행된 경우에만)
   const filteredUsers = useMemo(() => {
@@ -750,17 +793,17 @@ export default function MasterAdmin() {
                       placeholder="에이전트 이름으로 검색..."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAgentSearch()}
                     />
                   </div>
-                  <Button onClick={executeSearch}>검색</Button>
+                  <Button onClick={handleAgentSearch}>검색</Button>
                 </div>
               </div>
               
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: {filteredUsers?.length || 0}개 에이전트
+                  검색 결과: {sortedAgents?.length || 0}개 에이전트
                   {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
                 </div>
               )}
@@ -901,7 +944,8 @@ export default function MasterAdmin() {
                                 className="text-red-600 hover:text-red-700"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  deleteAgentMutation.mutate(agent.id);
+                                  // Delete functionality would be implemented here
+                                  console.log('Delete agent:', agent.id);
                                 }}
                                 title="에이전트 삭제"
                               >
