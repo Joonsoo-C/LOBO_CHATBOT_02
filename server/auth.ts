@@ -5,7 +5,7 @@ import session from "express-session";
 import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
-import MemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
 
 declare global {
   namespace Express {
@@ -23,9 +23,12 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const MemoryStoreInstance = MemoryStore(session);
-  const sessionStore = new MemoryStoreInstance({
-    checkPeriod: 86400000, // prune expired entries every 24h
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false,
+    ttl: sessionTtl,
+    tableName: "sessions",
   });
 
   const sessionSettings: session.SessionOptions = {
@@ -48,31 +51,12 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        console.log(`Login attempt for username: ${username}`);
         const user = await storage.getUserByUsername(username);
-        console.log(`User found:`, user ? `Yes (${user.username})` : 'No');
-        
-        if (!user) {
-          console.log('User not found');
+        if (!user || !user.password || !(await comparePasswords(password, user.password))) {
           return done(null, false);
         }
-        
-        if (!user.password) {
-          console.log('User has no password');
-          return done(null, false);
-        }
-        
-        const passwordMatch = await comparePasswords(password, user.password);
-        console.log(`Password match: ${passwordMatch}`);
-        
-        if (!passwordMatch) {
-          return done(null, false);
-        }
-        
-        console.log('Login successful');
         return done(null, user);
       } catch (error) {
-        console.error('Login error:', error);
         return done(error);
       }
     }),
@@ -125,39 +109,16 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/login", (req, res, next) => {
-    console.log("Login endpoint hit with:", req.body);
-    
-    passport.authenticate("local", (err, user, info) => {
-      console.log("Authentication result:", { err, user: user ? user.username : null, info });
-      
-      if (err) {
-        console.error("Authentication error:", err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      
-      if (!user) {
-        console.log("Authentication failed - no user");
-        return res.status(401).json({ message: "Invalid credentials" });
-      }
-      
-      req.login(user, (loginErr) => {
-        if (loginErr) {
-          console.error("Login error:", loginErr);
-          return res.status(500).json({ message: "Login failed" });
-        }
-        
-        console.log("Login successful for:", user.username);
-        res.status(200).json({
-          id: user.id,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          userType: user.userType
-        });
-      });
-    })(req, res, next);
+  app.post("/api/login", passport.authenticate("local"), (req, res) => {
+    const user = req.user as SelectUser;
+    res.status(200).json({
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      userType: user.userType
+    });
   });
 
   app.post("/api/logout", (req, res, next) => {

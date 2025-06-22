@@ -31,12 +31,12 @@ export function setupAdminRoutes(app: Express) {
         todayMessagesResult
       ] = await Promise.all([
         db.select({ count: count() }).from(users),
-        db.select({ count: count() }).from(users).where(sql`created_at >= datetime('now', '-30 days')`),
+        db.select({ count: count() }).from(users).where(sql`created_at >= NOW() - INTERVAL '30 days'`),
         db.select({ count: count() }).from(agents),
         db.select({ count: count() }).from(agents).where(eq(agents.isActive, true)),
         db.select({ count: count() }).from(conversations),
         db.select({ count: count() }).from(messages),
-        db.select({ count: count() }).from(messages).where(sql`created_at >= date('now')`)
+        db.select({ count: count() }).from(messages).where(sql`created_at >= CURRENT_DATE`)
       ]);
 
       const stats = {
