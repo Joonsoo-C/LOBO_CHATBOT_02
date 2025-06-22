@@ -456,7 +456,6 @@ export default function QALogs2() {
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">질문 내용</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답 유형</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답 시간</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">만족도</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답상태</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">개선요청</th>
                     </tr>
@@ -476,9 +475,6 @@ export default function QALogs2() {
                           {getResponseTypeBadge(log.responseType)}
                         </td>
                         <td className="py-3 px-4 text-sm">{log.responseTime}</td>
-                        <td className="py-3 px-4 text-sm">
-                          {getSatisfactionIcon(log.satisfaction)}
-                        </td>
                         <td className="py-3 px-4 text-sm">
                           {getStatusBadge(log.status)}
                         </td>
