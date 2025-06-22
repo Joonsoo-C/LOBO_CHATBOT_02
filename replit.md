@@ -419,19 +419,6 @@ Changelog:
   * Added icon change API endpoint with support for 10 different icons and 10 background colors
   * Agent creation now uses default icon/color, with separate icon customization available
   * Enhanced agent list display to show manager name and organizational affiliation
-- June 22, 2025. Fixed critical JSX syntax errors in MasterAdmin.tsx:
-  * Resolved JSX parsing error where 'class' was used as reserved keyword in destructuring assignment
-  * Removed stray code blocks and syntax issues that prevented application startup
-  * Created corrected version of MasterAdmin.tsx maintaining all functionality
-  * Application now successfully runs without build errors on port 5000
-  * Master admin interface fully operational with dashboard, user management, and agent management features
-- June 22, 2025. Enhanced organization selection with hierarchical 3-tier dropdown UI:
-  * Updated agent creation and editing forms with 3-stage organization selection (전체/대학/대학교 → 단과대학 → 학과)
-  * Implemented cascading dropdown behavior with automatic reset of lower levels when upper level changes
-  * Added separate state management for create and edit modes to prevent interference
-  * Improved user experience with disabled states for dependent dropdowns
-  * Organization selection now matches the hierarchical structure shown in attached UI mockups
-  * Reorganized form layout to place organization selection in dedicated row above manager selection for better space utilization
 ```
 
 ## User Preferences
