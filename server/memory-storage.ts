@@ -32,20 +32,50 @@ export class MemoryStorage implements IStorage {
   }
 
   private initializeDefaultData() {
-    // Create master admin user
+    // Create users with pre-hashed passwords
     const masterAdmin: User = {
       id: "master_admin",
       username: "master_admin",
       firstName: "Master",
       lastName: "Admin",
-      password: "$2b$10$YourHashedPasswordHere", // master_admin/MasterAdmin2024!
+      password: "$2b$10$e097KpT.lX7HTqlHodUO5.3gIU26TfoFaDbkINPo5egSeY/zf4sb6", // MasterAdmin2024!
       email: "admin@lobo.edu",
-      role: "admin",
       userType: "admin",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      profileImageUrl: null
     };
     this.users.set("master_admin", masterAdmin);
+
+    // Create demo student account
+    const studentUser: User = {
+      id: "2024001234",
+      username: "2024001234",
+      firstName: "김",
+      lastName: "학생",
+      password: "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO", // student123
+      email: "student@lobo.edu",
+      userType: "student",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      profileImageUrl: null
+    };
+    this.users.set("2024001234", studentUser);
+
+    // Create demo faculty account
+    const facultyUser: User = {
+      id: "F2024001",
+      username: "F2024001",
+      firstName: "이",
+      lastName: "교수",
+      password: "$2b$10$eYu4kIdi2oqmILaVljmuNOELydq3vW920HbVQhTiiG8xPT5WyiLeO", // faculty123
+      email: "faculty@lobo.edu",
+      userType: "faculty",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      profileImageUrl: null
+    };
+    this.users.set("F2024001", facultyUser);
 
     // Create sample agents
     const sampleAgents: Agent[] = [
