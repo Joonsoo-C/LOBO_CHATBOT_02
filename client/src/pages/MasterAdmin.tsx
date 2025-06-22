@@ -42,7 +42,9 @@ import {
   Coffee,
   Music,
   Heart,
-  Upload
+  Upload,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -116,6 +118,8 @@ export default function MasterAdmin() {
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
+  const [agentSortField, setAgentSortField] = useState<string>('name');
+  const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -195,6 +199,34 @@ export default function MasterAdmin() {
     setUserSearchQuery('');
     setHasSearched(false);
   };
+
+  // 에이전트 정렬 핸들러
+  const handleAgentSort = (field: string) => {
+    if (agentSortField === field) {
+      setAgentSortDirection(agentSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setAgentSortField(field);
+      setAgentSortDirection('asc');
+    }
+  };
+
+  // 정렬된 에이전트 목록
+  const sortedAgents = useMemo(() => {
+    if (!agents) return [];
+    
+    return [...agents].sort((a, b) => {
+      let aValue: any = a[agentSortField as keyof Agent];
+      let bValue: any = b[agentSortField as keyof Agent];
+      
+      // 문자열인 경우 대소문자 구분 없이 정렬
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      
+      if (aValue < bValue) return agentSortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return agentSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [agents, agentSortField, agentSortDirection]);
 
   // 필터링된 사용자 목록 계산 (검색이 실행된 경우에만)
   const filteredUsers = useMemo(() => {
@@ -1003,11 +1035,31 @@ export default function MasterAdmin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          이름
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('name')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>이름</span>
+                            {agentSortField === 'name' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          에이전트 카테고리
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('category')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>에이전트 카테고리</span>
+                            {agentSortField === 'category' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           관리자
@@ -1015,19 +1067,49 @@ export default function MasterAdmin() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           소속
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          문서 수
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('documentCount')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>문서 수</span>
+                            {agentSortField === 'documentCount' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자 수
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('userCount')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>사용자 수</span>
+                            {agentSortField === 'userCount' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          최종 사용일
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('createdAt')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>최종 사용일</span>
+                            {agentSortField === 'createdAt' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {agents?.map((agent) => (
+                      {sortedAgents?.map((agent) => (
                         <tr 
                           key={agent.id}
                           className={`cursor-pointer transition-all duration-200 group ${
