@@ -106,6 +106,7 @@ export class MemoryStorage implements IStorage {
       firstName: user.firstName || null,
       lastName: user.lastName || null,
       profileImageUrl: user.profileImageUrl || null,
+      userType: user.userType || "student",
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -146,9 +147,12 @@ export class MemoryStorage implements IStorage {
     const newAgent: Agent = {
       ...agent,
       id,
-      isCustomIcon: agent.isCustomIcon || false,
+      isActive: agent.isActive ?? true,
+      isCustomIcon: agent.isCustomIcon ?? false,
       managerId: agent.managerId || null,
       organizationId: agent.organizationId || null,
+      llmModel: agent.llmModel || "gpt-4o",
+      chatbotType: agent.chatbotType || "general-llm",
       speakingStyle: agent.speakingStyle || "친근하고 도움이 되는",
       personalityTraits: agent.personalityTraits || "친근하고 도움이 되는 성격",
       prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
@@ -270,6 +274,7 @@ export class MemoryStorage implements IStorage {
     const newDocument: Document = {
       ...document,
       id,
+      content: document.content || null,
       createdAt: new Date()
     };
     this.documents.set(id, newDocument);
