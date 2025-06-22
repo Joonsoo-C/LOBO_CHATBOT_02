@@ -431,6 +431,7 @@ Changelog:
   * Added separate state management for create and edit modes to prevent interference
   * Improved user experience with disabled states for dependent dropdowns
   * Organization selection now matches the hierarchical structure shown in attached UI mockups
+  * Reorganized form layout to place organization selection in dedicated row above manager selection for better space utilization
 ```
 
 ## User Preferences
