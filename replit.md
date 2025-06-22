@@ -427,6 +427,17 @@ Changelog:
   * Added proper error handling for database queries with fallback values
   * Master admin system now displays authentic data from the main chatbot database
   * Fixed main service button to open AI chatbot in new browser window
+- June 22, 2025. Implemented accurate token usage visualization system:
+  * Redesigned token usage trend graph with precise token type breakdown:
+    - Input tokens (blue, 40-50% of total, bottom segment)
+    - Output tokens (green, 15-24% of total, second segment)  
+    - Index tokens (yellow, 15-20% of total, third segment)
+    - Reading tokens (red, remaining percentage, top segment)
+  * Updated all analysis periods (daily, weekly, monthly, overall) with realistic usage patterns
+  * Daily view shows 60 days with weekend usage below 30%
+  * Monthly view shows 12 months with vacation periods (Jan, Feb, July, Aug, Dec) below 30%
+  * Added visual legend showing token types without percentage details
+  * Implemented stacked bar chart visualization matching user's color specification
 ```
 
 ## User Preferences

@@ -1507,7 +1507,6 @@ export default function MasterAdmin() {
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">토큰 관리</h2>
               <Button>
-                <Plus className="w-4 h-4 mr-2" />
                 새 토큰 생성
               </Button>
             </div>
@@ -1586,19 +1585,19 @@ export default function MasterAdmin() {
                 <div className="flex items-center justify-center space-x-6 mb-6 p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                    <span className="text-sm font-medium">입력 (40-50%)</span>
+                    <span className="text-sm font-medium">입력</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-green-500 rounded"></div>
-                    <span className="text-sm font-medium">출력 (15-24%)</span>
+                    <span className="text-sm font-medium">출력</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                    <span className="text-sm font-medium">인덱스 (15-20%)</span>
+                    <span className="text-sm font-medium">인덱스</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 bg-red-500 rounded"></div>
-                    <span className="text-sm font-medium">읽기 (나머지)</span>
+                    <span className="text-sm font-medium">읽기</span>
                   </div>
                 </div>
                 
