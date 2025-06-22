@@ -47,7 +47,9 @@ import {
   ChevronDown,
   Palette,
   Menu,
-  X
+  X,
+  UserCheck,
+  Building
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -619,7 +621,15 @@ export default function MasterAdmin() {
             <Building className="w-5 h-5" />
             <span>기관 관리</span>
           </button>
-        </nav>etActiveTab("dashboard");
+        </nav>
+      </div>
+      
+      {/* Mobile Navigation */}
+      <div className="lg:hidden">
+        <nav className="space-y-1">
+          <button
+            onClick={() => {
+              setActiveTab("dashboard");
               setIsSidebarOpen(false);
             }}
             className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-left"
