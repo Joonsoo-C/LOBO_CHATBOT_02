@@ -861,49 +861,27 @@ async function initializeDefaultAgents() {
       console.log("Master admin user created successfully");
     }
 
-    // Create demo accounts for login screen
-    const demoUsers = [
-      // Student demo account
-      { 
-        id: "student-2024001234", 
-        username: "2024001234", 
-        password: "$2b$10$N3BLApxiQqtS8HfLzKyHDuaoCP6iMEiHBV6OQ2xtkE8JmSIESQKXq", // password: student123
-        userType: "student", 
-        firstName: "학생", 
-        lastName: "계정",
-        email: "2024001234@student.lobo.edu" 
-      },
-      // Faculty demo account
-      { 
-        id: "faculty-f2024001", 
-        username: "F2024001", 
-        password: "$2b$10$bx3hGRSc8mPMlY2ScCKI8.bYqzk8XvBbifxps9SXV3SDYpENE.T8a", // password: faculty123
-        userType: "faculty", 
-        firstName: "교직원", 
-        lastName: "계정",
-        email: "f2024001@faculty.lobo.edu" 
-      },
-      // Faculty users for agent management
-      { id: "prof001", username: "prof001", password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", userType: "faculty", firstName: "김교수", lastName: "교수", email: "prof001@lobo.edu" },
-      { id: "prof002", username: "prof002", password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", userType: "faculty", firstName: "이교수", lastName: "교수", email: "prof002@lobo.edu" },
-      { id: "prof003", username: "prof003", password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", userType: "faculty", firstName: "박교수", lastName: "교수", email: "prof003@lobo.edu" },
+    // Create sample faculty users for agent management
+    const facultyUsers = [
+      { id: "prof001", username: "prof001", name: "김교수", userType: "faculty" },
+      { id: "prof002", username: "prof002", name: "이교수", userType: "faculty" },
+      { id: "prof003", username: "prof003", name: "박교수", userType: "faculty" },
     ];
 
-    for (const user of demoUsers) {
-      const existing = await storage.getUserByUsername(user.username);
+    for (const faculty of facultyUsers) {
+      const existing = await storage.getUserByUsername(faculty.username);
       if (!existing) {
         await storage.createUser({
-          id: user.id,
-          username: user.username,
-          password: user.password,
-          userType: user.userType,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
+          id: faculty.id,
+          username: faculty.username,
+          password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+          userType: faculty.userType,
+          firstName: faculty.name,
+          lastName: "교수",
+          email: `${faculty.username}@lobo.edu`,
           createdAt: new Date(),
           updatedAt: new Date()
         });
-        console.log(`Created demo user: ${user.username} (${user.userType})`);
       }
     }
 
