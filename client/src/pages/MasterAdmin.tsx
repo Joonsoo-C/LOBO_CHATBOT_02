@@ -415,7 +415,6 @@ export default function MasterAdmin() {
                 size="sm" 
                 onClick={() => window.open('/', '_blank')}
               >
-                <Home className="w-4 h-4 mr-2" />
                 메인 서비스
               </Button>
               <Button variant="outline" size="sm" onClick={handleLogout}>
