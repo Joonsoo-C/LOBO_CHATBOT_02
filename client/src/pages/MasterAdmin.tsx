@@ -200,8 +200,8 @@ export default function MasterAdmin() {
     setHasSearched(false);
   };
 
-  // 사용자 검색 함수
-  const handleUserSearch = () => {
+  // 에이전트 검색 함수
+  const handleAgentSearch = () => {
     setHasSearched(true);
   };
 
@@ -686,52 +686,52 @@ export default function MasterAdmin() {
               </Card>
             </div>
 
-            {/* 조직 필터링 및 검색 */}
+            {/* 에이전트 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold mb-4">에이전트 검색 및 관리</h3>
               
-              {/* 조직 필터 */}
+              {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>전체/대학원/대학교</Label>
+                  <Label>카테고리</Label>
                   <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="undergraduate">대학교</SelectItem>
+                      <SelectItem value="school">학교</SelectItem>
+                      <SelectItem value="professor">교수</SelectItem>
+                      <SelectItem value="student">학생</SelectItem>
+                      <SelectItem value="group">그룹</SelectItem>
+                      <SelectItem value="function">기능형</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>단과대학</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
+                  <Label>상태</Label>
+                  <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="liberal">인문대학</SelectItem>
-                      <SelectItem value="science">자연과학대학</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>학과</Label>
-                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
+                  <Label>관리자</Label>
+                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                      <SelectItem value="electrical">전자공학과</SelectItem>
-                      <SelectItem value="mechanical">기계공학과</SelectItem>
-                      <SelectItem value="business_admin">경영학과</SelectItem>
+                      <SelectItem value="system">System Admin</SelectItem>
+                      <SelectItem value="prof001">박 교수</SelectItem>
+                      <SelectItem value="prof002">최 교수</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -742,12 +742,12 @@ export default function MasterAdmin() {
                 </div>
               </div>
 
-              {/* 사용자 검색 */}
+              {/* 에이전트 검색 */}
               <div className="space-y-2">
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="이름, 학번, 교번으로 검색..."
+                      placeholder="에이전트 이름으로 검색..."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
@@ -755,46 +755,65 @@ export default function MasterAdmin() {
                   </div>
                   <Button onClick={executeSearch}>검색</Button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 조직 범위에서 전체 사용자를 조회할 수 있습니다.
-                </p>
               </div>
               
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: {filteredUsers?.length || 0}명
+                  검색 결과: {filteredUsers?.length || 0}개 에이전트
                   {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
                 </div>
               )}
             </div>
 
+            {/* 에이전트 관리 테이블 */}
             <Card>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자명
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('name')}
+                        >
+                          에이전트명 {agentSortField === 'name' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          학번/교번
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('category')}
+                        >
+                          카테고리 {agentSortField === 'category' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          소속 조직
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('manager')}
+                        >
+                          관리자 {agentSortField === 'manager' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          학년/직급
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('organization')}
+                        >
+                          소속 {agentSortField === 'organization' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          역할
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('documentCount')}
+                        >
+                          문서 {agentSortField === 'documentCount' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          상태
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('userCount')}
+                        >
+                          사용자 {agentSortField === 'userCount' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          마지막 로그인
+                        <th
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleAgentSort('createdAt')}
+                        >
+                          최근 사용 {agentSortField === 'createdAt' && (agentSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           작업
@@ -802,87 +821,96 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {!hasSearched ? (
-                        <tr>
-                          <td colSpan={8} className="px-6 py-12 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">사용자 검색</p>
-                              <p className="text-sm">
-                                위의 검색 조건을 설정하고 "사용자 검색" 버튼을 클릭하여 사용자를 찾아보세요.
-                              </p>
+                      {sortedAgents.map((agent) => (
+                        <tr 
+                          key={agent.id} 
+                          className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
+                            !agent.isActive ? 'opacity-60 bg-gray-50 dark:bg-gray-900' : ''
+                          }`}
+                          onClick={() => openEditAgentDialog(agent)}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div 
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg mr-3"
+                                style={{ backgroundColor: agent.backgroundColor }}
+                              >
+                                {agent.icon}
+                              </div>
+                              <div>
+                                <div className={`text-sm font-medium ${agent.isActive ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+                                  {agent.name}
+                                </div>
+                                <div className="text-xs text-gray-500 truncate max-w-48">
+                                  {agent.description}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge variant="outline">
+                              {agent.category}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).managerFirstName && (agent as any).managerLastName 
+                              ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}`
+                              : 'System Admin'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).organizationName || '로보대학교'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).documentCount || 0}개
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).userCount || 0}명
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {(agent as any).lastUsedAt 
+                              ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
+                              : '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex space-x-1">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditAgentDialog(agent);
+                                }}
+                                title="에이전트 편집"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openIconChangeDialog(agent);
+                                }}
+                                title="아이콘 변경"
+                              >
+                                <Palette className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="text-red-600 hover:text-red-700"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteAgentMutation.mutate(agent.id);
+                                }}
+                                title="에이전트 삭제"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </td>
                         </tr>
-                      ) : filteredUsers?.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="px-6 py-12 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
-                              <p className="text-sm">
-                                검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredUsers?.map((user) => (
-                          <tr key={user.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {user.firstName} {user.lastName}
-                              </div>
-                              {user.email && (
-                                <div className="text-xs text-gray-500">{user.email}</div>
-                              )}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {user.username}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">
-                                {user.userType === 'faculty' ? '로보대학교 컴퓨터공학과' : 
-                                 user.userType === 'student' ? '컴퓨터공학과' : '시스템 관리'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">
-                                {user.userType === 'faculty' ? '교수' : 
-                                 user.userType === 'student' ? '4학년' : 
-                                 user.userType === 'admin' ? '시스템관리자' : '-'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant={user.userType === 'faculty' ? 'default' : user.userType === 'admin' ? 'destructive' : 'secondary'}>
-                                {user.userType === 'faculty' ? '교직원' : 
-                                 user.userType === 'admin' ? '관리자' :
-                                 user.userType === 'student' ? '학생' : '기타'}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">
-                                활성
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString('ko-KR') : '2025. 6. 21.'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="계정 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" title="계정 삭제">
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
