@@ -245,15 +245,20 @@ export default function QALogs2() {
       </div>
 
       {/* Tabs */}
-      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="mb-6">
-          <TabsTrigger value="logs" className="flex items-center space-x-2">
+        <TabsList className="mb-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <TabsTrigger 
+            value="logs" 
+            className="flex items-center space-x-2 px-6 py-3 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent hover:text-blue-600 transition-colors"
+          >
             <MessageSquare className="w-4 h-4" />
             <span>질문 로그</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center space-x-2">
+          <TabsTrigger 
+            value="analytics" 
+            className="flex items-center space-x-2 px-6 py-3 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent hover:text-blue-600 transition-colors"
+          >
             <BarChart3 className="w-4 h-4" />
-            <span>키워드 & 통계</span>
+            <span>키워드 & 핫이슈</span>
           </TabsTrigger>
         </TabsList>
 
