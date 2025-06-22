@@ -438,6 +438,14 @@ Changelog:
   * Monthly view shows 12 months with vacation periods (Jan, Feb, July, Aug, Dec) below 30%
   * Added visual legend showing token types without percentage details
   * Implemented stacked bar chart visualization matching user's color specification
+- June 22, 2025. Converted user search section to agent search and management:
+  * Changed "사용자 검색 및 관리" section to "에이전트 검색 및 관리" in master admin interface
+  * Replaced user search functionality with agent name-based search capability
+  * Updated search filters: category (전체/학교/교수/학생/그룹/기능형), status (활성/비활성), manager selection
+  * Implemented agent filtering by name, description, category, and status
+  * Updated search results to display filtered agent count instead of user count
+  * Replaced user table with comprehensive agent management table showing agent details, statistics, and management actions
+  * Fixed all function references and imports to support agent-focused search and management workflow
 ```
 
 ## User Preferences
