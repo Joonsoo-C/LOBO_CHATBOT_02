@@ -1024,27 +1024,24 @@ export default function MasterAdmin() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           최종 사용일
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          작업
-                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {agents?.map((agent) => (
                         <tr 
                           key={agent.id}
-                          className={`cursor-pointer transition-all duration-200 ${
+                          className={`cursor-pointer transition-all duration-200 group ${
                             agent.isActive 
-                              ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-sm' 
-                              : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 opacity-70'
+                              ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md hover:scale-[1.01]' 
+                              : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 opacity-70 hover:opacity-90'
                           }`}
                           onClick={() => openEditAgentDialog(agent)}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm font-medium ${
+                            <div className={`text-sm font-medium transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-500 dark:text-gray-500'
+                                ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400' 
+                                : 'text-gray-500 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                             }`}>
                               {agent.name}
                             </div>
@@ -1055,10 +1052,10 @@ export default function MasterAdmin() {
                             </Badge>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm ${
+                            <div className={`text-sm transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-500 dark:text-gray-500'
+                                ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400' 
+                                : 'text-gray-500 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                             }`}>
                               {(agent as any).managerFirstName && (agent as any).managerLastName 
                                 ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
@@ -1066,56 +1063,42 @@ export default function MasterAdmin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm ${
+                            <div className={`text-sm transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-500' 
-                                : 'text-gray-400 dark:text-gray-600'
+                                ? 'text-gray-500 group-hover:text-gray-600' 
+                                : 'text-gray-400 dark:text-gray-600 group-hover:text-gray-500'
                             }`}>
                               {(agent as any).organizationName || '-'}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm ${
+                            <div className={`text-sm transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-500 dark:text-gray-500'
+                                ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400' 
+                                : 'text-gray-500 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                             }`}>
                               {(agent as any).documentCount || 0}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm ${
+                            <div className={`text-sm transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-500 dark:text-gray-500'
+                                ? 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400' 
+                                : 'text-gray-500 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                             }`}>
                               {(agent as any).userCount || 0}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div className={`${
+                            <div className={`transition-colors duration-200 ${
                               agent.isActive 
-                                ? 'text-gray-500' 
-                                : 'text-gray-400 dark:text-gray-600'
+                                ? 'text-gray-500 group-hover:text-gray-600' 
+                                : 'text-gray-400 dark:text-gray-600 group-hover:text-gray-500'
                             }`}>
                               {(agent as any).lastUsedAt 
                                 ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR')
                                 : '-'}
                             </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              title="통계 보기"
-                              className={agent.isActive ? '' : 'opacity-50'}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // 통계 보기 로직
-                              }}
-                            >
-                              <BarChart3 className="w-4 h-4" />
-                            </Button>
                           </td>
                         </tr>
                       ))}
