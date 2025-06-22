@@ -1606,163 +1606,99 @@ export default function MasterAdmin() {
                     </div>
                     
                     {/* 막대 그래프 */}
-                    <div className="relative h-full flex items-end justify-between px-4">
+                    <div className="relative h-full flex items-end justify-between px-1">
                       {tokenPeriod === 'daily' && (
                         <>
-                          {/* 어제 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '45%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '65%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '55%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '40%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">어제</span>
-                          </div>
-                          
-                          {/* 오늘 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">오늘</span>
-                          </div>
+                          {/* 60일치 데이터 - 주말 사용량 30% 미만 */}
+                          {Array.from({ length: 60 }, (_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - (59 - i));
+                            const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                            const height = isWeekend ? Math.random() * 25 + 5 : Math.random() * 60 + 30; // 주말 5-30%, 평일 30-90%
+                            const dayStr = `${date.getMonth() + 1}/${date.getDate()}`;
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-1 flex-1 min-w-0">
+                                <div className="w-2 relative" style={{height: '200px'}}>
+                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
+                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
+                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
+                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                </div>
+                                {(i % 7 === 0 || i === 59) && (
+                                  <span className="text-xs text-gray-500 transform -rotate-45 whitespace-nowrap">{dayStr}</span>
+                                )}
+                              </div>
+                            );
+                          })}
                         </>
                       )}
                       
                       {tokenPeriod === 'weekly' && (
                         <>
-                          {/* 1주 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '50%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '60%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '45%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">1주</span>
-                          </div>
-                          
-                          {/* 2주 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">2주</span>
-                          </div>
-                          
-                          {/* 3주 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '70%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">3주</span>
-                          </div>
-                          
-                          {/* 4주 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '75%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '90%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '85%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '70%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">4주</span>
-                          </div>
+                          {/* 12주치 데이터 */}
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const weekNumber = 12 - i;
+                            const height = Math.random() * 50 + 40; // 40-90%
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-8 relative" style={{height: '200px'}}>
+                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
+                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
+                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
+                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{weekNumber}주</span>
+                              </div>
+                            );
+                          })}
                         </>
                       )}
                       
                       {tokenPeriod === 'monthly' && (
                         <>
-                          {/* 9월 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '40%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '60%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '50%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '35%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">9월</span>
-                          </div>
-                          
-                          {/* 10월 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">10월</span>
-                          </div>
-                          
-                          {/* 11월 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '65%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '85%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '75%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '60%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">11월</span>
-                          </div>
-                          
-                          {/* 12월 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '80%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '95%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '90%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '75%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">12월</span>
-                          </div>
+                          {/* 12개월 데이터 - 방학 기간 30% 미만 */}
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+                            const month = months[i];
+                            const isVacation = i === 0 || i === 1 || i === 6 || i === 7 || i === 11; // 1월, 2월, 7월, 8월, 12월
+                            const height = isVacation ? Math.random() * 25 + 5 : Math.random() * 50 + 40; // 방학 5-30%, 학기 40-90%
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-8 relative" style={{height: '200px'}}>
+                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
+                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
+                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
+                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{month}</span>
+                              </div>
+                            );
+                          })}
                         </>
                       )}
                       
                       {tokenPeriod === 'all' && (
                         <>
-                          {/* 2022 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '30%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '45%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '35%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '25%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">2022</span>
-                          </div>
-                          
-                          {/* 2023 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">2023</span>
-                          </div>
-                          
-                          {/* 2024 */}
-                          <div className="flex flex-col items-center space-y-2 flex-1">
-                            <div className="w-16 relative" style={{height: '200px'}}>
-                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '85%'}}></div>
-                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '95%', opacity: 0.8}}></div>
-                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '90%', opacity: 0.6}}></div>
-                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '80%', opacity: 0.4}}></div>
-                            </div>
-                            <span className="text-xs text-gray-500">2024</span>
-                          </div>
+                          {/* 전체 분석 - 연도별 데이터 */}
+                          {Array.from({ length: 5 }, (_, i) => {
+                            const year = 2020 + i;
+                            const height = 20 + (i * 15) + Math.random() * 10; // 점진적 증가 패턴
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-12 relative" style={{height: '200px'}}>
+                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
+                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
+                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
+                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{year}</span>
+                              </div>
+                            );
+                          })}
                         </>
                       )}
                     </div>
