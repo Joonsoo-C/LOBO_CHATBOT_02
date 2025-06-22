@@ -452,6 +452,31 @@ export default function MasterAdmin() {
     setIsIconChangeDialogOpen(true);
   };
 
+  // 에이전트 삭제 뮤테이션
+  const deleteAgentMutation = useMutation({
+    mutationFn: async (agentId: number) => {
+      const response = await apiRequest(`/api/admin/agents/${agentId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete agent');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+      toast({
+        title: "성공",
+        description: "에이전트가 성공적으로 삭제되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: error.message || "에이전트 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch('/api/logout', {
