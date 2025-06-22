@@ -200,6 +200,11 @@ export default function MasterAdmin() {
     setHasSearched(false);
   };
 
+  // 사용자 검색 함수
+  const handleUserSearch = () => {
+    setHasSearched(true);
+  };
+
   // 에이전트 정렬 핸들러
   const handleAgentSort = (field: string) => {
     if (agentSortField === field) {
@@ -887,6 +892,207 @@ export default function MasterAdmin() {
 
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
+            {/* 사용자 검색 및 관리 섹션 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>사용자 검색 및 관리</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* 필터 행 */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">전체/대학원/대학교</Label>
+                    <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium">단과대학</Label>
+                    <Select value={selectedCollege} onValueChange={setSelectedCollege}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium">학과</Label>
+                    <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="electrical">전기공학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium">필터 초기화</Label>
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-10"
+                      onClick={resetFilters}
+                    >
+                      필터 초기화
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* 검색 행 */}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="이름, 학번, 교번으로 검색..."
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      className="h-10"
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleUserSearch}
+                    className="h-10 px-6"
+                  >
+                    검색
+                  </Button>
+                </div>
+                
+                {/* 안내 메시지 */}
+                <div className="flex items-start space-x-2 text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
+                  <div className="w-4 h-4 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold mt-0.5">!</div>
+                  <p>* 전 안례학교 검색하려면 선택된 조건에 따라 전체 사용자를 조회할 수 있습니다.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 검색 결과 테이블 */}
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          사용자명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          학번/교번
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          소속 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          학년/직급
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          마지막 로그인
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {!hasSearched ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">사용자 검색</p>
+                              <p className="text-sm">
+                                위의 검색 조건을 설정하고 "사용자 검색" 버튼을 클릭하여 사용자를 찾아보세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : filteredUsers?.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                              <p className="text-sm">
+                                검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredUsers?.map((user) => (
+                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.firstName} {user.lastName}
+                              </div>
+                              {user.email && (
+                                <div className="text-xs text-gray-500">{user.email}</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.username}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {user.userType === 'faculty' ? '로보대학교 컴퓨터공학과' : 
+                                 user.userType === 'student' ? '컴퓨터공학과' : '시스템 관리'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {user.userType === 'faculty' ? '교수' : 
+                                 user.userType === 'student' ? '4학년' : 
+                                 user.userType === 'admin' ? '시스템관리자' : '-'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                활성
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString('ko-KR') : '2025. 6. 21.'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="계정 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" title="계정 삭제">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
