@@ -1036,26 +1036,17 @@ export default function MasterAdmin() {
                           className={`cursor-pointer transition-all duration-200 ${
                             agent.isActive 
                               ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-sm' 
-                              : 'bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                              : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 opacity-70'
                           }`}
                           onClick={() => openEditAgentDialog(agent)}
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className={`text-sm font-medium ${
-                                agent.isActive 
-                                  ? 'text-gray-900 dark:text-white' 
-                                  : 'text-gray-600 dark:text-gray-400'
-                              }`}>
-                                {agent.name}
-                              </div>
-                              <div className={`text-xs ${
-                                agent.isActive 
-                                  ? 'text-green-600 dark:text-green-400' 
-                                  : 'text-gray-500 dark:text-gray-500'
-                              }`}>
-                                {agent.isActive ? '활성' : '비활성'}
-                              </div>
+                            <div className={`text-sm font-medium ${
+                              agent.isActive 
+                                ? 'text-gray-900 dark:text-white' 
+                                : 'text-gray-500 dark:text-gray-500'
+                            }`}>
+                              {agent.name}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -1067,7 +1058,7 @@ export default function MasterAdmin() {
                             <div className={`text-sm ${
                               agent.isActive 
                                 ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-600 dark:text-gray-400'
+                                : 'text-gray-500 dark:text-gray-500'
                             }`}>
                               {(agent as any).managerFirstName && (agent as any).managerLastName 
                                 ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
@@ -1075,7 +1066,11 @@ export default function MasterAdmin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-500">
+                            <div className={`text-sm ${
+                              agent.isActive 
+                                ? 'text-gray-500' 
+                                : 'text-gray-400 dark:text-gray-600'
+                            }`}>
                               {(agent as any).organizationName || '-'}
                             </div>
                           </td>
@@ -1083,7 +1078,7 @@ export default function MasterAdmin() {
                             <div className={`text-sm ${
                               agent.isActive 
                                 ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-600 dark:text-gray-400'
+                                : 'text-gray-500 dark:text-gray-500'
                             }`}>
                               {(agent as any).documentCount || 0}
                             </div>
@@ -1092,22 +1087,28 @@ export default function MasterAdmin() {
                             <div className={`text-sm ${
                               agent.isActive 
                                 ? 'text-gray-900 dark:text-white' 
-                                : 'text-gray-600 dark:text-gray-400'
+                                : 'text-gray-500 dark:text-gray-500'
                             }`}>
                               {(agent as any).userCount || 0}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).lastUsedAt 
-                              ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR')
-                              : '-'}
+                            <div className={`${
+                              agent.isActive 
+                                ? 'text-gray-500' 
+                                : 'text-gray-400 dark:text-gray-600'
+                            }`}>
+                              {(agent as any).lastUsedAt 
+                                ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR')
+                                : '-'}
+                            </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <Button 
                               variant="outline" 
                               size="sm" 
                               title="통계 보기"
-                              className={agent.isActive ? '' : 'opacity-60'}
+                              className={agent.isActive ? '' : 'opacity-50'}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 // 통계 보기 로직
