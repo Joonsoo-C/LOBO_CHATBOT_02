@@ -2432,7 +2432,7 @@ export default function MasterAdmin() {
                       취소
                     </Button>
                     <Button type="submit" disabled={updateAgentMutation.isPending}>
-                      {updateAgentMutation.isPending ? "수정 중..." : "에이전트 수정"}
+                      {updateAgentMutation.isPending ? "수정 중..." : "저장"}
                     </Button>
                   </div>
                 </div>
