@@ -410,7 +410,10 @@ export default function MasterAdmin() {
         name: data.name,
         description: data.description,
         category: data.category,
-        personality: data.personality,
+        speakingStyle: data.speakingStyle,
+        personalityTraits: data.personalityTraits,
+        llmModel: data.llmModel,
+        chatbotType: data.chatbotType,
         managerId: data.managerId,
         organizationId: parseInt(data.organizationId),
       };
@@ -443,7 +446,10 @@ export default function MasterAdmin() {
       name: agent.name,
       description: agent.description,
       category: agent.category,
-      personality: (agent as any).personalityTraits || "",
+      speakingStyle: (agent as any).speakingStyle || "",
+      personalityTraits: (agent as any).personalityTraits || "",
+      llmModel: (agent as any).llmModel || "gpt-4o",
+      chatbotType: (agent as any).chatbotType || "general-llm",
       managerId: (agent as any).managerId || "",
       organizationId: (agent as any).organizationId?.toString() || "",
     });
@@ -460,9 +466,7 @@ export default function MasterAdmin() {
   // 에이전트 삭제 뮤테이션
   const deleteAgentMutation = useMutation({
     mutationFn: async (agentId: number) => {
-      const response = await apiRequest(`/api/admin/agents/${agentId}`, {
-        method: 'DELETE',
-      });
+      const response = await apiRequest('DELETE', `/api/admin/agents/${agentId}`);
       if (!response.ok) throw new Error('Failed to delete agent');
       return response.json();
     },
