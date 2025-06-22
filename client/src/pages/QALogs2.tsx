@@ -184,7 +184,7 @@ export default function QALogs2() {
       log.question.toLowerCase().includes(searchKeyword.toLowerCase()) ||
       log.category.toLowerCase().includes(searchKeyword.toLowerCase()) ||
       log.agent.toLowerCase().includes(searchKeyword.toLowerCase());
-    
+
     const matchesCategory = categoryFilter === "전체" || log.category === categoryFilter;
     const matchesSatisfaction = satisfactionFilter === "전체" || 
       (satisfactionFilter === "만족도 높음" && log.satisfaction === "positive") ||
@@ -207,7 +207,7 @@ export default function QALogs2() {
       "성공": "secondary", 
       "실패": "destructive"
     } as const;
-    
+
     return <Badge variant={variants[status]}>{status}</Badge>;
   };
 
@@ -217,7 +217,7 @@ export default function QALogs2() {
       "일반응답": "secondary",
       "혼합응답": "outline"
     } as const;
-    
+
     return <Badge variant={variants[responseType]}>{responseType}</Badge>;
   };
 
@@ -271,7 +271,7 @@ export default function QALogs2() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -283,7 +283,7 @@ export default function QALogs2() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -314,7 +314,7 @@ export default function QALogs2() {
                   className="flex-1"
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Date Filter */}
                 <div>
@@ -334,7 +334,7 @@ export default function QALogs2() {
                         <SelectItem value="custom">사용자 지정</SelectItem>
                       </SelectContent>
                     </Select>
-                    
+
                     {dateFilter === "custom" && (
                       <Popover open={showCustomCalendar} onOpenChange={setShowCustomCalendar}>
                         <PopoverTrigger asChild>
@@ -420,7 +420,7 @@ export default function QALogs2() {
                   </Select>
                 </div>
               </div>
-              
+
               <div className="flex justify-end mt-4">
                 <Button size="sm" onClick={() => window.location.reload()}>
                   <RefreshCw className="w-4 h-4 mr-2" />
@@ -523,7 +523,7 @@ export default function QALogs2() {
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            
+
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               질의응답에 대한 개선 요청과 코멘트를 작성합니다.
             </p>
