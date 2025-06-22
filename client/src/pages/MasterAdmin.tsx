@@ -483,7 +483,6 @@ export default function MasterAdmin() {
           </div>
         </div>
       </header>
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -749,9 +748,7 @@ export default function MasterAdmin() {
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                     />
                   </div>
-                  <Button onClick={executeSearch}>
-                    사용자 검색
-                  </Button>
+                  <Button onClick={executeSearch}>검색</Button>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   💡 <strong>*</strong>을 입력하고 검색하면 선택된 조직 범위에서 전체 사용자를 조회할 수 있습니다.
