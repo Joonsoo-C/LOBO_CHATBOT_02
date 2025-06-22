@@ -824,7 +824,6 @@ export default function MasterAdmin() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={agentForm.control}
-```python
                           name="name"
                           render={({ field }) => (
                             <FormItem>
@@ -1594,7 +1593,7 @@ export default function MasterAdmin() {
               {/* 카테고리 검색 */}
               <div className="space-y-2">
                 <div className="flex space-x-2">
-                  <div className"flex-1">
+                  <div className="flex-1">
                     <Input
                       placeholder="조직명으로 검색..."
                       value={userSearchQuery}
@@ -2773,17 +2772,17 @@ export default function MasterAdmin() {
                 <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
                 <div className="grid grid-cols-5 gap-2">
                   {[
-                    { color: "blue", class: "bg-blue-500" },
-                    { color: "green", class: "bg-green-500" },
-                    { color: "purple", class: "bg-purple-500" },
-                    { color: "red", class: "bg-red-500" },
-                    { color: "orange", class: "bg-orange-500" },
-                    { color: "pink", class: "bg-pink-500" },
-                    { color: "yellow", class: "bg-yellow-500" },
-                    { color: "cyan", class: "bg-cyan-500" },
-                    { color: "gray", class: "bg-gray-500" },
-                    { color: "indigo", class: "bg-indigo-500" }
-                  ].map(({ color, class: bgClass }) => (
+                    { color: "blue", className: "bg-blue-500" },
+                    { color: "green", className: "bg-green-500" },
+                    { color: "purple", className: "bg-purple-500" },
+                    { color: "red", className: "bg-red-500" },
+                    { color: "orange", className: "bg-orange-500" },
+                    { color: "pink", className: "bg-pink-500" },
+                    { color: "yellow", className: "bg-yellow-500" },
+                    { color: "cyan", className: "bg-cyan-500" },
+                    { color: "gray", className: "bg-gray-500" },
+                    { color: "indigo", className: "bg-indigo-500" }
+                  ].map(({ color, className: bgClass }) => (
                     <Button
                       key={color}
                       variant="outline"
