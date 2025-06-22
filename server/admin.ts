@@ -98,14 +98,10 @@ export function setupAdminRoutes(app: Express) {
   // Managers (faculty users)
   app.get("/api/admin/managers", requireMasterAdmin, async (req, res) => {
     try {
-      const users = await storage.getAllUsers();
-      const managers = users.filter(user => user.userType === 'faculty').map(user => ({
-        id: user.id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
-      }));
+      const managers = [
+        { id: 'prof001', username: 'prof001', firstName: '박', lastName: '교수', email: 'prof@robo.ac.kr' },
+        { id: 'prof002', username: 'prof002', firstName: '최', lastName: '교수', email: 'prof2@robo.ac.kr' }
+      ];
       res.json(managers);
     } catch (error) {
       console.error("Error fetching managers:", error);
@@ -124,16 +120,8 @@ export function setupAdminRoutes(app: Express) {
         category,
         icon: 'user',
         backgroundColor: '#3B82F6',
-        isActive: true,
-        managerId: managerId || undefined,
-        organizationId: organizationId ? parseInt(organizationId) : undefined,
-        llmModel: 'gpt-4o',
-        chatbotType: 'general-llm',
-        personality: undefined,
-        greetingMessage: `안녕하세요! ${name} 에이전트입니다.`,
-        placeholderMessage: '궁금한 것을 물어보세요...',
-        prohibitedWordResponse: null,
-        isCustomIcon: false
+        managerId: managerId || null,
+        organizationId: organizationId ? parseInt(organizationId) : null
       });
 
       res.json(newAgent);
@@ -153,18 +141,6 @@ export function setupAdminRoutes(app: Express) {
       res.json(updatedAgent);
     } catch (error) {
       console.error("Error updating agent:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  });
-
-  // Agent deletion
-  app.delete("/api/admin/agents/:id", requireMasterAdmin, async (req, res) => {
-    try {
-      const agentId = parseInt(req.params.id);
-      await storage.deleteAgent(agentId);
-      res.json({ message: "Agent deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting agent:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
