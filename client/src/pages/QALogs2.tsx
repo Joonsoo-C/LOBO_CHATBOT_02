@@ -18,7 +18,9 @@ import {
   ThumbsDown,
   MessageCircle,
   RefreshCw,
-  X
+  X,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { format, subDays, subWeeks, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
