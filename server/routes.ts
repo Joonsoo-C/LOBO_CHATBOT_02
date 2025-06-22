@@ -8,7 +8,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
-import { db } from "./db";
+import { db, testDatabaseConnection } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
 // Configure multer for document uploads
@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   try {
     await initializeDefaultAgents();
   } catch (error) {
-    console.log('Warning: Could not initialize default agents, will retry on first request:', error.message);
+    console.log('Warning: Could not initialize default agents, will retry on first request:', (error as Error).message);
   }
 
   // Note: Auth routes are now handled in setupAuth() function
