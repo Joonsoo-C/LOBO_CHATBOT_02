@@ -425,6 +425,12 @@ Changelog:
   * Created corrected version of MasterAdmin.tsx maintaining all functionality
   * Application now successfully runs without build errors on port 5000
   * Master admin interface fully operational with dashboard, user management, and agent management features
+- June 22, 2025. Enhanced organization selection with hierarchical 3-tier dropdown UI:
+  * Updated agent creation and editing forms with 3-stage organization selection (전체/대학/대학교 → 단과대학 → 학과)
+  * Implemented cascading dropdown behavior with automatic reset of lower levels when upper level changes
+  * Added separate state management for create and edit modes to prevent interference
+  * Improved user experience with disabled states for dependent dropdowns
+  * Organization selection now matches the hierarchical structure shown in attached UI mockups
 ```
 
 ## User Preferences

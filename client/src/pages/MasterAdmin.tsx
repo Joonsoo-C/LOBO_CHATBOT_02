@@ -107,6 +107,9 @@ export default function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [editSelectedUniversity, setEditSelectedUniversity] = useState('all');
+  const [editSelectedCollege, setEditSelectedCollege] = useState('all');
+  const [editSelectedDepartment, setEditSelectedDepartment] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
@@ -358,6 +361,12 @@ export default function MasterAdmin() {
       managerId: (agent as any).managerId || "",
       organizationId: (agent as any).organizationId?.toString() || "",
     });
+    
+    // 편집시 조직 선택 상태 초기화
+    setEditSelectedUniversity('all');
+    setEditSelectedCollege('all');
+    setEditSelectedDepartment('all');
+    
     setIsEditAgentDialogOpen(true);
   };
 
@@ -808,30 +817,87 @@ export default function MasterAdmin() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>소속 조직</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
+                              <div className="grid grid-cols-3 gap-2">
+                                <Select 
+                                  value={selectedUniversity} 
+                                  onValueChange={(value) => {
+                                    setSelectedUniversity(value);
+                                    setSelectedCollege('all');
+                                    setSelectedDepartment('all');
+                                    field.onChange('');
+                                  }}
+                                >
                                   <SelectTrigger>
-                                    <SelectValue placeholder="조직을 선택하세요" />
+                                    <SelectValue placeholder="전체" />
                                   </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {organizations?.map((org) => (
-                                    <SelectItem key={org.id} value={org.id.toString()}>
-                                      {org.name}
-                                      {org.colleges?.map((college: any) => (
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {organizations?.map((org) => (
+                                      <SelectItem key={org.id} value={org.id.toString()}>
+                                        {org.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select 
+                                  value={selectedCollege} 
+                                  onValueChange={(value) => {
+                                    setSelectedCollege(value);
+                                    setSelectedDepartment('all');
+                                    if (value !== 'all') {
+                                      field.onChange(value);
+                                    } else {
+                                      field.onChange('');
+                                    }
+                                  }}
+                                  disabled={selectedUniversity === 'all'}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="단과대학" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {selectedUniversity !== 'all' && organizations
+                                      ?.find(org => org.id.toString() === selectedUniversity)
+                                      ?.colleges?.map((college: any) => (
                                         <SelectItem key={college.id} value={college.id.toString()}>
-                                          - {college.name}
-                                          {college.departments?.map((dept: any) => (
-                                            <SelectItem key={dept.id} value={dept.id.toString()}>
-                                              -- {dept.name}
-                                            </SelectItem>
-                                          ))}
+                                          {college.name}
                                         </SelectItem>
                                       ))}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                                  </SelectContent>
+                                </Select>
+
+                                <Select 
+                                  value={selectedDepartment} 
+                                  onValueChange={(value) => {
+                                    setSelectedDepartment(value);
+                                    if (value !== 'all') {
+                                      field.onChange(value);
+                                    } else if (selectedCollege !== 'all') {
+                                      field.onChange(selectedCollege);
+                                    } else {
+                                      field.onChange('');
+                                    }
+                                  }}
+                                  disabled={selectedCollege === 'all'}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="학과" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {selectedCollege !== 'all' && organizations
+                                      ?.find(org => org.id.toString() === selectedUniversity)
+                                      ?.colleges?.find((college: any) => college.id.toString() === selectedCollege)
+                                      ?.departments?.map((dept: any) => (
+                                        <SelectItem key={dept.id} value={dept.id.toString()}>
+                                          {dept.name}
+                                        </SelectItem>
+                                      ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -952,6 +1018,200 @@ export default function MasterAdmin() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* 에이전트 편집 다이얼로그 */}
+        <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 편집</DialogTitle>
+            </DialogHeader>
+            <Form {...editAgentForm}>
+              <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>에이전트 이름</FormLabel>
+                        <FormControl>
+                          <Input placeholder="예: 학사 도우미" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>카테고리</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="카테고리를 선택하세요" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={editAgentForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>설명</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트에 대한 설명을 입력하세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="managerId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>관리자</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="관리자를 선택하세요" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {managers?.map((manager) => (
+                              <SelectItem key={manager.id} value={manager.id}>
+                                {manager.firstName} {manager.lastName} ({manager.username})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={editAgentForm.control}
+                    name="organizationId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>소속 조직</FormLabel>
+                        <div className="grid grid-cols-3 gap-2">
+                          <Select 
+                            value={editSelectedUniversity} 
+                            onValueChange={(value) => {
+                              setEditSelectedUniversity(value);
+                              setEditSelectedCollege('all');
+                              setEditSelectedDepartment('all');
+                              field.onChange('');
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="전체" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">전체</SelectItem>
+                              {organizations?.map((org) => (
+                                <SelectItem key={org.id} value={org.id.toString()}>
+                                  {org.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Select 
+                            value={editSelectedCollege} 
+                            onValueChange={(value) => {
+                              setEditSelectedCollege(value);
+                              setEditSelectedDepartment('all');
+                              if (value !== 'all') {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                            disabled={editSelectedUniversity === 'all'}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="단과대학" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">전체</SelectItem>
+                              {editSelectedUniversity !== 'all' && organizations
+                                ?.find(org => org.id.toString() === editSelectedUniversity)
+                                ?.colleges?.map((college: any) => (
+                                  <SelectItem key={college.id} value={college.id.toString()}>
+                                    {college.name}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Select 
+                            value={editSelectedDepartment} 
+                            onValueChange={(value) => {
+                              setEditSelectedDepartment(value);
+                              if (value !== 'all') {
+                                field.onChange(value);
+                              } else if (editSelectedCollege !== 'all') {
+                                field.onChange(editSelectedCollege);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                            disabled={editSelectedCollege === 'all'}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="학과" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">전체</SelectItem>
+                              {editSelectedCollege !== 'all' && organizations
+                                ?.find(org => org.id.toString() === editSelectedUniversity)
+                                ?.colleges?.find((college: any) => college.id.toString() === editSelectedCollege)
+                                ?.departments?.map((dept: any) => (
+                                  <SelectItem key={dept.id} value={dept.id.toString()}>
+                                    {dept.name}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <Button type="button" variant="outline" onClick={() => setIsEditAgentDialogOpen(false)}>
+                    취소
+                  </Button>
+                  <Button type="submit" disabled={updateAgentMutation.isPending}>
+                    {updateAgentMutation.isPending ? "수정 중..." : "수정하기"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
 
         {/* 아이콘 변경 다이얼로그 */}
         <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
