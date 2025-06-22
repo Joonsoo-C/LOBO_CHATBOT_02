@@ -1,243 +1,462 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Search, Filter, Download } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  BarChart3, 
+  MessageSquare, 
+  TrendingUp, 
+  Search, 
+  Calendar as CalendarIcon,
+  ThumbsUp,
+  ThumbsDown,
+  Eye,
+  RefreshCw
+} from "lucide-react";
+import { format, subDays, subWeeks, subMonths } from "date-fns";
+import { ko } from "date-fns/locale";
 
 interface QALog {
   id: number;
-  userId: string;
-  username: string;
-  agentName: string;
+  timestamp: string;
+  category: string;
+  agent: string;
   question: string;
   answer: string;
-  timestamp: string;
-  responseTime: number;
-  satisfaction?: number;
-  category: string;
+  satisfaction: "positive" | "negative" | null;
+  status: "처리중" | "성공" | "실패";
+}
+
+interface QAStats {
+  satisfactionRate: number;
+  totalQuestions: number;
+  responseRate: number;
 }
 
 export default function QALogs2() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [dateRange, setDateRange] = useState("7days");
+  const [selectedTab, setSelectedTab] = useState("logs");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [dateFilter, setDateFilter] = useState("today");
+  const [customDateRange, setCustomDateRange] = useState<{from?: Date; to?: Date}>({});
+  const [showCustomCalendar, setShowCustomCalendar] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState("전체");
+  const [satisfactionFilter, setSatisfactionFilter] = useState("전체");
+  const [agentFilter, setAgentFilter] = useState("전체");
 
   // Mock data for demonstration
+  const mockStats: QAStats = {
+    satisfactionRate: 74,
+    totalQuestions: 31,
+    responseRate: 49.5
+  };
+
   const mockLogs: QALog[] = [
     {
       id: 1,
-      userId: "student001",
-      username: "김학생",
-      agentName: "학교 안내",
-      question: "도서관 운영시간이 어떻게 되나요?",
-      answer: "도서관은 평일 오전 9시부터 오후 10시까지, 주말은 오전 10시부터 오후 6시까지 운영됩니다.",
-      timestamp: "2025-06-22T10:30:00Z",
-      responseTime: 1.2,
-      satisfaction: 4,
-      category: "일반문의"
+      timestamp: "06/22 13:21",
+      category: "영문학과",
+      agent: "영문학과 도우미",
+      question: "프로그래밍 심화 수업 예약 방법을 알려주세요",
+      answer: "",
+      satisfaction: null,
+      status: "처리중"
     },
     {
       id: 2,
-      userId: "student002",
-      username: "이학생",
-      agentName: "컴퓨터공학과",
-      question: "졸업요건이 어떻게 되나요?",
-      answer: "컴퓨터공학과 졸업요건은 전공필수 45학점, 전공선택 36학점, 교양 30학점 등 총 130학점 이상입니다.",
-      timestamp: "2025-06-22T11:15:00Z",
-      responseTime: 2.1,
-      satisfaction: 5,
-      category: "학사문의"
+      timestamp: "01/27 03:39",
+      category: "미술학과",
+      agent: "미술학과 도우미",
+      question: "미술학과 졸업전시는 언제 열리나요?",
+      answer: "",
+      satisfaction: null,
+      status: "성공"
     },
     {
       id: 3,
-      userId: "student003",
-      username: "박학생",
-      agentName: "장학금 안내",
-      question: "성적장학금 신청 방법을 알려주세요.",
-      answer: "성적장학금은 매 학기 성적 발표 후 자동으로 선발되며, 별도 신청이 필요하지 않습니다.",
-      timestamp: "2025-06-22T14:20:00Z",
-      responseTime: 1.8,
-      satisfaction: 3,
-      category: "장학금"
+      timestamp: "01/26 11:35",
+      category: "화학과",
+      agent: "화학과 도우미",
+      question: "분석화학 과목 선수과목이 있나요?",
+      answer: "",
+      satisfaction: null,
+      status: "실패"
+    },
+    {
+      id: 4,
+      timestamp: "01/26 10:34",
+      category: "화학과",
+      agent: "화학과 도우미",
+      question: "화학과에서 취업률이 어떻게 되나요?",
+      answer: "",
+      satisfaction: "positive",
+      status: "성공"
+    },
+    {
+      id: 5,
+      timestamp: "01/26 09:33",
+      category: "화학과",
+      agent: "화학과 도우미",
+      question: "화학과 유기화학 실험이 공급됩니다 자세히 알려주세요.",
+      answer: "",
+      satisfaction: null,
+      status: "성공"
+    },
+    {
+      id: 6,
+      timestamp: "01/26 08:32",
+      category: "물리학과",
+      agent: "물리학과 도우미",
+      question: "물리학과 졸업논문 주제는 어떻게 정하나니까?",
+      answer: "",
+      satisfaction: "negative",
+      status: "실패"
+    },
+    {
+      id: 7,
+      timestamp: "01/26 02:38",
+      category: "생명과학과",
+      agent: "생명과학과 도우미",
+      question: "생명학과 대학원 진학률이 궁금합니다 자세히 알려주세요.",
+      answer: "",
+      satisfaction: null,
+      status: "실패"
+    },
+    {
+      id: 8,
+      timestamp: "01/26 01:37",
+      category: "생명과학과",
+      agent: "생명과학과 도우미",
+      question: "분자생물학 실험이 어려워니까?",
+      answer: "",
+      satisfaction: null,
+      status: "성공"
     }
   ];
 
-  const { data: logs = mockLogs } = useQuery<QALog[]>({
-    queryKey: ["/api/admin/qa-logs"],
-    initialData: mockLogs
-  });
+  const getDateRange = () => {
+    const today = new Date();
+    switch (dateFilter) {
+      case "today":
+        return { from: today, to: today };
+      case "week":
+        return { from: subWeeks(today, 1), to: today };
+      case "month":
+        return { from: subMonths(today, 1), to: today };
+      case "90days":
+        return { from: subDays(today, 90), to: today };
+      case "custom":
+        return customDateRange;
+      default:
+        return { from: today, to: today };
+    }
+  };
 
-  const filteredLogs = logs.filter(log => {
-    const matchesSearch = log.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         log.answer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         log.username.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesAgent = selectedAgent === "all" || log.agentName === selectedAgent;
-    const matchesCategory = selectedCategory === "all" || log.category === selectedCategory;
+  const filteredLogs = mockLogs.filter(log => {
+    const matchesKeyword = searchKeyword === "" || 
+      log.question.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      log.category.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      log.agent.toLowerCase().includes(searchKeyword.toLowerCase());
     
-    return matchesSearch && matchesAgent && matchesCategory;
+    const matchesCategory = categoryFilter === "전체" || log.category === categoryFilter;
+    const matchesSatisfaction = satisfactionFilter === "전체" || 
+      (satisfactionFilter === "만족도 높음" && log.satisfaction === "positive") ||
+      (satisfactionFilter === "만족도 낮음" && log.satisfaction === "negative") ||
+      (satisfactionFilter === "만족도 없음" && log.satisfaction === null);
+    const matchesAgent = agentFilter === "전체" || log.agent === agentFilter;
+
+    return matchesKeyword && matchesCategory && matchesSatisfaction && matchesAgent;
   });
 
-  const handleExport = () => {
-    // Export functionality would be implemented here
-    console.log("Exporting logs...");
+  const getSatisfactionIcon = (satisfaction: QALog["satisfaction"]) => {
+    if (satisfaction === "positive") return <ThumbsUp className="w-4 h-4 text-green-600" />;
+    if (satisfaction === "negative") return <ThumbsDown className="w-4 h-4 text-red-600" />;
+    return "—";
+  };
+
+  const getStatusBadge = (status: QALog["status"]) => {
+    const variants = {
+      "처리중": "default",
+      "성공": "secondary", 
+      "실패": "destructive"
+    } as const;
+    
+    return <Badge variant={variants[status]}>{status}</Badge>;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <MessageSquare className="h-5 w-5" />
-            <span>질문/응답 로그 2</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="질문이나 답변 내용 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <select
-              value={selectedAgent}
-              onChange={(e) => setSelectedAgent(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="all">모든 에이전트</option>
-              <option value="학교 안내">학교 안내</option>
-              <option value="컴퓨터공학과">컴퓨터공학과</option>
-              <option value="장학금 안내">장학금 안내</option>
-            </select>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="all">모든 카테고리</option>
-              <option value="일반문의">일반문의</option>
-              <option value="학사문의">학사문의</option>
-              <option value="장학금">장학금</option>
-            </select>
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md"
-            >
-              <option value="1day">최근 1일</option>
-              <option value="7days">최근 7일</option>
-              <option value="30days">최근 30일</option>
-              <option value="90days">최근 90일</option>
-            </select>
-            <Button onClick={handleExport} className="flex items-center space-x-2">
-              <Download className="h-4 w-4" />
-              <span>내보내기</span>
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">질의응답 관리</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          질문과 응답의 품질을 확인하고 개선하세요.
+        </p>
+      </div>
 
-          {/* Results Count */}
-          <div className="mb-4">
-            <p className="text-sm text-gray-600">
-              검색 결과: {filteredLogs.length}개의 로그
-            </p>
-          </div>
+      {/* Tabs */}
+      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+        <TabsList className="mb-6">
+          <TabsTrigger value="logs" className="flex items-center space-x-2">
+            <MessageSquare className="w-4 h-4" />
+            <span>질문 로그</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center space-x-2">
+            <BarChart3 className="w-4 h-4" />
+            <span>키워드 & 통계</span>
+          </TabsTrigger>
+        </TabsList>
 
-          {/* Logs Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-200">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="border border-gray-200 px-4 py-2 text-left">시간</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">사용자</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">에이전트</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">질문</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">답변</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">응답시간</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">만족도</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">카테고리</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 px-4 py-2">
-                      {new Date(log.timestamp).toLocaleString()}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {log.username}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      <Badge variant="outline">{log.agentName}</Badge>
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2 max-w-xs">
-                      <div className="truncate" title={log.question}>
-                        {log.question}
-                      </div>
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2 max-w-xs">
-                      <div className="truncate" title={log.answer}>
-                        {log.answer}
-                      </div>
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {log.responseTime}초
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {log.satisfaction ? (
-                        <div className="flex items-center space-x-1">
-                          <span>{log.satisfaction}</span>
-                          <span className="text-yellow-500">★</span>
-                        </div>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      <Badge variant="secondary">{log.category}</Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Summary Statistics */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Statistics Cards */}
+        {selectedTab === "logs" && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold">{filteredLogs.length}</div>
-                <div className="text-sm text-gray-600">총 질문 수</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold">
-                  {(filteredLogs.reduce((acc, log) => acc + log.responseTime, 0) / filteredLogs.length).toFixed(1)}초
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">응답 만족률</p>
+                    <p className="text-2xl font-bold text-green-600">{mockStats.satisfactionRate}%</p>
+                  </div>
+                  <TrendingUp className="w-8 h-8 text-green-600" />
                 </div>
-                <div className="text-sm text-gray-600">평균 응답시간</div>
               </CardContent>
             </Card>
+            
             <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold">
-                  {filteredLogs.filter(log => log.satisfaction).length > 0 
-                    ? (filteredLogs.reduce((acc, log) => acc + (log.satisfaction || 0), 0) / 
-                       filteredLogs.filter(log => log.satisfaction).length).toFixed(1)
-                    : '-'}
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">미해결 수</p>
+                    <p className="text-2xl font-bold text-orange-600">{mockStats.totalQuestions}</p>
+                  </div>
+                  <MessageSquare className="w-8 h-8 text-orange-600" />
                 </div>
-                <div className="text-sm text-gray-600">평균 만족도</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">사용자 만족도</p>
+                    <p className="text-2xl font-bold text-blue-600">{mockStats.responseRate}%</p>
+                  </div>
+                  <BarChart3 className="w-8 h-8 text-blue-600" />
+                </div>
               </CardContent>
             </Card>
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        {/* Filters */}
+        <TabsContent value="logs">
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">키워드 검색</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-2 mb-4">
+                <Search className="w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="키워드 입력"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  className="flex-1"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Date Filter */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    시간 범위
+                  </label>
+                  <div className="flex space-x-2">
+                    <Select value={dateFilter} onValueChange={setDateFilter}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">오늘</SelectItem>
+                        <SelectItem value="week">지난 1주일</SelectItem>
+                        <SelectItem value="month">지난달</SelectItem>
+                        <SelectItem value="90days">지난 90일</SelectItem>
+                        <SelectItem value="custom">사용자 지정</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {dateFilter === "custom" && (
+                      <Popover open={showCustomCalendar} onOpenChange={setShowCustomCalendar}>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <CalendarIcon className="w-4 h-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="range"
+                            selected={customDateRange}
+                            onSelect={setCustomDateRange}
+                            locale={ko}
+                            numberOfMonths={2}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  </div>
+                  {dateFilter === "custom" && customDateRange.from && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {format(customDateRange.from, "MM/dd", { locale: ko })}
+                      {customDateRange.to && ` - ${format(customDateRange.to, "MM/dd", { locale: ko })}`}
+                    </p>
+                  )}
+                </div>
+
+                {/* Category Filter */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    응답 범위
+                  </label>
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="전체">전체</SelectItem>
+                      <SelectItem value="영문학과">영문학과</SelectItem>
+                      <SelectItem value="미술학과">미술학과</SelectItem>
+                      <SelectItem value="화학과">화학과</SelectItem>
+                      <SelectItem value="물리학과">물리학과</SelectItem>
+                      <SelectItem value="생명과학과">생명과학과</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Satisfaction Filter */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    상위카테고리
+                  </label>
+                  <Select value={satisfactionFilter} onValueChange={setSatisfactionFilter}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="전체">전체</SelectItem>
+                      <SelectItem value="만족도 높음">만족도 높음</SelectItem>
+                      <SelectItem value="만족도 낮음">만족도 낮음</SelectItem>
+                      <SelectItem value="만족도 없음">만족도 없음</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Agent Filter */}
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    에이전트
+                  </label>
+                  <Select value={agentFilter} onValueChange={setAgentFilter}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="전체">전체</SelectItem>
+                      <SelectItem value="영문학과 도우미">영문학과 도우미</SelectItem>
+                      <SelectItem value="미술학과 도우미">미술학과 도우미</SelectItem>
+                      <SelectItem value="화학과 도우미">화학과 도우미</SelectItem>
+                      <SelectItem value="물리학과 도우미">물리학과 도우미</SelectItem>
+                      <SelectItem value="생명과학과 도우미">생명과학과 도우미</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end mt-4">
+                <Button size="sm" onClick={() => window.location.reload()}>
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  새로고침
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* QA Logs Table */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>질의응답 목록</CardTitle>
+                <div className="flex items-center space-x-4">
+                  <Button variant="outline" size="sm">최신순</Button>
+                  <Button variant="outline" size="sm">오래된순</Button>
+                  <Button variant="outline" size="sm">만족도 높은순</Button>
+                  <Button variant="outline" size="sm">만족도 낮은순</Button>
+                  <Button variant="outline" size="sm">응답 상태별 보기</Button>
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">총 {filteredLogs.length}개 중 1-20개 표시</p>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">대화 시각</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">카테고리</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">에이전트</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">질문 내용</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">만족도</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답상태</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">세부조회</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLogs.map((log) => (
+                      <tr key={log.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td className="py-3 px-4 text-sm">{log.timestamp}</td>
+                        <td className="py-3 px-4 text-sm">{log.category}</td>
+                        <td className="py-3 px-4 text-sm">{log.agent}</td>
+                        <td className="py-3 px-4 text-sm max-w-md">
+                          <div className="truncate" title={log.question}>
+                            {log.question}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          {getSatisfactionIcon(log.satisfaction)}
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          {getStatusBadge(log.status)}
+                        </td>
+                        <td className="py-3 px-4 text-sm">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics">
+          <Card>
+            <CardHeader>
+              <CardTitle>키워드 분석 및 통계</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500">키워드 분석 및 상세 통계 기능이 여기에 표시됩니다.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
