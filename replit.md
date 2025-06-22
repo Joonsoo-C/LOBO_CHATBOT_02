@@ -438,6 +438,13 @@ Changelog:
   * Monthly view shows 12 months with vacation periods (Jan, Feb, July, Aug, Dec) below 30%
   * Added visual legend showing token types without percentage details
   * Implemented stacked bar chart visualization matching user's color specification
+- June 22, 2025. Fixed PostgreSQL endpoint connectivity issues and completed SQLite migration:
+  * Resolved "Control plane request failed: endpoint is disabled" error by migrating session storage from PostgreSQL to memory-based store
+  * Successfully migrated database from disabled Neon PostgreSQL to SQLite for development
+  * Fixed SQLite schema compatibility issues with timestamp functions and data binding
+  * Created master admin account (master_admin/MasterAdmin2024!) and sample faculty accounts
+  * System now fully operational with SQLite backend and memory session storage
+  * All core functionality working: authentication, agent management, chat interface, admin panel
 ```
 
 ## User Preferences

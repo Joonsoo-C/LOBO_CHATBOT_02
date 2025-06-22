@@ -5,7 +5,7 @@ import session from "express-session";
 import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
-import connectPg from "connect-pg-simple";
+import MemoryStore from "memorystore";
 
 declare global {
   namespace Express {
@@ -23,12 +23,9 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
+  const MemoryStoreInstance = MemoryStore(session);
+  const sessionStore = new MemoryStoreInstance({
+    checkPeriod: 86400000, // prune expired entries every 24h
   });
 
   const sessionSettings: session.SessionOptions = {

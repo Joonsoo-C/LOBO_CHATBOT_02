@@ -844,9 +844,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 async function initializeDefaultAgents() {
   try {
-    // Skip agent initialization for now to avoid data binding errors
-    console.log("Skipping agent initialization due to schema compatibility issues");
+    // Create master admin user first
+    const masterAdmin = await storage.getUserByUsername("master_admin");
+    if (!masterAdmin) {
+      await storage.createUser({
+        id: "master-admin-001",
+        username: "master_admin",
+        password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // MasterAdmin2024!
+        userType: "admin",
+        firstName: "Master",
+        lastName: "Admin",
+        email: "admin@lobo.edu",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      console.log("Master admin user created successfully");
+    }
+
+    // Create sample faculty users for agent management
+    const facultyUsers = [
+      { id: "prof001", username: "prof001", name: "김교수", userType: "faculty" },
+      { id: "prof002", username: "prof002", name: "이교수", userType: "faculty" },
+      { id: "prof003", username: "prof003", name: "박교수", userType: "faculty" },
+    ];
+
+    for (const faculty of facultyUsers) {
+      const existing = await storage.getUserByUsername(faculty.username);
+      if (!existing) {
+        await storage.createUser({
+          id: faculty.id,
+          username: faculty.username,
+          password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password
+          userType: faculty.userType,
+          firstName: faculty.name,
+          lastName: "교수",
+          email: `${faculty.username}@lobo.edu`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+      }
+    }
+
+    console.log("User initialization completed successfully");
   } catch (error) {
-    console.error("Error initializing default agents:", error);
+    console.error("Error initializing users:", error);
   }
 }
