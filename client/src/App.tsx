@@ -52,29 +52,29 @@ function Router() {
         <>
           <Route path="/master-admin" component={MasterAdmin} />
           
-          {/* Sidebar-based duplicate pages */}
-          <Route path="/dashboard2">
+          {/* Sidebar-based duplicate pages with correct prefix */}
+          <Route path="/master-admin/dashboard2">
             {() => <SidebarLayout><Dashboard2 /></SidebarLayout>}
           </Route>
-          <Route path="/user-management2">
+          <Route path="/master-admin/user-management2">
             {() => <SidebarLayout><UserManagement2 /></SidebarLayout>}
           </Route>
-          <Route path="/agent-management2">
+          <Route path="/master-admin/agent-management2">
             {() => <SidebarLayout><AgentManagement2 /></SidebarLayout>}
           </Route>
-          <Route path="/qa-logs2">
+          <Route path="/master-admin/qa-logs2">
             {() => <SidebarLayout><QALogs2 /></SidebarLayout>}
           </Route>
-          <Route path="/token-management2">
+          <Route path="/master-admin/token-management2">
             {() => <SidebarLayout><TokenManagement2 /></SidebarLayout>}
           </Route>
-          <Route path="/category-management2">
+          <Route path="/master-admin/category-management2">
             {() => <SidebarLayout><CategoryManagement2 /></SidebarLayout>}
           </Route>
-          <Route path="/document-management2">
+          <Route path="/master-admin/document-management2">
             {() => <SidebarLayout><DocumentManagement2 /></SidebarLayout>}
           </Route>
-          <Route path="/system-settings2">
+          <Route path="/master-admin/system-settings2">
             {() => <SidebarLayout><SystemSettings2 /></SidebarLayout>}
           </Route>
           
