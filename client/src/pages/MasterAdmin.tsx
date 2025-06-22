@@ -91,6 +91,8 @@ const agentSchema = z.object({
   personality: z.string().optional(),
   managerId: z.string().min(1, "관리자를 선택해주세요"),
   organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
+  llmModel: z.string().optional(),
+  chatbotType: z.string().optional(),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;
@@ -200,13 +202,13 @@ export default function MasterAdmin() {
   // 필터링된 사용자 목록 계산 (검색이 실행된 경우에만)
   const filteredUsers = useMemo(() => {
     if (!users || !hasSearched) return [];
-    
+
     let filtered = users;
-    
+
     // 검색어 필터링
     if (userSearchQuery.trim()) {
       const query = userSearchQuery.toLowerCase();
-      
+
       // * 입력시 전체 검색 (조직 필터만 적용)
       if (query === '*') {
         // 전체 사용자 반환 (조직 필터는 아래에서 적용)
@@ -221,10 +223,10 @@ export default function MasterAdmin() {
         );
       }
     }
-    
+
     // 조직 필터링 (현재는 기본 구현, 실제로는 사용자 테이블에 조직 정보가 필요)
     // TODO: 사용자 스키마에 조직 정보 추가 후 실제 필터링 구현
-    
+
     return filtered;
   }, [users, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, hasSearched]);
 
@@ -238,6 +240,8 @@ export default function MasterAdmin() {
       personality: "",
       managerId: "",
       organizationId: "",
+      llmModel: "gpt-4o-mini",
+      chatbotType: "doc-fallback-llm",
     },
   });
 
@@ -629,7 +633,7 @@ export default function MasterAdmin() {
             {/* 조직 필터링 및 검색 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
-              
+
               {/* 조직 필터 */}
               <div className="flex items-center justify-between">
                 <OrganizationSelector
@@ -669,7 +673,7 @@ export default function MasterAdmin() {
                   💡 <strong>*</strong>을 입력하고 검색하면 선택된 조직 범위에서 전체 사용자를 조회할 수 있습니다.
                 </p>
               </div>
-              
+
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -820,6 +824,7 @@ export default function MasterAdmin() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={agentForm.control}
+```python
                           name="name"
                           render={({ field }) => (
                             <FormItem>
@@ -856,7 +861,7 @@ export default function MasterAdmin() {
                           )}
                         />
                       </div>
-                      
+
                       <FormField
                         control={agentForm.control}
                         name="description"
@@ -1046,7 +1051,7 @@ export default function MasterAdmin() {
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">로그 필터링</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label>에이전트</Label>
@@ -1565,7 +1570,7 @@ export default function MasterAdmin() {
             {/* 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">카테고리 검색 및 관리</h3>
-              
+
               {/* 조직 유형 필터 */}
               <div className="flex items-center justify-between">
                 <OrganizationSelector
@@ -1589,7 +1594,7 @@ export default function MasterAdmin() {
               {/* 카테고리 검색 */}
               <div className="space-y-2">
                 <div className="flex space-x-2">
-                  <div className="flex-1">
+                  <div className"flex-1">
                     <Input
                       placeholder="조직명으로 검색..."
                       value={userSearchQuery}
@@ -1608,7 +1613,7 @@ export default function MasterAdmin() {
                   💡 <strong>*</strong>을 입력하고 검색하면 선택된 필터 범위에서 전체 조직을 조회할 수 있습니다.
                 </p>
               </div>
-              
+
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -1915,7 +1920,7 @@ export default function MasterAdmin() {
             {/* 문서 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
-              
+
               {/* 카테고리 및 조직 필터 */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -1936,7 +1941,7 @@ export default function MasterAdmin() {
                         </SelectContent>
                       </Select>
                     </div>
-                    
+
                     <div className="relative">
                       <Select>
                         <SelectTrigger className="min-w-[100px] h-10 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm font-medium hover:bg-gray-100 transition-colors">
@@ -1952,7 +1957,7 @@ export default function MasterAdmin() {
                         </SelectContent>
                       </Select>
                     </div>
-                    
+
                     <div className="relative">
                       <Select>
                         <SelectTrigger className="min-w-[100px] h-10 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm font-medium hover:bg-gray-100 transition-colors">
@@ -1969,7 +1974,7 @@ export default function MasterAdmin() {
                       </Select>
                     </div>
                   </div>
-                  
+
                   <Button variant="outline" onClick={() => {
                     setSelectedDocumentCategory('all');
                     setDocumentSearchQuery('');
@@ -1978,7 +1983,7 @@ export default function MasterAdmin() {
                     필터 초기화
                   </Button>
                 </div>
-                
+
                 {/* 조직 필터 */}
                 <OrganizationSelector
                   selectedUniversity={selectedUniversity}
@@ -2010,7 +2015,7 @@ export default function MasterAdmin() {
                   💡 <strong>*</strong>을 입력하고 검색하면 선택된 카테고리 범위에서 전체 문서를 조회할 수 있습니다.
                 </p>
               </div>
-              
+
               {/* 검색 결과 표시 */}
               {hasDocumentSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -2124,7 +2129,7 @@ export default function MasterAdmin() {
           {/* 시스템 설정 */}
           <TabsContent value="system" className="space-y-6">
             <h2 className="text-2xl font-bold">시스템 설정</h2>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
@@ -2224,7 +2229,7 @@ export default function MasterAdmin() {
                     )}
                   />
                 </div>
-                
+
                 <FormField
                   control={editAgentForm.control}
                   name="description"
@@ -2384,8 +2389,7 @@ export default function MasterAdmin() {
                     placeholder="LMS API 키 입력" 
                   />
                 </div>
-                <div>
-                  <Label htmlFor="sync-interval">동기화 주기</Label>
+                <div><Label htmlFor="sync-interval">동기화 주기</Label>
                   <Select>
                     <SelectTrigger>
                       <SelectValue placeholder="동기화 주기 선택" />
