@@ -504,6 +504,14 @@ export default function MasterAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="md:hidden"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
               <Shield className="w-8 h-8 text-blue-600" />
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -530,6 +538,141 @@ export default function MasterAdmin() {
           </div>
         </div>
       </header>
+
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">메뉴</h2>
+          <Button variant="ghost" size="sm" onClick={() => setIsSidebarOpen(false)}>
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+        <nav className="p-4 space-y-2">
+          <button
+            onClick={() => {
+              setActiveTab("dashboard");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "dashboard"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <BarChart3 className="w-4 h-4 mr-3" />
+            대시보드
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("users");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "users"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <Users className="w-4 h-4 mr-3" />
+            사용자 관리
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("agents");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "agents"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <Bot className="w-4 h-4 mr-3" />
+            에이전트 관리
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("conversations");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "conversations"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4 mr-3" />
+            질문/응답 로그
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("tokens");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "tokens"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <Shield className="w-4 h-4 mr-3" />
+            토큰 관리
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("categories");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "categories"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <Database className="w-4 h-4 mr-3" />
+            카테고리 관리
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("documents");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "documents"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <FileText className="w-4 h-4 mr-3" />
+            문서 관리
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("system");
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "system"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
+          >
+            <Settings className="w-4 h-4 mr-3" />
+            시스템 설정
+          </button>
+        </nav>
+      </div>
+
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
