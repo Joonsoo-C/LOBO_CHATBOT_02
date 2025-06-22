@@ -45,11 +45,7 @@ import {
   Upload,
   ChevronUp,
   ChevronDown,
-  Palette,
-  Menu,
-  X,
-  UserCheck,
-  Building
+  Palette
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -93,12 +89,9 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다"),
   description: z.string().min(1, "설명은 필수입니다"),
   category: z.string().min(1, "카테고리를 선택해주세요"),
-  speakingStyle: z.string().min(1, "말투를 입력해주세요"),
-  personalityTraits: z.string().min(1, "성격을 입력해주세요"),
+  personality: z.string().optional(),
   managerId: z.string().min(1, "관리자를 선택해주세요"),
   organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
-  llmModel: z.string().min(1, "LLM 모델을 선택해주세요"),
-  chatbotType: z.string().min(1, "챗봇 유형을 선택해주세요"),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;
@@ -123,7 +116,6 @@ export default function MasterAdmin() {
   const [selectedDocumentCategory, setSelectedDocumentCategory] = useState('all');
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
@@ -413,10 +405,7 @@ export default function MasterAdmin() {
         name: data.name,
         description: data.description,
         category: data.category,
-        speakingStyle: data.speakingStyle,
-        personalityTraits: data.personalityTraits,
-        llmModel: data.llmModel,
-        chatbotType: data.chatbotType,
+        personality: data.personality,
         managerId: data.managerId,
         organizationId: parseInt(data.organizationId),
       };
@@ -449,10 +438,7 @@ export default function MasterAdmin() {
       name: agent.name,
       description: agent.description,
       category: agent.category,
-      speakingStyle: (agent as any).speakingStyle || "",
-      personalityTraits: (agent as any).personalityTraits || "",
-      llmModel: (agent as any).llmModel || "gpt-4o",
-      chatbotType: (agent as any).chatbotType || "general-llm",
+      personality: (agent as any).personalityTraits || "",
       managerId: (agent as any).managerId || "",
       organizationId: (agent as any).organizationId?.toString() || "",
     });
@@ -469,7 +455,9 @@ export default function MasterAdmin() {
   // 에이전트 삭제 뮤테이션
   const deleteAgentMutation = useMutation({
     mutationFn: async (agentId: number) => {
-      const response = await apiRequest('DELETE', `/api/admin/agents/${agentId}`);
+      const response = await apiRequest(`/api/admin/agents/${agentId}`, {
+        method: 'DELETE',
+      });
       if (!response.ok) throw new Error('Failed to delete agent');
       return response.json();
     },
@@ -513,14 +501,6 @@ export default function MasterAdmin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="mr-2"
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
               <Shield className="w-8 h-8 text-blue-600" />
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -547,228 +527,6 @@ export default function MasterAdmin() {
           </div>
         </div>
       </header>
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">메뉴</h2>
-          <Button variant="ghost" size="sm" onClick={() => setIsSidebarOpen(false)}>
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
-        <nav className="p-4 space-y-2">
-          <button
-            onClick={() => {
-              setActiveTab('dashboard');
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-              activeTab === 'dashboard' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            <BarChart3 className="w-5 h-5" />
-            <span>대시보드</span>
-          </button>
-          
-          {/* 사용자 관리 그룹 */}
-          <div className="space-y-1">
-            <button
-              onClick={() => {
-                setActiveTab('users');
-                setIsSidebarOpen(false);
-              }}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-                activeTab === 'users' 
-                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-              }`}
-            >
-              <Users className="w-5 h-5" />
-              <span>사용자 관리</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('users2');
-                setIsSidebarOpen(false);
-              }}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ml-4 ${
-                activeTab === 'users2' 
-                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              <span>사용자 관리 II</span>
-            </button>
-          </div>
-          <button
-            onClick={() => {
-              setActiveTab('managers');
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-              activeTab === 'managers' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            <UserCheck className="w-5 h-5" />
-            <span>관리자 관리</span>
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('agents');
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-              activeTab === 'agents' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            <Bot className="w-5 h-5" />
-            <span>에이전트 관리</span>
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('organizations');
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-              activeTab === 'organizations' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            <Building className="w-5 h-5" />
-            <span>기관 관리</span>
-          </button>
-        </nav>
-      </div>
-      
-      {/* Mobile Navigation */}
-      <div className="lg:hidden">
-        <nav className="space-y-1">
-          <button
-            onClick={() => {
-              setActiveTab("dashboard");
-              setIsSidebarOpen(false);
-            }}
-            className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-left"
-          >
-            <BarChart3 className="w-4 h-4 mr-3" />
-            대시보드
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("users");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "users"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <Users className="w-4 h-4 mr-3" />
-            사용자 관리
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("agents");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "agents"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <Bot className="w-4 h-4 mr-3" />
-            에이전트 관리
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("conversations");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "conversations"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <MessageSquare className="w-4 h-4 mr-3" />
-            질문/응답 로그
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("tokens");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "tokens"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <Shield className="w-4 h-4 mr-3" />
-            토큰 관리
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("categories");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "categories"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <Database className="w-4 h-4 mr-3" />
-            카테고리 관리
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("documents");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "documents"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <FileText className="w-4 h-4 mr-3" />
-            문서 관리
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("system");
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "system"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
-          >
-            <Settings className="w-4 h-4 mr-3" />
-            시스템 설정
-          </button>
-        </nav>
-      </div>
-      {/* Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
