@@ -16,8 +16,9 @@ import {
   Calendar as CalendarIcon,
   ThumbsUp,
   ThumbsDown,
-  Eye,
-  RefreshCw
+  MessageCircle,
+  RefreshCw,
+  X
 } from "lucide-react";
 import { format, subDays, subWeeks, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -31,6 +32,8 @@ interface QALog {
   answer: string;
   satisfaction: "positive" | "negative" | null;
   status: "처리중" | "성공" | "실패";
+  responseType: "문서기반" | "일반응답" | "혼합응답";
+  responseTime: string;
 }
 
 interface QAStats {
@@ -48,6 +51,9 @@ export default function QALogs2() {
   const [categoryFilter, setCategoryFilter] = useState("전체");
   const [satisfactionFilter, setSatisfactionFilter] = useState("전체");
   const [agentFilter, setAgentFilter] = useState("전체");
+  const [showImprovementModal, setShowImprovementModal] = useState(false);
+  const [selectedLog, setSelectedLog] = useState<QALog | null>(null);
+  const [improvementComment, setImprovementComment] = useState("");
 
   // Mock data for demonstration
   const mockStats: QAStats = {
@@ -63,9 +69,11 @@ export default function QALogs2() {
       category: "영문학과",
       agent: "영문학과 도우미",
       question: "프로그래밍 심화 수업 예약 방법을 알려주세요",
-      answer: "",
+      answer: "실습실 예약은 학과 사무실에 직접 방문하거나 온라인 예약 시스템을 이용하세요. 자세한 내용은 학과 홈페이지를 참고하세요.",
       satisfaction: null,
-      status: "처리중"
+      status: "처리중",
+      responseType: "일반응답",
+      responseTime: "2.3초"
     },
     {
       id: 2,
@@ -73,9 +81,11 @@ export default function QALogs2() {
       category: "미술학과",
       agent: "미술학과 도우미",
       question: "미술학과 졸업전시는 언제 열리나요?",
-      answer: "",
+      answer: "미술학과 졸업전시는 매년 5월 중순경 학과 전시관에서 개최됩니다.",
       satisfaction: null,
-      status: "성공"
+      status: "성공",
+      responseType: "문서기반",
+      responseTime: "1.8초"
     },
     {
       id: 3,
@@ -85,7 +95,9 @@ export default function QALogs2() {
       question: "분석화학 과목 선수과목이 있나요?",
       answer: "",
       satisfaction: null,
-      status: "실패"
+      status: "실패",
+      responseType: "일반응답",
+      responseTime: "4.1초"
     },
     {
       id: 4,
@@ -93,9 +105,11 @@ export default function QALogs2() {
       category: "화학과",
       agent: "화학과 도우미",
       question: "화학과에서 취업률이 어떻게 되나요?",
-      answer: "",
+      answer: "화학과 취업률은 약 85%이며, 주요 취업처는 화학회사, 제약회사, 연구소 등입니다.",
       satisfaction: "positive",
-      status: "성공"
+      status: "성공",
+      responseType: "혼합응답",
+      responseTime: "1.5초"
     },
     {
       id: 5,
@@ -103,9 +117,11 @@ export default function QALogs2() {
       category: "화학과",
       agent: "화학과 도우미",
       question: "화학과 유기화학 실험이 공급됩니다 자세히 알려주세요.",
-      answer: "",
+      answer: "유기화학 실험은 매주 화요일과 목요일에 진행되며, 실험복과 보안경 착용이 필수입니다.",
       satisfaction: null,
-      status: "성공"
+      status: "성공",
+      responseType: "문서기반",
+      responseTime: "2.1초"
     },
     {
       id: 6,
@@ -115,7 +131,9 @@ export default function QALogs2() {
       question: "물리학과 졸업논문 주제는 어떻게 정하나니까?",
       answer: "",
       satisfaction: "negative",
-      status: "실패"
+      status: "실패",
+      responseType: "일반응답",
+      responseTime: "3.7초"
     },
     {
       id: 7,
@@ -125,7 +143,9 @@ export default function QALogs2() {
       question: "생명학과 대학원 진학률이 궁금합니다 자세히 알려주세요.",
       answer: "",
       satisfaction: null,
-      status: "실패"
+      status: "실패",
+      responseType: "혼합응답",
+      responseTime: "5.2초"
     },
     {
       id: 8,
@@ -133,9 +153,11 @@ export default function QALogs2() {
       category: "생명과학과",
       agent: "생명과학과 도우미",
       question: "분자생물학 실험이 어려워니까?",
-      answer: "",
+      answer: "분자생물학 실험은 기초 생물학 지식이 필요하며, 실습을 통해 점진적으로 익힐 수 있습니다.",
       satisfaction: null,
-      status: "성공"
+      status: "성공",
+      responseType: "문서기반",
+      responseTime: "1.9초"
     }
   ];
 
@@ -187,6 +209,29 @@ export default function QALogs2() {
     } as const;
     
     return <Badge variant={variants[status]}>{status}</Badge>;
+  };
+
+  const getResponseTypeBadge = (responseType: QALog["responseType"]) => {
+    const variants = {
+      "문서기반": "default",
+      "일반응답": "secondary",
+      "혼합응답": "outline"
+    } as const;
+    
+    return <Badge variant={variants[responseType]}>{responseType}</Badge>;
+  };
+
+  const handleImprovementRequest = (log: QALog) => {
+    setSelectedLog(log);
+    setShowImprovementModal(true);
+  };
+
+  const handleSubmitImprovement = () => {
+    // Here you would typically send the improvement request to your API
+    console.log("Improvement request for log:", selectedLog?.id, "Comment:", improvementComment);
+    setShowImprovementModal(false);
+    setSelectedLog(null);
+    setImprovementComment("");
   };
 
   return (
@@ -409,9 +454,11 @@ export default function QALogs2() {
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">카테고리</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">에이전트</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">질문 내용</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답 유형</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답 시간</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">만족도</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">응답상태</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">세부조회</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">개선요청</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -426,14 +473,22 @@ export default function QALogs2() {
                           </div>
                         </td>
                         <td className="py-3 px-4 text-sm">
+                          {getResponseTypeBadge(log.responseType)}
+                        </td>
+                        <td className="py-3 px-4 text-sm">{log.responseTime}</td>
+                        <td className="py-3 px-4 text-sm">
                           {getSatisfactionIcon(log.satisfaction)}
                         </td>
                         <td className="py-3 px-4 text-sm">
                           {getStatusBadge(log.status)}
                         </td>
                         <td className="py-3 px-4 text-sm">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="w-4 h-4" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleImprovementRequest(log)}
+                          >
+                            <MessageCircle className="w-4 h-4" />
                           </Button>
                         </td>
                       </tr>
@@ -457,6 +512,77 @@ export default function QALogs2() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Improvement Request Modal */}
+      {showImprovementModal && selectedLog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">개선 요청 및 코멘트</h2>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowImprovementModal(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              질의응답에 대한 개선 요청과 코멘트를 작성합니다.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  질문
+                </label>
+                <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                  <p className="text-sm text-gray-900 dark:text-white">{selectedLog.question}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  답변
+                </label>
+                <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                  <p className="text-sm text-gray-900 dark:text-white">
+                    {selectedLog.answer || "실습실 예약은 학과 사무실에 직접 방문하거나 온라인 예약 시스템을 이용하세요. 자세한 내용은 학과 홈페이지를 참고하세요."}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  개선 요청 코멘트
+                </label>
+                <textarea
+                  value={improvementComment}
+                  onChange={(e) => setImprovementComment(e.target.value)}
+                  placeholder="개선이 필요한 내용을 입력해주세요."
+                  className="w-full h-32 p-3 border border-gray-300 dark:border-gray-600 rounded-md resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowImprovementModal(false)}
+              >
+                취소
+              </Button>
+              <Button 
+                onClick={handleSubmitImprovement}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                저장
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
