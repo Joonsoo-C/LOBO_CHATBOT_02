@@ -844,70 +844,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 async function initializeDefaultAgents() {
   try {
-    const existingAgents = await storage.getAllAgents();
-    if (existingAgents.length > 0) {
-      return; // Agents already exist
-    }
-
-    // Create basic agents for development using Drizzle ORM
-    console.log('Creating sample agents for development...');
-    
-    const defaultAgents = [
-      {
-        name: '학생회 도우미',
-        description: '학생회 활동 관련 질문에 답변하는 에이전트입니다',
-        category: '학생',
-        icon: 'User',
-        backgroundColor: 'blue',
-        isActive: true,
-        isCustomIcon: false,
-        llmModel: 'gpt-4o',
-        chatbotType: 'general-llm',
-        speakingStyle: '친근하고 도움이 되는 말투',
-        personalityTraits: '친절하고 전문적인 성격으로 정확한 정보를 제공',
-        prohibitedWordResponse: '죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.',
-        managerId: null,
-        organizationId: null,
-      },
-      {
-        name: '컴퓨터공학과',
-        description: '컴퓨터공학과 관련 정보와 수업 안내를 제공합니다',
-        category: '학과',
-        icon: 'User',
-        backgroundColor: 'green',
-        isActive: true,
-        isCustomIcon: false,
-        llmModel: 'gpt-4o',
-        chatbotType: 'general-llm',
-        speakingStyle: '친근하고 도움이 되는 말투',
-        personalityTraits: '친절하고 전문적인 성격으로 정확한 정보를 제공',
-        prohibitedWordResponse: '죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.',
-        managerId: null,
-        organizationId: null,
-      },
-      {
-        name: '범용 AI 어시스턴트',
-        description: '다양한 질문에 대한 일반적인 AI 도움을 제공합니다',
-        category: '기능형',
-        icon: 'User',
-        backgroundColor: 'orange',
-        isActive: true,
-        isCustomIcon: false,
-        llmModel: 'gpt-4o',
-        chatbotType: 'general-llm',
-        speakingStyle: '친근하고 도움이 되는 말투',
-        personalityTraits: '친절하고 전문적인 성격으로 정확한 정보를 제공',
-        prohibitedWordResponse: '죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.',
-        managerId: null,
-        organizationId: null,
-      },
-    ];
-
-    for (const agentData of defaultAgents) {
-      await storage.createAgent(agentData);
-    }
-
-    console.log("Default agents initialized successfully");
+    // Skip agent initialization for now to avoid data binding errors
+    console.log("Skipping agent initialization due to schema compatibility issues");
   } catch (error) {
     console.error("Error initializing default agents:", error);
   }
