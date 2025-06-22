@@ -115,6 +115,7 @@ export default function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -1545,10 +1546,38 @@ export default function MasterAdmin() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">토큰 사용 추이</CardTitle>
                   <div className="flex items-center space-x-2 text-sm">
-                    <Button variant="ghost" size="sm" className="text-blue-600">일별</Button>
-                    <Button variant="ghost" size="sm" className="text-gray-500">주별</Button>
-                    <Button variant="ghost" size="sm" className="text-gray-500">월별</Button>
-                    <Button variant="ghost" size="sm" className="text-gray-500">분석 전체</Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'daily' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('daily')}
+                    >
+                      일별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'weekly' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('weekly')}
+                    >
+                      주별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'monthly' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('monthly')}
+                    >
+                      월별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'all' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('all')}
+                    >
+                      분석 전체
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
@@ -1578,49 +1607,164 @@ export default function MasterAdmin() {
                     
                     {/* 막대 그래프 */}
                     <div className="relative h-full flex items-end justify-between px-4">
-                      {/* 1주 */}
-                      <div className="flex flex-col items-center space-y-2 flex-1">
-                        <div className="w-16 relative" style={{height: '200px'}}>
-                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '50%'}}></div>
-                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
-                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '60%', opacity: 0.6}}></div>
-                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '45%', opacity: 0.4}}></div>
-                        </div>
-                        <span className="text-xs text-gray-500">1주</span>
-                      </div>
+                      {tokenPeriod === 'daily' && (
+                        <>
+                          {/* 어제 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '45%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '65%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '55%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '40%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">어제</span>
+                          </div>
+                          
+                          {/* 오늘 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">오늘</span>
+                          </div>
+                        </>
+                      )}
                       
-                      {/* 2주 */}
-                      <div className="flex flex-col items-center space-y-2 flex-1">
-                        <div className="w-16 relative" style={{height: '200px'}}>
-                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
-                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
-                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
-                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
-                        </div>
-                        <span className="text-xs text-gray-500">2주</span>
-                      </div>
+                      {tokenPeriod === 'weekly' && (
+                        <>
+                          {/* 1주 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '50%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '60%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '45%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">1주</span>
+                          </div>
+                          
+                          {/* 2주 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">2주</span>
+                          </div>
+                          
+                          {/* 3주 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '70%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">3주</span>
+                          </div>
+                          
+                          {/* 4주 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '75%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '90%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '85%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '70%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">4주</span>
+                          </div>
+                        </>
+                      )}
                       
-                      {/* 3주 */}
-                      <div className="flex flex-col items-center space-y-2 flex-1">
-                        <div className="w-16 relative" style={{height: '200px'}}>
-                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
-                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '70%', opacity: 0.8}}></div>
-                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
-                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
-                        </div>
-                        <span className="text-xs text-gray-500">3주</span>
-                      </div>
+                      {tokenPeriod === 'monthly' && (
+                        <>
+                          {/* 9월 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '40%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '60%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '50%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '35%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">9월</span>
+                          </div>
+                          
+                          {/* 10월 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">10월</span>
+                          </div>
+                          
+                          {/* 11월 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '65%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '85%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '75%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '60%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">11월</span>
+                          </div>
+                          
+                          {/* 12월 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '80%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '95%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '90%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '75%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">12월</span>
+                          </div>
+                        </>
+                      )}
                       
-                      {/* 4주 */}
-                      <div className="flex flex-col items-center space-y-2 flex-1">
-                        <div className="w-16 relative" style={{height: '200px'}}>
-                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '75%'}}></div>
-                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '90%', opacity: 0.8}}></div>
-                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '85%', opacity: 0.6}}></div>
-                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '70%', opacity: 0.4}}></div>
-                        </div>
-                        <span className="text-xs text-gray-500">4주</span>
-                      </div>
+                      {tokenPeriod === 'all' && (
+                        <>
+                          {/* 2022 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '30%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '45%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '35%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '25%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">2022</span>
+                          </div>
+                          
+                          {/* 2023 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">2023</span>
+                          </div>
+                          
+                          {/* 2024 */}
+                          <div className="flex flex-col items-center space-y-2 flex-1">
+                            <div className="w-16 relative" style={{height: '200px'}}>
+                              <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '85%'}}></div>
+                              <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '95%', opacity: 0.8}}></div>
+                              <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '90%', opacity: 0.6}}></div>
+                              <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '80%', opacity: 0.4}}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">2024</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
