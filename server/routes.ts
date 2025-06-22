@@ -8,7 +8,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
-import { db, testDatabaseConnection, initializeDatabase, pool } from "./db";
+import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
 // Configure multer for document uploads
@@ -57,33 +57,11 @@ const imageUpload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Test database connection first
-  console.log('Testing database connection...');
-  const dbConnected = await testDatabaseConnection();
-  
-  if (!dbConnected) {
-    console.warn('Primary database connection failed, attempting to initialize fallback database...');
-    const fallbackInitialized = await initializeDatabase();
-    if (fallbackInitialized) {
-      console.log('Fallback database initialized successfully');
-    } else {
-      console.warn('Application will run with limited functionality due to database issues');
-    }
-  }
-
   // Auth middleware
   await setupAuth(app);
 
   // Initialize default agents if they don't exist
-  if (dbConnected) {
-    try {
-      await initializeDefaultAgents();
-    } catch (error) {
-      console.log('Warning: Could not initialize default agents, will retry on first request:', (error as Error).message);
-    }
-  } else {
-    console.log('Skipping default agent initialization due to database connection issues');
-  }
+  await initializeDefaultAgents();
 
   // Note: Auth routes are now handled in setupAuth() function
 
@@ -844,8 +822,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 async function initializeDefaultAgents() {
   try {
-    // Skip agent initialization for now to avoid data binding errors
-    console.log("Skipping agent initialization due to schema compatibility issues");
+    const existingAgents = await storage.getAllAgents();
+    if (existingAgents.length > 0) {
+      return; // Agents already exist
+    }
+
+    const defaultAgents = [
+      {
+        name: "학교 종합 안내",
+        description: "대학교 전반적인 안내와 정보를 제공하는 에이전트입니다",
+        category: "학교",
+        icon: "fas fa-graduation-cap",
+        backgroundColor: "bg-slate-800",
+        managerId: null,
+      },
+      {
+        name: "컴퓨터공학과",
+        description: "컴퓨터공학과 관련 정보와 수업 안내를 제공합니다",
+        category: "학과",
+        icon: "fas fa-code",
+        backgroundColor: "bg-primary",
+        managerId: null,
+      },
+      {
+        name: "범용 AI 어시스턴트",
+        description: "다양한 질문에 대한 일반적인 AI 도움을 제공합니다",
+        category: "기능",
+        icon: "fas fa-robot",
+        backgroundColor: "bg-orange-500",
+        managerId: null,
+      },
+      {
+        name: "노지후 에이전트",
+        description: "노지후 교수의 수업적 상표 과목을 답변하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-user",
+        backgroundColor: "bg-gray-600",
+        managerId: "manager1", // Will be updated with actual manager ID
+      },
+      {
+        name: "비즈니스 실험실",
+        description: "비즈니스 관련 실험과 연구를 지원하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-flask",
+        backgroundColor: "bg-gray-600",
+        managerId: null,
+      },
+      {
+        name: "신입생 가이드",
+        description: "신입생을 위한 가이드와 정보를 제공합니다",
+        category: "학교",
+        icon: "fas fa-map",
+        backgroundColor: "bg-blue-500",
+        managerId: null,
+      },
+      {
+        name: "영어학습 도우미",
+        description: "영어 학습을 도와주는 AI 튜터입니다",
+        category: "기능",
+        icon: "fas fa-language",
+        backgroundColor: "bg-green-500",
+        managerId: null,
+      },
+      {
+        name: "운동/다이어트 코치",
+        description: "건강한 운동과 다이어트를 지도해주는 코치입니다",
+        category: "기능",
+        icon: "fas fa-dumbbell",
+        backgroundColor: "bg-orange-500",
+        managerId: null,
+      },
+      {
+        name: "프로그래밍 튜터",
+        description: "프로그래밍 학습을 도와주는 전문 튜터입니다",
+        category: "기능",
+        icon: "fas fa-code",
+        backgroundColor: "bg-purple-500",
+        managerId: null,
+      },
+      {
+        name: "디비디비딥 에이전트",
+        description: "데이터베이스 관련 질문과 도움을 제공합니다",
+        category: "교수",
+        icon: "fas fa-database",
+        backgroundColor: "bg-gray-600",
+        managerId: null,
+      },
+      {
+        name: "세영의 생각 실험실",
+        description: "창의적 사고와 실험을 지원하는 에이전트입니다",
+        category: "교수",
+        icon: "fas fa-lightbulb",
+        backgroundColor: "bg-yellow-500",
+        managerId: null,
+      },
+      {
+        name: "학생 상담 센터",
+        description: "학생들의 고민과 상담을 도와주는 센터입니다",
+        category: "학교",
+        icon: "fas fa-heart",
+        backgroundColor: "bg-pink-500",
+        managerId: null,
+      },
+      {
+        name: "과제 관리 & 플래너",
+        description: "과제와 일정을 효율적으로 관리해주는 도구입니다",
+        category: "기능",
+        icon: "fas fa-calendar",
+        backgroundColor: "bg-indigo-500",
+        managerId: null,
+      },
+      {
+        name: "글쓰기 코치",
+        description: "효과적인 글쓰기를 도와주는 전문 코치입니다",
+        category: "기능",
+        icon: "fas fa-pen",
+        backgroundColor: "bg-teal-500",
+        managerId: null,
+      },
+      {
+        name: "논문 작성 도우미",
+        description: "학술 논문 작성을 지원하는 전문 도우미입니다",
+        category: "기능",
+        icon: "fas fa-file-alt",
+        backgroundColor: "bg-red-500",
+        managerId: null,
+      },
+    ];
+
+    for (const agentData of defaultAgents) {
+      await storage.createAgent(agentData);
+    }
+
+    console.log("Default agents initialized successfully");
   } catch (error) {
     console.error("Error initializing default agents:", error);
   }
