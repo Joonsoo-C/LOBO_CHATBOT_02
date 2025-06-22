@@ -1511,89 +1511,117 @@ export default function MasterAdmin() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>OpenAI API 토큰</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-sm">
-                    <p className="text-gray-500">사용량: 12,450 / 100,000 토큰</p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '12.45%'}}></div>
-                    </div>
+            {/* 월간 사용량 카드 */}
+            <Card className="w-full max-w-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center justify-between">
+                  <span className="text-lg">월간 사용량</span>
+                  <div className="w-6 h-6 text-gray-400">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12,6 12,12 16,14"/>
+                    </svg>
                   </div>
-                  <div className="text-xs text-gray-400">
-                    마지막 사용: 2시간 전
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm text-gray-600 mb-2">사용량</div>
+                  <div className="text-2xl font-bold">847K / 1M 토큰</div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 mt-3">
+                    <div className="bg-blue-500 h-3 rounded-full" style={{width: '73%'}}></div>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Edit className="w-4 h-4 mr-1" />
-                      편집
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Eye className="w-4 h-4 mr-1" />
-                      상세
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  <div className="text-sm text-blue-600 font-medium mt-2">73% 사용</div>
+                </div>
+                <div className="text-xs text-gray-500 pt-2 border-t">
+                  다음 갱신: 2024년 1월 1일
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Claude API 토큰</span>
-                    <Badge variant="secondary">비활성</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-sm">
-                    <p className="text-gray-500">사용량: 0 / 50,000 토큰</p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                      <div className="bg-gray-400 h-2 rounded-full" style={{width: '0%'}}></div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    마지막 사용: 사용 안함
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Edit className="w-4 h-4 mr-1" />
-                      편집
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Eye className="w-4 h-4 mr-1" />
-                      상세
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
+            {/* 토큰 사용 추이 그래프 */}
             <Card>
-              <CardHeader>
-                <CardTitle>토큰 사용량 통계</CardTitle>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">토큰 사용 추이</CardTitle>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Button variant="ghost" size="sm" className="text-blue-600">일별</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-500">주별</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-500">월별</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-500">분석 전체</Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">15,234</div>
-                    <div className="text-sm text-gray-500">오늘 사용량</div>
+                <div className="h-64 relative">
+                  {/* Y축 레이블 */}
+                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 py-2">
+                    <span>600000</span>
+                    <span>450000</span>
+                    <span>300000</span>
+                    <span>150000</span>
+                    <span>0</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">485,921</div>
-                    <div className="text-sm text-gray-500">이번 달 사용량</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">2,341,234</div>
-                    <div className="text-sm text-gray-500">총 사용량</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-red-600">₩234,580</div>
-                    <div className="text-sm text-gray-500">이번 달 비용</div>
+                  
+                  {/* 그래프 영역 */}
+                  <div className="ml-12 h-full relative">
+                    {/* 격자선 */}
+                    <div className="absolute inset-0">
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <div 
+                          key={i} 
+                          className="absolute w-full border-t border-gray-200" 
+                          style={{top: `${i * 25}%`}}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* 막대 그래프 */}
+                    <div className="relative h-full flex items-end justify-between px-4">
+                      {/* 1주 */}
+                      <div className="flex flex-col items-center space-y-2 flex-1">
+                        <div className="w-16 relative" style={{height: '200px'}}>
+                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '50%'}}></div>
+                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '75%', opacity: 0.8}}></div>
+                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '60%', opacity: 0.6}}></div>
+                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '45%', opacity: 0.4}}></div>
+                        </div>
+                        <span className="text-xs text-gray-500">1주</span>
+                      </div>
+                      
+                      {/* 2주 */}
+                      <div className="flex flex-col items-center space-y-2 flex-1">
+                        <div className="w-16 relative" style={{height: '200px'}}>
+                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '60%'}}></div>
+                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '80%', opacity: 0.8}}></div>
+                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '70%', opacity: 0.6}}></div>
+                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '55%', opacity: 0.4}}></div>
+                        </div>
+                        <span className="text-xs text-gray-500">2주</span>
+                      </div>
+                      
+                      {/* 3주 */}
+                      <div className="flex flex-col items-center space-y-2 flex-1">
+                        <div className="w-16 relative" style={{height: '200px'}}>
+                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '55%'}}></div>
+                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '70%', opacity: 0.8}}></div>
+                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '65%', opacity: 0.6}}></div>
+                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '50%', opacity: 0.4}}></div>
+                        </div>
+                        <span className="text-xs text-gray-500">3주</span>
+                      </div>
+                      
+                      {/* 4주 */}
+                      <div className="flex flex-col items-center space-y-2 flex-1">
+                        <div className="w-16 relative" style={{height: '200px'}}>
+                          <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: '75%'}}></div>
+                          <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: '90%', opacity: 0.8}}></div>
+                          <div className="absolute bottom-0 w-full bg-orange-500 rounded-t" style={{height: '85%', opacity: 0.6}}></div>
+                          <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: '70%', opacity: 0.4}}></div>
+                        </div>
+                        <span className="text-xs text-gray-500">4주</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
