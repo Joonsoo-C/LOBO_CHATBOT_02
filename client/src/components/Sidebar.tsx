@@ -10,7 +10,8 @@ import {
   FolderTree, 
   FileText, 
   Settings,
-  X
+  X,
+  Home
 } from "lucide-react";
 
 interface SidebarProps {
@@ -19,6 +20,11 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  {
+    title: "메인 관리자 화면",
+    path: "/master-admin",
+    icon: Home,
+  },
   {
     title: "대시보드 2",
     path: "/master-admin/dashboard2",
