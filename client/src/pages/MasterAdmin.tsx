@@ -508,7 +508,7 @@ export default function MasterAdmin() {
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden"
+                className="mr-2"
               >
                 <Menu className="w-5 h-5" />
               </Button>
