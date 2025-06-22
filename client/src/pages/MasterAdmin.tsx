@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import Sidebar from "@/components/Sidebar";
+import AdminSidebar from "@/components/Sidebar";
 import { 
   Users, 
   MessageSquare, 
@@ -51,7 +51,6 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Link } from "wouter";
-import Sidebar from "@/components/Sidebar";
 
 interface User {
   id: string;
@@ -3598,7 +3597,6 @@ export default function MasterAdmin() {
             </div>
           </DialogContent>
         </Dialog>
-        </Tabs>
       </main>
     </div>
   );
