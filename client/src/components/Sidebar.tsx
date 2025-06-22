@@ -21,42 +21,42 @@ interface SidebarProps {
 const menuItems = [
   {
     title: "대시보드 2",
-    path: "/dashboard2",
+    path: "/master-admin/dashboard2",
     icon: LayoutDashboard,
   },
   {
     title: "사용자 관리 2",
-    path: "/user-management2",
+    path: "/master-admin/user-management2",
     icon: Users,
   },
   {
     title: "에이전트 관리 2",
-    path: "/agent-management2",
+    path: "/master-admin/agent-management2",
     icon: Bot,
   },
   {
     title: "질문/응답 로그 2",
-    path: "/qa-logs2",
+    path: "/master-admin/qa-logs2",
     icon: MessageSquare,
   },
   {
     title: "토큰 관리 2",
-    path: "/token-management2",
+    path: "/master-admin/token-management2",
     icon: Zap,
   },
   {
     title: "카테고리 관리 2",
-    path: "/category-management2",
+    path: "/master-admin/category-management2",
     icon: FolderTree,
   },
   {
     title: "문서 관리 2",
-    path: "/document-management2",
+    path: "/master-admin/document-management2",
     icon: FileText,
   },
   {
     title: "시스템 설정 2",
-    path: "/system-settings2",
+    path: "/master-admin/system-settings2",
     icon: Settings,
   },
 ];
@@ -69,7 +69,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={onClose}
         />
       )}
@@ -80,7 +80,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           fixed top-0 left-0 h-full w-80 bg-white dark:bg-gray-800 shadow-lg z-50 
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:relative lg:translate-x-0 lg:w-64
         `}
       >
         {/* Header */}
@@ -92,7 +91,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="lg:hidden"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -116,12 +114,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         : "hover:bg-gray-100 dark:hover:bg-gray-700"
                       }
                     `}
-                    onClick={() => {
-                      // Close sidebar on mobile after navigation
-                      if (window.innerWidth < 1024) {
-                        onClose();
-                      }
-                    }}
+                    onClick={onClose}
                   >
                     <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
                     <span className="truncate">{item.title}</span>
