@@ -79,7 +79,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/agents/managed', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const agents = await storage.getAgentsByManager(userId);
+      const userType = req.user.userType;
+      
+      // Master admin can manage all agents
+      let agents;
+      if (userType === 'admin' || userId === 'master_admin') {
+        agents = await storage.getAllAgents();
+      } else {
+        agents = await storage.getAgentsByManager(userId);
+      }
       
       // Get stats for each agent
       const agentsWithStats = await Promise.all(
@@ -127,9 +135,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
       
-      // Check if user is the manager of this agent
+      // Check if user is the manager of this agent or master admin
       const agent = await storage.getAgent(agentId);
-      if (!agent || agent.managerId !== userId) {
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
       
@@ -230,7 +239,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const agent = await storage.getAgent(agentId);
-      if (!agent || agent.managerId !== userId) {
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
       
