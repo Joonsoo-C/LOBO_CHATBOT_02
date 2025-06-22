@@ -215,8 +215,33 @@ export default function MasterAdmin() {
     if (!agents) return [];
     
     return [...agents].sort((a, b) => {
-      let aValue: any = a[agentSortField as keyof Agent];
-      let bValue: any = b[agentSortField as keyof Agent];
+      let aValue: any;
+      let bValue: any;
+      
+      // 특별한 필드들에 대한 처리
+      if (agentSortField === 'manager') {
+        aValue = (a as any).managerFirstName && (a as any).managerLastName 
+          ? `${(a as any).managerFirstName} ${(a as any).managerLastName}` 
+          : '';
+        bValue = (b as any).managerFirstName && (b as any).managerLastName 
+          ? `${(b as any).managerFirstName} ${(b as any).managerLastName}` 
+          : '';
+      } else if (agentSortField === 'organization') {
+        aValue = (a as any).organizationName || '';
+        bValue = (b as any).organizationName || '';
+      } else if (agentSortField === 'documentCount') {
+        aValue = (a as any).documentCount || 0;
+        bValue = (b as any).documentCount || 0;
+      } else if (agentSortField === 'userCount') {
+        aValue = (a as any).userCount || 0;
+        bValue = (b as any).userCount || 0;
+      } else if (agentSortField === 'createdAt') {
+        aValue = (a as any).lastUsedAt || a.createdAt || '';
+        bValue = (b as any).lastUsedAt || b.createdAt || '';
+      } else {
+        aValue = a[agentSortField as keyof Agent];
+        bValue = b[agentSortField as keyof Agent];
+      }
       
       // 문자열인 경우 대소문자 구분 없이 정렬
       if (typeof aValue === 'string') aValue = aValue.toLowerCase();
@@ -1061,11 +1086,31 @@ export default function MasterAdmin() {
                             )}
                           </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          관리자
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('manager')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>관리자</span>
+                            {agentSortField === 'manager' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          소속
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          onClick={() => handleAgentSort('organization')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>소속</span>
+                            {agentSortField === 'organization' && (
+                              agentSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
                         <th 
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
