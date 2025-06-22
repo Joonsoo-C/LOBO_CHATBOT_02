@@ -538,7 +538,6 @@ export default function MasterAdmin() {
           </div>
         </div>
       </header>
-
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -555,11 +554,7 @@ export default function MasterAdmin() {
               setActiveTab("dashboard");
               setIsSidebarOpen(false);
             }}
-            className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              activeTab === "dashboard"
-                ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-            }`}
+            className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-left"
           >
             <BarChart3 className="w-4 h-4 mr-3" />
             대시보드
@@ -664,7 +659,6 @@ export default function MasterAdmin() {
           </button>
         </nav>
       </div>
-
       {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -672,7 +666,6 @@ export default function MasterAdmin() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
