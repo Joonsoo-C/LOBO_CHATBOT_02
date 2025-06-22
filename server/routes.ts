@@ -302,9 +302,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { agentId } = req.body;
       
-      // Check if user is the manager of this agent
+      // Check if user is the manager of this agent or master admin
       const agent = await storage.getAgent(agentId);
-      if (!agent || agent.managerId !== userId) {
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
       
@@ -607,7 +608,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has permission to manage this agent
       const agent = await storage.getAgent(agentId);
-      if (!agent || agent.managerId !== userId) {
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "Unauthorized to modify this agent" });
       }
 
@@ -658,7 +660,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const agent = await storage.getAgent(agentId);
-      if (!agent || agent.managerId !== userId) {
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
 

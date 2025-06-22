@@ -15,8 +15,8 @@ export default function Management() {
     enabled: !!agentId,
   });
 
-  // Check if user is the manager of this agent
-  const isAuthorized = agent && user && agent.managerId === user.id;
+  // Check if user is the manager of this agent or master admin
+  const isAuthorized = agent && user && (agent.managerId === user.id || user.userType === 'admin' || user.id === 'master_admin');
 
   if (isLoading) {
     return (
