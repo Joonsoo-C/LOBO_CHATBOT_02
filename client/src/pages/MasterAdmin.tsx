@@ -2323,6 +2323,54 @@ export default function MasterAdmin() {
                     )}
                   />
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="llmModel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LLM 모델 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o-mini"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="GPT-4o Mini (빠름)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
+                            <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="chatbotType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>챗봇 유형 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="문서 우선 + LLM..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
+                            <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
+                            <SelectItem value="general-llm">자유 대화형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 
                 <FormField
                   control={editAgentForm.control}
