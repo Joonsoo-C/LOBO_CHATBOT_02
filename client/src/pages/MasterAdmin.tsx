@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { SidebarLayout } from "@/components/SidebarLayout";
+import Sidebar from "@/components/Sidebar";
 import { 
   Users, 
   MessageSquare, 
@@ -500,24 +500,22 @@ export default function MasterAdmin() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <Sidebar 
+      <AdminSidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
       />
       
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-4">
-                {/* Hamburger Menu Button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              {/* Hamburger Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
                   onClick={() => setSidebarOpen(true)}
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                 >
@@ -551,8 +549,8 @@ export default function MasterAdmin() {
           </div>
         </header>
         
-        {/* Main Content */}
-        <main className="flex-1 overflow-auto max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">
@@ -3600,8 +3598,8 @@ export default function MasterAdmin() {
             </div>
           </DialogContent>
         </Dialog>
-      </Tabs>
+        </Tabs>
       </main>
-    </SidebarLayout>
+    </div>
   );
 }
