@@ -42,9 +42,11 @@ import {
   Coffee,
   Music,
   Heart,
-  Upload
+  Upload,
+  ChevronDown
 } from "lucide-react";
 import { Link } from "wouter";
+import OrganizationSelector from "@/components/OrganizationSelector";
 
 interface User {
   id: string;
@@ -629,55 +631,23 @@ export default function MasterAdmin() {
               <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
               
               {/* 조직 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>전체/대학원/대학교</Label>
-                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="undergraduate">대학교</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>단과대학</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="liberal">인문대학</SelectItem>
-                      <SelectItem value="science">자연과학대학</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>학과</Label>
-                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                      <SelectItem value="electrical">전자공학과</SelectItem>
-                      <SelectItem value="mechanical">기계공학과</SelectItem>
-                      <SelectItem value="business_admin">경영학과</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetFilters}>
-                    필터 초기화
-                  </Button>
-                </div>
+              <div className="flex items-center justify-between">
+                <OrganizationSelector
+                  selectedUniversity={selectedUniversity}
+                  selectedCollege={selectedCollege}
+                  selectedDepartment={selectedDepartment}
+                  onUniversityChange={setSelectedUniversity}
+                  onCollegeChange={setSelectedCollege}
+                  onDepartmentChange={setSelectedDepartment}
+                  showApplyButton={true}
+                  onApply={() => {
+                    setDocumentSearchQuery('');
+                    setHasDocumentSearched(false);
+                  }}
+                />
+                <Button variant="outline" onClick={resetFilters}>
+                  필터 초기화
+                </Button>
               </div>
 
               {/* 사용자 검색 */}
@@ -1597,55 +1567,23 @@ export default function MasterAdmin() {
               <h3 className="text-lg font-semibold mb-4">카테고리 검색 및 관리</h3>
               
               {/* 조직 유형 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>조직 유형</Label>
-                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="university">대학교</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="college">단과대학</SelectItem>
-                      <SelectItem value="department">학과</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>상위 조직</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="robo_univ">로보대학교</SelectItem>
-                      <SelectItem value="robo_grad">로보대학교 대학원</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>단과대학</Label>
-                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="liberal">인문대학</SelectItem>
-                      <SelectItem value="science">자연과학대학</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetFilters}>
-                    필터 초기화
-                  </Button>
-                </div>
+              <div className="flex items-center justify-between">
+                <OrganizationSelector
+                  selectedUniversity={selectedUniversity}
+                  selectedCollege={selectedCollege}
+                  selectedDepartment={selectedDepartment}
+                  onUniversityChange={setSelectedUniversity}
+                  onCollegeChange={setSelectedCollege}
+                  onDepartmentChange={setSelectedDepartment}
+                  showApplyButton={true}
+                  onApply={() => {
+                    setUserSearchQuery('');
+                    setHasSearched(false);
+                  }}
+                />
+                <Button variant="outline" onClick={resetFilters}>
+                  필터 초기화
+                </Button>
               </div>
 
               {/* 카테고리 검색 */}
@@ -1978,55 +1916,60 @@ export default function MasterAdmin() {
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
               
-              {/* 카테고리 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>문서 카테고리</Label>
-                  <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="lecture">강의 자료</SelectItem>
-                      <SelectItem value="policy">정책 문서</SelectItem>
-                      <SelectItem value="manual">매뉴얼</SelectItem>
-                      <SelectItem value="form">양식</SelectItem>
-                      <SelectItem value="notice">공지사항</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>파일 형식</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="pdf">PDF</SelectItem>
-                      <SelectItem value="word">Word</SelectItem>
-                      <SelectItem value="excel">Excel</SelectItem>
-                      <SelectItem value="ppt">PowerPoint</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>업로드 기간</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="today">오늘</SelectItem>
-                      <SelectItem value="week">1주일</SelectItem>
-                      <SelectItem value="month">1개월</SelectItem>
-                      <SelectItem value="year">1년</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
+              {/* 카테고리 및 조직 필터 */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="relative">
+                      <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
+                        <SelectTrigger className="min-w-[120px] h-10 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm font-medium hover:bg-gray-100 transition-colors">
+                          <SelectValue placeholder="문서 카테고리" />
+                          <ChevronDown className="w-4 h-4 ml-2 text-gray-500" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="lecture">강의 자료</SelectItem>
+                          <SelectItem value="policy">정책 문서</SelectItem>
+                          <SelectItem value="manual">매뉴얼</SelectItem>
+                          <SelectItem value="form">양식</SelectItem>
+                          <SelectItem value="notice">공지사항</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="relative">
+                      <Select>
+                        <SelectTrigger className="min-w-[100px] h-10 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm font-medium hover:bg-gray-100 transition-colors">
+                          <SelectValue placeholder="파일 형식" />
+                          <ChevronDown className="w-4 h-4 ml-2 text-gray-500" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="pdf">PDF</SelectItem>
+                          <SelectItem value="word">Word</SelectItem>
+                          <SelectItem value="excel">Excel</SelectItem>
+                          <SelectItem value="ppt">PowerPoint</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="relative">
+                      <Select>
+                        <SelectTrigger className="min-w-[100px] h-10 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm font-medium hover:bg-gray-100 transition-colors">
+                          <SelectValue placeholder="업로드 기간" />
+                          <ChevronDown className="w-4 h-4 ml-2 text-gray-500" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="today">오늘</SelectItem>
+                          <SelectItem value="week">1주일</SelectItem>
+                          <SelectItem value="month">1개월</SelectItem>
+                          <SelectItem value="year">1년</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
                   <Button variant="outline" onClick={() => {
                     setSelectedDocumentCategory('all');
                     setDocumentSearchQuery('');
@@ -2035,6 +1978,16 @@ export default function MasterAdmin() {
                     필터 초기화
                   </Button>
                 </div>
+                
+                {/* 조직 필터 */}
+                <OrganizationSelector
+                  selectedUniversity={selectedUniversity}
+                  selectedCollege={selectedCollege}
+                  selectedDepartment={selectedDepartment}
+                  onUniversityChange={setSelectedUniversity}
+                  onCollegeChange={setSelectedCollege}
+                  onDepartmentChange={setSelectedDepartment}
+                />
               </div>
 
               {/* 문서 검색 */}
