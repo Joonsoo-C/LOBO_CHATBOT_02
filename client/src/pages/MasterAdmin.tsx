@@ -572,20 +572,38 @@ export default function MasterAdmin() {
             <BarChart3 className="w-5 h-5" />
             <span>대시보드</span>
           </button>
-          <button
-            onClick={() => {
-              setActiveTab('users');
-              setIsSidebarOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
-              activeTab === 'users' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            <Users className="w-5 h-5" />
-            <span>사용자 관리</span>
-          </button>
+          
+          {/* 사용자 관리 그룹 */}
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                setActiveTab('users');
+                setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+                activeTab === 'users' 
+                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              <span>사용자 관리</span>
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('users2');
+                setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ml-4 ${
+                activeTab === 'users2' 
+                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>사용자 관리 II</span>
+            </button>
+          </div>
           <button
             onClick={() => {
               setActiveTab('managers');
