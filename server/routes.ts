@@ -57,14 +57,26 @@ const imageUpload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Test database connection first
+  console.log('Testing database connection...');
+  const dbConnected = await testDatabaseConnection();
+  
+  if (!dbConnected) {
+    console.warn('Database connection failed, application will run with limited functionality');
+  }
+
   // Auth middleware
   await setupAuth(app);
 
-  // Initialize default agents if they don't exist
-  try {
-    await initializeDefaultAgents();
-  } catch (error) {
-    console.log('Warning: Could not initialize default agents, will retry on first request:', (error as Error).message);
+  // Initialize default agents if they don't exist (only if DB is connected)
+  if (dbConnected) {
+    try {
+      await initializeDefaultAgents();
+    } catch (error) {
+      console.log('Warning: Could not initialize default agents, will retry on first request:', (error as Error).message);
+    }
+  } else {
+    console.log('Skipping default agent initialization due to database connection issues');
   }
 
   // Note: Auth routes are now handled in setupAuth() function

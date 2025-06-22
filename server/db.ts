@@ -1,9 +1,6 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
-
-neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -11,13 +8,14 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Configure connection with retry logic and timeout handling
+// Use standard PostgreSQL driver instead of Neon serverless
 const connectionString = process.env.DATABASE_URL;
 export const pool = new Pool({ 
   connectionString,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 // Add connection error handling
@@ -25,7 +23,7 @@ pool.on('error', (err) => {
   console.warn('Database pool error:', err.message);
 });
 
-export const db = drizzle({ client: pool, schema });
+export const db = drizzle(pool, { schema });
 
 // Test database connection with retry logic
 export async function testDatabaseConnection(retries = 3): Promise<boolean> {
