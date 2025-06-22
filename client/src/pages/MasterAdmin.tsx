@@ -459,7 +459,7 @@ export default function MasterAdmin() {
   // 에이전트 삭제 뮤테이션
   const deleteAgentMutation = useMutation({
     mutationFn: async (agentId: number) => {
-      const response = await apiRequest(`/api/admin/agents/${agentId}`, {
+      const response = await fetch(`/api/admin/agents/${agentId}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete agent');

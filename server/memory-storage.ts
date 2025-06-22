@@ -96,9 +96,7 @@ export class MemoryStorage implements IStorage {
         managerId: "master_admin",
         organizationId: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
+        updatedAt: new Date()
       },
       {
         id: 2,
@@ -117,156 +115,7 @@ export class MemoryStorage implements IStorage {
         managerId: "master_admin",
         organizationId: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 3,
-        name: "레포트 작성",
-        description: "학술 레포트 작성을 도와드립니다",
-        category: "기능형",
-        icon: "FileText",
-        backgroundColor: "purple",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "체계적이고 논리적인",
-        personalityTraits: "체계적이고 논리적인 사고로 명확한 설명을 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 4,
-        name: "자기소개서 작성",
-        description: "자기소개서 작성 및 첨삭을 도와드립니다",
-        category: "기능형",
-        icon: "User",
-        backgroundColor: "orange",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "격려하고 긍정적인",
-        personalityTraits: "격려하고 긍정적인 성격으로 자신감을 북돋아주는",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 5,
-        name: "코딩 과제 도움",
-        description: "프로그래밍 과제와 코딩 문제를 해결해드립니다",
-        category: "기능형",
-        icon: "Code",
-        backgroundColor: "indigo",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "논리적이고 정확한",
-        personalityTraits: "논리적이고 정확한 성격으로 체계적인 해결책을 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 6,
-        name: "강의 요약 정리",
-        description: "강의 내용을 체계적으로 요약 정리해드립니다",
-        category: "기능형",
-        icon: "BookOpen",
-        backgroundColor: "teal",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "체계적이고 명확한",
-        personalityTraits: "체계적이고 명확한 성격으로 정리된 정보를 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 7,
-        name: "SNS 게시물 작성",
-        description: "소셜미디어 게시물 작성을 도와드립니다",
-        category: "기능형",
-        icon: "MessageCircle",
-        backgroundColor: "pink",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "창의적이고 트렌디한",
-        personalityTraits: "창의적이고 트렌디한 성격으로 독창적인 아이디어를 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 8,
-        name: "발표 대본 작성",
-        description: "프레젠테이션 대본 작성을 도와드립니다",
-        category: "기능형",
-        icon: "Presentation",
-        backgroundColor: "red",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "설득력 있고 명확한",
-        personalityTraits: "설득력 있고 명확한 성격으로 효과적인 커뮤니케이션을 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
-      },
-      {
-        id: 9,
-        name: "면접 준비",
-        description: "취업 면접 준비와 모의면접을 도와드립니다",
-        category: "기능형",
-        icon: "Users",
-        backgroundColor: "yellow",
-        isActive: true,
-        isCustomIcon: false,
-        speakingStyle: "격려하고 전문적인",
-        personalityTraits: "격려하고 전문적인 성격으로 자신감을 키워주는 조언 제공",
-        prohibitedWordResponse: "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        llmModel: "gpt-4o",
-        chatbotType: "general-llm",
-        managerId: "F2024001",
-        organizationId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        grumpyResponse: null,
-        prohibitedWordResponse: null
+        updatedAt: new Date()
       }
     ];
 
@@ -285,6 +134,11 @@ export class MemoryStorage implements IStorage {
   async createUser(user: UpsertUser): Promise<User> {
     const newUser: User = {
       ...user,
+      email: user.email || null,
+      firstName: user.firstName || null,
+      lastName: user.lastName || null,
+      profileImageUrl: user.profileImageUrl || null,
+      userType: user.userType || "student",
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -296,6 +150,11 @@ export class MemoryStorage implements IStorage {
     const existingUser = this.users.get(user.id);
     const newUser: User = {
       ...user,
+      email: user.email || null,
+      firstName: user.firstName || null,
+      lastName: user.lastName || null,
+      profileImageUrl: user.profileImageUrl || null,
+      userType: user.userType || "student",
       createdAt: existingUser?.createdAt || new Date(),
       updatedAt: new Date()
     };
@@ -317,6 +176,15 @@ export class MemoryStorage implements IStorage {
     const newAgent: Agent = {
       ...agent,
       id,
+      isCustomIcon: agent.isCustomIcon || false,
+      isActive: agent.isActive || true,
+      managerId: agent.managerId || null,
+      organizationId: agent.organizationId || null,
+      llmModel: agent.llmModel || "gpt-4o",
+      chatbotType: agent.chatbotType || "general-llm",
+      speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
+      personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+      prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -325,16 +193,13 @@ export class MemoryStorage implements IStorage {
   }
 
   async updateAgent(id: number, updates: any): Promise<Agent> {
-    const existing = this.agents.get(id);
-    if (!existing) throw new Error('Agent not found');
-    
-    const updated: Agent = {
-      ...existing,
-      ...updates,
-      updatedAt: new Date()
-    };
-    this.agents.set(id, updated);
-    return updated;
+    const existingAgent = this.agents.get(id);
+    if (!existingAgent) {
+      throw new Error("Agent not found");
+    }
+    const updatedAgent = { ...existingAgent, ...updates, updatedAt: new Date() };
+    this.agents.set(id, updatedAgent);
+    return updatedAgent;
   }
 
   async getAgentsByManager(managerId: string): Promise<Agent[]> {
@@ -343,10 +208,13 @@ export class MemoryStorage implements IStorage {
 
   // Conversation operations
   async getOrCreateConversation(userId: string, agentId: number, type: string = "general"): Promise<Conversation> {
-    const existing = Array.from(this.conversations.values())
-      .find(conv => conv.userId === userId && conv.agentId === agentId && conv.type === type);
-    
-    if (existing) return existing;
+    const existing = Array.from(this.conversations.values()).find(
+      conv => conv.userId === userId && conv.agentId === agentId && conv.type === type
+    );
+
+    if (existing) {
+      return existing;
+    }
 
     const id = this.nextId++;
     const newConversation: Conversation = {
@@ -355,9 +223,9 @@ export class MemoryStorage implements IStorage {
       agentId,
       type,
       unreadCount: 0,
-      lastMessageAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      lastReadAt: null,
+      lastMessageAt: new Date(),
+      createdAt: new Date()
     };
     this.conversations.set(id, newConversation);
     return newConversation;
@@ -365,31 +233,64 @@ export class MemoryStorage implements IStorage {
 
   async getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
     const userConversations = Array.from(this.conversations.values())
-      .filter(conv => conv.userId === userId);
-    
+      .filter(conv => conv.userId === userId && conv.type === "general")
+      .sort((a, b) => {
+        const aTime = a.lastMessageAt?.getTime() || 0;
+        const bTime = b.lastMessageAt?.getTime() || 0;
+        return bTime - aTime;
+      });
+
     return userConversations.map(conv => {
-      const agent = this.agents.get(conv.agentId)!;
-      const lastMessage = Array.from(this.messages.values())
+      const agent = this.agents.get(conv.agentId);
+      const conversationMessages = Array.from(this.messages.values())
         .filter(msg => msg.conversationId === conv.id)
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+        .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
       
-      return { ...conv, agent, lastMessage };
+      return {
+        ...conv,
+        agent: agent!,
+        lastMessage: conversationMessages[0]
+      };
     });
   }
 
   async getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
-    return this.getUserConversations(userId);
+    const userConversations = Array.from(this.conversations.values())
+      .filter(conv => conv.userId === userId)
+      .sort((a, b) => {
+        const aTime = a.lastMessageAt?.getTime() || 0;
+        const bTime = b.lastMessageAt?.getTime() || 0;
+        return bTime - aTime;
+      });
+
+    return userConversations.map(conv => {
+      const agent = this.agents.get(conv.agentId);
+      const conversationMessages = Array.from(this.messages.values())
+        .filter(msg => msg.conversationId === conv.id)
+        .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+      
+      return {
+        ...conv,
+        agent: agent!,
+        lastMessage: conversationMessages[0]
+      };
+    });
   }
 
   async getAllConversations(): Promise<Conversation[]> {
-    return Array.from(this.conversations.values());
+    return Array.from(this.conversations.values())
+      .sort((a, b) => {
+        const aTime = a.lastMessageAt?.getTime() || 0;
+        const bTime = b.lastMessageAt?.getTime() || 0;
+        return bTime - aTime;
+      });
   }
 
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
     return Array.from(this.messages.values())
       .filter(msg => msg.conversationId === conversationId)
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+      .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
   }
 
   async createMessage(message: InsertMessage): Promise<Message> {
@@ -400,87 +301,82 @@ export class MemoryStorage implements IStorage {
       createdAt: new Date()
     };
     this.messages.set(id, newMessage);
-    
-    // Update conversation last message time
+
+    // Update conversation
     const conversation = this.conversations.get(message.conversationId);
     if (conversation) {
-      conversation.lastMessageAt = newMessage.createdAt;
-      conversation.updatedAt = new Date();
+      this.conversations.set(message.conversationId, {
+        ...conversation,
+        lastMessageAt: new Date(),
+        unreadCount: !message.isFromUser ? (conversation.unreadCount || 0) + 1 : conversation.unreadCount
+      });
     }
-    
+
     return newMessage;
   }
 
   async markConversationAsRead(conversationId: number): Promise<void> {
     const conversation = this.conversations.get(conversationId);
     if (conversation) {
-      conversation.unreadCount = 0;
-      conversation.updatedAt = new Date();
-    }
-  }
-
-  async incrementUnreadCount(conversationId: number): Promise<void> {
-    const conversation = this.conversations.get(conversationId);
-    if (conversation) {
-      conversation.unreadCount = (conversation.unreadCount || 0) + 1;
-      conversation.updatedAt = new Date();
+      this.conversations.set(conversationId, {
+        ...conversation,
+        unreadCount: 0,
+        lastReadAt: new Date()
+      });
     }
   }
 
   // Document operations
-  async getAgentDocuments(agentId: number): Promise<Document[]> {
-    return Array.from(this.documents.values()).filter(doc => doc.agentId === agentId);
-  }
-
   async createDocument(document: InsertDocument): Promise<Document> {
     const id = this.nextId++;
     const newDocument: Document = {
       ...document,
       id,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      content: document.content || null,
+      createdAt: new Date()
     };
     this.documents.set(id, newDocument);
     return newDocument;
   }
 
-  async getAllDocuments(): Promise<Document[]> {
-    return Array.from(this.documents.values());
+  async getAgentDocuments(agentId: number): Promise<Document[]> {
+    return Array.from(this.documents.values())
+      .filter(doc => doc.agentId === agentId)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
     return this.documents.get(id);
   }
 
-  // Agent stats operations
-  async getAgentStats(): Promise<AgentStats[]> {
-    return Array.from(this.agentStats.values());
+  async deleteDocument(id: number): Promise<void> {
+    this.documents.delete(id);
+  }
+
+  // Stats operations
+  async getAgentStats(agentId: number): Promise<AgentStats | undefined> {
+    return this.agentStats.get(agentId);
   }
 
   async updateAgentStats(agentId: number, stats: Partial<AgentStats>): Promise<void> {
     const existing = this.agentStats.get(agentId);
-    const updated: AgentStats = {
+    const newStats: AgentStats = {
       id: existing?.id || this.nextId++,
       agentId,
-      totalMessages: 0,
-      totalUsers: 0,
-      averageResponseTime: 0,
-      totalTokensUsed: 0,
-      satisfactionScore: 0,
-      lastUsedAt: null,
-      ...existing,
-      ...stats,
+      activeUsers: stats.activeUsers || 0,
+      totalMessages: stats.totalMessages || 0,
+      usagePercentage: stats.usagePercentage || 0,
+      ranking: stats.ranking || 0,
       updatedAt: new Date()
     };
-    this.agentStats.set(agentId, updated);
+    this.agentStats.set(agentId, newStats);
   }
 
   // Message reaction operations
-  async getMessageReactions(messageId: number): Promise<MessageReaction[]> {
-    return Array.from(this.messageReactions.values()).filter(reaction => reaction.messageId === messageId);
-  }
-
   async createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction> {
+    // Delete existing reaction first
+    await this.deleteMessageReaction(reaction.messageId, reaction.userId);
+    
     const id = this.nextId++;
     const newReaction: MessageReaction = {
       ...reaction,
@@ -492,24 +388,23 @@ export class MemoryStorage implements IStorage {
   }
 
   async deleteMessageReaction(messageId: number, userId: string): Promise<void> {
-    const toDelete = Array.from(this.messageReactions.entries())
-      .find(([_, reaction]) => reaction.messageId === messageId && reaction.userId === userId);
-    
-    if (toDelete) {
-      this.messageReactions.delete(toDelete[0]);
+    const reactions = Array.from(this.messageReactions.entries());
+    for (const [id, reaction] of reactions) {
+      if (reaction.messageId === messageId && reaction.userId === userId) {
+        this.messageReactions.delete(id);
+        break;
+      }
     }
   }
 
-  // Additional methods for admin functionality
-  async getAllUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
-  }
-
-  async getUsersCount(): Promise<number> {
-    return this.users.size;
-  }
-
-  async getAgentsCount(): Promise<number> {
-    return this.agents.size;
+  async getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }> {
+    const result: { [messageId: number]: MessageReaction | undefined } = {};
+    const reactions = Array.from(this.messageReactions.values());
+    
+    for (const messageId of messageIds) {
+      result[messageId] = reactions.find(r => r.messageId === messageId);
+    }
+    
+    return result;
   }
 }

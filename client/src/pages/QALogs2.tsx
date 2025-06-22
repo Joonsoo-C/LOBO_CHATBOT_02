@@ -247,6 +247,7 @@ export default function QALogs2() {
       </div>
 
       {/* Tabs */}
+      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList className="mb-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <TabsTrigger 
             value="logs" 

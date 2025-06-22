@@ -210,7 +210,8 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
-  personality: z.string().optional(),
+  llmModel: z.string().optional(),
+  chatbotType: z.string().optional(),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
