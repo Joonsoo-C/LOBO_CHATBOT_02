@@ -95,6 +95,8 @@ const agentSchema = z.object({
   personality: z.string().optional(),
   managerId: z.string().min(1, "관리자를 선택해주세요"),
   organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
+  llmModel: z.string().optional(),
+  chatbotType: z.string().optional(),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;
@@ -317,6 +319,8 @@ export default function MasterAdmin() {
       personality: "",
       managerId: "",
       organizationId: "",
+      llmModel: "gpt-4o",
+      chatbotType: "general-llm",
     },
   });
 
@@ -330,6 +334,8 @@ export default function MasterAdmin() {
       personality: "",
       managerId: "",
       organizationId: "",
+      llmModel: "gpt-4o",
+      chatbotType: "general-llm",
     },
   });
 
