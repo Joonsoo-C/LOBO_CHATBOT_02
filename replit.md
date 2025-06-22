@@ -419,6 +419,14 @@ Changelog:
   * Added icon change API endpoint with support for 10 different icons and 10 background colors
   * Agent creation now uses default icon/color, with separate icon customization available
   * Enhanced agent list display to show manager name and organizational affiliation
+- June 22, 2025. Unified database system for LoBo AI chatbot and master admin system:
+  * Confirmed both systems share the same PostgreSQL database through shared/schema.ts
+  * Enhanced admin.ts with comprehensive agent statistics including document count, user count, and last used date
+  * Improved agent management table with clickable rows, hover effects, and visual state indicators
+  * Removed text-based active/inactive labels in favor of visual styling (background colors, text opacity)
+  * Added proper error handling for database queries with fallback values
+  * Master admin system now displays authentic data from the main chatbot database
+  * Fixed main service button to open AI chatbot in new browser window
 ```
 
 ## User Preferences

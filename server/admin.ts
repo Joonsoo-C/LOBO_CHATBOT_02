@@ -1,6 +1,6 @@
 import { Express } from "express";
 import { db } from "./db";
-import { users, agents, conversations, messages, organizations } from "../shared/schema";
+import { users, agents, conversations, messages, organizations, documents } from "../shared/schema";
 import { eq, sql, desc, count } from "drizzle-orm";
 
 // Middleware to check if user is master admin
@@ -114,19 +114,50 @@ export function setupAdminRoutes(app: Express) {
         .leftJoin(organizations, eq(agents.organizationId, organizations.id))
         .orderBy(desc(agents.createdAt));
 
-      // Get message counts for each agent
+      // Get comprehensive stats for each agent
       const agentStats = await Promise.all(
         agentList.map(async (agent) => {
-          const messageCount = await db
-            .select({ count: count() })
-            .from(messages)
-            .innerJoin(conversations, eq(messages.conversationId, conversations.id))
-            .where(eq(conversations.agentId, agent.id));
+          try {
+            const [messageCountResult, documentCountResult, userCountResult, lastUsedResult] = await Promise.all([
+              // Message count
+              db.select({ count: count() })
+                .from(messages)
+                .innerJoin(conversations, eq(messages.conversationId, conversations.id))
+                .where(eq(conversations.agentId, agent.id)),
+              
+              // Document count
+              db.select({ count: count() })
+                .from(documents)
+                .where(eq(documents.agentId, agent.id)),
+              
+              // Unique user count
+              db.select({ count: sql<number>`COUNT(DISTINCT ${conversations.userId})` })
+                .from(conversations)
+                .where(eq(conversations.agentId, agent.id)),
+              
+              // Last used date
+              db.select({ lastUsed: sql<Date | null>`MAX(${conversations.lastMessageAt})` })
+                .from(conversations)
+                .where(eq(conversations.agentId, agent.id))
+            ]);
 
-          return {
-            ...agent,
-            messageCount: messageCount[0]?.count || 0
-          };
+            return {
+              ...agent,
+              messageCount: messageCountResult[0]?.count || 0,
+              documentCount: documentCountResult[0]?.count || 0,
+              userCount: Number(userCountResult[0]?.count) || 0,
+              lastUsedAt: lastUsedResult[0]?.lastUsed || null
+            };
+          } catch (error) {
+            console.error(`Error fetching stats for agent ${agent.id}:`, error);
+            return {
+              ...agent,
+              messageCount: 0,
+              documentCount: 0,
+              userCount: 0,
+              lastUsedAt: null
+            };
+          }
         })
       );
 
