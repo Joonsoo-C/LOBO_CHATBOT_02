@@ -1582,6 +1582,26 @@ export default function MasterAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* 토큰 유형 범례 */}
+                <div className="flex items-center justify-center space-x-6 mb-6 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                    <span className="text-sm font-medium">입력 (40-50%)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-green-500 rounded"></div>
+                    <span className="text-sm font-medium">출력 (15-24%)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                    <span className="text-sm font-medium">인덱스 (15-20%)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    <span className="text-sm font-medium">읽기 (나머지)</span>
+                  </div>
+                </div>
+                
                 <div className="h-64 relative">
                   {/* Y축 레이블 */}
                   <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 py-2">
@@ -1617,13 +1637,23 @@ export default function MasterAdmin() {
                             const height = isWeekend ? Math.random() * 25 + 5 : Math.random() * 60 + 30; // 주말 5-30%, 평일 30-90%
                             const dayStr = `${date.getMonth() + 1}/${date.getDate()}`;
                             
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
                             return (
                               <div key={i} className="flex flex-col items-center space-y-1 flex-1 min-w-0">
                                 <div className="w-2 relative" style={{height: '200px'}}>
-                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
-                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
-                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
-                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
                                 </div>
                                 {(i % 7 === 0 || i === 59) && (
                                   <span className="text-xs text-gray-500 transform -rotate-45 whitespace-nowrap">{dayStr}</span>
@@ -1641,13 +1671,23 @@ export default function MasterAdmin() {
                             const weekNumber = 12 - i;
                             const height = Math.random() * 50 + 40; // 40-90%
                             
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
                             return (
                               <div key={i} className="flex flex-col items-center space-y-2 flex-1">
                                 <div className="w-8 relative" style={{height: '200px'}}>
-                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
-                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
-                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
-                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
                                 </div>
                                 <span className="text-xs text-gray-500">{weekNumber}주</span>
                               </div>
@@ -1665,13 +1705,23 @@ export default function MasterAdmin() {
                             const isVacation = i === 0 || i === 1 || i === 6 || i === 7 || i === 11; // 1월, 2월, 7월, 8월, 12월
                             const height = isVacation ? Math.random() * 25 + 5 : Math.random() * 50 + 40; // 방학 5-30%, 학기 40-90%
                             
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
                             return (
                               <div key={i} className="flex flex-col items-center space-y-2 flex-1">
                                 <div className="w-8 relative" style={{height: '200px'}}>
-                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
-                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
-                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
-                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
                                 </div>
                                 <span className="text-xs text-gray-500">{month}</span>
                               </div>
@@ -1687,13 +1737,23 @@ export default function MasterAdmin() {
                             const year = 2020 + i;
                             const height = 20 + (i * 15) + Math.random() * 10; // 점진적 증가 패턴
                             
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
                             return (
                               <div key={i} className="flex flex-col items-center space-y-2 flex-1">
                                 <div className="w-12 relative" style={{height: '200px'}}>
-                                  <div className="absolute bottom-0 w-full bg-blue-500 rounded-t" style={{height: `${height}%`}}></div>
-                                  <div className="absolute bottom-0 w-full bg-green-500 rounded-t" style={{height: `${height * 0.8}%`, opacity: 0.9}}></div>
-                                  <div className="absolute bottom-0 w-full bg-yellow-500 rounded-t" style={{height: `${height * 0.6}%`, opacity: 0.8}}></div>
-                                  <div className="absolute bottom-0 w-full bg-red-500 rounded-t" style={{height: `${height * 0.4}%`, opacity: 0.7}}></div>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
                                 </div>
                                 <span className="text-xs text-gray-500">{year}</span>
                               </div>
