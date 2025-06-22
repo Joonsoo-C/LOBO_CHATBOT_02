@@ -93,9 +93,12 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다"),
   description: z.string().min(1, "설명은 필수입니다"),
   category: z.string().min(1, "카테고리를 선택해주세요"),
-  personality: z.string().optional(),
+  speakingStyle: z.string().min(1, "말투를 입력해주세요"),
+  personalityTraits: z.string().min(1, "성격을 입력해주세요"),
   managerId: z.string().min(1, "관리자를 선택해주세요"),
   organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
+  llmModel: z.string().min(1, "LLM 모델을 선택해주세요"),
+  chatbotType: z.string().min(1, "챗봇 유형을 선택해주세요"),
 });
 
 type AgentFormData = z.infer<typeof agentSchema>;

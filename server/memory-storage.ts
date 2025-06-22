@@ -21,7 +21,7 @@ export class MemoryStorage implements IStorage {
       {
         id: "master_admin",
         username: "master_admin",
-        password: "$2b$10$hash", // Hashed password
+        password: "$2b$10$OQCYjHUemscu0NaFL47W9ODhNWFnYPnypbP3ayDxyka60lBe2m1.K", // MasterAdmin2024!
         email: "admin@university.ac.kr",
         firstName: "관리자",
         lastName: "마스터",
@@ -33,7 +33,7 @@ export class MemoryStorage implements IStorage {
       {
         id: "student001",
         username: "student001",
-        password: "$2b$10$hash",
+        password: "$2b$10$7xRu6HlguZdQJdAsgQT3CeaJs42vfieBw4Uh/N116dPnv29LHNWSy", // Student001!
         email: "student001@university.ac.kr",
         firstName: "김",
         lastName: "학생",
