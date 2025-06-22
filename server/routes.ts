@@ -61,7 +61,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Initialize default agents if they don't exist
-  await initializeDefaultAgents();
+  try {
+    await initializeDefaultAgents();
+  } catch (error) {
+    console.log('Warning: Could not initialize default agents, database may need setup:', (error as Error).message);
+  }
 
   // Note: Auth routes are now handled in setupAuth() function
 
