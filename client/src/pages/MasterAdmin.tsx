@@ -45,9 +45,12 @@ import {
   Upload,
   ChevronUp,
   ChevronDown,
-  Palette
+  Palette,
+  Menu,
+  ExternalLink
 } from "lucide-react";
 import { Link } from "wouter";
+import Sidebar from "@/components/Sidebar";
 
 interface User {
   id: string;
@@ -98,6 +101,7 @@ type AgentFormData = z.infer<typeof agentSchema>;
 
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
