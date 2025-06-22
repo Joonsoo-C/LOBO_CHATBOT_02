@@ -45,7 +45,9 @@ import {
   Upload,
   ChevronUp,
   ChevronDown,
-  Palette
+  Palette,
+  Menu,
+  X
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -116,6 +118,7 @@ export default function MasterAdmin() {
   const [selectedDocumentCategory, setSelectedDocumentCategory] = useState('all');
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
