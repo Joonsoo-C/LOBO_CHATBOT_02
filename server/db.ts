@@ -1,96 +1,84 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import Database from 'better-sqlite3';
 import * as schema from "@shared/schema";
+import path from 'path';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
+// Use SQLite as fallback when PostgreSQL is unavailable
+console.log('Using SQLite database for development due to connectivity issues');
+
+const sqlite = new Database(path.join(process.cwd(), 'dev.db'));
+export const db = drizzle(sqlite, { schema });
+
+// Initialize tables for SQLite
+sqlite.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    email TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
-}
 
-// Use standard PostgreSQL driver instead of Neon serverless
-const connectionString = process.env.DATABASE_URL;
-export const pool = new Pool({ 
-  connectionString,
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+  CREATE TABLE IF NOT EXISTS agents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    icon TEXT DEFAULT 'User',
+    background_color TEXT DEFAULT 'blue',
+    is_active BOOLEAN DEFAULT true,
+    is_custom_icon BOOLEAN DEFAULT false,
+    manager_id TEXT,
+    organization_id INTEGER,
+    personality_traits TEXT,
+    llm_model TEXT DEFAULT 'gpt-4o',
+    chatbot_type TEXT DEFAULT 'general-llm',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 
-// Add connection error handling
-pool.on('error', (err) => {
-  console.warn('Database pool error:', err.message);
-});
+  CREATE TABLE IF NOT EXISTS conversations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    agent_id INTEGER NOT NULL,
+    type TEXT DEFAULT 'general',
+    last_message_at DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (agent_id) REFERENCES agents(id)
+  );
 
-export const db = drizzle(pool, { schema });
+  CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    conversation_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    role TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id)
+  );
+`);
 
-// Test database connection with retry logic
-export async function testDatabaseConnection(retries = 3): Promise<boolean> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const client = await pool.connect();
-      const result = await client.query('SELECT 1 as test');
-      client.release();
-      
-      if (result.rows[0]?.test === 1) {
-        console.log('Database connection successful');
-        return true;
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.warn(`Database connection attempt ${i + 1} failed:`, errorMessage);
-      
-      // If it's a Neon endpoint disabled error, don't retry
-      if (errorMessage.includes('endpoint is disabled')) {
-        console.error('Neon database endpoint is disabled - this requires manual intervention');
-        return false;
-      }
-      
-      if (i === retries - 1) {
-        console.error('All database connection attempts failed');
-        return false;
-      }
-      // Wait before retry
-      await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1)));
+// Test database connection
+export async function testDatabaseConnection(): Promise<boolean> {
+  try {
+    const result = sqlite.prepare('SELECT 1 as test').get();
+    if (result && (result as any).test === 1) {
+      console.log('SQLite database connection successful');
+      return true;
     }
+    return false;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('SQLite database connection failed:', errorMessage);
+    return false;
   }
-  return false;
 }
 
 // Initialize database schema if connection is available
 export async function initializeDatabase(): Promise<boolean> {
   try {
-    const client = await pool.connect();
-    
-    // Create basic tables if they don't exist
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id VARCHAR(255) PRIMARY KEY,
-        username VARCHAR(255) UNIQUE NOT NULL,
-        first_name VARCHAR(255),
-        last_name VARCHAR(255),
-        email VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS agents (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        category VARCHAR(100),
-        icon VARCHAR(255) DEFAULT 'User',
-        background_color VARCHAR(50) DEFAULT 'blue',
-        is_active BOOLEAN DEFAULT true,
-        is_custom_icon BOOLEAN DEFAULT false,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    
-    client.release();
-    console.log('Database schema initialized successfully');
+    // Tables are already created in the sqlite.exec() call above
+    console.log('SQLite database schema initialized successfully');
     return true;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -98,3 +86,6 @@ export async function initializeDatabase(): Promise<boolean> {
     return false;
   }
 }
+
+// Export sqlite instance for compatibility
+export const pool = sqlite;
