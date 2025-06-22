@@ -1031,24 +1031,18 @@ export default function MasterAdmin() {
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {agents?.map((agent) => (
-                        <tr key={agent.id}>
+                        <tr 
+                          key={agent.id}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                          onClick={() => openEditAgentDialog(agent)}
+                        >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div 
-                                className={`w-10 h-10 rounded-full flex items-center justify-center bg-${agent.backgroundColor}-500 mr-3`}
-                              >
-                                {(() => {
-                                  const IconComponent = iconMap[agent.icon as keyof typeof iconMap] || User;
-                                  return <IconComponent className="w-5 h-5 text-white" />;
-                                })()}
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {agent.name}
                               </div>
-                              <div>
-                                <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {agent.name}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {agent.isActive ? '활성' : '비활성'}
-                                </div>
+                              <div className="text-xs text-gray-500">
+                                {agent.isActive ? '활성' : '비활성'}
                               </div>
                             </div>
                           </td>
@@ -1083,14 +1077,17 @@ export default function MasterAdmin() {
                               : '-'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-1">
-                              <Button variant="outline" size="sm" onClick={() => openEditAgentDialog(agent)} title="에이전트 편집">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm" title="통계 보기">
-                                <BarChart3 className="w-4 h-4" />
-                              </Button>
-                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              title="통계 보기"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // 통계 보기 로직
+                              }}
+                            >
+                              <BarChart3 className="w-4 h-4" />
+                            </Button>
                           </td>
                         </tr>
                       ))}
