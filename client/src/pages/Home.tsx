@@ -46,12 +46,12 @@ function Home() {
   });
 
   const categories = [
-    { value: "전체", label: t('home.categories.all') },
-    { value: "학교", label: t('home.categories.school') },
-    { value: "교수", label: t('home.categories.professor') },
-    { value: "학생", label: t('home.categories.student') },
-    { value: "그룹", label: t('home.categories.group') },
-    { value: "기능형", label: t('home.categories.function') }
+    { value: "전체", label: "전체" },
+    { value: "학교", label: "학교" },
+    { value: "교수", label: "교수" },
+    { value: "학생", label: "학생" },
+    { value: "그룹", label: "그룹" },
+    { value: "기능형", label: "기능형" }
   ];
 
   const filteredAgents = useMemo(() => {

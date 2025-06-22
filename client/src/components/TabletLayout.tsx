@@ -330,12 +330,12 @@ export default function TabletLayout() {
 
   // Category options with translations
   const categories = [
-    { value: "전체", label: t('home.categoryAll') },
-    { value: "학교", label: t('home.categorySchool') },
-    { value: "교수", label: t('home.categoryProfessor') },
-    { value: "학생", label: t('home.categoryStudent') },
-    { value: "그룹", label: t('home.categoryGroup') },
-    { value: "기능형", label: t('home.categoryFunction') }
+    { value: "전체", label: "전체" },
+    { value: "학교", label: "학교" },
+    { value: "교수", label: "교수" },
+    { value: "학생", label: "학생" },
+    { value: "그룹", label: "그룹" },
+    { value: "기능형", label: "기능형" }
   ];
 
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
