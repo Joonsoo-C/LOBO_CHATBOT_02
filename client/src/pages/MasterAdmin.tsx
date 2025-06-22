@@ -2280,7 +2280,7 @@ export default function MasterAdmin() {
         <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>새 에이전트 설정</DialogTitle>
+              <DialogTitle>에이전트 설정</DialogTitle>
             </DialogHeader>
             <Form {...editAgentForm}>
               <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
