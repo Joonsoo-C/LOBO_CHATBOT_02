@@ -551,7 +551,75 @@ export default function MasterAdmin() {
         <nav className="p-4 space-y-2">
           <button
             onClick={() => {
-              setActiveTab("dashboard");
+              setActiveTab('dashboard');
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+              activeTab === 'dashboard' 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span>대시보드</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('users');
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+              activeTab === 'users' 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <Users className="w-5 h-5" />
+            <span>사용자 관리</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('managers');
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+              activeTab === 'managers' 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <UserCheck className="w-5 h-5" />
+            <span>관리자 관리</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('agents');
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+              activeTab === 'agents' 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <Bot className="w-5 h-5" />
+            <span>에이전트 관리</span>
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('organizations');
+              setIsSidebarOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+              activeTab === 'organizations' 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <Building className="w-5 h-5" />
+            <span>기관 관리</span>
+          </button>
+        </nav>etActiveTab("dashboard");
               setIsSidebarOpen(false);
             }}
             className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-left"
