@@ -415,7 +415,7 @@ export default function MasterAdmin() {
                 size="sm" 
                 onClick={() => window.open('/', '_blank')}
               >
-                메인 서비스
+                LoBo 챗봇
               </Button>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
