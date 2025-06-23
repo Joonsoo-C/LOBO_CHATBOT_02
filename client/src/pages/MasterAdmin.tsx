@@ -147,6 +147,9 @@ export default function MasterAdmin() {
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   
+  // 파일 입력 참조
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -456,53 +459,62 @@ export default function MasterAdmin() {
 
   // 문서 파일 선택 핸들러
   const handleDocumentFileSelect = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx';
-    input.multiple = false;
+    console.log("파일 선택 버튼 클릭됨");
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // 파일 선택 변경 핸들러
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("파일 선택 이벤트 발생", e);
+    const file = e.target.files?.[0];
+    console.log("선택된 파일:", file);
     
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        // 파일 크기 체크 (50MB)
-        if (file.size > 50 * 1024 * 1024) {
-          toast({
-            title: "파일 크기 초과",
-            description: "파일 크기는 50MB를 초과할 수 없습니다.",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        // 파일 형식 체크
-        const allowedTypes = [
-          'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'application/vnd.ms-powerpoint',
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-        ];
-        
-        if (!allowedTypes.includes(file.type)) {
-          toast({
-            title: "지원하지 않는 파일 형식",
-            description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        setSelectedDocumentFile(file);
+    if (file) {
+      // 파일 크기 체크 (50MB)
+      if (file.size > 50 * 1024 * 1024) {
         toast({
-          title: "파일 선택됨",
-          description: `${file.name} 파일이 선택되었습니다.`,
+          title: "파일 크기 초과",
+          description: "파일 크기는 50MB를 초과할 수 없습니다.",
+          variant: "destructive",
         });
+        return;
       }
-    };
+      
+      // 파일 형식 체크
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ];
+      
+      console.log("파일 타입:", file.type);
+      console.log("허용된 타입들:", allowedTypes);
+      
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "지원하지 않는 파일 형식",
+          description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      console.log("파일 선택 완료, 상태 업데이트 중");
+      setSelectedDocumentFile(file);
+      toast({
+        title: "파일 선택됨",
+        description: `${file.name} 파일이 선택되었습니다.`,
+      });
+    }
     
-    input.click();
+    // 파일 입력 값 리셋 (같은 파일을 다시 선택할 수 있도록)
+    e.target.value = '';
   };
 
   // 문서 업로드 핸들러
@@ -3701,6 +3713,14 @@ export default function MasterAdmin() {
               <DialogTitle>문서 업로드</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+              />
               <div 
                 className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
                 onDragOver={handleDragOver}
@@ -3719,7 +3739,13 @@ export default function MasterAdmin() {
                     <p className="text-sm font-medium text-green-600">선택된 파일: {selectedDocumentFile.name}</p>
                     <p className="text-xs text-gray-500">{(selectedDocumentFile.size / 1024 / 1024).toFixed(2)} MB</p>
                     <div className="flex gap-2 justify-center">
-                      <Button variant="outline" onClick={handleDocumentFileSelect}>
+                      <Button 
+                        variant="outline" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDocumentFileSelect(e);
+                        }}
+                      >
                         다른 파일 선택
                       </Button>
                       <Button variant="outline" onClick={() => setSelectedDocumentFile(null)}>
@@ -3728,7 +3754,13 @@ export default function MasterAdmin() {
                     </div>
                   </div>
                 ) : (
-                  <Button variant="outline" onClick={(e) => e.stopPropagation()}>
+                  <Button 
+                    variant="outline" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDocumentFileSelect(e);
+                    }}
+                  >
                     파일 선택
                   </Button>
                 )}
