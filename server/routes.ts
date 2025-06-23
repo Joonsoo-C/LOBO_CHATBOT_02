@@ -94,12 +94,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const userType = req.user.userType;
 
+      console.log(`[DEBUG] Managed agents request - userId: ${userId}, userType: ${userType}`);
+
       // Master admin can manage all agents
       let agents;
       if (userType === 'admin' || userId === 'master_admin') {
         agents = await storage.getAllAgents();
+        console.log(`[DEBUG] Admin accessing all agents: ${agents.length} found`);
       } else {
         agents = await storage.getAgentsByManager(userId);
+        console.log(`[DEBUG] User ${userId} managing agents: ${agents.length} found`);
+        console.log(`[DEBUG] Managed agents:`, agents.map(a => ({ id: a.id, name: a.name, managerId: a.managerId })));
       }
 
       // Get stats for each agent
