@@ -28,6 +28,7 @@ export const sessions = pgTable(
 // User storage table.
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
+  // 기존 필드들 (호환성 유지)
   id: varchar("id").primaryKey().notNull(),
   username: varchar("username").unique().notNull(), // 학번/교번
   password: varchar("password").notNull(), // 해시된 비밀번호
@@ -38,6 +39,32 @@ export const users = pgTable("users", {
   userType: varchar("user_type").notNull().default("student"), // "student" or "faculty"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  
+  // 1. 기본 정보 (추가)
+  name: varchar("name", { length: 50 }), // 사용자 이름
+  passwordHash: text("password_hash"), // 암호화된 비밀번호 (별도 필드)
+  lastLoginAt: timestamp("last_login_at"), // 마지막 로그인 시각
+  
+  // 2. 카테고리 및 소속 정보
+  upperCategory: varchar("upper_category"), // 상위 카테고리 (예: 단과대학, 본부)
+  lowerCategory: varchar("lower_category"), // 하위 카테고리 (예: 학과, 부서)
+  detailCategory: varchar("detail_category"), // 세부 카테고리
+  groups: jsonb("groups").default(JSON.stringify([])), // 추가 소속 그룹
+  
+  // 3. 역할 및 권한 정보
+  role: varchar("role").notNull().default("user"), // 사용자 역할
+  permissions: jsonb("permissions"), // 커스텀 권한 세트
+  
+  // 4. 계정 상태 정보
+  status: varchar("status").notNull().default("active"), // 계정 상태
+  lockedReason: text("locked_reason"), // 계정 잠금 사유
+  deactivatedAt: timestamp("deactivated_at"), // 비활성화된 시각
+  
+  // 5. 활동 및 인증 정보
+  loginFailCount: integer("login_fail_count").default(0), // 연속 로그인 실패 횟수
+  lastLoginIP: varchar("last_login_ip"), // 마지막 로그인 IP 주소
+  authProvider: varchar("auth_provider").default("email"), // 인증 수단
+  termsAcceptedAt: timestamp("terms_accepted_at"), // 이용약관 동의 일시
 });
 
 // 조직 구조 테이블
@@ -307,9 +334,49 @@ export const insertOrganizationSchema = createInsertSchema(organizations).omit({
   createdAt: true,
 });
 
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  // 기본 정보
+  name: z.string().min(1, "이름은 필수입니다").max(50, "이름은 최대 50자입니다").optional(),
+  email: z.string().email("올바른 이메일 형식이어야 합니다").max(100, "이메일은 최대 100자입니다").optional(),
+  passwordHash: z.string().optional(),
+  
+  // 카테고리 및 소속
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
+  groups: z.array(z.string()).optional(),
+  
+  // 역할 및 권한
+  role: z.enum([
+    "master_admin", 
+    "operation_admin", 
+    "category_admin", 
+    "agent_admin", 
+    "qa_admin", 
+    "doc_admin", 
+    "user", 
+    "external"
+  ]).optional(),
+  permissions: z.record(z.boolean()).optional(),
+  
+  // 계정 상태
+  status: z.enum(["active", "inactive", "locked", "pending", "deleted"]).optional(),
+  lockedReason: z.string().optional(),
+  
+  // 활동 및 인증
+  loginFailCount: z.number().min(0).optional(),
+  lastLoginIP: z.string().optional(),
+  authProvider: z.enum(["email", "sso", "oauth"]).optional(),
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Agent = typeof agents.$inferSelect & {
   managerFirstName?: string | null;
   managerLastName?: string | null;
