@@ -1570,7 +1570,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader>
                 <CardTitle>사용자 목록</CardTitle>
                 {hasSearched && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600 dark:text-gray-400" style={{ display: 'none' }}>
                     전체 {filteredUsers.length}명 중 {paginatedUsers.length}명 표시 (페이지 {userCurrentPage}/{totalUserPages}) | 데이터베이스 총 사용자: {users?.length || 0}명
                   </p>
                 )}
@@ -1730,7 +1730,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 페이지네이션 */}
             {hasSearched && totalUserPages > 1 && (
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700 dark:text-gray-300">
+                <div className="text-sm text-gray-700 dark:text-gray-300" style={{ display: 'none' }}>
                   총 {filteredUsers.length}명의 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
                 </div>
                 <div className="flex items-center space-x-2">
