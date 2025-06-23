@@ -52,7 +52,8 @@ export const users = pgTable("users", {
   groups: jsonb("groups").default(JSON.stringify([])), // 추가 소속 그룹
   
   // 3. 역할 및 권한 정보
-  role: varchar("role").notNull().default("user"), // 사용자 역할
+  role: varchar("role").notNull().default("user"), // 시스템 내 역할 (System Role)
+  position: varchar("position"), // 조직 내 직책/역할 (Organization Role/Position)
   permissions: jsonb("permissions"), // 커스텀 권한 세트
   
   // 4. 계정 상태 정보
@@ -361,6 +362,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
     "user", 
     "external"
   ]).optional(),
+  position: z.string().optional(), // 조직 내 직책 (예: 학과장, 조교, 연구원, 매니저 등)
   permissions: z.record(z.boolean()).optional(),
   
   // 계정 상태
