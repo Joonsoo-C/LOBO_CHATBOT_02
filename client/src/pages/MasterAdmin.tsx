@@ -1335,27 +1335,56 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   // 문서 다운로드 핸들러 (실제 파일 다운로드)
   const handleDocumentDownload = async (document: any) => {
     try {
-      const response = await fetch(`/api/admin/documents/${document.id}/download`);
-      if (!response.ok) throw new Error('다운로드 실패');
+      console.log(`Starting download for document: ${document.name} (ID: ${document.id})`);
+      
+      const response = await fetch(`/api/admin/documents/${document.id}/download`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': '*/*',
+        }
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Download failed:', response.status, errorText);
+        throw new Error(`다운로드 실패: ${response.status}`);
+      }
+      
+      const contentType = response.headers.get('content-type');
+      const contentLength = response.headers.get('content-length');
+      console.log(`Download response: ${contentType}, ${contentLength} bytes`);
       
       const blob = await response.blob();
+      console.log(`Blob created: ${blob.size} bytes, type: ${blob.type}`);
+      
+      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = document.name || `문서_${document.id}`;
+      link.style.display = 'none';
+      
+      // Trigger download
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
       
       toast({
         title: "다운로드 완료",
-        description: "문서가 성공적으로 다운로드되었습니다.",
+        description: `"${document.name}"이 성공적으로 다운로드되었습니다.`,
       });
+      
     } catch (error) {
+      console.error('Download error:', error);
       toast({
         title: "다운로드 실패", 
-        description: "문서 다운로드 중 오류가 발생했습니다.",
+        description: error instanceof Error ? error.message : "문서 다운로드 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }

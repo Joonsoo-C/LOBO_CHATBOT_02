@@ -49,7 +49,7 @@ const adminUpload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Unsupported file type'), false);
+      cb(new Error('Unsupported file type') as any, false);
     }
   }
 });
@@ -516,17 +516,41 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "서버에서 문서 파일을 찾을 수 없습니다" });
       }
 
-      // Set headers for file download
-      res.setHeader('Content-Type', document.mimeType);
-      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(document.originalName)}"`);
+      // Get file stats for proper headers
+      const stats = fs.statSync(filePath);
       
-      // Send file
+      // Set headers for file download with proper encoding
+      res.setHeader('Content-Type', document.mimeType || 'application/octet-stream');
+      res.setHeader('Content-Length', stats.size);
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(document.originalName)}`);
+      res.setHeader('Cache-Control', 'no-cache');
+      
+      // Create read stream and handle errors
       const fileStream = fs.createReadStream(filePath);
+      
+      fileStream.on('error', (streamError) => {
+        console.error("File stream error:", streamError);
+        if (!res.headersSent) {
+          res.status(500).json({ message: "파일 스트림 오류" });
+        }
+      });
+
+      fileStream.on('open', () => {
+        console.log(`Starting download of ${document.originalName}`);
+      });
+
+      fileStream.on('end', () => {
+        console.log(`Download completed for ${document.originalName}`);
+      });
+
+      // Pipe file to response
       fileStream.pipe(res);
       
     } catch (error) {
       console.error("Error downloading document:", error);
-      res.status(500).json({ message: "문서 다운로드에 실패했습니다" });
+      if (!res.headersSent) {
+        res.status(500).json({ message: "문서 다운로드에 실패했습니다" });
+      }
     }
   });
 
