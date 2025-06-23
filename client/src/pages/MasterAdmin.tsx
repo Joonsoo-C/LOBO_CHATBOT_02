@@ -5584,6 +5584,40 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
             <Label>사용자 ID</Label>
             <Input value={user.id || ""} disabled className="bg-gray-50" />
           </div>
+          <div>
+            <Label>사용자명</Label>
+            <Input value={user.username} disabled className="bg-gray-50" />
+          </div>
+          <div>
+            <Label>사용자 타입</Label>
+            <Select value={userType} onValueChange={setUserType}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">학생</SelectItem>
+                <SelectItem value="faculty">교직원</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>계정 상태</Label>
+            <Select value={accountStatus} onValueChange={setAccountStatus}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">활성</SelectItem>
+                <SelectItem value="inactive">비활성</SelectItem>
+                <SelectItem value="locked">잠김</SelectItem>
+                <SelectItem value="pending">대기</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <div>가입 날짜: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
+          {user.lastLoginAt && <div>최종 접속 날짜: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
         </div>
       </div>
 
@@ -5798,46 +5832,7 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
         />
       </div>
 
-      {/* 계정 설정 */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">계정 설정</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label>사용자명</Label>
-            <Input value={user.username} disabled className="bg-gray-50" />
-          </div>
-          <div>
-            <Label>사용자 타입</Label>
-            <Select value={userType} onValueChange={setUserType}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">학생</SelectItem>
-                <SelectItem value="faculty">교직원</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>계정 상태</Label>
-            <Select value={accountStatus} onValueChange={setAccountStatus}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">활성</SelectItem>
-                <SelectItem value="inactive">비활성</SelectItem>
-                <SelectItem value="locked">잠김</SelectItem>
-                <SelectItem value="pending">대기</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="text-sm text-gray-600 dark:text-gray-400">
-          <div>가입일: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
-          {user.lastLoginAt && <div>최근 로그인: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
-        </div>
-      </div>
+      
 
       {/* 버튼 그룹 */}
       <div className="flex justify-between">
