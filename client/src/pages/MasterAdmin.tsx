@@ -149,6 +149,45 @@ export default function MasterAdmin() {
   
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // 파일 업로드 뮤테이션
+  const uploadDocumentMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('type', 'all');
+      formData.append('description', '관리자 업로드 문서');
+
+      const response = await fetch('/api/admin/documents/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('File upload failed');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "성공",
+        description: "문서가 성공적으로 업로드되었습니다.",
+      });
+      refetchDocuments();
+      setSelectedDocumentFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "오류",
+        description: "문서 업로드에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  });
   
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -2781,7 +2820,7 @@ export default function MasterAdmin() {
 
               <Card 
                 className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsDocumentUploadDialogOpen(true)}
+                onClick={() => fileInputRef.current?.click()}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
@@ -2793,7 +2832,24 @@ export default function MasterAdmin() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
                   </p>
+                  {uploadDocumentMutation.isPending && (
+                    <div className="mt-2 text-sm text-blue-600">
+                      업로드 중...
+                    </div>
+                  )}
                 </CardContent>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      uploadDocumentMutation.mutate(file);
+                    }
+                  }}
+                  className="hidden"
+                />
               </Card>
             </div>
 
@@ -2851,18 +2907,24 @@ export default function MasterAdmin() {
                   <CardTitle className="text-lg">최근 업로드</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="text-sm">
-                    <div className="font-medium">2024학년도 수강신청 안내.pdf</div>
-                    <div className="text-gray-500">2시간 전</div>
-                  </div>
-                  <div className="text-sm">
-                    <div className="font-medium">졸업요건 변경 안내.docx</div>
-                    <div className="text-gray-500">5시간 전</div>
-                  </div>
-                  <div className="text-sm">
-                    <div className="font-medium">학과 교육과정.xlsx</div>
-                    <div className="text-gray-500">1일 전</div>
-                  </div>
+                  {documentsLoading ? (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-gray-500">로딩 중...</div>
+                    </div>
+                  ) : documents && documents.length > 0 ? (
+                    documents.slice(0, 3).map((doc: any, index: number) => (
+                      <div key={doc.id || index} className="text-sm">
+                        <div className="font-medium">{doc.name}</div>
+                        <div className="text-gray-500">
+                          {new Date(doc.createdAt || doc.date).toLocaleDateString('ko-KR')}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-gray-500">최근 업로드된 문서가 없습니다.</div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
