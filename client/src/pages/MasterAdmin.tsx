@@ -3389,28 +3389,14 @@ export default function MasterAdmin() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex flex-wrap gap-1">
-                              {doc.agents.slice(0, 2).map((agent, idx) => (
-                                <span 
-                                  key={idx}
-                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                                >
-                                  {agent}
-                                </span>
-                              ))}
-                              {doc.agents.length > 2 && (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                                  +{doc.agents.length - 2}
-                                </span>
-                              )}
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                Agent {doc.agentId}
+                              </span>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              doc.status === '활성' 
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                            }`}>
-                              {doc.status}
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                              활성
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -3420,7 +3406,7 @@ export default function MasterAdmin() {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setDocumentDetailData(doc);
-                                setSelectedDocumentAgents(doc.agents);
+                                setSelectedDocumentAgents([`Agent ${doc.agentId}`]);
                                 setIsDocumentDetailOpen(true);
                               }}
                             >
@@ -3428,7 +3414,20 @@ export default function MasterAdmin() {
                             </Button>
                           </td>
                         </tr>
-                      ))}
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">업로드된 문서 없음</p>
+                              <p className="text-sm">
+                                문서 업로드 기능을 사용하여 새 문서를 추가하세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
