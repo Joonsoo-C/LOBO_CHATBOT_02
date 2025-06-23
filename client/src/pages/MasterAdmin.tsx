@@ -156,6 +156,60 @@ export default function MasterAdmin() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // 필터된 사용자 목록
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    
+    let filtered = [...users];
+    
+    // 검색이 실행된 경우에만 필터링 적용
+    if (hasSearched) {
+      // 검색 쿼리 필터링
+      if (userSearchQuery.trim()) {
+        const query = userSearchQuery.toLowerCase();
+        filtered = filtered.filter(user => 
+          user.username.toLowerCase().includes(query) ||
+          (user.firstName && user.firstName.toLowerCase().includes(query)) ||
+          (user.lastName && user.lastName.toLowerCase().includes(query)) ||
+          (user.email && user.email.toLowerCase().includes(query))
+        );
+      }
+      
+      // 상위 카테고리 필터링
+      if (selectedUniversity !== 'all') {
+        filtered = filtered.filter(user => 
+          (user as any).upperCategory === selectedUniversity
+        );
+      }
+      
+      // 하위 카테고리 필터링
+      if (selectedCollege !== 'all') {
+        filtered = filtered.filter(user => 
+          (user as any).lowerCategory === selectedCollege
+        );
+      }
+      
+      // 세부 카테고리 필터링
+      if (selectedDepartment !== 'all') {
+        filtered = filtered.filter(user => 
+          (user as any).detailCategory === selectedDepartment
+        );
+      }
+    }
+    
+    return filtered;
+  }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+
+  // 페이지네이션된 사용자 목록
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (userCurrentPage - 1) * usersPerPage;
+    const endIndex = startIndex + usersPerPage;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, userCurrentPage, usersPerPage]);
+
+  // 총 페이지 수 계산
+  const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
+
   const iconMap = {
     User,
     GraduationCap,
@@ -188,6 +242,10 @@ export default function MasterAdmin() {
       return response.json();
     }
   });
+
+  // 페이지네이션 상태
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const usersPerPage = 20;
 
   // 에이전트 목록 조회
   const { data: agents } = useQuery<Agent[]>({
@@ -232,6 +290,7 @@ export default function MasterAdmin() {
   // 검색 실행 함수
   const executeSearch = () => {
     setHasSearched(true);
+    setUserCurrentPage(1); // 검색 시 첫 페이지로 이동
   };
 
   // 필터 초기화 함수
@@ -241,6 +300,7 @@ export default function MasterAdmin() {
     setSelectedDepartment('all');
     setUserSearchQuery('');
     setHasSearched(false);
+    setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
   };
 
   // 문서 필터 초기화 함수
@@ -1208,14 +1268,22 @@ export default function MasterAdmin() {
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: {users?.length || 0}명 사용자
+                  검색 결과: {filteredUsers.length}명 사용자
                   {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
                 </div>
               )}
             </div>
 
-            {/* 사용자 관리 테이블 */}
+            {/* 사용자 목록 테이블 */}
             <Card>
+              <CardHeader>
+                <CardTitle>사용자 목록</CardTitle>
+                {hasSearched && (
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {filteredUsers.length}명 중 {paginatedUsers.length}명 표시 (페이지 {userCurrentPage}/{totalUserPages})
+                  </p>
+                )}
+              </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -1231,13 +1299,13 @@ export default function MasterAdmin() {
                           소속 조직
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          직책/역할
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           이메일
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           가입일
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          최근 로그인
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           작업
@@ -1257,7 +1325,7 @@ export default function MasterAdmin() {
                             </div>
                           </td>
                         </tr>
-                      ) : users?.length === 0 ? (
+                      ) : filteredUsers?.length === 0 ? (
                         <tr>
                           <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
@@ -1270,7 +1338,7 @@ export default function MasterAdmin() {
                           </td>
                         </tr>
                       ) : (
-                        users?.slice(0, 20).map((user) => (
+                        paginatedUsers?.map((user) => (
                           <tr 
                             key={user.id} 
                             className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
@@ -1285,7 +1353,7 @@ export default function MasterAdmin() {
                                 </div>
                                 <div>
                                   <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {user.firstName} {user.lastName}
+                                    {(user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
                                   </div>
                                   <div className="text-xs text-gray-500">
                                     {user.username}
@@ -1305,16 +1373,23 @@ export default function MasterAdmin() {
                               </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              로보대학교 컴퓨터공학과
+                              <div>
+                                <div className="font-medium">{(user as any).upperCategory}</div>
+                                <div className="text-xs text-gray-400">
+                                  {(user as any).lowerCategory} / {(user as any).detailCategory}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <Badge variant="secondary">
+                                {(user as any).position || '일반 사용자'}
+                              </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {user.email || '-'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(user.createdAt).toLocaleDateString('ko-KR')}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('ko-KR') : '-'}
+                              {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
@@ -1351,6 +1426,80 @@ export default function MasterAdmin() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* 페이지네이션 */}
+            {hasSearched && totalUserPages > 1 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
+                  총 {filteredUsers.length}명의 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={userCurrentPage === 1}
+                  >
+                    이전
+                  </Button>
+                  
+                  <div className="flex items-center space-x-1">
+                    {/* 첫 페이지 */}
+                    {userCurrentPage > 3 && (
+                      <>
+                        <Button
+                          variant={1 === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(1)}
+                        >
+                          1
+                        </Button>
+                        {userCurrentPage > 4 && <span className="px-2">...</span>}
+                      </>
+                    )}
+                    
+                    {/* 현재 페이지 주변 페이지들 */}
+                    {Array.from({ length: Math.min(5, totalUserPages) }, (_, i) => {
+                      const page = Math.max(1, Math.min(userCurrentPage - 2 + i, totalUserPages));
+                      if (page < Math.max(1, userCurrentPage - 2) || page > Math.min(userCurrentPage + 2, totalUserPages)) return null;
+                      return (
+                        <Button
+                          key={page}
+                          variant={page === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(page)}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    })}
+                    
+                    {/* 마지막 페이지 */}
+                    {userCurrentPage < totalUserPages - 2 && (
+                      <>
+                        {userCurrentPage < totalUserPages - 3 && <span className="px-2">...</span>}
+                        <Button
+                          variant={totalUserPages === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(totalUserPages)}
+                        >
+                          {totalUserPages}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
+                    disabled={userCurrentPage === totalUserPages}
+                  >
+                    다음
+                  </Button>
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* 에이전트 관리 */}
@@ -3210,7 +3359,39 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {sortedDocuments.map((doc, index) => (
+                      {/* 30개 샘플 문서 */}
+                      {[
+                        { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "신입생 오리엔테이션 가이드.docx", type: "정책 문서", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "졸업논문 작성 가이드라인.pdf", type: "매뉴얼", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "prof002" },
+                        { name: "장학금 신청서 양식.xlsx", type: "양식", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
+                        { name: "2024년 1학기 시간표.pdf", type: "공지사항", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "컴퓨터공학과 교육과정표.pdf", type: "교육과정", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
+                        { name: "도서관 이용 안내서.docx", type: "매뉴얼", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
+                        { name: "기숙사 입사 신청서.pdf", type: "양식", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
+                        { name: "취업 준비 가이드북.pdf", type: "강의 자료", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" },
+                        { name: "학생회 활동 규정.docx", type: "정책 문서", size: "1.2 MB", date: "2024-02-18", agents: ["학생회 봇"], status: "활성", uploader: "student001" },
+                        { name: "실험실 안전수칙.pdf", type: "매뉴얼", size: "2.8 MB", date: "2024-01-12", agents: ["안전관리 봇"], status: "활성", uploader: "safety001" },
+                        { name: "교환학생 프로그램 안내.pdf", type: "공지사항", size: "1.9 MB", date: "2024-02-22", agents: ["국제교류 봇"], status: "활성", uploader: "intl001" },
+                        { name: "체육관 시설 이용 안내.docx", type: "매뉴얼", size: "1.1 MB", date: "2024-01-08", agents: ["체육시설 봇"], status: "활성", uploader: "sports001" },
+                        { name: "등록금 납부 안내서.pdf", type: "양식", size: "945 KB", date: "2024-01-18", agents: ["재무 안내봇"], status: "활성", uploader: "finance001" },
+                        { name: "졸업사정 기준표.xlsx", type: "정책 문서", size: "234 KB", date: "2024-02-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "연구실 배정 신청서.pdf", type: "양식", size: "567 KB", date: "2024-03-01", agents: ["대학원 안내봇"], status: "활성", uploader: "grad001" },
+                        { name: "학과별 커리큘럼 가이드.pdf", type: "교육과정", size: "3.7 MB", date: "2024-01-22", agents: ["학과 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "휴학 신청 절차.docx", type: "매뉴얼", size: "834 KB", date: "2024-02-08", agents: ["학사 안내봇"], status: "활성", uploader: "admin002" },
+                        { name: "교내 동아리 활동 가이드.pdf", type: "공지사항", size: "1.6 MB", date: "2024-01-28", agents: ["동아리 안내봇"], status: "활성", uploader: "club001" },
+                        { name: "성적 이의신청서.pdf", type: "양식", size: "412 KB", date: "2024-02-25", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "캡스톤 프로젝트 가이드라인.pdf", type: "강의 자료", size: "2.9 MB", date: "2024-03-08", agents: ["교수 상담봇"], status: "활성", uploader: "prof004" },
+                        { name: "학생 상담 프로그램 안내.docx", type: "공지사항", size: "1.3 MB", date: "2024-02-10", agents: ["상담 안내봇"], status: "활성", uploader: "counsel001" },
+                        { name: "교육실습 신청서.xlsx", type: "양식", size: "189 KB", date: "2024-01-16", agents: ["교육대학 봇"], status: "비활성", uploader: "edu001" },
+                        { name: "논문 심사 기준표.pdf", type: "정책 문서", size: "1.7 MB", date: "2024-02-28", agents: ["대학원 안내봇"], status: "활성", uploader: "grad002" },
+                        { name: "학교 시설물 이용 규칙.pdf", type: "매뉴얼", size: "2.4 MB", date: "2024-01-05", agents: ["시설관리 봇"], status: "활성", uploader: "facility001" },
+                        { name: "인턴십 프로그램 안내서.pdf", type: "공지사항", size: "2.1 MB", date: "2024-03-12", agents: ["취업 상담봇"], status: "활성", uploader: "career002" },
+                        { name: "학점 교류 신청서.docx", type: "양식", size: "623 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin003" },
+                        { name: "연구윤리 가이드라인.pdf", type: "정책 문서", size: "1.8 MB", date: "2024-01-31", agents: ["연구지원 봇"], status: "활성", uploader: "research001" },
+                        { name: "학생증 재발급 신청서.pdf", type: "양식", size: "345 KB", date: "2024-02-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin001" },
+                        { name: "교수법 워크샵 자료.pptx", type: "강의 자료", size: "5.2 MB", date: "2024-03-15", agents: ["교수 개발봇"], status: "활성", uploader: "prof005" }
+                      ].map((doc, index) => (
                         <tr 
                           key={index}
                           className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
