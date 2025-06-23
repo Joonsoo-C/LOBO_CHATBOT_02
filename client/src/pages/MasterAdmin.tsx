@@ -105,6 +105,28 @@ const agentSchema = z.object({
 
 type AgentFormData = z.infer<typeof agentSchema>;
 
+const userEditSchema = z.object({
+  name: z.string().min(1, "이름은 필수입니다"),
+  email: z.string().email("올바른 이메일 형식이어야 합니다").optional().or(z.literal("")),
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
+  position: z.string().optional(),
+  role: z.enum([
+    "master_admin", 
+    "operation_admin", 
+    "category_admin", 
+    "agent_admin", 
+    "qa_admin", 
+    "doc_admin", 
+    "user", 
+    "external"
+  ]),
+  status: z.enum(["active", "inactive", "locked", "pending"]),
+});
+
+type UserEditFormData = z.infer<typeof userEditSchema>;
+
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -116,6 +138,9 @@ export default function MasterAdmin() {
   const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
+  const [isUserDetailDialogOpen, setIsUserDetailDialogOpen] = useState(false);
+  const [userSortField, setUserSortField] = useState<string>('name');
+  const [userSortDirection, setUserSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
@@ -190,6 +215,59 @@ export default function MasterAdmin() {
       return response.json();
     }
   });
+
+  // 사용자 정렬 함수
+  const handleUserSort = (field: string) => {
+    if (userSortField === field) {
+      setUserSortDirection(userSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setUserSortField(field);
+      setUserSortDirection('asc');
+    }
+  };
+
+  // 정렬된 사용자 목록
+  const sortedUsers = useMemo(() => {
+    if (!users) return [];
+    
+    return [...users].sort((a, b) => {
+      let aValue: any = '';
+      let bValue: any = '';
+      
+      switch (userSortField) {
+        case 'name':
+          aValue = (a as any).name || `${a.firstName || ''} ${a.lastName || ''}`.trim();
+          bValue = (b as any).name || `${b.firstName || ''} ${b.lastName || ''}`.trim();
+          break;
+        case 'email':
+          aValue = a.email || '';
+          bValue = b.email || '';
+          break;
+        case 'role':
+          aValue = a.role || '';
+          bValue = b.role || '';
+          break;
+        case 'status':
+          aValue = (a as any).status || 'active';
+          bValue = (b as any).status || 'active';
+          break;
+        case 'createdAt':
+          aValue = new Date(a.createdAt || 0);
+          bValue = new Date(b.createdAt || 0);
+          break;
+        case 'upperCategory':
+          aValue = (a as any).upperCategory || '';
+          bValue = (b as any).upperCategory || '';
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aValue < bValue) return userSortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return userSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [users, userSortField, userSortDirection]);
 
   // 사용자 데이터가 로드되면 자동으로 검색 상태를 true로 설정
   React.useEffect(() => {
@@ -1734,23 +1812,83 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자 정보
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('name')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>사용자 정보</span>
+                            {userSortField === 'name' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          소속 조직
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('upperCategory')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>소속 조직</span>
+                            {userSortField === 'upperCategory' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          직책/역할
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('role')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>직책/역할</span>
+                            {userSortField === 'role' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          이메일
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('email')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>이메일</span>
+                            {userSortField === 'email' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          상태
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('status')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>상태</span>
+                            {userSortField === 'status' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          가입일
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleUserSort('createdAt')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>가입일</span>
+                            {userSortField === 'createdAt' && (
+                              userSortDirection === 'asc' ? 
+                                <ChevronUp className="w-4 h-4" /> : 
+                                <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           작업
@@ -1774,10 +1912,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         paginatedUsers?.map((user) => (
                           <tr 
                             key={user.id} 
-                            className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
+                            className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150 ${
                               !user.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
                             }`}
-                            onClick={() => setSelectedUser(user)}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setIsUserDetailDialogOpen(true);
+                            }}
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
@@ -1788,8 +1929,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <div className="text-sm font-medium text-gray-900 dark:text-white">
                                     {(user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
                                   </div>
-                                  <div className="text-xs text-gray-500">
-                                    {user.username}
+                                  <div className="text-xs text-gray-500 flex items-center">
+                                    <span>{user.username}</span>
+                                    <Edit className="w-3 h-3 ml-1 text-blue-500" />
                                   </div>
                                 </div>
                               </div>
@@ -1854,6 +1996,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedUser(user);
+                                    setIsUserDetailDialogOpen(true);
                                   }}
                                 >
                                   <Edit className="w-4 h-4" />
