@@ -771,8 +771,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 관리자 라우트들 (handled by admin.ts)
-
   // Setup admin routes
   setupAdminRoutes(app);
 
@@ -975,10 +973,7 @@ async function initializeDefaultAgents() {
     ];
 
     for (const agentData of defaultAgents) {
-      await storage.createAgent({
-        ...agentData,
-        creatorId: "master_admin"
-      });
+      await storage.createAgent(agentData);
     }
 
     console.log("Default agents initialized successfully");
