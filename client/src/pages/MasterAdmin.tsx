@@ -419,27 +419,92 @@ export default function MasterAdmin() {
     setHasDocumentSearched(true);
   };
 
+  // 사용자 편집 폼 초기화
+  const userEditForm = useForm<UserEditFormData>({
+    resolver: zodResolver(userEditSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      upperCategory: "",
+      lowerCategory: "",
+      detailCategory: "",
+      position: "",
+      role: "user",
+      status: "active",
+    },
+  });
+
+  // 사용자 상세 정보 편집 열기
+  const openUserDetailDialog = (user: User) => {
+    setSelectedUser(user);
+    userEditForm.reset({
+      name: (user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+      email: user.email || "",
+      upperCategory: (user as any).upperCategory || "",
+      lowerCategory: (user as any).lowerCategory || "",
+      detailCategory: (user as any).detailCategory || "",
+      position: (user as any).position || "",
+      role: (user.role as any) || "user",
+      status: (user as any).status || "active",
+    });
+    setIsUserDetailDialogOpen(true);
+  };
+
+  // 사용자 편집 뮤테이션
+  const updateUserMutation = useMutation({
+    mutationFn: async (data: UserEditFormData & { id: string }) => {
+      const payload = {
+        name: data.name,
+        email: data.email || null,
+        upperCategory: data.upperCategory || null,
+        lowerCategory: data.lowerCategory || null,
+        detailCategory: data.detailCategory || null,
+        position: data.position || null,
+        role: data.role,
+        status: data.status,
+      };
+      const response = await apiRequest("PATCH", `/api/admin/users/${data.id}`, payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      toast({
+        title: "성공",
+        description: "사용자 정보가 수정되었습니다.",
+      });
+      setIsUserDetailDialogOpen(false);
+      setSelectedUser(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "사용자 정보 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // 사용자 카테고리 데이터 (샘플 데이터 기반)
   const upperCategories = useMemo(() => {
     if (!users) return [];
-    const categories = [...new Set(users.map(user => (user as any).upperCategory).filter(Boolean))];
+    const categories = Array.from(new Set(users.map(user => (user as any).upperCategory).filter(Boolean)));
     return categories.sort();
   }, [users]);
 
   const lowerCategories = useMemo(() => {
     if (!users || selectedUniversity === 'all') return [];
-    const categories = [...new Set(
+    const categories = Array.from(new Set(
       users
         .filter(user => (user as any).upperCategory === selectedUniversity)
         .map(user => (user as any).lowerCategory)
         .filter(Boolean)
-    )];
+    ));
     return categories.sort();
   }, [users, selectedUniversity]);
 
   const detailCategories = useMemo(() => {
     if (!users || selectedCollege === 'all' || selectedUniversity === 'all') return [];
-    const categories = [...new Set(
+    const categories = Array.from(new Set(
       users
         .filter(user => 
           (user as any).upperCategory === selectedUniversity && 
@@ -447,7 +512,7 @@ export default function MasterAdmin() {
         )
         .map(user => (user as any).detailCategory)
         .filter(Boolean)
-    )];
+    ));
     return categories.sort();
   }, [users, selectedUniversity, selectedCollege]);
 
@@ -1916,8 +1981,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               !user.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
                             }`}
                             onClick={() => {
-                              setSelectedUser(user);
-                              setIsUserDetailDialogOpen(true);
+                              openUserDetailDialog(user);
                             }}
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -1995,8 +2059,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   title="사용자 편집"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setSelectedUser(user);
-                                    setIsUserDetailDialogOpen(true);
+                                    openUserDetailDialog(user);
                                   }}
                                 >
                                   <Edit className="w-4 h-4" />
@@ -5293,6 +5356,231 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </div>
               </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 사용자 상세 정보 편집 다이얼로그 */}
+        <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>사용자 상세 정보 편집</DialogTitle>
+            </DialogHeader>
+            
+            {selectedUser && (
+              <Form {...userEditForm}>
+                <form onSubmit={userEditForm.handleSubmit((data) => {
+                  updateUserMutation.mutate({ ...data, id: selectedUser.id });
+                })} className="space-y-6">
+                  
+                  {/* 기본 정보 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>이름</FormLabel>
+                          <FormControl>
+                            <Input placeholder="사용자 이름" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>이메일</FormLabel>
+                          <FormControl>
+                            <Input placeholder="이메일 주소" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 조직 정보 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="upperCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>상위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">미분류</SelectItem>
+                              <SelectItem value="대학본부">대학본부</SelectItem>
+                              <SelectItem value="인문대학">인문대학</SelectItem>
+                              <SelectItem value="사회과학대학">사회과학대학</SelectItem>
+                              <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                              <SelectItem value="공과대학">공과대학</SelectItem>
+                              <SelectItem value="경영대학">경영대학</SelectItem>
+                              <SelectItem value="의과대학">의과대학</SelectItem>
+                              <SelectItem value="대학원">대학원</SelectItem>
+                              <SelectItem value="연구기관">연구기관</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="lowerCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>하위 카테고리</FormLabel>
+                          <FormControl>
+                            <Input placeholder="학과/부서" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="detailCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>세부 카테고리</FormLabel>
+                          <FormControl>
+                            <Input placeholder="전공/팀" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 역할 및 상태 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>직책/역할</FormLabel>
+                          <FormControl>
+                            <Input placeholder="직책 또는 역할" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>시스템 역할</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">일반 사용자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>계정 상태</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="active">활성</SelectItem>
+                              <SelectItem value="inactive">비활성</SelectItem>
+                              <SelectItem value="locked">잠금</SelectItem>
+                              <SelectItem value="pending">대기</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 추가 정보 표시 */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                    <h4 className="font-medium mb-3">계정 정보</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400">사용자 ID:</span>
+                        <span className="ml-2 font-mono">{selectedUser.id}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400">사용자명:</span>
+                        <span className="ml-2 font-mono">{selectedUser.username}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400">사용자 타입:</span>
+                        <span className="ml-2">{selectedUser.userType === 'student' ? '학생' : '교직원'}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400">가입일:</span>
+                        <span className="ml-2">{selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('ko-KR') : '-'}</span>
+                      </div>
+                      {selectedUser.lastLoginAt && (
+                        <div>
+                          <span className="text-gray-600 dark:text-gray-400">마지막 로그인:</span>
+                          <span className="ml-2">{new Date(selectedUser.lastLoginAt).toLocaleDateString('ko-KR')}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 버튼 그룹 */}
+                  <div className="flex justify-end space-x-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setIsUserDetailDialogOpen(false)}
+                    >
+                      취소
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={updateUserMutation.isPending}
+                    >
+                      {updateUserMutation.isPending ? "저장 중..." : "저장"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             )}
           </DialogContent>
         </Dialog>
