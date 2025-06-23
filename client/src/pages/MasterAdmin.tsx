@@ -1019,7 +1019,7 @@ export default function MasterAdmin() {
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium"하위 카테고리</Label>
+                    <Label className="text-sm font-medium">하위 카테고리</Label>
                     <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
@@ -2293,8 +2293,8 @@ export default function MasterAdmin() {
                       <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="university">대학교</SelectItem>
                       <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="college"하위 카테고리</SelectItem>
-                      <SelectItem value="department"학과</SelectItem>
+                      <SelectItem value="college">하위 카테고리</SelectItem>
+                      <SelectItem value="department">세부 카테고리</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
