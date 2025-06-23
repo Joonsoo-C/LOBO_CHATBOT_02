@@ -86,17 +86,17 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
     }
   };
 
-  // Sort agents: first by category priority, then by recent message activity
+  // Sort agents: prioritize those with recent messages, then by category
   const sortedAgents = [...agents].sort((a, b) => {
     const conversationA = getConversationForAgent(a.id);
     const conversationB = getConversationForAgent(b.id);
     
-    // If either agent has recent messages, prioritize those
+    // Check for recent message activity using lastMessageAt
     const hasRecentA = conversationA?.lastMessageAt;
     const hasRecentB = conversationB?.lastMessageAt;
     
     if (hasRecentA && hasRecentB) {
-      // Both have messages - sort by most recent first
+      // Both have messages - sort by most recent message timestamp (newest first)
       const timeA = new Date(conversationA.lastMessageAt).getTime();
       const timeB = new Date(conversationB.lastMessageAt).getTime();
       return timeB - timeA;
@@ -107,7 +107,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
       // Only B has messages - B comes first
       return 1;
     } else {
-      // Neither has messages - sort by category priority
+      // Neither has messages - sort by category priority (학교, 교수, 그룹, 학생, 기능형)
       return getCategoryPriority(a.category) - getCategoryPriority(b.category);
     }
   });

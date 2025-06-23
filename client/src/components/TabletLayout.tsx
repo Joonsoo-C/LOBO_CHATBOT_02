@@ -369,16 +369,52 @@ export default function TabletLayout() {
     },
   });
 
-  // Filter agents based on search and category
-  const filteredAgents = agents.filter((agent: Agent) => {
-    const matchesSearch = searchQuery === "" || 
-      agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      agent.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = selectedCategory === "전체" || agent.category === selectedCategory;
-    
-    return matchesSearch && matchesCategory;
-  });
+  // Filter and sort agents based on search, category, and recent messages
+  const filteredAgents = agents
+    .filter((agent: Agent) => {
+      const matchesSearch = searchQuery === "" || 
+        agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        agent.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesCategory = selectedCategory === "전체" || agent.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      // For general chat mode, sort by most recent message first
+      if (activeTab === "chat") {
+        const conversationA = conversations.find(conv => conv.agentId === a.id);
+        const conversationB = conversations.find(conv => conv.agentId === b.id);
+        
+        const hasRecentA = conversationA?.lastMessageAt;
+        const hasRecentB = conversationB?.lastMessageAt;
+        
+        if (hasRecentA && hasRecentB) {
+          // Both have messages - sort by most recent first
+          const timeA = new Date(conversationA.lastMessageAt).getTime();
+          const timeB = new Date(conversationB.lastMessageAt).getTime();
+          return timeB - timeA;
+        } else if (hasRecentA && !hasRecentB) {
+          // Only A has messages - A comes first
+          return -1;
+        } else if (!hasRecentA && hasRecentB) {
+          // Only B has messages - B comes first
+          return 1;
+        } else {
+          // Neither has messages - sort by category priority
+          const categoryOrder: Record<string, number> = { 
+            "학교": 1, "교수": 2, "그룹": 3, "학생": 4, "기능형": 5 
+          };
+          return (categoryOrder[a.category] || 6) - (categoryOrder[b.category] || 6);
+        }
+      }
+      
+      // For management mode, maintain category order
+      const categoryOrder: Record<string, number> = { 
+        "학교": 1, "교수": 2, "그룹": 3, "학생": 4, "기능형": 5 
+      };
+      return (categoryOrder[a.category] || 6) - (categoryOrder[b.category] || 6);
+    });
 
   const selectedAgent = selectedAgentId ? agents.find(agent => agent.id === selectedAgentId) : null;
 

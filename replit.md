@@ -453,6 +453,12 @@ Changelog:
   * Removed sidebar state management and UI elements from MasterAdmin.tsx
   * Removed sidebar styling configuration from tailwind.config.ts
   * Master admin system now operates as single-page application without sidebar navigation
+- June 23, 2025. Enhanced agent list sorting for general chat mode:
+  * Updated AgentList.tsx, TabletLayout.tsx, and Home.tsx to prioritize agents with recent messages
+  * Agents with recent conversations now appear at top, sorted by newest message timestamp
+  * Agents without messages maintain category-based ordering (학교, 교수, 그룹, 학생, 기능형)
+  * Improved user experience by making active conversations easily accessible
+  * Consistent sorting behavior across mobile and tablet layouts
 ```
 
 ## User Preferences
