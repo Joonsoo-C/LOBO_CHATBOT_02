@@ -5375,7 +5375,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               }} 
               onCancel={() => setIsUserDetailDialogOpen(false)} 
               onDelete={(userId) => {
-                deleteUserMutation.mutate(userId);
+                updateUserMutation.mutate({ id: userId, action: 'delete' });
               }}
               isLoading={updateUserMutation.isPending} 
             />}
@@ -5395,20 +5395,37 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
   isLoading: boolean;
 }) {
   const [organizationAffiliations, setOrganizationAffiliations] = useState(
-    user.organizationAffiliations || [
-      { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
-    ]
+    Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
+      ? user.organizationAffiliations
+      : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
   );
   
   const [agentPermissions, setAgentPermissions] = useState(
-    user.agentPermissions || [
-      { agentName: "", permissions: [] }
-    ]
+    Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
+      ? user.agentPermissions
+      : [{ agentName: "", permissions: [] }]
   );
 
   const [userMemo, setUserMemo] = useState(user.userMemo || "");
   const [accountStatus, setAccountStatus] = useState(user.status || "active");
   const [userType, setUserType] = useState(user.userType || "student");
+
+  // Update state when user prop changes
+  React.useEffect(() => {
+    setOrganizationAffiliations(
+      Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
+        ? user.organizationAffiliations
+        : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
+    );
+    setAgentPermissions(
+      Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
+        ? user.agentPermissions
+        : [{ agentName: "", permissions: [] }]
+    );
+    setUserMemo(user.userMemo || "");
+    setAccountStatus(user.status || "active");
+    setUserType(user.userType || "student");
+  }, [user]);
 
   // 조직 계층 구조 데이터
   const organizationHierarchy = {
