@@ -97,7 +97,7 @@ const agentSchema = z.object({
   organizationId: z.string().min(1, "소속 조직을 선택해주세요"),
   upperCategory: z.string().optional(),
   lowerCategory: z.string().optional(),
-  detailCategory: z.string().optional(),
+  detailCategoryField: z.string().optional(),
   llmModel: z.string().optional(),
   chatbotType: z.string().optional(),
 });

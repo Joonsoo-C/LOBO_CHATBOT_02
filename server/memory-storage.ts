@@ -182,7 +182,7 @@ export class MemoryStorage implements IStorage {
       organizationId: agent.organizationId || null,
       upperCategory: agent.upperCategory || "전체",
       lowerCategory: agent.lowerCategory || "전체",
-      detailCategory: agent.detailCategory || "전체",
+      detailCategoryField: agent.detailCategoryField || "전체",
       llmModel: agent.llmModel || "gpt-4o",
       chatbotType: agent.chatbotType || "general-llm",
       speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
