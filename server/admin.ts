@@ -13,7 +13,16 @@ if (!fs.existsSync(adminUploadDir)) {
 }
 
 const adminUpload = multer({
-  dest: adminUploadDir,
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, adminUploadDir);
+    },
+    filename: (req, file, cb) => {
+      // Generate a unique filename
+      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+      cb(null, uniqueName);
+    }
+  }),
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit
   },
@@ -456,14 +465,30 @@ export function setupAdminRoutes(app: Express) {
 
       const document = await storage.getDocument(documentId);
       if (!document) {
-        return res.status(404).json({ message: "Document not found" });
+        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
-      const filePath = path.join(adminUploadDir, document.filename);
+      // Try multiple possible file locations
+      let filePath = path.join(adminUploadDir, document.filename);
+      
+      // If file doesn't exist in admin dir, check temp directory
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join('/tmp', document.filename);
+      }
+      
+      // If still not found, check current working directory uploads
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(process.cwd(), document.filename);
+      }
       
       // Check if file exists
       if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ message: "Document file not found on server" });
+        console.error(`Document file not found: ${document.filename}, tried paths:`, [
+          path.join(adminUploadDir, document.filename),
+          path.join('/tmp', document.filename),
+          path.join(process.cwd(), document.filename)
+        ]);
+        return res.status(404).json({ message: "서버에서 문서 파일을 찾을 수 없습니다" });
       }
 
       // Set headers for file download
@@ -476,7 +501,7 @@ export function setupAdminRoutes(app: Express) {
       
     } catch (error) {
       console.error("Error downloading document:", error);
-      res.status(500).json({ message: "Failed to download document" });
+      res.status(500).json({ message: "문서 다운로드에 실패했습니다" });
     }
   });
 
@@ -490,11 +515,18 @@ export function setupAdminRoutes(app: Express) {
 
       const document = await storage.getDocument(documentId);
       if (!document) {
-        return res.status(404).json({ message: "Document not found" });
+        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
-      // Delete file from filesystem
-      const filePath = path.join(adminUploadDir, document.filename);
+      // Delete file from filesystem - try multiple locations
+      let filePath = path.join(adminUploadDir, document.filename);
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join('/tmp', document.filename);
+      }
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(process.cwd(), document.filename);
+      }
+      
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
@@ -504,12 +536,12 @@ export function setupAdminRoutes(app: Express) {
 
       res.json({ 
         success: true, 
-        message: "Document deleted successfully" 
+        message: "문서가 성공적으로 삭제되었습니다" 
       });
       
     } catch (error) {
       console.error("Error deleting document:", error);
-      res.status(500).json({ message: "Failed to delete document" });
+      res.status(500).json({ message: "문서 삭제에 실패했습니다" });
     }
   });
 }
