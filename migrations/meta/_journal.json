@@ -8,6 +8,13 @@
       "when": 1750609912131,
       "tag": "0000_absent_vindicator",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750647744623,
+      "tag": "0001_lowly_the_hood",
+      "breakpoints": true
     }
   ]
 }
