@@ -260,31 +260,63 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && validateFile(file)) {
-      setSelectedFile(file);
+    console.log("handleFileSelect called", event.target.files);
+    const files = event.target.files;
+    if (!files || files.length === 0) {
+      console.log("No files selected");
+      return;
     }
+    
+    const file = files[0];
+    console.log("Selected file:", file.name, file.size, file.type);
+    
+    if (validateFile(file)) {
+      setSelectedFile(file);
+      console.log("File successfully set");
+    } else {
+      console.log("File validation failed");
+    }
+    
+    // Reset the input value to allow selecting the same file again
+    event.target.value = '';
   };
 
-  const handleDragOver = (event: React.DragEvent) => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
+    console.log("Drag over event");
     setIsDragOver(true);
   };
 
-  const handleDragLeave = (event: React.DragEvent) => {
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
+    console.log("Drag leave event");
     setIsDragOver(false);
   };
 
-  const handleDrop = (event: React.DragEvent) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
+    console.log("Drop event triggered");
     setIsDragOver(false);
     
     const files = Array.from(event.dataTransfer.files);
-    const file = files[0];
+    console.log("Dropped files:", files.length);
     
-    if (file && validateFile(file)) {
+    if (files.length === 0) {
+      console.log("No files in drop event");
+      return;
+    }
+    
+    const file = files[0];
+    console.log("Processing dropped file:", file.name, file.size, file.type);
+    
+    if (validateFile(file)) {
       setSelectedFile(file);
+      console.log("Dropped file successfully set");
+    } else {
+      console.log("Dropped file validation failed");
     }
   };
 
@@ -444,12 +476,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Drop zone clicked");
+            onClick={() => {
+              console.log("드롭 존 클릭됨");
               const fileInput = document.getElementById('file-upload') as HTMLInputElement;
               if (fileInput) {
                 fileInput.click();
+                console.log("드롭 존에서 파일 입력 클릭 실행됨");
               }
             }}
           >
@@ -469,10 +501,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log("Replace file button clicked");
+                      onClick={() => {
+                        console.log("다른 파일 선택 버튼 클릭됨");
                         const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                         if (fileInput) {
                           fileInput.click();
@@ -513,16 +543,15 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     type="button"
                     variant="default"
                     className="korean-text bg-blue-600 hover:bg-blue-700"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      console.log("File select button clicked");
+                    onClick={() => {
+                      console.log("파일 선택 버튼 클릭됨");
                       const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                      console.log("파일 입력 요소:", fileInput);
                       if (fileInput) {
-                        console.log("File input found, triggering click");
                         fileInput.click();
+                        console.log("파일 입력 클릭 실행됨");
                       } else {
-                        console.log("File input not found!");
+                        console.error("파일 입력 요소를 찾을 수 없음");
                       }
                     }}
                   >
@@ -539,6 +568,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               onChange={handleFileSelect}
               style={{ display: 'none' }}
               multiple={false}
+              key={selectedFile ? selectedFile.name : 'file-input'}
             />
           </div>
 
