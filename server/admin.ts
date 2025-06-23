@@ -462,6 +462,38 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Document preview endpoint
+  app.get("/api/admin/documents/:id/preview", requireMasterAdmin, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
+      }
+
+      // Return document content and metadata as JSON
+      res.json({
+        id: document.id,
+        name: document.originalName,
+        content: document.content || "문서 내용을 읽을 수 없습니다.",
+        size: `${(document.size / 1024).toFixed(1)} KB`,
+        type: document.mimeType.includes('pdf') ? 'PDF' : 
+              document.mimeType.includes('word') ? 'Word' :
+              document.mimeType.includes('excel') ? 'Excel' :
+              document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document',
+        uploadedAt: document.createdAt
+      });
+      
+    } catch (error) {
+      console.error("Error previewing document:", error);
+      res.status(500).json({ message: "문서 미리보기에 실패했습니다" });
+    }
+  });
+
   // Document download endpoint
   app.get("/api/admin/documents/:id/download", requireMasterAdmin, async (req, res) => {
     try {

@@ -1271,30 +1271,56 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
-  // 문서 다운로드 핸들러
-  const handleDocumentDownload = async (document: any) => {
+  // 문서 미리보기 핸들러
+  const handleDocumentPreview = async (document: any) => {
     try {
-      const response = await fetch(`/api/admin/documents/${document.id}/download`);
-      if (!response.ok) throw new Error('다운로드 실패');
+      const response = await fetch(`/api/admin/documents/${document.id}/preview`);
+      if (!response.ok) throw new Error('미리보기 실패');
       
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = document.name || `문서_${document.id}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      const data = await response.json();
+      
+      // 새 창에서 문서 내용 표시
+      const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes');
+      if (previewWindow) {
+        previewWindow.document.write(`
+          <html>
+            <head>
+              <title>${document.name} - 문서 미리보기</title>
+              <style>
+                body { 
+                  font-family: 'Malgun Gothic', sans-serif; 
+                  padding: 20px; 
+                  line-height: 1.6;
+                  max-width: 800px;
+                  margin: 0 auto;
+                }
+                h1 { color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+                .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+                .content { white-space: pre-wrap; word-wrap: break-word; }
+              </style>
+            </head>
+            <body>
+              <h1>${document.name}</h1>
+              <div class="meta">
+                <p>파일 크기: ${document.size}</p>
+                <p>업로드 날짜: ${document.date}</p>
+                <p>파일 형식: ${document.type}</p>
+              </div>
+              <div class="content">${data.content || '문서 내용을 표시할 수 없습니다.'}</div>
+            </body>
+          </html>
+        `);
+        previewWindow.document.close();
+      }
       
       toast({
-        title: "다운로드 완료",
-        description: "문서가 성공적으로 다운로드되었습니다.",
+        title: "미리보기 열림",
+        description: "새 창에서 문서를 확인할 수 있습니다.",
       });
     } catch (error) {
       toast({
-        title: "다운로드 실패",
-        description: "문서 다운로드 중 오류가 발생했습니다.",
+        title: "미리보기 실패",
+        description: "문서 미리보기 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -5016,11 +5042,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Button 
                       variant="outline" 
                       className="flex items-center space-x-2"
-                      onClick={() => handleDocumentDownload(documentDetailData)}
+                      onClick={() => handleDocumentPreview(documentDetailData)}
                       disabled={!documentDetailData}
                     >
                       <Download className="w-4 h-4" />
-                      <span>문서 다운로드</span>
+                      <span>문서 미리보기</span>
                     </Button>
                     <Button 
                       variant="destructive" 

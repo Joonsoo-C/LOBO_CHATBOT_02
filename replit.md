@@ -472,6 +472,9 @@ Changelog:
   * Added server-side endpoints for document download and deletion with proper authentication
   * Integrated with existing storage interface methods for consistent data management
   * Enhanced user experience with confirmation dialogs and success/error notifications
+  * Replaced file download with web-based document preview system for Replit compatibility
+  * Added preview endpoint that opens documents in new browser windows with formatted content
+  * Fixed file storage issues by implementing proper permanent file copying during upload
 ```
 
 ## User Preferences
