@@ -3317,7 +3317,7 @@ export default function MasterAdmin() {
                 <Label>문서 카테고리</Label>
                 <Select>
                   <SelectTrigger>
-                    <SelectValue placeholder="카테고리 선택" />
+                    <SelectValue placeholder="문서 종류" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="lecture">강의 자료</SelectItem>
