@@ -10,6 +10,7 @@ import { generateChatResponse, generateManagementResponse, analyzeDocument, extr
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
+import { organizationCategories } from './organization-categories';
 
 // Configure multer for document uploads
 const upload = multer({
@@ -25,7 +26,7 @@ const upload = multer({
       'application/msword',
       'application/vnd.ms-powerpoint',
     ];
-    
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -47,7 +48,7 @@ const imageUpload = multer({
       'image/gif',
       'image/webp'
     ];
-    
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -92,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       const userType = req.user.userType;
-      
+
       // Master admin can manage all agents
       let agents;
       if (userType === 'admin' || userId === 'master_admin') {
@@ -100,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         agents = await storage.getAgentsByManager(userId);
       }
-      
+
       // Get stats for each agent
       const agentsWithStats = await Promise.all(
         agents.map(async (agent) => {
@@ -108,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return { ...agent, stats };
         })
       );
-      
+
       res.json(agentsWithStats);
     } catch (error) {
       console.error("Error fetching managed agents:", error);
@@ -119,17 +120,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/agents/:id', isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.id);
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      
+
       const agent = await storage.getAgent(agentId);
-      
+
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
       }
-      
+
       res.json(agent);
     } catch (error) {
       console.error("Error fetching agent:", error);
@@ -142,20 +143,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const agentId = parseInt(req.params.id);
       const userId = req.user.id;
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      
+
       // Check if user is the manager of this agent or master admin
       const agent = await storage.getAgent(agentId);
       const userType = req.user.userType;
       if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
-      
+
       const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse } = req.body;
-      
+
       // Update agent with complete persona data
       const updatedAgent = await storage.updateAgent(agentId, {
         name: nickname,
@@ -164,7 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         personalityTraits,
         prohibitedWordResponse
       });
-      
+
       res.json(updatedAgent);
     } catch (error) {
       console.error("Error updating agent persona:", error);
@@ -177,11 +178,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const agentId = parseInt(req.params.id);
       const userId = req.user.id;
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      
+
       const agent = await storage.getAgent(agentId);
       if (!agent || agent.managerId !== userId) {
         return res.status(403).json({ message: "You are not authorized to view this agent's performance" });
@@ -191,12 +192,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allConversations = await storage.getAllConversations();
       const agentConversations = allConversations.filter(conv => conv.agentId === agentId);
       const documents = await storage.getAgentDocuments(agentId);
-      
+
       // Calculate metrics from actual data
       const totalMessages = agentConversations.length;
       const activeUsers = new Set(agentConversations.map(conv => conv.userId)).size;
       const documentsCount = documents.length;
-      
+
       // Recent activity (last 7 days)
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       const recentActivity = agentConversations.filter(conv => {
@@ -245,37 +246,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const agentId = parseInt(req.params.id);
       const userId = req.user.id;
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      
+
       const agent = await storage.getAgent(agentId);
       const userType = req.user.userType;
       if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
-      
+
       const { llmModel, chatbotType } = req.body;
-      
+
       // Validate settings
       const validModels = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
       const validTypes = ["strict-doc", "doc-fallback-llm", "general-llm"];
-      
+
       if (!validModels.includes(llmModel)) {
         return res.status(400).json({ message: "Invalid LLM model" });
       }
-      
+
       if (!validTypes.includes(chatbotType)) {
         return res.status(400).json({ message: "Invalid chatbot type" });
       }
-      
+
       // Update agent settings
       const updatedAgent = await storage.updateAgent(agentId, {
         llmModel,
         chatbotType
       });
-      
+
       res.json(updatedAgent);
     } catch (error) {
       console.error("Error updating agent settings:", error);
@@ -299,7 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       const { agentId, type = "general" } = req.body;
-      
+
       const conversation = await storage.getOrCreateConversation(userId, agentId, type);
       res.json(conversation);
     } catch (error) {
@@ -313,14 +314,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       const { agentId } = req.body;
-      
+
       // Check if user is the manager of this agent or master admin
       const agent = await storage.getAgent(agentId);
       const userType = req.user.userType;
       if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
-      
+
       const conversation = await storage.getOrCreateConversation(userId, agentId, "management");
       res.json(conversation);
     } catch (error) {
@@ -333,11 +334,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/conversations/:id/messages', isAuthenticated, async (req, res) => {
     try {
       const conversationId = parseInt(req.params.id);
-      
+
       if (isNaN(conversationId)) {
         return res.status(400).json({ message: "Invalid conversation ID" });
       }
-      
+
       const messages = await storage.getConversationMessages(conversationId);
       res.json(messages);
     } catch (error) {
@@ -349,11 +350,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/conversations/:id/messages', isAuthenticated, async (req: any, res) => {
     try {
       const conversationId = parseInt(req.params.id);
-      
+
       if (isNaN(conversationId)) {
         return res.status(400).json({ message: "Invalid conversation ID" });
       }
-      
+
       const { content } = req.body;
       const userId = req.user.id;
 
@@ -373,7 +374,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get conversation and agent info
       const messages = await storage.getConversationMessages(conversationId);
-      
+
       // Get the conversation directly from database
       const [conversationResult] = await db
         .select()
@@ -382,13 +383,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           eq(conversations.id, conversationId),
           eq(conversations.userId, userId)
         ));
-      
+
       if (!conversationResult) {
         return res.status(404).json({ message: "Conversation not found" });
       }
-      
+
       const agent = await storage.getAgent(conversationResult.agentId);
-      
+
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
       }
@@ -413,7 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Force refresh agent data to ensure persona fields are loaded
       const refreshedAgent = await storage.getAgent(agent.id);
-      
+
       // Extract persona parameters with detailed logging
       const chatbotType = refreshedAgent?.chatbotType || "general-llm";
       const speakingStyle = refreshedAgent?.speakingStyle || "친근하고 도움이 되는 말투";
@@ -486,11 +487,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/agents/:id/documents', isAuthenticated, async (req, res) => {
     try {
       const agentId = parseInt(req.params.id);
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
-      
+
       const documents = await storage.getAgentDocuments(agentId);
       res.json(documents);
     } catch (error) {
@@ -502,7 +503,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/agents/:id/documents', isAuthenticated, upload.single('file'), async (req: any, res) => {
     try {
       const agentId = parseInt(req.params.id);
-      
+
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
@@ -515,10 +516,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Read file content
       const fileContent = fs.readFileSync(file.path, 'utf-8');
-      
+
       // Extract text content based on file type
       const extractedText = await extractTextFromContent(fileContent, file.mimetype);
-      
+
       // Analyze document
       const analysis = await analyzeDocument(extractedText, file.originalname);
 
@@ -544,7 +545,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error uploading document:", error);
-      
+
       // Clean up temporary file if it exists
       if (req.file) {
         try {
@@ -553,7 +554,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Error cleaning up file:", cleanupError);
         }
       }
-      
+
       res.status(500).json({ message: "Failed to upload document" });
     }
   });
@@ -570,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Properly encode filename for Korean characters
       const safeFilename = document.originalName.replace(/[^\w\s.-]/g, '_');
       const encodedFilename = encodeURIComponent(document.originalName);
-      
+
       // In a real implementation, you'd serve the actual file
       // For now, we'll serve the extracted content
       res.setHeader('Content-Type', 'application/octet-stream');
@@ -585,7 +586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/documents/:id', isAuthenticated, async (req, res) => {
     try {
       const documentId = parseInt(req.params.id);
-      
+
       if (isNaN(documentId)) {
         return res.status(400).json({ message: "Invalid document ID" });
       }
@@ -648,7 +649,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/uploads/agent-icons/:filename', (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(process.cwd(), 'uploads', 'agent-icons', filename);
-    
+
     if (fs.existsSync(filePath)) {
       res.sendFile(filePath);
     } else {
@@ -758,6 +759,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching agent stats:", error);
       res.status(500).json({ message: "Failed to fetch agent stats" });
     }
+  });
+
+  // 조직 카테고리 조회
+  app.get('/api/organization-categories', async (req, res) => {
+    try {
+      res.json(organizationCategories);
+    } catch (error) {
+      console.error('Failed to get organization categories:', error);
+      res.status(500).json({ error: 'Failed to get organization categories' });
+    }
+  });
+
+  // 관리자 라우트들
+  app.get('/api/admin/users', requireAuth, requireAdmin, async (req, res) => {
+    // ... 관리자 로직
   });
 
   // Setup admin routes
@@ -872,8 +888,7 @@ async function initializeDefaultAgents() {
         backgroundColor: "bg-gray-600",
         managerId: "manager1", // Will be updated with actual manager ID
       },
-      {
-        name: "비즈니스 실험실",
+      {        name: "비즈니스 실험실",
         description: "비즈니스 관련 실험과 연구를 지원하는 에이전트입니다",
         category: "교수",
         icon: "fas fa-flask",
