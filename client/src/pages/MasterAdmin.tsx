@@ -1427,7 +1427,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold mb-4">사용자 검색</h3>
               
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -1487,7 +1487,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="이름, 학번, 교번으로 검색..."
+                      placeholder="사용자명 또는 이메일 주소를 입력하세요."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
@@ -1497,13 +1497,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
               
-              {/* 검색 결과 표시 */}
-              {hasSearched && (
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: {filteredUsers.length}명 사용자 (전체 사용자: {users?.length || 0}명)
-                  {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
-                </div>
-              )}
+              {/* 검색 결과 표시 - 숨김 처리됨 */}
             </div>
 
             {/* 사용자 목록 테이블 */}
