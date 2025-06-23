@@ -48,6 +48,7 @@ import {
   ChevronDown,
   Palette,
   Menu,
+  Download,
   ExternalLink
 } from "lucide-react";
 import { Link } from "wouter";
@@ -131,6 +132,12 @@ export default function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  
+  // 문서 상세 팝업 상태
+  const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
+  const [documentDetailData, setDocumentDetailData] = useState<any>(null);
+  const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
+  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -2781,115 +2788,125 @@ export default function MasterAdmin() {
                           크기
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          업로드일
+                          업로드 날짜
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용 중인 에이전트
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           상태
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          작업
+                          설정
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      <tr 
-                        className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                        onClick={() => openDocumentDetail({
-                          name: "2024학년도 수강신청 안내.pdf",
-                          type: "PDF",
-                          size: "2.1 MB",
-                          uploadDate: "2024.01.21",
-                          status: "활성",
-                          category: "정책 문서"
-                        })}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            2024학년도 수강신청 안내.pdf
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="outline">PDF</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2.1 MB
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.21
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" onClick={() => openDocumentDetail({
-                              name: "2024학년도 수강신청 안내.pdf",
-                              type: "PDF",
-                              size: "2.1 MB",
-                              uploadDate: "2024.01.21",
-                              status: "활성",
-                              category: "정책 문서"
-                            })}>
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
+                      {/* 30개 샘플 문서 */}
+                      {[
+                        { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "신입생 오리엔테이션 가이드.docx", type: "정책 문서", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "졸업논문 작성 가이드라인.pdf", type: "매뉴얼", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "prof002" },
+                        { name: "장학금 신청서 양식.xlsx", type: "양식", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
+                        { name: "2024년 1학기 시간표.pdf", type: "공지사항", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "컴퓨터공학과 교육과정표.pdf", type: "교육과정", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
+                        { name: "도서관 이용 안내서.docx", type: "매뉴얼", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
+                        { name: "기숙사 입사 신청서.pdf", type: "양식", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
+                        { name: "취업 준비 가이드북.pdf", type: "강의 자료", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" },
+                        { name: "학생회 활동 규정.docx", type: "정책 문서", size: "1.2 MB", date: "2024-02-18", agents: ["학생회 봇"], status: "활성", uploader: "student001" },
+                        { name: "실험실 안전수칙.pdf", type: "매뉴얼", size: "2.8 MB", date: "2024-01-12", agents: ["안전관리 봇"], status: "활성", uploader: "safety001" },
+                        { name: "교환학생 프로그램 안내.pdf", type: "공지사항", size: "1.9 MB", date: "2024-02-22", agents: ["국제교류 봇"], status: "활성", uploader: "intl001" },
+                        { name: "체육관 시설 이용 안내.docx", type: "매뉴얼", size: "1.1 MB", date: "2024-01-08", agents: ["체육시설 봇"], status: "활성", uploader: "sports001" },
+                        { name: "등록금 납부 안내서.pdf", type: "양식", size: "945 KB", date: "2024-01-18", agents: ["재무 안내봇"], status: "활성", uploader: "finance001" },
+                        { name: "졸업사정 기준표.xlsx", type: "정책 문서", size: "234 KB", date: "2024-02-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "연구실 배정 신청서.pdf", type: "양식", size: "567 KB", date: "2024-03-01", agents: ["대학원 안내봇"], status: "활성", uploader: "grad001" },
+                        { name: "학과별 커리큘럼 가이드.pdf", type: "교육과정", size: "3.7 MB", date: "2024-01-22", agents: ["학과 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "휴학 신청 절차.docx", type: "매뉴얼", size: "834 KB", date: "2024-02-08", agents: ["학사 안내봇"], status: "활성", uploader: "admin002" },
+                        { name: "교내 동아리 활동 가이드.pdf", type: "공지사항", size: "1.6 MB", date: "2024-01-28", agents: ["동아리 안내봇"], status: "활성", uploader: "club001" },
+                        { name: "성적 이의신청서.pdf", type: "양식", size: "412 KB", date: "2024-02-25", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "캡스톤 프로젝트 가이드라인.pdf", type: "강의 자료", size: "2.9 MB", date: "2024-03-08", agents: ["교수 상담봇"], status: "활성", uploader: "prof004" },
+                        { name: "학생 상담 프로그램 안내.docx", type: "공지사항", size: "1.3 MB", date: "2024-02-10", agents: ["상담 안내봇"], status: "활성", uploader: "counsel001" },
+                        { name: "교육실습 신청서.xlsx", type: "양식", size: "189 KB", date: "2024-01-16", agents: ["교육대학 봇"], status: "비활성", uploader: "edu001" },
+                        { name: "논문 심사 기준표.pdf", type: "정책 문서", size: "1.7 MB", date: "2024-02-28", agents: ["대학원 안내봇"], status: "활성", uploader: "grad002" },
+                        { name: "학교 시설물 이용 규칙.pdf", type: "매뉴얼", size: "2.4 MB", date: "2024-01-05", agents: ["시설관리 봇"], status: "활성", uploader: "facility001" },
+                        { name: "인턴십 프로그램 안내서.pdf", type: "공지사항", size: "2.1 MB", date: "2024-03-12", agents: ["취업 상담봇"], status: "활성", uploader: "career002" },
+                        { name: "학점 교류 신청서.docx", type: "양식", size: "623 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin003" },
+                        { name: "연구윤리 가이드라인.pdf", type: "정책 문서", size: "1.8 MB", date: "2024-01-31", agents: ["연구지원 봇"], status: "활성", uploader: "research001" },
+                        { name: "학생증 재발급 신청서.pdf", type: "양식", size: "345 KB", date: "2024-02-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin001" },
+                        { name: "교수법 워크샵 자료.pptx", type: "강의 자료", size: "5.2 MB", date: "2024-03-15", agents: ["교수 개발봇"], status: "활성", uploader: "prof005" }
+                      ].map((doc, index) => (
+                        <tr 
+                          key={index}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                          onClick={() => {
+                            setSelectedDocument(doc);
+                            setSelectedAgents(doc.agents);
+                            setIsDocumentDetailOpen(true);
+                          }}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <FileText className="w-5 h-5 mr-3 text-blue-500" />
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {doc.name}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.type}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.size}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.date}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex flex-wrap gap-1">
+                              {doc.agents.slice(0, 2).map((agent, idx) => (
+                                <span 
+                                  key={idx}
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                                >
+                                  {agent}
+                                </span>
+                              ))}
+                              {doc.agents.length > 2 && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  +{doc.agents.length - 2}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              doc.status === '활성' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            }`}>
+                              {doc.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedDocument(doc);
+                                setSelectedAgents(doc.agents);
+                                setIsDocumentDetailOpen(true);
+                              }}
+                            >
                               <Edit className="w-4 h-4" />
                             </Button>
-                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr 
-                        className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                        onClick={() => openDocumentDetail({
-                          name: "졸업요건 변경 안내.docx",
-                          type: "Word",
-                          size: "450 KB",
-                          uploadDate: "2024.01.20",
-                          status: "활성",
-                          category: "정책 문서"
-                        })}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            졸업요건 변경 안내.docx
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="outline">Word</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          450 KB
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.20
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" onClick={() => openDocumentDetail({
-                              name: "졸업요건 변경 안내.docx",
-                              type: "Word",
-                              size: "450 KB",
-                              uploadDate: "2024.01.20",
-                              status: "활성",
-                              category: "정책 문서"
-                            })}>
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+
                     </tbody>
                   </table>
                 </div>
@@ -3809,6 +3826,148 @@ export default function MasterAdmin() {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
+        <Dialog open={isDocumentDetailOpen} onOpenChange={setIsDocumentDetailOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>문서 상세 정보 및 에이전트 연결</DialogTitle>
+            </DialogHeader>
+            
+            {documentDetailData && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">문서 정보</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일명</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로드 시간</Label>
+                      <p className="text-sm mt-1">{documentDetailData.date} 14:30:15</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로더 ID</Label>
+                      <p className="text-sm mt-1">{documentDetailData.uploader}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">문서 종류</Label>
+                      <p className="text-sm mt-1">{documentDetailData.type}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name.split('.').pop()?.toUpperCase()}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 크기</Label>
+                      <p className="text-sm mt-1">{documentDetailData.size}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 현재 연결된 에이전트 */}
+                <div>
+                  <h3 className="text-lg font-medium mb-3">현재 연결된 에이전트</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedDocumentAgents.map((agent, index) => (
+                      <span 
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                      >
+                        {agent}
+                        <button
+                          onClick={() => setSelectedDocumentAgents(prev => prev.filter((_, i) => i !== index))}
+                          className="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 에이전트 연결 영역 */}
+                <div>
+                  <h3 className="text-lg font-medium mb-3">에이전트 연결</h3>
+                  
+                  {/* 에이전트 검색 */}
+                  <div className="mb-4">
+                    <Input
+                      placeholder="에이전트 이름으로 검색..."
+                      value={agentSearchQuery}
+                      onChange={(e) => setAgentSearchQuery(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+
+                  {/* 사용 가능한 에이전트 목록 */}
+                  <div className="border rounded-lg p-4 max-h-60 overflow-y-auto">
+                    <div className="space-y-2">
+                      {[
+                        "학사 안내봇", "입학처 안내봇", "교수 상담봇", "학생 지원봇", "학과 안내봇",
+                        "도서관 봇", "생활관 안내봇", "취업 상담봇", "학생회 봇", "안전관리 봇",
+                        "국제교류 봇", "체육시설 봇", "재무 안내봇", "대학원 안내봇", "동아리 안내봇",
+                        "상담 안내봇", "교육대학 봇", "시설관리 봇", "연구지원 봇", "교수 개발봇"
+                      ]
+                        .filter(agent => 
+                          agent.toLowerCase().includes(agentSearchQuery.toLowerCase()) &&
+                          !selectedDocumentAgents.includes(agent)
+                        )
+                        .map((agent, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id={`agent-${index}`}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedDocumentAgents(prev => [...prev, agent]);
+                                }
+                              }}
+                              className="rounded"
+                            />
+                            <Label htmlFor={`agent-${index}`} className="text-sm">
+                              {agent}
+                            </Label>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 문서 액션 버튼들 */}
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div className="flex space-x-2">
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <Download className="w-4 h-4" />
+                      <span>문서 다운로드</span>
+                    </Button>
+                    <Button variant="destructive" className="flex items-center space-x-2">
+                      <Trash2 className="w-4 h-4" />
+                      <span>문서 삭제</span>
+                    </Button>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={() => setIsDocumentDetailOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => {
+                      setIsDocumentDetailOpen(false);
+                      toast({
+                        title: "에이전트 연결 완료",
+                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
+                      });
+                    }}>
+                      저장
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </main>
