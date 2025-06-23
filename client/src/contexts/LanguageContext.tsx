@@ -98,7 +98,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.satisfaction': '사용률',
     'agent.ranking': '순위',
     'agent.managementMode': '관리자 모드',
-    'agent.generalChat': '일반 대화',
+    'agent.generalChat': '에이전트 대화',
     
     // Chat interface
     'chat.typing': '메시지 작성 중...',
