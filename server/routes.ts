@@ -771,10 +771,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // 관리자 라우트들
-  app.get('/api/admin/users', requireAuth, requireAdmin, async (req, res) => {
-    // ... 관리자 로직
-  });
+  // 관리자 라우트들 (handled by admin.ts)
 
   // Setup admin routes
   setupAdminRoutes(app);
