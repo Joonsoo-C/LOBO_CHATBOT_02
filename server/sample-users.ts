@@ -1,4 +1,3 @@
-
 export const sampleUsers = [
   // 대학본부 직원들 (40명)
   // 총장실 (8명)
@@ -312,7 +311,7 @@ export function generateAdditionalUsers(): any[] {
     { upper: "연구기관", lower: "공학연구소", detail: "신소재연구소", count: 8 }
   ];
 
-  const positions = ["학부생", "대학원생", "박사과정", "석사과정", "연구원"];
+  const positions = ["학부생", "대학원생", "박사과정", "석사과정", "연구원", "교수", "부교수", "조교수", "학과장", "연구소장"];
   const names = ["김", "이", "박", "최", "정", "한", "송", "오", "조", "윤", "장", "임", "서", "강", "유", "신"];
   const suffixes = ["철수", "영희", "민수", "지영", "현우", "수연", "진호", "은지", "성민", "혜진"];
 
@@ -322,7 +321,15 @@ export function generateAdditionalUsers(): any[] {
       const name = names[Math.floor(Math.random() * names.length)] + suffixes[Math.floor(Math.random() * suffixes.length)];
       const position = positions[Math.floor(Math.random() * positions.length)];
       const userType = position.includes("교수") || position.includes("연구원") ? "faculty" : "student";
-      
+
+      // 직책에 따른 시스템 역할 결정
+      let systemRole = "user";
+      if (position === "교수" || position === "학과장" || position === "연구소장") {
+        systemRole = "operation_admin";
+      } else if (position === "부교수" || position === "조교수") {
+        systemRole = "agent_admin";
+      }
+
       additionalUsers.push({
         id: `USR${userIdCounter.toString().padStart(4, '0')}`,
         username: `USR${userIdCounter.toString().padStart(4, '0')}`,
@@ -333,7 +340,7 @@ export function generateAdditionalUsers(): any[] {
         upperCategory: category.upper,
         lowerCategory: category.lower,
         detailCategory: category.detail,
-        role: "user",
+        role: systemRole,
         position: position,
         status: "active"
       });

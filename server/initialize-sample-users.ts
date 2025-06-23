@@ -10,7 +10,21 @@ export async function initializeSampleUsers() {
     const existingUsers = await storage.getAllUsers?.() || [];
     console.log(`Current user count: ${existingUsers.length}`);
     if (existingUsers.length >= 300) {
-      console.log("Sample users already exist, skipping initialization");
+      console.log("Sample users already exist, updating roles for senior faculty...");
+      // Update existing users' roles based on position
+      for (const user of existingUsers) {
+        if (user.position === "교수" || user.position === "학과장" || user.position === "연구소장") {
+          if (user.role === "user") {
+            user.role = "operation_admin";
+            await storage.updateUser(user.id, { role: user.role });
+          }
+        } else if (user.position === "부교수" || user.position === "조교수") {
+          if (user.role === "user") {
+            user.role = "agent_admin";
+            await storage.updateUser(user.id, { role: user.role });
+          }
+        }
+      }
       return;
     }
 
