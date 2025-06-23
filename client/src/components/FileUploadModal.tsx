@@ -36,6 +36,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [uploading, setUploading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   
   // 카테고리 상태
   const [mainCategory, setMainCategory] = useState<string>("");
@@ -226,39 +227,63 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     },
   });
 
+  const validateFile = (file: File) => {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "지원하지 않는 파일 형식",
+        description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      toast({
+        title: "파일 크기 초과",
+        description: "50MB 이하의 파일만 업로드 가능합니다.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Check file type
-      const allowedTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-powerpoint',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      ];
+    if (file && validateFile(file)) {
+      setSelectedFile(file);
+    }
+  };
 
-      if (!allowedTypes.includes(file.type)) {
-        toast({
-          title: "지원하지 않는 파일 형식",
-          description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
-          variant: "destructive",
-        });
-        return;
-      }
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(true);
+  };
 
-      // Check file size (50MB limit)
-      if (file.size > 50 * 1024 * 1024) {
-        toast({
-          title: "파일 크기 초과",
-          description: "50MB 이하의 파일만 업로드 가능합니다.",
-          variant: "destructive",
-        });
-        return;
-      }
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(false);
+  };
 
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(false);
+    
+    const files = Array.from(event.dataTransfer.files);
+    const file = files[0];
+    
+    if (file && validateFile(file)) {
       setSelectedFile(file);
     }
   };
@@ -408,7 +433,17 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         {/* Modal Content */}
         <div className="p-6 max-h-[75vh] overflow-y-auto">
           {/* File Upload Section */}
-          <div className="mb-6 p-6 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
+          <div 
+            className={`mb-6 p-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
+              isDragOver 
+                ? 'border-primary bg-primary/10 dark:bg-primary/20' 
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800'
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => document.getElementById('file-upload')?.click()}
+          >
             <div className="text-center mb-4">
               <FileText className="w-12 h-12 text-gray-400 mx-auto mb-2" />
               <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 드래그하거나 클릭하여 업로드</h4>
@@ -417,16 +452,42 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </p>
             </div>
             <div className="space-y-3">
-              <Input
-                type="file"
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-                onChange={handleFileSelect}
-                className="korean-text cursor-pointer"
-              />
+              <div className="relative">
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                  className="w-full korean-text hover:bg-primary hover:text-primary-foreground"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  파일 선택
+                </Button>
+              </div>
               {selectedFile && (
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <span className="text-sm text-foreground korean-text font-medium">{selectedFile.name}</span>
-                  <span className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
+                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-sm text-foreground korean-text font-medium">{selectedFile.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedFile(null)}
+                      className="text-gray-500 hover:text-red-500"
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
@@ -547,16 +608,30 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
           {/* Action Buttons */}
           <div className="flex space-x-3">
-            <Button variant="outline" onClick={onClose} className="flex-1 korean-text">
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              className="flex-1 korean-text"
+              disabled={uploadMutation.isPending}
+            >
               취소
             </Button>
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || !mainCategory || !subCategory || !detailCategory || uploadMutation.isPending}
-              className="flex-1 korean-text"
+              className="flex-1 korean-text relative"
             >
-              <Upload className="w-4 h-4 mr-2" />
-              {uploadMutation.isPending ? "업로드 중..." : "업로드 시작"}
+              {uploadMutation.isPending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  업로드 중...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4 mr-2" />
+                  업로드 시작
+                </>
+              )}
             </Button>
           </div>
 
