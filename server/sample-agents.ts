@@ -335,6 +335,23 @@ export const sampleAgents = [
     managerId: "prof012",
     creatorId: "prof012"
   },
+  {
+    name: "이영학 에이전트",
+    description: "컴퓨터공학과 이영학 교수님의 인공지능 및 머신러닝 강의를 지원하는 에이전트입니다",
+    category: "교수",
+    upperCategory: "공과대학",
+    lowerCategory: "컴퓨터공학과",
+    detailCategory: "인공지능전공",
+    icon: "fas fa-brain",
+    backgroundColor: "bg-blue-700",
+    llmModel: "gpt-4o",
+    chatbotType: "doc-fallback-llm",
+    speakingStyle: "기술적이면서도 학생들이 이해하기 쉽게 설명하는 교수님의 말투",
+    personalityTraits: "인공지능 기술에 대한 깊은 이해를 바탕으로 복잡한 개념을 단순하게 설명하며, 학생들의 창의적 사고를 자극하는 성격",
+    rolePrompt: "컴퓨터공학과 교수로서 인공지능과 머신러닝의 이론과 실무를 가르칩니다.",
+    managerId: "prof_lee",
+    creatorId: "prof_lee"
+  },
 
   // 학과 관련 에이전트들 (15개)
   {

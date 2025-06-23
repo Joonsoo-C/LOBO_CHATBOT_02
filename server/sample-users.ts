@@ -188,6 +188,12 @@ export const sampleUsers = [
     role: "agent_admin", position: "교수", status: "active"
   },
   {
+    id: "prof_lee", username: "prof_lee", password: "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
+    name: "이영학", email: "yhlee@university.edu", userType: "faculty",
+    upperCategory: "공과대학", lowerCategory: "컴퓨터공학과", detailCategory: "인공지능전공",
+    role: "agent_admin", position: "교수", status: "active"
+  },
+  {
     id: "ENG002", username: "ENG002", password: "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     name: "이AI", email: "ai@university.edu", userType: "faculty",
     upperCategory: "공과대학", lowerCategory: "컴퓨터공학과", detailCategory: "인공지능전공",
