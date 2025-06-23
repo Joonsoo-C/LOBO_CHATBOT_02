@@ -2185,16 +2185,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="대학본부">대학본부</SelectItem>
-                        <SelectItem value="학사부서">학사부서</SelectItem>
+                        <SelectItem value="행정부서">행정부서</SelectItem>
+                        <SelectItem value="학술정보원">학술정보원</SelectItem>
+                        <SelectItem value="국제교류원">국제교류원</SelectItem>
+                        <SelectItem value="학생지원처">학생지원처</SelectItem>
+                        <SelectItem value="취업지원처">취업지원처</SelectItem>
+                        <SelectItem value="산학협력단">산학협력단</SelectItem>
                         <SelectItem value="인문대학">인문대학</SelectItem>
                         <SelectItem value="사회과학대학">사회과학대학</SelectItem>
                         <SelectItem value="자연과학대학">자연과학대학</SelectItem>
                         <SelectItem value="공과대학">공과대학</SelectItem>
                         <SelectItem value="경영대학">경영대학</SelectItem>
+                        <SelectItem value="법과대학">법과대학</SelectItem>
                         <SelectItem value="의과대학">의과대학</SelectItem>
-                        <SelectItem value="대학원">대학원</SelectItem>
-                        <SelectItem value="연구기관">연구기관</SelectItem>
+                        <SelectItem value="학습지원">학습지원</SelectItem>
+                        <SelectItem value="기술교육">기술교육</SelectItem>
+                        <SelectItem value="언어교육">언어교육</SelectItem>
+                        <SelectItem value="취업지원">취업지원</SelectItem>
+                        <SelectItem value="소통능력">소통능력</SelectItem>
+                        <SelectItem value="생활관리">생활관리</SelectItem>
+                        <SelectItem value="창업지원">창업지원</SelectItem>
+                        <SelectItem value="창의성개발">창의성개발</SelectItem>
+                        <SelectItem value="정신건강">정신건강</SelectItem>
+                        <SelectItem value="철학사고">철학사고</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -2214,76 +2227,158 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {selectedUniversity === '대학본부' && (
-                          <>
-                            <SelectItem value="총장실">총장실</SelectItem>
-                            <SelectItem value="교무처">교무처</SelectItem>
-                            <SelectItem value="행정처">행정처</SelectItem>
-                          </>
-                        )}
-                        {selectedUniversity === '학사부서' && (
+                        {/* 행정부서 */}
+                        {selectedUniversity === '행정부서' && (
                           <>
                             <SelectItem value="입학처">입학처</SelectItem>
                             <SelectItem value="학사지원팀">학사지원팀</SelectItem>
-                            <SelectItem value="학생상담센터">학생상담센터</SelectItem>
                           </>
                         )}
+                        {/* 학술정보원 */}
+                        {selectedUniversity === '학술정보원' && (
+                          <>
+                            <SelectItem value="도서관">도서관</SelectItem>
+                          </>
+                        )}
+                        {/* 국제교류원 */}
+                        {selectedUniversity === '국제교류원' && (
+                          <>
+                            <SelectItem value="국제교류팀">국제교류팀</SelectItem>
+                          </>
+                        )}
+                        {/* 학생지원처 */}
+                        {selectedUniversity === '학생지원처' && (
+                          <>
+                            <SelectItem value="학생상담센터">학생상담센터</SelectItem>
+                            <SelectItem value="기숙사">기숙사</SelectItem>
+                          </>
+                        )}
+                        {/* 취업지원처 */}
+                        {selectedUniversity === '취업지원처' && (
+                          <>
+                            <SelectItem value="취업지원센터">취업지원센터</SelectItem>
+                          </>
+                        )}
+                        {/* 산학협력단 */}
+                        {selectedUniversity === '산학협력단' && (
+                          <>
+                            <SelectItem value="창업지원센터">창업지원센터</SelectItem>
+                          </>
+                        )}
+                        {/* 인문대학 */}
                         {selectedUniversity === '인문대학' && (
                           <>
                             <SelectItem value="국어국문학과">국어국문학과</SelectItem>
                             <SelectItem value="영어영문학과">영어영문학과</SelectItem>
-                            <SelectItem value="철학과">철학과</SelectItem>
                           </>
                         )}
+                        {/* 사회과학대학 */}
                         {selectedUniversity === '사회과학대학' && (
                           <>
-                            <SelectItem value="정치외교학과">정치외교학과</SelectItem>
-                            <SelectItem value="행정학과">행정학과</SelectItem>
                             <SelectItem value="심리학과">심리학과</SelectItem>
+                            <SelectItem value="경제학과">경제학과</SelectItem>
                           </>
                         )}
+                        {/* 자연과학대학 */}
                         {selectedUniversity === '자연과학대학' && (
                           <>
                             <SelectItem value="수학과">수학과</SelectItem>
                             <SelectItem value="물리학과">물리학과</SelectItem>
                             <SelectItem value="화학과">화학과</SelectItem>
                             <SelectItem value="생명과학과">생명과학과</SelectItem>
+                            <SelectItem value="통계학과">통계학과</SelectItem>
                           </>
                         )}
+                        {/* 공과대학 */}
                         {selectedUniversity === '공과대학' && (
                           <>
                             <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
                             <SelectItem value="전자공학과">전자공학과</SelectItem>
                             <SelectItem value="기계공학과">기계공학과</SelectItem>
-                            <SelectItem value="건축공학과">건축공학과</SelectItem>
+                            <SelectItem value="건축학과">건축학과</SelectItem>
                           </>
                         )}
+                        {/* 경영대학 */}
                         {selectedUniversity === '경영대학' && (
                           <>
                             <SelectItem value="경영학과">경영학과</SelectItem>
-                            <SelectItem value="회계학과">회계학과</SelectItem>
-                            <SelectItem value="국제통상학과">국제통상학과</SelectItem>
                           </>
                         )}
+                        {/* 법과대학 */}
+                        {selectedUniversity === '법과대학' && (
+                          <>
+                            <SelectItem value="법학과">법학과</SelectItem>
+                          </>
+                        )}
+                        {/* 의과대학 */}
                         {selectedUniversity === '의과대학' && (
                           <>
                             <SelectItem value="의학과">의학과</SelectItem>
-                            <SelectItem value="간호학과">간호학과</SelectItem>
-                            <SelectItem value="약학과">약학과</SelectItem>
                           </>
                         )}
-                        {selectedUniversity === '대학원' && (
+                        {/* 학습지원 */}
+                        {selectedUniversity === '학습지원' && (
                           <>
-                            <SelectItem value="일반대학원">일반대학원</SelectItem>
-                            <SelectItem value="특수대학원">특수대학원</SelectItem>
-                            <SelectItem value="전문대학원">전문대학원</SelectItem>
+                            <SelectItem value="글쓰기">글쓰기</SelectItem>
+                            <SelectItem value="수학">수학</SelectItem>
+                            <SelectItem value="계획관리">계획관리</SelectItem>
+                            <SelectItem value="독서">독서</SelectItem>
                           </>
                         )}
-                        {selectedUniversity === '연구기관' && (
+                        {/* 기술교육 */}
+                        {selectedUniversity === '기술교육' && (
                           <>
-                            <SelectItem value="중앙연구소">중앙연구소</SelectItem>
-                            <SelectItem value="산학협력단">산학협력단</SelectItem>
-                            <SelectItem value="부설연구소">부설연구소</SelectItem>
+                            <SelectItem value="프로그래밍">프로그래밍</SelectItem>
+                            <SelectItem value="IT트렌드">IT트렌드</SelectItem>
+                          </>
+                        )}
+                        {/* 언어교육 */}
+                        {selectedUniversity === '언어교육' && (
+                          <>
+                            <SelectItem value="영어">영어</SelectItem>
+                            <SelectItem value="다국어">다국어</SelectItem>
+                          </>
+                        )}
+                        {/* 취업지원 */}
+                        {selectedUniversity === '취업지원' && (
+                          <>
+                            <SelectItem value="서류작성">서류작성</SelectItem>
+                          </>
+                        )}
+                        {/* 소통능력 */}
+                        {selectedUniversity === '소통능력' && (
+                          <>
+                            <SelectItem value="발표">발표</SelectItem>
+                          </>
+                        )}
+                        {/* 생활관리 */}
+                        {selectedUniversity === '생활관리' && (
+                          <>
+                            <SelectItem value="건강">건강</SelectItem>
+                          </>
+                        )}
+                        {/* 창업지원 */}
+                        {selectedUniversity === '창업지원' && (
+                          <>
+                            <SelectItem value="아이디어">아이디어</SelectItem>
+                          </>
+                        )}
+                        {/* 창의성개발 */}
+                        {selectedUniversity === '창의성개발' && (
+                          <>
+                            <SelectItem value="디자인">디자인</SelectItem>
+                          </>
+                        )}
+                        {/* 정신건강 */}
+                        {selectedUniversity === '정신건강' && (
+                          <>
+                            <SelectItem value="상담">상담</SelectItem>
+                          </>
+                        )}
+                        {/* 철학사고 */}
+                        {selectedUniversity === '철학사고' && (
+                          <>
+                            <SelectItem value="AI윤리">AI윤리</SelectItem>
                           </>
                         )}
                       </SelectContent>
@@ -2302,104 +2397,250 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {/* 대학본부 - 총장실 */}
-                        {selectedUniversity === '대학본부' && selectedCollege === '총장실' && (
+                        {/* 행정부서 - 입학처 */}
+                        {selectedUniversity === '행정부서' && selectedCollege === '입학처' && (
                           <>
-                            <SelectItem value="기획팀">기획팀</SelectItem>
-                            <SelectItem value="인사팀">인사팀</SelectItem>
-                            <SelectItem value="홍보팀">홍보팀</SelectItem>
+                            <SelectItem value="입학상담">입학상담</SelectItem>
                           </>
                         )}
-                        {/* 대학본부 - 교무처 */}
-                        {selectedUniversity === '대학본부' && selectedCollege === '교무처' && (
+                        {/* 행정부서 - 학사지원팀 */}
+                        {selectedUniversity === '행정부서' && selectedCollege === '학사지원팀' && (
                           <>
-                            <SelectItem value="교무팀">교무팀</SelectItem>
-                            <SelectItem value="학사팀">학사팀</SelectItem>
-                            <SelectItem value="입학팀">입학팀</SelectItem>
+                            <SelectItem value="학사관리">학사관리</SelectItem>
                           </>
                         )}
-                        {/* 대학본부 - 행정처 */}
-                        {selectedUniversity === '대학본부' && selectedCollege === '행정처' && (
+                        {/* 학술정보원 - 도서관 */}
+                        {selectedUniversity === '학술정보원' && selectedCollege === '도서관' && (
                           <>
-                            <SelectItem value="총무팀">총무팀</SelectItem>
-                            <SelectItem value="재무팀">재무팀</SelectItem>
-                            <SelectItem value="시설팀">시설팀</SelectItem>
+                            <SelectItem value="정보서비스">정보서비스</SelectItem>
                           </>
                         )}
-                        {/* 인문대학 */}
-                        {selectedUniversity === '인문대학' && selectedCollege === '국어국문학과' && (
+                        {/* 국제교류원 - 국제교류팀 */}
+                        {selectedUniversity === '국제교류원' && selectedCollege === '국제교류팀' && (
                           <>
-                            <SelectItem value="현대문학전공">현대문학전공</SelectItem>
-                            <SelectItem value="고전문학전공">고전문학전공</SelectItem>
-                            <SelectItem value="국어학전공">국어학전공</SelectItem>
+                            <SelectItem value="해외프로그램">해외프로그램</SelectItem>
                           </>
                         )}
-                        {selectedUniversity === '인문대학' && selectedCollege === '영어영문학과' && (
+                        {/* 학생지원처 - 학생상담센터 */}
+                        {selectedUniversity === '학생지원처' && selectedCollege === '학생상담센터' && (
                           <>
-                            <SelectItem value="영문학전공">영문학전공</SelectItem>
-                            <SelectItem value="영어학전공">영어학전공</SelectItem>
-                            <SelectItem value="번역학전공">번역학전공</SelectItem>
+                            <SelectItem value="심리상담">심리상담</SelectItem>
                           </>
                         )}
-                        {/* 자연과학대학 */}
+                        {/* 학생지원처 - 기숙사 */}
+                        {selectedUniversity === '학생지원처' && selectedCollege === '기숙사' && (
+                          <>
+                            <SelectItem value="생활관리">생활관리</SelectItem>
+                          </>
+                        )}
+                        {/* 취업지원처 - 취업지원센터 */}
+                        {selectedUniversity === '취업지원처' && selectedCollege === '취업지원센터' && (
+                          <>
+                            <SelectItem value="취업상담">취업상담</SelectItem>
+                          </>
+                        )}
+                        {/* 산학협력단 - 창업지원센터 */}
+                        {selectedUniversity === '산학협력단' && selectedCollege === '창업지원센터' && (
+                          <>
+                            <SelectItem value="창업상담">창업상담</SelectItem>
+                          </>
+                        )}
+                        {/* 자연과학대학 - 수학과 */}
                         {selectedUniversity === '자연과학대학' && selectedCollege === '수학과' && (
                           <>
-                            <SelectItem value="순수수학전공">순수수학전공</SelectItem>
-                            <SelectItem value="응용수학전공">응용수학전공</SelectItem>
-                            <SelectItem value="통계학전공">통계학전공</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
+                        {/* 자연과학대학 - 물리학과 */}
                         {selectedUniversity === '자연과학대학' && selectedCollege === '물리학과' && (
                           <>
-                            <SelectItem value="이론물리전공">이론물리전공</SelectItem>
-                            <SelectItem value="실험물리전공">실험물리전공</SelectItem>
-                            <SelectItem value="응용물리전공">응용물리전공</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
-                        {/* 공과대학 */}
+                        {/* 자연과학대학 - 화학과 */}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '화학과' && (
+                          <>
+                            <SelectItem value="유기화학">유기화학</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 자연과학대학 - 생명과학과 */}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '생명과학과' && (
+                          <>
+                            <SelectItem value="미생물학">미생물학</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 자연과학대학 - 통계학과 */}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '통계학과' && (
+                          <>
+                            <SelectItem value="통계학">통계학</SelectItem>
+                          </>
+                        )}
+                        {/* 공과대학 - 컴퓨터공학과 */}
                         {selectedUniversity === '공과대학' && selectedCollege === '컴퓨터공학과' && (
                           <>
-                            <SelectItem value="소프트웨어전공">소프트웨어전공</SelectItem>
-                            <SelectItem value="하드웨어전공">하드웨어전공</SelectItem>
-                            <SelectItem value="AI전공">AI전공</SelectItem>
+                            <SelectItem value="데이터베이스">데이터베이스</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
+                        {/* 공과대학 - 전자공학과 */}
                         {selectedUniversity === '공과대학' && selectedCollege === '전자공학과' && (
                           <>
-                            <SelectItem value="통신전공">통신전공</SelectItem>
-                            <SelectItem value="반도체전공">반도체전공</SelectItem>
-                            <SelectItem value="제어전공">제어전공</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
-                        {/* 경영대학 */}
+                        {/* 공과대학 - 기계공학과 */}
+                        {selectedUniversity === '공과대학' && selectedCollege === '기계공학과' && (
+                          <>
+                            <SelectItem value="기계설계">기계설계</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 공과대학 - 건축학과 */}
+                        {selectedUniversity === '공과대학' && selectedCollege === '건축학과' && (
+                          <>
+                            <SelectItem value="건축설계">건축설계</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 인문대학 - 국어국문학과 */}
+                        {selectedUniversity === '인문대학' && selectedCollege === '국어국문학과' && (
+                          <>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 인문대학 - 영어영문학과 */}
+                        {selectedUniversity === '인문대학' && selectedCollege === '영어영문학과' && (
+                          <>
+                            <SelectItem value="영미문학">영미문학</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 사회과학대학 - 심리학과 */}
+                        {selectedUniversity === '사회과학대학' && selectedCollege === '심리학과' && (
+                          <>
+                            <SelectItem value="일반심리학">일반심리학</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 사회과학대학 - 경제학과 */}
+                        {selectedUniversity === '사회과학대학' && selectedCollege === '경제학과' && (
+                          <>
+                            <SelectItem value="경제학원론">경제학원론</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 경영대학 - 경영학과 */}
                         {selectedUniversity === '경영대학' && selectedCollege === '경영학과' && (
                           <>
-                            <SelectItem value="전략경영전공">전략경영전공</SelectItem>
-                            <SelectItem value="마케팅전공">마케팅전공</SelectItem>
-                            <SelectItem value="재무전공">재무전공</SelectItem>
+                            <SelectItem value="마케팅">마케팅</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
-                        {/* 의과대학 */}
+                        {/* 법과대학 - 법학과 */}
+                        {selectedUniversity === '법과대학' && selectedCollege === '법학과' && (
+                          <>
+                            <SelectItem value="국제법">국제법</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
+                          </>
+                        )}
+                        {/* 의과대학 - 의학과 */}
                         {selectedUniversity === '의과대학' && selectedCollege === '의학과' && (
                           <>
-                            <SelectItem value="기초의학전공">기초의학전공</SelectItem>
-                            <SelectItem value="임상의학전공">임상의학전공</SelectItem>
-                            <SelectItem value="예방의학전공">예방의학전공</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
-                        {/* 대학원 */}
-                        {selectedUniversity === '대학원' && selectedCollege === '일반대학원' && (
+                        {/* 자연과학대학 - 수학과 */}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '수학과' && (
                           <>
-                            <SelectItem value="석사과정">석사과정</SelectItem>
-                            <SelectItem value="박사과정">박사과정</SelectItem>
-                            <SelectItem value="석박통합과정">석박통합과정</SelectItem>
+                            <SelectItem value="미적분학">미적분학</SelectItem>
+                            <SelectItem value="학과안내">학과안내</SelectItem>
                           </>
                         )}
-                        {selectedUniversity === '대학원' && selectedCollege === '특수대학원' && (
+                        {/* 학습지원 */}
+                        {selectedUniversity === '학습지원' && selectedCollege === '글쓰기' && (
                           <>
-                            <SelectItem value="경영대학원">경영대학원</SelectItem>
-                            <SelectItem value="교육대학원">교육대학원</SelectItem>
-                            <SelectItem value="공학대학원">공학대학원</SelectItem>
+                            <SelectItem value="논문작성">논문작성</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '학습지원' && selectedCollege === '수학' && (
+                          <>
+                            <SelectItem value="문제풀이">문제풀이</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '학습지원' && selectedCollege === '계획관리' && (
+                          <>
+                            <SelectItem value="스터디">스터디</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '학습지원' && selectedCollege === '독서' && (
+                          <>
+                            <SelectItem value="토론활동">토론활동</SelectItem>
+                          </>
+                        )}
+                        {/* 기술교육 */}
+                        {selectedUniversity === '기술교육' && selectedCollege === '프로그래밍' && (
+                          <>
+                            <SelectItem value="코딩교육">코딩교육</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '기술교육' && selectedCollege === 'IT트렌드' && (
+                          <>
+                            <SelectItem value="기술분석">기술분석</SelectItem>
+                          </>
+                        )}
+                        {/* 언어교육 */}
+                        {selectedUniversity === '언어교육' && selectedCollege === '영어' && (
+                          <>
+                            <SelectItem value="회화연습">회화연습</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '언어교육' && selectedCollege === '다국어' && (
+                          <>
+                            <SelectItem value="언어교환">언어교환</SelectItem>
+                          </>
+                        )}
+                        {/* 취업지원 */}
+                        {selectedUniversity === '취업지원' && selectedCollege === '서류작성' && (
+                          <>
+                            <SelectItem value="이력서">이력서</SelectItem>
+                          </>
+                        )}
+                        {/* 소통능력 */}
+                        {selectedUniversity === '소통능력' && selectedCollege === '발표' && (
+                          <>
+                            <SelectItem value="프레젠테이션">프레젠테이션</SelectItem>
+                          </>
+                        )}
+                        {/* 생활관리 */}
+                        {selectedUniversity === '생활관리' && selectedCollege === '건강' && (
+                          <>
+                            <SelectItem value="웰니스">웰니스</SelectItem>
+                          </>
+                        )}
+                        {/* 창업지원 */}
+                        {selectedUniversity === '창업지원' && selectedCollege === '아이디어' && (
+                          <>
+                            <SelectItem value="창업기획">창업기획</SelectItem>
+                          </>
+                        )}
+                        {/* 창의성개발 */}
+                        {selectedUniversity === '창의성개발' && selectedCollege === '디자인' && (
+                          <>
+                            <SelectItem value="창의사고">창의사고</SelectItem>
+                          </>
+                        )}
+                        {/* 정신건강 */}
+                        {selectedUniversity === '정신건강' && selectedCollege === '상담' && (
+                          <>
+                            <SelectItem value="스트레스">스트레스</SelectItem>
+                          </>
+                        )}
+                        {/* 철학사고 */}
+                        {selectedUniversity === '철학사고' && selectedCollege === 'AI윤리' && (
+                          <>
+                            <SelectItem value="윤리토론">윤리토론</SelectItem>
                           </>
                         )}
                       </SelectContent>
