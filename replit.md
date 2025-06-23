@@ -459,6 +459,12 @@ Changelog:
   * Agents without messages maintain category-based ordering (학교, 교수, 그룹, 학생, 기능형)
   * Improved user experience by making active conversations easily accessible
   * Consistent sorting behavior across mobile and tablet layouts
+- June 23, 2025. Fixed message sending functionality with memory storage fallback:
+  * Resolved database connection issues causing message sending failures
+  * Updated message sending logic to work with memory storage system when PostgreSQL is unavailable
+  * Fixed conversation lookup methods to use available storage interface methods
+  * Message sending now works correctly with OpenAI API integration
+  * System automatically falls back to memory storage with proper error handling
 ```
 
 ## User Preferences

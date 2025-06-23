@@ -134,7 +134,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
             <div>
               <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
               <p className="text-sm text-muted-foreground korean-text">
-                {isManagementMode ? "관리자 모드" : "일반 대화"}
+                {isManagementMode ? "관리자 모드" : "에이전트 대화"}
               </p>
             </div>
           </div>
