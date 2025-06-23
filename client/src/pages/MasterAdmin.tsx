@@ -105,7 +105,7 @@ const agentSchema = z.object({
 
 type AgentFormData = z.infer<typeof agentSchema>;
 
-export default function MasterAdmin() {
+function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -696,7 +696,7 @@ export default function MasterAdmin() {
     },
     onError: (error: Error) => {
       toast({
-        title: "오류",```python
+        title: "오류",
         description: "아이콘 변경에 실패했습니다.",
         variant: "destructive",
       });
@@ -1799,7 +1799,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   );
 }
