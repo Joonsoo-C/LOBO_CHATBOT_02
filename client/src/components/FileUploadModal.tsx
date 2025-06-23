@@ -54,10 +54,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
   // 상위 카테고리 옵션
   const mainCategories = [
+    { value: "all", label: "전체" },
     { value: "university", label: "대학교" },
-    { value: "graduate", label: "대학원" },
-    { value: "research", label: "연구소" },
-    { value: "administration", label: "행정" }
+    { value: "graduate", label: "대학원" }
   ];
 
   // 하위 카테고리 옵션 (상위 카테고리에 따라 달라짐)
@@ -435,13 +434,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
           {/* Category Selection */}
           <div className="mb-6">
-            <h4 className="text-base font-medium text-foreground mb-4 korean-text">문서 카테고리</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <h4 className="text-base font-medium text-foreground mb-4 korean-text">적용 범위</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <Label className="text-sm font-medium mb-2 block">상위 카테고리</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">전체/대학원/대학교</Label>
                 <Select value={mainCategory} onValueChange={(value) => { setMainCategory(value); resetCategories(); }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="선택하세요" />
+                    <SelectValue placeholder="전체" />
                   </SelectTrigger>
                   <SelectContent>
                     {mainCategories.map((category) => (
@@ -454,10 +453,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </div>
 
               <div>
-                <Label className="text-sm font-medium mb-2 block">하위 카테고리</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">단과대학</Label>
                 <Select value={subCategory} onValueChange={(value) => { setSubCategory(value); resetDetailCategory(); }} disabled={!mainCategory}>
                   <SelectTrigger>
-                    <SelectValue placeholder="선택하세요" />
+                    <SelectValue placeholder="전체" />
                   </SelectTrigger>
                   <SelectContent>
                     {getSubCategories(mainCategory).map((category) => (
@@ -470,10 +469,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </div>
 
               <div>
-                <Label className="text-sm font-medium mb-2 block">세부 카테고리</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">학과</Label>
                 <Select value={detailCategory} onValueChange={setDetailCategory} disabled={!subCategory}>
                   <SelectTrigger>
-                    <SelectValue placeholder="선택하세요" />
+                    <SelectValue placeholder="전체" />
                   </SelectTrigger>
                   <SelectContent>
                     {getDetailCategories(mainCategory, subCategory).map((category) => (
@@ -484,24 +483,23 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-          </div>
 
-          {/* Agent Selection */}
-          <div className="mb-6">
-            <Label className="text-sm font-medium mb-2 block">에이전트 선택</Label>
-            <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-              <SelectTrigger>
-                <SelectValue placeholder="적용할 에이전트를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {agents.map((agentOption) => (
-                  <SelectItem key={agentOption.id} value={agentOption.id.toString()}>
-                    {agentOption.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <div>
+                <Label className="text-sm font-medium mb-2 block korean-text">에이전트</Label>
+                <Select value={selectedAgent} onValueChange={setSelectedAgent}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="전체" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {agents.map((agentOption) => (
+                      <SelectItem key={agentOption.id} value={agentOption.id.toString()}>
+                        {agentOption.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           {/* Document Description */}
