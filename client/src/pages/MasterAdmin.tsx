@@ -180,15 +180,22 @@ export default function MasterAdmin() {
     }
   });
 
+  // 사용자 데이터가 로드되면 자동으로 검색 상태를 true로 설정
+  React.useEffect(() => {
+    if (users && users.length > 0 && !hasSearched) {
+      setHasSearched(true);
+    }
+  }, [users, hasSearched]);
+
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
     if (!users) return [];
     
     let filtered = [...users];
     
-    // 검색이 실행된 경우에만 필터링 적용
-    if (hasSearched) {
-      // 검색 쿼리 필터링
+    // 검색이 실행된 경우 또는 초기 상태에서 필터링 적용
+    if (hasSearched || !hasSearched) {
+      // 검색 쿼리 필터링 (검색어가 있을 때만)
       if (userSearchQuery.trim()) {
         const query = userSearchQuery.toLowerCase();
         filtered = filtered.filter(user => 
@@ -347,18 +354,6 @@ export default function MasterAdmin() {
     }
   };
 
-  // 파일 크기를 바이트로 변환하는 함수
-  const parseFileSize = (sizeStr: string): number => {
-    const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
-    const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
-    if (match) {
-      const value = parseFloat(match[1]);
-      const unit = match[2] as keyof typeof units;
-      return value * units[unit];
-    }
-    return 0;
-  };
-
   // 샘플 문서 데이터
   const sampleDocuments = [
     { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
@@ -447,6 +442,18 @@ export default function MasterAdmin() {
       }
     });
   }, [documentSortField, documentSortDirection]);
+
+  // 파일 크기를 바이트로 변환하는 함수
+  const parseFileSize = (sizeStr: string): number => {
+    const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+    const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
+    if (match) {
+      const value = parseFloat(match[1]);
+      const unit = match[2] as keyof typeof units;
+      return value * units[unit];
+    }
+    return 0;
+  };
 
   // 필터된 에이전트 목록
   const filteredAgents = useMemo(() => {
@@ -1313,19 +1320,7 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {!hasSearched ? (
-                        <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">사용자 검색</p>
-                              <p className="text-sm">
-                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 사용자를 찾아보세요.
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      ) : filteredUsers?.length === 0 ? (
+                      {filteredUsers?.length === 0 ? (
                         <tr>
                           <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
