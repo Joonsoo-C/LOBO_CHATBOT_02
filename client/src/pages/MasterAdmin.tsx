@@ -142,10 +142,6 @@ export default function MasterAdmin() {
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
   
-  // 문서 정렬 상태
-  const [documentSortField, setDocumentSortField] = useState<string>('date');
-  const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('desc');
-  
   // 문서 업로드 관련 상태
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
   const [selectedDocumentFiles, setSelectedDocumentFiles] = useState<File[]>([]);
@@ -217,16 +213,6 @@ export default function MasterAdmin() {
     queryFn: async () => {
       const response = await fetch('/api/admin/organizations');
       if (!response.ok) throw new Error('Failed to fetch organizations');
-      return response.json();
-    }
-  });
-
-  // 문서 목록 조회
-  const { data: documents } = useQuery<any[]>({
-    queryKey: ['/api/admin/documents'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/documents');
-      if (!response.ok) throw new Error('Failed to fetch documents');
       return response.json();
     }
   });
@@ -374,78 +360,6 @@ export default function MasterAdmin() {
       return 0;
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
-
-  // 문서 정렬 함수
-  const handleDocumentSort = (field: string) => {
-    if (documentSortField === field) {
-      setDocumentSortDirection(documentSortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setDocumentSortField(field);
-      setDocumentSortDirection('asc');
-    }
-  };
-
-  // 정렬된 문서 목록 (샘플 데이터 포함)
-  const sortedDocuments = useMemo(() => {
-    const sampleDocuments = [
-      { name: "2024학년도 수강신청 안내.pdf", type: "PDF", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
-      { name: "신입생 오리엔테이션 가이드.docx", type: "Word", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
-      { name: "졸업논문 작성 가이드라인.pdf", type: "PDF", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "admin001" },
-      { name: "장학금 신청서 양식.xlsx", type: "Excel", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
-      { name: "2024년 1학기 시간표.pdf", type: "PDF", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
-      { name: "컴퓨터공학과 교육과정표.pdf", type: "PDF", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
-      { name: "도서관 이용 안내서.docx", type: "Word", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
-      { name: "기숙사 입사 신청서.pdf", type: "PDF", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
-      { name: "취업 준비 가이드북.pdf", type: "PDF", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" }
-    ];
-
-    // API에서 가져온 실제 문서와 샘플 문서 합치기
-    const allDocuments = [...(documentList || []), ...sampleDocuments];
-    
-    return [...allDocuments].sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
-      
-      if (documentSortField === 'name') {
-        aValue = a.name;
-        bValue = b.name;
-      } else if (documentSortField === 'type') {
-        aValue = a.type;
-        bValue = b.type;
-      } else if (documentSortField === 'size') {
-        // 크기 정렬을 위해 숫자로 변환
-        const extractSize = (sizeStr: string) => {
-          const match = sizeStr.match(/([0-9.]+)\s*(KB|MB)/i);
-          if (!match) return 0;
-          const value = parseFloat(match[1]);
-          const unit = match[2].toUpperCase();
-          return unit === 'MB' ? value * 1024 : value;
-        };
-        aValue = extractSize(a.size);
-        bValue = extractSize(b.size);
-      } else if (documentSortField === 'date') {
-        aValue = new Date(a.date);
-        bValue = new Date(b.date);
-      } else if (documentSortField === 'agents') {
-        aValue = a.agents?.join(', ') || '';
-        bValue = b.agents?.join(', ') || '';
-      } else if (documentSortField === 'status') {
-        aValue = a.status;
-        bValue = b.status;
-      } else {
-        aValue = a[documentSortField as keyof typeof a];
-        bValue = b[documentSortField as keyof typeof b];
-      }
-      
-      // 문자열인 경우 대소문자 구분 없이 정렬
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-      
-      if (aValue < bValue) return documentSortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return documentSortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [documents, documentSortField, documentSortDirection]);
 
 
 
@@ -1107,52 +1021,53 @@ export default function MasterAdmin() {
               </Card>
             </div>
 
-            {/* 에이전트 검색 및 필터링 */}
+            {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">에이전트 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold mb-4">사용자 검색 및 관리</h3>
               
-              {/* 카테고리 필터 */}
+              {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>카테고리</Label>
+                  <Label>상위 카테고리</Label>
                   <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="school">학교</SelectItem>
-                      <SelectItem value="professor">교수</SelectItem>
-                      <SelectItem value="student">학생</SelectItem>
-                      <SelectItem value="group">그룹</SelectItem>
-                      <SelectItem value="function">기능형</SelectItem>
+                      <SelectItem value="graduate">대학원</SelectItem>
+                      <SelectItem value="undergraduate">대학교</SelectItem>
+                      <SelectItem value="headquarters">본부</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>상태</Label>
+                  <Label>하위 카테고리</Label>
                   <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="active">활성</SelectItem>
-                      <SelectItem value="inactive">비활성</SelectItem>
+                      <SelectItem value="engineering">공과대학</SelectItem>
+                      <SelectItem value="humanities">인문대학</SelectItem>
+                      <SelectItem value="business">경영대학</SelectItem>
+                      <SelectItem value="science">자연과학대학</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>관리자</Label>
+                  <Label>세부 카테고리</Label>
                   <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="system">System Admin</SelectItem>
-                      <SelectItem value="prof001">박 교수</SelectItem>
-                      <SelectItem value="prof002">최 교수</SelectItem>
+                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                      <SelectItem value="mechanical">기계공학과</SelectItem>
+                      <SelectItem value="electrical">전기공학과</SelectItem>
+                      <SelectItem value="business_admin">경영학과</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1163,78 +1078,54 @@ export default function MasterAdmin() {
                 </div>
               </div>
 
-              {/* 에이전트 검색 */}
+              {/* 사용자 검색 */}
               <div className="space-y-2">
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="에이전트 이름으로 검색..."
+                      placeholder="이름, 학번, 교번으로 검색..."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleAgentSearch()}
+                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                     />
                   </div>
-                  <Button onClick={handleAgentSearch}>검색</Button>
+                  <Button onClick={executeSearch}>검색</Button>
                 </div>
               </div>
               
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: {sortedAgents?.length || 0}개 에이전트
+                  검색 결과: {users?.length || 0}명 사용자
                   {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
                 </div>
               )}
             </div>
 
-            {/* 에이전트 관리 테이블 */}
+            {/* 사용자 관리 테이블 */}
             <Card>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('name')}
-                        >
-                          에이전트명 {agentSortField === 'name' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자 정보
                         </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('category')}
-                        >
-                          카테고리 {agentSortField === 'category' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자 유형
                         </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('manager')}
-                        >
-                          관리자 {agentSortField === 'manager' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 조직
                         </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('organization')}
-                        >
-                          소속 {agentSortField === 'organization' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          이메일
                         </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('documentCount')}
-                        >
-                          문서 {agentSortField === 'documentCount' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          가입일
                         </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('userCount')}
-                        >
-                          사용자 {agentSortField === 'userCount' && (agentSortDirection === 'asc' ? '↑' : '↓')}
-                        </th>
-                        <th
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleAgentSort('createdAt')}
-                        >
-                          최근 사용 {agentSortField === 'createdAt' && (agentSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          최근 로그인
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           작업
@@ -1242,97 +1133,107 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {sortedAgents.map((agent) => (
-                        <tr 
-                          key={agent.id} 
-                          className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
-                            !agent.isActive ? 'opacity-60 bg-gray-50 dark:bg-gray-900' : ''
-                          }`}
-                          onClick={() => openEditAgentDialog(agent)}
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div 
-                                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg mr-3"
-                                style={{ backgroundColor: agent.backgroundColor }}
-                              >
-                                {agent.icon}
-                              </div>
-                              <div>
-                                <div className={`text-sm font-medium ${agent.isActive ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
-                                  {agent.name}
-                                </div>
-                                <div className="text-xs text-gray-500 truncate max-w-48">
-                                  {agent.description}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant="outline">
-                              {agent.category}
-                            </Badge>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).managerFirstName && (agent as any).managerLastName 
-                              ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}`
-                              : 'System Admin'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).organizationName || '로보대학교'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).documentCount || 0}개
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).userCount || 0}명
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {(agent as any).lastUsedAt 
-                              ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
-                              : '-'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex space-x-1">
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openEditAgentDialog(agent);
-                                }}
-                                title="에이전트 편집"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openIconChangeDialog(agent);
-                                }}
-                                title="아이콘 변경"
-                              >
-                                <Palette className="w-4 h-4" />
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="text-red-600 hover:text-red-700"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  // Delete functionality would be implemented here
-                                  console.log('Delete agent:', agent.id);
-                                }}
-                                title="에이전트 삭제"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                      {!hasSearched ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">사용자 검색</p>
+                              <p className="text-sm">
+                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 사용자를 찾아보세요.
+                              </p>
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ) : users?.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                              <p className="text-sm">
+                                검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        users?.slice(0, 20).map((user) => (
+                          <tr 
+                            key={user.id} 
+                            className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
+                              !user.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
+                            }`}
+                            onClick={() => setSelectedUser(user)}
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
+                                  <User className="w-5 h-5 text-gray-500" />
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                    {user.firstName} {user.lastName}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {user.username}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">
+                                {user.role === 'master_admin' ? '마스터 관리자' :
+                                 user.role === 'operation_admin' ? '운영 관리자' :
+                                 user.role === 'category_admin' ? '카테고리 관리자' :
+                                 user.role === 'agent_admin' ? '에이전트 관리자' :
+                                 user.role === 'qa_admin' ? 'QA 관리자' :
+                                 user.role === 'doc_admin' ? '문서 관리자' :
+                                 user.role === 'external' ? '외부 사용자' : '일반 사용자'}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              로보대학교 컴퓨터공학과
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {user.email || '-'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(user.createdAt).toLocaleDateString('ko-KR')}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('ko-KR') : '-'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  title="사용자 편집"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedUser(user);
+                                  }}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="text-red-600 hover:text-red-700" 
+                                  title="사용자 비활성화"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // 사용자 비활성화 로직
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -1342,54 +1243,56 @@ export default function MasterAdmin() {
 
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
-            {/* 사용자 검색 및 관리 섹션 */}
+            {/* 에이전트 검색 및 관리 섹션 */}
             <Card>
               <CardHeader>
-                <CardTitle>사용자 검색 및 관리</CardTitle>
+                <CardTitle>에이전트 검색 및 관리</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">상위 카테고리</Label>
+                    <Label className="text-sm font-medium">카테고리</Label>
                     <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="graduate">대학원</SelectItem>
-                        <SelectItem value="undergraduate">대학교</SelectItem>
+                        <SelectItem value="school">학교</SelectItem>
+                        <SelectItem value="professor">교수</SelectItem>
+                        <SelectItem value="student">학생</SelectItem>
+                        <SelectItem value="group">그룹</SelectItem>
+                        <SelectItem value="function">기능형</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">하위 카테고리</Label>
+                    <Label className="text-sm font-medium">상태</Label>
                     <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="engineering">공과대학</SelectItem>
-                        <SelectItem value="humanities">인문대학</SelectItem>
-                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="inactive">비활성</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">세부 카테고리</Label>
+                    <Label className="text-sm font-medium">관리자</Label>
                     <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                        <SelectItem value="mechanical">기계공학과</SelectItem>
-                        <SelectItem value="electrical">전기공학과</SelectItem>
+                        <SelectItem value="system">System Admin</SelectItem>
+                        <SelectItem value="prof001">박 교수</SelectItem>
+                        <SelectItem value="prof002">최 교수</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1410,7 +1313,7 @@ export default function MasterAdmin() {
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <Input
-                      placeholder="이름, 학번, 교번으로 검색..."
+                      placeholder="에이전트 이름으로 검색..."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       className="h-10"
@@ -3111,83 +3014,23 @@ export default function MasterAdmin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('name')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>문서명</span>
-                            {documentSortField === 'name' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          문서명
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('type')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>종류</span>
-                            {documentSortField === 'type' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          종류
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('size')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>크기</span>
-                            {documentSortField === 'size' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          크기
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('date')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>업로드 날짜</span>
-                            {documentSortField === 'date' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          업로드 날짜
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('agents')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>사용 중인 에이전트</span>
-                            {documentSortField === 'agents' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용 중인 에이전트
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          onClick={() => handleDocumentSort('status')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>상태</span>
-                            {documentSortField === 'status' && (
-                              documentSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           설정
@@ -3195,43 +3038,106 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {/* 정렬된 문서 목록 */}
-                      {sortedDocuments.map((doc, index) => (
-                        <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={() => openDocumentDetailDialog(doc)}>
+                      {/* 30개 샘플 문서 */}
+                      {[
+                        { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "신입생 오리엔테이션 가이드.docx", type: "정책 문서", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "졸업논문 작성 가이드라인.pdf", type: "매뉴얼", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "prof002" },
+                        { name: "장학금 신청서 양식.xlsx", type: "양식", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
+                        { name: "2024년 1학기 시간표.pdf", type: "공지사항", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "컴퓨터공학과 교육과정표.pdf", type: "교육과정", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
+                        { name: "도서관 이용 안내서.docx", type: "매뉴얼", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
+                        { name: "기숙사 입사 신청서.pdf", type: "양식", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
+                        { name: "취업 준비 가이드북.pdf", type: "강의 자료", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" },
+                        { name: "학생회 활동 규정.docx", type: "정책 문서", size: "1.2 MB", date: "2024-02-18", agents: ["학생회 봇"], status: "활성", uploader: "student001" },
+                        { name: "실험실 안전수칙.pdf", type: "매뉴얼", size: "2.8 MB", date: "2024-01-12", agents: ["안전관리 봇"], status: "활성", uploader: "safety001" },
+                        { name: "교환학생 프로그램 안내.pdf", type: "공지사항", size: "1.9 MB", date: "2024-02-22", agents: ["국제교류 봇"], status: "활성", uploader: "intl001" },
+                        { name: "체육관 시설 이용 안내.docx", type: "매뉴얼", size: "1.1 MB", date: "2024-01-08", agents: ["체육시설 봇"], status: "활성", uploader: "sports001" },
+                        { name: "등록금 납부 안내서.pdf", type: "양식", size: "945 KB", date: "2024-01-18", agents: ["재무 안내봇"], status: "활성", uploader: "finance001" },
+                        { name: "졸업사정 기준표.xlsx", type: "정책 문서", size: "234 KB", date: "2024-02-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "연구실 배정 신청서.pdf", type: "양식", size: "567 KB", date: "2024-03-01", agents: ["대학원 안내봇"], status: "활성", uploader: "grad001" },
+                        { name: "학과별 커리큘럼 가이드.pdf", type: "교육과정", size: "3.7 MB", date: "2024-01-22", agents: ["학과 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "휴학 신청 절차.docx", type: "매뉴얼", size: "834 KB", date: "2024-02-08", agents: ["학사 안내봇"], status: "활성", uploader: "admin002" },
+                        { name: "교내 동아리 활동 가이드.pdf", type: "공지사항", size: "1.6 MB", date: "2024-01-28", agents: ["동아리 안내봇"], status: "활성", uploader: "club001" },
+                        { name: "성적 이의신청서.pdf", type: "양식", size: "412 KB", date: "2024-02-25", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "캡스톤 프로젝트 가이드라인.pdf", type: "강의 자료", size: "2.9 MB", date: "2024-03-08", agents: ["교수 상담봇"], status: "활성", uploader: "prof004" },
+                        { name: "학생 상담 프로그램 안내.docx", type: "공지사항", size: "1.3 MB", date: "2024-02-10", agents: ["상담 안내봇"], status: "활성", uploader: "counsel001" },
+                        { name: "교육실습 신청서.xlsx", type: "양식", size: "189 KB", date: "2024-01-16", agents: ["교육대학 봇"], status: "비활성", uploader: "edu001" },
+                        { name: "논문 심사 기준표.pdf", type: "정책 문서", size: "1.7 MB", date: "2024-02-28", agents: ["대학원 안내봇"], status: "활성", uploader: "grad002" },
+                        { name: "학교 시설물 이용 규칙.pdf", type: "매뉴얼", size: "2.4 MB", date: "2024-01-05", agents: ["시설관리 봇"], status: "활성", uploader: "facility001" },
+                        { name: "인턴십 프로그램 안내서.pdf", type: "공지사항", size: "2.1 MB", date: "2024-03-12", agents: ["취업 상담봇"], status: "활성", uploader: "career002" },
+                        { name: "학점 교류 신청서.docx", type: "양식", size: "623 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin003" },
+                        { name: "연구윤리 가이드라인.pdf", type: "정책 문서", size: "1.8 MB", date: "2024-01-31", agents: ["연구지원 봇"], status: "활성", uploader: "research001" },
+                        { name: "학생증 재발급 신청서.pdf", type: "양식", size: "345 KB", date: "2024-02-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin001" },
+                        { name: "교수법 워크샵 자료.pptx", type: "강의 자료", size: "5.2 MB", date: "2024-03-15", agents: ["교수 개발봇"], status: "활성", uploader: "prof005" }
+                      ].map((doc, index) => (
+                        <tr 
+                          key={index}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                          onClick={() => {
+                            setDocumentDetailData(doc);
+                            setSelectedDocumentAgents(doc.agents);
+                            setIsDocumentDetailOpen(true);
+                          }}
+                        >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{doc.name}</div>
+                            <div className="flex items-center">
+                              <FileText className="w-5 h-5 mr-3 text-blue-500" />
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {doc.name}
+                                </div>
+                              </div>
+                            </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant="outline">{doc.type}</Badge>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.type}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {doc.size}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {doc.date}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex flex-wrap gap-1">
-                              {doc.agents?.slice(0, 2).map((agent: string, i: number) => (
-                                <Badge key={i} variant="secondary" className="text-xs">{agent}</Badge>
+                              {doc.agents.slice(0, 2).map((agent, idx) => (
+                                <span 
+                                  key={idx}
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                                >
+                                  {agent}
+                                </span>
                               ))}
-                              {doc.agents && doc.agents.length > 2 && (
-                                <Badge variant="secondary" className="text-xs">+{doc.agents.length - 2}</Badge>
+                              {doc.agents.length > 2 && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  +{doc.agents.length - 2}
+                                </span>
                               )}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant="default" className="bg-green-100 text-green-800">{doc.status}</Badge>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              doc.status === '활성' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            }`}>
+                              {doc.status}
+                            </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-1">
-                              <Button variant="outline" size="sm" title="문서 상세" onClick={(e) => { e.stopPropagation(); openDocumentDetailDialog(doc); }}>
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm" title="문서 편집" onClick={(e) => { e.stopPropagation(); /* 편집 로직 */ }}>
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                            </div>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDocumentDetailData(doc);
+                                setSelectedDocumentAgents(doc.agents);
+                                setIsDocumentDetailOpen(true);
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -3241,7 +3147,1133 @@ export default function MasterAdmin() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* 시스템 설정 */}
+          <TabsContent value="system" className="space-y-6">
+            <h2 className="text-2xl font-bold">시스템 설정</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>OpenAI 설정</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>API 키</Label>
+                    <Input type="password" placeholder="sk-..." />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>기본 모델</Label>
+                    <Select defaultValue="gpt-4o">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button>설정 저장</Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>데이터베이스 관리</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Database className="w-4 h-4 mr-2" />
+                      데이터베이스 백업
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <FileText className="w-4 h-4 mr-2" />
+                      로그 다운로드
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      사용량 분석
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
+
+        {/* 에이전트 편집 다이얼로그 */}
+        <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 설정</DialogTitle>
+            </DialogHeader>
+            <Form {...editAgentForm}>
+              <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>에이전트 이름</FormLabel>
+                        <FormControl>
+                          <Input placeholder="예: 학사 도우미" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>카테고리</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="카테고리 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="llmModel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LLM 모델 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o-mini"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="GPT-4o Mini (빠름)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
+                            <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="chatbotType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>챗봇 유형 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="문서 우선 + LLM..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
+                            <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
+                            <SelectItem value="general-llm">자유 대화형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={editAgentForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>설명</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 역할과 기능을 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 소속 조직 선택 - 3단계 드롭다운 */}
+                <div className="space-y-4">
+                  <FormLabel className="text-base font-medium">소속 조직</FormLabel>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="대학교">대학교</SelectItem>
+                          <SelectItem value="대학원">대학원</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                          <SelectItem value="전자공학과">전자공학과</SelectItem>
+                          <SelectItem value="기계공학과">기계공학과</SelectItem>
+                          <SelectItem value="경영학과">경영학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button variant="default" className="h-11 px-6 bg-blue-600 hover:bg-blue-700">
+                        적용
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 관리자 */}
+                <FormField
+                  control={editAgentForm.control}
+                  name="managerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>에이전트 관리자</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="관리자 선택" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {managers?.map((manager) => (
+                            <SelectItem key={manager.id} value={manager.id}>
+                              {manager.firstName} {manager.lastName} ({manager.username})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 숨겨진 조직 ID 필드 */}
+                <FormField
+                  control={editAgentForm.control}
+                  name="organizationId"
+                  render={({ field }) => (
+                    <FormItem style={{ display: 'none' }}>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={editAgentForm.control}
+                  name="personality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>성격/말투 (선택사항)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 성격이나 말투를 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-between">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => openIconChangeDialog(editingAgent!)}
+                  >
+                    아이콘 편집
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button type="button" variant="outline" onClick={() => setIsEditAgentDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button type="submit" disabled={updateAgentMutation.isPending}>
+                      {updateAgentMutation.isPending ? "수정 중..." : "저장"}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* LMS 연동 다이얼로그 */}
+        <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>LMS 연동 설정</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="lms-type">LMS 유형</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="LMS 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="blackboard">Blackboard</SelectItem>
+                      <SelectItem value="moodle">Moodle</SelectItem>
+                      <SelectItem value="canvas">Canvas</SelectItem>
+                      <SelectItem value="sakai">Sakai</SelectItem>
+                      <SelectItem value="d2l">D2L Brightspace</SelectItem>
+                      <SelectItem value="custom">사용자 정의</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="lms-url">LMS 서버 URL</Label>
+                  <Input 
+                    id="lms-url" 
+                    placeholder="https://lms.university.edu" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="api-key">API 키</Label>
+                  <Input 
+                    id="api-key" 
+                    type="password"
+                    placeholder="LMS API 키 입력" 
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sync-interval">동기화 주기</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="동기화 주기 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1h">1시간마다</SelectItem>
+                      <SelectItem value="6h">6시간마다</SelectItem>
+                      <SelectItem value="daily">매일</SelectItem>
+                      <SelectItem value="weekly">매주</SelectItem>
+                      <SelectItem value="manual">수동</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 종류</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="카테고리 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">세부 카테고리"</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button className="w-full">
+                      적용
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연동 상태</h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  현재 LMS와 연동되지 않음. 위 설정을 완료한 후 연결 테스트를 진행하세요.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsLmsDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline">
+                  연결 테스트
+                </Button>
+                <Button>
+                  연동 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 상세 보기 다이얼로그 */}
+        <Dialog open={isDocumentDetailDialogOpen} onOpenChange={setIsDocumentDetailDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 연결 설정</DialogTitle>
+            </DialogHeader>
+            {selectedDocument && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">{selectedDocument.name}</h3>
+                      <p className="text-sm text-gray-500">{selectedDocument.size} • {selectedDocument.uploadDate}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 검색 */}
+                <div>
+                  <h4 className="text-base font-medium mb-4">에이전트 검색</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Select defaultValue="인문대학">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Select defaultValue="국문학과">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="국문학과">국문학과</SelectItem>
+                          <SelectItem value="영문학과">영문학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Select defaultValue="4학년">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="1학년">1학년</SelectItem>
+                          <SelectItem value="2학년">2학년</SelectItem>
+                          <SelectItem value="3학년">3학년</SelectItem>
+                          <SelectItem value="4학년">4학년</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 목록 */}
+                <div className="border rounded-lg">
+                  <div className="p-4 border-b bg-gray-50 dark:bg-gray-800">
+                    <h4 className="font-medium">국문학과</h4>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent1" className="rounded" />
+                      <label htmlFor="agent1" className="flex-1 cursor-pointer">
+                        <div className="font-medium">한국어문학과 도우미</div>
+                        <div className="text-sm text-gray-500">한국어문학과 관련 질문을 도와드립니다</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent2" className="rounded" defaultChecked />
+                      <label htmlFor="agent2" className="flex-1 cursor-pointer">
+                        <div className="font-medium">고전문학 해설 봇</div>
+                        <div className="text-sm text-gray-500">고전 문학 작품 해설 및 감상</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent3" className="rounded" />
+                      <label htmlFor="agent3" className="flex-1 cursor-pointer">
+                        <div className="font-medium">현대문학 분석 도우미</div>
+                        <div className="text-sm text-gray-500">현대 문학 작품 분석 및 비평</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent4" className="rounded" />
+                      <label htmlFor="agent4" className="flex-1 cursor-pointer">
+                        <div className="font-medium">창작 지도 멘토</div>
+                        <div className="text-sm text-gray-500">소설, 시 창작 지도 및 피드백</div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 연결 요약 */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연결 요약</h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    현재 3개의 에이전트에 연결되어 있습니다.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Badge variant="secondary">영문학과 도우미</Badge>
+                    <Badge variant="secondary">고전문학 해설 봇</Badge>
+                    <Badge variant="secondary">기술생활 가이드</Badge>
+                  </div>
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-between">
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      // 문서 삭제 로직
+                      toast({
+                        title: "문서 삭제",
+                        description: `${selectedDocument.name}이(가) 삭제되었습니다.`,
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={() => setIsDocumentDetailDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => {
+                      toast({
+                        title: "에이전트 연결 완료",
+                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}>
+                      에이전트 연결 저장
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 업로드 다이얼로그 */}
+        <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>문서 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                multiple
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleDocumentFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDocumentFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedDocumentFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedDocumentFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleClearAllFiles}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedDocumentFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveFile(index)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label>문서 종류</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="문서 종류" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button className="w-full">
+                      적용
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">업로드 옵션</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="auto-categorize" className="rounded" />
+                    <Label htmlFor="auto-categorize">AI 자동 분류 활성화</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="extract-keywords" className="rounded" />
+                    <Label htmlFor="extract-keywords">키워드 자동 추출</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="notify-users" className="rounded" />
+                    <Label htmlFor="notify-users">해당 범위 사용자에게 알림 발송</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsDocumentUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button 
+                  onClick={handleDocumentUpload}
+                  disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
+                >
+                  {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작 (${selectedDocumentFiles.length}개 파일)`}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 파일 업로드 다이얼로그 */}
+        <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>사용자 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, XLSX 파일 지원 (최대 10MB)
+                </p>
+                <Button variant="outline">
+                  파일 선택
+                </Button>
+              </div>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (username, firstName, lastName, email, userType)</p>
+                  <p>• username: 학번/교번 (필수)</p>
+                  <p>• userType: "student" 또는 "faculty" (필수)</p>
+                  <p>• email: 이메일 주소 (선택)</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>업로드 옵션</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="overwrite-existing" className="rounded" />
+                    <Label htmlFor="overwrite-existing">기존 사용자 정보 덮어쓰기</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="send-welcome" className="rounded" />
+                    <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="validate-only" className="rounded" />
+                    <Label htmlFor="validate-only">검증만 수행 (실제 업로드 안함)</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline">
+                  샘플 파일 다운로드
+                </Button>
+                <Button>
+                  업로드 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 아이콘 변경 다이얼로그 */}
+        <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>아이콘 변경</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 아이콘 미리보기 */}
+              <div className="flex justify-center">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500`}>
+                  {(() => {
+                    const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
+                    return <IconComponent className="w-6 h-6 text-white" />;
+                  })()}
+                </div>
+              </div>
+
+              {/* 아이콘 유형 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant={selectedIcon !== "custom" ? "default" : "outline"} 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setSelectedIcon("User")}
+                  >
+                    기본 아이콘
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    disabled
+                  >
+                    이미지 업로드
+                  </Button>
+                </div>
+              </div>
+
+              {/* 아이콘 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { icon: "User" },
+                    { icon: "GraduationCap" },
+                    { icon: "BookOpen" },
+                    { icon: "Shield" },
+                    { icon: "Brain" },
+                    { icon: "Zap" },
+                    { icon: "Target" },
+                    { icon: "Coffee" },
+                    { icon: "Music" },
+                    { icon: "Heart" }
+                  ].map(({ icon }) => {
+                    const IconComponent = iconMap[icon as keyof typeof iconMap];
+                    return (
+                      <Button
+                        key={icon}
+                        variant={selectedIcon === icon ? "default" : "outline"}
+                        size="sm"
+                        className="h-12 w-12 p-0"
+                        onClick={() => setSelectedIcon(icon)}
+                      >
+                        <IconComponent className="w-5 h-5" />
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 배경색 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { color: "blue", class: "bg-blue-500" },
+                    { color: "green", class: "bg-green-500" },
+                    { color: "purple", class: "bg-purple-500" },
+                    { color: "red", class: "bg-red-500" },
+                    { color: "orange", class: "bg-orange-500" },
+                    { color: "pink", class: "bg-pink-500" },
+                    { color: "yellow", class: "bg-yellow-500" },
+                    { color: "cyan", class: "bg-cyan-500" },
+                    { color: "gray", class: "bg-gray-500" },
+                    { color: "indigo", class: "bg-indigo-500" }
+                  ].map(({ color, class: bgClass }) => (
+                    <Button
+                      key={color}
+                      variant="outline"
+                      size="sm"
+                      className={`h-12 w-12 p-0 border-2 ${selectedBgColor === color ? 'border-black' : 'border-gray-200'}`}
+                      onClick={() => setSelectedBgColor(color)}
+                    >
+                      <div className={`w-8 h-8 rounded ${bgClass}`}></div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 버튼 */}
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setIsIconChangeDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button onClick={handleIconChange} disabled={changeIconMutation.isPending}>
+                  {changeIconMutation.isPending ? "변경 중..." : "변경하기"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
+        <Dialog open={isDocumentDetailOpen} onOpenChange={setIsDocumentDetailOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>문서 상세 정보 및 에이전트 연결</DialogTitle>
+            </DialogHeader>
+            
+            {documentDetailData && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">문서 정보</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일명</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로드 시간</Label>
+                      <p className="text-sm mt-1">{documentDetailData.date} 14:30:15</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로더 ID</Label>
+                      <p className="text-sm mt-1">{documentDetailData.uploader}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">문서 종류</Label>
+                      <p className="text-sm mt-1">{documentDetailData.type}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name.split('.').pop()?.toUpperCase()}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 크기</Label>
+                      <p className="text-sm mt-1">{documentDetailData.size}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 현재 연결된 에이전트 */}
+                <div>
+                  <h3 className="text-lg font-medium mb-3">현재 연결된 에이전트</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedDocumentAgents.map((agent, index) => (
+                      <span 
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                      >
+                        {agent}
+                        <button
+                          onClick={() => setSelectedDocumentAgents(prev => prev.filter((_, i) => i !== index))}
+                          className="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 에이전트 연결 영역 */}
+                <div>
+                  <h3 className="text-lg font-medium mb-3">에이전트 연결</h3>
+                  
+                  {/* 에이전트 검색 */}
+                  <div className="mb-4">
+                    <Input
+                      placeholder="에이전트 이름으로 검색..."
+                      value={agentSearchQuery}
+                      onChange={(e) => setAgentSearchQuery(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+
+                  {/* 사용 가능한 에이전트 목록 */}
+                  <div className="border rounded-lg p-4 max-h-60 overflow-y-auto">
+                    <div className="space-y-2">
+                      {[
+                        "학사 안내봇", "입학처 안내봇", "교수 상담봇", "학생 지원봇", "학과 안내봇",
+                        "도서관 봇", "생활관 안내봇", "취업 상담봇", "학생회 봇", "안전관리 봇",
+                        "국제교류 봇", "체육시설 봇", "재무 안내봇", "대학원 안내봇", "동아리 안내봇",
+                        "상담 안내봇", "교육대학 봇", "시설관리 봇", "연구지원 봇", "교수 개발봇"
+                      ]
+                        .filter(agent => 
+                          agent.toLowerCase().includes(agentSearchQuery.toLowerCase()) &&
+                          !selectedDocumentAgents.includes(agent)
+                        )
+                        .map((agent, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id={`agent-${index}`}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedDocumentAgents(prev => [...prev, agent]);
+                                }
+                              }}
+                              className="rounded"
+                            />
+                            <Label htmlFor={`agent-${index}`} className="text-sm">
+                              {agent}
+                            </Label>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 문서 액션 버튼들 */}
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div className="flex space-x-2">
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <Download className="w-4 h-4" />
+                      <span>문서 다운로드</span>
+                    </Button>
+                    <Button variant="destructive" className="flex items-center space-x-2">
+                      <Trash2 className="w-4 h-4" />
+                      <span>문서 삭제</span>
+                    </Button>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={() => setIsDocumentDetailOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => {
+                      setIsDocumentDetailOpen(false);
+                      toast({
+                        title: "에이전트 연결 완료",
+                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
+                      });
+                    }}>
+                      저장
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
