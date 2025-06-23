@@ -475,6 +475,9 @@ Changelog:
   * Replaced file download with web-based document preview system for Replit compatibility
   * Added preview endpoint that opens documents in new browser windows with formatted content
   * Fixed file storage issues by implementing proper permanent file copying during upload
+  * Fixed critical JavaScript variable naming conflict preventing actual file downloads
+  * Enhanced download functionality with proper blob handling and UTF-8 filename encoding
+  * Document download now works correctly with proper error handling and user feedback
 ```
 
 ## User Preferences

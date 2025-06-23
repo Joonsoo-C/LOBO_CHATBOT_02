@@ -1333,11 +1333,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   };
 
   // 문서 다운로드 핸들러 (실제 파일 다운로드)
-  const handleDocumentDownload = async (document: any) => {
+  const handleDocumentDownload = async (doc: any) => {
     try {
-      console.log(`Starting download for document: ${document.name} (ID: ${document.id})`);
+      console.log(`Starting download for document: ${doc.name} (ID: ${doc.id})`);
       
-      const response = await fetch(`/api/admin/documents/${document.id}/download`, {
+      const response = await fetch(`/api/admin/documents/${doc.id}/download`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -1362,7 +1362,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = document.name || `문서_${document.id}`;
+      link.download = doc.name || `문서_${doc.id}`;
       link.style.display = 'none';
       
       // Trigger download
@@ -1377,7 +1377,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       
       toast({
         title: "다운로드 완료",
-        description: `"${document.name}"이 성공적으로 다운로드되었습니다.`,
+        description: `"${doc.name}"이 성공적으로 다운로드되었습니다.`,
       });
       
     } catch (error) {
