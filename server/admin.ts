@@ -255,22 +255,29 @@ export function setupAdminRoutes(app: Express) {
         description
       });
 
+      // Generate a unique filename for permanent storage
+      const permanentFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${originalName}`;
+      const permanentPath = path.join(adminUploadDir, permanentFilename);
+      
+      // Move file to permanent location
+      fs.copyFileSync(file.path, permanentPath);
+
       // Read file content for processing
       let fileContent = '';
       let extractedText = '';
 
       try {
-        fileContent = fs.readFileSync(file.path, 'utf-8');
+        fileContent = fs.readFileSync(permanentPath, 'utf-8');
         extractedText = await extractTextFromContent(fileContent, file.mimetype);
       } catch (contentError) {
         console.log("Could not extract text content, storing file info only");
         extractedText = `Document: ${originalName}`;
       }
 
-      // Create document record - using agentId: 1 for admin uploads (system-wide documents)
+      // Create document record - using permanent filename
       const documentData = {
         agentId: 1, // Use first agent as default for admin uploads
-        filename: file.filename,
+        filename: permanentFilename,
         originalName: originalName,
         mimeType: file.mimetype,
         size: file.size,
@@ -279,7 +286,7 @@ export function setupAdminRoutes(app: Express) {
       };
 
       const document = await storage.createDocument(documentData);
-
+      
       // Clean up temporary file
       fs.unlinkSync(file.path);
 
@@ -468,26 +475,12 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
-      // Try multiple possible file locations
-      let filePath = path.join(adminUploadDir, document.filename);
-      
-      // If file doesn't exist in admin dir, check temp directory
-      if (!fs.existsSync(filePath)) {
-        filePath = path.join('/tmp', document.filename);
-      }
-      
-      // If still not found, check current working directory uploads
-      if (!fs.existsSync(filePath)) {
-        filePath = path.join(process.cwd(), document.filename);
-      }
+      // File should be in admin upload directory
+      const filePath = path.join(adminUploadDir, document.filename);
       
       // Check if file exists
       if (!fs.existsSync(filePath)) {
-        console.error(`Document file not found: ${document.filename}, tried paths:`, [
-          path.join(adminUploadDir, document.filename),
-          path.join('/tmp', document.filename),
-          path.join(process.cwd(), document.filename)
-        ]);
+        console.error(`Document file not found: ${document.filename} at ${filePath}`);
         return res.status(404).json({ message: "서버에서 문서 파일을 찾을 수 없습니다" });
       }
 
@@ -518,15 +511,8 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
-      // Delete file from filesystem - try multiple locations
-      let filePath = path.join(adminUploadDir, document.filename);
-      if (!fs.existsSync(filePath)) {
-        filePath = path.join('/tmp', document.filename);
-      }
-      if (!fs.existsSync(filePath)) {
-        filePath = path.join(process.cwd(), document.filename);
-      }
-      
+      // Delete file from filesystem
+      const filePath = path.join(adminUploadDir, document.filename);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
