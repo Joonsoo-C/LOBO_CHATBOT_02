@@ -1245,6 +1245,68 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     logoutMutation.mutate();
   };
 
+  // 문서 삭제 뮤테이션
+  const deleteDocumentMutation = useMutation({
+    mutationFn: async (documentId: number) => {
+      const response = await fetch(`/api/admin/documents/${documentId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete document');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      setIsDocumentDetailOpen(false);
+      toast({
+        title: "삭제 완료",
+        description: "문서가 성공적으로 삭제되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "삭제 실패",
+        description: error.message || "문서 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 문서 다운로드 핸들러
+  const handleDocumentDownload = async (document: any) => {
+    try {
+      const response = await fetch(`/api/admin/documents/${document.id}/download`);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = document.name || `document_${document.id}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast({
+        title: "다운로드 완료",
+        description: "문서가 성공적으로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "다운로드 실패",
+        description: "문서 다운로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 문서 삭제 핸들러
+  const handleDocumentDelete = (document: any) => {
+    if (window.confirm(`"${document.name}" 문서를 정말 삭제하시겠습니까?`)) {
+      deleteDocumentMutation.mutate(document.id);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
@@ -4923,13 +4985,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 문서 액션 버튼들 */}
                 <div className="flex justify-between items-center pt-4 border-t">
                   <div className="flex space-x-2">
-                    <Button variant="outline" className="flex items-center space-x-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center space-x-2"
+                      onClick={() => handleDocumentDownload(documentDetailData)}
+                      disabled={!documentDetailData}
+                    >
                       <Download className="w-4 h-4" />
                       <span>문서 다운로드</span>
                     </Button>
-                    <Button variant="destructive" className="flex items-center space-x-2">
+                    <Button 
+                      variant="destructive" 
+                      className="flex items-center space-x-2"
+                      onClick={() => handleDocumentDelete(documentDetailData)}
+                      disabled={!documentDetailData || deleteDocumentMutation.isPending}
+                    >
                       <Trash2 className="w-4 h-4" />
-                      <span>문서 삭제</span>
+                      <span>{deleteDocumentMutation.isPending ? '삭제 중...' : '문서 삭제'}</span>
                     </Button>
                   </div>
                   
