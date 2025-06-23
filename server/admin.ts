@@ -593,7 +593,12 @@ export function setupAdminRoutes(app: Express) {
       const userId = req.params.id;
       const updateData = req.body;
 
-      console.log(`Updating user ${userId} with data:`, updateData);
+      console.log(`Updating user ${userId} with data:`, {
+        ...updateData,
+        organizationAffiliations: updateData.organizationAffiliations?.length || 0,
+        agentPermissions: updateData.agentPermissions?.length || 0,
+        userMemo: updateData.userMemo ? 'has memo' : 'no memo'
+      });
 
       // Update user in storage
       const updatedUser = await storage.updateUser(userId, updateData);
@@ -608,6 +613,27 @@ export function setupAdminRoutes(app: Express) {
       console.error("Failed to update user:", error);
       res.status(500).json({ 
         message: "사용자 정보 수정에 실패했습니다.",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Delete user endpoint
+  app.delete("/api/admin/users/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const userId = req.params.id;
+
+      if (userId === 'master_admin') {
+        return res.status(400).json({ message: "마스터 관리자 계정은 삭제할 수 없습니다." });
+      }
+
+      await storage.deleteUser(userId);
+      console.log("User deleted successfully:", userId);
+      res.json({ success: true, message: "사용자가 삭제되었습니다." });
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      res.status(500).json({ 
+        message: "사용자 삭제에 실패했습니다.",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }

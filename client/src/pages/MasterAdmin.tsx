@@ -5375,7 +5375,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               }} 
               onCancel={() => setIsUserDetailDialogOpen(false)} 
               onDelete={(userId) => {
-                updateUserMutation.mutate({ id: userId, action: 'delete' });
+                updateUserMutation.mutate({ id: userId, action: 'delete' } as any);
               }}
               isLoading={updateUserMutation.isPending} 
             />}
