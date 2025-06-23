@@ -399,3 +399,26 @@ export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type AgentStats = typeof agentStats.$inferSelect;
 export type MessageReaction = typeof messageReactions.$inferSelect;
 export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
+
+// User edit schema for admin interface
+export const userEditSchema = z.object({
+  name: z.string().min(1, "이름을 입력해주세요"),
+  email: z.string().email("올바른 이메일 형식을 입력해주세요").optional(),
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
+  position: z.string().optional(),
+  role: z.enum([
+    "master_admin", 
+    "operation_admin", 
+    "category_admin", 
+    "agent_admin", 
+    "qa_admin", 
+    "doc_admin", 
+    "user", 
+    "external"
+  ]),
+  status: z.enum(["active", "inactive", "locked", "pending"]),
+});
+
+export type UserEditFormData = z.infer<typeof userEditSchema>;

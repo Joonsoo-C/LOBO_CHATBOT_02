@@ -268,6 +268,12 @@ export class MemoryStorage implements IStorage {
       passwordHash: user.passwordHash || null,
       lastLoginAt: user.lastLoginAt || null,
       termsAcceptedAt: user.termsAcceptedAt || null,
+      upperCategory: user.upperCategory || null,
+      lowerCategory: user.lowerCategory || null,
+      detailCategory: user.detailCategory || null,
+      position: user.position || null,
+      status: user.status || "active",
+      role: user.role || "user",
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -288,6 +294,12 @@ export class MemoryStorage implements IStorage {
       passwordHash: user.passwordHash || null,
       lastLoginAt: user.lastLoginAt || null,
       termsAcceptedAt: user.termsAcceptedAt || null,
+      upperCategory: user.upperCategory || null,
+      lowerCategory: user.lowerCategory || null,
+      detailCategory: user.detailCategory || null,
+      position: user.position || null,
+      status: user.status || "active",
+      role: user.role || "user",
       createdAt: existingUser?.createdAt || new Date(),
       updatedAt: new Date()
     };
@@ -328,6 +340,7 @@ export class MemoryStorage implements IStorage {
       isActive: agent.isActive || true,
       managerId: agent.managerId || null,
       organizationId: agent.organizationId || null,
+      status: agent.status || "active",
       upperCategory: agent.upperCategory || "전체",
       lowerCategory: agent.lowerCategory || "전체",
       detailCategory: agent.detailCategory || "전체",

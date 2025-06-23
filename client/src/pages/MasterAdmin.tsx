@@ -425,7 +425,7 @@ export default function MasterAdmin() {
     defaultValues: {
       name: "",
       email: "",
-      upperCategory: "",
+      upperCategory: "none",
       lowerCategory: "",
       detailCategory: "",
       position: "",
@@ -440,7 +440,7 @@ export default function MasterAdmin() {
     userEditForm.reset({
       name: (user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
       email: user.email || "",
-      upperCategory: (user as any).upperCategory || "",
+      upperCategory: (user as any).upperCategory || "none",
       lowerCategory: (user as any).lowerCategory || "",
       detailCategory: (user as any).detailCategory || "",
       position: (user as any).position || "",
@@ -456,7 +456,7 @@ export default function MasterAdmin() {
       const payload = {
         name: data.name,
         email: data.email || null,
-        upperCategory: data.upperCategory || null,
+        upperCategory: data.upperCategory === "none" ? null : data.upperCategory,
         lowerCategory: data.lowerCategory || null,
         detailCategory: data.detailCategory || null,
         position: data.position || null,
@@ -5419,7 +5419,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">미분류</SelectItem>
+                              <SelectItem value="none">미분류</SelectItem>
                               <SelectItem value="대학본부">대학본부</SelectItem>
                               <SelectItem value="인문대학">인문대학</SelectItem>
                               <SelectItem value="사회과학대학">사회과학대학</SelectItem>
