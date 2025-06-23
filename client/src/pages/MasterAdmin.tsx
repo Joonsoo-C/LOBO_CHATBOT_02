@@ -2719,8 +2719,7 @@ export default function MasterAdmin() {
                     />
                   </div>
                   <Button onClick={() => setHasDocumentSearched(true)}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    문서 검색
+                    검색
                   </Button>
                 </div>
               </div>
