@@ -138,6 +138,11 @@ export default function MasterAdmin() {
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
   const [agentSearchQuery, setAgentSearchQuery] = useState('');
+  
+  // 에이전트 연결을 위한 상태
+  const [selectedUpperCategory, setSelectedUpperCategory] = useState('');
+  const [selectedLowerCategory, setSelectedLowerCategory] = useState('');
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState('');
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -3888,50 +3893,150 @@ export default function MasterAdmin() {
                   </div>
                 </div>
 
-                {/* 에이전트 연결 영역 */}
+                {/* 에이전트 검색 */}
                 <div>
-                  <h3 className="text-lg font-medium mb-3">에이전트 연결</h3>
+                  <h3 className="text-lg font-medium mb-4">에이전트 검색</h3>
                   
-                  {/* 에이전트 검색 */}
-                  <div className="mb-4">
-                    <Input
-                      placeholder="에이전트 이름으로 검색..."
-                      value={agentSearchQuery}
-                      onChange={(e) => setAgentSearchQuery(e.target.value)}
-                      className="w-full"
-                    />
+                  {/* 카테고리 선택 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">상위 카테고리</Label>
+                      <Select value={selectedUpperCategory} onValueChange={setSelectedUpperCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="인문대학" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="humanities">인문대학</SelectItem>
+                          <SelectItem value="engineering">공과대학</SelectItem>
+                          <SelectItem value="business">경영대학</SelectItem>
+                          <SelectItem value="science">자연과학대학</SelectItem>
+                          <SelectItem value="medicine">의과대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">하위 카테고리</Label>
+                      <Select value={selectedLowerCategory} onValueChange={setSelectedLowerCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="국문학과" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="korean">국문학과</SelectItem>
+                          <SelectItem value="english">영문학과</SelectItem>
+                          <SelectItem value="history">사학과</SelectItem>
+                          <SelectItem value="philosophy">철학과</SelectItem>
+                          <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                          <SelectItem value="mechanical">기계공학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium mb-2 block">세부 카테고리</Label>
+                      <Select value={selectedDetailCategory} onValueChange={setSelectedDetailCategory}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="4학년" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="year1">1학년</SelectItem>
+                          <SelectItem value="year2">2학년</SelectItem>
+                          <SelectItem value="year3">3학년</SelectItem>
+                          <SelectItem value="year4">4학년</SelectItem>
+                          <SelectItem value="graduate">대학원</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  {/* 사용 가능한 에이전트 목록 */}
-                  <div className="border rounded-lg p-4 max-h-60 overflow-y-auto">
-                    <div className="space-y-2">
+                  {/* 국문학과 에이전트 목록 */}
+                  <div className="mb-6">
+                    <h4 className="text-base font-medium mb-3">국문학과</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {[
-                        "학사 안내봇", "입학처 안내봇", "교수 상담봇", "학생 지원봇", "학과 안내봇",
-                        "도서관 봇", "생활관 안내봇", "취업 상담봇", "학생회 봇", "안전관리 봇",
-                        "국제교류 봇", "체육시설 봇", "재무 안내봇", "대학원 안내봇", "동아리 안내봇",
-                        "상담 안내봇", "교육대학 봇", "시설관리 봇", "연구지원 봇", "교수 개발봇"
-                      ]
-                        .filter(agent => 
-                          agent.toLowerCase().includes(agentSearchQuery.toLowerCase()) &&
-                          !selectedDocumentAgents.includes(agent)
-                        )
-                        .map((agent, index) => (
-                          <div key={index} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id={`agent-${index}`}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedDocumentAgents(prev => [...prev, agent]);
-                                }
-                              }}
-                              className="rounded"
-                            />
-                            <Label htmlFor={`agent-${index}`} className="text-sm">
-                              {agent}
+                        { name: "한국어문학과 도우미", desc: "한국어문학 관련 질문을 도와드립니다", checked: false },
+                        { name: "고전문학 해설 봇", desc: "고전 문학 작품 해설 및 감상", checked: true },
+                        { name: "현대문학 분석 도우미", desc: "현대 문학 작품 분석 및 비평", checked: false },
+                        { name: "한국어 맞춤법 검사기", desc: "한국어 맞춤법 및 문법 검사", checked: false },
+                        { name: "창작 지도 도우미", desc: "소설, 시 창작 지도 및 피드백", checked: false }
+                      ].map((agent, index) => (
+                        <div key={index} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
+                          <input
+                            type="checkbox"
+                            id={`category-agent-${index}`}
+                            checked={agent.checked || selectedDocumentAgents.includes(agent.name)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedDocumentAgents(prev => [...prev, agent.name]);
+                              } else {
+                                setSelectedDocumentAgents(prev => prev.filter(a => a !== agent.name));
+                              }
+                            }}
+                            className="rounded mt-1"
+                          />
+                          <div className="flex-1">
+                            <Label htmlFor={`category-agent-${index}`} className="text-sm font-medium cursor-pointer">
+                              {agent.name}
                             </Label>
+                            <p className="text-xs text-gray-500 mt-1">{agent.desc}</p>
                           </div>
-                        ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 기능봇 섹션 */}
+                  <div className="mb-6">
+                    <h4 className="text-base font-medium mb-3">기능봇</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {[
+                        { name: "AI 논문 작성 도우미", desc: "논문 작성 및 연구 지원", checked: false },
+                        { name: "프로그래밍 튜터", desc: "프로그래밍 학습 및 코딩 지원", checked: false },
+                        { name: "영어회화 트레이너", desc: "영어 회화 연습 및 발음 교정", checked: false },
+                        { name: "수학 문제 해결사", desc: "수학 문제 풀이 및 개념 설명", checked: false },
+                        { name: "스터디 플래너", desc: "학습 계획 수립 및 일정 관리", checked: false },
+                        { name: "이력서 컨설턴트", desc: "이력서 작성 및 취업 준비", checked: false }
+                      ].map((agent, index) => (
+                        <div key={index} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
+                          <input
+                            type="checkbox"
+                            id={`function-agent-${index}`}
+                            checked={selectedDocumentAgents.includes(agent.name)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedDocumentAgents(prev => [...prev, agent.name]);
+                              } else {
+                                setSelectedDocumentAgents(prev => prev.filter(a => a !== agent.name));
+                              }
+                            }}
+                            className="rounded mt-1"
+                          />
+                          <div className="flex-1">
+                            <Label htmlFor={`function-agent-${index}`} className="text-sm font-medium cursor-pointer">
+                              {agent.name}
+                            </Label>
+                            <p className="text-xs text-gray-500 mt-1">{agent.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 연결 요약 */}
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">연결 요약</h4>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                      현재 {selectedDocumentAgents.length}개의 에이전트에 연결되어 있습니다.
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {selectedDocumentAgents.map((agent, index) => (
+                        <span 
+                          key={index}
+                          className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200 rounded"
+                        >
+                          {agent}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>
