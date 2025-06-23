@@ -2294,7 +2294,7 @@ export default function MasterAdmin() {
                       <SelectItem value="university">대학교</SelectItem>
                       <SelectItem value="graduate">대학원</SelectItem>
                       <SelectItem value="college">하위 카테고리</SelectItem>
-                      <SelectItem value="department">세부 카테고리"/SelectItem>
+                      <SelectItem value="department">세부 카테고리</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -2480,7 +2480,7 @@ export default function MasterAdmin() {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">세부 카테고리"/Badge>
+                              <Badge variant="outline">세부 카테고리</Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               공과대학
@@ -2512,7 +2512,7 @@ export default function MasterAdmin() {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">세부 카테고리"/Badge>
+                              <Badge variant="outline">세부 카테고리</Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               경영대학
@@ -3052,7 +3052,7 @@ export default function MasterAdmin() {
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-gray-600">세부 카테고리"/Label>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
                       <Select defaultValue="전체">
                         <SelectTrigger className="h-11">
                           <SelectValue placeholder="전체" />
