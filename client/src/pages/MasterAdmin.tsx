@@ -142,6 +142,10 @@ export default function MasterAdmin() {
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
   
+  // 문서 정렬 상태
+  const [documentSortField, setDocumentSortField] = useState<string>('date');
+  const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('desc');
+  
   // 문서 업로드 관련 상태
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
   const [selectedDocumentFiles, setSelectedDocumentFiles] = useState<File[]>([]);
@@ -213,6 +217,16 @@ export default function MasterAdmin() {
     queryFn: async () => {
       const response = await fetch('/api/admin/organizations');
       if (!response.ok) throw new Error('Failed to fetch organizations');
+      return response.json();
+    }
+  });
+
+  // 문서 목록 조회
+  const { data: documents } = useQuery<any[]>({
+    queryKey: ['/api/admin/documents'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/documents');
+      if (!response.ok) throw new Error('Failed to fetch documents');
       return response.json();
     }
   });
@@ -360,6 +374,78 @@ export default function MasterAdmin() {
       return 0;
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
+
+  // 문서 정렬 함수
+  const handleDocumentSort = (field: string) => {
+    if (documentSortField === field) {
+      setDocumentSortDirection(documentSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setDocumentSortField(field);
+      setDocumentSortDirection('asc');
+    }
+  };
+
+  // 정렬된 문서 목록 (샘플 데이터 포함)
+  const sortedDocuments = useMemo(() => {
+    const sampleDocuments = [
+      { name: "2024학년도 수강신청 안내.pdf", type: "PDF", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+      { name: "신입생 오리엔테이션 가이드.docx", type: "Word", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
+      { name: "졸업논문 작성 가이드라인.pdf", type: "PDF", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "admin001" },
+      { name: "장학금 신청서 양식.xlsx", type: "Excel", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
+      { name: "2024년 1학기 시간표.pdf", type: "PDF", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+      { name: "컴퓨터공학과 교육과정표.pdf", type: "PDF", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
+      { name: "도서관 이용 안내서.docx", type: "Word", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
+      { name: "기숙사 입사 신청서.pdf", type: "PDF", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
+      { name: "취업 준비 가이드북.pdf", type: "PDF", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" }
+    ];
+
+    // API에서 가져온 실제 문서와 샘플 문서 합치기
+    const allDocuments = [...(documents || []), ...sampleDocuments];
+    
+    return [...allDocuments].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+      
+      if (documentSortField === 'name') {
+        aValue = a.name;
+        bValue = b.name;
+      } else if (documentSortField === 'type') {
+        aValue = a.type;
+        bValue = b.type;
+      } else if (documentSortField === 'size') {
+        // 크기 정렬을 위해 숫자로 변환
+        const extractSize = (sizeStr: string) => {
+          const match = sizeStr.match(/([0-9.]+)\s*(KB|MB)/i);
+          if (!match) return 0;
+          const value = parseFloat(match[1]);
+          const unit = match[2].toUpperCase();
+          return unit === 'MB' ? value * 1024 : value;
+        };
+        aValue = extractSize(a.size);
+        bValue = extractSize(b.size);
+      } else if (documentSortField === 'date') {
+        aValue = new Date(a.date);
+        bValue = new Date(b.date);
+      } else if (documentSortField === 'agents') {
+        aValue = a.agents?.join(', ') || '';
+        bValue = b.agents?.join(', ') || '';
+      } else if (documentSortField === 'status') {
+        aValue = a.status;
+        bValue = b.status;
+      } else {
+        aValue = a[documentSortField as keyof typeof a];
+        bValue = b[documentSortField as keyof typeof b];
+      }
+      
+      // 문자열인 경우 대소문자 구분 없이 정렬
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      
+      if (aValue < bValue) return documentSortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return documentSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [documents, documentSortField, documentSortDirection]);
 
 
 
