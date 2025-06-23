@@ -108,50 +108,7 @@ type AgentFormData = z.infer<typeof agentSchema>;
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Mobile viewport handling for address bar
-  useEffect(() => {
-    const handleMobileViewport = () => {
-      if (window.innerWidth <= 768) {
-        const header = document.querySelector('.mobile-safe-header');
-        const content = document.querySelector('.mobile-content-spacing');
-        
-        if (header && content) {
-          // Detect iOS Safari for additional offset
-          const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-          const headerOffset = isIOSSafari ? '120px' : '100px';
-          const contentOffset = isIOSSafari ? '220px' : '200px';
-          
-          // Force header positioning with device-specific offsets
-          (header as HTMLElement).style.top = headerOffset;
-          (content as HTMLElement).style.paddingTop = contentOffset;
-          
-          // Additional viewport meta tag adjustment
-          const viewport = document.querySelector('meta[name=viewport]');
-          if (viewport) {
-            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover, minimal-ui');
-          }
-        }
-      }
-    };
 
-    // Run immediately and on multiple events
-    handleMobileViewport();
-    window.addEventListener('resize', handleMobileViewport);
-    window.addEventListener('orientationchange', handleMobileViewport);
-    window.addEventListener('scroll', handleMobileViewport);
-    window.addEventListener('load', handleMobileViewport);
-    
-    // Additional timeout for delayed execution
-    setTimeout(handleMobileViewport, 100);
-    setTimeout(handleMobileViewport, 500);
-    
-    return () => {
-      window.removeEventListener('resize', handleMobileViewport);
-      window.removeEventListener('orientationchange', handleMobileViewport);
-      window.removeEventListener('scroll', handleMobileViewport);
-      window.removeEventListener('load', handleMobileViewport);
-    };
-  }, []);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -1446,7 +1403,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50 safe-area-top mobile-safe-header">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -1478,7 +1435,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </div>
         </header>
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mobile-content-spacing">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">
