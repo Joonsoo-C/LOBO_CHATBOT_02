@@ -355,7 +355,17 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.users.set(id, updatedUser);
+    await this.savePersistentData();
     return updatedUser;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    this.users.delete(id);
+    await this.savePersistentData();
   }
 
   // Agent operations
@@ -392,6 +402,9 @@ export class MemoryStorage implements IStorage {
       uploadFormats: agent.uploadFormats || [],
       uploadMethod: agent.uploadMethod || null,
       visibility: agent.visibility || null,
+      maxFileCount: agent.maxFileCount || null,
+      maxFileSize: agent.maxFileSize || null,
+      allowedFileTypes: agent.allowedFileTypes || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
