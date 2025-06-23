@@ -114,7 +114,6 @@ export default function MasterAdmin() {
   const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
-  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
@@ -150,8 +149,18 @@ export default function MasterAdmin() {
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   
+  // 사용자 파일 업로드 관련 상태
+  const [selectedUserFiles, setSelectedUserFiles] = useState<File[]>([]);
+  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
+  const [isUserFileUploading, setIsUserFileUploading] = useState(false);
+  const [userFileUploadProgress, setUserFileUploadProgress] = useState(0);
+  const [overwriteExisting, setOverwriteExisting] = useState(false);
+  const [sendWelcome, setSendWelcome] = useState(false);
+  const [validateOnly, setValidateOnly] = useState(false);
+  
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const userFileInputRef = React.useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -722,6 +731,287 @@ export default function MasterAdmin() {
     setSelectedDocumentFiles([]);
   };
 
+  // 드래그 오버 핸들러
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // 드래그 엔터 핸들러
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // 드래그 리브 핸들러
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // 드롭 핸들러
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        // 파일 크기 체크 (50MB)
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과)`);
+          continue;
+        }
+        
+        // 파일 타입 체크
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedDocumentFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
+    }
+  };
+
+  // 사용자 파일 선택 핸들러
+  const handleUserFileSelect = () => {
+    if (userFileInputRef.current) {
+      userFileInputRef.current.click();
+    }
+  };
+
+  // 사용자 파일 입력 변경 핸들러
+  const handleUserFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (files.length > 0) {
+      const allowedTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        // 파일 크기 체크 (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과)`);
+          continue;
+        }
+        
+        // 파일 타입 체크
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedUserFiles(validFiles);
+        toast({
+          title: "파일 선택됨",
+          description: `${validFiles.length}개 파일이 선택되었습니다.`,
+        });
+      }
+    }
+    
+    e.target.value = '';
+  };
+
+  // 사용자 파일 드롭 핸들러
+  const handleUserFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      const allowedTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        // 파일 크기 체크 (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과)`);
+          continue;
+        }
+        
+        // 파일 타입 체크
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedUserFiles(validFiles);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
+    }
+  };
+
+  // 사용자 파일 업로드 핸들러
+  const handleUserFileUpload = async () => {
+    if (selectedUserFiles.length === 0) {
+      toast({
+        title: "파일을 선택해주세요",
+        description: "업로드할 사용자 파일을 먼저 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUserFileUploading(true);
+    setUserFileUploadProgress(0);
+
+    try {
+      let successCount = 0;
+      let errorCount = 0;
+      const totalFiles = selectedUserFiles.length;
+
+      for (let i = 0; i < totalFiles; i++) {
+        const file = selectedUserFiles[i];
+        
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('overwriteExisting', overwriteExisting.toString());
+          formData.append('sendWelcome', sendWelcome.toString());
+          formData.append('validateOnly', validateOnly.toString());
+
+          const response = await fetch('/api/admin/users/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Upload failed for ${file.name}`);
+          }
+
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          console.error(`사용자 파일 업로드 실패: ${file.name}`, error);
+        }
+
+        // 진행률 업데이트
+        setUserFileUploadProgress(((i + 1) / totalFiles) * 100);
+      }
+
+      if (successCount > 0) {
+        toast({
+          title: "업로드 완료",
+          description: `${successCount}개 파일이 성공적으로 처리되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
+        });
+        
+        // 사용자 목록 새로고침
+        queryClient.invalidateQueries({
+          queryKey: ['/api/admin/users']
+        });
+      }
+
+      if (errorCount > 0 && successCount === 0) {
+        toast({
+          title: "업로드 실패",
+          description: "모든 파일 업로드에 실패했습니다.",
+          variant: "destructive",
+        });
+      }
+      
+      setSelectedUserFiles([]);
+      setIsFileUploadDialogOpen(false);
+      
+    } catch (error) {
+      toast({
+        title: "업로드 실패",
+        description: "사용자 파일 업로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUserFileUploading(false);
+      setUserFileUploadProgress(0);
+    }
+  };
+
+  // 샘플 사용자 파일 다운로드 핸들러
+  const handleDownloadSampleFile = () => {
+    const csvContent = `username,firstName,lastName,email,userType
+2024001001,김,학생,kim.student@example.com,student
+2024001002,이,철수,lee.cs@example.com,student
+prof001,박,교수,park.prof@example.com,faculty
+admin001,최,관리자,choi.admin@example.com,faculty`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'sample_users.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // 문서 업로드 핸들러 (다중 파일 지원)
   const handleDocumentUpload = async () => {
     if (selectedDocumentFiles.length === 0) {
@@ -804,74 +1094,7 @@ export default function MasterAdmin() {
     }
   };
 
-  // 드래그 앤 드롭 핸들러
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
 
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      const allowedTypes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-powerpoint',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      ];
-      
-      const validFiles: File[] = [];
-      const invalidFiles: string[] = [];
-      
-      for (const file of files) {
-        // 파일 크기 체크 (50MB)
-        if (file.size > 50 * 1024 * 1024) {
-          invalidFiles.push(`${file.name} (크기 초과)`);
-          continue;
-        }
-        
-        // 파일 타입 체크
-        if (!allowedTypes.includes(file.type)) {
-          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
-          continue;
-        }
-        
-        validFiles.push(file);
-      }
-      
-      if (invalidFiles.length > 0) {
-        toast({
-          title: "일부 파일이 제외됨",
-          description: `${invalidFiles.join(', ')}`,
-          variant: "destructive",
-        });
-      }
-      
-      if (validFiles.length > 0) {
-        setSelectedDocumentFiles(prev => [...prev, ...validFiles]);
-        toast({
-          title: "파일 추가됨",
-          description: `${validFiles.length}개 파일이 추가되었습니다.`,
-        });
-      }
-    }
-  };
 
   // 에이전트 편집 뮤테이션
   const updateAgentMutation = useMutation({
@@ -4304,16 +4527,83 @@ export default function MasterAdmin() {
               <DialogTitle>사용자 파일 업로드</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={userFileInputRef}
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                multiple
+                onChange={handleUserFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleUserFileDrop}
+                onClick={handleUserFileSelect}
+              >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
                   CSV, XLSX 파일 지원 (최대 10MB)
                 </p>
-                <Button variant="outline">
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUserFileSelect();
+                  }}
+                >
                   파일 선택
                 </Button>
               </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedUserFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedUserFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedUserFiles([])}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedUserFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedUserFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
@@ -4329,15 +4619,33 @@ export default function MasterAdmin() {
                 <Label>업로드 옵션</Label>
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="overwrite-existing" className="rounded" />
+                    <input 
+                      type="checkbox" 
+                      id="overwrite-existing" 
+                      className="rounded" 
+                      checked={overwriteExisting}
+                      onChange={(e) => setOverwriteExisting(e.target.checked)}
+                    />
                     <Label htmlFor="overwrite-existing">기존 사용자 정보 덮어쓰기</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="send-welcome" className="rounded" />
+                    <input 
+                      type="checkbox" 
+                      id="send-welcome" 
+                      className="rounded"
+                      checked={sendWelcome}
+                      onChange={(e) => setSendWelcome(e.target.checked)}
+                    />
                     <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="validate-only" className="rounded" />
+                    <input 
+                      type="checkbox" 
+                      id="validate-only" 
+                      className="rounded"
+                      checked={validateOnly}
+                      onChange={(e) => setValidateOnly(e.target.checked)}
+                    />
                     <Label htmlFor="validate-only">검증만 수행 (실제 업로드 안함)</Label>
                   </div>
                 </div>
@@ -4347,11 +4655,14 @@ export default function MasterAdmin() {
                 <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
                   취소
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleDownloadSampleFile}>
                   샘플 파일 다운로드
                 </Button>
-                <Button>
-                  업로드 시작
+                <Button 
+                  onClick={handleUserFileUpload}
+                  disabled={selectedUserFiles.length === 0 || isUserFileUploading}
+                >
+                  {isUserFileUploading ? `업로드 중... (${Math.round(userFileUploadProgress)}%)` : `업로드 시작 (${selectedUserFiles.length}개 파일)`}
                 </Button>
               </div>
             </div>

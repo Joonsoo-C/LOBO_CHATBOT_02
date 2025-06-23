@@ -296,6 +296,126 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // User file upload endpoint
+  app.post("/api/admin/users/upload", requireMasterAdmin, adminUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const overwriteExisting = req.body.overwriteExisting === 'true';
+      const sendWelcome = req.body.sendWelcome === 'true';
+      const validateOnly = req.body.validateOnly === 'true';
+
+      // Read and parse CSV/Excel file
+      const filePath = req.file.path;
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      
+      // Simple CSV parsing
+      const lines = fileContent.split('\n').filter(line => line.trim());
+      if (lines.length < 2) {
+        throw new Error('파일에 충분한 데이터가 없습니다.');
+      }
+
+      const headers = lines[0].split(',').map(h => h.trim());
+      const users = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length >= headers.length) {
+          const user: any = {};
+          headers.forEach((header, index) => {
+            user[header] = values[index] || null;
+          });
+          
+          // Validate required fields
+          if (user.username && user.userType) {
+            users.push({
+              id: user.username,
+              username: user.username,
+              firstName: user.firstName || null,
+              lastName: user.lastName || null,
+              email: user.email || null,
+              name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+              password: 'defaultPassword123',
+              userType: user.userType,
+              role: user.userType === 'faculty' ? 'faculty' : 'student',
+              upperCategory: '로보대학교',
+              lowerCategory: user.userType === 'faculty' ? '교직원' : '학생',
+              status: 'active',
+              createdAt: new Date(),
+              updatedAt: new Date()
+            });
+          }
+        }
+      }
+
+      // Clean up temporary file
+      fs.unlinkSync(filePath);
+
+      if (validateOnly) {
+        return res.json({
+          success: true,
+          message: `검증 완료: ${users.length}개 사용자 레코드가 유효합니다.`,
+          userCount: users.length
+        });
+      }
+
+      // Create users in storage
+      let createdCount = 0;
+      let updatedCount = 0;
+      let errorCount = 0;
+
+      for (const userData of users) {
+        try {
+          const existingUser = await storage.getUserById(userData.id);
+          
+          if (existingUser && !overwriteExisting) {
+            continue; // Skip existing users if not overwriting
+          }
+          
+          if (existingUser && overwriteExisting) {
+            // Update existing user
+            await storage.updateUser(userData.id, userData);
+            updatedCount++;
+          } else {
+            // Create new user
+            await storage.createUser(userData);
+            createdCount++;
+          }
+        } catch (error) {
+          console.error(`Failed to process user ${userData.username}:`, error);
+          errorCount++;
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `사용자 파일 업로드 완료`,
+        created: createdCount,
+        updated: updatedCount,
+        errors: errorCount,
+        total: users.length
+      });
+
+    } catch (error) {
+      console.error("Error uploading user file:", error);
+
+      // Clean up temporary file if it exists
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error("Error cleaning up file:", cleanupError);
+        }
+      }
+
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to upload user file" 
+      });
+    }
+  });
+
   // Get admin documents
   app.get("/api/admin/documents", requireMasterAdmin, async (req, res) => {
     try {
