@@ -347,6 +347,18 @@ export default function MasterAdmin() {
     }
   };
 
+  // 파일 크기를 바이트로 변환하는 함수
+  const parseFileSize = (sizeStr: string): number => {
+    const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+    const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
+    if (match) {
+      const value = parseFloat(match[1]);
+      const unit = match[2] as keyof typeof units;
+      return value * units[unit];
+    }
+    return 0;
+  };
+
   // 샘플 문서 데이터
   const sampleDocuments = [
     { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
@@ -435,18 +447,6 @@ export default function MasterAdmin() {
       }
     });
   }, [documentSortField, documentSortDirection]);
-
-  // 파일 크기를 바이트로 변환하는 함수
-  const parseFileSize = (sizeStr: string): number => {
-    const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
-    const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
-    if (match) {
-      const value = parseFloat(match[1]);
-      const unit = match[2] as keyof typeof units;
-      return value * units[unit];
-    }
-    return 0;
-  };
 
   // 필터된 에이전트 목록
   const filteredAgents = useMemo(() => {
