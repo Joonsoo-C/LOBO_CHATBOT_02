@@ -275,6 +275,8 @@ export class MemoryStorage implements IStorage {
       status: user.status || "active",
       role: user.role || "user",
       groups: user.groups || [],
+      usingAgents: user.usingAgents || [],
+      managedCategories: user.managedCategories || [],
       permissions: user.permissions || {},
       loginFailCount: user.loginFailCount || 0,
       lastLoginIP: user.lastLoginIP || null,
@@ -308,6 +310,8 @@ export class MemoryStorage implements IStorage {
       status: user.status || "active",
       role: user.role || "user",
       groups: user.groups || [],
+      usingAgents: user.usingAgents || [],
+      managedCategories: user.managedCategories || [],
       permissions: user.permissions || {},
       loginFailCount: user.loginFailCount || 0,
       lastLoginIP: user.lastLoginIP || null,
@@ -365,6 +369,8 @@ export class MemoryStorage implements IStorage {
       upperCategory: agent.upperCategory || null,
       lowerCategory: agent.lowerCategory || null,
       detailCategory: agent.detailCategory || null,
+      personaName: agent.personaName || null,
+      rolePrompt: agent.rolePrompt || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };

@@ -429,6 +429,8 @@ export default function MasterAdmin() {
       lowerCategory: "",
       detailCategory: "",
       position: "",
+      usingAgents: [],
+      managedCategories: [],
       role: "user",
       status: "active",
     },
@@ -444,6 +446,8 @@ export default function MasterAdmin() {
       lowerCategory: (user as any).lowerCategory || "",
       detailCategory: (user as any).detailCategory || "",
       position: (user as any).position || "",
+      usingAgents: (user as any).usingAgents || [],
+      managedCategories: (user as any).managedCategories || [],
       role: (user.role as any) || "user",
       status: (user as any).status || "active",
     });
@@ -460,6 +464,8 @@ export default function MasterAdmin() {
         lowerCategory: data.lowerCategory || null,
         detailCategory: data.detailCategory || null,
         position: data.position || null,
+        usingAgents: data.usingAgents || [],
+        managedCategories: data.managedCategories || [],
         role: data.role,
         status: data.status,
       };

@@ -350,6 +350,8 @@ export const insertUserSchema = createInsertSchema(users).omit({
   lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
   groups: z.array(z.string()).optional(),
+  usingAgents: z.array(z.string()).optional(),
+  managedCategories: z.array(z.string()).optional(),
   
   // 역할 및 권한
   role: z.enum([
@@ -408,6 +410,8 @@ export const userEditSchema = z.object({
   lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
   position: z.string().optional(),
+  usingAgents: z.array(z.string()).optional(),
+  managedCategories: z.array(z.string()).optional(),
   role: z.enum([
     "master_admin", 
     "operation_admin", 
