@@ -5548,7 +5548,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                       <div>
                         <span className="text-gray-600 dark:text-gray-400">사용자 타입:</span>
-                        <span className="ml-2">{selectedUser.userType === 'student' ? '학생' : '교직원'}</span>
+                        <span className="ml-2">{(selectedUser as any).userType === 'student' ? '학생' : '교직원'}</span>
                       </div>
                       <div>
                         <span className="text-gray-600 dark:text-gray-400">가입일:</span>

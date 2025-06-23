@@ -259,6 +259,7 @@ export class MemoryStorage implements IStorage {
   async createUser(user: UpsertUser): Promise<User> {
     const newUser: User = {
       ...user,
+      name: user.name || null,
       email: user.email || null,
       firstName: user.firstName || null,
       lastName: user.lastName || null,
@@ -275,6 +276,7 @@ export class MemoryStorage implements IStorage {
     const existingUser = this.users.get(user.id);
     const newUser: User = {
       ...user,
+      name: user.name || null,
       email: user.email || null,
       firstName: user.firstName || null,
       lastName: user.lastName || null,
@@ -285,6 +287,21 @@ export class MemoryStorage implements IStorage {
     };
     this.users.set(user.id, newUser);
     return newUser;
+  }
+
+  async updateUser(id: string, updates: any): Promise<User | undefined> {
+    const existingUser = this.users.get(id);
+    if (!existingUser) {
+      return undefined;
+    }
+
+    const updatedUser: User = {
+      ...existingUser,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.users.set(id, updatedUser);
+    return updatedUser;
   }
 
   // Agent operations

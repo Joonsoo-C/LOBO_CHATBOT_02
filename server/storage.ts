@@ -31,6 +31,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: UpsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUser(id: string, updates: any): Promise<User | undefined>;
 
   // Agent operations
   getAllAgents(): Promise<Agent[]>;
@@ -70,6 +71,11 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // User operations
+  async updateUser(id: string, updates: any): Promise<User | undefined> {
+    // Implementation for database storage (currently not used)
+    throw new Error("Database storage not implemented");
+  }
+
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
