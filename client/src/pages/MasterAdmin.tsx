@@ -2257,157 +2257,167 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 검색 결과 테이블 */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>에이전트 목록</CardTitle>
-                {hasSearched && sortedAgents && (
+            {/* 검색 결과만 표시 - 중복 제거 */}
+            {hasSearched && (
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>에이전트 검색 결과</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {sortedAgents.length}개 에이전트 표시
+                    전체 {sortedAgents?.length || 0}개 에이전트 표시
                   </div>
-                )}
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          에이전트명
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          카테고리
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          담당자
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          소속 조직
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          사용 통계
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          최근 사용일
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          작업
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {!hasSearched ? (
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">에이전트 검색</p>
-                              <p className="text-sm">
-                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 에이전트를 찾아보세요.
-                              </p>
-                            </div>
-                          </td>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            에이전트명
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            카테고리
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            담당자
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            소속
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            사용 통계
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            최근 사용일
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            작업
+                          </th>
                         </tr>
-                      ) : sortedAgents?.length === 0 ? (
-                        <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
-                              <p className="text-sm">
-                                검색 조건에 맞는 에이전트가 없습니다. 다른 조건으로 검색해보세요.
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      ) : (
-                        sortedAgents?.map((agent) => (
-                          <tr 
-                            key={agent.id} 
-                            className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
-                              !agent.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
-                            }`}
-                            onClick={() => openEditAgentDialog(agent)}
-                          >
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div
-                                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-medium mr-3"
-                                  style={{ backgroundColor: agent.backgroundColor }}
-                                >
-                                  {agent.icon}
-                                </div>
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {agent.name}
-                                  </div>
-                                  <div className="text-xs text-gray-500 truncate max-w-48">
-                                    {agent.description}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">
-                                {agent.category}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">
-                                {(agent as any).managerFirstName && (agent as any).managerLastName 
-                                  ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
-                                  : '-'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">
-                                {(agent as any).organizationName || '-'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-500">
-                                문서: {(agent as any).documentCount || 0}개 | 사용자: {(agent as any).userCount || 0}명
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(agent as any).lastUsedAt ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR') : 
-                               agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('ko-KR') : '-'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  title="에이전트 편집"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openEditAgentDialog(agent);
-                                  }}
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="text-red-600 hover:text-red-700" 
-                                  title="에이전트 삭제"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteAgentMutation.mutate(agent.id);
-                                  }}
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
+                      </thead>
+                      <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                        {sortedAgents?.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="px-6 py-12 text-center">
+                              <div className="text-gray-500 dark:text-gray-400">
+                                <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                                <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                                <p className="text-sm">
+                                  검색 조건에 맞는 에이전트가 없습니다. 다른 조건으로 검색해보세요.
+                                </p>
                               </div>
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+                        ) : (
+                          sortedAgents?.map((agent) => (
+                            <tr 
+                              key={agent.id} 
+                              className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
+                                !agent.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
+                              }`}
+                              onClick={() => openEditAgentDialog(agent)}
+                            >
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div
+                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-medium mr-3"
+                                    style={{ backgroundColor: agent.backgroundColor }}
+                                  >
+                                    {agent.icon}
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                      {agent.name}
+                                    </div>
+                                    <div className="text-xs text-gray-500 truncate max-w-48">
+                                      {agent.description}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge variant="outline">
+                                  {agent.category}
+                                </Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500">
+                                  {(agent as any).managerFirstName && (agent as any).managerLastName 
+                                    ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
+                                    : '-'}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                  <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {(agent as any).upperCategory || '로보대학교'}
+                                  </div>
+                                  <div className="text-xs text-blue-600 dark:text-blue-400">
+                                    {(agent as any).lowerCategory || '소속 미분류'}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500">
+                                  문서: {(agent as any).documentCount || 0}개 | 사용자: {(agent as any).userCount || 0}명
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {(agent as any).lastUsedAt ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR') : 
+                                 agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('ko-KR') : '-'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div className="flex space-x-1">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    title="에이전트 편집"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openEditAgentDialog(agent);
+                                    }}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-600 hover:text-red-700" 
+                                    title="에이전트 삭제"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteAgentMutation.mutate(agent.id);
+                                    }}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {!hasSearched && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>에이전트 검색</CardTitle>
+                </CardHeader>
+                <CardContent className="py-12">
+                  <div className="text-center text-gray-500 dark:text-gray-400">
+                    <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-lg font-medium mb-2">에이전트 검색</p>
+                    <p className="text-sm">
+                      위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 에이전트를 찾아보세요.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
