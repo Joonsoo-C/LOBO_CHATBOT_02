@@ -465,6 +465,12 @@ Changelog:
   * Fixed conversation lookup methods to use available storage interface methods
   * Message sending now works correctly with OpenAI API integration
   * System automatically falls back to memory storage with proper error handling
+- June 23, 2025. Fixed faculty demo account agent management access:
+  * Corrected manager ID mismatch in sample-agents.ts for "이영학 에이전트"
+  * Changed managerId from "prof_lee" to "F2024001" (Professor Lee's actual user ID)
+  * Faculty demo account "이영학 교수" can now successfully access and manage assigned agent
+  * Managed agents API properly returns agents for faculty users with correct permissions
+  * Agent management system now fully functional for demo faculty account
 ```
 
 ## User Preferences

@@ -318,14 +318,7 @@ export class MemoryStorage implements IStorage {
   }
 
   async getAgentsByManager(managerId: string): Promise<Agent[]> {
-    const allAgents = Array.from(this.agents.values());
-    console.log(`[DEBUG] getAgentsByManager - looking for managerId: ${managerId}`);
-    console.log(`[DEBUG] All agents:`, allAgents.map(a => ({ id: a.id, name: a.name, managerId: a.managerId })));
-    
-    const filtered = allAgents.filter(agent => agent.managerId === managerId);
-    console.log(`[DEBUG] Filtered agents for ${managerId}:`, filtered.map(a => ({ id: a.id, name: a.name })));
-    
-    return filtered;
+    return Array.from(this.agents.values()).filter(agent => agent.managerId === managerId);
   }
 
   // Conversation operations
