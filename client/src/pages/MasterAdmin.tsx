@@ -5497,7 +5497,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
 
   const removeOrganizationAffiliation = (index: number) => {
     if (organizationAffiliations.length > 1) {
-      setOrganizationAffiliations(organizationAffiliations.filter((_, i) => i !== index));
+      setOrganizationAffiliations(organizationAffiliations.filter((_: any, i: number) => i !== index));
     }
   };
 
@@ -5524,7 +5524,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
 
   const removeAgentPermission = (index: number) => {
     if (agentPermissions.length > 1) {
-      setAgentPermissions(agentPermissions.filter((_, i) => i !== index));
+      setAgentPermissions(agentPermissions.filter((_: any, i: number) => i !== index));
     }
   };
 
@@ -5538,8 +5538,8 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
     onSave({
       name: user.name,
       email: user.email,
-      organizationAffiliations: organizationAffiliations.filter(org => org.upperCategory),
-      agentPermissions: agentPermissions.filter(agent => agent.agentName),
+      organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
+      agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
       userMemo,
       status: user.status,
       role: user.role
@@ -5577,7 +5577,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
           </Button>
         </div>
         
-        {organizationAffiliations.map((affiliation, index) => (
+        {organizationAffiliations.map((affiliation: any, index: number) => (
           <div key={index} className="border rounded-lg p-4 space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">소속 정보 #{index + 1}</h4>
@@ -5624,7 +5624,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
                     <SelectValue placeholder="선택" />
                   </SelectTrigger>
                   <SelectContent>
-                    {affiliation.upperCategory && Object.keys(organizationHierarchy[affiliation.upperCategory] || {}).map(subcategory => (
+                    {affiliation.upperCategory && Object.keys((organizationHierarchy as any)[affiliation.upperCategory] || {}).map((subcategory: string) => (
                       <SelectItem key={subcategory} value={subcategory}>{subcategory}</SelectItem>
                     ))}
                   </SelectContent>
@@ -5644,7 +5644,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
                   </SelectTrigger>
                   <SelectContent>
                     {affiliation.lowerCategory && affiliation.upperCategory && 
-                     (organizationHierarchy[affiliation.upperCategory]?.[affiliation.lowerCategory] || []).map(detail => (
+                     ((organizationHierarchy as any)[affiliation.upperCategory]?.[affiliation.lowerCategory] || []).map((detail: string) => (
                       <SelectItem key={detail} value={detail}>{detail}</SelectItem>
                     ))}
                   </SelectContent>
@@ -5701,7 +5701,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
           </Button>
         </div>
         
-        {agentPermissions.map((agentPerm, index) => (
+        {agentPermissions.map((agentPerm: any, index: number) => (
           <div key={index} className="border rounded-lg p-4 space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">에이전트 권한 #{index + 1}</h4>
@@ -5750,7 +5750,7 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
                           const currentPermissions = agentPerm.permissions || [];
                           const newPermissions = e.target.checked
                             ? [...currentPermissions, permission]
-                            : currentPermissions.filter(p => p !== permission);
+                            : currentPermissions.filter((p: string) => p !== permission);
                           updateAgentPermission(index, 'permissions', newPermissions);
                         }}
                         className="rounded border-gray-300"

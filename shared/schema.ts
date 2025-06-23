@@ -67,7 +67,7 @@ export const users = pgTable("users", {
   agentPermissions: jsonb("agent_permissions").default(JSON.stringify([])), // 에이전트별 권한 정보
   
   // 사용자 메모
-  userMemo: text("user_memo")
+  userMemo: text("user_memo"),
   
   // 3. 역할 및 권한 정보
   role: varchar("role").notNull().default("user"), // 시스템 내 역할 (System Role)
