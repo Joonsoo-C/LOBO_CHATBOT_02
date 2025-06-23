@@ -25,13 +25,22 @@ const adminUpload = multer({
       'application/vnd.ms-excel',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'text/plain',
+      'text/csv'
     ];
+
+    // Fix Korean filename encoding immediately
+    try {
+      file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    } catch (e) {
+      console.log('Filename encoding conversion failed, keeping original:', file.originalname);
+    }
 
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(null, false);
+      cb(new Error('Unsupported file type'), false);
     }
   }
 });
@@ -199,15 +208,16 @@ export function setupAdminRoutes(app: Express) {
                      file.mimetype.includes('powerpoint') ? '.pptx' : '.txt';
           originalName = `document_${Date.now()}${ext}`;
         } else {
-          // Additional cleanup for Korean filenames if needed
-          if (originalName.includes('ê') || originalName.includes('ì') || originalName.includes('\\x')) {
-            console.log('Detected potentially corrupted Korean filename, attempting fix:', originalName);
-            // If still corrupted after multer conversion, try additional fixes
-            try {
-              originalName = Buffer.from(originalName, 'latin1').toString('utf8');
-            } catch (e) {
-              console.log('Korean filename conversion failed, using original:', originalName);
-            }
+          // Clean filename but preserve Korean characters
+          originalName = originalName.replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
+          
+          // Ensure filename is not empty after cleanup
+          if (!originalName.trim()) {
+            const ext = file.mimetype.includes('pdf') ? '.pdf' :
+                       file.mimetype.includes('word') ? '.docx' :
+                       file.mimetype.includes('excel') ? '.xlsx' :
+                       file.mimetype.includes('powerpoint') ? '.pptx' : '.txt';
+            originalName = `document_${Date.now()}${ext}`;
           }
 
           // Only clean up truly invalid characters, preserve Korean characters and common filename chars
