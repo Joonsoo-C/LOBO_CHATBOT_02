@@ -5611,10 +5611,9 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
             </Select>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
           <div>가입 날짜: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
           {user.lastLoginAt && <div>최종 접속 시간: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
-          <div>사용자명: {user.username}</div>
         </div>
       </div>
 
