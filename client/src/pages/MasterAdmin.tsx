@@ -520,7 +520,6 @@ export default function MasterAdmin() {
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
       />
-      
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -562,7 +561,6 @@ export default function MasterAdmin() {
             </div>
           </div>
         </header>
-        
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -3377,7 +3375,7 @@ export default function MasterAdmin() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-sm text-gray-600">세부 카테고리"</Label>
+                    <Label className="text-sm text-gray-600">세부 카테고리</Label>
                     <Select>
                       <SelectTrigger>
                         <SelectValue placeholder="전체" />
