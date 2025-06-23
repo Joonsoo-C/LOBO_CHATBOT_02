@@ -499,22 +499,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   </SelectContent>
                 </Select>
               </div>
-
-              <div>
-                <Label className="text-sm font-medium mb-2 block korean-text">에이전트</Label>
-                <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {agents.map((agentOption) => (
-                      <SelectItem key={agentOption.id} value={agentOption.id.toString()}>
-                        {agentOption.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </div>
 
