@@ -31,7 +31,6 @@ import {
   Plus,
   Edit,
   Trash2,
-  Eye,
   LogOut,
   Home,
   User,
@@ -49,7 +48,8 @@ import {
   Palette,
   Menu,
   Download,
-  ExternalLink
+  ExternalLink,
+  Eye
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -1090,7 +1090,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         try {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('type', selectedDocumentType || 'manual');
+          formData.append('type', selectedDocumentType || 'all');
           formData.append('description', '관리자 업로드 문서');
 
           const response = await fetch('/api/admin/documents/upload', {
@@ -1098,8 +1098,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             body: formData,
           });
 
+          const responseData = await response.json();
+          console.log(`업로드 응답:`, responseData);
+
           if (!response.ok) {
-            throw new Error(`Upload failed for ${file.name}`);
+            throw new Error(responseData.message || `Upload failed for ${file.name}`);
           }
 
           successCount++;
@@ -1132,8 +1135,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         });
       }
       
-      setSelectedDocumentFiles([]);
-      setIsDocumentUploadDialogOpen(false);
+      // 성공 시에만 파일 목록과 다이얼로그 닫기
+      if (successCount > 0) {
+        setSelectedDocumentFiles([]);
+        setIsDocumentUploadDialogOpen(false);
+      }
       
     } catch (error) {
       toast({
@@ -1321,6 +1327,35 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       toast({
         title: "미리보기 실패",
         description: "문서 미리보기 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 문서 다운로드 핸들러 (실제 파일 다운로드)
+  const handleDocumentDownload = async (document: any) => {
+    try {
+      const response = await fetch(`/api/admin/documents/${document.id}/download`);
+      if (!response.ok) throw new Error('다운로드 실패');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = document.name || `문서_${document.id}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast({
+        title: "다운로드 완료",
+        description: "문서가 성공적으로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "다운로드 실패", 
+        description: "문서 다운로드 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -5041,12 +5076,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="flex space-x-2">
                     <Button 
                       variant="outline" 
-                      className="flex items-center space-x-2"
+                      className="flex items-center space-x-2 mr-2"
                       onClick={() => handleDocumentPreview(documentDetailData)}
                       disabled={!documentDetailData}
                     >
-                      <Download className="w-4 h-4" />
+                      <Eye className="w-4 h-4" />
                       <span>문서 미리보기</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center space-x-2"
+                      onClick={() => handleDocumentDownload(documentDetailData)}
+                      disabled={!documentDetailData}
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>문서 다운로드</span>
                     </Button>
                     <Button 
                       variant="destructive" 
