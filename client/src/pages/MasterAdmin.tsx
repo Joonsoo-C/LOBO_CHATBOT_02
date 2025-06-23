@@ -339,6 +339,59 @@ export default function MasterAdmin() {
     setHasDocumentSearched(true);
   };
 
+  // 사용자 카테고리 데이터 (샘플 데이터 기반)
+  const upperCategories = useMemo(() => {
+    if (!users) return [];
+    const categories = [...new Set(users.map(user => (user as any).upperCategory).filter(Boolean))];
+    return categories.sort();
+  }, [users]);
+
+  const lowerCategories = useMemo(() => {
+    if (!users || selectedUniversity === 'all') return [];
+    const categories = [...new Set(
+      users
+        .filter(user => (user as any).upperCategory === selectedUniversity)
+        .map(user => (user as any).lowerCategory)
+        .filter(Boolean)
+    )];
+    return categories.sort();
+  }, [users, selectedUniversity]);
+
+  const detailCategories = useMemo(() => {
+    if (!users || selectedCollege === 'all' || selectedUniversity === 'all') return [];
+    const categories = [...new Set(
+      users
+        .filter(user => 
+          (user as any).upperCategory === selectedUniversity && 
+          (user as any).lowerCategory === selectedCollege
+        )
+        .map(user => (user as any).detailCategory)
+        .filter(Boolean)
+    )];
+    return categories.sort();
+  }, [users, selectedUniversity, selectedCollege]);
+
+  // 상위 카테고리 변경 시 하위 카테고리 초기화
+  const handleUpperCategoryChange = (value: string) => {
+    setSelectedUniversity(value);
+    setSelectedCollege('all');
+    setSelectedDepartment('all');
+    executeSearch();
+  };
+
+  // 하위 카테고리 변경 시 세부 카테고리 초기화
+  const handleLowerCategoryChange = (value: string) => {
+    setSelectedCollege(value);
+    setSelectedDepartment('all');
+    executeSearch();
+  };
+
+  // 세부 카테고리 변경 시 검색 실행
+  const handleDetailCategoryChange = (value: string) => {
+    setSelectedDepartment(value);
+    executeSearch();
+  };
+
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
     setHasSearched(true);
@@ -1433,45 +1486,57 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label>상위 카테고리</Label>
-                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                  <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="undergraduate">대학교</SelectItem>
-                      <SelectItem value="headquarters">본부</SelectItem>
+                      {upperCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>하위 카테고리</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege}>
-                    <SelectTrigger>
+                  <Select 
+                    value={selectedCollege} 
+                    onValueChange={handleLowerCategoryChange}
+                    disabled={selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="humanities">인문대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="science">자연과학대학</SelectItem>
+                      {lowerCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>세부 카테고리</Label>
-                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-                    <SelectTrigger>
+                  <Select 
+                    value={selectedDepartment} 
+                    onValueChange={handleDetailCategoryChange}
+                    disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                      <SelectItem value="mechanical">기계공학과</SelectItem>
-                      <SelectItem value="electrical">전기공학과</SelectItem>
-                      <SelectItem value="business_admin">경영학과</SelectItem>
+                      {detailCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
