@@ -5387,10 +5387,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 }
 
 // 사용자 편집 폼 컴포넌트
-function UserEditForm({ user, onSave, onCancel, isLoading }: {
+function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
   user: any;
   onSave: (data: any) => void;
   onCancel: () => void;
+  onDelete?: (userId: string) => void;
   isLoading: boolean;
 }) {
   const [organizationAffiliations, setOrganizationAffiliations] = useState(

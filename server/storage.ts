@@ -32,6 +32,8 @@ export interface IStorage {
   createUser(user: UpsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, updates: any): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
+  deleteUser(id: string): Promise<void>;
 
   // Agent operations
   getAllAgents(): Promise<Agent[]>;
