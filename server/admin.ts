@@ -194,26 +194,45 @@ export function setupAdminRoutes(app: Express) {
       // Fix Korean filename encoding
       let originalName = file.originalname;
       try {
-        // Detect and fix corrupted Korean filenames
-        if (originalName && (originalName.includes('á') || originalName.includes('\\x'))) {
-          // Try multiple encoding conversion methods
-          try {
-            originalName = Buffer.from(originalName, 'latin1').toString('utf8');
-          } catch (e1) {
+        // Ensure we have a valid filename
+        if (!originalName || originalName.trim() === '') {
+          // Generate a basic filename with proper extension
+          const ext = file.mimetype.includes('pdf') ? '.pdf' :
+                     file.mimetype.includes('word') ? '.docx' :
+                     file.mimetype.includes('excel') ? '.xlsx' :
+                     file.mimetype.includes('powerpoint') ? '.pptx' : '.txt';
+          originalName = `document_${Date.now()}${ext}`;
+        } else {
+          // Detect and fix corrupted Korean filenames
+          if (originalName.includes('á') || originalName.includes('\\x')) {
+            // Try multiple encoding conversion methods
             try {
-              originalName = decodeURIComponent(escape(originalName));
-            } catch (e2) {
-              // If all conversions fail, keep original
-              originalName = file.originalname;
+              originalName = Buffer.from(originalName, 'latin1').toString('utf8');
+            } catch (e1) {
+              try {
+                originalName = decodeURIComponent(escape(originalName));
+              } catch (e2) {
+                // If all conversions fail, keep original
+                originalName = file.originalname;
+              }
             }
           }
+          
+          // Only clean up truly invalid characters, preserve Korean characters and common filename chars
+          originalName = originalName.replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
+          
+          // Ensure filename is not empty after cleanup
+          if (!originalName.trim()) {
+            const ext = file.mimetype.includes('pdf') ? '.pdf' :
+                       file.mimetype.includes('word') ? '.docx' :
+                       file.mimetype.includes('excel') ? '.xlsx' :
+                       file.mimetype.includes('powerpoint') ? '.pptx' : '.txt';
+            originalName = `document_${Date.now()}${ext}`;
+          }
         }
-        
-        // Additional cleanup for any remaining encoding artifacts
-        originalName = originalName.replace(/[^\w\s\-._가-힣]/g, '');
       } catch (e) {
-        // Keep original name if conversion fails
-        originalName = file.originalname;
+        // Keep original name if conversion fails, or generate fallback
+        originalName = file.originalname || `document_${Date.now()}.txt`;
       }
 
       console.log("Admin document upload:", {
