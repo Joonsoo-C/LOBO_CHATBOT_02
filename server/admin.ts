@@ -199,18 +199,14 @@ export function setupAdminRoutes(app: Express) {
                      file.mimetype.includes('powerpoint') ? '.pptx' : '.txt';
           originalName = `document_${Date.now()}${ext}`;
         } else {
-          // Detect and fix corrupted Korean filenames
-          if (originalName.includes('á') || originalName.includes('\\x')) {
-            // Try multiple encoding conversion methods
+          // Additional cleanup for Korean filenames if needed
+          if (originalName.includes('ê') || originalName.includes('ì') || originalName.includes('\\x')) {
+            console.log('Detected potentially corrupted Korean filename, attempting fix:', originalName);
+            // If still corrupted after multer conversion, try additional fixes
             try {
               originalName = Buffer.from(originalName, 'latin1').toString('utf8');
-            } catch (e1) {
-              try {
-                originalName = decodeURIComponent(escape(originalName));
-              } catch (e2) {
-                // If all conversions fail, keep original
-                originalName = file.originalname;
-              }
+            } catch (e) {
+              console.log('Korean filename conversion failed, using original:', originalName);
             }
           }
 
@@ -361,28 +357,15 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // Create users in storage
+      // Create users in storage - using simpler approach for memory storage
       let createdCount = 0;
-      let updatedCount = 0;
       let errorCount = 0;
 
       for (const userData of users) {
         try {
-          const existingUser = await storage.getUserById(userData.id);
-          
-          if (existingUser && !overwriteExisting) {
-            continue; // Skip existing users if not overwriting
-          }
-          
-          if (existingUser && overwriteExisting) {
-            // Update existing user
-            await storage.updateUser(userData.id, userData);
-            updatedCount++;
-          } else {
-            // Create new user
-            await storage.createUser(userData);
-            createdCount++;
-          }
+          // For memory storage, we'll just try to create the user
+          await storage.createUser(userData);
+          createdCount++;
         } catch (error) {
           console.error(`Failed to process user ${userData.username}:`, error);
           errorCount++;
@@ -393,7 +376,7 @@ export function setupAdminRoutes(app: Express) {
         success: true,
         message: `사용자 파일 업로드 완료`,
         created: createdCount,
-        updated: updatedCount,
+        updated: 0,
         errors: errorCount,
         total: users.length
       });
