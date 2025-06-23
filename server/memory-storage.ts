@@ -348,6 +348,11 @@ export class MemoryStorage implements IStorage {
       .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
+  async getAllDocuments(): Promise<Document[]> {
+    return Array.from(this.documents.values())
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
   async getDocument(id: number): Promise<Document | undefined> {
     return this.documents.get(id);
   }

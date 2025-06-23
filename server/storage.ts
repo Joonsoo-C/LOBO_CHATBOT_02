@@ -53,6 +53,7 @@ export interface IStorage {
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
   getAgentDocuments(agentId: number): Promise<Document[]>;
+  getAllDocuments(): Promise<Document[]>;
   getDocument(id: number): Promise<Document | undefined>;
   //delete document operations
   deleteDocument(id: number): Promise<void>;
@@ -283,6 +284,13 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(documents)
       .where(eq(documents.agentId, agentId))
+      .orderBy(desc(documents.createdAt));
+  }
+
+  async getAllDocuments(): Promise<Document[]> {
+    return await db
+      .select()
+      .from(documents)
       .orderBy(desc(documents.createdAt));
   }
 
