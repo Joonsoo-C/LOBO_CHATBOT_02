@@ -49,7 +49,8 @@ import {
   Menu,
   Download,
   ExternalLink,
-  Eye
+  Eye,
+  X
 } from "lucide-react";
 import { Link } from "wouter";
 
