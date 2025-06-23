@@ -586,4 +586,30 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "문서 삭제에 실패했습니다" });
     }
   });
+
+  // Update user endpoint
+  app.patch("/api/admin/users/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const updateData = req.body;
+
+      console.log(`Updating user ${userId} with data:`, updateData);
+
+      // Update user in storage
+      const updatedUser = await storage.updateUser(userId, updateData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+      }
+
+      console.log("User updated successfully:", updatedUser.id);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      res.status(500).json({ 
+        message: "사용자 정보 수정에 실패했습니다.",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
 }

@@ -265,6 +265,9 @@ export class MemoryStorage implements IStorage {
       lastName: user.lastName || null,
       profileImageUrl: user.profileImageUrl || null,
       userType: user.userType || "student",
+      passwordHash: user.passwordHash || null,
+      lastLoginAt: user.lastLoginAt || null,
+      termsAcceptedAt: user.termsAcceptedAt || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -282,6 +285,9 @@ export class MemoryStorage implements IStorage {
       lastName: user.lastName || null,
       profileImageUrl: user.profileImageUrl || null,
       userType: user.userType || "student",
+      passwordHash: user.passwordHash || null,
+      lastLoginAt: user.lastLoginAt || null,
+      termsAcceptedAt: user.termsAcceptedAt || null,
       createdAt: existingUser?.createdAt || new Date(),
       updatedAt: new Date()
     };
