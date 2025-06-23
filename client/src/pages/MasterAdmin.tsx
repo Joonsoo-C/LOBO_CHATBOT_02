@@ -156,6 +156,30 @@ export default function MasterAdmin() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // 페이지네이션 상태
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const usersPerPage = 20;
+
+  // 통계 데이터 조회
+  const { data: stats } = useQuery<SystemStats>({
+    queryKey: ['/api/admin/stats'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/stats');
+      if (!response.ok) throw new Error('Failed to fetch stats');
+      return response.json();
+    }
+  });
+
+  // 사용자 목록 조회
+  const { data: users } = useQuery<User[]>({
+    queryKey: ['/api/admin/users'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+      return response.json();
+    }
+  });
+
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
     if (!users) return [];
@@ -222,30 +246,6 @@ export default function MasterAdmin() {
     Music,
     Heart
   };
-
-  // 통계 데이터 조회
-  const { data: stats } = useQuery<SystemStats>({
-    queryKey: ['/api/admin/stats'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/stats');
-      if (!response.ok) throw new Error('Failed to fetch stats');
-      return response.json();
-    }
-  });
-
-  // 사용자 목록 조회
-  const { data: users } = useQuery<User[]>({
-    queryKey: ['/api/admin/users'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) throw new Error('Failed to fetch users');
-      return response.json();
-    }
-  });
-
-  // 페이지네이션 상태
-  const [userCurrentPage, setUserCurrentPage] = useState(1);
-  const usersPerPage = 20;
 
   // 에이전트 목록 조회
   const { data: agents } = useQuery<Agent[]>({
