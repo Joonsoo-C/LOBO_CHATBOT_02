@@ -53,10 +53,13 @@ export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // 학교, 교수, 학생, 그룹, 기능형
+  category: text("category").notNull(),
+  mainCategory: text("main_category"), // 상위 카테고리
+  subCategory: text("sub_category"),   // 하위 카테고리
+  detailCategory: text("detail_category"), // 세부 카테고리
   icon: text("icon").notNull(),
   backgroundColor: text("background_color").notNull(),
-  isCustomIcon: boolean("is_custom_icon").default(false), // Whether using custom uploaded image
+  isCustomIcon: boolean("is_custom_icon").default(false),
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
   organizationId: integer("organization_id").references(() => organizations.id),

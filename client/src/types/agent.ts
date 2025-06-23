@@ -3,6 +3,9 @@ export interface Agent {
   name: string;
   description: string;
   category: "학교" | "교수" | "학생" | "그룹" | "기능형";
+  mainCategory?: string;  // 상위 카테고리 (대학교/대학원/연구소/행정)
+  subCategory?: string;   // 하위 카테고리 (단과대학 등)
+  detailCategory?: string; // 세부 카테고리 (학과 등)
   icon: string;
   backgroundColor: string;
   isCustomIcon?: boolean;
