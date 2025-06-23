@@ -149,45 +149,6 @@ export default function MasterAdmin() {
   
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  // 파일 업로드 뮤테이션
-  const uploadDocumentMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('document', file);
-      formData.append('type', 'all');
-      formData.append('description', '관리자 업로드 문서');
-
-      const response = await fetch('/api/admin/documents/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('File upload failed');
-      }
-
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "성공",
-        description: "문서가 성공적으로 업로드되었습니다.",
-      });
-      refetchDocuments();
-      setSelectedDocumentFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    },
-    onError: (error: any) => {
-      toast({
-        title: "오류",
-        description: "문서 업로드에 실패했습니다.",
-        variant: "destructive",
-      });
-    }
-  });
   
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -251,16 +212,6 @@ export default function MasterAdmin() {
     queryFn: async () => {
       const response = await fetch('/api/admin/organizations');
       if (!response.ok) throw new Error('Failed to fetch organizations');
-      return response.json();
-    }
-  });
-
-  // 문서 목록 조회
-  const { data: documents, isLoading: documentsLoading, refetch: refetchDocuments } = useQuery<any[]>({
-    queryKey: ['/api/admin/documents'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/documents');
-      if (!response.ok) throw new Error('Failed to fetch documents');
       return response.json();
     }
   });
@@ -2820,7 +2771,7 @@ export default function MasterAdmin() {
 
               <Card 
                 className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => setIsDocumentUploadDialogOpen(true)}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
@@ -2832,24 +2783,7 @@ export default function MasterAdmin() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
                   </p>
-                  {uploadDocumentMutation.isPending && (
-                    <div className="mt-2 text-sm text-blue-600">
-                      업로드 중...
-                    </div>
-                  )}
                 </CardContent>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      uploadDocumentMutation.mutate(file);
-                    }
-                  }}
-                  className="hidden"
-                />
               </Card>
             </div>
 
@@ -2907,24 +2841,18 @@ export default function MasterAdmin() {
                   <CardTitle className="text-lg">최근 업로드</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {documentsLoading ? (
-                    <div className="text-center py-4">
-                      <div className="text-sm text-gray-500">로딩 중...</div>
-                    </div>
-                  ) : documents && documents.length > 0 ? (
-                    documents.slice(0, 3).map((doc: any, index: number) => (
-                      <div key={doc.id || index} className="text-sm">
-                        <div className="font-medium">{doc.name}</div>
-                        <div className="text-gray-500">
-                          {new Date(doc.createdAt || doc.date).toLocaleDateString('ko-KR')}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-4">
-                      <div className="text-sm text-gray-500">최근 업로드된 문서가 없습니다.</div>
-                    </div>
-                  )}
+                  <div className="text-sm">
+                    <div className="font-medium">2024학년도 수강신청 안내.pdf</div>
+                    <div className="text-gray-500">2시간 전</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium">졸업요건 변경 안내.docx</div>
+                    <div className="text-gray-500">5시간 전</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium">학과 교육과정.xlsx</div>
+                    <div className="text-gray-500">1일 전</div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -3056,63 +2984,109 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {documents && documents.length > 0 ? (
-                        documents.map((doc: any, index: number) => (
-                          <tr key={doc.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <FileText className="w-5 h-5 text-blue-500 mr-3" />
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {doc.name}
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    업로더: {doc.uploader}
-                                  </div>
+                      {/* 30개 샘플 문서 */}
+                      {[
+                        { name: "2024학년도 수강신청 안내.pdf", type: "강의 자료", size: "2.1 MB", date: "2024-01-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "신입생 오리엔테이션 가이드.docx", type: "정책 문서", size: "1.8 MB", date: "2024-02-28", agents: ["입학처 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "졸업논문 작성 가이드라인.pdf", type: "매뉴얼", size: "3.2 MB", date: "2024-03-10", agents: ["학사 안내봇", "교수 상담봇"], status: "활성", uploader: "prof002" },
+                        { name: "장학금 신청서 양식.xlsx", type: "양식", size: "156 KB", date: "2024-01-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin002" },
+                        { name: "2024년 1학기 시간표.pdf", type: "공지사항", size: "892 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "컴퓨터공학과 교육과정표.pdf", type: "교육과정", size: "1.4 MB", date: "2024-01-30", agents: ["학과 안내봇"], status: "활성", uploader: "prof003" },
+                        { name: "도서관 이용 안내서.docx", type: "매뉴얼", size: "2.3 MB", date: "2024-02-12", agents: ["도서관 봇"], status: "활성", uploader: "lib001" },
+                        { name: "기숙사 입사 신청서.pdf", type: "양식", size: "678 KB", date: "2024-01-25", agents: ["생활관 안내봇"], status: "활성", uploader: "dorm001" },
+                        { name: "취업 준비 가이드북.pdf", type: "강의 자료", size: "4.1 MB", date: "2024-03-05", agents: ["취업 상담봇"], status: "활성", uploader: "career001" },
+                        { name: "학생회 활동 규정.docx", type: "정책 문서", size: "1.2 MB", date: "2024-02-18", agents: ["학생회 봇"], status: "활성", uploader: "student001" },
+                        { name: "실험실 안전수칙.pdf", type: "매뉴얼", size: "2.8 MB", date: "2024-01-12", agents: ["안전관리 봇"], status: "활성", uploader: "safety001" },
+                        { name: "교환학생 프로그램 안내.pdf", type: "공지사항", size: "1.9 MB", date: "2024-02-22", agents: ["국제교류 봇"], status: "활성", uploader: "intl001" },
+                        { name: "체육관 시설 이용 안내.docx", type: "매뉴얼", size: "1.1 MB", date: "2024-01-08", agents: ["체육시설 봇"], status: "활성", uploader: "sports001" },
+                        { name: "등록금 납부 안내서.pdf", type: "양식", size: "945 KB", date: "2024-01-18", agents: ["재무 안내봇"], status: "활성", uploader: "finance001" },
+                        { name: "졸업사정 기준표.xlsx", type: "정책 문서", size: "234 KB", date: "2024-02-15", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "연구실 배정 신청서.pdf", type: "양식", size: "567 KB", date: "2024-03-01", agents: ["대학원 안내봇"], status: "활성", uploader: "grad001" },
+                        { name: "학과별 커리큘럼 가이드.pdf", type: "교육과정", size: "3.7 MB", date: "2024-01-22", agents: ["학과 안내봇"], status: "활성", uploader: "prof001" },
+                        { name: "휴학 신청 절차.docx", type: "매뉴얼", size: "834 KB", date: "2024-02-08", agents: ["학사 안내봇"], status: "활성", uploader: "admin002" },
+                        { name: "교내 동아리 활동 가이드.pdf", type: "공지사항", size: "1.6 MB", date: "2024-01-28", agents: ["동아리 안내봇"], status: "활성", uploader: "club001" },
+                        { name: "성적 이의신청서.pdf", type: "양식", size: "412 KB", date: "2024-02-25", agents: ["학사 안내봇"], status: "활성", uploader: "admin001" },
+                        { name: "캡스톤 프로젝트 가이드라인.pdf", type: "강의 자료", size: "2.9 MB", date: "2024-03-08", agents: ["교수 상담봇"], status: "활성", uploader: "prof004" },
+                        { name: "학생 상담 프로그램 안내.docx", type: "공지사항", size: "1.3 MB", date: "2024-02-10", agents: ["상담 안내봇"], status: "활성", uploader: "counsel001" },
+                        { name: "교육실습 신청서.xlsx", type: "양식", size: "189 KB", date: "2024-01-16", agents: ["교육대학 봇"], status: "비활성", uploader: "edu001" },
+                        { name: "논문 심사 기준표.pdf", type: "정책 문서", size: "1.7 MB", date: "2024-02-28", agents: ["대학원 안내봇"], status: "활성", uploader: "grad002" },
+                        { name: "학교 시설물 이용 규칙.pdf", type: "매뉴얼", size: "2.4 MB", date: "2024-01-05", agents: ["시설관리 봇"], status: "활성", uploader: "facility001" },
+                        { name: "인턴십 프로그램 안내서.pdf", type: "공지사항", size: "2.1 MB", date: "2024-03-12", agents: ["취업 상담봇"], status: "활성", uploader: "career002" },
+                        { name: "학점 교류 신청서.docx", type: "양식", size: "623 KB", date: "2024-02-05", agents: ["학사 안내봇"], status: "활성", uploader: "admin003" },
+                        { name: "연구윤리 가이드라인.pdf", type: "정책 문서", size: "1.8 MB", date: "2024-01-31", agents: ["연구지원 봇"], status: "활성", uploader: "research001" },
+                        { name: "학생증 재발급 신청서.pdf", type: "양식", size: "345 KB", date: "2024-02-20", agents: ["학생 지원봇"], status: "활성", uploader: "admin001" },
+                        { name: "교수법 워크샵 자료.pptx", type: "강의 자료", size: "5.2 MB", date: "2024-03-15", agents: ["교수 개발봇"], status: "활성", uploader: "prof005" }
+                      ].map((doc, index) => (
+                        <tr 
+                          key={index}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                          onClick={() => {
+                            setDocumentDetailData(doc);
+                            setSelectedDocumentAgents(doc.agents);
+                            setIsDocumentDetailOpen(true);
+                          }}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <FileText className="w-5 h-5 mr-3 text-blue-500" />
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {doc.name}
                                 </div>
                               </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">{doc.type}</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {doc.size}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {doc.date}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex flex-wrap gap-1">
-                                <Badge variant="secondary" className="text-xs">
-                                  {doc.agentId ? `Agent ${doc.agentId}` : '미할당'}
-                                </Badge>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="문서 상세보기" onClick={() => openDocumentDetail(doc)}>
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="문서 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="문서 다운로드">
-                                  <Download className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                            업로드된 문서가 없습니다.
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.type}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.size}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.date}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex flex-wrap gap-1">
+                              {doc.agents.slice(0, 2).map((agent, idx) => (
+                                <span 
+                                  key={idx}
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                                >
+                                  {agent}
+                                </span>
+                              ))}
+                              {doc.agents.length > 2 && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  +{doc.agents.length - 2}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              doc.status === '활성' 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            }`}>
+                              {doc.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDocumentDetailData(doc);
+                                setSelectedDocumentAgents(doc.agents);
+                                setIsDocumentDetailOpen(true);
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
                           </td>
                         </tr>
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
