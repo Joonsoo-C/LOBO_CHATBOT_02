@@ -60,6 +60,15 @@ export const users = pgTable("users", {
   // 에이전트/QA/문서 관리자 권한
   managedAgents: jsonb("managed_agents").default(JSON.stringify([])), // 에이전트/QA/문서 관리자가 관리하는 에이전트명 목록
   
+  // 복수 소속 정보 (조직별 정보)
+  organizationAffiliations: jsonb("organization_affiliations").default(JSON.stringify([])), // 복수 조직 소속 정보
+  
+  // 복수 에이전트 권한 정보
+  agentPermissions: jsonb("agent_permissions").default(JSON.stringify([])), // 에이전트별 권한 정보
+  
+  // 사용자 메모
+  userMemo: text("user_memo")
+  
   // 3. 역할 및 권한 정보
   role: varchar("role").notNull().default("user"), // 시스템 내 역할 (System Role)
   position: varchar("position"), // 조직 내 직책/역할 (Organization Role/Position)
@@ -423,6 +432,18 @@ export const userEditSchema = z.object({
   usingAgents: z.array(z.string()).optional(),
   managedCategories: z.array(z.string()).optional(),
   managedAgents: z.array(z.string()).optional(),
+  organizationAffiliations: z.array(z.object({
+    upperCategory: z.string(),
+    lowerCategory: z.string(),
+    detailCategory: z.string(),
+    position: z.string(),
+    systemRole: z.string()
+  })).optional(),
+  agentPermissions: z.array(z.object({
+    agentName: z.string(),
+    permissions: z.array(z.string())
+  })).optional(),
+  userMemo: z.string().optional(),
   role: z.enum([
     "master_admin", 
     "operation_admin", 
