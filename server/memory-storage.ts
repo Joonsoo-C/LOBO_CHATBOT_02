@@ -14,6 +14,8 @@ import {
   type InsertMessageReaction,
 } from "@shared/schema";
 import { IStorage } from "./storage";
+import * as fs from "fs";
+import * as path from "path";
 
 // Temporary in-memory storage to handle database connection issues
 export class MemoryStorage implements IStorage {
@@ -26,9 +28,60 @@ export class MemoryStorage implements IStorage {
   private messageReactions: Map<number, MessageReaction> = new Map();
 
   private nextId = 1;
+  private readonly persistenceDir = path.join(process.cwd(), 'data');
+  private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
 
   constructor() {
+    this.ensurePersistenceDir();
+    this.loadPersistedDocuments();
     this.initializeDefaultData();
+  }
+
+  private ensurePersistenceDir() {
+    if (!fs.existsSync(this.persistenceDir)) {
+      fs.mkdirSync(this.persistenceDir, { recursive: true });
+    }
+  }
+
+  private loadPersistedDocuments() {
+    try {
+      if (fs.existsSync(this.documentsFile)) {
+        const data = fs.readFileSync(this.documentsFile, 'utf-8');
+        const persistedData = JSON.parse(data);
+        
+        // Restore documents
+        if (persistedData.documents) {
+          persistedData.documents.forEach((doc: Document) => {
+            // Convert date strings back to Date objects
+            if (doc.createdAt) {
+              doc.createdAt = new Date(doc.createdAt);
+            }
+            this.documents.set(doc.id, doc);
+          });
+        }
+        
+        // Update nextId to avoid conflicts
+        if (persistedData.nextId) {
+          this.nextId = Math.max(this.nextId, persistedData.nextId);
+        }
+        
+        console.log(`Loaded ${this.documents.size} persisted documents`);
+      }
+    } catch (error) {
+      console.error('Error loading persisted documents:', error);
+    }
+  }
+
+  private savePersistedDocuments() {
+    try {
+      const data = {
+        documents: Array.from(this.documents.values()),
+        nextId: this.nextId
+      };
+      fs.writeFileSync(this.documentsFile, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error saving persisted documents:', error);
+    }
   }
 
   private initializeDefaultData() {
@@ -411,6 +464,8 @@ export class MemoryStorage implements IStorage {
       createdAt: new Date()
     };
     this.documents.set(id, newDocument);
+    this.savePersistedDocuments(); // Persist immediately
+    console.log(`Document ${id} created and persisted: ${document.originalName}`);
     return newDocument;
   }
 
@@ -430,7 +485,12 @@ export class MemoryStorage implements IStorage {
   }
 
   async deleteDocument(id: number): Promise<void> {
-    this.documents.delete(id);
+    const document = this.documents.get(id);
+    if (document) {
+      this.documents.delete(id);
+      this.savePersistedDocuments(); // Persist immediately
+      console.log(`Document ${id} deleted and persisted: ${document.originalName}`);
+    }
   }
 
   // Stats operations

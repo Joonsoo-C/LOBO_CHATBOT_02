@@ -478,6 +478,9 @@ Changelog:
   * Fixed critical JavaScript variable naming conflict preventing actual file downloads
   * Enhanced download functionality with proper blob handling and UTF-8 filename encoding
   * Document download now works correctly with proper error handling and user feedback
+  * Implemented file-based persistence layer for memory storage to ensure documents persist across server restarts
+  * Added automatic document loading from persistent storage with proper date conversion
+  * Enhanced document creation and deletion with immediate persistence saving
 ```
 
 ## User Preferences
