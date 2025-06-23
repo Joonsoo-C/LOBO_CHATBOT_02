@@ -2906,8 +2906,6 @@ export default function MasterAdmin() {
                         </tr>
                       ))}
                     </tbody>
-
-                    </tbody>
                   </table>
                 </div>
               </CardContent>
