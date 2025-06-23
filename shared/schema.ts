@@ -51,26 +51,56 @@ export const organizations = pgTable("organizations", {
 
 export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  category: text("category").notNull(),
-  mainCategory: text("main_category"), // 상위 카테고리 (대학교/대학원/연구소/행정)
-  subCategory: text("sub_category"),   // 하위 카테고리 (단과대학 등)
-  detailCategory: text("detail_category"), // 세부 카테고리 (학과 등)
+  
+  // 1. 기본 정보 (Basic Info)
+  name: varchar("name", { length: 20 }).notNull(),
+  description: varchar("description", { length: 200 }).notNull(),
+  creatorId: varchar("creator_id").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  
+  // 2. 카테고리 및 상태 정보
+  upperCategory: varchar("upper_category").default("전체"), // 상위 카테고리 (예: 단과대학)
+  lowerCategory: varchar("lower_category").default("전체"), // 하위 카테고리 (예: 학과)
+  detailCategory: varchar("detail_category").default("전체"), // 세부 카테고리
+  status: varchar("status").default("active"), // "active", "inactive", "pending"
+  
+  // 3. 모델 및 응답 설정
+  llmModel: varchar("llm_model").notNull().default("gpt-4o"), // 사용 모델
+  chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // "strict-doc", "doc-fallback-llm", "general-llm"
+  maxInputLength: integer("max_input_length").default(2048), // 최대 입력 길이
+  maxResponseLength: integer("max_response_length").default(1024), // 최대 응답 길이
+  
+  // 4. 역할 및 페르소나 설정
+  personaName: varchar("persona_name"), // 페르소나 닉네임
+  speakingStyle: text("speaking_style").default("공손하고 친절한 말투"),
+  personalityTraits: text("personality_traits").default("친절하고 전문적인 성격으로 정확한 정보를 제공"),
+  rolePrompt: text("role_prompt"), // 역할 프롬프트
+  prohibitedWordResponse: text("prohibited_word_response").default("죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."),
+  
+  // 5. 문서 연결 및 업로드
+  uploadFormats: jsonb("upload_formats").default(JSON.stringify(["PDF", "DOCX", "TXT"])), // 업로드 가능한 포맷
+  uploadMethod: varchar("upload_method").default("dragdrop"), // "dragdrop", "onedrive"
+  maxFileCount: integer("max_file_count").default(100), // 최대 문서 수
+  maxFileSizeMB: integer("max_file_size_mb").default(100), // 최대 파일 크기(MB)
+  documentManagerIds: jsonb("document_manager_ids").default(JSON.stringify([])), // 문서 업로드/연결 권한자 목록
+  
+  // 6. 권한 및 접근 설정
+  visibility: varchar("visibility").default("private"), // "private", "custom", "group", "organization"
+  allowedGroups: jsonb("allowed_groups").default(JSON.stringify([])), // 접근 가능한 사용자 그룹
+  agentManagerIds: jsonb("agent_manager_ids").default(JSON.stringify([])), // 에이전트 관리자 목록
+  agentEditorIds: jsonb("agent_editor_ids").default(JSON.stringify([])), // 에이전트 편집 가능 사용자 목록
+  
+  // 기존 UI 관련 필드들 (호환성 유지)
   icon: text("icon").notNull(),
   backgroundColor: text("background_color").notNull(),
   isCustomIcon: boolean("is_custom_icon").default(false),
-  isActive: boolean("is_active").default(true),
+  
+  // 기존 레거시 필드들 (호환성 유지)
+  category: text("category").notNull(),
   managerId: varchar("manager_id").references(() => users.id),
   organizationId: integer("organization_id").references(() => organizations.id),
-  llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
-  chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
-  // Persona fields
-  speakingStyle: text("speaking_style").default("친근하고 도움이 되는 말투"),
-  personalityTraits: text("personality_traits").default("친절하고 전문적인 성격으로 정확한 정보를 제공"),
-  prohibitedWordResponse: text("prohibited_word_response").default("죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  isActive: boolean("is_active").default(true),
 });
 
 export const conversations = pgTable("conversations", {
@@ -213,11 +243,42 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
-  mainCategory: z.string().optional(),
-  subCategory: z.string().optional(),
+  // 기본 정보
+  name: z.string().min(1, "에이전트 이름은 필수입니다").max(20, "에이전트 이름은 최대 20자입니다"),
+  description: z.string().max(200, "설명은 최대 200자입니다"),
+  creatorId: z.string().min(1, "생성자 ID는 필수입니다"),
+  
+  // 카테고리 및 상태
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
+  status: z.enum(["active", "inactive", "pending"]).optional(),
+  
+  // 모델 및 응답 설정
   llmModel: z.string().optional(),
-  chatbotType: z.string().optional(),
+  chatbotType: z.enum(["strict-doc", "doc-fallback-llm", "general-llm"]).optional(),
+  maxInputLength: z.number().min(1).max(10000).optional(),
+  maxResponseLength: z.number().min(1).max(10000).optional(),
+  
+  // 페르소나 설정
+  personaName: z.string().optional(),
+  speakingStyle: z.string().optional(),
+  personalityTraits: z.string().optional(),
+  rolePrompt: z.string().optional(),
+  prohibitedWordResponse: z.string().optional(),
+  
+  // 문서 설정
+  uploadFormats: z.array(z.string()).optional(),
+  uploadMethod: z.enum(["dragdrop", "onedrive"]).optional(),
+  maxFileCount: z.number().min(1).max(1000).optional(),
+  maxFileSizeMB: z.number().min(1).max(1000).optional(),
+  documentManagerIds: z.array(z.string()).optional(),
+  
+  // 권한 설정
+  visibility: z.enum(["private", "custom", "group", "organization"]).optional(),
+  allowedGroups: z.array(z.string()).optional(),
+  agentManagerIds: z.array(z.string()).optional(),
+  agentEditorIds: z.array(z.string()).optional(),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({

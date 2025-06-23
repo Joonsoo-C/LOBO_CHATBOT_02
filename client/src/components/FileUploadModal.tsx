@@ -444,7 +444,14 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={() => document.getElementById('file-upload')?.click()}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log("Drop zone clicked");
+              const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+              if (fileInput) {
+                fileInput.click();
+              }
+            }}
           >
             <div className="text-center">
               {selectedFile ? (
@@ -463,8 +470,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       variant="outline"
                       size="sm"
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
-                        document.getElementById('file-upload')?.click();
+                        console.log("Replace file button clicked");
+                        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                        if (fileInput) {
+                          fileInput.click();
+                        }
                       }}
                       className="korean-text"
                     >
@@ -502,8 +514,16 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     variant="default"
                     className="korean-text bg-blue-600 hover:bg-blue-700"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
-                      document.getElementById('file-upload')?.click();
+                      console.log("File select button clicked");
+                      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                      if (fileInput) {
+                        console.log("File input found, triggering click");
+                        fileInput.click();
+                      } else {
+                        console.log("File input not found!");
+                      }
                     }}
                   >
                     <Upload className="w-4 h-4 mr-2" />
@@ -512,12 +532,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 </div>
               )}
             </div>
-            <Input
+            <input
               id="file-upload"
               type="file"
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
               onChange={handleFileSelect}
-              className="hidden"
+              style={{ display: 'none' }}
+              multiple={false}
             />
           </div>
 
