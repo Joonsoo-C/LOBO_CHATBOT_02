@@ -2165,31 +2165,260 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
-            {/* 에이전트 검색 및 관리 섹션 */}
+            {/* 에이전트 검색 섹션 */}
             <Card>
               <CardHeader>
-                <CardTitle>에이전트 검색 및 관리</CardTitle>
+                <CardTitle>에이전트 검색</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">카테고리</Label>
-                    <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                    <Label className="text-sm font-medium">상위 카테고리</Label>
+                    <Select value={selectedUniversity} onValueChange={(value) => {
+                      setSelectedUniversity(value);
+                      setSelectedCollege('all');
+                      setSelectedDepartment('all');
+                    }}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="school">학교</SelectItem>
-                        <SelectItem value="professor">교수</SelectItem>
-                        <SelectItem value="student">학생</SelectItem>
-                        <SelectItem value="group">그룹</SelectItem>
-                        <SelectItem value="function">기능형</SelectItem>
+                        <SelectItem value="대학본부">대학본부</SelectItem>
+                        <SelectItem value="학사부서">학사부서</SelectItem>
+                        <SelectItem value="인문대학">인문대학</SelectItem>
+                        <SelectItem value="사회과학대학">사회과학대학</SelectItem>
+                        <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                        <SelectItem value="공과대학">공과대학</SelectItem>
+                        <SelectItem value="경영대학">경영대학</SelectItem>
+                        <SelectItem value="의과대학">의과대학</SelectItem>
+                        <SelectItem value="대학원">대학원</SelectItem>
+                        <SelectItem value="연구기관">연구기관</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
+                  <div>
+                    <Label className="text-sm font-medium">하위 카테고리</Label>
+                    <Select 
+                      value={selectedCollege} 
+                      onValueChange={(value) => {
+                        setSelectedCollege(value);
+                        setSelectedDepartment('all');
+                      }}
+                      disabled={selectedUniversity === 'all'}
+                    >
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {selectedUniversity === '대학본부' && (
+                          <>
+                            <SelectItem value="총장실">총장실</SelectItem>
+                            <SelectItem value="교무처">교무처</SelectItem>
+                            <SelectItem value="행정처">행정처</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '학사부서' && (
+                          <>
+                            <SelectItem value="입학처">입학처</SelectItem>
+                            <SelectItem value="학사지원팀">학사지원팀</SelectItem>
+                            <SelectItem value="학생상담센터">학생상담센터</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '인문대학' && (
+                          <>
+                            <SelectItem value="국어국문학과">국어국문학과</SelectItem>
+                            <SelectItem value="영어영문학과">영어영문학과</SelectItem>
+                            <SelectItem value="철학과">철학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '사회과학대학' && (
+                          <>
+                            <SelectItem value="정치외교학과">정치외교학과</SelectItem>
+                            <SelectItem value="행정학과">행정학과</SelectItem>
+                            <SelectItem value="심리학과">심리학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '자연과학대학' && (
+                          <>
+                            <SelectItem value="수학과">수학과</SelectItem>
+                            <SelectItem value="물리학과">물리학과</SelectItem>
+                            <SelectItem value="화학과">화학과</SelectItem>
+                            <SelectItem value="생명과학과">생명과학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '공과대학' && (
+                          <>
+                            <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                            <SelectItem value="전자공학과">전자공학과</SelectItem>
+                            <SelectItem value="기계공학과">기계공학과</SelectItem>
+                            <SelectItem value="건축공학과">건축공학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '경영대학' && (
+                          <>
+                            <SelectItem value="경영학과">경영학과</SelectItem>
+                            <SelectItem value="회계학과">회계학과</SelectItem>
+                            <SelectItem value="국제통상학과">국제통상학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '의과대학' && (
+                          <>
+                            <SelectItem value="의학과">의학과</SelectItem>
+                            <SelectItem value="간호학과">간호학과</SelectItem>
+                            <SelectItem value="약학과">약학과</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '대학원' && (
+                          <>
+                            <SelectItem value="일반대학원">일반대학원</SelectItem>
+                            <SelectItem value="특수대학원">특수대학원</SelectItem>
+                            <SelectItem value="전문대학원">전문대학원</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '연구기관' && (
+                          <>
+                            <SelectItem value="중앙연구소">중앙연구소</SelectItem>
+                            <SelectItem value="산학협력단">산학협력단</SelectItem>
+                            <SelectItem value="부설연구소">부설연구소</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium">세부 카테고리</Label>
+                    <Select 
+                      value={selectedDepartment} 
+                      onValueChange={setSelectedDepartment}
+                      disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                    >
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {/* 대학본부 - 총장실 */}
+                        {selectedUniversity === '대학본부' && selectedCollege === '총장실' && (
+                          <>
+                            <SelectItem value="기획팀">기획팀</SelectItem>
+                            <SelectItem value="인사팀">인사팀</SelectItem>
+                            <SelectItem value="홍보팀">홍보팀</SelectItem>
+                          </>
+                        )}
+                        {/* 대학본부 - 교무처 */}
+                        {selectedUniversity === '대학본부' && selectedCollege === '교무처' && (
+                          <>
+                            <SelectItem value="교무팀">교무팀</SelectItem>
+                            <SelectItem value="학사팀">학사팀</SelectItem>
+                            <SelectItem value="입학팀">입학팀</SelectItem>
+                          </>
+                        )}
+                        {/* 대학본부 - 행정처 */}
+                        {selectedUniversity === '대학본부' && selectedCollege === '행정처' && (
+                          <>
+                            <SelectItem value="총무팀">총무팀</SelectItem>
+                            <SelectItem value="재무팀">재무팀</SelectItem>
+                            <SelectItem value="시설팀">시설팀</SelectItem>
+                          </>
+                        )}
+                        {/* 인문대학 */}
+                        {selectedUniversity === '인문대학' && selectedCollege === '국어국문학과' && (
+                          <>
+                            <SelectItem value="현대문학전공">현대문학전공</SelectItem>
+                            <SelectItem value="고전문학전공">고전문학전공</SelectItem>
+                            <SelectItem value="국어학전공">국어학전공</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '인문대학' && selectedCollege === '영어영문학과' && (
+                          <>
+                            <SelectItem value="영문학전공">영문학전공</SelectItem>
+                            <SelectItem value="영어학전공">영어학전공</SelectItem>
+                            <SelectItem value="번역학전공">번역학전공</SelectItem>
+                          </>
+                        )}
+                        {/* 자연과학대학 */}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '수학과' && (
+                          <>
+                            <SelectItem value="순수수학전공">순수수학전공</SelectItem>
+                            <SelectItem value="응용수학전공">응용수학전공</SelectItem>
+                            <SelectItem value="통계학전공">통계학전공</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '자연과학대학' && selectedCollege === '물리학과' && (
+                          <>
+                            <SelectItem value="이론물리전공">이론물리전공</SelectItem>
+                            <SelectItem value="실험물리전공">실험물리전공</SelectItem>
+                            <SelectItem value="응용물리전공">응용물리전공</SelectItem>
+                          </>
+                        )}
+                        {/* 공과대학 */}
+                        {selectedUniversity === '공과대학' && selectedCollege === '컴퓨터공학과' && (
+                          <>
+                            <SelectItem value="소프트웨어전공">소프트웨어전공</SelectItem>
+                            <SelectItem value="하드웨어전공">하드웨어전공</SelectItem>
+                            <SelectItem value="AI전공">AI전공</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '공과대학' && selectedCollege === '전자공학과' && (
+                          <>
+                            <SelectItem value="통신전공">통신전공</SelectItem>
+                            <SelectItem value="반도체전공">반도체전공</SelectItem>
+                            <SelectItem value="제어전공">제어전공</SelectItem>
+                          </>
+                        )}
+                        {/* 경영대학 */}
+                        {selectedUniversity === '경영대학' && selectedCollege === '경영학과' && (
+                          <>
+                            <SelectItem value="전략경영전공">전략경영전공</SelectItem>
+                            <SelectItem value="마케팅전공">마케팅전공</SelectItem>
+                            <SelectItem value="재무전공">재무전공</SelectItem>
+                          </>
+                        )}
+                        {/* 의과대학 */}
+                        {selectedUniversity === '의과대학' && selectedCollege === '의학과' && (
+                          <>
+                            <SelectItem value="기초의학전공">기초의학전공</SelectItem>
+                            <SelectItem value="임상의학전공">임상의학전공</SelectItem>
+                            <SelectItem value="예방의학전공">예방의학전공</SelectItem>
+                          </>
+                        )}
+                        {/* 대학원 */}
+                        {selectedUniversity === '대학원' && selectedCollege === '일반대학원' && (
+                          <>
+                            <SelectItem value="석사과정">석사과정</SelectItem>
+                            <SelectItem value="박사과정">박사과정</SelectItem>
+                            <SelectItem value="석박통합과정">석박통합과정</SelectItem>
+                          </>
+                        )}
+                        {selectedUniversity === '대학원' && selectedCollege === '특수대학원' && (
+                          <>
+                            <SelectItem value="경영대학원">경영대학원</SelectItem>
+                            <SelectItem value="교육대학원">교육대학원</SelectItem>
+                            <SelectItem value="공학대학원">공학대학원</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-10 mt-6"
+                      onClick={resetFilters}
+                    >
+                      필터 초기화
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* 상태 필터 행 */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <Label className="text-sm font-medium">상태</Label>
                     <Select value={selectedCollege} onValueChange={setSelectedCollege}>
@@ -2200,34 +2429,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="active">활성</SelectItem>
                         <SelectItem value="inactive">비활성</SelectItem>
+                        <SelectItem value="pending">승인 대기 중</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-sm font-medium">관리자</Label>
-                    <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="system">System Admin</SelectItem>
-                        <SelectItem value="prof001">박 교수</SelectItem>
-                        <SelectItem value="prof002">최 교수</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-sm font-medium">필터 초기화</Label>
-                    <Button 
-                      variant="outline" 
-                      className="w-full h-10"
-                      onClick={resetFilters}
-                    >
-                      필터 초기화
-                    </Button>
                   </div>
                 </div>
                 
