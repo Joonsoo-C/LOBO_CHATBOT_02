@@ -556,6 +556,68 @@ export default function MasterAdmin() {
     }
   };
 
+  // 드래그 앤 드롭 핸들러
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      const file = files[0];
+      
+      // 파일 크기 체크 (50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        toast({
+          title: "파일 크기 초과",
+          description: "파일 크기는 50MB를 초과할 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // 파일 형식 체크
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "지원하지 않는 파일 형식",
+          description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setSelectedDocumentFile(file);
+      toast({
+        title: "파일 선택됨",
+        description: `${file.name} 파일이 선택되었습니다.`,
+      });
+    }
+  };
+
   // 에이전트 편집 뮤테이션
   const updateAgentMutation = useMutation({
     mutationFn: async (data: AgentFormData & { id: number }) => {
@@ -3639,14 +3701,21 @@ export default function MasterAdmin() {
               <DialogTitle>문서 업로드</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleDocumentFileSelect}
+              >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
                   PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
                 </p>
                 {selectedDocumentFile ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
                     <p className="text-sm font-medium text-green-600">선택된 파일: {selectedDocumentFile.name}</p>
                     <p className="text-xs text-gray-500">{(selectedDocumentFile.size / 1024 / 1024).toFixed(2)} MB</p>
                     <div className="flex gap-2 justify-center">
@@ -3659,7 +3728,7 @@ export default function MasterAdmin() {
                     </div>
                   </div>
                 ) : (
-                  <Button variant="outline" onClick={handleDocumentFileSelect}>
+                  <Button variant="outline" onClick={(e) => e.stopPropagation()}>
                     파일 선택
                   </Button>
                 )}
@@ -3767,8 +3836,11 @@ export default function MasterAdmin() {
                 <Button variant="outline" onClick={() => setIsDocumentUploadDialogOpen(false)}>
                   취소
                 </Button>
-                <Button>
-                  업로드 시작
+                <Button 
+                  onClick={handleDocumentUpload}
+                  disabled={!selectedDocumentFile || isDocumentUploading}
+                >
+                  {isDocumentUploading ? "업로드 중..." : "업로드 시작"}
                 </Button>
               </div>
             </div>
