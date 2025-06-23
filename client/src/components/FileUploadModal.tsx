@@ -434,63 +434,91 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         <div className="p-6 max-h-[75vh] overflow-y-auto">
           {/* File Upload Section */}
           <div 
-            className={`mb-6 p-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
+            className={`mb-6 p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer ${
               isDragOver 
-                ? 'border-primary bg-primary/10 dark:bg-primary/20' 
-                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02]' 
+                : selectedFile
+                ? 'border-green-400 bg-green-50 dark:bg-green-900/20'
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-gray-400'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => document.getElementById('file-upload')?.click()}
           >
-            <div className="text-center mb-4">
-              <FileText className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-              <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 드래그하거나 클릭하여 업로드</h4>
-              <p className="text-sm text-muted-foreground korean-text">
-                PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
-              </p>
-            </div>
-            <div className="space-y-3">
-              <div className="relative">
-                <Input
-                  id="file-upload"
-                  type="file"
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => document.getElementById('file-upload')?.click()}
-                  className="w-full korean-text hover:bg-primary hover:text-primary-foreground"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  파일 선택
-                </Button>
-              </div>
-              {selectedFile && (
-                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center space-x-2">
-                    <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    <span className="text-sm text-foreground korean-text font-medium">{selectedFile.name}</span>
+            <div className="text-center">
+              {selectedFile ? (
+                <div className="space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
+                  <div>
+                    <h4 className="text-lg font-medium text-foreground mb-1 korean-text">선택된 파일</h4>
+                    <p className="text-sm font-medium text-green-600 dark:text-green-400 korean-text">{selectedFile.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{formatFileSize(selectedFile.size)}</p>
+                  </div>
+                  <div className="flex gap-2 justify-center">
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
-                      onClick={() => setSelectedFile(null)}
-                      className="text-gray-500 hover:text-red-500"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        document.getElementById('file-upload')?.click();
+                      }}
+                      className="korean-text"
                     >
-                      <X className="w-3 h-3" />
+                      <Upload className="w-4 h-4 mr-1" />
+                      다른 파일 선택
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFile(null);
+                      }}
+                      className="korean-text text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      제거
                     </Button>
                   </div>
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 드래그하거나 클릭하여 업로드</h4>
+                    <p className="text-sm text-muted-foreground korean-text mb-4">
+                      PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="default"
+                    className="korean-text bg-blue-600 hover:bg-blue-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      document.getElementById('file-upload')?.click();
+                    }}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    파일 선택
+                  </Button>
+                </div>
               )}
             </div>
+            <Input
+              id="file-upload"
+              type="file"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
           </div>
 
           {/* Category Selection */}
@@ -560,6 +588,22 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   </SelectContent>
                 </Select>
               </div>
+              
+              <div className="flex items-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-[40px] korean-text"
+                  onClick={() => {
+                    setMainCategory("");
+                    setSubCategory("");
+                    setDetailCategory("");
+                    setSelectedAgent("");
+                  }}
+                >
+                  적용
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -607,11 +651,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           </div>
 
           {/* Action Buttons */}
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 pt-4 border-t border-border">
             <Button 
               variant="outline" 
               onClick={onClose} 
-              className="flex-1 korean-text"
+              className="flex-1 korean-text h-12"
               disabled={uploadMutation.isPending}
             >
               취소
@@ -619,7 +663,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || !mainCategory || !subCategory || !detailCategory || uploadMutation.isPending}
-              className="flex-1 korean-text relative"
+              className="flex-1 korean-text relative h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium"
             >
               {uploadMutation.isPending ? (
                 <>
