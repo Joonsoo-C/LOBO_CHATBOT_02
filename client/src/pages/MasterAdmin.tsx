@@ -144,6 +144,7 @@ export default function MasterAdmin() {
   
   // 문서 업로드 관련 상태
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
+  const [selectedDocumentFiles, setSelectedDocumentFiles] = useState<File[]>([]);
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   
@@ -465,24 +466,11 @@ export default function MasterAdmin() {
     }
   };
 
-  // 파일 선택 변경 핸들러
+  // 파일 선택 변경 핸들러 (다중 파일 지원)
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("파일 선택 이벤트 발생", e);
-    const file = e.target.files?.[0];
-    console.log("선택된 파일:", file);
+    const files = Array.from(e.target.files || []);
     
-    if (file) {
-      // 파일 크기 체크 (50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        toast({
-          title: "파일 크기 초과",
-          description: "파일 크기는 50MB를 초과할 수 없습니다.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // 파일 형식 체크
+    if (files.length > 0) {
       const allowedTypes = [
         'application/pdf',
         'application/msword',
@@ -493,28 +481,54 @@ export default function MasterAdmin() {
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       ];
       
-      console.log("파일 타입:", file.type);
-      console.log("허용된 타입들:", allowedTypes);
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
       
-      if (!allowedTypes.includes(file.type)) {
-        toast({
-          title: "지원하지 않는 파일 형식",
-          description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
-          variant: "destructive",
-        });
-        return;
+      for (const file of files) {
+        // 파일 크기 체크 (50MB)
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과)`);
+          continue;
+        }
+        
+        // 파일 타입 체크
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
       }
       
-      console.log("파일 선택 완료, 상태 업데이트 중");
-      setSelectedDocumentFile(file);
-      toast({
-        title: "파일 선택됨",
-        description: `${file.name} 파일이 선택되었습니다.`,
-      });
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedDocumentFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 선택됨",
+          description: `${validFiles.length}개 파일이 선택되었습니다.`,
+        });
+      }
     }
     
     // 파일 입력 값 리셋 (같은 파일을 다시 선택할 수 있도록)
     e.target.value = '';
+  };
+
+  // 선택된 파일 제거 핸들러
+  const handleRemoveFile = (index: number) => {
+    setSelectedDocumentFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // 모든 파일 제거 핸들러
+  const handleClearAllFiles = () => {
+    setSelectedDocumentFiles([]);
   };
 
   // 문서 업로드 핸들러
@@ -3718,6 +3732,7 @@ export default function MasterAdmin() {
                 ref={fileInputRef}
                 type="file"
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                multiple
                 onChange={handleFileInputChange}
                 style={{ display: 'none' }}
               />
