@@ -642,14 +642,14 @@ export default function TabletLayout() {
             )
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center korean-text">
+              <div className="text-center korean-text max-w-md mx-auto">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Settings className="text-white w-10 h-10" />
                 </div>
                 <h3 className="text-xl font-medium text-foreground mb-3 text-center">
                   {activeTab === "chat" ? t('home.selectAgent') : t('home.manageAgent')}
                 </h3>
-                <p className="text-muted-foreground text-center">
+                <p className="text-muted-foreground text-center leading-relaxed">
                   {activeTab === "chat" 
                     ? t('home.selectAgentDesc')
                     : t('home.manageAgentDesc')
