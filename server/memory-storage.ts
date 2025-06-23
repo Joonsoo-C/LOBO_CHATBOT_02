@@ -373,6 +373,7 @@ export class MemoryStorage implements IStorage {
       rolePrompt: agent.rolePrompt || null,
       uploadFormats: agent.uploadFormats || [],
       uploadMethod: agent.uploadMethod || null,
+      visibility: agent.visibility || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };

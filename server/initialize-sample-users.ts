@@ -43,7 +43,11 @@ export async function initializeSampleUsers() {
           lastLoginAt: null,
           passwordHash: userData.password,
           groups: [],
-          permissions: null,
+          usingAgents: Math.random() > 0.5 ? [`${Math.floor(Math.random() * 50) + 1}`] : [],
+          managedCategories: [],
+          managedAgents: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
+            ? [`에이전트${Math.floor(Math.random() * 10) + 1}`] : [],
+          permissions: {},
           lockedReason: null,
           deactivatedAt: null,
           loginFailCount: 0,
