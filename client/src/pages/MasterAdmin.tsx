@@ -1302,9 +1302,6 @@ export default function MasterAdmin() {
                           사용자 정보
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자 유형
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           소속 조직
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -1312,6 +1309,9 @@ export default function MasterAdmin() {
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           이메일
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           가입일
@@ -1358,17 +1358,6 @@ export default function MasterAdmin() {
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">
-                                {user.role === 'master_admin' ? '마스터 관리자' :
-                                 user.role === 'operation_admin' ? '운영 관리자' :
-                                 user.role === 'category_admin' ? '카테고리 관리자' :
-                                 user.role === 'agent_admin' ? '에이전트 관리자' :
-                                 user.role === 'qa_admin' ? 'QA 관리자' :
-                                 user.role === 'doc_admin' ? '문서 관리자' :
-                                 user.role === 'external' ? '외부 사용자' : '일반 사용자'}
-                              </Badge>
-                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               <div>
                                 <div className="font-medium">{(user as any).upperCategory || '미분류'}</div>
@@ -1378,12 +1367,44 @@ export default function MasterAdmin() {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <Badge variant="secondary">
-                                {(user as any).position || '일반 사용자'}
-                              </Badge>
+                              <div className="space-y-1">
+                                <div className="font-medium text-gray-900 dark:text-white">
+                                  {(user as any).position || '일반 구성원'}
+                                </div>
+                                <div className="text-xs text-blue-600 dark:text-blue-400">
+                                  {user.role === 'master_admin' ? '마스터 관리자' :
+                                   user.role === 'operation_admin' ? '운영 관리자' :
+                                   user.role === 'category_admin' ? '카테고리 관리자' :
+                                   user.role === 'agent_admin' ? '에이전트 관리자' :
+                                   user.role === 'qa_admin' ? 'QA 관리자' :
+                                   user.role === 'doc_admin' ? '문서 관리자' :
+                                   user.role === 'external' ? '외부 사용자' : '일반 사용자'}
+                                </div>
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {user.email || '-'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge 
+                                variant={
+                                  (user as any).status === 'active' ? 'default' :
+                                  (user as any).status === 'inactive' ? 'secondary' :
+                                  (user as any).status === 'locked' ? 'destructive' :
+                                  (user as any).status === 'pending' ? 'outline' : 'secondary'
+                                }
+                                className={
+                                  (user as any).status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                                  (user as any).status === 'inactive' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' :
+                                  (user as any).status === 'locked' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                                  (user as any).status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : 'bg-gray-100 text-gray-800'
+                                }
+                              >
+                                {(user as any).status === 'active' ? '활성' :
+                                 (user as any).status === 'inactive' ? '비활성' :
+                                 (user as any).status === 'locked' ? '잠금' :
+                                 (user as any).status === 'pending' ? '대기' : '활성'}
+                              </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}
