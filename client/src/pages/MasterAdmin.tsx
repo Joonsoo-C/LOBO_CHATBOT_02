@@ -217,6 +217,16 @@ export default function MasterAdmin() {
     }
   });
 
+  // 문서 목록 조회
+  const { data: documentList } = useQuery<any[]>({
+    queryKey: ['/api/admin/documents'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/documents');
+      if (!response.ok) throw new Error('Failed to fetch documents');
+      return response.json();
+    }
+  });
+
   // 검색 실행 함수
   const executeSearch = () => {
     setHasSearched(true);
@@ -582,6 +592,11 @@ export default function MasterAdmin() {
         toast({
           title: "업로드 완료",
           description: `${successCount}개 파일이 성공적으로 업로드되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
+        });
+        
+        // 문서 목록 새로고침
+        queryClient.invalidateQueries({
+          queryKey: ['/api/admin/documents']
         });
       }
 
@@ -2842,19 +2857,22 @@ export default function MasterAdmin() {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-sm">전체 문서</span>
-                    <span className="font-medium">1,234</span>
+                    <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">활성 문서</span>
-                    <span className="font-medium">1,180</span>
+                    <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">비활성 문서</span>
-                    <span className="font-medium">54</span>
+                    <span className="font-medium">0</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">총 용량</span>
-                    <span className="font-medium">2.3 GB</span>
+                    <span className="font-medium">{documentList?.reduce((total, doc) => {
+                      const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
+                      return total + sizeInMB;
+                    }, 0).toFixed(1) || '0'} MB</span>
                   </div>
                 </CardContent>
               </Card>
@@ -2888,18 +2906,18 @@ export default function MasterAdmin() {
                   <CardTitle className="text-lg">최근 업로드</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="text-sm">
-                    <div className="font-medium">2024학년도 수강신청 안내.pdf</div>
-                    <div className="text-gray-500">2시간 전</div>
-                  </div>
-                  <div className="text-sm">
-                    <div className="font-medium">졸업요건 변경 안내.docx</div>
-                    <div className="text-gray-500">5시간 전</div>
-                  </div>
-                  <div className="text-sm">
-                    <div className="font-medium">학과 교육과정.xlsx</div>
-                    <div className="text-gray-500">1일 전</div>
-                  </div>
+                  {documentList && documentList.length > 0 ? (
+                    documentList.slice(0, 3).map((doc, index) => (
+                      <div key={index} className="text-sm">
+                        <div className="font-medium">{doc.name}</div>
+                        <div className="text-gray-500">{doc.date}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-500">
+                      업로드된 문서가 없습니다.
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
