@@ -106,7 +106,7 @@ type AgentFormData = z.infer<typeof agentSchema>;
 
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
