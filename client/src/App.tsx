@@ -14,15 +14,6 @@ import Management from "@/pages/Management";
 import MasterAdmin from "@/pages/MasterAdmin";
 import TabletLayout from "@/components/TabletLayout";
 import NotFound from "@/pages/not-found";
-import SidebarLayout from "@/components/SidebarLayout";
-import Dashboard2 from "@/pages/Dashboard2";
-import UserManagement2 from "@/pages/UserManagement2";
-import AgentManagement2 from "@/pages/AgentManagement2";
-import QALogs2 from "@/pages/QALogs2";
-import TokenManagement2 from "@/pages/TokenManagement2";
-import CategoryManagement2 from "@/pages/CategoryManagement2";
-import DocumentManagement2 from "@/pages/DocumentManagement2";
-import SystemSettings2 from "@/pages/SystemSettings2";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -51,32 +42,6 @@ function Router() {
       ) : (
         <>
           <Route path="/master-admin" component={MasterAdmin} />
-          
-          {/* Sidebar-based duplicate pages with correct prefix */}
-          <Route path="/master-admin/dashboard2">
-            {() => <SidebarLayout><Dashboard2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/user-management2">
-            {() => <SidebarLayout><UserManagement2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/agent-management2">
-            {() => <SidebarLayout><AgentManagement2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/qa-logs2">
-            {() => <SidebarLayout><QALogs2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/token-management2">
-            {() => <SidebarLayout><TokenManagement2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/category-management2">
-            {() => <SidebarLayout><CategoryManagement2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/document-management2">
-            {() => <SidebarLayout><DocumentManagement2 /></SidebarLayout>}
-          </Route>
-          <Route path="/master-admin/system-settings2">
-            {() => <SidebarLayout><SystemSettings2 /></SidebarLayout>}
-          </Route>
           
           {isTablet ? (
             <>
