@@ -108,6 +108,34 @@ type AgentFormData = z.infer<typeof agentSchema>;
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
+  // Mobile viewport handling for address bar
+  useEffect(() => {
+    const handleMobileViewport = () => {
+      if (window.innerWidth <= 768) {
+        const header = document.querySelector('.mobile-safe-header');
+        const content = document.querySelector('.mobile-content-spacing');
+        
+        if (header && content) {
+          // Force header to stay below address bar
+          (header as HTMLElement).style.top = '60px';
+          (content as HTMLElement).style.paddingTop = '160px';
+        }
+      }
+    };
+
+    // Run immediately and on events
+    handleMobileViewport();
+    window.addEventListener('resize', handleMobileViewport);
+    window.addEventListener('orientationchange', handleMobileViewport);
+    window.addEventListener('scroll', handleMobileViewport);
+    
+    return () => {
+      window.removeEventListener('resize', handleMobileViewport);
+      window.removeEventListener('orientationchange', handleMobileViewport);
+      window.removeEventListener('scroll', handleMobileViewport);
+    };
+  }, []);
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);

@@ -44,16 +44,39 @@ body {
 /* Mobile-specific header positioning */
 @media (max-width: 768px) {
   .mobile-safe-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding-top: max(var(--safe-area-inset-top), 0px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    margin-top: 40px !important;
+    transform: none !important;
   }
   
   .mobile-content-spacing {
-    padding-top: calc(4rem + max(var(--safe-area-inset-top), 0px));
+    padding-top: 140px !important;
+    margin-top: 0 !important;
+  }
+
+  /* Aggressive mobile viewport handling */
+  html {
+    height: 100vh !important;
+    height: -webkit-fill-available !important;
+    overflow-x: hidden !important;
+  }
+  
+  body {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    position: relative !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Force proper spacing on mobile */
+  .min-h-screen {
+    min-height: calc(100vh + 40px) !important;
+    min-height: calc(-webkit-fill-available + 40px) !important;
   }
 }
 
