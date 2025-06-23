@@ -531,9 +531,9 @@ export default function MasterAdmin() {
     setSelectedDocumentFiles([]);
   };
 
-  // 문서 업로드 핸들러
+  // 문서 업로드 핸들러 (다중 파일 지원)
   const handleDocumentUpload = async () => {
-    if (!selectedDocumentFile) {
+    if (selectedDocumentFiles.length === 0) {
       toast({
         title: "파일을 선택해주세요",
         description: "업로드할 문서 파일을 먼저 선택해주세요.",
@@ -546,28 +546,54 @@ export default function MasterAdmin() {
     setDocumentUploadProgress(0);
 
     try {
-      const formData = new FormData();
-      formData.append('file', selectedDocumentFile);
-      formData.append('type', selectedDocumentType || 'manual');
-      formData.append('description', '관리자 업로드 문서');
+      let successCount = 0;
+      let errorCount = 0;
+      const totalFiles = selectedDocumentFiles.length;
 
-      const response = await fetch('/api/admin/documents/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      for (let i = 0; i < totalFiles; i++) {
+        const file = selectedDocumentFiles[i];
+        
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('type', selectedDocumentType || 'manual');
+          formData.append('description', '관리자 업로드 문서');
 
-      if (!response.ok) {
-        throw new Error('Upload failed');
+          const response = await fetch('/api/admin/documents/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Upload failed for ${file.name}`);
+          }
+
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          console.error(`파일 업로드 실패: ${file.name}`, error);
+        }
+
+        // 진행률 업데이트
+        setDocumentUploadProgress(((i + 1) / totalFiles) * 100);
       }
 
-      setDocumentUploadProgress(100);
+      if (successCount > 0) {
+        toast({
+          title: "업로드 완료",
+          description: `${successCount}개 파일이 성공적으로 업로드되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
+        });
+      }
+
+      if (errorCount > 0 && successCount === 0) {
+        toast({
+          title: "업로드 실패",
+          description: "모든 파일 업로드에 실패했습니다.",
+          variant: "destructive",
+        });
+      }
       
-      toast({
-        title: "업로드 완료",
-        description: "문서가 성공적으로 업로드되었습니다.",
-      });
-      
-      setSelectedDocumentFile(null);
+      setSelectedDocumentFiles([]);
       setIsDocumentUploadDialogOpen(false);
       
     } catch (error) {
@@ -602,21 +628,8 @@ export default function MasterAdmin() {
     e.preventDefault();
     e.stopPropagation();
     
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      
-      // 파일 크기 체크 (50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        toast({
-          title: "파일 크기 초과",
-          description: "파일 크기는 50MB를 초과할 수 없습니다.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // 파일 형식 체크
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
       const allowedTypes = [
         'application/pdf',
         'application/msword',
@@ -627,20 +640,40 @@ export default function MasterAdmin() {
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       ];
       
-      if (!allowedTypes.includes(file.type)) {
-        toast({
-          title: "지원하지 않는 파일 형식",
-          description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
-          variant: "destructive",
-        });
-        return;
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        // 파일 크기 체크 (50MB)
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과)`);
+          continue;
+        }
+        
+        // 파일 타입 체크
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
       }
       
-      setSelectedDocumentFile(file);
-      toast({
-        title: "파일 선택됨",
-        description: `${file.name} 파일이 선택되었습니다.`,
-      });
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedDocumentFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
     }
   };
 
@@ -3749,37 +3782,61 @@ export default function MasterAdmin() {
                 <p className="text-sm text-gray-500 mb-4">
                   PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
                 </p>
-                {selectedDocumentFile ? (
-                  <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
-                    <p className="text-sm font-medium text-green-600">선택된 파일: {selectedDocumentFile.name}</p>
-                    <p className="text-xs text-gray-500">{(selectedDocumentFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                    <div className="flex gap-2 justify-center">
-                      <Button 
-                        variant="outline" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDocumentFileSelect();
-                        }}
-                      >
-                        다른 파일 선택
-                      </Button>
-                      <Button variant="outline" onClick={() => setSelectedDocumentFile(null)}>
-                        제거
-                      </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDocumentFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedDocumentFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedDocumentFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleClearAllFiles}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedDocumentFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveFile(index)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDocumentFileSelect();
-                    }}
-                  >
-                    파일 선택
-                  </Button>
-                )}
-              </div>
+                </div>
+              )}
 
               <div>
                 <Label>문서 종류</Label>
@@ -3885,9 +3942,9 @@ export default function MasterAdmin() {
                 </Button>
                 <Button 
                   onClick={handleDocumentUpload}
-                  disabled={!selectedDocumentFile || isDocumentUploading}
+                  disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
                 >
-                  {isDocumentUploading ? "업로드 중..." : "업로드 시작"}
+                  {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작 (${selectedDocumentFiles.length}개 파일)`}
                 </Button>
               </div>
             </div>
