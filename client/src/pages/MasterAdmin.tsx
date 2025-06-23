@@ -5367,9 +5367,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <DialogTitle>사용자 상세 정보 편집</DialogTitle>
             </DialogHeader>
             
-            {selectedUser && <UserEditForm user={selectedUser} onSave={(userData) => {
-              updateUserMutation.mutate({ ...userData, id: selectedUser.id });
-            }} onCancel={() => setIsUserDetailDialogOpen(false)} isLoading={updateUserMutation.isPending} />}
+            {selectedUser && <UserEditForm 
+              user={selectedUser} 
+              onSave={(userData) => {
+                updateUserMutation.mutate({ ...userData, id: selectedUser.id });
+              }} 
+              onCancel={() => setIsUserDetailDialogOpen(false)} 
+              onDelete={(userId) => {
+                deleteUserMutation.mutate(userId);
+              }}
+              isLoading={updateUserMutation.isPending} 
+            />}
           </DialogContent>
         </Dialog>
       </main>
@@ -5397,6 +5405,8 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
   );
 
   const [userMemo, setUserMemo] = useState(user.userMemo || "");
+  const [accountStatus, setAccountStatus] = useState(user.status || "active");
+  const [userType, setUserType] = useState(user.userType || "student");
 
   // 조직 계층 구조 데이터
   const organizationHierarchy = {
@@ -5523,9 +5533,18 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
       organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
       agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
       userMemo,
-      status: user.status,
+      status: accountStatus,
+      userType: userType,
       role: user.role
     });
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('정말로 이 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      if (onDelete) {
+        onDelete(user.id);
+      }
+    }
   };
 
   return (
@@ -5760,37 +5779,66 @@ function UserEditForm({ user, onSave, onCancel, isLoading }: {
         />
       </div>
 
-      {/* 계정 정보 (읽기 전용) */}
-      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-        <h4 className="font-medium mb-3">계정 정보</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+      {/* 계정 설정 */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">계정 설정</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <span className="text-gray-600 dark:text-gray-400">사용자명:</span>
-            <span className="ml-2 font-mono">{user.username}</span>
+            <Label>사용자명</Label>
+            <Input value={user.username} disabled className="bg-gray-50" />
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">사용자 타입:</span>
-            <span className="ml-2">{user.userType === 'student' ? '학생' : '교직원'}</span>
+            <Label>사용자 타입</Label>
+            <Select value={userType} onValueChange={setUserType}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">학생</SelectItem>
+                <SelectItem value="faculty">교직원</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">계정 상태:</span>
-            <span className="ml-2">{user.status === 'active' ? '활성' : '비활성'}</span>
+            <Label>계정 상태</Label>
+            <Select value={accountStatus} onValueChange={setAccountStatus}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">활성</SelectItem>
+                <SelectItem value="inactive">비활성</SelectItem>
+                <SelectItem value="locked">잠김</SelectItem>
+                <SelectItem value="pending">대기</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div>
-            <span className="text-gray-600 dark:text-gray-400">가입일:</span>
-            <span className="ml-2">{user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</span>
-          </div>
+        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div>가입일: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
+          {user.lastLoginAt && <div>최근 로그인: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
         </div>
       </div>
 
       {/* 버튼 그룹 */}
-      <div className="flex justify-end space-x-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          취소
+      <div className="flex justify-between">
+        <Button 
+          type="button" 
+          variant="destructive" 
+          onClick={handleDelete}
+          disabled={isLoading || user.id === 'master_admin'}
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          계정 삭제
         </Button>
-        <Button onClick={handleSave} disabled={isLoading}>
-          {isLoading ? "저장 중..." : "저장"}
-        </Button>
+        <div className="space-x-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            취소
+          </Button>
+          <Button onClick={handleSave} disabled={isLoading}>
+            {isLoading ? "저장 중..." : "저장"}
+          </Button>
+        </div>
       </div>
     </div>
   );
