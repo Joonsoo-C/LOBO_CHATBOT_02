@@ -1005,7 +1005,7 @@ export default function MasterAdmin() {
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">전체/대학원/대학교</Label>
+                    <Label className="text-sm font-medium">상위 카테고리</Label>
                     <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
@@ -1019,7 +1019,7 @@ export default function MasterAdmin() {
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">단과대학</Label>
+                    <Label className="text-sm font-medium">하위 카테고리</Label>
                     <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
@@ -1034,7 +1034,7 @@ export default function MasterAdmin() {
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">학과</Label>
+                    <Label className="text-sm font-medium">세부 카테고리</Label>
                     <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
@@ -3024,7 +3024,7 @@ export default function MasterAdmin() {
                   <FormLabel className="text-base font-medium">소속 조직</FormLabel>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div>
-                      <Label className="text-sm text-gray-600">전체/대학원/대학교</Label>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
                       <Select defaultValue="전체">
                         <SelectTrigger className="h-11">
                           <SelectValue placeholder="전체" />
@@ -3037,7 +3037,7 @@ export default function MasterAdmin() {
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-gray-600">단과대학</Label>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
                       <Select defaultValue="전체">
                         <SelectTrigger className="h-11">
                           <SelectValue placeholder="전체" />
@@ -3052,7 +3052,7 @@ export default function MasterAdmin() {
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-gray-600">학과</Label>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
                       <Select defaultValue="전체">
                         <SelectTrigger className="h-11">
                           <SelectValue placeholder="전체" />
