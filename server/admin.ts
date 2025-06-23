@@ -191,9 +191,34 @@ export function setupAdminRoutes(app: Express) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
+      // Fix Korean filename encoding
+      let originalName = file.originalname;
+      try {
+        // Detect and fix corrupted Korean filenames
+        if (originalName && (originalName.includes('á') || originalName.includes('\\x'))) {
+          // Try multiple encoding conversion methods
+          try {
+            originalName = Buffer.from(originalName, 'latin1').toString('utf8');
+          } catch (e1) {
+            try {
+              originalName = decodeURIComponent(escape(originalName));
+            } catch (e2) {
+              // If all conversions fail, keep original
+              originalName = file.originalname;
+            }
+          }
+        }
+        
+        // Additional cleanup for any remaining encoding artifacts
+        originalName = originalName.replace(/[^\w\s\-._가-힣]/g, '');
+      } catch (e) {
+        // Keep original name if conversion fails
+        originalName = file.originalname;
+      }
+
       console.log("Admin document upload:", {
         filename: file.filename,
-        originalName: file.originalname,
+        originalName: originalName,
         mimetype: file.mimetype,
         size: file.size,
         type,
@@ -209,14 +234,14 @@ export function setupAdminRoutes(app: Express) {
         extractedText = await extractTextFromContent(fileContent, file.mimetype);
       } catch (contentError) {
         console.log("Could not extract text content, storing file info only");
-        extractedText = `Document: ${file.originalname}`;
+        extractedText = `Document: ${originalName}`;
       }
 
       // Create document record - using agentId: 1 for admin uploads (system-wide documents)
       const documentData = {
         agentId: 1, // Use first agent as default for admin uploads
         filename: file.filename,
-        originalName: file.originalname,
+        originalName: originalName,
         mimeType: file.mimetype,
         size: file.size,
         content: extractedText,

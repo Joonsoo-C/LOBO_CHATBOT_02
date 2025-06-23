@@ -6,6 +6,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Add support for Korean filenames in multipart forms
+app.use((req, res, next) => {
+  // Set proper charset for handling Korean filenames
+  req.setEncoding = req.setEncoding || (() => {});
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
