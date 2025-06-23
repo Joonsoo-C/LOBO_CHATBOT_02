@@ -51,6 +51,15 @@ export const users = pgTable("users", {
   detailCategory: varchar("detail_category"), // 세부 카테고리
   groups: jsonb("groups").default(JSON.stringify([])), // 추가 소속 그룹
   
+  // 사용 중인 에이전트 목록
+  usingAgents: jsonb("using_agents").default(JSON.stringify([])), // 사용자가 현재 사용 중인 에이전트 ID 목록
+  
+  // 카테고리 운영자 권한
+  managedCategories: jsonb("managed_categories").default(JSON.stringify([])), // 카테고리 운영자가 관리하는 카테고리명 목록
+  
+  // 에이전트/QA/문서 관리자 권한
+  managedAgents: jsonb("managed_agents").default(JSON.stringify([])), // 에이전트/QA/문서 관리자가 관리하는 에이전트명 목록
+  
   // 3. 역할 및 권한 정보
   role: varchar("role").notNull().default("user"), // 시스템 내 역할 (System Role)
   position: varchar("position"), // 조직 내 직책/역할 (Organization Role/Position)
@@ -352,6 +361,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
   groups: z.array(z.string()).optional(),
   usingAgents: z.array(z.string()).optional(),
   managedCategories: z.array(z.string()).optional(),
+  managedAgents: z.array(z.string()).optional(),
   
   // 역할 및 권한
   role: z.enum([
@@ -412,6 +422,7 @@ export const userEditSchema = z.object({
   position: z.string().optional(),
   usingAgents: z.array(z.string()).optional(),
   managedCategories: z.array(z.string()).optional(),
+  managedAgents: z.array(z.string()).optional(),
   role: z.enum([
     "master_admin", 
     "operation_admin", 

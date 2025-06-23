@@ -431,6 +431,7 @@ export default function MasterAdmin() {
       position: "",
       usingAgents: [],
       managedCategories: [],
+      managedAgents: [],
       role: "user",
       status: "active",
     },
@@ -448,6 +449,7 @@ export default function MasterAdmin() {
       position: (user as any).position || "",
       usingAgents: (user as any).usingAgents || [],
       managedCategories: (user as any).managedCategories || [],
+      managedAgents: (user as any).managedAgents || [],
       role: (user.role as any) || "user",
       status: (user as any).status || "active",
     });
@@ -466,6 +468,7 @@ export default function MasterAdmin() {
         position: data.position || null,
         usingAgents: data.usingAgents || [],
         managedCategories: data.managedCategories || [],
+        managedAgents: data.managedAgents || [],
         role: data.role,
         status: data.status,
       };

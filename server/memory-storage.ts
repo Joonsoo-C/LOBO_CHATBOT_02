@@ -371,6 +371,8 @@ export class MemoryStorage implements IStorage {
       detailCategory: agent.detailCategory || null,
       personaName: agent.personaName || null,
       rolePrompt: agent.rolePrompt || null,
+      uploadFormats: agent.uploadFormats || [],
+      uploadMethod: agent.uploadMethod || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
