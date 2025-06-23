@@ -878,8 +878,7 @@ async function initializeDefaultAgents() {
         backgroundColor: "bg-gray-600",
         managerId: "manager1", // Will be updated with actual manager ID
       },
-      {
-        name: "비즈니스 실험실",
+      {        name: "비즈니스 실험실",
         description: "비즈니스 관련 실험과 연구를 지원하는 에이전트입니다",
         category: "교수",
         icon: "fas fa-flask",
