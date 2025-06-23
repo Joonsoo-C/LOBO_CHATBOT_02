@@ -390,8 +390,20 @@ export default function MasterAdmin() {
 
   // 문서 정렬 함수
   const sortedDocuments = useMemo(() => {
+    // 파일 크기를 바이트로 변환하는 함수 (로컬 함수로 정의)
+    const parseSize = (sizeStr: string): number => {
+      const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+      const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
+      if (match) {
+        const value = parseFloat(match[1]);
+        const unit = match[2] as keyof typeof units;
+        return value * units[unit];
+      }
+      return 0;
+    };
+
     return [...sampleDocuments].sort((a, b) => {
-      let aValue, bValue;
+      let aValue: any, bValue: any;
       
       switch (documentSortField) {
         case 'name':
@@ -404,8 +416,8 @@ export default function MasterAdmin() {
           break;
         case 'size':
           // 크기를 바이트 단위로 변환하여 정렬
-          aValue = parseFileSize(a.size);
-          bValue = parseFileSize(b.size);
+          aValue = parseSize(a.size);
+          bValue = parseSize(b.size);
           break;
         case 'date':
           aValue = new Date(a.date);
@@ -441,19 +453,9 @@ export default function MasterAdmin() {
         }
       }
     });
-  }, [documentSortField, documentSortDirection]);
+  }, [sampleDocuments, documentSortField, documentSortDirection]);
 
-  // 파일 크기를 바이트로 변환하는 함수
-  const parseFileSize = (sizeStr: string): number => {
-    const units = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
-    const match = sizeStr.match(/^([\d.]+)\s*(KB|MB|GB)$/);
-    if (match) {
-      const value = parseFloat(match[1]);
-      const unit = match[2] as keyof typeof units;
-      return value * units[unit];
-    }
-    return 0;
-  };
+
 
   // 필터된 에이전트 목록
   const filteredAgents = useMemo(() => {
