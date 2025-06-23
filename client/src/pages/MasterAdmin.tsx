@@ -2839,8 +2839,8 @@ export default function MasterAdmin() {
                           key={index}
                           className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                           onClick={() => {
-                            setSelectedDocument(doc);
-                            setSelectedAgents(doc.agents);
+                            setDocumentDetailData(doc);
+                            setSelectedDocumentAgents(doc.agents);
                             setIsDocumentDetailOpen(true);
                           }}
                         >
@@ -2895,8 +2895,8 @@ export default function MasterAdmin() {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedDocument(doc);
-                                setSelectedAgents(doc.agents);
+                                setDocumentDetailData(doc);
+                                setSelectedDocumentAgents(doc.agents);
                                 setIsDocumentDetailOpen(true);
                               }}
                             >
