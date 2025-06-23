@@ -975,7 +975,10 @@ async function initializeDefaultAgents() {
     ];
 
     for (const agentData of defaultAgents) {
-      await storage.createAgent(agentData);
+      await storage.createAgent({
+        ...agentData,
+        creatorId: "master_admin"
+      });
     }
 
     console.log("Default agents initialized successfully");
