@@ -2723,9 +2723,6 @@ export default function MasterAdmin() {
                     문서 검색
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 카테고리 범위에서 전체 문서를 조회할 수 있습니다.
-                </p>
               </div>
               
               {/* 검색 결과 표시 */}
