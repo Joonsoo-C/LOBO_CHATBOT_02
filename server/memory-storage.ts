@@ -43,7 +43,24 @@ export class MemoryStorage implements IStorage {
       userType: "admin",
       createdAt: new Date(),
       updatedAt: new Date(),
-      profileImageUrl: null
+      profileImageUrl: null,
+      name: "Master Admin",
+      upperCategory: null,
+      lowerCategory: null,
+      status: "active",
+      role: "admin",
+      passwordHash: null,
+      lastLoginAt: null,
+      detailCategory: null,
+      groups: [],
+      position: null,
+      permissions: null,
+      lockedReason: null,
+      deactivatedAt: null,
+      loginFailCount: 0,
+      lastLoginIP: null,
+      authProvider: "email",
+      termsAcceptedAt: null
     };
     this.users.set("master_admin", masterAdmin);
 
@@ -58,7 +75,24 @@ export class MemoryStorage implements IStorage {
       userType: "student",
       createdAt: new Date(),
       updatedAt: new Date(),
-      profileImageUrl: null
+      profileImageUrl: null,
+      name: "김학생",
+      upperCategory: null,
+      lowerCategory: null,
+      status: "active",
+      role: "user",
+      passwordHash: null,
+      lastLoginAt: null,
+      detailCategory: null,
+      groups: [],
+      position: null,
+      permissions: null,
+      lockedReason: null,
+      deactivatedAt: null,
+      loginFailCount: 0,
+      lastLoginIP: null,
+      authProvider: "email",
+      termsAcceptedAt: null
     };
     this.users.set("2024001234", studentUser);
 
@@ -73,7 +107,24 @@ export class MemoryStorage implements IStorage {
       userType: "faculty",
       createdAt: new Date(),
       updatedAt: new Date(),
-      profileImageUrl: null
+      profileImageUrl: null,
+      name: "이교수",
+      upperCategory: null,
+      lowerCategory: null,
+      status: "active",
+      role: "user",
+      passwordHash: null,
+      lastLoginAt: null,
+      detailCategory: null,
+      groups: [],
+      position: null,
+      permissions: null,
+      lockedReason: null,
+      deactivatedAt: null,
+      loginFailCount: 0,
+      lastLoginIP: null,
+      authProvider: "email",
+      termsAcceptedAt: null
     };
     this.users.set("F2024001", facultyUser);
 
@@ -83,6 +134,7 @@ export class MemoryStorage implements IStorage {
         id: 1,
         name: "학교 안내",
         description: "학교 전반에 대한 정보를 제공합니다",
+        creatorId: "master_admin",
         category: "학교",
         icon: "School",
         backgroundColor: "blue",
@@ -96,12 +148,30 @@ export class MemoryStorage implements IStorage {
         managerId: "master_admin",
         organizationId: 1,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        upperCategory: "전체",
+        lowerCategory: "전체",
+        detailCategory: "전체",
+        status: "active",
+        maxInputLength: 2048,
+        maxResponseLength: 1024,
+        personaName: null,
+        rolePrompt: null,
+        uploadFormats: ["PDF", "DOCX", "TXT"],
+        uploadMethod: "dragdrop",
+        maxFileCount: 100,
+        maxFileSizeMB: 100,
+        documentManagerIds: [],
+        visibility: "private",
+        allowedGroups: [],
+        agentManagerIds: [],
+        agentEditorIds: []
       },
       {
         id: 2,
         name: "입학 상담",
         description: "입학 관련 정보와 상담을 제공합니다",
+        creatorId: "master_admin",
         category: "학교",
         icon: "GraduationCap",
         backgroundColor: "green",
@@ -115,7 +185,24 @@ export class MemoryStorage implements IStorage {
         managerId: "master_admin",
         organizationId: 1,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        upperCategory: "전체",
+        lowerCategory: "전체",
+        detailCategory: "전체",
+        status: "active",
+        maxInputLength: 2048,
+        maxResponseLength: 1024,
+        personaName: null,
+        rolePrompt: null,
+        uploadFormats: ["PDF", "DOCX", "TXT"],
+        uploadMethod: "dragdrop",
+        maxFileCount: 100,
+        maxFileSizeMB: 100,
+        documentManagerIds: [],
+        visibility: "private",
+        allowedGroups: [],
+        agentManagerIds: [],
+        agentEditorIds: []
       }
     ];
 
@@ -140,7 +227,24 @@ export class MemoryStorage implements IStorage {
       profileImageUrl: user.profileImageUrl || null,
       userType: user.userType || "student",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      name: user.name || null,
+      passwordHash: null,
+      lastLoginAt: null,
+      upperCategory: null,
+      lowerCategory: null,
+      detailCategory: null,
+      groups: [],
+      role: "user",
+      position: null,
+      permissions: null,
+      status: "active",
+      lockedReason: null,
+      deactivatedAt: null,
+      loginFailCount: 0,
+      lastLoginIP: null,
+      authProvider: "email",
+      termsAcceptedAt: null
     };
     this.users.set(user.id, newUser);
     return newUser;
@@ -156,7 +260,24 @@ export class MemoryStorage implements IStorage {
       profileImageUrl: user.profileImageUrl || null,
       userType: user.userType || "student",
       createdAt: existingUser?.createdAt || new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      name: user.name || null,
+      passwordHash: null,
+      lastLoginAt: null,
+      upperCategory: null,
+      lowerCategory: null,
+      detailCategory: null,
+      groups: [],
+      role: "user",
+      position: null,
+      permissions: null,
+      status: "active",
+      lockedReason: null,
+      deactivatedAt: null,
+      loginFailCount: 0,
+      lastLoginIP: null,
+      authProvider: "email",
+      termsAcceptedAt: null
     };
     this.users.set(user.id, newUser);
     return newUser;
