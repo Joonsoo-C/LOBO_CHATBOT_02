@@ -154,6 +154,7 @@ export default function AuthPage() {
   });
 
   const onLogin = (data: LoginData) => {
+    console.log("로그인 시도:", data);
     loginMutation.mutate(data);
   };
 
@@ -197,7 +198,10 @@ export default function AuthPage() {
             <CardTitle>{t('auth.login')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
+            <form onSubmit={(e) => {
+              console.log("폼 제출 이벤트");
+              loginForm.handleSubmit(onLogin)(e);
+            }} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="login-username">{t('auth.username')}</Label>
                 <Input
@@ -257,6 +261,11 @@ export default function AuthPage() {
                 type="submit"
                 className="w-full"
                 disabled={loginMutation.isPending}
+                onClick={(e) => {
+                  console.log("로그인 버튼 클릭됨");
+                  const formData = loginForm.getValues();
+                  console.log("현재 폼 데이터:", formData);
+                }}
               >
                 {loginMutation.isPending ? t('auth.loggingIn') : t('auth.loginButton')}
               </Button>
@@ -300,8 +309,14 @@ export default function AuthPage() {
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
+                    console.log("마스터 계정 버튼 클릭됨");
                     loginForm.setValue("username", "master_admin");
                     loginForm.setValue("password", "MasterAdmin2024!");
+                    // 자동으로 로그인 시도
+                    setTimeout(() => {
+                      const formData = { username: "master_admin", password: "MasterAdmin2024!" };
+                      onLogin(formData);
+                    }, 100);
                   }}
                 >
                   {t('auth.masterAccount')}
