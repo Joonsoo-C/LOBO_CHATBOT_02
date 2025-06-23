@@ -355,17 +355,7 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.users.set(id, updatedUser);
-    await this.savePersistentData();
     return updatedUser;
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
-  }
-
-  async deleteUser(id: string): Promise<void> {
-    this.users.delete(id);
-    await this.savePersistentData();
   }
 
   // Agent operations
@@ -403,8 +393,7 @@ export class MemoryStorage implements IStorage {
       uploadMethod: agent.uploadMethod || null,
       visibility: agent.visibility || null,
       maxFileCount: agent.maxFileCount || null,
-      maxFileSize: agent.maxFileSize || null,
-      allowedFileTypes: agent.allowedFileTypes || null,
+      maxFileSizeMB: agent.maxFileSizeMB || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -639,9 +628,76 @@ export class MemoryStorage implements IStorage {
 
     return result;
   }
+
   async getAllUsers(): Promise<User[]> {
     const allUsers = Array.from(this.users.values());
     console.log(`Memory storage getAllUsers: ${allUsers.length} users total`);
     return allUsers;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    this.users.delete(id);
+  }
+
+  private async savePersistentData(): Promise<void> {
+    try {
+      const data = {
+        users: Array.from(this.users.entries()),
+        agents: Array.from(this.agents.entries()),
+        conversations: Array.from(this.conversations.entries()),
+        messages: Array.from(this.messages.entries()),
+        documents: Array.from(this.documents.entries()).map(([id, doc]) => [
+          id,
+          {
+            ...doc,
+            createdAt: doc.createdAt.toISOString(),
+            updatedAt: doc.updatedAt.toISOString()
+          }
+        ]),
+        agentStats: Array.from(this.agentStats.entries()),
+        messageReactions: Array.from(this.messageReactions.entries()),
+        nextId: this.nextId
+      };
+
+      const dir = path.dirname('./data/memory-storage.json');
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync('./data/memory-storage.json', JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Failed to save persistent data:', error);
+    }
+  }
+
+  private loadPersistentData(): void {
+    try {
+      if (fs.existsSync('./data/memory-storage.json')) {
+        const data = JSON.parse(fs.readFileSync('./data/memory-storage.json', 'utf8'));
+        
+        this.users = new Map(data.users || []);
+        this.agents = new Map(data.agents || []);
+        this.conversations = new Map(data.conversations || []);
+        this.messages = new Map(data.messages || []);
+        
+        const documentsWithDates = (data.documents || []).map(([id, doc]: [number, any]) => [
+          id,
+          {
+            ...doc,
+            createdAt: new Date(doc.createdAt),
+            updatedAt: new Date(doc.updatedAt)
+          }
+        ]);
+        this.documents = new Map(documentsWithDates);
+        
+        this.agentStats = new Map(data.agentStats || []);
+        this.messageReactions = new Map(data.messageReactions || []);
+        this.nextId = data.nextId || 1;
+        
+        console.log(`Loaded ${this.documents.size} persisted documents`);
+      }
+    } catch (error) {
+      console.error('Failed to load persistent data:', error);
+    }
   }
 }
