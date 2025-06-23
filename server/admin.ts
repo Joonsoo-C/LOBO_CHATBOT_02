@@ -306,6 +306,14 @@ export function setupAdminRoutes(app: Express) {
       // Get all documents across all agents for admin view
       const documents = await storage.getAllDocuments();
       
+      console.log(`Admin documents retrieved: ${documents.length} documents found`);
+      console.log("Document details:", documents.map(doc => ({
+        id: doc.id,
+        originalName: doc.originalName,
+        agentId: doc.agentId,
+        createdAt: doc.createdAt
+      })));
+      
       // Format documents for admin display
       const formattedDocuments = documents.map((doc: any) => ({
         id: doc.id,
@@ -321,6 +329,7 @@ export function setupAdminRoutes(app: Express) {
         agentId: doc.agentId
       }));
 
+      console.log(`Formatted documents: ${formattedDocuments.length} documents`);
       res.json(formattedDocuments);
     } catch (error) {
       console.error("Error fetching admin documents:", error);
