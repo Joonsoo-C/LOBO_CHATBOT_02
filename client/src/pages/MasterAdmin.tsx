@@ -169,6 +169,24 @@ export default function MasterAdmin() {
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const usersPerPage = 20;
 
+  // Form 정의
+  const editAgentForm = useForm<AgentFormData>({
+    resolver: zodResolver(agentSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      category: "",
+      personality: "",
+      managerId: "",
+      organizationId: "",
+      upperCategory: "전체",
+      lowerCategory: "전체", 
+      detailCategoryField: "전체",
+      llmModel: "gpt-4o",
+      chatbotType: "general-llm",
+    },
+  });
+
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
     queryKey: ['/api/admin/stats'],
@@ -624,23 +642,7 @@ export default function MasterAdmin() {
     },
   });
 
-  // 에이전트 편집 폼
-  const editAgentForm = useForm<AgentFormData>({
-    resolver: zodResolver(agentSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      category: "",
-      personality: "",
-      managerId: "",
-      organizationId: "",
-      upperCategory: "전체",
-      lowerCategory: "전체", 
-      detailCategoryField: "전체",
-      llmModel: "gpt-4o",
-      chatbotType: "general-llm",
-    },
-  });
+
 
   // 에이전트 생성 뮤테이션
   const createAgentMutation = useMutation({
@@ -1716,3 +1718,90 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
               </div>
+
+              {/* 사용자 검색 결과 표시 */}
+              {hasSearched && (
+                <div className="mb-4">
+                  <p className="text-sm text-muted-foreground">
+                    검색 결과: {filteredUsers.length}명의 사용자가 발견되었습니다.
+                  </p>
+                </div>
+              )}
+
+              {/* 사용자 테이블 */}
+              {hasSearched && (
+                <div className="border rounded-lg">
+                  <div className="max-h-96 overflow-y-auto">
+                    <table className="w-full">
+                      <thead className="border-b bg-muted/50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-sm font-medium">사용자명</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium">이메일</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium">유형</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium">소속</th>
+                          <th className="px-4 py-3 text-left text-sm font-medium">가입일</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedUsers.map((user) => (
+                          <tr key={user.id} className="border-b hover:bg-muted/30 cursor-pointer">
+                            <td className="px-4 py-3">{user.firstName} {user.lastName}</td>
+                            <td className="px-4 py-3">{user.email}</td>
+                            <td className="px-4 py-3">
+                              <Badge variant={user.userType === 'faculty' ? 'default' : 'secondary'}>
+                                {user.userType === 'faculty' ? '교직원' : '학생'}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-3 text-sm">
+                              <div>{(user as any).upperCategory || '-'}</div>
+                              <div className="text-muted-foreground">{(user as any).lowerCategory || '-'}</div>
+                            </td>
+                            <td className="px-4 py-3 text-sm">
+                              {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* 페이지네이션 */}
+                  {totalUserPages > 1 && (
+                    <div className="flex items-center justify-between px-4 py-3 border-t">
+                      <div className="text-sm text-muted-foreground">
+                        총 {filteredUsers.length}명 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setUserCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={userCurrentPage === 1}
+                        >
+                          이전
+                        </Button>
+                        <span className="text-sm">
+                          {userCurrentPage} / {totalUserPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setUserCurrentPage(prev => Math.min(totalUserPages, prev + 1))}
+                          disabled={userCurrentPage === totalUserPages}
+                        >
+                          다음
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
+
+export default MasterAdmin;
