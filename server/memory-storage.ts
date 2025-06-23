@@ -357,13 +357,14 @@ export class MemoryStorage implements IStorage {
       status: agent.status || "active",
       maxInputLength: agent.maxInputLength || null,
       maxResponseLength: agent.maxResponseLength || null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
       llmModel: agent.llmModel || "gpt-4o",
       chatbotType: agent.chatbotType || "general-llm",
       speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
       personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
       prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+      upperCategory: agent.upperCategory || null,
+      lowerCategory: agent.lowerCategory || null,
+      detailCategory: agent.detailCategory || null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
