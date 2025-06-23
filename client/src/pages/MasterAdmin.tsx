@@ -123,6 +123,10 @@ export default function MasterAdmin() {
   const [hasDocumentSearched, setHasDocumentSearched] = useState(false);
   const [isDocumentUploadDialogOpen, setIsDocumentUploadDialogOpen] = useState(false);
   const [selectedDocumentCategory, setSelectedDocumentCategory] = useState('all');
+  const [isDocumentDetailDialogOpen, setIsDocumentDetailDialogOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [selectedDocumentType, setSelectedDocumentType] = useState('all');
+  const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -208,6 +212,26 @@ export default function MasterAdmin() {
     setSelectedDepartment('all');
     setUserSearchQuery('');
     setHasSearched(false);
+  };
+
+  // 문서 필터 초기화 함수
+  const resetDocumentFilters = () => {
+    setSelectedDocumentCategory('all');
+    setSelectedDocumentType('all');
+    setSelectedDocumentPeriod('all');
+    setDocumentSearchQuery('');
+    setHasDocumentSearched(false);
+  };
+
+  // 문서 상세 보기 열기
+  const openDocumentDetail = (document: any) => {
+    setSelectedDocument(document);
+    setIsDocumentDetailDialogOpen(true);
+  };
+
+  // 드롭박스 변경 시 자동 검색 실행
+  const handleDocumentFilterChange = () => {
+    setHasDocumentSearched(true);
   };
 
   // 에이전트 검색 함수
@@ -2651,8 +2675,11 @@ export default function MasterAdmin() {
               {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>문서 카테고리</Label>
-                  <Select value={selectedDocumentCategory} onValueChange={setSelectedDocumentCategory}>
+                  <Label>문서 종류</Label>
+                  <Select value={selectedDocumentCategory} onValueChange={(value) => {
+                    setSelectedDocumentCategory(value);
+                    handleDocumentFilterChange();
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
@@ -2668,7 +2695,10 @@ export default function MasterAdmin() {
                 </div>
                 <div>
                   <Label>파일 형식</Label>
-                  <Select>
+                  <Select value={selectedDocumentType} onValueChange={(value) => {
+                    setSelectedDocumentType(value);
+                    handleDocumentFilterChange();
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
@@ -2683,7 +2713,10 @@ export default function MasterAdmin() {
                 </div>
                 <div>
                   <Label>업로드 기간</Label>
-                  <Select>
+                  <Select value={selectedDocumentPeriod} onValueChange={(value) => {
+                    setSelectedDocumentPeriod(value);
+                    handleDocumentFilterChange();
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
@@ -2697,11 +2730,7 @@ export default function MasterAdmin() {
                   </Select>
                 </div>
                 <div className="flex items-end">
-                  <Button variant="outline" onClick={() => {
-                    setSelectedDocumentCategory('all');
-                    setDocumentSearchQuery('');
-                    setHasDocumentSearched(false);
-                  }}>
+                  <Button variant="outline" onClick={resetDocumentFilters}>
                     필터 초기화
                   </Button>
                 </div>
@@ -2763,7 +2792,17 @@ export default function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      <tr>
+                      <tr 
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                        onClick={() => openDocumentDetail({
+                          name: "2024학년도 수강신청 안내.pdf",
+                          type: "PDF",
+                          size: "2.1 MB",
+                          uploadDate: "2024.01.21",
+                          status: "활성",
+                          category: "정책 문서"
+                        })}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             2024학년도 수강신청 안내.pdf
@@ -2781,9 +2820,16 @@ export default function MasterAdmin() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
                           <div className="flex space-x-1">
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => openDocumentDetail({
+                              name: "2024학년도 수강신청 안내.pdf",
+                              type: "PDF",
+                              size: "2.1 MB",
+                              uploadDate: "2024.01.21",
+                              status: "활성",
+                              category: "정책 문서"
+                            })}>
                               <Eye className="w-4 h-4" />
                             </Button>
                             <Button variant="outline" size="sm">
@@ -2795,7 +2841,17 @@ export default function MasterAdmin() {
                           </div>
                         </td>
                       </tr>
-                      <tr>
+                      <tr 
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                        onClick={() => openDocumentDetail({
+                          name: "졸업요건 변경 안내.docx",
+                          type: "Word",
+                          size: "450 KB",
+                          uploadDate: "2024.01.20",
+                          status: "활성",
+                          category: "정책 문서"
+                        })}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             졸업요건 변경 안내.docx
@@ -2813,9 +2869,16 @@ export default function MasterAdmin() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
                           <div className="flex space-x-1">
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => openDocumentDetail({
+                              name: "졸업요건 변경 안내.docx",
+                              type: "Word",
+                              size: "450 KB",
+                              uploadDate: "2024.01.20",
+                              status: "활성",
+                              category: "정책 문서"
+                            })}>
                               <Eye className="w-4 h-4" />
                             </Button>
                             <Button variant="outline" size="sm">
@@ -3190,7 +3253,7 @@ export default function MasterAdmin() {
               </div>
 
               <div>
-                <Label>문서 카테고리</Label>
+                <Label>문서 종류</Label>
                 <Select>
                   <SelectTrigger>
                     <SelectValue placeholder="카테고리 선택" />
@@ -3291,6 +3354,161 @@ export default function MasterAdmin() {
           </DialogContent>
         </Dialog>
 
+        {/* 문서 상세 보기 다이얼로그 */}
+        <Dialog open={isDocumentDetailDialogOpen} onOpenChange={setIsDocumentDetailDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 연결 설정</DialogTitle>
+            </DialogHeader>
+            {selectedDocument && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">{selectedDocument.name}</h3>
+                      <p className="text-sm text-gray-500">{selectedDocument.size} • {selectedDocument.uploadDate}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 검색 */}
+                <div>
+                  <h4 className="text-base font-medium mb-4">에이전트 검색</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Select defaultValue="인문대학">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Select defaultValue="국문학과">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="국문학과">국문학과</SelectItem>
+                          <SelectItem value="영문학과">영문학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Select defaultValue="4학년">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="1학년">1학년</SelectItem>
+                          <SelectItem value="2학년">2학년</SelectItem>
+                          <SelectItem value="3학년">3학년</SelectItem>
+                          <SelectItem value="4학년">4학년</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 목록 */}
+                <div className="border rounded-lg">
+                  <div className="p-4 border-b bg-gray-50 dark:bg-gray-800">
+                    <h4 className="font-medium">국문학과</h4>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent1" className="rounded" />
+                      <label htmlFor="agent1" className="flex-1 cursor-pointer">
+                        <div className="font-medium">한국어문학과 도우미</div>
+                        <div className="text-sm text-gray-500">한국어문학과 관련 질문을 도와드립니다</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent2" className="rounded" defaultChecked />
+                      <label htmlFor="agent2" className="flex-1 cursor-pointer">
+                        <div className="font-medium">고전문학 해설 봇</div>
+                        <div className="text-sm text-gray-500">고전 문학 작품 해설 및 감상</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent3" className="rounded" />
+                      <label htmlFor="agent3" className="flex-1 cursor-pointer">
+                        <div className="font-medium">현대문학 분석 도우미</div>
+                        <div className="text-sm text-gray-500">현대 문학 작품 분석 및 비평</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent4" className="rounded" />
+                      <label htmlFor="agent4" className="flex-1 cursor-pointer">
+                        <div className="font-medium">창작 지도 멘토</div>
+                        <div className="text-sm text-gray-500">소설, 시 창작 지도 및 피드백</div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 연결 요약 */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연결 요약</h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    현재 3개의 에이전트에 연결되어 있습니다.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Badge variant="secondary">영문학과 도우미</Badge>
+                    <Badge variant="secondary">고전문학 해설 봇</Badge>
+                    <Badge variant="secondary">기술생활 가이드</Badge>
+                  </div>
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-between">
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      // 문서 삭제 로직
+                      toast({
+                        title: "문서 삭제",
+                        description: `${selectedDocument.name}이(가) 삭제되었습니다.`,
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={() => setIsDocumentDetailDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => {
+                      toast({
+                        title: "에이전트 연결 완료",
+                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}>
+                      에이전트 연결 저장
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {/* 문서 업로드 다이얼로그 */}
         <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
@@ -3310,7 +3528,7 @@ export default function MasterAdmin() {
               </div>
 
               <div>
-                <Label>문서 카테고리</Label>
+                <Label>문서 종류</Label>
                 <Select>
                   <SelectTrigger>
                     <SelectValue placeholder="문서 종류" />
