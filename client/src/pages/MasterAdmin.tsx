@@ -141,6 +141,8 @@ export default function MasterAdmin() {
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [documentSortField, setDocumentSortField] = useState<string>('name');
+  const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('asc');
   
   // 문서 업로드 관련 상태
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
@@ -273,6 +275,15 @@ export default function MasterAdmin() {
     } else {
       setAgentSortField(field);
       setAgentSortDirection('asc');
+    }
+  };
+
+  const handleDocumentSort = (field: string) => {
+    if (documentSortField === field) {
+      setDocumentSortDirection(documentSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setDocumentSortField(field);
+      setDocumentSortDirection('asc');
     }
   };
 
