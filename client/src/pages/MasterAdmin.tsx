@@ -256,7 +256,7 @@ export default function MasterAdmin() {
   });
 
   // 문서 목록 조회
-  const { data: documents, refetch: refetchDocuments } = useQuery<any[]>({
+  const { data: documents, isLoading: documentsLoading, refetch: refetchDocuments } = useQuery<any[]>({
     queryKey: ['/api/admin/documents'],
     queryFn: async () => {
       const response = await fetch('/api/admin/documents');
