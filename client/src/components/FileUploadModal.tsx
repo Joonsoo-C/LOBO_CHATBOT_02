@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { X, FileText, Download, Upload, Trash2 } from "lucide-react";
@@ -37,14 +36,14 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  
+
   // 카테고리 상태
   const [mainCategory, setMainCategory] = useState<string>("");
   const [subCategory, setSubCategory] = useState<string>("");
   const [detailCategory, setDetailCategory] = useState<string>("");
   const [selectedAgent, setSelectedAgent] = useState<string>("");
   const [documentDescription, setDocumentDescription] = useState<string>("");
-  
+
   // 업로드 옵션
   const [enableAIAnalysis, setEnableAIAnalysis] = useState<boolean>(false);
   const [enableKeywordExtraction, setEnableKeywordExtraction] = useState<boolean>(false);
@@ -135,7 +134,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     },
     onSuccess: (data) => {
       console.log(`Document upload notification sent to ${data.totalRecipients} users`);
-      
+
       // Invalidate conversation cache to refresh the conversation list
       queryClient.invalidateQueries({
         queryKey: ["/api/conversations"]
@@ -163,7 +162,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       formData.append("enableAIAnalysis", enableAIAnalysis.toString());
       formData.append("enableKeywordExtraction", enableKeywordExtraction.toString());
       formData.append("enableScopeRestriction", enableScopeRestriction.toString());
-      
+
       const response = await fetch(`/api/agents/${agent.id}/documents`, {
         method: "POST",
         body: formData,
@@ -190,12 +189,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       setEnableAIAnalysis(false);
       setEnableKeywordExtraction(false);
       setEnableScopeRestriction(false);
-      
+
       toast({
         title: "업로드 완료",
         description: "문서가 성공적으로 업로드되었습니다.",
       });
-      
+
       // Send completion message to chat
       if (onSuccess) {
         onSuccess(`${data.originalName || selectedFile?.name} 문서 업로드가 저장되었습니다.`);
@@ -266,17 +265,17 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       console.log("No files selected");
       return;
     }
-    
+
     const file = files[0];
     console.log("Selected file:", file.name, file.size, file.type);
-    
+
     if (validateFile(file)) {
       setSelectedFile(file);
       console.log("File successfully set");
     } else {
       console.log("File validation failed");
     }
-    
+
     // Reset the input value to allow selecting the same file again
     event.target.value = '';
   };
@@ -300,18 +299,18 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     event.stopPropagation();
     console.log("Drop event triggered");
     setIsDragOver(false);
-    
+
     const files = Array.from(event.dataTransfer.files);
     console.log("Dropped files:", files.length);
-    
+
     if (files.length === 0) {
       console.log("No files in drop event");
       return;
     }
-    
+
     const file = files[0];
     console.log("Processing dropped file:", file.name, file.size, file.type);
-    
+
     if (validateFile(file)) {
       setSelectedFile(file);
       console.log("Dropped file successfully set");
@@ -639,7 +638,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="flex items-end">
                 <Button
                   type="button"
