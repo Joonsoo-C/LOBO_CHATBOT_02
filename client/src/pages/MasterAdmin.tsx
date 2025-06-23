@@ -141,6 +141,12 @@ export default function MasterAdmin() {
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
+  
+  // 문서 업로드 관련 상태
+  const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
+  const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
+  const [isDocumentUploading, setIsDocumentUploading] = useState(false);
+  
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -445,6 +451,108 @@ export default function MasterAdmin() {
         icon: selectedIcon,
         backgroundColor: selectedBgColor
       });
+    }
+  };
+
+  // 문서 파일 선택 핸들러
+  const handleDocumentFileSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx';
+    input.multiple = false;
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // 파일 크기 체크 (50MB)
+        if (file.size > 50 * 1024 * 1024) {
+          toast({
+            title: "파일 크기 초과",
+            description: "파일 크기는 50MB를 초과할 수 없습니다.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // 파일 형식 체크
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/vnd.ms-powerpoint',
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+          toast({
+            title: "지원하지 않는 파일 형식",
+            description: "PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        setSelectedDocumentFile(file);
+        toast({
+          title: "파일 선택됨",
+          description: `${file.name} 파일이 선택되었습니다.`,
+        });
+      }
+    };
+    
+    input.click();
+  };
+
+  // 문서 업로드 핸들러
+  const handleDocumentUpload = async () => {
+    if (!selectedDocumentFile) {
+      toast({
+        title: "파일을 선택해주세요",
+        description: "업로드할 문서 파일을 먼저 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsDocumentUploading(true);
+    setDocumentUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedDocumentFile);
+      formData.append('type', selectedDocumentType || 'manual');
+      formData.append('description', '관리자 업로드 문서');
+
+      const response = await fetch('/api/admin/documents/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      setDocumentUploadProgress(100);
+      
+      toast({
+        title: "업로드 완료",
+        description: "문서가 성공적으로 업로드되었습니다.",
+      });
+      
+      setSelectedDocumentFile(null);
+      setIsDocumentUploadDialogOpen(false);
+      
+    } catch (error) {
+      toast({
+        title: "업로드 실패",
+        description: "문서 업로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDocumentUploading(false);
+      setDocumentUploadProgress(0);
     }
   };
 
@@ -3537,9 +3645,24 @@ export default function MasterAdmin() {
                 <p className="text-sm text-gray-500 mb-4">
                   PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
                 </p>
-                <Button variant="outline">
-                  파일 선택
-                </Button>
+                {selectedDocumentFile ? (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-green-600">선택된 파일: {selectedDocumentFile.name}</p>
+                    <p className="text-xs text-gray-500">{(selectedDocumentFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <div className="flex gap-2 justify-center">
+                      <Button variant="outline" onClick={handleDocumentFileSelect}>
+                        다른 파일 선택
+                      </Button>
+                      <Button variant="outline" onClick={() => setSelectedDocumentFile(null)}>
+                        제거
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button variant="outline" onClick={handleDocumentFileSelect}>
+                    파일 선택
+                  </Button>
+                )}
               </div>
 
               <div>
