@@ -1,0 +1,70 @@
+
+import { storage } from "./storage";
+import { allSampleUsers, userCategoryStats } from "./sample-users";
+
+export async function initializeSampleUsers() {
+  try {
+    console.log("Initializing 400 sample users...");
+    
+    // Check if users already exist to avoid duplicates
+    const existingUsers = await storage.getAllUsers?.() || [];
+    if (existingUsers.length >= 50) {
+      console.log("Sample users already exist, skipping initialization");
+      return;
+    }
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const userData of allSampleUsers) {
+      try {
+        await storage.createUser({
+          ...userData,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          profileImageUrl: null,
+          firstName: userData.name?.split('')[1] || '',
+          lastName: userData.name?.split('')[0] || userData.name,
+          lastLoginAt: null,
+          passwordHash: userData.password,
+          groups: [],
+          permissions: null,
+          lockedReason: null,
+          deactivatedAt: null,
+          loginFailCount: 0,
+          lastLoginIP: null,
+          authProvider: "email",
+          termsAcceptedAt: new Date()
+        });
+        successCount++;
+        if (successCount % 50 === 0) {
+          console.log(`✓ Created ${successCount} users so far...`);
+        }
+      } catch (error) {
+        errorCount++;
+        console.error(`✗ Failed to create user: ${userData.username}`, error);
+      }
+    }
+
+    console.log(`\nSample users initialization completed:`);
+    console.log(`✓ Successfully created: ${successCount} users`);
+    console.log(`✗ Failed to create: ${errorCount} users`);
+    
+    console.log(`\n📊 User Distribution by Category:`);
+    Object.entries(userCategoryStats.상위카테고리별).forEach(([category, count]) => {
+      console.log(`   ${category}: ${count}명`);
+    });
+    
+    console.log(`\n👥 User Types:`);
+    Object.entries(userCategoryStats.사용자유형별).forEach(([type, count]) => {
+      console.log(`   ${type}: ${count}명`);
+    });
+    
+    if (successCount > 0) {
+      console.log("\n🎉 Sample users are ready! You can now manage the diverse university community.");
+    }
+    
+  } catch (error) {
+    console.error("Error initializing sample users:", error);
+  }
+}
