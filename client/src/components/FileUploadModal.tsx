@@ -435,9 +435,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           {/* Category Selection */}
           <div className="mb-6">
             <h4 className="text-base font-medium text-foreground mb-4 korean-text">적용 범위</h4>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div>
-                <Label className="text-sm font-medium mb-2 block korean-text">전체/대학원/대학교</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">상위 카테고리</Label>
                 <Select value={mainCategory} onValueChange={(value) => { setMainCategory(value); resetCategories(); }}>
                   <SelectTrigger>
                     <SelectValue placeholder="전체" />
@@ -453,7 +453,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </div>
 
               <div>
-                <Label className="text-sm font-medium mb-2 block korean-text">단과대학</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">하위 카테고리</Label>
                 <Select value={subCategory} onValueChange={(value) => { setSubCategory(value); resetDetailCategory(); }} disabled={!mainCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="전체" />
@@ -469,7 +469,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </div>
 
               <div>
-                <Label className="text-sm font-medium mb-2 block korean-text">학과</Label>
+                <Label className="text-sm font-medium mb-2 block korean-text">세부 카테고리</Label>
                 <Select value={detailCategory} onValueChange={setDetailCategory} disabled={!subCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="전체" />
@@ -478,6 +478,22 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     {getDetailCategories(mainCategory, subCategory).map((category) => (
                       <SelectItem key={category.value} value={category.value}>
                         {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium mb-2 block korean-text">에이전트</Label>
+                <Select value={selectedAgent} onValueChange={setSelectedAgent}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="에이전트 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {agents.map((agent) => (
+                      <SelectItem key={agent.id.toString()} value={agent.id.toString()}>
+                        {agent.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

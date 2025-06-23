@@ -63,6 +63,10 @@ export const agents = pgTable("agents", {
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
   organizationId: integer("organization_id").references(() => organizations.id),
+  // Category fields
+  upperCategory: varchar("upper_category").default("전체"), // 상위 카테고리
+  lowerCategory: varchar("lower_category").default("전체"), // 하위 카테고리
+  detailCategory: varchar("detail_category").default("전체"), // 세부 카테고리
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
   chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
   // Persona fields
@@ -213,6 +217,9 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
   llmModel: z.string().optional(),
   chatbotType: z.string().optional(),
 });
