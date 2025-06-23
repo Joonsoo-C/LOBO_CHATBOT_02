@@ -8,7 +8,8 @@ export async function initializeSampleUsers() {
     
     // Check if users already exist to avoid duplicates
     const existingUsers = await storage.getAllUsers?.() || [];
-    if (existingUsers.length >= 50) {
+    console.log(`Current user count: ${existingUsers.length}`);
+    if (existingUsers.length >= 300) {
       console.log("Sample users already exist, skipping initialization");
       return;
     }

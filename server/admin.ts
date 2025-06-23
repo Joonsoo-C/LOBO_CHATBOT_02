@@ -27,7 +27,7 @@ const adminUpload = multer({
       'application/vnd.ms-powerpoint',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ];
-    
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -41,12 +41,12 @@ const requireMasterAdmin = (req: any, res: any, next: any) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  
+
   const user = req.user;
   if (user.username !== "master_admin" || user.userType !== "admin") {
     return res.status(403).json({ message: "Forbidden - Master admin access required" });
   }
-  
+
   next();
 };
 
@@ -56,7 +56,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const agents = await storage.getAllAgents();
       const conversations = await storage.getAllConversations();
-      
+
       const stats = {
         totalUsers: 15,
         activeUsers: 12,
@@ -78,13 +78,9 @@ export function setupAdminRoutes(app: Express) {
   // Users management
   app.get("/api/admin/users", requireMasterAdmin, async (req, res) => {
     try {
-      // For memory storage, return mock users data
-      const users = [
-        { id: 'student001', username: 'student001', firstName: '김', lastName: '학생', userType: 'student', email: 'student@robo.ac.kr' },
-        { id: 'student002', username: 'student002', firstName: '이', lastName: '대학생', userType: 'student', email: 'student2@robo.ac.kr' },
-        { id: 'prof001', username: 'prof001', firstName: '박', lastName: '교수', userType: 'faculty', email: 'prof@robo.ac.kr' },
-        { id: 'prof002', username: 'prof002', firstName: '최', lastName: '교수', userType: 'faculty', email: 'prof2@robo.ac.kr' }
-      ];
+      const users = await storage.getAllUsers();
+      console.log(`Admin users retrieved: ${users.length} users found`);
+      console.log('User details:', users.slice(0, 5).map(u => ({ id: u.id, name: u.name || `${u.firstName} ${u.lastName}`, upperCategory: u.upperCategory, lowerCategory: u.lowerCategory })));
       res.json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -96,7 +92,7 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
       const agents = await storage.getAllAgents();
-      
+
       // Format agents for admin display with additional stats
       const agentsWithStats = agents.map(agent => ({
         ...agent,
@@ -148,7 +144,7 @@ export function setupAdminRoutes(app: Express) {
   app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
       const { name, description, category, managerId, organizationId } = req.body;
-      
+
       const newAgent = await storage.createAgent({
         name,
         description,
@@ -172,7 +168,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const agentId = parseInt(req.params.id);
       const updateData = req.body;
-      
+
       const updatedAgent = await storage.updateAgent(agentId, updateData);
       res.json(updatedAgent);
     } catch (error) {
@@ -217,10 +213,10 @@ export function setupAdminRoutes(app: Express) {
               }
             }
           }
-          
+
           // Only clean up truly invalid characters, preserve Korean characters and common filename chars
           originalName = originalName.replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
-          
+
           // Ensure filename is not empty after cleanup
           if (!originalName.trim()) {
             const ext = file.mimetype.includes('pdf') ? '.pdf' :
@@ -247,7 +243,7 @@ export function setupAdminRoutes(app: Express) {
       // Read file content for processing
       let fileContent = '';
       let extractedText = '';
-      
+
       try {
         fileContent = fs.readFileSync(file.path, 'utf-8');
         extractedText = await extractTextFromContent(fileContent, file.mimetype);
@@ -286,7 +282,7 @@ export function setupAdminRoutes(app: Express) {
 
     } catch (error) {
       console.error("Error uploading admin document:", error);
-      
+
       // Clean up temporary file if it exists
       if (req.file) {
         try {
@@ -295,7 +291,7 @@ export function setupAdminRoutes(app: Express) {
           console.error("Error cleaning up file:", cleanupError);
         }
       }
-      
+
       res.status(500).json({ message: "Failed to upload document" });
     }
   });
@@ -305,7 +301,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       // Get all documents across all agents for admin view
       const documents = await storage.getAllDocuments();
-      
+
       console.log(`Admin documents retrieved: ${documents.length} documents found`);
       console.log("Document details:", documents.map(doc => ({
         id: doc.id,
@@ -313,7 +309,7 @@ export function setupAdminRoutes(app: Express) {
         agentId: doc.agentId,
         createdAt: doc.createdAt
       })));
-      
+
       // Format documents for admin display
       const formattedDocuments = documents.map((doc: any) => ({
         id: doc.id,

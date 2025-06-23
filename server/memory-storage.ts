@@ -24,7 +24,7 @@ export class MemoryStorage implements IStorage {
   private documents: Map<number, Document> = new Map();
   private agentStats: Map<number, AgentStats> = new Map();
   private messageReactions: Map<number, MessageReaction> = new Map();
-  
+
   private nextId = 1;
 
   constructor() {
@@ -248,7 +248,7 @@ export class MemoryStorage implements IStorage {
       const conversationMessages = Array.from(this.messages.values())
         .filter(msg => msg.conversationId === conv.id)
         .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
-      
+
       return {
         ...conv,
         agent: agent!,
@@ -271,7 +271,7 @@ export class MemoryStorage implements IStorage {
       const conversationMessages = Array.from(this.messages.values())
         .filter(msg => msg.conversationId === conv.id)
         .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
-      
+
       return {
         ...conv,
         agent: agent!,
@@ -384,7 +384,7 @@ export class MemoryStorage implements IStorage {
   async createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction> {
     // Delete existing reaction first
     await this.deleteMessageReaction(reaction.messageId, reaction.userId);
-    
+
     const id = this.nextId++;
     const newReaction: MessageReaction = {
       ...reaction,
@@ -408,11 +408,16 @@ export class MemoryStorage implements IStorage {
   async getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }> {
     const result: { [messageId: number]: MessageReaction | undefined } = {};
     const reactions = Array.from(this.messageReactions.values());
-    
+
     for (const messageId of messageIds) {
       result[messageId] = reactions.find(r => r.messageId === messageId);
     }
-    
+
     return result;
+  }
+  async getAllUsers(): Promise<User[]> {
+    const allUsers = Array.from(this.users.values());
+    console.log(`Memory storage getAllUsers: ${allUsers.length} users total`);
+    return allUsers;
   }
 }
