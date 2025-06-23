@@ -152,7 +152,7 @@ export function setupAdminRoutes(app: Express) {
       const newAgent = await storage.createAgent({
         name,
         description,
-        creatorId: req.user.id,
+        creatorId: req.user?.id || 'master_admin',
         category,
         icon: 'user',
         backgroundColor: '#3B82F6',
@@ -220,7 +220,7 @@ export function setupAdminRoutes(app: Express) {
         mimeType: file.mimetype,
         size: file.size,
         content: extractedText,
-        uploadedBy: req.user.id,
+        uploadedBy: req.user?.id || 'master_admin',
       };
 
       const document = await storage.createDocument(documentData);
@@ -263,7 +263,7 @@ export function setupAdminRoutes(app: Express) {
       const documents = await storage.getAllDocuments();
       
       // Format documents for admin display
-      const formattedDocuments = documents.map(doc => ({
+      const formattedDocuments = documents.map((doc: any) => ({
         id: doc.id,
         name: doc.originalName,
         filename: doc.filename,
@@ -273,7 +273,7 @@ export function setupAdminRoutes(app: Express) {
               doc.mimeType.includes('excel') ? 'Excel' :
               doc.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document',
         uploader: doc.uploadedBy,
-        date: new Date(doc.createdAt).toLocaleDateString('ko-KR'),
+        date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
         agentId: doc.agentId
       }));
 
