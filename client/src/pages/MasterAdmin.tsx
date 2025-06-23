@@ -1275,13 +1275,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   const handleDocumentDownload = async (document: any) => {
     try {
       const response = await fetch(`/api/admin/documents/${document.id}/download`);
-      if (!response.ok) throw new Error('Download failed');
+      if (!response.ok) throw new Error('다운로드 실패');
       
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = document.name || `document_${document.id}`;
+      link.download = document.name || `문서_${document.id}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1960,6 +1960,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 검색 결과 테이블 */}
             <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>에이전트 목록</CardTitle>
+                {hasSearched && sortedAgents && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {sortedAgents.length}개 에이전트 표시
+                  </div>
+                )}
+              </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -2267,6 +2275,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>전체 에이전트 목록</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {sortedAgents?.length || 0}개 에이전트 표시
+                </div>
+              </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -2584,8 +2598,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 질문/응답 로그 테이블 */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>최근 질문/응답 로그</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 1,247개 중 4개 표시
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -3238,6 +3255,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>조직 목록</CardTitle>
+                {hasSearched && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 12개 조직 표시
+                  </div>
+                )}
+              </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -3629,8 +3654,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>문서 목록</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {documentList?.length || 0}개 문서 표시
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
