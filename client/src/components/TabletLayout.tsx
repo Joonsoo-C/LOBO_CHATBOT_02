@@ -579,16 +579,10 @@ export default function TabletLayout() {
                             }}
                           />
                         ) : (
-                          (() => {
-                            const IconComponent = iconMap[agent.icon] || User;
-                            return <IconComponent className="text-white w-6 h-6" />;
-                          })()
+                          <User className="text-white w-6 h-6" />
                         )}
                         {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                          (() => {
-                            const IconComponent = iconMap[agent.icon] || User;
-                            return <IconComponent className="text-white w-6 h-6 hidden" />;
-                          })()
+                          <User className="text-white w-6 h-6 hidden" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
