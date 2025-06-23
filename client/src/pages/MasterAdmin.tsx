@@ -3743,7 +3743,7 @@ export default function MasterAdmin() {
                         variant="outline" 
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDocumentFileSelect(e);
+                          handleDocumentFileSelect();
                         }}
                       >
                         다른 파일 선택
@@ -3758,7 +3758,7 @@ export default function MasterAdmin() {
                     variant="outline" 
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDocumentFileSelect(e);
+                      handleDocumentFileSelect();
                     }}
                   >
                     파일 선택
