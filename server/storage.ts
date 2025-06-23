@@ -365,6 +365,6 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Temporarily use memory storage due to database endpoint issue
+// Use memory storage with enhanced persistence
 console.log('Using memory storage due to database connection issue');
 export const storage = new MemoryStorage();
