@@ -41,42 +41,83 @@ body {
   padding-right: var(--safe-area-inset-right);
 }
 
-/* Mobile-specific header positioning */
-@media (max-width: 768px) {
-  .mobile-safe-header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    margin-top: 40px !important;
-    transform: none !important;
-  }
-  
-  .mobile-content-spacing {
-    padding-top: 140px !important;
-    margin-top: 0 !important;
-  }
-
-  /* Aggressive mobile viewport handling */
+/* Mobile-specific header positioning - nuclear solution */
+@media screen and (max-width: 768px) {
+  /* Root-level mobile viewport handling */
   html {
-    height: 100vh !important;
-    height: -webkit-fill-available !important;
-    overflow-x: hidden !important;
+    height: 100vh;
+    height: -webkit-fill-available;
+    height: 100dvh;
+    overflow-x: hidden;
   }
   
   body {
-    min-height: 100vh !important;
-    min-height: -webkit-fill-available !important;
-    position: relative !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+    position: relative;
+    padding-top: 0;
+    margin-top: 0;
   }
 
-  /* Force proper spacing on mobile */
+  /* Master admin container adjustments */
   .min-h-screen {
-    min-height: calc(100vh + 40px) !important;
-    min-height: calc(-webkit-fill-available + 40px) !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    min-height: 100dvh !important;
+    position: relative !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Extreme mobile header positioning */
+  .mobile-safe-header {
+    position: fixed !important;
+    top: 15vh !important; /* Use viewport height instead of pixels */
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99999 !important;
+    width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    background: white !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+  
+  /* Extreme content spacing */
+  .mobile-content-spacing {
+    margin-top: 30vh !important; /* Push content way down */
+    padding-top: 0 !important;
+    min-height: 70vh !important;
+  }
+
+  /* Force all nested elements to respect mobile layout */
+  .mobile-safe-header * {
+    position: relative !important;
+    z-index: inherit !important;
+  }
+
+  /* iOS Safari extreme fixes */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-safe-header {
+      top: 20vh !important;
+    }
+    
+    .mobile-content-spacing {
+      margin-top: 35vh !important;
+    }
+  }
+
+  /* Chrome mobile extreme fixes */
+  @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: .001dpcm) {
+    .mobile-safe-header {
+      top: 18vh !important;
+    }
+    
+    .mobile-content-spacing {
+      margin-top: 32vh !important;
+    }
   }
 }
 

@@ -116,23 +116,40 @@ export default function MasterAdmin() {
         const content = document.querySelector('.mobile-content-spacing');
         
         if (header && content) {
-          // Force header to stay below address bar
-          (header as HTMLElement).style.top = '60px';
-          (content as HTMLElement).style.paddingTop = '160px';
+          // Detect iOS Safari for additional offset
+          const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+          const headerOffset = isIOSSafari ? '120px' : '100px';
+          const contentOffset = isIOSSafari ? '220px' : '200px';
+          
+          // Force header positioning with device-specific offsets
+          (header as HTMLElement).style.top = headerOffset;
+          (content as HTMLElement).style.paddingTop = contentOffset;
+          
+          // Additional viewport meta tag adjustment
+          const viewport = document.querySelector('meta[name=viewport]');
+          if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover, minimal-ui');
+          }
         }
       }
     };
 
-    // Run immediately and on events
+    // Run immediately and on multiple events
     handleMobileViewport();
     window.addEventListener('resize', handleMobileViewport);
     window.addEventListener('orientationchange', handleMobileViewport);
     window.addEventListener('scroll', handleMobileViewport);
+    window.addEventListener('load', handleMobileViewport);
+    
+    // Additional timeout for delayed execution
+    setTimeout(handleMobileViewport, 100);
+    setTimeout(handleMobileViewport, 500);
     
     return () => {
       window.removeEventListener('resize', handleMobileViewport);
       window.removeEventListener('orientationchange', handleMobileViewport);
       window.removeEventListener('scroll', handleMobileViewport);
+      window.removeEventListener('load', handleMobileViewport);
     };
   }, []);
 
