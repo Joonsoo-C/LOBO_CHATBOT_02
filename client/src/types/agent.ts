@@ -3,9 +3,14 @@ export interface Agent {
   name: string;
   description: string;
   category: "학교" | "교수" | "학생" | "그룹" | "기능형";
-  mainCategory?: string;  // 상위 카테고리 (대학교/대학원/연구소/행정)
-  subCategory?: string;   // 하위 카테고리 (단과대학 등)
-  detailCategory?: string; // 세부 카테고리 (학과 등)
+  mainCategory?: string;    // 상위 카테고리 (대학교/대학원/연구소/행정)
+  subCategory?: string;     // 하위 카테고리 (단과대학 등)
+  detailCategory?: string;  // 세부 카테고리 (학과 등)
+  llmModel?: string;        // LLM 모델 (gpt-4o, gpt-4o-mini 등)
+  chatbotType?: string;     // 챗봇 타입 (strict-doc, doc-fallback-llm, general-llm)
+  speakingStyle?: string;   // 말투 설정
+  personalityTraits?: string; // 성격 특성
+  prohibitedWordResponse?: string; // 금지어 응답
   icon: string;
   backgroundColor: string;
   isCustomIcon?: boolean;

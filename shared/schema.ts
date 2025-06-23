@@ -54,19 +54,15 @@ export const agents = pgTable("agents", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(),
-  mainCategory: text("main_category"), // 상위 카테고리
-  subCategory: text("sub_category"),   // 하위 카테고리
-  detailCategory: text("detail_category"), // 세부 카테고리
+  mainCategory: text("main_category"), // 상위 카테고리 (대학교/대학원/연구소/행정)
+  subCategory: text("sub_category"),   // 하위 카테고리 (단과대학 등)
+  detailCategory: text("detail_category"), // 세부 카테고리 (학과 등)
   icon: text("icon").notNull(),
   backgroundColor: text("background_color").notNull(),
   isCustomIcon: boolean("is_custom_icon").default(false),
   isActive: boolean("is_active").default(true),
   managerId: varchar("manager_id").references(() => users.id),
   organizationId: integer("organization_id").references(() => organizations.id),
-  // Category fields
-  upperCategory: varchar("upper_category").default("전체"), // 상위 카테고리
-  lowerCategory: varchar("lower_category").default("전체"), // 하위 카테고리
-  detailCategoryField: varchar("detail_category").default("전체"), // 세부 카테고리
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // OpenAI model
   chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // strict-doc, doc-fallback-llm, general-llm
   // Persona fields
@@ -217,9 +213,9 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
-  upperCategory: z.string().optional(),
-  lowerCategory: z.string().optional(),
-  detailCategoryField: z.string().optional(),
+  mainCategory: z.string().optional(),
+  subCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
   llmModel: z.string().optional(),
   chatbotType: z.string().optional(),
 });
