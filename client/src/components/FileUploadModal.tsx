@@ -47,7 +47,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   // 업로드 옵션
   const [enableAIAnalysis, setEnableAIAnalysis] = useState<boolean>(false);
   const [enableKeywordExtraction, setEnableKeywordExtraction] = useState<boolean>(false);
-  const [enableScopeRestriction, setEnableeScopeRestriction] = useState<boolean>(false);
+  const [enableScopeRestriction, setEnableScopeRestriction] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -189,7 +189,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       setDocumentDescription("");
       setEnableAIAnalysis(false);
       setEnableKeywordExtraction(false);
-      setEnableeScopeRestriction(false);
+      setEnableScopeRestriction(false);
       
       toast({
         title: "업로드 완료",
@@ -441,7 +441,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Label className="text-sm font-medium mb-2 block">상위 카테고리</Label>
                 <Select value={mainCategory} onValueChange={(value) => { setMainCategory(value); resetCategories(); }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="카테고리 선택" />
+                    <SelectValue placeholder="선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
                     {mainCategories.map((category) => (
@@ -457,7 +457,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Label className="text-sm font-medium mb-2 block">하위 카테고리</Label>
                 <Select value={subCategory} onValueChange={(value) => { setSubCategory(value); resetDetailCategory(); }} disabled={!mainCategory}>
                   <SelectTrigger>
-                    <SelectValue placeholder="전체" />
+                    <SelectValue placeholder="선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
                     {getSubCategories(mainCategory).map((category) => (
@@ -473,7 +473,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Label className="text-sm font-medium mb-2 block">세부 카테고리</Label>
                 <Select value={detailCategory} onValueChange={setDetailCategory} disabled={!subCategory}>
                   <SelectTrigger>
-                    <SelectValue placeholder="전체" />
+                    <SelectValue placeholder="선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
                     {getDetailCategories(mainCategory, subCategory).map((category) => (
@@ -489,54 +489,19 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
           {/* Agent Selection */}
           <div className="mb-6">
-            <Label className="text-sm font-medium mb-2 block">적용 범위</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label className="text-sm text-gray-600">전체/대학원/대학교</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
-                    <SelectItem value="graduate">대학원</SelectItem>
-                    <SelectItem value="undergraduate">대학교</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-600">단과대학</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
-                    <SelectItem value="engineering">공과대학</SelectItem>
-                    <SelectItem value="humanities">인문대학</SelectItem>
-                    <SelectItem value="sciences">이과대학</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-600">학과</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
-                    <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                    <SelectItem value="mechanical">기계공학과</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button variant="outline" className="w-full korean-text">
-                적용
-              </Button>
-            </div>
+            <Label className="text-sm font-medium mb-2 block">에이전트 선택</Label>
+            <Select value={selectedAgent} onValueChange={setSelectedAgent}>
+              <SelectTrigger>
+                <SelectValue placeholder="적용할 에이전트를 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {agents.map((agentOption) => (
+                  <SelectItem key={agentOption.id} value={agentOption.id.toString()}>
+                    {agentOption.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Document Description */}
@@ -575,7 +540,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Checkbox
                   id="scope-restriction"
                   checked={enableScopeRestriction}
-                  onCheckedChange={setEnableeScopeRestriction}
+                  onCheckedChange={setEnableScopeRestriction}
                 />
                 <Label htmlFor="scope-restriction" className="text-sm korean-text">해당 범위 사용자에게만 업로드 발송</Label>
               </div>
@@ -593,7 +558,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               className="flex-1 korean-text"
             >
               <Upload className="w-4 h-4 mr-2" />
-              {uploadMutation.isPending ? "업로드 시작" : "업로드 시작"}
+              {uploadMutation.isPending ? "업로드 중..." : "업로드 시작"}
             </Button>
           </div>
 
