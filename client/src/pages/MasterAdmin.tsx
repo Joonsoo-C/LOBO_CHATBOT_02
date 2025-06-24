@@ -5919,10 +5919,10 @@ function NewCategoryDialog({
             </Select>
           </div>
 
-          {/* 상위 카테고리일 때: 상위 카테고리 이름만 */}
+          {/* 상위 카테고리일 때: 카테고리 이름만 */}
           {categoryLevel === "upper" && (
             <div className="space-y-2">
-              <Label>상위 카테고리 이름 *</Label>
+              <Label>카테고리이름 *</Label>
               <Input 
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
@@ -5931,7 +5931,7 @@ function NewCategoryDialog({
             </div>
           )}
 
-          {/* 하위 카테고리일 때: 상위 선택 + 하위 이름 */}
+          {/* 하위 카테고리일 때: 상위 선택 + 카테고리 이름 */}
           {categoryLevel === "lower" && (
             <>
               <div className="space-y-2">
@@ -5948,7 +5948,7 @@ function NewCategoryDialog({
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>하위 카테고리 이름 *</Label>
+                <Label>카테고리이름 *</Label>
                 <Input 
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
@@ -5958,7 +5958,7 @@ function NewCategoryDialog({
             </>
           )}
 
-          {/* 세부 카테고리일 때: 상위 선택 + 하위 선택 + 세부 이름 */}
+          {/* 세부 카테고리일 때: 상위 선택 + 하위 선택 + 카테고리 이름 */}
           {categoryLevel === "detail" && (
             <>
               <div className="space-y-2">
@@ -5991,7 +5991,7 @@ function NewCategoryDialog({
               )}
               {selectedLowerCategory && (
                 <div className="space-y-2">
-                  <Label>세부 카테고리 이름 *</Label>
+                  <Label>카테고리이름 *</Label>
                   <Input 
                     value={categoryName}
                     onChange={(e) => setCategoryName(e.target.value)}
