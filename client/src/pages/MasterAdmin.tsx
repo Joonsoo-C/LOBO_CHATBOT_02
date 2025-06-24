@@ -1615,6 +1615,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               시스템 설정
             </TabsTrigger>
           </TabsList>
+        </div>
 
           {/* 대시보드 */}
           <TabsContent value="dashboard" className="space-y-6">
@@ -4448,7 +4449,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
           </TabsContent>
-        </Tabs>
+          </Tabs>
 
         {/* 에이전트 편집 다이얼로그 */}
         <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
