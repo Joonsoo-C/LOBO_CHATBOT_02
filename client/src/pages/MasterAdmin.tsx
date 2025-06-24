@@ -317,10 +317,24 @@ export default function MasterAdmin() {
           (user as any).detailCategory === selectedDepartment
         );
       }
+      
+      // 상태 필터링
+      if (selectedDocumentType !== 'all') {
+        filtered = filtered.filter(user => 
+          (user as any).status === selectedDocumentType
+        );
+      }
+      
+      // 시스템 역할 필터링
+      if (selectedDocumentPeriod !== 'all') {
+        filtered = filtered.filter(user => 
+          user.role === selectedDocumentPeriod
+        );
+      }
     }
     
     return filtered;
-  }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+  }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
 
   // 페이지네이션된 사용자 목록
   const paginatedUsers = useMemo(() => {
@@ -396,6 +410,8 @@ export default function MasterAdmin() {
     setSelectedUniversity('all');
     setSelectedCollege('all');
     setSelectedDepartment('all');
+    setSelectedDocumentType('all'); // 상태 필터 초기화
+    setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setUserSearchQuery('');
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
