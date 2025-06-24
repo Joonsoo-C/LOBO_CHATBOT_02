@@ -14,6 +14,7 @@ import {
   type InsertMessageReaction,
 } from "@shared/schema";
 import { IStorage } from "./storage";
+import { cache } from "./cache";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -35,6 +36,35 @@ export class MemoryStorage implements IStorage {
     this.ensurePersistenceDir();
     this.loadPersistedDocuments();
     this.initializeDefaultData();
+    
+    // Optimize garbage collection
+    this.setupPeriodicCleanup();
+  }
+  
+  private setupPeriodicCleanup() {
+    // Clean up old conversations and messages every 30 minutes
+    setInterval(() => {
+      this.cleanupOldData();
+    }, 30 * 60 * 1000);
+  }
+  
+  private cleanupOldData() {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    
+    // Remove old conversations without recent activity
+    for (const [id, conversation] of this.conversations.entries()) {
+      if (conversation.lastMessageAt && conversation.lastMessageAt < thirtyDaysAgo) {
+        this.conversations.delete(id);
+      }
+    }
+    
+    // Remove orphaned messages
+    const validConversationIds = new Set(this.conversations.keys());
+    for (const [id, message] of this.messages.entries()) {
+      if (!validConversationIds.has(message.conversationId)) {
+        this.messages.delete(id);
+      }
+    }
   }
 
   private ensurePersistenceDir() {
@@ -360,7 +390,13 @@ export class MemoryStorage implements IStorage {
 
   // Agent operations
   async getAllAgents(): Promise<Agent[]> {
-    return Array.from(this.agents.values());
+    const cacheKey = 'all_agents';
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    
+    const agents = Array.from(this.agents.values());
+    cache.set(cacheKey, agents, 2 * 60 * 1000); // Cache for 2 minutes
+    return agents;
   }
 
   async getAgent(id: number): Promise<Agent | undefined> {

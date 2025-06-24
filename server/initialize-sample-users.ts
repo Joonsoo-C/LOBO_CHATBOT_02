@@ -4,13 +4,13 @@ import { allSampleUsers, userCategoryStats } from "./sample-users";
 
 export async function initializeSampleUsers() {
   try {
-    console.log("Initializing 400 sample users...");
-    
     // Check if users already exist to avoid duplicates
     const existingUsers = await storage.getAllUsers?.() || [];
-    console.log(`Current user count: ${existingUsers.length}`);
-    if (existingUsers.length >= 300) {
-      console.log("Sample users already exist, updating roles for senior faculty...");
+    if (existingUsers.length >= 50) {
+      return; // Silent skip to reduce initialization time
+    }
+    
+    console.log("Initializing sample users...");
       // Update existing users' roles based on position
       for (const user of existingUsers) {
         if (user.position === "교수" || user.position === "학과장" || user.position === "연구소장") {
@@ -31,23 +31,29 @@ export async function initializeSampleUsers() {
     let successCount = 0;
     let errorCount = 0;
 
-    for (const userData of allSampleUsers) {
-      try {
-        await storage.createUser({
-          ...userData,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          profileImageUrl: null,
-          firstName: userData.name?.split('')[1] || '',
-          lastName: userData.name?.split('')[0] || userData.name,
-          lastLoginAt: null,
-          passwordHash: userData.password,
-          groups: [],
-          usingAgents: Math.random() > 0.5 ? [`${Math.floor(Math.random() * 50) + 1}`] : [],
-          managedCategories: [],
-          managedAgents: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
-            ? [`에이전트${Math.floor(Math.random() * 10) + 1}`] : [],
-          organizationAffiliations: [{
+    // Create users in batches for better performance
+    const batchSize = 20;
+    const limitedUsers = allSampleUsers.slice(0, 50); // Reduce to 50 users for faster startup
+    
+    for (let i = 0; i < limitedUsers.length; i += batchSize) {
+      const batch = limitedUsers.slice(i, i + batchSize);
+      await Promise.all(batch.map(async userData => {
+          try {
+            await storage.createUser({
+              ...userData,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              profileImageUrl: null,
+              firstName: userData.name?.split('')[1] || '',
+              lastName: userData.name?.split('')[0] || userData.name,
+              lastLoginAt: null,
+              passwordHash: userData.password,
+              groups: [],
+              usingAgents: Math.random() > 0.5 ? [`${Math.floor(Math.random() * 5) + 1}`] : [],
+              managedCategories: [],
+              managedAgents: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
+                ? [`에이전트${Math.floor(Math.random() * 5) + 1}`] : [],
+              organizationAffiliations: [{
             upperCategory: userData.upperCategory || "대학본부",
             lowerCategory: userData.lowerCategory || "총장실",
             detailCategory: userData.detailCategory || "기획팀",

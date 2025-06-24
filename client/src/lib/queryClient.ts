@@ -49,11 +49,12 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: false,
+      staleTime: 10 * 60 * 1000, // Extended to 10 minutes for better caching
+      gcTime: 15 * 60 * 1000, // Cache for 15 minutes
+      retry: 1, // Single retry on failure
     },
     mutations: {
-      retry: false,
+      retry: 1,
     },
   },
 });

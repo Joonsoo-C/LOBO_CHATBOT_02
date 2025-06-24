@@ -4,14 +4,13 @@ import { sampleAgents } from "./sample-agents";
 
 export async function initializeSampleAgents() {
   try {
-    console.log("Initializing 50 sample agents...");
-    
     // Check if agents already exist to avoid duplicates
     const existingAgents = await storage.getAllAgents();
-    if (existingAgents.length >= 50) {
-      console.log("Sample agents already exist, skipping initialization");
-      return;
+    if (existingAgents.length >= 5) {
+      return; // Silent skip to reduce console noise
     }
+    
+    console.log("Initializing sample agents...");
 
     let successCount = 0;
     let errorCount = 0;
