@@ -576,16 +576,6 @@ export class MemoryStorage implements IStorage {
     }
 
     return newMessage;
-    const conversation = this.conversations.get(message.conversationId);
-    if (conversation) {
-      this.conversations.set(message.conversationId, {
-        ...conversation,
-        lastMessageAt: new Date(),
-        unreadCount: !message.isFromUser ? (conversation.unreadCount || 0) + 1 : conversation.unreadCount
-      });
-    }
-
-    return newMessage;
   }
 
   async markConversationAsRead(conversationId: number): Promise<void> {

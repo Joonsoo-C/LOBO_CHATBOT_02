@@ -1,4 +1,3 @@
-
 import { storage } from "./storage";
 import { allSampleUsers, userCategoryStats } from "./sample-users";
 
@@ -11,22 +10,6 @@ export async function initializeSampleUsers() {
     }
     
     console.log("Initializing sample users...");
-      // Update existing users' roles based on position
-      for (const user of existingUsers) {
-        if (user.position === "교수" || user.position === "학과장" || user.position === "연구소장") {
-          if (user.role === "user") {
-            user.role = "operation_admin";
-            await storage.updateUser(user.id, { role: user.role });
-          }
-        } else if (user.position === "부교수" || user.position === "조교수") {
-          if (user.role === "user") {
-            user.role = "agent_admin";
-            await storage.updateUser(user.id, { role: user.role });
-          }
-        }
-      }
-      return;
-    }
 
     let successCount = 0;
     let errorCount = 0;
@@ -38,52 +21,52 @@ export async function initializeSampleUsers() {
     for (let i = 0; i < limitedUsers.length; i += batchSize) {
       const batch = limitedUsers.slice(i, i + batchSize);
       await Promise.all(batch.map(async userData => {
-          try {
-            await storage.createUser({
-              ...userData,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              profileImageUrl: null,
-              firstName: userData.name?.split('')[1] || '',
-              lastName: userData.name?.split('')[0] || userData.name,
-              lastLoginAt: null,
-              passwordHash: userData.password,
-              groups: [],
-              usingAgents: Math.random() > 0.5 ? [`${Math.floor(Math.random() * 5) + 1}`] : [],
-              managedCategories: [],
-              managedAgents: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
-                ? [`에이전트${Math.floor(Math.random() * 5) + 1}`] : [],
-              organizationAffiliations: [{
-            upperCategory: userData.upperCategory || "대학본부",
-            lowerCategory: userData.lowerCategory || "총장실",
-            detailCategory: userData.detailCategory || "기획팀",
-            position: userData.position || "직원",
-            systemRole: userData.role === "user" ? "일반 사용자" : userData.role
-          }],
-          agentPermissions: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
-            ? [{
-                agentName: `에이전트${Math.floor(Math.random() * 10) + 1}`,
-                permissions: [userData.role === "agent_admin" ? "에이전트 관리자" : userData.role === "qa_admin" ? "QA 관리자" : "문서 관리자"]
-              }] : [],
-          userMemo: null,
-          permissions: {},
-          lockedReason: null,
-          deactivatedAt: null,
-          loginFailCount: 0,
-          lastLoginIP: null,
-          authProvider: "email",
-          termsAcceptedAt: new Date()
-        });
-        successCount++;
-      } catch (error) {
-        errorCount++;
+        try {
+          await storage.createUser({
+            ...userData,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            profileImageUrl: null,
+            firstName: userData.name?.split('')[1] || '',
+            lastName: userData.name?.split('')[0] || userData.name,
+            lastLoginAt: null,
+            passwordHash: userData.password,
+            groups: [],
+            usingAgents: Math.random() > 0.5 ? [`${Math.floor(Math.random() * 5) + 1}`] : [],
+            managedCategories: [],
+            managedAgents: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
+              ? [`에이전트${Math.floor(Math.random() * 5) + 1}`] : [],
+            organizationAffiliations: [{
+              upperCategory: userData.upperCategory || "대학본부",
+              lowerCategory: userData.lowerCategory || "총장실",
+              detailCategory: userData.detailCategory || "기획팀",
+              position: userData.position || "직원",
+              systemRole: userData.role === "user" ? "일반 사용자" : userData.role
+            }],
+            agentPermissions: userData.role === "agent_admin" || userData.role === "qa_admin" || userData.role === "doc_admin" 
+              ? [{
+                  agentName: `에이전트${Math.floor(Math.random() * 10) + 1}`,
+                  permissions: [userData.role === "agent_admin" ? "에이전트 관리자" : userData.role === "qa_admin" ? "QA 관리자" : "문서 관리자"]
+                }] : [],
+            userMemo: null,
+            permissions: {},
+            lockedReason: null,
+            deactivatedAt: null,
+            loginFailCount: 0,
+            lastLoginIP: null,
+            authProvider: "email",
+            termsAcceptedAt: new Date()
+          });
+          successCount++;
+        } catch (error) {
+          errorCount++;
+        }
+      }));
+      
+      if (successCount % 20 === 0) {
+        console.log(`✓ Created ${successCount} users so far...`);
       }
-    }));
-    
-    if (successCount % 20 === 0) {
-      console.log(`✓ Created ${successCount} users so far...`);
     }
-  }
 
     console.log(`\nSample users initialization completed:`);
     console.log(`✓ Successfully created: ${successCount} users`);

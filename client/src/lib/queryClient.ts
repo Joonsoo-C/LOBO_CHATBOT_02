@@ -51,7 +51,13 @@ export const queryClient = new QueryClient({
       refetchOnReconnect: false,
       staleTime: 10 * 60 * 1000, // Extended to 10 minutes for better caching
       gcTime: 15 * 60 * 1000, // Cache for 15 minutes
-      retry: 1, // Single retry on failure
+      retry: (failureCount, error: any) => {
+        // Don't retry on 401/403 errors
+        if (error?.message?.includes('401') || error?.message?.includes('403')) {
+          return false;
+        }
+        return failureCount < 2;
+      },
     },
     mutations: {
       retry: 1,
