@@ -137,16 +137,6 @@ const userEditSchema = z.object({
 
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
-// 새 카테고리 생성 스키마
-const newCategorySchema = z.object({
-  categoryLevel: z.string().min(1, "카테고리 레벨을 선택해주세요"),
-  parentCategory: z.string().optional(),
-  categoryName: z.string().min(1, "상위 카테고리 이름을 입력해주세요"),
-  description: z.string().optional(),
-});
-
-type NewCategoryFormData = z.infer<typeof newCategorySchema>;
-
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -174,12 +164,11 @@ export default function MasterAdmin() {
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
+  const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
-  const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-  const [newCategoryLevel, setNewCategoryLevel] = useState("");
   
   // 문서 상세 팝업 상태
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
@@ -213,46 +202,6 @@ export default function MasterAdmin() {
   
   const { toast } = useToast();
   const { t } = useLanguage();
-
-  // 새 카테고리 폼
-  const newCategoryForm = useForm<NewCategoryFormData>({
-    resolver: zodResolver(newCategorySchema),
-    defaultValues: {
-      categoryLevel: "",
-      parentCategory: "",
-      categoryName: "",
-      description: "",
-    },
-  });
-
-  // 새 카테고리 생성 핸들러
-  const handleCreateCategory = async (data: NewCategoryFormData) => {
-    try {
-      // 카테고리 생성 로직 구현
-      console.log("새 카테고리 생성:", data);
-      
-      toast({
-        title: "카테고리 생성 완료",
-        description: `${data.categoryName} 카테고리가 성공적으로 생성되었습니다.`,
-      });
-      
-      setIsNewCategoryDialogOpen(false);
-      newCategoryForm.reset();
-    } catch (error) {
-      toast({
-        title: "카테고리 생성 실패",
-        description: "카테고리 생성 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // 카테고리 레벨 변경 핸들러
-  const handleCategoryLevelChange = (level: string) => {
-    setNewCategoryLevel(level);
-    newCategoryForm.setValue("categoryLevel", level);
-    newCategoryForm.setValue("parentCategory", "");
-  };
 
   // 고유한 상위 카테고리 추출 (imported data 사용)
   const uniqueUpperCategories = getUniqueUpperCategories();
@@ -1638,12 +1587,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* 새 카테고리 생성 다이얼로그 */}
-      <NewCategoryDialog 
-        open={isNewCategoryDialogOpen}
-        onOpenChange={setIsNewCategoryDialogOpen}
-        onSubmit={handleCreateCategory}
-      />
 
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
@@ -3377,8 +3320,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
-              <Button className="whitespace-nowrap">
-                + 새 조직 카테고리
+              <Button 
+                className="whitespace-nowrap"
+                onClick={() => setIsNewCategoryDialogOpen(true)}
+              >
+                + 새 조직 카테고리 추가
               </Button>
             </div>
 
@@ -3421,12 +3367,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
-                <Button onClick={() => setIsNewCategoryDialogOpen(true)}>
-                  + 새 조직 카테고리 추가
-                </Button>
-              </div>
+              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -4860,6 +4801,96 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
+        {/* 새 조직 카테고리 생성 다이얼로그 */}
+        <Dialog open={isNewCategoryDialogOpen} onOpenChange={setIsNewCategoryDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="flex items-center justify-between">
+                <DialogTitle>새 카테고리 생성</DialogTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsNewCategoryDialogOpen(false)}
+                  className="h-6 w-6 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            
+            <div className="space-y-4 pt-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                생성하려는 카테고리 레벨을 선택하세요.
+              </p>
+              
+              {/* 카테고리 레벨 */}
+              <div className="space-y-2">
+                <Label>카테고리 레벨</Label>
+                <Select defaultValue="상위 카테고리 (예: 인문대학)">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="상위 카테고리 (예: 인문대학)">상위 카테고리 (예: 인문대학)</SelectItem>
+                    <SelectItem value="하위 카테고리 (예: 국어국문학과)">하위 카테고리 (예: 국어국문학과)</SelectItem>
+                    <SelectItem value="세부 카테고리 (예: 현대문학전공)">세부 카테고리 (예: 현대문학전공)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 상위 카테고리 이름 */}
+              <div className="space-y-2">
+                <Label>상위 카테고리 이름 *</Label>
+                <Input 
+                  placeholder="예: 인문대학, 공과대학"
+                  className="w-full"
+                />
+              </div>
+
+              {/* 설명 */}
+              <div className="space-y-2">
+                <Label>설명</Label>
+                <Textarea 
+                  placeholder="카테고리에 대한 설명을 입력하세요"
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+
+              {/* 버튼 그룹 */}
+              <div className="flex justify-between pt-4">
+                <Button 
+                  variant="destructive"
+                  className="flex items-center space-x-1"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>삭제</span>
+                </Button>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsNewCategoryDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => {
+                      setIsNewCategoryDialogOpen(false);
+                      toast({
+                        title: "카테고리 생성",
+                        description: "새 카테고리가 성공적으로 생성되었습니다.",
+                      });
+                    }}
+                  >
+                    생성
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* 파일 업로드 다이얼로그 */}
         <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
@@ -5774,214 +5805,5 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
         </div>
       </div>
     </div>
-  );
-}
-
-// 새 카테고리 생성 다이얼로그 컴포넌트
-function NewCategoryDialog({ 
-  open, 
-  onOpenChange, 
-  onSubmit 
-}: { 
-  open: boolean; 
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (data: NewCategoryFormData) => void;
-}) {
-  const [categoryLevel, setCategoryLevel] = useState("");
-  
-  const form = useForm<NewCategoryFormData>({
-    resolver: zodResolver(newCategorySchema),
-    defaultValues: {
-      categoryLevel: "",
-      parentCategory: "",
-      categoryName: "",
-      description: "",
-    },
-  });
-
-  const handleCategoryLevelChange = (level: string) => {
-    setCategoryLevel(level);
-    form.setValue("categoryLevel", level);
-    form.setValue("parentCategory", "");
-  };
-
-  const handleSubmit = (data: NewCategoryFormData) => {
-    onSubmit(data);
-    form.reset();
-    setCategoryLevel("");
-  };
-
-  const handleClose = () => {
-    onOpenChange(false);
-    form.reset();
-    setCategoryLevel("");
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            새 카테고리 생성
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            생성하려는 카테고리 레벨을 선택하세요.
-          </p>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            {/* 카테고리 레벨 선택 */}
-            <FormField
-              control={form.control}
-              name="categoryLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>카테고리 레벨</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={handleCategoryLevelChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="상위 카테고리 (예: 인문대학)" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="upper">상위 카테고리</SelectItem>
-                      <SelectItem value="lower">하위 카테고리</SelectItem>
-                      <SelectItem value="detail">세부 카테고리</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 상위 카테고리 선택 (하위/세부 카테고리일 때만 표시) */}
-            {(categoryLevel === "lower" || categoryLevel === "detail") && (
-              <FormField
-                control={form.control}
-                name="parentCategory"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {categoryLevel === "lower" ? "상위 카테고리" : "하위 카테고리"}
-                    </FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="선택하세요" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categoryLevel === "lower" && (
-                          <>
-                            <SelectItem value="로보대학교">로보대학교</SelectItem>
-                            <SelectItem value="대학본부">대학본부</SelectItem>
-                            <SelectItem value="학사부서">학사부서</SelectItem>
-                            <SelectItem value="연구기관">연구기관</SelectItem>
-                          </>
-                        )}
-                        {categoryLevel === "detail" && (
-                          <>
-                            <SelectItem value="공과대학">공과대학</SelectItem>
-                            <SelectItem value="경영대학">경영대학</SelectItem>
-                            <SelectItem value="인문대학">인문대학</SelectItem>
-                            <SelectItem value="사회과학대학">사회과학대학</SelectItem>
-                            <SelectItem value="자연과학대학">자연과학대학</SelectItem>
-                            <SelectItem value="의과대학">의과대학</SelectItem>
-                            <SelectItem value="법과대학">법과대학</SelectItem>
-                            <SelectItem value="예술대학">예술대학</SelectItem>
-                            <SelectItem value="총장실">총장실</SelectItem>
-                            <SelectItem value="기획처">기획처</SelectItem>
-                            <SelectItem value="교무처">교무처</SelectItem>
-                          </>
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            {/* 카테고리 이름 */}
-            <FormField
-              control={form.control}
-              name="categoryName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {categoryLevel === "upper" ? "상위 카테고리 이름" : 
-                     categoryLevel === "lower" ? "하위 카테고리 이름" : "세부 카테고리 이름"} *
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={
-                        categoryLevel === "upper" ? "예: 인문대학, 공과대학" :
-                        categoryLevel === "lower" ? "예: 국어국문학과, 영어영문학과" :
-                        "예: 학부과정, 대학원과정"
-                      } 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 설명 */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>설명</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="카테고리에 대한 설명을 입력하세요"
-                      className="resize-none"
-                      rows={4}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 버튼 그룹 */}
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
-                variant="destructive"
-                onClick={handleClose}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                삭제
-              </Button>
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={handleClose}
-              >
-                취소
-              </Button>
-              <Button type="submit">
-                생성
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
   );
 }
