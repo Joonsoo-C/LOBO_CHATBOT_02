@@ -140,7 +140,7 @@ const userEditSchema = z.object({
 
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
-export default function MasterAdmin() {
+function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
 
@@ -3328,79 +3328,173 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 조직 카테고리 관리 */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+              <div>
+                <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+                <p className="text-gray-600 dark:text-gray-400">대학 조직 구조를 관리하고 카테고리를 설정합니다.</p>
+              </div>
               <Button 
-                className="whitespace-nowrap"
+                className="bg-blue-500 hover:bg-blue-600"
                 onClick={() => setIsNewCategoryDialogOpen(true)}
               >
-                + 새 조직 카테고리 추가
+                <Plus className="w-4 h-4 mr-2" />
+                새 카테고리 생성
               </Button>
             </div>
 
-            {/* 카테고리 관리 방법 안내 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Card 
-                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsLmsDialogOpen(true)}
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center">
-                    <Database className="w-5 h-5 mr-2 text-blue-600" />
-                    LMS 연동 (권장)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    대학 LMS 시스템과 연동하여 조직 구조를 자동으로 동기화합니다.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card 
-                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsFileUploadDialogOpen(true)}
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center">
-                    <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* 조직 카테고리 검색 및 필터링 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
-              
-              {/* 3단계 카테고리 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>상위조직</Label>
-                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {uniqueUpperCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            {/* 조직 목록 테이블 */}
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>조직 목록</CardTitle>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {organizationCategories?.length || 0}개 중 {Math.min(organizationPerPage, (organizationCategories?.length || 0) - (organizationPage - 1) * organizationPerPage)}개 표시
+                  </div>
                 </div>
-                <div>
-                  <Label>하위조직</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상위 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          하위 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          세부 조직
+                        </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 인원
+                        </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          에이전트 수
+                        </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          설정
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {organizationCategories
+                        ?.slice((organizationPage - 1) * organizationPerPage, organizationPage * organizationPerPage)
+                        ?.map((org: any) => (
+                        <tr key={org.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {org.type === 'university' ? org.name : (org.upperCategory || '미분류')}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              {org.type === 'university' ? '대학교' :
+                               org.type === 'college' ? '대학' :
+                               org.type === 'department' ? '학과' :
+                               org.type === 'center' ? '센터' : '기타'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {org.type !== 'university' ? org.name : (org.lowerCategory || '미분류')}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {org.detailCategory || '미분류'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {org.memberCount || 0}명
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {org.agentCount || 0}개
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                              onClick={() => {
+                                setSelectedOrganization(org);
+                                setIsCategoryEditDialogOpen(true);
+                              }}
+                            >
+                              <Settings className="w-4 h-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 페이지네이션 */}
+                {organizationCategories && organizationCategories.length > organizationPerPage && (
+                  <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        <span className="font-medium">{(organizationPage - 1) * organizationPerPage + 1}</span>
+                        {' - '}
+                        <span className="font-medium">
+                          {Math.min(organizationPage * organizationPerPage, organizationCategories.length)}
+                        </span>
+                        {' of '}
+                        <span className="font-medium">{organizationCategories.length}</span>
+                        {' results'}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrganizationPage(organizationPage - 1)}
+                        disabled={organizationPage === 1}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        이전
+                      </Button>
+                      <div className="flex space-x-1">
+                        {Array.from(
+                          { length: Math.ceil(organizationCategories.length / organizationPerPage) },
+                          (_, i) => i + 1
+                        )
+                          .filter(page => 
+                            page === 1 || 
+                            page === Math.ceil(organizationCategories.length / organizationPerPage) ||
+                            Math.abs(page - organizationPage) <= 2
+                          )
+                          .map((page, index, arr) => (
+                            <div key={page} className="flex items-center">
+                              {index > 0 && arr[index - 1] !== page - 1 && (
+                                <span className="px-2 text-gray-500">...</span>
+                              )}
+                              <Button
+                                variant={page === organizationPage ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setOrganizationPage(page)}
+                                className="w-10"
+                              >
+                                {page}
+                              </Button>
+                            </div>
+                          ))}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrganizationPage(organizationPage + 1)}
+                        disabled={organizationPage === Math.ceil(organizationCategories.length / organizationPerPage)}
+                      >
+                        다음
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
@@ -3409,18 +3503,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           {category}
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>세부조직</Label>
-                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {filteredDetailCategories.map((category) => (
+
                         <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
