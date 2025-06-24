@@ -2721,6 +2721,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 통합된 에이전트 목록 */}
             <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
