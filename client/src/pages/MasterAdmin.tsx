@@ -5630,9 +5630,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 사용자 상세 정보 편집 다이얼로그 */}
         <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-[95vw] sm:max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>사용자 상세 정보 편집</DialogTitle>
+              <DialogTitle className="text-sm sm:text-lg">사용자 상세 정보 편집</DialogTitle>
             </DialogHeader>
             
             {selectedUser && <UserEditForm 
@@ -5885,40 +5885,42 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
       </div>
 
       {/* 조직 소속 정보 */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">조직 소속 정보</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
-            <Plus className="w-4 h-4 mr-2" />
-            소속 추가
+          <h3 className="text-base sm:text-lg font-semibold">조직 소속 정보</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation} className="text-xs sm:text-sm px-2 sm:px-3">
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">소속 추가</span>
+            <span className="sm:hidden">추가</span>
           </Button>
         </div>
         
         {organizationAffiliations.map((affiliation: any, index: number) => (
-          <div key={index} className="border rounded-lg p-4 space-y-4">
+          <div key={index} className="border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium">소속 정보 #{index + 1}</h4>
+              <h4 className="text-sm sm:text-base font-medium">소속 정보 #{index + 1}</h4>
               {organizationAffiliations.length > 1 && (
                 <Button 
                   type="button" 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => removeOrganizationAffiliation(index)}
+                  className="h-6 w-6 sm:h-8 sm:w-8 p-0"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               )}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               {/* 상위 카테고리 */}
               <div>
-                <Label>상위 카테고리</Label>
+                <Label className="text-xs sm:text-sm">상위 카테고리</Label>
                 <Select 
                   value={affiliation.upperCategory} 
                   onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm">
                     <SelectValue placeholder="선택" />
                   </SelectTrigger>
                   <SelectContent>
