@@ -50,7 +50,8 @@ import {
   Download,
   ExternalLink,
   Eye,
-  X
+  X,
+  ChevronsUpDown
 } from "lucide-react";
 import { Link } from "wouter";
 
