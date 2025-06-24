@@ -3528,7 +3528,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card 
                 className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsFileUploadDialogOpen(true)}
+                onClick={() => setIsOrgCategoryUploadDialogOpen(true)}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
@@ -3538,7 +3538,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                    Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
                   </p>
                 </CardContent>
               </Card>
