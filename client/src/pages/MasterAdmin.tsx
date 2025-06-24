@@ -2820,15 +2820,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </FormControl>
                                 <SelectContent>
                                   {organizations?.map((org) => (
-                                    <>
-                                      <SelectItem key={org.id} value={org.id.toString()}>
+                                    <React.Fragment key={org.id}>
+                                      <SelectItem value={org.id.toString()}>
                                         {org.name} ({org.type === 'university' ? '대학교' : 
                                           org.type === 'graduate_school' ? '대학원' : 
                                           org.type === 'college' ? '단과대학' : '학과'})
                                       </SelectItem>
                                       {org.children?.map((college: any) => (
-                                        <>
-                                          <SelectItem key={college.id} value={college.id.toString()}>
+                                        <React.Fragment key={college.id}>
+                                          <SelectItem value={college.id.toString()}>
                                             └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
                                           </SelectItem>
                                           {college.children?.map((dept: any) => (
@@ -2836,9 +2836,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
                                             </SelectItem>
                                           ))}
-                                        </>
+                                        </React.Fragment>
                                       ))}
-                                    </>
+                                    </React.Fragment>
                                   ))}
                                 </SelectContent>
                               </Select>
