@@ -2902,19 +2902,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             에이전트명
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            카테고리
+                            유형
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            담당자
+                            관리자
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             소속
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            사용 통계
+                            문서
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            최근 사용일
+                            사용자
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             작업
@@ -2967,10 +2967,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </Badge>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">
-                                  {(agent as any).managerFirstName && (agent as any).managerLastName 
-                                    ? `${(agent as any).managerFirstName} ${(agent as any).managerLastName}` 
-                                    : '-'}
+                                <div className="text-sm text-gray-500 font-mono">
+                                  {(agent as any).managerId || '-'}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -2983,14 +2981,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">
-                                  문서: {(agent as any).documentCount || 0}개 | 사용자: {(agent as any).userCount || 0}명
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {(agent as any).documentCount || 0}개
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {(agent as any).lastUsedAt ? new Date((agent as any).lastUsedAt).toLocaleDateString('ko-KR') : 
-                                 agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('ko-KR') : '-'}
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {(agent as any).userCount || 0}명
+                                </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div className="flex space-x-1">
