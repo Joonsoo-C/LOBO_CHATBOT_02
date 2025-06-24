@@ -481,6 +481,10 @@ export class MemoryStorage implements IStorage {
   }
 
   async getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
+    const cacheKey = `user_conversations_${userId}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    
     const userConversations = Array.from(this.conversations.values())
       .filter(conv => conv.userId === userId && conv.type === "general")
       .sort((a, b) => {
@@ -489,7 +493,7 @@ export class MemoryStorage implements IStorage {
         return bTime - aTime;
       });
 
-    return userConversations.map(conv => {
+    const result = userConversations.map(conv => {
       const agent = this.agents.get(conv.agentId);
       const conversationMessages = Array.from(this.messages.values())
         .filter(msg => msg.conversationId === conv.id)
@@ -501,6 +505,9 @@ export class MemoryStorage implements IStorage {
         lastMessage: conversationMessages[0]
       };
     });
+
+    cache.set(cacheKey, result, 1 * 60 * 1000); // Cache for 1 minute
+    return result;
   }
 
   async getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
@@ -558,7 +565,7 @@ export class MemoryStorage implements IStorage {
     };
     this.messages.set(id, newMessage);
 
-    // Update conversation's lastMessageAt
+    // Update conversation's lastMessageAt  
     const conversation = this.conversations.get(message.conversationId);
     if (conversation) {
       conversation.lastMessageAt = newMessage.createdAt;

@@ -2,6 +2,8 @@ import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText } from "lucide-react";
+import { useMemo } from "react";
+import { debounce } from "@/utils/performance";
 import type { Agent, Conversation } from "@/types/agent";
 
 interface AgentListProps {
@@ -59,58 +61,64 @@ function getCategoryBadgeStyle(category: string) {
 }
 
 export default function AgentList({ agents, conversations }: AgentListProps) {
-  const getConversationForAgent = (agentId: number) => {
-    return conversations.find(conv => conv.agentId === agentId);
-  };
+  const getConversationForAgent = useMemo(() => {
+    return (agentId: number) => conversations.find(conv => conv.agentId === agentId);
+  }, [conversations]);
 
-  const getTimeAgo = (date: string) => {
-    try {
-      return formatDistanceToNow(new Date(date), { 
-        addSuffix: true, 
-        locale: ko 
-      });
-    } catch {
-      return "최근";
-    }
-  };
+  const getTimeAgo = useMemo(() => {
+    return (date: string) => {
+      try {
+        return formatDistanceToNow(new Date(date), { 
+          addSuffix: true, 
+          locale: ko 
+        });
+      } catch {
+        return "최근";
+      }
+    };
+  }, []);
 
   // Category priority order: 학교, 교수, 그룹, 학생, 기능
-  const getCategoryPriority = (category: string) => {
-    switch (category) {
-      case "학교": return 1;
-      case "교수": return 2;
-      case "그룹": return 3;
-      case "학생": return 4;
-      case "기능형": return 5;
-      default: return 6;
-    }
-  };
+  const getCategoryPriority = useMemo(() => {
+    return (category: string) => {
+      switch (category) {
+        case "학교": return 1;
+        case "교수": return 2;
+        case "그룹": return 3;
+        case "학생": return 4;
+        case "기능형": return 5;
+        default: return 6;
+      }
+    };
+  }, []);
 
   // Sort agents: prioritize those with recent messages, then by category
-  const sortedAgents = [...agents].sort((a, b) => {
-    const conversationA = getConversationForAgent(a.id);
-    const conversationB = getConversationForAgent(b.id);
-    
-    // Check for recent message activity using lastMessageAt
-    const hasRecentA = conversationA?.lastMessageAt;
-    const hasRecentB = conversationB?.lastMessageAt;
-    
-    if (hasRecentA && hasRecentB) {
-      // Both have messages - sort by most recent message timestamp (newest first)
-      const timeA = new Date(conversationA.lastMessageAt).getTime();
-      const timeB = new Date(conversationB.lastMessageAt).getTime();
-      return timeB - timeA;
-    } else if (hasRecentA && !hasRecentB) {
-      // Only A has messages - A comes first
-      return -1;
-    } else if (!hasRecentA && hasRecentB) {
-      // Only B has messages - B comes first
-      return 1;
-    } else {
-      // Neither has messages - sort by category priority (학교, 교수, 그룹, 학생, 기능형)
-      return getCategoryPriority(a.category) - getCategoryPriority(b.category);
-    }
-  });
+  const sortedAgents = useMemo(() => {
+    return [...agents].sort((a, b) => {
+      const conversationA = getConversationForAgent(a.id);
+      const conversationB = getConversationForAgent(b.id);
+      
+      // Check for recent message activity using lastMessageAt
+      const hasRecentA = conversationA?.lastMessageAt;
+      const hasRecentB = conversationB?.lastMessageAt;
+      
+      if (hasRecentA && hasRecentB) {
+        // Both have messages - sort by most recent message timestamp (newest first)
+        const timeA = new Date(conversationA.lastMessageAt).getTime();
+        const timeB = new Date(conversationB.lastMessageAt).getTime();
+        return timeB - timeA;
+      } else if (hasRecentA && !hasRecentB) {
+        // Only A has messages - A comes first
+        return -1;
+      } else if (!hasRecentA && hasRecentB) {
+        // Only B has messages - B comes first
+        return 1;
+      } else {
+        // Neither has messages - sort by category priority (학교, 교수, 그룹, 학생, 기능형)
+        return getCategoryPriority(a.category) - getCategoryPriority(b.category);
+      }
+    });
+  }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
     <div className="px-6 py-2 space-y-3 responsive-agent-grid">

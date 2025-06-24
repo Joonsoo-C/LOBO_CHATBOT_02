@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import AgentManagement from "@/components/AgentManagement";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { ThemeSelector } from "@/components/ThemeSelector";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface User {
   id: string;
@@ -29,6 +30,7 @@ interface User {
 function Home() {
   const [activeTab, setActiveTab] = useState<"chat" | "management">("chat");
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const { t } = useLanguage();
 
@@ -62,9 +64,9 @@ function Home() {
       filtered = filtered.filter(agent => agent.category === selectedCategory);
     }
 
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    // Filter by search query using debounced value
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase();
       filtered = filtered.filter(agent => 
         agent.name.toLowerCase().includes(query) ||
         agent.description.toLowerCase().includes(query)
@@ -95,9 +97,9 @@ function Home() {
         return (categoryOrder[a.category] ?? 5) - (categoryOrder[b.category] ?? 5);
       }
     });
-  }, [agents, conversations, searchQuery, selectedCategory]);
+  }, [agents, conversations, debouncedSearchQuery, selectedCategory]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       const response = await fetch('/api/logout', {
         method: 'POST',
@@ -112,7 +114,7 @@ function Home() {
     } catch (error) {
       console.error('Logout failed:', error);
     }
-  };
+  }, []);
 
   return (
     <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">

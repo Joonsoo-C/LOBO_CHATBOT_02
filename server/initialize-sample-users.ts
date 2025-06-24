@@ -75,14 +75,15 @@ export async function initializeSampleUsers() {
           termsAcceptedAt: new Date()
         });
         successCount++;
-        if (successCount % 50 === 0) {
-          console.log(`✓ Created ${successCount} users so far...`);
-        }
       } catch (error) {
         errorCount++;
-        console.error(`✗ Failed to create user: ${userData.username}`, error);
       }
+    }));
+    
+    if (successCount % 20 === 0) {
+      console.log(`✓ Created ${successCount} users so far...`);
     }
+  }
 
     console.log(`\nSample users initialization completed:`);
     console.log(`✓ Successfully created: ${successCount} users`);
