@@ -3538,7 +3538,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
                   </p>
                 </CardContent>
               </Card>
