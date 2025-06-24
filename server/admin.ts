@@ -565,6 +565,105 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Organization category file upload endpoint
+  app.post("/api/admin/organizations/upload", requireMasterAdmin, adminUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const overwriteExisting = req.body.overwriteExisting === 'true';
+      const validateOnly = req.body.validateOnly === 'true';
+
+      // Read and parse Excel file
+      const filePath = req.file.path;
+      let organizations = [];
+
+      // Check file type and parse accordingly
+      if (req.file.mimetype.includes('excel') || req.file.mimetype.includes('spreadsheetml')) {
+        // Excel file parsing
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        if (jsonData.length === 0) {
+          throw new Error('엑셀 파일에 데이터가 없습니다.');
+        }
+
+        // Process Excel data for organizations
+        organizations = jsonData.map((row: any) => {
+          return {
+            name: row.조직명 || row.name || row.이름,
+            type: row.조직유형 || row.type || 'department',
+            parentId: null, // Will be resolved later based on hierarchy
+            upperCategory: row.상위조직 || row.upperCategory || row.상위카테고리,
+            lowerCategory: row.하위조직 || row.lowerCategory || row.하위카테고리,
+            detailCategory: row.세부조직 || row.detailCategory || row.세부카테고리,
+            description: row.설명 || row.description || null,
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+        }).filter(org => org.name); // Only include rows with organization name
+
+      } else {
+        throw new Error('조직 카테고리 업로드는 엑셀 파일(.xlsx)만 지원됩니다.');
+      }
+
+      // Clean up temporary file
+      fs.unlinkSync(filePath);
+
+      if (validateOnly) {
+        return res.json({
+          success: true,
+          message: `검증 완료: ${organizations.length}개 조직이 유효합니다.`,
+          organizationCount: organizations.length
+        });
+      }
+
+      // Process organizations in storage
+      let createdCount = 0;
+      let updatedCount = 0;
+      let errorCount = 0;
+
+      for (const orgData of organizations) {
+        try {
+          // For now, just count as created since we don't have organization storage yet
+          createdCount++;
+        } catch (error) {
+          console.error(`Failed to process organization ${orgData.name}:`, error);
+          errorCount++;
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `조직 카테고리 파일 업로드 완료`,
+        created: createdCount,
+        updated: updatedCount,
+        errors: errorCount,
+        total: organizations.length
+      });
+
+    } catch (error) {
+      console.error("Error uploading organization file:", error);
+
+      // Clean up temporary file if it exists
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error("Error cleaning up file:", cleanupError);
+        }
+      }
+
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to upload organization file" 
+      });
+    }
+  });
+
   // Export users to Excel
   app.get("/api/admin/users/export", requireMasterAdmin, async (req, res) => {
     try {

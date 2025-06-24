@@ -197,6 +197,16 @@ export default function MasterAdmin() {
   const [overwriteExisting, setOverwriteExisting] = useState(false);
   const [sendWelcome, setSendWelcome] = useState(false);
   const [validateOnly, setValidateOnly] = useState(false);
+  const userFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Organization category upload states
+  const [isOrgCategoryUploadDialogOpen, setIsOrgCategoryUploadDialogOpen] = useState(false);
+  const [selectedOrgCategoryFiles, setSelectedOrgCategoryFiles] = useState<File[]>([]);
+  const [isOrgCategoryUploading, setIsOrgCategoryUploading] = useState(false);
+  const [orgCategoryUploadProgress, setOrgCategoryUploadProgress] = useState(0);
+  const [orgOverwriteExisting, setOrgOverwriteExisting] = useState(false);
+  const [orgValidateOnly, setOrgValidateOnly] = useState(false);
+  const orgCategoryFileInputRef = useRef<HTMLInputElement>(null);
   
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -1090,6 +1100,120 @@ export default function MasterAdmin() {
   const handleUserFileSelect = () => {
     if (userFileInputRef.current) {
       userFileInputRef.current.click();
+    }
+  };
+
+  // Organization category file handlers
+  const handleOrgCategoryFileSelect = () => {
+    if (orgCategoryFileInputRef.current) {
+      orgCategoryFileInputRef.current.click();
+    }
+  };
+
+  const handleOrgCategoryFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (files.length > 0) {
+      const allowedTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        if (file.size > 10 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (파일 크기가 10MB를 초과함)`);
+          continue;
+        }
+        
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedOrgCategoryFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
+    }
+    
+    // Clear the input value so the same file can be selected again
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const handleOrgCategoryUpload = async () => {
+    if (selectedOrgCategoryFiles.length === 0) {
+      toast({
+        title: "파일을 선택해주세요",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsOrgCategoryUploading(true);
+    setOrgCategoryUploadProgress(0);
+
+    try {
+      for (let i = 0; i < selectedOrgCategoryFiles.length; i++) {
+        const file = selectedOrgCategoryFiles[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('overwriteExisting', orgOverwriteExisting.toString());
+        formData.append('validateOnly', orgValidateOnly.toString());
+
+        const response = await fetch('/api/admin/organizations/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '파일 업로드에 실패했습니다');
+        }
+
+        const result = await response.json();
+        
+        // Update progress
+        setOrgCategoryUploadProgress(((i + 1) / selectedOrgCategoryFiles.length) * 100);
+        
+        toast({
+          title: "업로드 완료",
+          description: result.message,
+        });
+      }
+
+      // Reset form
+      setSelectedOrgCategoryFiles([]);
+      setIsOrgCategoryUploadDialogOpen(false);
+      
+    } catch (error) {
+      console.error('Organization category upload error:', error);
+      toast({
+        title: "업로드 실패",
+        description: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOrgCategoryUploading(false);
+      setOrgCategoryUploadProgress(0);
     }
   };
 
@@ -4921,6 +5045,139 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     생성
                   </Button>
                 </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 조직 카테고리 파일 업로드 다이얼로그 */}
+        <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>조직 카테고리 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={orgCategoryFileInputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                multiple
+                onChange={handleOrgCategoryFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onClick={handleOrgCategoryFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Excel 파일(.xlsx) 지원 (최대 10MB)
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOrgCategoryFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedOrgCategoryFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedOrgCategoryFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedOrgCategoryFiles([])}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedOrgCategoryFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedOrgCategoryFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (조직명, 상위조직, 하위조직, 세부조직)</p>
+                  <p>• 조직명: 조직의 정식 명칭 (필수)</p>
+                  <p>• 상위조직: 대학/본부 등 최상위 조직</p>
+                  <p>• 하위조직: 단과대학/처/부 등</p>
+                  <p>• 세부조직: 학과/팀/과 등</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>업로드 옵션</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="org-overwrite-existing" 
+                      className="rounded" 
+                      checked={orgOverwriteExisting}
+                      onChange={(e) => setOrgOverwriteExisting(e.target.checked)}
+                    />
+                    <Label htmlFor="org-overwrite-existing">기존 조직 정보 덮어쓰기</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="org-validate-only" 
+                      className="rounded"
+                      checked={orgValidateOnly}
+                      onChange={(e) => setOrgValidateOnly(e.target.checked)}
+                    />
+                    <Label htmlFor="org-validate-only">검증만 수행 (실제 업로드 안함)</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button 
+                  onClick={handleOrgCategoryUpload}
+                  disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
+                >
+                  {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작 (${selectedOrgCategoryFiles.length}개 파일)`}
+                </Button>
               </div>
             </div>
           </DialogContent>
