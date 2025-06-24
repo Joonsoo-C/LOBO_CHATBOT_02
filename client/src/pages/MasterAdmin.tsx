@@ -141,6 +141,7 @@ const userEditSchema = z.object({
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
 function MasterAdmin() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("dashboard");
 
 
@@ -3495,31 +3496,47 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
           </TabsContent>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {filteredLowerCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
 
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetFilters}>
-                    필터 초기화
-                  </Button>
-                </div>
-              </div>
+          {/* 문서 관리 */}
+          <TabsContent value="documents" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">문서 관리</h2>
+            </div>
+          </TabsContent>
+        </Tabs>
 
-              {/* 카테고리 검색 */}
-              <div className="space-y-2">
+        {/* 다이얼로그들 */}
+        <NewCategoryDialog 
+          open={isNewCategoryDialogOpen}
+          onOpenChange={setIsNewCategoryDialogOpen}
+          onSubmit={handleNewCategorySubmit}
+        />
+
+        <CategoryEditDialog
+          open={isCategoryEditDialogOpen}
+          onOpenChange={setIsCategoryEditDialogOpen}
+          organization={selectedOrganization}
+          onSave={(updatedOrg) => {
+            toast({
+              title: "조직 정보 업데이트",
+              description: `${updatedOrg.name} 조직 정보가 성공적으로 업데이트되었습니다.`,
+            });
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+          }}
+          onDelete={(orgId) => {
+            toast({
+              title: "조직 삭제",
+              description: "조직이 성공적으로 삭제되었습니다.",
+            });
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+          }}
+        />
+      </div>
+
+    </div>
+  );
+
+}
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
@@ -5899,4 +5916,6 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
     </div>
   );
 }
+
+export default MasterAdmin;
 
