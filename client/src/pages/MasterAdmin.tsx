@@ -208,7 +208,6 @@ function MasterAdmin() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const userFileInputRef = React.useRef<HTMLInputElement>(null);
   
-  const { toast } = useToast();
   const { t } = useLanguage();
 
   // 고유한 상위 카테고리 추출 (imported data 사용)
@@ -3536,31 +3535,79 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     </div>
   );
 
-}
-                <div className="flex space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="조직명으로 검색..."
-                      value={userSearchQuery}
-                      onChange={(e) => setUserSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
-                    />
-                  </div>
-                  <Button onClick={executeSearch}>
-                    검색
-                  </Button>
-                </div>
-              </div>
-              
-              
-            </div>
+  // 새 카테고리 생성 핸들러  
+  const handleNewCategorySubmit = (data: any) => {
+    toast({
+      title: "새 카테고리 생성",
+      description: `${data.categoryName} 카테고리가 성공적으로 생성되었습니다.`,
+    });
+    queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+  };
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>조직 목록</CardTitle>
-                {hasSearched && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {organizationCategories.length}개 조직 표시
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto px-4 py-8">
+        {/* 헤더 */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">마스터 관리자</h1>
+            <p className="text-gray-600 dark:text-gray-400">시스템 전체를 관리합니다.</p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="flex items-center space-x-2"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>로그아웃</span>
+          </Button>
+        </div>
+
+        {/* 탭 네비게이션 */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="dashboard">대시보드</TabsTrigger>
+            <TabsTrigger value="agents">에이전트 관리</TabsTrigger>
+            <TabsTrigger value="categories">조직 카테고리</TabsTrigger>
+            <TabsTrigger value="users">사용자 관리</TabsTrigger>
+            <TabsTrigger value="documents">문서 관리</TabsTrigger>
+          </TabsList>
+
+          {tabsContent}
+        </Tabs>
+
+        {/* 다이얼로그들 */}
+        <NewCategoryDialog 
+          open={isNewCategoryDialogOpen}
+          onOpenChange={setIsNewCategoryDialogOpen}
+          onSubmit={handleNewCategorySubmit}
+        />
+
+        <CategoryEditDialog
+          open={isCategoryEditDialogOpen}
+          onOpenChange={setIsCategoryEditDialogOpen}
+          organization={selectedOrganization}
+          onSave={(updatedOrg) => {
+            toast({
+              title: "조직 정보 업데이트",
+              description: `${updatedOrg.name} 조직 정보가 성공적으로 업데이트되었습니다.`,
+            });
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+          }}
+          onDelete={(orgId) => {
+            toast({
+              title: "조직 삭제",
+              description: "조직이 성공적으로 삭제되었습니다.",
+            });
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default MasterAdmin;
                   </div>
                 )}
               </CardHeader>
@@ -5916,6 +5963,4 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
     </div>
   );
 }
-
-export default MasterAdmin;
 
