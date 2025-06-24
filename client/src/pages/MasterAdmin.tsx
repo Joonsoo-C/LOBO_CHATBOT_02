@@ -1114,8 +1114,10 @@ export default function MasterAdmin() {
     
     if (files.length > 0) {
       const allowedTypes = [
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'application/vnd.ms-excel', // .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'text/csv', // .csv
+        'application/csv' // .csv alternative
       ];
       
       const validFiles: File[] = [];
@@ -1127,8 +1129,13 @@ export default function MasterAdmin() {
           continue;
         }
         
-        if (!allowedTypes.includes(file.type)) {
-          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+        // Check both MIME type and file extension for better compatibility
+        const fileName = file.name.toLowerCase();
+        const isValidMimeType = allowedTypes.includes(file.type);
+        const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+        
+        if (!isValidMimeType && !isValidExtension) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식: CSV, Excel 파일만 지원)`);
           continue;
         }
         
@@ -5105,7 +5112,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <input
                 ref={orgCategoryFileInputRef}
                 type="file"
-                accept=".xlsx,.xls"
+                accept=".xlsx,.xls,.csv"
                 multiple
                 onChange={handleOrgCategoryFileInputChange}
                 style={{ display: 'none' }}
@@ -5117,7 +5124,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  Excel 파일(.xlsx) 지원 (최대 10MB)
+                  CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 10MB)
                 </p>
                 <Button 
                   variant="outline"
