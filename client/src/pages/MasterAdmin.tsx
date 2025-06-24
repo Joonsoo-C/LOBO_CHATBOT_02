@@ -3381,10 +3381,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="로보대학교">로보대학교</SelectItem>
-                      <SelectItem value="대학본부">대학본부</SelectItem>
-                      <SelectItem value="학사부서">학사부서</SelectItem>
-                      <SelectItem value="연구기관">연구기관</SelectItem>
+                      {uniqueUpperCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -3396,43 +3397,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {selectedUniversity === '로보대학교' && (
-                        <>
-                          <SelectItem value="공과대학">공과대학</SelectItem>
-                          <SelectItem value="경영대학">경영대학</SelectItem>
-                          <SelectItem value="인문대학">인문대학</SelectItem>
-                          <SelectItem value="사회과학대학">사회과학대학</SelectItem>
-                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
-                          <SelectItem value="의과대학">의과대학</SelectItem>
-                          <SelectItem value="법과대학">법과대학</SelectItem>
-                          <SelectItem value="예술대학">예술대학</SelectItem>
-                        </>
-                      )}
-                      {selectedUniversity === '대학본부' && (
-                        <>
-                          <SelectItem value="총장실">총장실</SelectItem>
-                          <SelectItem value="기획처">기획처</SelectItem>
-                          <SelectItem value="교무처">교무처</SelectItem>
-                          <SelectItem value="학생처">학생처</SelectItem>
-                          <SelectItem value="총무처">총무처</SelectItem>
-                        </>
-                      )}
-                      {selectedUniversity === '학사부서' && (
-                        <>
-                          <SelectItem value="입학처">입학처</SelectItem>
-                          <SelectItem value="학사관리팀">학사관리팀</SelectItem>
-                          <SelectItem value="도서관">도서관</SelectItem>
-                          <SelectItem value="국제교류센터">국제교류센터</SelectItem>
-                          <SelectItem value="창업지원센터">창업지원센터</SelectItem>
-                        </>
-                      )}
-                      {selectedUniversity === '연구기관' && (
-                        <>
-                          <SelectItem value="산학협력단">산학협력단</SelectItem>
-                          <SelectItem value="연구처">연구처</SelectItem>
-                          <SelectItem value="기술이전센터">기술이전센터</SelectItem>
-                        </>
-                      )}
+                      {filteredLowerCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -3444,68 +3413,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {selectedCollege === '공과대학' && (
-                        <>
-                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
-                          <SelectItem value="전자공학과">전자공학과</SelectItem>
-                          <SelectItem value="기계공학과">기계공학과</SelectItem>
-                          <SelectItem value="건축공학과">건축공학과</SelectItem>
-                          <SelectItem value="화학공학과">화학공학과</SelectItem>
-                          <SelectItem value="산업공학과">산업공학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '경영대학' && (
-                        <>
-                          <SelectItem value="경영학과">경영학과</SelectItem>
-                          <SelectItem value="회계학과">회계학과</SelectItem>
-                          <SelectItem value="마케팅학과">마케팅학과</SelectItem>
-                          <SelectItem value="국제경영학과">국제경영학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '인문대학' && (
-                        <>
-                          <SelectItem value="국어국문학과">국어국문학과</SelectItem>
-                          <SelectItem value="영어영문학과">영어영문학과</SelectItem>
-                          <SelectItem value="역사학과">역사학과</SelectItem>
-                          <SelectItem value="철학과">철학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '사회과학대학' && (
-                        <>
-                          <SelectItem value="심리학과">심리학과</SelectItem>
-                          <SelectItem value="사회학과">사회학과</SelectItem>
-                          <SelectItem value="정치외교학과">정치외교학과</SelectItem>
-                          <SelectItem value="경제학과">경제학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '자연과학대학' && (
-                        <>
-                          <SelectItem value="수학과">수학과</SelectItem>
-                          <SelectItem value="물리학과">물리학과</SelectItem>
-                          <SelectItem value="화학과">화학과</SelectItem>
-                          <SelectItem value="생물학과">생물학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '의과대학' && (
-                        <>
-                          <SelectItem value="의학과">의학과</SelectItem>
-                          <SelectItem value="간호학과">간호학과</SelectItem>
-                          <SelectItem value="약학과">약학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '법과대학' && (
-                        <>
-                          <SelectItem value="법학과">법학과</SelectItem>
-                          <SelectItem value="국제법무학과">국제법무학과</SelectItem>
-                        </>
-                      )}
-                      {selectedCollege === '예술대학' && (
-                        <>
-                          <SelectItem value="음악과">음악과</SelectItem>
-                          <SelectItem value="미술과">미술과</SelectItem>
-                          <SelectItem value="연극영화과">연극영화과</SelectItem>
-                        </>
-                      )}
+                      {filteredDetailCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
