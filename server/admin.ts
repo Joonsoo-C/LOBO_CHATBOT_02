@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { insertDocumentSchema } from "../shared/schema";
 import { extractTextFromContent, analyzeDocument } from "./openai";
+import * as XLSX from 'xlsx';
 
 // Configure multer for admin document uploads
 const adminUploadDir = path.join(process.cwd(), 'uploads', 'admin');
@@ -422,6 +423,84 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ 
         message: error instanceof Error ? error.message : "Failed to upload user file" 
       });
+    }
+  });
+
+  // Export users to Excel
+  app.get("/api/admin/users/export", requireMasterAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      
+      if (!users || users.length === 0) {
+        return res.status(404).json({ message: "사용자 데이터가 없습니다" });
+      }
+
+      // Prepare user data for Excel export
+      const excelData = users.map(user => ({
+        'ID': user.id,
+        '사용자명': user.username,
+        '이름': user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        '이메일': user.email,
+        '사용자유형': user.userType === 'faculty' ? '교직원' : '학생',
+        '상위카테고리': user.upperCategory || '',
+        '하위카테고리': user.lowerCategory || '',
+        '세부카테고리': user.detailCategory || '',
+        '직급/직위': user.position || '',
+        '시스템역할': user.role,
+        '상태': user.status,
+        '생성일': user.createdAt ? new Date(user.createdAt).toLocaleString('ko-KR') : '',
+        '최종로그인': user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString('ko-KR') : '로그인 기록 없음',
+        '사용중인에이전트': Array.isArray(user.usingAgents) ? user.usingAgents.join(', ') : '',
+        '관리카테고리': Array.isArray(user.managedCategories) ? user.managedCategories.join(', ') : '',
+        '관리에이전트': Array.isArray(user.managedAgents) ? user.managedAgents.join(', ') : ''
+      }));
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Auto-size columns
+      const colWidths = [
+        { wch: 15 }, // ID
+        { wch: 15 }, // 사용자명
+        { wch: 20 }, // 이름
+        { wch: 30 }, // 이메일
+        { wch: 10 }, // 사용자유형
+        { wch: 15 }, // 상위카테고리
+        { wch: 20 }, // 하위카테고리
+        { wch: 25 }, // 세부카테고리
+        { wch: 15 }, // 직급/직위
+        { wch: 15 }, // 시스템역할
+        { wch: 8 },  // 상태
+        { wch: 20 }, // 생성일
+        { wch: 20 }, // 최종로그인
+        { wch: 30 }, // 사용중인에이전트
+        { wch: 20 }, // 관리카테고리
+        { wch: 20 }  // 관리에이전트
+      ];
+      worksheet['!cols'] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, '사용자목록');
+
+      // Generate Excel file buffer
+      const excelBuffer = XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx' 
+      });
+
+      // Set response headers for file download
+      const fileName = `사용자목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+      res.setHeader('Content-Length', excelBuffer.length);
+
+      // Send file
+      res.send(excelBuffer);
+
+    } catch (error) {
+      console.error("Error exporting users to Excel:", error);
+      res.status(500).json({ message: "엑셀 파일 생성에 실패했습니다" });
     }
   });
 
