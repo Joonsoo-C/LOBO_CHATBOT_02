@@ -1178,48 +1178,48 @@ export default function MasterAdmin() {
     setOrgCategoryUploadProgress(0);
 
     try {
-      for (let i = 0; i < selectedOrgCategoryFiles.length; i++) {
-        const file = selectedOrgCategoryFiles[i];
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('overwriteExisting', orgOverwriteExisting.toString());
-        formData.append('validateOnly', orgValidateOnly.toString());
+      const formData = new FormData();
+      
+      // Add all files to the same FormData
+      for (const file of selectedOrgCategoryFiles) {
+        formData.append('files', file);
+      }
+      
+      // Add options
+      formData.append('overwriteExisting', orgOverwriteExisting.toString());
+      formData.append('validateOnly', orgValidateOnly.toString());
 
-        const response = await fetch('/api/admin/upload-org-categories', {
-          method: 'POST',
-          body: formData,
-        });
+      const response = await fetch('/api/admin/upload-org-categories', {
+        method: 'POST',
+        body: formData,
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || '파일 업로드에 실패했습니다');
-        }
-
-        const result = await response.json();
-        
-        // Update progress
-        setOrgCategoryUploadProgress(((i + 1) / selectedOrgCategoryFiles.length) * 100);
-        
-        toast({
-          title: "업로드 완료",
-          description: result.message,
-        });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '조직 카테고리 파일 업로드에 실패했습니다');
       }
 
-      // Reset form
-      setSelectedOrgCategoryFiles([]);
-      setIsOrgCategoryUploadDialogOpen(false);
+      const result = await response.json();
+      setOrgCategoryUploadProgress(100);
       
-    } catch (error) {
+      toast({
+        title: "업로드 완료",
+        description: result.message || `${result.totalProcessed || selectedOrgCategoryFiles.length}개 조직 카테고리가 처리되었습니다.`,
+      });
+
+      setIsOrgCategoryUploadDialogOpen(false);
+      setSelectedOrgCategoryFiles([]);
+      setOrgCategoryUploadProgress(0);
+      
+    } catch (error: any) {
       console.error('Organization category upload error:', error);
       toast({
         title: "업로드 실패",
-        description: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다",
+        description: error.message || "조직 카테고리 파일 업로드 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
       setIsOrgCategoryUploading(false);
-      setOrgCategoryUploadProgress(0);
     }
   };
 
