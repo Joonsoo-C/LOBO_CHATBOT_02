@@ -210,7 +210,6 @@ export default function MasterAdmin() {
   
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const userFileInputRef = React.useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
   const { t } = useLanguage();
