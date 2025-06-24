@@ -50,7 +50,8 @@ import {
   Download,
   ExternalLink,
   Eye,
-  X
+  X,
+  ChevronUpDown
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -1917,19 +1918,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             )}
                           </div>
                         </th>
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('email')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>이메일</span>
-                            {userSortField === 'email' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
-                        </th>
+
                         <th 
                           className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('status')}
@@ -1951,7 +1940,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredUsers?.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="px-6 py-12 text-center">
+                          <td colSpan={5} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -2011,9 +2000,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {user.email || '-'}
-                            </td>
+
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Badge 
                                 variant={
