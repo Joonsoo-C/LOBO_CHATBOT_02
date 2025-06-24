@@ -194,6 +194,132 @@ export default function MasterAdmin() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // 조직 카테고리 데이터
+  const organizationCategories = [
+    { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실' },
+    { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보실' },
+    { id: 3, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획팀' },
+    { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '예산팀' },
+    { id: 5, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '평가팀' },
+    { id: 6, upperCategory: '대학본부', lowerCategory: '교무처', detailCategory: '교무팀' },
+    { id: 7, upperCategory: '대학본부', lowerCategory: '교무처', detailCategory: '학사팀' },
+    { id: 8, upperCategory: '대학본부', lowerCategory: '학생처', detailCategory: '학생지원팀' },
+    { id: 9, upperCategory: '대학본부', lowerCategory: '학생처', detailCategory: '생활관리팀' },
+    { id: 10, upperCategory: '대학본부', lowerCategory: '총무처', detailCategory: '인사팀' },
+    { id: 11, upperCategory: '대학본부', lowerCategory: '총무처', detailCategory: '재무팀' },
+    { id: 12, upperCategory: '대학본부', lowerCategory: '총무처', detailCategory: '시설팀' },
+    { id: 13, upperCategory: '학사부서', lowerCategory: '입학처', detailCategory: '입학전형팀' },
+    { id: 14, upperCategory: '학사부서', lowerCategory: '입학처', detailCategory: '입학관리팀' },
+    { id: 15, upperCategory: '학사부서', lowerCategory: '도서관', detailCategory: '열람실' },
+    { id: 16, upperCategory: '학사부서', lowerCategory: '도서관', detailCategory: '자료실' },
+    { id: 17, upperCategory: '학사부서', lowerCategory: '전산센터', detailCategory: 'IT지원팀' },
+    { id: 18, upperCategory: '학사부서', lowerCategory: '전산센터', detailCategory: '네트워크팀' },
+    { id: 19, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공' },
+    { id: 20, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '고전문학전공' },
+    { id: 21, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '국어학전공' },
+    { id: 22, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영문학전공' },
+    { id: 23, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영어학전공' },
+    { id: 24, upperCategory: '인문대학', lowerCategory: '철학과', detailCategory: '동양철학전공' },
+    { id: 25, upperCategory: '인문대학', lowerCategory: '철학과', detailCategory: '서양철학전공' },
+    { id: 26, upperCategory: '인문대학', lowerCategory: '사학과', detailCategory: '한국사전공' },
+    { id: 27, upperCategory: '인문대학', lowerCategory: '사학과', detailCategory: '동양사전공' },
+    { id: 28, upperCategory: '인문대학', lowerCategory: '사학과', detailCategory: '서양사전공' },
+    { id: 29, upperCategory: '사회과학대학', lowerCategory: '경제학과', detailCategory: '미시경제학전공' },
+    { id: 30, upperCategory: '사회과학대학', lowerCategory: '경제학과', detailCategory: '거시경제학전공' },
+    { id: 31, upperCategory: '사회과학대학', lowerCategory: '경제학과', detailCategory: '계량경제학전공' },
+    { id: 32, upperCategory: '사회과학대학', lowerCategory: '정치외교학과', detailCategory: '정치학전공' },
+    { id: 33, upperCategory: '사회과학대학', lowerCategory: '정치외교학과', detailCategory: '외교학전공' },
+    { id: 34, upperCategory: '사회과학대학', lowerCategory: '사회학과', detailCategory: '사회이론전공' },
+    { id: 35, upperCategory: '사회과학대학', lowerCategory: '사회학과', detailCategory: '사회조사전공' },
+    { id: 36, upperCategory: '사회과학대학', lowerCategory: '심리학과', detailCategory: '인지심리학전공' },
+    { id: 37, upperCategory: '사회과학대학', lowerCategory: '심리학과', detailCategory: '임상심리학전공' },
+    { id: 38, upperCategory: '자연과학대학', lowerCategory: '수학과', detailCategory: '순수수학전공' },
+    { id: 39, upperCategory: '자연과학대학', lowerCategory: '수학과', detailCategory: '응용수학전공' },
+    { id: 40, upperCategory: '자연과학대학', lowerCategory: '물리학과', detailCategory: '이론물리학전공' },
+    { id: 41, upperCategory: '자연과학대학', lowerCategory: '물리학과', detailCategory: '실험물리학전공' },
+    { id: 42, upperCategory: '자연과학대학', lowerCategory: '화학과', detailCategory: '유기화학전공' },
+    { id: 43, upperCategory: '자연과학대학', lowerCategory: '화학과', detailCategory: '무기화학전공' },
+    { id: 44, upperCategory: '자연과학대학', lowerCategory: '화학과', detailCategory: '물리화학전공' },
+    { id: 45, upperCategory: '자연과학대학', lowerCategory: '생물학과', detailCategory: '분자생물학전공' },
+    { id: 46, upperCategory: '자연과학대학', lowerCategory: '생물학과', detailCategory: '생태학전공' },
+    { id: 47, upperCategory: '공과대학', lowerCategory: '컴퓨터공학과', detailCategory: '소프트웨어전공' },
+    { id: 48, upperCategory: '공과대학', lowerCategory: '컴퓨터공학과', detailCategory: '하드웨어전공' },
+    { id: 49, upperCategory: '공과대학', lowerCategory: '컴퓨터공학과', detailCategory: '인공지능전공' },
+    { id: 50, upperCategory: '공과대학', lowerCategory: '전자공학과', detailCategory: '반도체전공' },
+    { id: 51, upperCategory: '공과대학', lowerCategory: '전자공학과', detailCategory: '통신전공' },
+    { id: 52, upperCategory: '공과대학', lowerCategory: '기계공학과', detailCategory: '설계전공' },
+    { id: 53, upperCategory: '공과대학', lowerCategory: '기계공학과', detailCategory: '제조전공' },
+    { id: 54, upperCategory: '공과대학', lowerCategory: '기계공학과', detailCategory: '열역학전공' },
+    { id: 55, upperCategory: '공과대학', lowerCategory: '건축학과', detailCategory: '건축설계전공' },
+    { id: 56, upperCategory: '공과대학', lowerCategory: '건축학과', detailCategory: '건축공학전공' },
+    { id: 57, upperCategory: '공과대학', lowerCategory: '토목공학과', detailCategory: '구조공학전공' },
+    { id: 58, upperCategory: '공과대학', lowerCategory: '토목공학과', detailCategory: '지반공학전공' },
+    { id: 59, upperCategory: '경영대학', lowerCategory: '경영학과', detailCategory: '경영전략전공' },
+    { id: 60, upperCategory: '경영대학', lowerCategory: '경영학과', detailCategory: '마케팅전공' },
+    { id: 61, upperCategory: '경영대학', lowerCategory: '경영학과', detailCategory: '재무관리전공' },
+    { id: 62, upperCategory: '경영대학', lowerCategory: '회계학과', detailCategory: '재무회계전공' },
+    { id: 63, upperCategory: '경영대학', lowerCategory: '회계학과', detailCategory: '관리회계전공' },
+    { id: 64, upperCategory: '경영대학', lowerCategory: '국제통상학과', detailCategory: '무역실무전공' },
+    { id: 65, upperCategory: '경영대학', lowerCategory: '국제통상학과', detailCategory: '국제경영전공' },
+    { id: 66, upperCategory: '의과대학', lowerCategory: '의학과', detailCategory: '내과전공' },
+    { id: 67, upperCategory: '의과대학', lowerCategory: '의학과', detailCategory: '외과전공' },
+    { id: 68, upperCategory: '의과대학', lowerCategory: '의학과', detailCategory: '소아과전공' },
+    { id: 69, upperCategory: '의과대학', lowerCategory: '간호학과', detailCategory: '기본간호학전공' },
+    { id: 70, upperCategory: '의과대학', lowerCategory: '간호학과', detailCategory: '성인간호학전공' },
+    { id: 71, upperCategory: '의과대학', lowerCategory: '약학과', detailCategory: '약물학전공' },
+    { id: 72, upperCategory: '의과대학', lowerCategory: '약학과', detailCategory: '약제학전공' },
+    { id: 73, upperCategory: '대학원', lowerCategory: '일반대학원', detailCategory: '석사과정' },
+    { id: 74, upperCategory: '대학원', lowerCategory: '일반대학원', detailCategory: '박사과정' },
+    { id: 75, upperCategory: '대학원', lowerCategory: '특수대학원', detailCategory: 'MBA과정' },
+    { id: 76, upperCategory: '대학원', lowerCategory: '특수대학원', detailCategory: '교육대학원' },
+    { id: 77, upperCategory: '연구기관', lowerCategory: '공학연구소', detailCategory: '기계연구팀' },
+    { id: 78, upperCategory: '연구기관', lowerCategory: '공학연구소', detailCategory: '전자연구팀' },
+    { id: 79, upperCategory: '연구기관', lowerCategory: '인문학연구소', detailCategory: '고전연구팀' },
+    { id: 80, upperCategory: '연구기관', lowerCategory: '인문학연구소', detailCategory: '현대문화연구팀' },
+    { id: 81, upperCategory: '연구기관', lowerCategory: '사회과학연구소', detailCategory: '경제연구팀' },
+    { id: 82, upperCategory: '연구기관', lowerCategory: '사회과학연구소', detailCategory: '정책연구팀' },
+    { id: 83, upperCategory: '연구기관', lowerCategory: '의학연구소', detailCategory: '임상연구팀' },
+    { id: 84, upperCategory: '연구기관', lowerCategory: '의학연구소', detailCategory: '기초의학연구팀' },
+    { id: 85, upperCategory: '부속기관', lowerCategory: '병원', detailCategory: '진료과' },
+    { id: 86, upperCategory: '부속기관', lowerCategory: '병원', detailCategory: '간호부' },
+    { id: 87, upperCategory: '부속기관', lowerCategory: '박물관', detailCategory: '전시팀' },
+    { id: 88, upperCategory: '부속기관', lowerCategory: '박물관', detailCategory: '연구팀' },
+    { id: 89, upperCategory: '부속기관', lowerCategory: '언론사', detailCategory: '편집부' },
+    { id: 90, upperCategory: '부속기관', lowerCategory: '언론사', detailCategory: '기술부' },
+    { id: 91, upperCategory: '특별기구', lowerCategory: '평생교육원', detailCategory: '평생교육팀' },
+    { id: 92, upperCategory: '특별기구', lowerCategory: '평생교육원', detailCategory: '사회교육팀' },
+    { id: 93, upperCategory: '특별기구', lowerCategory: '국제교류처', detailCategory: '교환학생팀' },
+    { id: 94, upperCategory: '특별기구', lowerCategory: '국제교류처', detailCategory: '외국인학생팀' },
+    { id: 95, upperCategory: '특별기구', lowerCategory: '창업지원센터', detailCategory: '창업교육팀' },
+    { id: 96, upperCategory: '특별기구', lowerCategory: '창업지원센터', detailCategory: '창업보육팀' },
+    { id: 97, upperCategory: '특별기구', lowerCategory: '산학협력단', detailCategory: '연구지원팀' },
+    { id: 98, upperCategory: '특별기구', lowerCategory: '산학협력단', detailCategory: '기술이전팀' },
+    { id: 99, upperCategory: '특별기구', lowerCategory: '지역혁신센터', detailCategory: '지역사업팀' },
+    { id: 100, upperCategory: '특별기구', lowerCategory: '지역혁신센터', detailCategory: '혁신연구팀' }
+  ];
+
+  // 고유한 상위 카테고리 추출
+  const uniqueUpperCategories = [...new Set(organizationCategories.map(org => org.upperCategory))];
+
+  // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
+  const filteredLowerCategories = useMemo(() => {
+    if (selectedUniversity === 'all') return [];
+    return [...new Set(organizationCategories
+      .filter(org => org.upperCategory === selectedUniversity)
+      .map(org => org.lowerCategory))];
+  }, [selectedUniversity]);
+
+  // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
+  const filteredDetailCategories = useMemo(() => {
+    if (selectedUniversity === 'all' || selectedCollege === 'all') return [];
+    return [...new Set(organizationCategories
+      .filter(org => 
+        org.upperCategory === selectedUniversity && 
+        org.lowerCategory === selectedCollege
+      )
+      .map(org => org.detailCategory))];
+  }, [selectedUniversity, selectedCollege]);
+
   // 페이지네이션 상태
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const usersPerPage = 20;
@@ -413,6 +539,7 @@ export default function MasterAdmin() {
     setSelectedDocumentType('all'); // 상태 필터 초기화
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setUserSearchQuery('');
+    setAgentSearchQuery('');
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
   };
@@ -2697,7 +2824,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <Input
-                      placeholder="에이전트 이름으로 검색..."
+                      placeholder="에이전트명 또는 설명 키워드를 입력하세요"
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       className="h-10"
@@ -2711,17 +2838,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
                 
-                {/* 안내 메시지 */}
-                <div className="flex items-start space-x-2 text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
-                  <div className="w-4 h-4 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold mt-0.5">!</div>
-                  <p>검색 조건을 설정하고 검색 버튼을 클릭하여 에이전트를 조회할 수 있습니다.</p>
-                </div>
+
               </CardContent>
             </Card>
 
             {/* 통합된 에이전트 목록 */}
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
@@ -2888,7 +3010,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {hasSearched ? (
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>에이전트 검색 결과</CardTitle>
+                  <CardTitle>에이전트 목록</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     전체 {sortedAgents?.length || 0}개 에이전트 표시
                   </div>
