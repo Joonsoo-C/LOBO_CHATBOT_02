@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -209,7 +209,7 @@ export default function MasterAdmin() {
   const orgCategoryFileInputRef = useRef<HTMLInputElement>(null);
   
   // 파일 입력 참조
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
   const { t } = useLanguage();
