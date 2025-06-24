@@ -2721,13 +2721,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 통합된 에이전트 목록 */}
             <div className="flex justify-between items-center">
-              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    새 에이전트 추가
-                  </Button>
-                </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
