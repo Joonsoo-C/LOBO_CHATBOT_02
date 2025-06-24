@@ -1622,10 +1622,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">
               <BarChart3 className="w-4 h-4 mr-2" />
               대시보드
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              <Database className="w-4 h-4 mr-2" />
+              조직 카테고리 관리
             </TabsTrigger>
             <TabsTrigger value="users">
               <Users className="w-4 h-4 mr-2" />
@@ -1635,21 +1639,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <Bot className="w-4 h-4 mr-2" />
               에이전트 관리
             </TabsTrigger>
-            <TabsTrigger value="conversations">
-              <MessageSquare className="w-4 h-4 mr-2" />
-              질문/응답 로그
-            </TabsTrigger>
-            <TabsTrigger value="tokens">
-              <Shield className="w-4 h-4 mr-2" />
-              토큰 관리
-            </TabsTrigger>
-            <TabsTrigger value="categories">
-              <Database className="w-4 h-4 mr-2" />
-              조직 카테고리 관리
-            </TabsTrigger>
             <TabsTrigger value="documents">
               <FileText className="w-4 h-4 mr-2" />
               문서 관리
+            </TabsTrigger>
+            <TabsTrigger value="conversations">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              질문/응답 로그
             </TabsTrigger>
             <TabsTrigger value="system">
               <Settings className="w-4 h-4 mr-2" />
