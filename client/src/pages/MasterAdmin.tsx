@@ -1316,6 +1316,43 @@ export default function MasterAdmin() {
     }
   };
 
+  // 사용자 엑셀 내보내기 핸들러
+  const handleExcelExport = async () => {
+    try {
+      const response = await fetch('/api/admin/users/export', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('엑셀 내보내기에 실패했습니다');
+      }
+
+      // 파일 다운로드
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `사용자목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "내보내기 완료",
+        description: "사용자 목록이 엑셀 파일로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('Excel export error:', error);
+      toast({
+        title: "내보내기 실패",
+        description: "엑셀 파일 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // 사용자 파일 업로드 핸들러
   const handleUserFileUpload = async () => {
     if (selectedUserFiles.length === 0) {
@@ -1940,6 +1977,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="users" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">사용자 관리</h2>
+              <Button 
+                variant="outline"
+                onClick={handleExcelExport}
+                className="flex items-center space-x-2"
+              >
+                <Download className="w-4 h-4" />
+                <span>엑셀 내보내기</span>
+              </Button>
             </div>
 
             {/* 사용자 관리 방법 안내 */}
