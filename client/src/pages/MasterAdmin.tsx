@@ -5903,140 +5903,124 @@ function NewCategoryDialog({
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 카테고리 레벨 선택 */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* 카테고리 구조 설명 */}
+          <div className="bg-blue-50 p-4 rounded-lg border">
+            <h4 className="font-medium text-blue-900 mb-2">카테고리 구조</h4>
+            <div className="text-sm text-blue-700 space-y-1">
+              <p>• <strong>최상위</strong>: 인문대학, 공과대학, 경영대학</p>
+              <p>• <strong>중간</strong>: 국어국문학과, 컴퓨터공학과, 경영학과</p>
+              <p>• <strong>세부</strong>: 1학년, 석사과정, 박사과정</p>
+            </div>
+          </div>
+
+          {/* 상위 카테고리 선택 (선택사항) */}
           <div className="space-y-2">
-            <Label>카테고리 레벨</Label>
-            <Select value={categoryLevel} onValueChange={handleCategoryLevelChange}>
+            <Label className="flex items-center">
+              상위 카테고리 
+              <span className="text-xs text-gray-500 ml-2">(최상위 카테고리 생성 시 비워두세요)</span>
+            </Label>
+            <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
               <SelectTrigger>
-                <SelectValue placeholder="상위 카테고리 (예: 인문대학)" />
+                <SelectValue placeholder="상위 카테고리 선택 (선택사항)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="upper">상위 카테고리 (예: 인문대학)</SelectItem>
-                <SelectItem value="lower">하위 카테고리 (예: 영어영문과)</SelectItem>
-                <SelectItem value="detail">세부 카테고리 (예: 1학년)</SelectItem>
+                <SelectItem value="">없음 (최상위 카테고리 생성)</SelectItem>
+                {upperCategories.map((category) => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* 상위 카테고리일 때: 카테고리 이름만 */}
-          {categoryLevel === "upper" && (
+          {/* 하위 카테고리 선택 (상위가 선택된 경우에만) */}
+          {selectedUpperCategory && (
             <div className="space-y-2">
-              <Label>카테고리이름 *</Label>
-              <Input 
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                placeholder="예: 인문대학, 공과대학"
-              />
+              <Label className="flex items-center">
+                하위 카테고리 
+                <span className="text-xs text-gray-500 ml-2">(중간 카테고리 생성 시 비워두세요)</span>
+              </Label>
+              <Select value={selectedLowerCategory} onValueChange={handleLowerCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="하위 카테고리 선택 (선택사항)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">없음 (중간 카테고리 생성)</SelectItem>
+                  {getLowerCategories(selectedUpperCategory).map((category) => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
 
-          {/* 하위 카테고리일 때: 상위 선택 + 카테고리 이름 */}
-          {categoryLevel === "lower" && (
-            <>
-              <div className="space-y-2">
-                <Label>상위 카테고리 선택 *</Label>
-                <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="상위 카테고리를 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {upperCategories.map((category) => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>카테고리이름 *</Label>
-                <Input 
-                  value={categoryName}
-                  onChange={(e) => setCategoryName(e.target.value)}
-                  placeholder="예: 국어국문학과, 영어영문학과"
-                />
-              </div>
-            </>
-          )}
+          {/* 생성할 카테고리 이름 */}
+          <div className="space-y-2">
+            <Label className="flex items-center">
+              카테고리 이름 *
+              <span className="text-xs text-blue-600 ml-2">
+                {!selectedUpperCategory 
+                  ? "(최상위 카테고리)" 
+                  : !selectedLowerCategory 
+                  ? "(중간 카테고리)"
+                  : "(세부 카테고리)"
+                }
+              </span>
+            </Label>
+            <Input 
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder={
+                !selectedUpperCategory 
+                  ? "예: 인문대학, 공과대학, 경영대학" 
+                  : !selectedLowerCategory 
+                  ? "예: 국어국문학과, 컴퓨터공학과, 경영학과"
+                  : "예: 1학년, 석사과정, 박사과정"
+              }
+              required
+            />
+          </div>
 
-          {/* 세부 카테고리일 때: 상위 선택 + 하위 선택 + 카테고리 이름 */}
-          {categoryLevel === "detail" && (
-            <>
-              <div className="space-y-2">
-                <Label>상위 카테고리 선택 *</Label>
-                <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="상위 카테고리를 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {upperCategories.map((category) => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {selectedUpperCategory && (
-                <div className="space-y-2">
-                  <Label>하위 카테고리 선택 *</Label>
-                  <Select value={selectedLowerCategory} onValueChange={handleLowerCategoryChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="하위 카테고리를 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getLowerCategories(selectedUpperCategory).map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              {selectedLowerCategory && (
-                <div className="space-y-2">
-                  <Label>카테고리이름 *</Label>
-                  <Input 
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                    placeholder="예: 1학년, 석사과정"
-                  />
-                </div>
-              )}
-            </>
+          {/* 미리보기 */}
+          {categoryName && (
+            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+              <Label className="text-green-800 text-sm font-medium">생성될 카테고리 경로:</Label>
+              <p className="text-green-700 mt-1">
+                {selectedUpperCategory && `${selectedUpperCategory} > `}
+                {selectedLowerCategory && `${selectedLowerCategory} > `}
+                <strong>{categoryName}</strong>
+              </p>
+            </div>
           )}
 
           {/* 설명 */}
           <div className="space-y-2">
-            <Label>설명</Label>
+            <Label>설명 (선택사항)</Label>
             <Textarea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="카테고리에 대한 설명을 입력하세요"
               className="resize-none"
-              rows={4}
+              rows={3}
             />
           </div>
 
           {/* 버튼 그룹 */}
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-end space-x-3 pt-4 border-t">
             <Button 
               type="button" 
-              variant="destructive"
+              variant="outline"
               onClick={handleClose}
-              className="flex items-center"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
-              삭제
+              취소
             </Button>
-            <div className="flex space-x-2">
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={handleClose}
-              >
-                취소
-              </Button>
-              <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
-                생성
-              </Button>
-            </div>
+            <Button 
+              type="submit" 
+              className="bg-blue-500 hover:bg-blue-600"
+              disabled={!categoryName.trim()}
+            >
+              카테고리 생성
+            </Button>
           </div>
         </form>
       </DialogContent>
