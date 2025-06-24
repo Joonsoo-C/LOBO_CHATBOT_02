@@ -5518,13 +5518,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
           </DialogContent>
         </Dialog>
+        </main>
       </div>
     </div>
   );
 }
 
 export default MasterAdmin;
-                onDrop={handleUserFileDrop}
                 onClick={handleUserFileSelect}
               >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
