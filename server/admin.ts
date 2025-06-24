@@ -986,7 +986,7 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // Organization category file upload endpoint
-  app.post("/api/admin/upload-org-categories", requireMasterAdmin, orgCategoryUpload.array('files'), async (req: any, res) => {
+  app.post("/api/admin/upload-org-categories", requireMasterAdmin, orgCategoryUpload.array('files', 10), async (req: any, res) => {
     try {
       console.log('Organization category upload request received');
       const files = req.files;
