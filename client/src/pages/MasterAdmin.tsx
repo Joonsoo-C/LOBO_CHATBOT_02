@@ -5819,52 +5819,48 @@ function NewCategoryDialog({
   onSubmit: (data: NewCategoryFormData) => void;
 }) {
   const [categoryLevel, setCategoryLevel] = useState("detail");
-  const [upperCategory, setUpperCategory] = useState("");
-  const [lowerCategory, setLowerCategory] = useState("");
-  
-  const form = useForm<NewCategoryFormData>({
-    resolver: zodResolver(newCategorySchema),
-    defaultValues: {
-      categoryLevel: "detail",
-      parentCategory: "",
-      categoryName: "",
-      description: "",
-    },
-  });
+  const [selectedUpperCategory, setSelectedUpperCategory] = useState("");
+  const [selectedLowerCategory, setSelectedLowerCategory] = useState("");
+  const [categoryName, setCategoryName] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleCategoryLevelChange = (level: string) => {
     setCategoryLevel(level);
-    form.setValue("categoryLevel", level);
-    setUpperCategory("");
-    setLowerCategory("");
-    form.setValue("parentCategory", "");
+    setSelectedUpperCategory("");
+    setSelectedLowerCategory("");
+    setCategoryName("");
   };
 
   const handleUpperCategoryChange = (category: string) => {
-    setUpperCategory(category);
-    setLowerCategory("");
-    form.setValue("parentCategory", category);
+    setSelectedUpperCategory(category);
+    setSelectedLowerCategory("");
   };
 
   const handleLowerCategoryChange = (category: string) => {
-    setLowerCategory(category);
-    form.setValue("parentCategory", category);
+    setSelectedLowerCategory(category);
   };
 
-  const handleSubmit = (data: NewCategoryFormData) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const data: NewCategoryFormData = {
+      categoryLevel,
+      parentCategory: categoryLevel === "lower" ? selectedUpperCategory : selectedLowerCategory,
+      categoryName,
+      description,
+    };
+    
     onSubmit(data);
-    form.reset();
-    setCategoryLevel("detail");
-    setUpperCategory("");
-    setLowerCategory("");
+    handleClose();
   };
 
   const handleClose = () => {
     onOpenChange(false);
-    form.reset();
     setCategoryLevel("detail");
-    setUpperCategory("");
-    setLowerCategory("");
+    setSelectedUpperCategory("");
+    setSelectedLowerCategory("");
+    setCategoryName("");
+    setDescription("");
   };
 
   // 상위 카테고리 옵션
@@ -5907,158 +5903,138 @@ function NewCategoryDialog({
           </p>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            {/* 카테고리 레벨 선택 */}
-            <FormField
-              control={form.control}
-              name="categoryLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>카테고리 레벨</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={handleCategoryLevelChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="세부 카테고리 (예: 1학년)" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="upper">상위 카테고리</SelectItem>
-                      <SelectItem value="lower">하위 카테고리</SelectItem>
-                      <SelectItem value="detail">세부 카테고리 (예: 1학년)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 카테고리 레벨 선택 */}
+          <div className="space-y-2">
+            <Label>카테고리 레벨</Label>
+            <Select value={categoryLevel} onValueChange={handleCategoryLevelChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="세부 카테고리 (예: 1학년)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="upper">상위 카테고리</SelectItem>
+                <SelectItem value="lower">하위 카테고리 (예: 영어영문과)</SelectItem>
+                <SelectItem value="detail">세부 카테고리 (예: 1학년)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            {/* 상위 카테고리 선택 */}
-            {(categoryLevel === "lower" || categoryLevel === "detail") && (
-              <FormField
-                control={form.control}
-                name="upperCategory"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>상위 카테고리 선택 *</FormLabel>
-                    <Select value={upperCategory} onValueChange={handleUpperCategoryChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="상위 카테고리를 선택하세요" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {upperCategories.map((category) => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          {/* 상위 카테고리 선택 (하위 카테고리일 때) */}
+          {categoryLevel === "lower" && (
+            <div className="space-y-2">
+              <Label>상위 카테고리 선택 *</Label>
+              <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="상위 카테고리를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {upperCategories.map((category) => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* 세부 카테고리일 때: 상위 카테고리 선택 */}
+          {categoryLevel === "detail" && (
+            <div className="space-y-2">
+              <Label>상위 카테고리 선택 *</Label>
+              <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="상위 카테고리를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {upperCategories.map((category) => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* 세부 카테고리일 때: 하위 카테고리 선택 */}
+          {categoryLevel === "detail" && selectedUpperCategory && (
+            <div className="space-y-2">
+              <Label>하위 카테고리 선택 *</Label>
+              <Select value={selectedLowerCategory} onValueChange={handleLowerCategoryChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="하위 카테고리를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {getLowerCategories(selectedUpperCategory).map((category) => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* 세부 카테고리일 때: 세부 카테고리 이름 */}
+          {categoryLevel === "detail" && selectedLowerCategory && (
+            <div className="space-y-2">
+              <Label>세부 카테고리 이름 *</Label>
+              <Input 
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                placeholder="예: 1학년, 석사과정"
               />
-            )}
+            </div>
+          )}
 
-            {/* 하위 카테고리 선택 (세부 카테고리일 때만) */}
-            {categoryLevel === "detail" && upperCategory && (
-              <FormField
-                control={form.control}
-                name="lowerCategory"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>하위 카테고리 선택 *</FormLabel>
-                    <Select value={lowerCategory} onValueChange={handleLowerCategoryChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="하위 카테고리를 선택하세요" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {getLowerCategories(upperCategory).map((category) => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          {/* 상위/하위 카테고리일 때: 카테고리 이름 */}
+          {(categoryLevel === "upper" || categoryLevel === "lower") && (
+            <div className="space-y-2">
+              <Label>
+                {categoryLevel === "upper" ? "상위 카테고리 이름" : "하위 카테고리 이름"} *
+              </Label>
+              <Input 
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                placeholder={
+                  categoryLevel === "upper" ? "예: 인문대학, 공과대학" : "예: 국어국문학과, 영어영문학과"
+                } 
               />
-            )}
+            </div>
+          )}
 
-            {/* 카테고리 이름 */}
-            <FormField
-              control={form.control}
-              name="categoryName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {categoryLevel === "upper" ? "상위 카테고리 이름" : 
-                     categoryLevel === "lower" ? "하위 카테고리 이름" : "세부 카테고리 이름"} *
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={
-                        categoryLevel === "upper" ? "예: 인문대학, 공과대학" :
-                        categoryLevel === "lower" ? "예: 국어국문학과, 영어영문학과" :
-                        "예: 1학년, 석사과정"
-                      } 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          {/* 설명 */}
+          <div className="space-y-2">
+            <Label>설명</Label>
+            <Textarea 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="카테고리에 대한 설명을 입력하세요"
+              className="resize-none"
+              rows={4}
             />
+          </div>
 
-            {/* 설명 */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>설명</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="카테고리에 대한 설명을 입력하세요"
-                      className="resize-none"
-                      rows={4}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 버튼 그룹 */}
-            <div className="flex justify-between pt-4">
+          {/* 버튼 그룹 */}
+          <div className="flex justify-between pt-4">
+            <Button 
+              type="button" 
+              variant="destructive"
+              onClick={handleClose}
+              className="flex items-center"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              삭제
+            </Button>
+            <div className="flex space-x-2">
               <Button 
                 type="button" 
-                variant="destructive"
+                variant="outline"
                 onClick={handleClose}
-                className="flex items-center"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                삭제
+                취소
               </Button>
-              <div className="flex space-x-2">
-                <Button 
-                  type="button" 
-                  variant="outline"
-                  onClick={handleClose}
-                >
-                  취소
-                </Button>
-                <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
-                  생성
-                </Button>
-              </div>
+              <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+                생성
+              </Button>
             </div>
-          </form>
-        </Form>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
