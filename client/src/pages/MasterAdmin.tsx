@@ -5471,7 +5471,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 파일 업로드 다이얼로그 */}
+        {/* 사용자 파일 업로드 다이얼로그 */}
         <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
@@ -5489,9 +5489,41 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               />
               <div 
                 className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
+                onClick={handleUserFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">사용자 파일을 업로드하세요</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, Excel 파일 지원 (최대 10MB)
+                </p>
+                <Button variant="outline">
+                  <Upload className="w-4 h-4 mr-2" />
+                  파일 선택
+                </Button>
+              </div>
+              
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "기능 준비 중",
+                    description: "사용자 파일 업로드 기능을 준비 중입니다.",
+                  });
+                }}>
+                  업로드 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
+
+export default MasterAdmin;
                 onDrop={handleUserFileDrop}
                 onClick={handleUserFileSelect}
               >
@@ -6389,3 +6421,5 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
     </div>
   );
 }
+
+export default MasterAdmin;
