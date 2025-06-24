@@ -5818,7 +5818,7 @@ function NewCategoryDialog({
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: NewCategoryFormData) => void;
 }) {
-  const [categoryLevel, setCategoryLevel] = useState("detail");
+  const [categoryLevel, setCategoryLevel] = useState("upper");
   const [selectedUpperCategory, setSelectedUpperCategory] = useState("");
   const [selectedLowerCategory, setSelectedLowerCategory] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -5856,7 +5856,7 @@ function NewCategoryDialog({
 
   const handleClose = () => {
     onOpenChange(false);
-    setCategoryLevel("detail");
+    setCategoryLevel("upper");
     setSelectedUpperCategory("");
     setSelectedLowerCategory("");
     setCategoryName("");
@@ -5909,93 +5909,97 @@ function NewCategoryDialog({
             <Label>카테고리 레벨</Label>
             <Select value={categoryLevel} onValueChange={handleCategoryLevelChange}>
               <SelectTrigger>
-                <SelectValue placeholder="세부 카테고리 (예: 1학년)" />
+                <SelectValue placeholder="상위 카테고리 (예: 인문대학)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="upper">상위 카테고리</SelectItem>
+                <SelectItem value="upper">상위 카테고리 (예: 인문대학)</SelectItem>
                 <SelectItem value="lower">하위 카테고리 (예: 영어영문과)</SelectItem>
                 <SelectItem value="detail">세부 카테고리 (예: 1학년)</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* 상위 카테고리 선택 (하위 카테고리일 때) */}
+          {/* 상위 카테고리일 때: 상위 카테고리 이름만 */}
+          {categoryLevel === "upper" && (
+            <div className="space-y-2">
+              <Label>상위 카테고리 이름 *</Label>
+              <Input 
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                placeholder="예: 인문대학, 공과대학"
+              />
+            </div>
+          )}
+
+          {/* 하위 카테고리일 때: 상위 선택 + 하위 이름 */}
           {categoryLevel === "lower" && (
-            <div className="space-y-2">
-              <Label>상위 카테고리 선택 *</Label>
-              <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="상위 카테고리를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {upperCategories.map((category) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label>상위 카테고리 선택 *</Label>
+                <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="상위 카테고리를 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {upperCategories.map((category) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>하위 카테고리 이름 *</Label>
+                <Input 
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  placeholder="예: 국어국문학과, 영어영문학과"
+                />
+              </div>
+            </>
           )}
 
-          {/* 세부 카테고리일 때: 상위 카테고리 선택 */}
+          {/* 세부 카테고리일 때: 상위 선택 + 하위 선택 + 세부 이름 */}
           {categoryLevel === "detail" && (
-            <div className="space-y-2">
-              <Label>상위 카테고리 선택 *</Label>
-              <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="상위 카테고리를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {upperCategories.map((category) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* 세부 카테고리일 때: 하위 카테고리 선택 */}
-          {categoryLevel === "detail" && selectedUpperCategory && (
-            <div className="space-y-2">
-              <Label>하위 카테고리 선택 *</Label>
-              <Select value={selectedLowerCategory} onValueChange={handleLowerCategoryChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="하위 카테고리를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {getLowerCategories(selectedUpperCategory).map((category) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* 세부 카테고리일 때: 세부 카테고리 이름 */}
-          {categoryLevel === "detail" && selectedLowerCategory && (
-            <div className="space-y-2">
-              <Label>세부 카테고리 이름 *</Label>
-              <Input 
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                placeholder="예: 1학년, 석사과정"
-              />
-            </div>
-          )}
-
-          {/* 상위/하위 카테고리일 때: 카테고리 이름 */}
-          {(categoryLevel === "upper" || categoryLevel === "lower") && (
-            <div className="space-y-2">
-              <Label>
-                {categoryLevel === "upper" ? "상위 카테고리 이름" : "하위 카테고리 이름"} *
-              </Label>
-              <Input 
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                placeholder={
-                  categoryLevel === "upper" ? "예: 인문대학, 공과대학" : "예: 국어국문학과, 영어영문학과"
-                } 
-              />
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label>상위 카테고리 선택 *</Label>
+                <Select value={selectedUpperCategory} onValueChange={handleUpperCategoryChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="상위 카테고리를 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {upperCategories.map((category) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {selectedUpperCategory && (
+                <div className="space-y-2">
+                  <Label>하위 카테고리 선택 *</Label>
+                  <Select value={selectedLowerCategory} onValueChange={handleLowerCategoryChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="하위 카테고리를 선택하세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getLowerCategories(selectedUpperCategory).map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {selectedLowerCategory && (
+                <div className="space-y-2">
+                  <Label>세부 카테고리 이름 *</Label>
+                  <Input 
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                    placeholder="예: 1학년, 석사과정"
+                  />
+                </div>
+              )}
+            </>
           )}
 
           {/* 설명 */}
