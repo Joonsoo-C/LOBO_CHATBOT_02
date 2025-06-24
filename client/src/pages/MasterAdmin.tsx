@@ -197,6 +197,14 @@ export default function MasterAdmin() {
   const [overwriteExisting, setOverwriteExisting] = useState(false);
   const [sendWelcome, setSendWelcome] = useState(false);
   const [validateOnly, setValidateOnly] = useState(false);
+
+  // 조직 카테고리 파일 업로드 관련 상태
+  const [selectedOrgCategoryFiles, setSelectedOrgCategoryFiles] = useState<File[]>([]);
+  const [isOrgCategoryUploadDialogOpen, setIsOrgCategoryUploadDialogOpen] = useState(false);
+  const [isOrgCategoryFileUploading, setIsOrgCategoryFileUploading] = useState(false);
+  const [orgCategoryFileUploadProgress, setOrgCategoryFileUploadProgress] = useState(0);
+  const [orgCategoryOverwriteExisting, setOrgCategoryOverwriteExisting] = useState(false);
+  const [orgCategoryValidateOnly, setOrgCategoryValidateOnly] = useState(false);
   
   // 파일 입력 참조
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -1084,6 +1092,199 @@ export default function MasterAdmin() {
           description: `${validFiles.length}개 파일이 추가되었습니다.`,
         });
       }
+    }
+  };
+
+  // 조직 카테고리 파일 선택 핸들러
+  const handleOrgCategoryFileSelect = () => {
+    if (orgCategoryFileInputRef.current) {
+      orgCategoryFileInputRef.current.click();
+    }
+  };
+
+  // 조직 카테고리 파일 입력 변경 핸들러
+  const handleOrgCategoryFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (files.length > 0) {
+      const allowedTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedOrgCategoryFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
+    }
+  };
+
+  // 조직 카테고리 파일 드래그 앤 드롭 핸들러
+  const handleOrgCategoryFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    
+    if (files.length > 0) {
+      const allowedTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+      
+      for (const file of files) {
+        if (!allowedTypes.includes(file.type)) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+          continue;
+        }
+        
+        validFiles.push(file);
+      }
+      
+      if (invalidFiles.length > 0) {
+        toast({
+          title: "일부 파일이 제외됨",
+          description: `${invalidFiles.join(', ')}`,
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedOrgCategoryFiles(prev => [...prev, ...validFiles]);
+        toast({
+          title: "파일 추가됨",
+          description: `${validFiles.length}개 파일이 추가되었습니다.`,
+        });
+      }
+    }
+  };
+
+  // 조직 카테고리 파일 업로드 핸들러
+  const handleOrgCategoryFileUpload = async () => {
+    if (selectedOrgCategoryFiles.length === 0) {
+      toast({
+        title: "파일을 선택해주세요",
+        description: "업로드할 조직 카테고리 파일을 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsOrgCategoryFileUploading(true);
+    setOrgCategoryFileUploadProgress(0);
+
+    try {
+      for (let i = 0; i < selectedOrgCategoryFiles.length; i++) {
+        const file = selectedOrgCategoryFiles[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('overwriteExisting', orgCategoryOverwriteExisting.toString());
+        formData.append('validateOnly', orgCategoryValidateOnly.toString());
+
+        const response = await fetch('/api/admin/organizational-categories/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '파일 업로드에 실패했습니다');
+        }
+
+        const result = await response.json();
+        
+        // 진행률 업데이트
+        const progress = ((i + 1) / selectedOrgCategoryFiles.length) * 100;
+        setOrgCategoryFileUploadProgress(progress);
+
+        if (i === selectedOrgCategoryFiles.length - 1) {
+          // 마지막 파일 업로드 완료
+          toast({
+            title: "조직 카테고리 파일 업로드 완료",
+            description: orgCategoryValidateOnly ? 
+              `검증 완료: ${result.categoryCount || 0}개 카테고리가 유효합니다.` :
+              `업로드 완료: ${result.created || 0}개 생성, ${result.updated || 0}개 업데이트, ${result.errors || 0}개 오류`,
+          });
+        }
+      }
+
+      // 성공 후 상태 초기화
+      setSelectedOrgCategoryFiles([]);
+      setIsOrgCategoryUploadDialogOpen(false);
+      setOrgCategoryOverwriteExisting(false);
+      setOrgCategoryValidateOnly(false);
+
+    } catch (error) {
+      console.error('조직 카테고리 파일 업로드 오류:', error);
+      toast({
+        title: "업로드 실패",
+        description: error instanceof Error ? error.message : "조직 카테고리 파일 업로드에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOrgCategoryFileUploading(false);
+      setOrgCategoryFileUploadProgress(0);
+    }
+  };
+
+  // 조직 카테고리 샘플 파일 다운로드 핸들러
+  const handleDownloadOrgCategorySampleFile = async () => {
+    try {
+      const response = await fetch('/api/admin/organizational-categories/sample', {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('조직 카테고리 샘플 파일 다운로드에 실패했습니다');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '조직카테고리_샘플파일.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "샘플 파일 다운로드 완료",
+        description: "조직 카테고리 엑셀 샘플 파일이 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('Org category sample file download error:', error);
+      toast({
+        title: "다운로드 실패",
+        description: "조직 카테고리 샘플 파일 다운로드에 실패했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
