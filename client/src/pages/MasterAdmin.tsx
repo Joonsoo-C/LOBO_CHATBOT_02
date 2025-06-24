@@ -1990,12 +1990,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 목록 테이블 */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>사용자 목록</CardTitle>
                 {hasSearched && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400" style={{ display: 'none' }}>
-                    전체 {filteredUsers.length}명 중 {paginatedUsers.length}명 표시 (페이지 {userCurrentPage}/{totalUserPages}) | 데이터베이스 총 사용자: {users?.length || 0}명
-                  </p>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {filteredUsers.length}명 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}개 표시
+                  </div>
                 )}
               </CardHeader>
               <CardContent className="p-0">
@@ -2003,51 +2003,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('name')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>사용자</span>
-                            <ChevronsUpDown className="w-4 h-4" />
-                          </div>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자
                         </th>
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('upperCategory')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>소속 조직</span>
-                            <ChevronsUpDown className="w-4 h-4" />
-                          </div>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 조직
                         </th>
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('role')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>직책/역할</span>
-                            <ChevronsUpDown className="w-4 h-4" />
-                          </div>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          직책/역할
                         </th>
-
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('email')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>이메일</span>
-                            <ChevronsUpDown className="w-4 h-4" />
-                          </div>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          이메일
                         </th>
-                        <th 
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('status')}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            <span>상태</span>
-                            <ChevronsUpDown className="w-4 h-4" />
-                          </div>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           수정
