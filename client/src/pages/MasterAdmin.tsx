@@ -2719,7 +2719,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
 
             {/* 통합된 에이전트 목록 */}
-            <div className="flex justify-between items-center">
+            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+              <div className="flex justify-between items-center">
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
@@ -2872,7 +2873,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </form>
                   </Form>
                 </DialogContent>
-              </Dialog>
+              </div>
+            </Dialog>
 
             {/* 에이전트 목록 */}
             {hasSearched ? (
