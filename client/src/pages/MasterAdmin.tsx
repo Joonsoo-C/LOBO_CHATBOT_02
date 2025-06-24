@@ -50,8 +50,7 @@ import {
   Download,
   ExternalLink,
   Eye,
-  X,
-  ChevronsUpDown
+  X
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -2874,7 +2873,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Form>
                 </DialogContent>
               </Dialog>
-            </div>
 
             {/* 에이전트 목록 */}
             {hasSearched ? (
@@ -5661,14 +5659,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     </div>
   );
 }
-
-// 사용자 편집 폼 컴포넌트
-function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
-  user: any;
-  onSave: (data: any) => void;
-  onCancel: () => void;
-  onDelete?: (userId: string) => void;
-  isLoading: boolean;
 }) {
   const [organizationAffiliations, setOrganizationAffiliations] = useState(
     Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
