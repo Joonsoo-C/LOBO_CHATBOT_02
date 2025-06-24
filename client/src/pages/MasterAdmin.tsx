@@ -2720,8 +2720,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
 
             {/* 통합된 에이전트 목록 */}
-            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-              <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center">
+              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    새 에이전트 추가
+                  </Button>
+                </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
@@ -2874,8 +2880,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </form>
                   </Form>
                 </DialogContent>
-              </div>
-            </Dialog>
+              </Dialog>
+            </div>
 
             {/* 에이전트 목록 */}
             {hasSearched ? (
@@ -5659,6 +5665,474 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
       </main>
+    </div>
+  );
+}
+
+// 사용자 편집 폼 컴포넌트
+function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
+  user: any;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  onDelete?: (userId: string) => void;
+  isLoading: boolean;
+}) {
+  const [organizationAffiliations, setOrganizationAffiliations] = useState(
+    Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
+      ? user.organizationAffiliations
+      : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
+  );
+  
+  const [agentPermissions, setAgentPermissions] = useState(
+    Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
+      ? user.agentPermissions
+      : [{ agentName: "", permissions: [] }]
+  );
+
+  const [userMemo, setUserMemo] = useState(user.userMemo || "");
+  const [accountStatus, setAccountStatus] = useState(user.status || "active");
+  const [userType, setUserType] = useState(user.userType || "student");
+
+  // Update state when user prop changes
+  React.useEffect(() => {
+    setOrganizationAffiliations(
+      Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
+        ? user.organizationAffiliations
+        : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
+    );
+    setAgentPermissions(
+      Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
+        ? user.agentPermissions
+        : [{ agentName: "", permissions: [] }]
+    );
+    setUserMemo(user.userMemo || "");
+    setAccountStatus(user.status || "active");
+    setUserType(user.userType || "student");
+  }, [user]);
+
+  // 조직 계층 구조 데이터
+  const organizationHierarchy = {
+    "대학본부": {
+      "총장실": ["기획팀", "인사팀", "홍보팀"],
+      "교무처": ["교무팀", "학사팀", "입학팀"],
+      "행정처": ["총무팀", "재무팀", "시설팀"]
+    },
+    "인문대학": {
+      "국어국문학과": ["현대문학전공", "고전문학전공", "국어학전공"],
+      "영어영문학과": ["영문학전공", "영어학전공", "번역학전공"],
+      "철학과": ["서양철학전공", "동양철학전공", "논리학전공"]
+    },
+    "사회과학대학": {
+      "정치외교학과": ["정치학전공", "외교학전공", "국제관계전공"],
+      "행정학과": ["일반행정전공", "지방행정전공", "정책학전공"],
+      "심리학과": ["임상심리전공", "인지심리전공", "사회심리전공"]
+    },
+    "자연과학대학": {
+      "수학과": ["순수수학전공", "응용수학전공", "통계학전공"],
+      "물리학과": ["이론물리전공", "실험물리전공", "응용물리전공"],
+      "화학과": ["유기화학전공", "무기화학전공", "물리화학전공"],
+      "생명과학과": ["분자생물학전공", "생화학전공", "생태학전공"]
+    },
+    "공과대학": {
+      "컴퓨터공학과": ["소프트웨어전공", "하드웨어전공", "AI전공"],
+      "전자공학과": ["통신전공", "반도체전공", "제어전공"],
+      "기계공학과": ["설계전공", "열유체전공", "생산전공"],
+      "건축공학과": ["구조전공", "환경전공", "시공전공"]
+    },
+    "경영대학": {
+      "경영학과": ["전략경영전공", "마케팅전공", "재무전공"],
+      "회계학과": ["재무회계전공", "관리회계전공", "세무회계전공"],
+      "국제통상학과": ["무역실무전공", "국제경영전공", "통상정책전공"]
+    },
+    "의과대학": {
+      "의학과": ["기초의학전공", "임상의학전공", "예방의학전공"],
+      "간호학과": ["기본간호전공", "성인간호전공", "소아간호전공"],
+      "약학과": ["약물학전공", "약제학전공", "임상약학전공"]
+    },
+    "대학원": {
+      "일반대학원": ["석사과정", "박사과정", "석박통합과정"],
+      "특수대학원": ["경영대학원", "교육대학원", "공학대학원"],
+      "전문대학원": ["법학전문대학원", "의학전문대학원", "치의학전문대학원"]
+    },
+    "연구기관": {
+      "중앙연구소": ["기초과학연구소", "응용과학연구소", "융합기술연구소"],
+      "산학협력단": ["기술이전팀", "창업지원팀", "산학협력팀"],
+      "부설연구소": ["AI연구소", "바이오연구소", "나노연구소"]
+    }
+  };
+
+  const positionOptions = [
+    "학생", "학부생", "대학원생", "석사과정", "박사과정",
+    "교수", "부교수", "조교수", "전임강사", "시간강사",
+    "연구원", "선임연구원", "책임연구원", "연구교수",
+    "직원", "주임", "과장", "부장", "팀장", "실장",
+    "학과장", "학장", "처장", "원장", "총장", "부총장"
+  ];
+
+  const agentOptions = [
+    "학교 종합 안내", "입학처 안내봇", "학사지원팀", "도서관 사서",
+    "컴퓨터공학과 도우미", "의학과 안내센터", "경영학과 길잡이",
+    "김교수의 미적분학", "박교수의 데이터베이스", "이교수의 영미문학",
+    "AI 논문 작성 도우미", "프로그래밍 튜터", "영어회화 트레이너"
+  ];
+
+  const systemRoleOptions = [
+    "일반 사용자", "외부 사용자", "문서 관리자", "QA 관리자", 
+    "에이전트 관리자", "카테고리 관리자", "운영 관리자", "마스터 관리자"
+  ];
+
+  const permissionOptions = ["에이전트 관리자", "QA 관리자", "문서 관리자"];
+
+  const addOrganizationAffiliation = () => {
+    setOrganizationAffiliations([...organizationAffiliations, 
+      { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
+    ]);
+  };
+
+  const removeOrganizationAffiliation = (index: number) => {
+    if (organizationAffiliations.length > 1) {
+      setOrganizationAffiliations(organizationAffiliations.filter((_: any, i: number) => i !== index));
+    }
+  };
+
+  const updateOrganizationAffiliation = (index: number, field: string, value: string) => {
+    const updated = [...organizationAffiliations];
+    updated[index] = { ...updated[index], [field]: value };
+    
+    // 상위 카테고리 변경 시 하위/세부 카테고리 초기화
+    if (field === 'upperCategory') {
+      updated[index].lowerCategory = "";
+      updated[index].detailCategory = "";
+    }
+    // 하위 카테고리 변경 시 세부 카테고리 초기화
+    if (field === 'lowerCategory') {
+      updated[index].detailCategory = "";
+    }
+    
+    setOrganizationAffiliations(updated);
+  };
+
+  const addAgentPermission = () => {
+    setAgentPermissions([...agentPermissions, { agentName: "", permissions: [] }]);
+  };
+
+  const removeAgentPermission = (index: number) => {
+    if (agentPermissions.length > 1) {
+      setAgentPermissions(agentPermissions.filter((_: any, i: number) => i !== index));
+    }
+  };
+
+  const updateAgentPermission = (index: number, field: string, value: any) => {
+    const updated = [...agentPermissions];
+    updated[index] = { ...updated[index], [field]: value };
+    setAgentPermissions(updated);
+  };
+
+  const handleSave = () => {
+    onSave({
+      name: user.name,
+      email: user.email,
+      organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
+      agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
+      userMemo,
+      status: accountStatus,
+      userType: userType,
+      role: user.role
+    });
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('정말로 이 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      if (onDelete) {
+        onDelete(user.id);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* 기본 정보 */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">기본 정보</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label>이름</Label>
+            <Input value={user.name || ""} disabled className="bg-gray-50" />
+          </div>
+          <div>
+            <Label>이메일</Label>
+            <Input value={user.email || ""} disabled className="bg-gray-50" />
+          </div>
+          <div>
+            <Label>사용자 ID</Label>
+            <Input value={user.id || ""} disabled className="bg-gray-50" />
+          </div>
+          <div>
+            <Label>사용자 타입</Label>
+            <Select value={userType} onValueChange={setUserType}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">학생</SelectItem>
+                <SelectItem value="faculty">교직원</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>계정 상태</Label>
+            <Select value={accountStatus} onValueChange={setAccountStatus}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">활성</SelectItem>
+                <SelectItem value="inactive">비활성</SelectItem>
+                <SelectItem value="locked">잠김</SelectItem>
+                <SelectItem value="pending">대기</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <div>가입 날짜: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
+          {user.lastLoginAt && <div>최종 접속 시간: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
+        </div>
+      </div>
+
+      {/* 조직 소속 정보 */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">조직 소속 정보</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
+            <Plus className="w-4 h-4 mr-2" />
+            소속 추가
+          </Button>
+        </div>
+        
+        {organizationAffiliations.map((affiliation: any, index: number) => (
+          <div key={index} className="border rounded-lg p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">소속 정보 #{index + 1}</h4>
+              {organizationAffiliations.length > 1 && (
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => removeOrganizationAffiliation(index)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* 상위 카테고리 */}
+              <div>
+                <Label>상위 카테고리</Label>
+                <Select 
+                  value={affiliation.upperCategory} 
+                  onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(organizationHierarchy).map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 하위 카테고리 */}
+              <div>
+                <Label>하위 카테고리</Label>
+                <Select 
+                  value={affiliation.lowerCategory} 
+                  onValueChange={(value) => updateOrganizationAffiliation(index, 'lowerCategory', value)}
+                  disabled={!affiliation.upperCategory}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {affiliation.upperCategory && Object.keys((organizationHierarchy as any)[affiliation.upperCategory] || {}).map((subcategory: string) => (
+                      <SelectItem key={subcategory} value={subcategory}>{subcategory}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 세부 카테고리 */}
+              <div>
+                <Label>세부 카테고리</Label>
+                <Select 
+                  value={affiliation.detailCategory} 
+                  onValueChange={(value) => updateOrganizationAffiliation(index, 'detailCategory', value)}
+                  disabled={!affiliation.lowerCategory}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {affiliation.lowerCategory && affiliation.upperCategory && 
+                     ((organizationHierarchy as any)[affiliation.upperCategory]?.[affiliation.lowerCategory] || []).map((detail: string) => (
+                      <SelectItem key={detail} value={detail}>{detail}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 직책/역할 */}
+              <div>
+                <Label>직책/역할</Label>
+                <Select 
+                  value={affiliation.position} 
+                  onValueChange={(value) => updateOrganizationAffiliation(index, 'position', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {positionOptions.map(position => (
+                      <SelectItem key={position} value={position}>{position}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 시스템 역할 */}
+              <div>
+                <Label>시스템 역할</Label>
+                <Select 
+                  value={affiliation.systemRole} 
+                  onValueChange={(value) => updateOrganizationAffiliation(index, 'systemRole', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {systemRoleOptions.map(role => (
+                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 에이전트 권한 정보 */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">에이전트 권한 정보</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addAgentPermission}>
+            <Plus className="w-4 h-4 mr-2" />
+            권한 추가
+          </Button>
+        </div>
+        
+        {agentPermissions.map((agentPerm: any, index: number) => (
+          <div key={index} className="border rounded-lg p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">에이전트 권한 #{index + 1}</h4>
+              {agentPermissions.length > 1 && (
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => removeAgentPermission(index)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 에이전트 선택 */}
+              <div>
+                <Label>에이전트</Label>
+                <Select 
+                  value={agentPerm.agentName} 
+                  onValueChange={(value) => updateAgentPermission(index, 'agentName', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="에이전트 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {agentOptions.map(agent => (
+                      <SelectItem key={agent} value={agent}>{agent}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 권한 선택 */}
+              <div>
+                <Label>관리 권한</Label>
+                <div className="space-y-2">
+                  {permissionOptions.map(permission => (
+                    <div key={permission} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`${index}-${permission}`}
+                        checked={agentPerm.permissions.includes(permission)}
+                        onChange={(e) => {
+                          const currentPermissions = agentPerm.permissions || [];
+                          const newPermissions = e.target.checked
+                            ? [...currentPermissions, permission]
+                            : currentPermissions.filter((p: string) => p !== permission);
+                          updateAgentPermission(index, 'permissions', newPermissions);
+                        }}
+                        className="rounded border-gray-300"
+                      />
+                      <Label htmlFor={`${index}-${permission}`} className="text-sm">
+                        {permission}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 사용자 메모 */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">사용자 메모</h3>
+        <Textarea
+          value={userMemo}
+          onChange={(e) => setUserMemo(e.target.value)}
+          placeholder="사용자에 대한 간단한 메모를 입력하세요..."
+          rows={4}
+        />
+      </div>
+
+      
+
+      {/* 버튼 그룹 */}
+      <div className="flex justify-between">
+        <Button 
+          type="button" 
+          variant="destructive" 
+          onClick={handleDelete}
+          disabled={isLoading || user.id === 'master_admin'}
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          계정 삭제
+        </Button>
+        <div className="space-x-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            취소
+          </Button>
+          <Button onClick={handleSave} disabled={isLoading}>
+            {isLoading ? "저장 중..." : "저장"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
