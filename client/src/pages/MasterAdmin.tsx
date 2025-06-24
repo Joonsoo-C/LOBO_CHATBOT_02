@@ -2917,7 +2917,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             사용자
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            작업
+                            수정
                           </th>
                         </tr>
                       </thead>
@@ -2945,11 +2945,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             >
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
-                                  <div
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-medium mr-3"
-                                    style={{ backgroundColor: agent.backgroundColor }}
-                                  >
-                                    {agent.icon}
+                                  <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border-2 border-gray-200">
+                                    {(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? (
+                                      <img 
+                                        src={(agent as any).icon} 
+                                        alt={`${agent.name} 프로필`}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&size=48&background=random`;
+                                        }}
+                                      />
+                                    ) : (
+                                      <img 
+                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&size=48&background=random`}
+                                        alt={`${agent.name} 프로필`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    )}
                                   </div>
                                   <div>
                                     <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -2968,7 +2981,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-500 font-mono">
-                                  {(agent as any).managerId || '-'}
+                                  {(agent as any).managerId || `prof${String(agent.id).padStart(3, '0')}`}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -2992,7 +3005,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div className="flex space-x-1">
+                                <div className="flex justify-center">
                                   <Button 
                                     variant="outline" 
                                     size="sm" 
@@ -3001,20 +3014,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       e.stopPropagation();
                                       openEditAgentDialog(agent);
                                     }}
+                                    className="hover:bg-blue-50 hover:text-blue-600"
                                   >
-                                    <Edit className="w-4 h-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="text-red-600 hover:text-red-700" 
-                                    title="에이전트 삭제"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      deleteAgentMutation.mutate(agent.id);
-                                    }}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Edit className="w-4 h-4 mr-1" />
+                                    수정
                                   </Button>
                                 </div>
                               </td>
