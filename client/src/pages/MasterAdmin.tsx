@@ -49,8 +49,10 @@ import {
   Menu,
   Download,
   MessageCircle,
-  ExternalLink,
+  RefreshCw,
+  Search,
   Eye,
+  ExternalLink,
   X
 } from "lucide-react";
 import { Link } from "wouter";
@@ -1664,7 +1666,187 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 관리 탭 */}
             <TabsContent value="users" className="space-y-4 mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">에이전트 검색 및 관리</h2>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Button variant="outline" onClick={resetFilters} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                    <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">필터 초기화</span>
+                    <span className="sm:hidden">초기화</span>
+                  </Button>
+                  <Button onClick={executeSearch} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                    <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    검색
+                  </Button>
+                </div>
+              </div>
+
+              {/* 검색 필터 */}
+              <Card>
+                <CardContent className="p-3 sm:p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                    <div>
+                      <Label htmlFor="university-select" className="text-xs sm:text-sm">대학 선택</Label>
+                      <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                        <SelectTrigger id="university-select" className="h-8 sm:h-10 text-xs sm:text-sm">
+                          <SelectValue placeholder="대학 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="로보대학교">로보대학교</SelectItem>
+                          <SelectItem value="대학본부">대학본부</SelectItem>
+                          <SelectItem value="학사부서">학사부서</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="college-select" className="text-xs sm:text-sm">단과대학 선택</Label>
+                      <Select value={selectedCollege} onValueChange={setSelectedCollege}>
+                        <SelectTrigger id="college-select" className="h-8 sm:h-10 text-xs sm:text-sm">
+                          <SelectValue placeholder="단과대학 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="사회과학대학">사회과학대학</SelectItem>
+                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                          <SelectItem value="의과대학">의과대학</SelectItem>
+                          <SelectItem value="대학원">대학원</SelectItem>
+                          <SelectItem value="연구기관">연구기관</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="department-select" className="text-xs sm:text-sm">학과/부서 선택</Label>
+                      <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                        <SelectTrigger id="department-select" className="h-8 sm:h-10 text-xs sm:text-sm">
+                          <SelectValue placeholder="학과/부서 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                          <SelectItem value="전자공학과">전자공학과</SelectItem>
+                          <SelectItem value="기계공학과">기계공학과</SelectItem>
+                          <SelectItem value="국어국문학과">국어국문학과</SelectItem>
+                          <SelectItem value="영어영문학과">영어영문학과</SelectItem>
+                          <SelectItem value="철학과">철학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="user-search" className="text-xs sm:text-sm">에이전트 검색</Label>
+                      <Input
+                        id="user-search"
+                        placeholder="에이전트명을 입력하세요"
+                        value={userSearchQuery}
+                        onChange={(e) => setUserSearchQuery(e.target.value)}
+                        className="h-8 sm:h-10 text-xs sm:text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {hasSearched && (
+                    <div className="mb-4 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300">
+                        검색 결과: {filteredUsers.length}명의 에이전트가 검색되었습니다.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 검색 결과 테이블 */}
+                  {hasSearched && (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-xs sm:text-sm">에이전트명</TableHead>
+                            <TableHead className="text-xs sm:text-sm hidden sm:table-cell">카테고리</TableHead>
+                            <TableHead className="text-xs sm:text-sm hidden md:table-cell">관리자</TableHead>
+                            <TableHead className="text-xs sm:text-sm">상태</TableHead>
+                            <TableHead className="text-xs sm:text-sm hidden lg:table-cell">최근 사용</TableHead>
+                            <TableHead className="text-xs sm:text-sm">관리</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {paginatedUsers.map((user: any) => (
+                            <TableRow 
+                              key={user.id} 
+                              className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                              onClick={() => openUserDetailDialog(user)}
+                            >
+                              <TableCell className="font-medium">
+                                <div className="flex items-center space-x-2 sm:space-x-3">
+                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
+                                      {user.name?.charAt(0) || user.firstName?.charAt(0) || 'N'}
+                                    </span>
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
+                                      {user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
+                                    </div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                      {user.email}
+                                    </div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                <div className="text-xs sm:text-sm">
+                                  {user.upperCategory && (
+                                    <div className="font-medium text-gray-900 dark:text-white truncate">{user.upperCategory}</div>
+                                  )}
+                                  {user.lowerCategory && (
+                                    <div className="text-gray-500 dark:text-gray-400 truncate">{user.lowerCategory}</div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+                                  {user.managerId || '-'}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={user.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                                  {user.status === 'active' ? '활성' : user.status === 'inactive' ? '비활성' : '대기'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden lg:table-cell">
+                                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+                                  {user.lastUsed || '-'}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openUserDetailDialog(user);
+                                  }}
+                                  className="text-xs sm:text-sm px-2 sm:px-3 py-1"
+                                >
+                                  편집
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* 에이전트 관리 탭 */}
+            <TabsContent value="agents" className="space-y-4 mt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">총 사용자</CardTitle>
@@ -5696,8 +5878,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             />}
           </DialogContent>
         </Dialog>
-      </div>
-    </div>
     </div>
   );
 }
