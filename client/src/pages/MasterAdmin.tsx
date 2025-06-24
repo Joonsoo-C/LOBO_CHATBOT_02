@@ -48,6 +48,7 @@ import {
   Palette,
   Menu,
   Download,
+  MessageCircle,
   ExternalLink,
   Eye,
   X
@@ -1545,80 +1546,124 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* 헤더 */}
+      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center min-w-0 flex-1">
+              <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 dark:text-blue-400 mr-2 sm:mr-3 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-sm sm:text-xl font-bold text-gray-900 dark:text-white truncate">
+                  관리자 시스템
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate hidden sm:block">
+                  대학교 AI 챗봇 서비스 통합 관리
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+              {/* 챗봇으로 이동 버튼 */}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.open('/', '_blank')}
+                className="text-xs sm:text-sm px-2 sm:px-3 flex items-center space-x-1"
+              >
+                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">챗봇</span>
+              </Button>
+              
+              {/* 로그아웃 버튼 */}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleLogout}
+                disabled={logoutMutation.isPending}
+                className="text-xs sm:text-sm px-2 sm:px-3 flex items-center space-x-1"
+              >
+                <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">로그아웃</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
 
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-
-                <Shield className="w-8 h-8 text-blue-600" />
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                    마스터 관리자 시스템
-                  </h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    대학교 AI 챗봇 서비스 통합 관리
+      {/* 메인 콘텐츠 */}
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 pt-6 sm:pt-8">
+        {/* 통계 카드 */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <Card>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center">
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 사용자</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
+                    {stats?.totalUsers || 0}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    활성 사용자: {stats?.activeUsers || 0}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => window.open('/', '_blank')}
-                >
-                  LoBo 챗봇
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  로그아웃
-                </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center">
+                <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 dark:text-green-400 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 에이전트</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
+                    {stats?.totalAgents || 0}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    활성 에이전트: {stats?.activeAgents || 0}
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        </header>
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="dashboard">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              대시보드
-            </TabsTrigger>
-            <TabsTrigger value="users">
-              <Users className="w-4 h-4 mr-2" />
-              사용자 관리
-            </TabsTrigger>
-            <TabsTrigger value="agents">
-              <Bot className="w-4 h-4 mr-2" />
-              에이전트 관리
-            </TabsTrigger>
-            <TabsTrigger value="conversations">
-              <MessageSquare className="w-4 h-4 mr-2" />
-              질문/응답 로그
-            </TabsTrigger>
-            <TabsTrigger value="tokens">
-              <Shield className="w-4 h-4 mr-2" />
-              토큰 관리
-            </TabsTrigger>
-            <TabsTrigger value="categories">
-              <Database className="w-4 h-4 mr-2" />
-              카테고리 관리
-            </TabsTrigger>
-            <TabsTrigger value="documents">
-              <FileText className="w-4 h-4 mr-2" />
-              문서 관리
-            </TabsTrigger>
-            <TabsTrigger value="system">
-              <Settings className="w-4 h-4 mr-2" />
-              시스템 설정
-            </TabsTrigger>
-          </TabsList>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center">
+                <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 대화</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">오늘 메시지: 145</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center">
+                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">오늘 활동</p>
+                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">23</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-          {/* 대시보드 */}
-          <TabsContent value="dashboard" className="space-y-6">
+        {/* 탭 컨테이너 */}
+        <div className="sticky top-14 sm:top-16 z-40 bg-gray-50 dark:bg-gray-900 pb-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 h-auto bg-white dark:bg-gray-800 shadow-sm">
+              <TabsTrigger value="users" className="text-xs sm:text-sm py-2 sm:py-2.5">사용자 관리</TabsTrigger>
+              <TabsTrigger value="agents" className="text-xs sm:text-sm py-2 sm:py-2.5">에이전트 관리</TabsTrigger>
+              <TabsTrigger value="documents" className="text-xs sm:text-sm py-2 sm:py-2.5">문서 관리</TabsTrigger>
+            </TabsList>
+
+            {/* 사용자 관리 탭 */}
+            <TabsContent value="users" className="space-y-4 mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -4450,6 +4495,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
           </TabsContent>
           </Tabs>
+        </div>
+      </main>
 
         {/* 에이전트 편집 다이얼로그 */}
         <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
@@ -5649,7 +5696,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             />}
           </DialogContent>
         </Dialog>
-      </main>
+      </div>
+    </div>
     </div>
   );
 }
