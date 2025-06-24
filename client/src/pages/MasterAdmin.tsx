@@ -2719,9 +2719,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 에이전트 생성 대화상자 */}
-            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-              <DialogContent className="max-w-2xl">
+            {/* 통합된 에이전트 목록 */}
+            <div className="flex justify-between items-center">
+                <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
                   </DialogHeader>
@@ -2820,15 +2820,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </FormControl>
                                 <SelectContent>
                                   {organizations?.map((org) => (
-                                    <React.Fragment key={org.id}>
-                                      <SelectItem value={org.id.toString()}>
+                                    <>
+                                      <SelectItem key={org.id} value={org.id.toString()}>
                                         {org.name} ({org.type === 'university' ? '대학교' : 
                                           org.type === 'graduate_school' ? '대학원' : 
                                           org.type === 'college' ? '단과대학' : '학과'})
                                       </SelectItem>
                                       {org.children?.map((college: any) => (
-                                        <React.Fragment key={college.id}>
-                                          <SelectItem value={college.id.toString()}>
+                                        <>
+                                          <SelectItem key={college.id} value={college.id.toString()}>
                                             └ {college.name} ({college.type === 'college' ? '단과대학' : '학과'})
                                           </SelectItem>
                                           {college.children?.map((dept: any) => (
@@ -2836,9 +2836,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               &nbsp;&nbsp;&nbsp;&nbsp;└ {dept.name} (학과)
                                             </SelectItem>
                                           ))}
-                                        </React.Fragment>
+                                        </>
                                       ))}
-                                    </React.Fragment>
+                                    </>
                                   ))}
                                 </SelectContent>
                               </Select>
@@ -2872,8 +2872,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                     </form>
                   </Form>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+            </div>
 
             {/* 에이전트 목록 */}
             {hasSearched ? (
