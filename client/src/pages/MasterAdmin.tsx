@@ -1645,7 +1645,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </TabsTrigger>
             <TabsTrigger value="categories">
               <Database className="w-4 h-4 mr-2" />
-              카테고리 관리
+              조직 카테고리 관리
             </TabsTrigger>
             <TabsTrigger value="documents">
               <FileText className="w-4 h-4 mr-2" />
@@ -3319,10 +3319,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
           </TabsContent>
 
-          {/* 카테고리 관리 */}
+          {/* 조직 카테고리 관리 */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">카테고리 관리</h2>
+              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+              <Button className="whitespace-nowrap">
+                + 새 조직 카테고리
+              </Button>
             </div>
 
             {/* 카테고리 관리 방법 안내 */}
@@ -3362,19 +3365,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
 
-            {/* 카테고리 검색 및 필터링 */}
+            {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">카테고리 검색 및 관리</h3>
-                <Button>
-                  새 조직 카테고리 추가
-                </Button>
-              </div>
+              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>상위 카테고리</Label>
+                  <Label>상위조직</Label>
                   <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -3390,7 +3388,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>하위 카테고리</Label>
+                  <Label>하위조직</Label>
                   <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -3406,7 +3404,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>세부 카테고리</Label>
+                  <Label>세부조직</Label>
                   <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -3445,13 +3443,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
               
-              {/* 검색 결과 표시 */}
-              {hasSearched && (
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: 9개 조직
-                  {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
-                </div>
-              )}
+              
             </div>
 
             <Card>
