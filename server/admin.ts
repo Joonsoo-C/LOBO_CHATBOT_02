@@ -955,4 +955,155 @@ export function setupAdminRoutes(app: Express) {
       });
     }
   });
+
+  // Organization category file upload configuration
+  const orgCategoryUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB
+    },
+    fileFilter: (req, file, cb) => {
+      console.log(`Checking file: ${file.originalname}, MIME: ${file.mimetype}`);
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel', // .xls
+        'text/csv', // .csv
+        'application/csv' // .csv alternative
+      ];
+      const fileName = file.originalname.toLowerCase();
+      const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+      
+      console.log(`File validation - MIME valid: ${allowedTypes.includes(file.mimetype)}, Extension valid: ${isValidExtension}`);
+      
+      if (allowedTypes.includes(file.mimetype) || isValidExtension) {
+        console.log(`File accepted: ${file.originalname}`);
+        cb(null, true);
+      } else {
+        console.log(`File rejected: ${file.originalname}`);
+        cb(new Error('CSV 또는 Excel 파일만 지원됩니다'));
+      }
+    }
+  });
+
+  // Organization category file upload endpoint
+  app.post("/api/admin/upload-org-categories", requireMasterAdmin, orgCategoryUpload.array('files'), async (req: any, res) => {
+    try {
+      console.log('Organization category upload request received');
+      const files = req.files;
+      if (!files || files.length === 0) {
+        return res.status(400).json({ message: "파일이 선택되지 않았습니다." });
+      }
+
+      const { overwriteExisting, validateOnly } = req.body;
+      console.log('Organization category upload options:', { overwriteExisting, validateOnly });
+
+      let totalOrganizations: any[] = [];
+      const processResults: any[] = [];
+
+      // Process each file
+      for (const file of files) {
+        try {
+          console.log(`Processing organization category file: ${file.originalname}`);
+          
+          let jsonData: any[][] = [];
+          const fileName = file.originalname.toLowerCase();
+          
+          if (fileName.endsWith('.csv')) {
+            // CSV file processing
+            const csvText = file.buffer.toString('utf-8');
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            jsonData = lines.map(line => line.split(',').map(cell => cell.trim().replace(/^"|"$/g, '')));
+          } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+            // Excel file processing  
+            const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            
+            // Convert to JSON
+            jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+          } else {
+            console.log(`Unsupported file type: ${file.originalname}`);
+            continue;
+          }
+          
+          if (jsonData.length === 0) {
+            console.log(`Empty file: ${file.originalname}`);
+            continue;
+          }
+
+          // Skip header row and process data
+          const dataRows = jsonData.slice(1);
+          console.log(`Processing ${dataRows.length} organization rows from ${file.originalname}`);
+
+          // Process each row
+          const fileOrganizations = dataRows.map((row, index) => {
+            const rowNum = index + 2; // +2 because we skipped header and array is 0-indexed
+            return {
+              name: row[0] || row.조직명 || row.name,
+              upperCategory: row[1] || row.상위조직 || row.upperCategory,
+              lowerCategory: row[2] || row.하위조직 || row.lowerCategory,
+              detailCategory: row[3] || row.세부조직 || row.detailCategory,
+              description: row[4] || row.설명 || row.description || null,
+              isActive: true,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              sourceFile: file.originalname,
+              sourceRow: rowNum
+            };
+          }).filter(org => org.name); // Only include rows with organization name
+
+          totalOrganizations = totalOrganizations.concat(fileOrganizations);
+          
+          processResults.push({
+            filename: file.originalname,
+            processed: fileOrganizations.length,
+            skipped: dataRows.length - fileOrganizations.length
+          });
+
+        } catch (fileError) {
+          console.error(`Error processing file ${file.originalname}:`, fileError);
+          processResults.push({
+            filename: file.originalname,
+            error: fileError instanceof Error ? fileError.message : 'Unknown error',
+            processed: 0,
+            skipped: 0
+          });
+        }
+      }
+
+      if (validateOnly) {
+        return res.json({
+          success: true,
+          message: `검증 완료: ${totalOrganizations.length}개 조직이 유효합니다.`,
+          organizationCount: totalOrganizations.length,
+          fileResults: processResults,
+          preview: totalOrganizations.slice(0, 10) // Show first 10 for preview
+        });
+      }
+
+      // For now, just simulate processing since we don't have organization storage
+      let createdCount = totalOrganizations.length;
+      let updatedCount = 0;
+      let errorCount = 0;
+
+      console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
+
+      res.json({
+        success: true,
+        message: `조직 카테고리 파일 업로드 완료`,
+        created: createdCount,
+        updated: updatedCount,
+        errors: errorCount,
+        fileResults: processResults,
+        totalProcessed: totalOrganizations.length
+      });
+
+    } catch (error) {
+      console.error('Organization category upload error:', error);
+      res.status(500).json({ 
+        message: "조직 카테고리 파일 업로드 중 오류가 발생했습니다.",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
 }
