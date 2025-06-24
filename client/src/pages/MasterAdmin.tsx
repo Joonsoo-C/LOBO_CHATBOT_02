@@ -1795,7 +1795,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">사용자 검색</h3>
+              <CardTitle>사용자 검색</CardTitle>
               
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
