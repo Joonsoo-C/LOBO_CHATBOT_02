@@ -1638,6 +1638,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* 새 카테고리 생성 다이얼로그 */}
+      <NewCategoryDialog 
+        open={isNewCategoryDialogOpen}
+        onOpenChange={setIsNewCategoryDialogOpen}
+        onSubmit={handleCreateCategory}
+      />
 
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
@@ -5768,5 +5774,214 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
         </div>
       </div>
     </div>
+  );
+}
+
+// 새 카테고리 생성 다이얼로그 컴포넌트
+function NewCategoryDialog({ 
+  open, 
+  onOpenChange, 
+  onSubmit 
+}: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (data: NewCategoryFormData) => void;
+}) {
+  const [categoryLevel, setCategoryLevel] = useState("");
+  
+  const form = useForm<NewCategoryFormData>({
+    resolver: zodResolver(newCategorySchema),
+    defaultValues: {
+      categoryLevel: "",
+      parentCategory: "",
+      categoryName: "",
+      description: "",
+    },
+  });
+
+  const handleCategoryLevelChange = (level: string) => {
+    setCategoryLevel(level);
+    form.setValue("categoryLevel", level);
+    form.setValue("parentCategory", "");
+  };
+
+  const handleSubmit = (data: NewCategoryFormData) => {
+    onSubmit(data);
+    form.reset();
+    setCategoryLevel("");
+  };
+
+  const handleClose = () => {
+    onOpenChange(false);
+    form.reset();
+    setCategoryLevel("");
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center justify-between">
+            새 카테고리 생성
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogTitle>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            생성하려는 카테고리 레벨을 선택하세요.
+          </p>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            {/* 카테고리 레벨 선택 */}
+            <FormField
+              control={form.control}
+              name="categoryLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>카테고리 레벨</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={handleCategoryLevelChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="상위 카테고리 (예: 인문대학)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="upper">상위 카테고리</SelectItem>
+                      <SelectItem value="lower">하위 카테고리</SelectItem>
+                      <SelectItem value="detail">세부 카테고리</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 상위 카테고리 선택 (하위/세부 카테고리일 때만 표시) */}
+            {(categoryLevel === "lower" || categoryLevel === "detail") && (
+              <FormField
+                control={form.control}
+                name="parentCategory"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {categoryLevel === "lower" ? "상위 카테고리" : "하위 카테고리"}
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="선택하세요" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categoryLevel === "lower" && (
+                          <>
+                            <SelectItem value="로보대학교">로보대학교</SelectItem>
+                            <SelectItem value="대학본부">대학본부</SelectItem>
+                            <SelectItem value="학사부서">학사부서</SelectItem>
+                            <SelectItem value="연구기관">연구기관</SelectItem>
+                          </>
+                        )}
+                        {categoryLevel === "detail" && (
+                          <>
+                            <SelectItem value="공과대학">공과대학</SelectItem>
+                            <SelectItem value="경영대학">경영대학</SelectItem>
+                            <SelectItem value="인문대학">인문대학</SelectItem>
+                            <SelectItem value="사회과학대학">사회과학대학</SelectItem>
+                            <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                            <SelectItem value="의과대학">의과대학</SelectItem>
+                            <SelectItem value="법과대학">법과대학</SelectItem>
+                            <SelectItem value="예술대학">예술대학</SelectItem>
+                            <SelectItem value="총장실">총장실</SelectItem>
+                            <SelectItem value="기획처">기획처</SelectItem>
+                            <SelectItem value="교무처">교무처</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* 카테고리 이름 */}
+            <FormField
+              control={form.control}
+              name="categoryName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {categoryLevel === "upper" ? "상위 카테고리 이름" : 
+                     categoryLevel === "lower" ? "하위 카테고리 이름" : "세부 카테고리 이름"} *
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder={
+                        categoryLevel === "upper" ? "예: 인문대학, 공과대학" :
+                        categoryLevel === "lower" ? "예: 국어국문학과, 영어영문학과" :
+                        "예: 학부과정, 대학원과정"
+                      } 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 설명 */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>설명</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="카테고리에 대한 설명을 입력하세요"
+                      className="resize-none"
+                      rows={4}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 버튼 그룹 */}
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button 
+                type="button" 
+                variant="destructive"
+                onClick={handleClose}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                삭제
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={handleClose}
+              >
+                취소
+              </Button>
+              <Button type="submit">
+                생성
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
