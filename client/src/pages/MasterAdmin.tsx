@@ -5808,7 +5808,7 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
   );
 }
 
-// 새 카테고리 생성 다이얼로그 컴포넌트
+// 단계별 카테고리 생성 다이얼로그
 function NewCategoryDialog({ 
   open, 
   onOpenChange, 
@@ -5818,49 +5818,39 @@ function NewCategoryDialog({
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: NewCategoryFormData) => void;
 }) {
-  const [categoryLevel, setCategoryLevel] = useState("upper");
-  const [selectedUpperCategory, setSelectedUpperCategory] = useState("");
-  const [selectedLowerCategory, setSelectedLowerCategory] = useState("");
+  const [step, setStep] = useState(1);
+  const [categoryType, setCategoryType] = useState("");
+  const [upperCategory, setUpperCategory] = useState("");
+  const [middleCategory, setMiddleCategory] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleCategoryLevelChange = (level: string) => {
-    setCategoryLevel(level);
-    setSelectedUpperCategory("");
-    setSelectedLowerCategory("");
+  const resetDialog = () => {
+    setStep(1);
+    setCategoryType("");
+    setUpperCategory("");
+    setMiddleCategory("");
     setCategoryName("");
-  };
-
-  const handleUpperCategoryChange = (category: string) => {
-    setSelectedUpperCategory(category);
-    setSelectedLowerCategory("");
-  };
-
-  const handleLowerCategoryChange = (category: string) => {
-    setSelectedLowerCategory(category);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const data: NewCategoryFormData = {
-      categoryLevel,
-      parentCategory: categoryLevel === "lower" ? selectedUpperCategory : selectedLowerCategory,
-      categoryName,
-      description,
-    };
-    
-    onSubmit(data);
-    handleClose();
+    setDescription("");
   };
 
   const handleClose = () => {
+    resetDialog();
     onOpenChange(false);
-    setCategoryLevel("upper");
-    setSelectedUpperCategory("");
-    setSelectedLowerCategory("");
-    setCategoryName("");
-    setDescription("");
+  };
+
+  const handleNext = () => setStep(step + 1);
+  const handleBack = () => setStep(step - 1);
+
+  const handleSubmit = () => {
+    const data: NewCategoryFormData = {
+      categoryLevel: categoryType,
+      parentCategory: categoryType === "detail" ? middleCategory : categoryType === "lower" ? upperCategory : "",
+      categoryName,
+      description,
+    };
+    onSubmit(data);
+    handleClose();
   };
 
   // 상위 카테고리 옵션
