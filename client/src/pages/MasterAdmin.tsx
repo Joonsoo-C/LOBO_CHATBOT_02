@@ -4953,7 +4953,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  CSV, XLSX 파일 지원 (최대 10MB)
+                  CSV, Excel 파일 지원 (최대 50MB)
                 </p>
                 <Button 
                   variant="outline"
@@ -5018,6 +5018,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <p>• username: 학번/교번 (필수)</p>
                   <p>• userType: "student" 또는 "faculty" (필수)</p>
                   <p>• email: 이메일 주소 (선택)</p>
+                  <p>• upperCategory, lowerCategory, detailCategory, position (선택)</p>
+                  <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다</p>
                 </div>
               </div>
 

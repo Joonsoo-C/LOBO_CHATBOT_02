@@ -332,46 +332,114 @@ export function setupAdminRoutes(app: Express) {
 
       // Read and parse CSV/Excel file
       const filePath = req.file.path;
-      const fileContent = fs.readFileSync(filePath, 'utf8');
-      
-      // Simple CSV parsing
-      const lines = fileContent.split('\n').filter(line => line.trim());
-      if (lines.length < 2) {
-        throw new Error('파일에 충분한 데이터가 없습니다.');
-      }
+      let users = [];
 
-      const headers = lines[0].split(',').map(h => h.trim());
-      const users = [];
+      // Check file type and parse accordingly
+      const fileExtension = path.extname(req.file.originalname).toLowerCase();
       
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
-        if (values.length >= headers.length) {
-          const user: any = {};
-          headers.forEach((header, index) => {
-            user[header] = values[index] || null;
-          });
-          
-          // Validate required fields
-          if (user.username && user.userType) {
-            users.push({
-              id: user.username,
-              username: user.username,
-              firstName: user.firstName || null,
-              lastName: user.lastName || null,
-              email: user.email || null,
-              name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
-              password: 'defaultPassword123',
-              userType: user.userType,
-              role: user.userType === 'faculty' ? 'faculty' : 'student',
-              upperCategory: '로보대학교',
-              lowerCategory: user.userType === 'faculty' ? '교직원' : '학생',
-              status: 'active',
-              createdAt: new Date(),
-              updatedAt: new Date()
+      if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+        // Parse Excel file
+        console.log('Parsing Excel file:', req.file.originalname);
+        
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0]; // Use first sheet
+        const worksheet = workbook.Sheets[sheetName];
+        
+        // Convert sheet to JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        
+        if (jsonData.length < 2) {
+          throw new Error('엑셀 파일에 충분한 데이터가 없습니다.');
+        }
+        
+        const headers = jsonData[0] as string[];
+        console.log('Excel headers:', headers);
+        
+        // Process each row
+        for (let i = 1; i < jsonData.length; i++) {
+          const values = jsonData[i] as any[];
+          if (values && values.length > 0) {
+            const user: any = {};
+            headers.forEach((header, index) => {
+              if (header && values[index] !== undefined && values[index] !== null) {
+                user[header.toString().trim()] = values[index].toString().trim();
+              }
             });
+            
+            // Validate required fields
+            if (user.username && user.userType) {
+              users.push({
+                id: user.username,
+                username: user.username,
+                firstName: user.firstName || null,
+                lastName: user.lastName || null,
+                email: user.email || null,
+                name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+                password: 'defaultPassword123',
+                userType: user.userType,
+                role: user.userType === 'faculty' ? 'faculty' : 'student',
+                upperCategory: user.upperCategory || '로보대학교',
+                lowerCategory: user.lowerCategory || (user.userType === 'faculty' ? '교직원' : '학생'),
+                detailCategory: user.detailCategory || null,
+                position: user.position || null,
+                status: 'active',
+                createdAt: new Date(),
+                updatedAt: new Date()
+              });
+            }
           }
         }
+        
+      } else if (fileExtension === '.csv') {
+        // Parse CSV file
+        console.log('Parsing CSV file:', req.file.originalname);
+        
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const lines = fileContent.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+          throw new Error('CSV 파일에 충분한 데이터가 없습니다.');
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim());
+        
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          if (values.length >= headers.length) {
+            const user: any = {};
+            headers.forEach((header, index) => {
+              user[header] = values[index] || null;
+            });
+            
+            // Validate required fields
+            if (user.username && user.userType) {
+              users.push({
+                id: user.username,
+                username: user.username,
+                firstName: user.firstName || null,
+                lastName: user.lastName || null,
+                email: user.email || null,
+                name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+                password: 'defaultPassword123',
+                userType: user.userType,
+                role: user.userType === 'faculty' ? 'faculty' : 'student',
+                upperCategory: user.upperCategory || '로보대학교',
+                lowerCategory: user.lowerCategory || (user.userType === 'faculty' ? '교직원' : '학생'),
+                detailCategory: user.detailCategory || null,
+                position: user.position || null,
+                status: 'active',
+                createdAt: new Date(),
+                updatedAt: new Date()
+              });
+            }
+          }
+        }
+        
+      } else {
+        throw new Error('지원하지 않는 파일 형식입니다. CSV 또는 Excel 파일만 업로드 가능합니다.');
       }
+
+      console.log(`Parsed ${users.length} users from ${fileExtension} file`);
 
       // Clean up temporary file
       fs.unlinkSync(filePath);
@@ -423,6 +491,77 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ 
         message: error instanceof Error ? error.message : "Failed to upload user file" 
       });
+    }
+  });
+
+  // Sample file download endpoint
+  app.get("/api/admin/users/sample", requireMasterAdmin, async (req, res) => {
+    try {
+      // Create sample Excel file
+      const sampleData = [
+        {
+          'username': 'S2024001',
+          'firstName': '김',
+          'lastName': '학생',
+          'email': 'student1@robo.ac.kr',
+          'userType': 'student',
+          'upperCategory': '로보대학교',
+          'lowerCategory': '공과대학',
+          'detailCategory': '컴퓨터공학과',
+          'position': '학부생'
+        },
+        {
+          'username': 'F2024001',
+          'firstName': '이',
+          'lastName': '교수',
+          'email': 'prof1@robo.ac.kr',
+          'userType': 'faculty',
+          'upperCategory': '로보대학교',
+          'lowerCategory': '공과대학',
+          'detailCategory': '컴퓨터공학과',
+          'position': '교수'
+        }
+      ];
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(sampleData);
+
+      // Auto-size columns
+      const colWidths = [
+        { wch: 15 }, // username
+        { wch: 10 }, // firstName
+        { wch: 10 }, // lastName
+        { wch: 25 }, // email
+        { wch: 10 }, // userType
+        { wch: 15 }, // upperCategory
+        { wch: 15 }, // lowerCategory
+        { wch: 20 }, // detailCategory
+        { wch: 10 }  // position
+      ];
+      worksheet['!cols'] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, '사용자샘플');
+
+      // Generate Excel file buffer
+      const excelBuffer = XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx' 
+      });
+
+      // Set response headers for file download
+      const fileName = `사용자업로드_샘플파일.xlsx`;
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+      res.setHeader('Content-Length', excelBuffer.length);
+
+      // Send file
+      res.send(excelBuffer);
+
+    } catch (error) {
+      console.error("Error creating sample file:", error);
+      res.status(500).json({ message: "샘플 파일 생성에 실패했습니다" });
     }
   });
 
