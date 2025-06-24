@@ -1846,6 +1846,51 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
+              {/* 상태 및 시스템 역할 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>상태</Label>
+                  <Select value={selectedDocumentType} onValueChange={(value) => {
+                    setSelectedDocumentType(value);
+                    executeSearch();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                      <SelectItem value="locked">잠금</SelectItem>
+                      <SelectItem value="pending">대기</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>시스템 역할</Label>
+                  <Select value={selectedDocumentPeriod} onValueChange={(value) => {
+                    setSelectedDocumentPeriod(value);
+                    executeSearch();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                      <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                      <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                      <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                      <SelectItem value="user">일반 사용자</SelectItem>
+                      <SelectItem value="external">외부 사용자</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div></div>
+              </div>
+
               {/* 사용자 검색 */}
               <div className="space-y-2">
                 <div className="flex space-x-2">
