@@ -51,7 +51,7 @@ import {
   ExternalLink,
   Eye,
   X,
-  ChevronUpDown
+  ChevronsUpDown
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -1946,7 +1946,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>사용자</span>
-                            <ChevronUpDown className="w-4 h-4" />
+                            <ChevronsUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1955,7 +1955,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>소속 조직</span>
-                            <ChevronUpDown className="w-4 h-4" />
+                            <ChevronsUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1964,7 +1964,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>직책/역할</span>
-                            <ChevronUpDown className="w-4 h-4" />
+                            <ChevronsUpDown className="w-4 h-4" />
                           </div>
                         </th>
 
@@ -1974,7 +1974,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>이메일</span>
-                            <ChevronUpDown className="w-4 h-4" />
+                            <ChevronsUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1983,7 +1983,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>상태</span>
-                            <ChevronUpDown className="w-4 h-4" />
+                            <ChevronsUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
