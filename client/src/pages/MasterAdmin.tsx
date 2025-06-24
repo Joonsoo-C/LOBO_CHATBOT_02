@@ -48,11 +48,8 @@ import {
   Palette,
   Menu,
   Download,
-  MessageCircle,
-  RefreshCw,
-  Search,
-  Eye,
   ExternalLink,
+  Eye,
   X
 } from "lucide-react";
 import { Link } from "wouter";
@@ -1548,305 +1545,80 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <div className="flex items-center min-w-0 flex-1">
-              <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 dark:text-blue-400 mr-2 sm:mr-3 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <h1 className="text-sm sm:text-xl font-bold text-gray-900 dark:text-white truncate">
-                  관리자 시스템
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate hidden sm:block">
-                  대학교 AI 챗봇 서비스 통합 관리
-                </p>
+
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+
+                <Shield className="w-8 h-8 text-blue-600" />
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                    마스터 관리자 시스템
+                  </h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    대학교 AI 챗봇 서비스 통합 관리
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-              {/* 챗봇으로 이동 버튼 */}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.open('/', '_blank')}
-                className="text-xs sm:text-sm px-2 sm:px-3 flex items-center space-x-1"
-              >
-                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">챗봇</span>
-              </Button>
-              
-              {/* 로그아웃 버튼 */}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
-                className="text-xs sm:text-sm px-2 sm:px-3 flex items-center space-x-1"
-              >
-                <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">로그아웃</span>
-              </Button>
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => window.open('/', '_blank')}
+                >
+                  LoBo 챗봇
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  로그아웃
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-8">
+            <TabsTrigger value="dashboard">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              대시보드
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <Users className="w-4 h-4 mr-2" />
+              사용자 관리
+            </TabsTrigger>
+            <TabsTrigger value="agents">
+              <Bot className="w-4 h-4 mr-2" />
+              에이전트 관리
+            </TabsTrigger>
+            <TabsTrigger value="conversations">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              질문/응답 로그
+            </TabsTrigger>
+            <TabsTrigger value="tokens">
+              <Shield className="w-4 h-4 mr-2" />
+              토큰 관리
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              <Database className="w-4 h-4 mr-2" />
+              카테고리 관리
+            </TabsTrigger>
+            <TabsTrigger value="documents">
+              <FileText className="w-4 h-4 mr-2" />
+              문서 관리
+            </TabsTrigger>
+            <TabsTrigger value="system">
+              <Settings className="w-4 h-4 mr-2" />
+              시스템 설정
+            </TabsTrigger>
+          </TabsList>
 
-      {/* 메인 콘텐츠 */}
-      <main className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 pt-6 sm:pt-8">
-        {/* 통계 카드 */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-          <Card>
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center">
-                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 사용자</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    {stats?.totalUsers || 0}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    활성 사용자: {stats?.activeUsers || 0}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center">
-                <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 에이전트</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    {stats?.totalAgents || 0}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    활성 에이전트: {stats?.activeAgents || 0}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center">
-                <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 dark:text-purple-400 flex-shrink-0" />
-                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">총 대화</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">0</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">오늘 메시지: 145</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 dark:text-orange-400 flex-shrink-0" />
-                <div className="ml-2 sm:ml-4 min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 truncate">오늘 활동</p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">23</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 탭 컨테이너 */}
-        <div className="sticky top-14 sm:top-16 z-40 bg-gray-50 dark:bg-gray-900 pb-2">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-white dark:bg-gray-800 shadow-sm">
-              <TabsTrigger value="users" className="text-xs sm:text-sm py-2 sm:py-2.5">사용자 관리</TabsTrigger>
-              <TabsTrigger value="agents" className="text-xs sm:text-sm py-2 sm:py-2.5">에이전트 관리</TabsTrigger>
-              <TabsTrigger value="documents" className="text-xs sm:text-sm py-2 sm:py-2.5">문서 관리</TabsTrigger>
-            </TabsList>
-
-            {/* 사용자 관리 탭 */}
-            <TabsContent value="users" className="space-y-4 mt-0">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">에이전트 검색 및 관리</h2>
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <Button variant="outline" onClick={resetFilters} className="flex-1 sm:flex-none text-xs sm:text-sm">
-                    <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">필터 초기화</span>
-                    <span className="sm:hidden">초기화</span>
-                  </Button>
-                  <Button onClick={executeSearch} className="flex-1 sm:flex-none text-xs sm:text-sm">
-                    <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    검색
-                  </Button>
-                </div>
-              </div>
-
-              {/* 검색 필터 */}
-              <Card>
-                <CardContent className="p-3 sm:p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
-                    <div>
-                      <Label htmlFor="university-select" className="text-xs sm:text-sm">대학 선택</Label>
-                      <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-                        <SelectTrigger id="university-select" className="h-8 sm:h-10 text-xs sm:text-sm">
-                          <SelectValue placeholder="대학 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          <SelectItem value="로보대학교">로보대학교</SelectItem>
-                          <SelectItem value="대학본부">대학본부</SelectItem>
-                          <SelectItem value="학사부서">학사부서</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="college-select" className="text-xs sm:text-sm">단과대학 선택</Label>
-                      <Select value={selectedCollege} onValueChange={setSelectedCollege}>
-                        <SelectTrigger id="college-select" className="h-8 sm:h-10 text-xs sm:text-sm">
-                          <SelectValue placeholder="단과대학 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          <SelectItem value="인문대학">인문대학</SelectItem>
-                          <SelectItem value="사회과학대학">사회과학대학</SelectItem>
-                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
-                          <SelectItem value="공과대학">공과대학</SelectItem>
-                          <SelectItem value="경영대학">경영대학</SelectItem>
-                          <SelectItem value="의과대학">의과대학</SelectItem>
-                          <SelectItem value="대학원">대학원</SelectItem>
-                          <SelectItem value="연구기관">연구기관</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="department-select" className="text-xs sm:text-sm">학과/부서 선택</Label>
-                      <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-                        <SelectTrigger id="department-select" className="h-8 sm:h-10 text-xs sm:text-sm">
-                          <SelectValue placeholder="학과/부서 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
-                          <SelectItem value="전자공학과">전자공학과</SelectItem>
-                          <SelectItem value="기계공학과">기계공학과</SelectItem>
-                          <SelectItem value="국어국문학과">국어국문학과</SelectItem>
-                          <SelectItem value="영어영문학과">영어영문학과</SelectItem>
-                          <SelectItem value="철학과">철학과</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="user-search" className="text-xs sm:text-sm">에이전트 검색</Label>
-                      <Input
-                        id="user-search"
-                        placeholder="에이전트명을 입력하세요"
-                        value={userSearchQuery}
-                        onChange={(e) => setUserSearchQuery(e.target.value)}
-                        className="h-8 sm:h-10 text-xs sm:text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  {hasSearched && (
-                    <div className="mb-4 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                      <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300">
-                        검색 결과: {filteredUsers.length}명의 에이전트가 검색되었습니다.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* 검색 결과 테이블 */}
-                  {hasSearched && (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="text-xs sm:text-sm">에이전트명</TableHead>
-                            <TableHead className="text-xs sm:text-sm hidden sm:table-cell">카테고리</TableHead>
-                            <TableHead className="text-xs sm:text-sm hidden md:table-cell">관리자</TableHead>
-                            <TableHead className="text-xs sm:text-sm">상태</TableHead>
-                            <TableHead className="text-xs sm:text-sm hidden lg:table-cell">최근 사용</TableHead>
-                            <TableHead className="text-xs sm:text-sm">관리</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {paginatedUsers.map((user: any) => (
-                            <TableRow 
-                              key={user.id} 
-                              className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
-                              onClick={() => openUserDetailDialog(user)}
-                            >
-                              <TableCell className="font-medium">
-                                <div className="flex items-center space-x-2 sm:space-x-3">
-                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-                                    <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
-                                      {user.name?.charAt(0) || user.firstName?.charAt(0) || 'N'}
-                                    </span>
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
-                                      {user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
-                                    </div>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                      {user.email}
-                                    </div>
-                                  </div>
-                                </div>
-                              </TableCell>
-                              <TableCell className="hidden sm:table-cell">
-                                <div className="text-xs sm:text-sm">
-                                  {user.upperCategory && (
-                                    <div className="font-medium text-gray-900 dark:text-white truncate">{user.upperCategory}</div>
-                                  )}
-                                  {user.lowerCategory && (
-                                    <div className="text-gray-500 dark:text-gray-400 truncate">{user.lowerCategory}</div>
-                                  )}
-                                </div>
-                              </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
-                                  {user.managerId || '-'}
-                                </span>
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant={user.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                                  {user.status === 'active' ? '활성' : user.status === 'inactive' ? '비활성' : '대기'}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="hidden lg:table-cell">
-                                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
-                                  {user.lastUsed || '-'}
-                                </span>
-                              </TableCell>
-                              <TableCell>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openUserDetailDialog(user);
-                                  }}
-                                  className="text-xs sm:text-sm px-2 sm:px-3 py-1"
-                                >
-                                  편집
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* 에이전트 관리 탭 */}
-            <TabsContent value="agents" className="space-y-4 mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 대시보드 */}
+          <TabsContent value="dashboard" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">총 사용자</CardTitle>
@@ -4676,9 +4448,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
           </TabsContent>
-          </Tabs>
-        </div>
-      </main>
+        </Tabs>
 
         {/* 에이전트 편집 다이얼로그 */}
         <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
@@ -5860,9 +5630,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 사용자 상세 정보 편집 다이얼로그 */}
         <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
-          <DialogContent className="max-w-[95vw] sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-sm sm:text-lg">사용자 상세 정보 편집</DialogTitle>
+              <DialogTitle>사용자 상세 정보 편집</DialogTitle>
             </DialogHeader>
             
             {selectedUser && <UserEditForm 
@@ -5878,6 +5648,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             />}
           </DialogContent>
         </Dialog>
+      </main>
     </div>
   );
 }
@@ -6114,42 +5885,40 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
       </div>
 
       {/* 조직 소속 정보 */}
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-base sm:text-lg font-semibold">조직 소속 정보</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation} className="text-xs sm:text-sm px-2 sm:px-3">
-            <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">소속 추가</span>
-            <span className="sm:hidden">추가</span>
+          <h3 className="text-lg font-semibold">조직 소속 정보</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
+            <Plus className="w-4 h-4 mr-2" />
+            소속 추가
           </Button>
         </div>
         
         {organizationAffiliations.map((affiliation: any, index: number) => (
-          <div key={index} className="border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4">
+          <div key={index} className="border rounded-lg p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm sm:text-base font-medium">소속 정보 #{index + 1}</h4>
+              <h4 className="font-medium">소속 정보 #{index + 1}</h4>
               {organizationAffiliations.length > 1 && (
                 <Button 
                   type="button" 
                   variant="ghost" 
                   size="sm" 
                   onClick={() => removeOrganizationAffiliation(index)}
-                  className="h-6 w-6 sm:h-8 sm:w-8 p-0"
                 >
-                  <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <X className="w-4 h-4" />
                 </Button>
               )}
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               {/* 상위 카테고리 */}
               <div>
-                <Label className="text-xs sm:text-sm">상위 카테고리</Label>
+                <Label>상위 카테고리</Label>
                 <Select 
                   value={affiliation.upperCategory} 
                   onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
                 >
-                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm">
+                  <SelectTrigger>
                     <SelectValue placeholder="선택" />
                   </SelectTrigger>
                   <SelectContent>
