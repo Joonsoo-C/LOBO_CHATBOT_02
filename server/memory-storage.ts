@@ -434,6 +434,10 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.agents.set(id, newAgent);
+    
+    // Invalidate cache
+    cache.delete('all_agents');
+    
     return newAgent;
   }
 
@@ -533,9 +537,16 @@ export class MemoryStorage implements IStorage {
 
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
-    return Array.from(this.messages.values())
+    const cacheKey = `conversation_messages_${conversationId}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    
+    const messages = Array.from(this.messages.values())
       .filter(msg => msg.conversationId === conversationId)
       .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
+    
+    cache.set(cacheKey, messages, 3 * 60 * 1000); // Cache for 3 minutes
+    return messages;
   }
 
   async createMessage(message: InsertMessage): Promise<Message> {
@@ -547,7 +558,17 @@ export class MemoryStorage implements IStorage {
     };
     this.messages.set(id, newMessage);
 
-    // Update conversation
+    // Update conversation's lastMessageAt
+    const conversation = this.conversations.get(message.conversationId);
+    if (conversation) {
+      conversation.lastMessageAt = newMessage.createdAt;
+      
+      // Invalidate related caches
+      cache.delete(`user_conversations_${conversation.userId}`);
+      cache.delete(`conversation_messages_${message.conversationId}`);
+    }
+
+    return newMessage;
     const conversation = this.conversations.get(message.conversationId);
     if (conversation) {
       this.conversations.set(message.conversationId, {

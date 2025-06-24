@@ -82,6 +82,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Agent routes
   app.get('/api/agents', isAuthenticated, async (req, res) => {
     try {
+      // Set cache headers for client-side caching
+      res.set({
+        'Cache-Control': 'public, max-age=300', // 5 minutes
+        'ETag': `"agents-${Date.now()}"`
+      });
+      
       const agents = await storage.getAllAgents();
       res.json(agents);
     } catch (error) {

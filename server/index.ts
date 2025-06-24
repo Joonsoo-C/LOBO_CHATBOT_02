@@ -90,7 +90,13 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 
-  // Initialize sample data
-  initializeSampleAgents();
-  initializeSampleUsers();
+  // Initialize sample data asynchronously to speed up startup
+  Promise.all([
+    initializeSampleAgents(),
+    initializeSampleUsers()
+  ]).then(() => {
+    console.log("Sample data initialization completed");
+  }).catch((error) => {
+    console.error("Error during sample data initialization:", error);
+  });
 })();
