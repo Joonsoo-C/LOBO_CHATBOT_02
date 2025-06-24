@@ -1185,7 +1185,7 @@ export default function MasterAdmin() {
         formData.append('overwriteExisting', orgOverwriteExisting.toString());
         formData.append('validateOnly', orgValidateOnly.toString());
 
-        const response = await fetch('/api/admin/organizations/upload', {
+        const response = await fetch('/api/admin/upload-org-categories', {
           method: 'POST',
           body: formData,
         });
