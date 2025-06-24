@@ -137,6 +137,16 @@ const userEditSchema = z.object({
 
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
+// 새 카테고리 생성 스키마
+const newCategorySchema = z.object({
+  categoryLevel: z.string().min(1, "카테고리 레벨을 선택해주세요"),
+  parentCategory: z.string().optional(),
+  categoryName: z.string().min(1, "상위 카테고리 이름을 입력해주세요"),
+  description: z.string().optional(),
+});
+
+type NewCategoryFormData = z.infer<typeof newCategorySchema>;
+
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -168,6 +178,8 @@ export default function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+  const [newCategoryLevel, setNewCategoryLevel] = useState("");
   
   // 문서 상세 팝업 상태
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
@@ -201,6 +213,46 @@ export default function MasterAdmin() {
   
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  // 새 카테고리 폼
+  const newCategoryForm = useForm<NewCategoryFormData>({
+    resolver: zodResolver(newCategorySchema),
+    defaultValues: {
+      categoryLevel: "",
+      parentCategory: "",
+      categoryName: "",
+      description: "",
+    },
+  });
+
+  // 새 카테고리 생성 핸들러
+  const handleCreateCategory = async (data: NewCategoryFormData) => {
+    try {
+      // 카테고리 생성 로직 구현
+      console.log("새 카테고리 생성:", data);
+      
+      toast({
+        title: "카테고리 생성 완료",
+        description: `${data.categoryName} 카테고리가 성공적으로 생성되었습니다.`,
+      });
+      
+      setIsNewCategoryDialogOpen(false);
+      newCategoryForm.reset();
+    } catch (error) {
+      toast({
+        title: "카테고리 생성 실패",
+        description: "카테고리 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 카테고리 레벨 변경 핸들러
+  const handleCategoryLevelChange = (level: string) => {
+    setNewCategoryLevel(level);
+    newCategoryForm.setValue("categoryLevel", level);
+    newCategoryForm.setValue("parentCategory", "");
+  };
 
   // 고유한 상위 카테고리 추출 (imported data 사용)
   const uniqueUpperCategories = getUniqueUpperCategories();
@@ -3363,7 +3415,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
+                <Button onClick={() => setIsNewCategoryDialogOpen(true)}>
+                  + 새 조직 카테고리 추가
+                </Button>
+              </div>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
