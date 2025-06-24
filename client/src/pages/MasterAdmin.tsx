@@ -3459,7 +3459,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardTitle>조직 목록</CardTitle>
                 {hasSearched && (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 9개 조직 표시
+                    전체 {organizationCategories.length}개 조직 표시
                   </div>
                 )}
               </CardHeader>
@@ -3505,264 +3505,107 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                         </tr>
                       ) : (
-                        <>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                로보대학교
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">상위 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              8개 단과대학
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              15,800명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="하위 조직 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                공과대학
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">하위 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              로보대학교
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              6개 학과
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              4,200명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="하위 조직 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                컴퓨터공학과
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">세부 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              공과대학
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              420명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="소속 인원 보기">
-                                  <Users className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                경영학과
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">세부 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              경영대학
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              380명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="소속 인원 보기">
-                                  <Users className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                의과대학
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">하위 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              로보대학교
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              3개 학과
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              1,200명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="하위 조직 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                의학과
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">세부 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              의과대학
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              800명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="소속 인원 보기">
-                                  <Users className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                대학본부
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">상위 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              5개 부서
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              150명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="하위 조직 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                총장실
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">하위 카테고리</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              대학본부
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              -
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              25명
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="조직 편집">
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="소속 인원 보기">
-                                  <Users className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
+                        organizationCategories.map((category, index) => {
+                          // 조직 유형 결정
+                          const getOrgType = (category: any) => {
+                            const upperCategories = ["대학본부", "학사부서", "인문대학", "사회과학대학", "자연과학대학", "공과대학", "경영대학", "의과대학", "대학원", "연구기관"];
+                            if (upperCategories.includes(category.upperCategory) && !category.lowerCategory) {
+                              return "상위 카테고리";
+                            } else if (category.lowerCategory && !category.detailCategory) {
+                              return "하위 카테고리";
+                            } else {
+                              return "세부 카테고리";
+                            }
+                          };
+
+                          // 표시할 조직명 결정
+                          const getOrgName = (category: any) => {
+                            if (category.detailCategory) return category.detailCategory;
+                            if (category.lowerCategory) return category.lowerCategory;
+                            return category.upperCategory;
+                          };
+
+                          // 상위 조직 결정
+                          const getParentOrg = (category: any) => {
+                            if (category.detailCategory) return category.lowerCategory;
+                            if (category.lowerCategory) return category.upperCategory;
+                            return "-";
+                          };
+
+                          // 하위 조직 수 계산
+                          const getSubOrgCount = (category: any) => {
+                            if (category.detailCategory) return "-";
+                            
+                            const subOrgs = organizationCategories.filter(cat => {
+                              if (category.lowerCategory) {
+                                return cat.upperCategory === category.upperCategory && cat.lowerCategory === category.lowerCategory && cat.detailCategory;
+                              } else {
+                                return cat.upperCategory === category.upperCategory && cat.lowerCategory && cat.lowerCategory !== category.lowerCategory;
+                              }
+                            });
+                            
+                            return subOrgs.length > 0 ? `${subOrgs.length}개 하위조직` : "-";
+                          };
+
+                          // 소속 인원 수 (랜덤 생성)
+                          const getPersonnelCount = (category: any) => {
+                            const orgType = getOrgType(category);
+                            if (orgType === "상위 카테고리") {
+                              return `${Math.floor(Math.random() * 5000) + 1000}명`;
+                            } else if (orgType === "하위 카테고리") {
+                              return `${Math.floor(Math.random() * 1000) + 200}명`;
+                            } else {
+                              return `${Math.floor(Math.random() * 300) + 50}명`;
+                            }
+                          };
+
+                          const orgType = getOrgType(category);
+                          const orgName = getOrgName(category);
+                          const parentOrg = getParentOrg(category);
+                          const subOrgCount = getSubOrgCount(category);
+                          const personnelCount = getPersonnelCount(category);
+
+                          return (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {orgName}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge variant="outline">{orgType}</Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {parentOrg}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {subOrgCount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {personnelCount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div className="flex space-x-1">
+                                  <Button variant="outline" size="sm" title="조직 편집">
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  {orgType === "세부 카테고리" ? (
+                                    <Button variant="outline" size="sm" title="소속 인원 보기">
+                                      <Users className="w-4 h-4" />
+                                    </Button>
+                                  ) : (
+                                    <Button variant="outline" size="sm" title="하위 조직 보기">
+                                      <Eye className="w-4 h-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>
