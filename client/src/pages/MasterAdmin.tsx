@@ -304,6 +304,46 @@ export default function MasterAdmin() {
     }
   }, [users, hasSearched]);
 
+  // 필터된 조직 카테고리 목록 (실시간 필터링)
+  const filteredOrganizationCategories = useMemo(() => {
+    if (!organizationCategories) return [];
+    
+    let filtered = [...organizationCategories];
+    
+    // 검색어 필터링
+    if (userSearchQuery.trim()) {
+      const query = userSearchQuery.toLowerCase();
+      filtered = filtered.filter(category => 
+        (category.upperCategory && category.upperCategory.toLowerCase().includes(query)) ||
+        (category.lowerCategory && category.lowerCategory.toLowerCase().includes(query)) ||
+        (category.detailCategory && category.detailCategory.toLowerCase().includes(query))
+      );
+    }
+    
+    // 상위 카테고리 필터링
+    if (selectedUniversity !== 'all') {
+      filtered = filtered.filter(category => 
+        category.upperCategory === selectedUniversity
+      );
+    }
+    
+    // 하위 카테고리 필터링
+    if (selectedCollege !== 'all') {
+      filtered = filtered.filter(category => 
+        category.lowerCategory === selectedCollege
+      );
+    }
+    
+    // 세부 카테고리 필터링
+    if (selectedDepartment !== 'all') {
+      filtered = filtered.filter(category => 
+        category.detailCategory === selectedDepartment
+      );
+    }
+    
+    return filtered;
+  }, [organizationCategories, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
     if (!users) return [];
@@ -561,25 +601,25 @@ export default function MasterAdmin() {
     return categories.sort();
   }, [users, selectedUniversity, selectedCollege]);
 
-  // 상위 카테고리 변경 시 하위 카테고리 초기화
+  // 상위 카테고리 변경 시 하위 카테고리 초기화 (실시간 적용)
   const handleUpperCategoryChange = (value: string) => {
     setSelectedUniversity(value);
     setSelectedCollege('all');
     setSelectedDepartment('all');
-    executeSearch();
+    setHasSearched(true); // 실시간 적용
   };
 
-  // 하위 카테고리 변경 시 세부 카테고리 초기화
+  // 하위 카테고리 변경 시 세부 카테고리 초기화 (실시간 적용)
   const handleLowerCategoryChange = (value: string) => {
     setSelectedCollege(value);
     setSelectedDepartment('all');
-    executeSearch();
+    setHasSearched(true); // 실시간 적용
   };
 
-  // 세부 카테고리 변경 시 검색 실행
+  // 세부 카테고리 변경 시 실시간 적용
   const handleDetailCategoryChange = (value: string) => {
     setSelectedDepartment(value);
-    executeSearch();
+    setHasSearched(true); // 실시간 적용
   };
 
   // 에이전트 검색 함수
@@ -3435,13 +3475,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Input
                       placeholder="조직명으로 검색..."
                       value={userSearchQuery}
-                      onChange={(e) => setUserSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                      onChange={(e) => {
+                        setUserSearchQuery(e.target.value);
+                        setHasSearched(true); // 실시간 검색
+                      }}
+                      onKeyPress={(e) => e.key === 'Enter' && setHasSearched(true)}
                     />
                   </div>
-                  <Button onClick={executeSearch}>
-                    검색
-                  </Button>
                 </div>
               </div>
               
@@ -3451,11 +3491,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>조직 목록</CardTitle>
-                {hasSearched && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {organizationCategories.length}개 조직 표시
-                  </div>
-                )}
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -3483,20 +3521,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {!hasSearched ? (
+                      {filteredOrganizationCategories.length === 0 ? (
                         <tr>
                           <td colSpan={6} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">카테고리 검색</p>
+                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
                               <p className="text-sm">
-                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 조직을 찾아보세요.
+                                검색 조건에 맞는 조직이 없습니다. 다른 조건으로 검색해보세요.
                               </p>
                             </div>
                           </td>
                         </tr>
                       ) : (
-                        organizationCategories.slice(0, 20).map((category, index) => {
+                        filteredOrganizationCategories.slice(0, 20).map((category, index) => {
                           // 소속 인원 수 (랜덤 생성)
                           const getPersonnelCount = () => {
                             if (!category.detailCategory) {
@@ -3539,9 +3577,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <Button variant="outline" size="sm" title="조직 편집">
                                     <Edit className="w-4 h-4" />
                                   </Button>
-                                  <Button variant="outline" size="sm" title="소속 인원 보기">
-                                    <Users className="w-4 h-4" />
-                                  </Button>
                                 </div>
                               </td>
                             </tr>
@@ -3555,10 +3590,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
 
             {/* 페이지네이션 */}
-            {hasSearched && organizationCategories.length > 20 && (
+            {filteredOrganizationCategories.length > 20 && (
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-700 dark:text-gray-300">
-                  총 {organizationCategories.length}개의 조직 중 1-{Math.min(20, organizationCategories.length)}개 표시
+                  총 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button
@@ -3576,7 +3611,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     >
                       1
                     </Button>
-                    {Math.ceil(organizationCategories.length / 20) > 1 && (
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 1 && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -3584,7 +3619,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         2
                       </Button>
                     )}
-                    {Math.ceil(organizationCategories.length / 20) > 2 && (
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 2 && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -3592,14 +3627,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         3
                       </Button>
                     )}
-                    {Math.ceil(organizationCategories.length / 20) > 3 && (
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 3 && (
                       <>
                         <span className="px-2">...</span>
                         <Button
                           variant="outline"
                           size="sm"
                         >
-                          {Math.ceil(organizationCategories.length / 20)}
+                          {Math.ceil(filteredOrganizationCategories.length / 20)}
                         </Button>
                       </>
                     )}
@@ -3608,7 +3643,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={Math.ceil(organizationCategories.length / 20) <= 1}
+                    disabled={Math.ceil(filteredOrganizationCategories.length / 20) <= 1}
                   >
                     다음
                   </Button>
