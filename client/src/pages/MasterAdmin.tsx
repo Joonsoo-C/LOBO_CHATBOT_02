@@ -3364,50 +3364,148 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">카테고리 검색 및 관리</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">카테고리 검색 및 관리</h3>
+                <Button>
+                  새 조직 카테고리 추가
+                </Button>
+              </div>
               
-              {/* 조직 유형 필터 */}
+              {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>조직 유형</Label>
+                  <Label>상위 카테고리</Label>
                   <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="university">대학교</SelectItem>
-                      <SelectItem value="graduate">대학원</SelectItem>
-                      <SelectItem value="college">하위 카테고리</SelectItem>
-                      <SelectItem value="department">세부 카테고리</SelectItem>
+                      <SelectItem value="로보대학교">로보대학교</SelectItem>
+                      <SelectItem value="대학본부">대학본부</SelectItem>
+                      <SelectItem value="학사부서">학사부서</SelectItem>
+                      <SelectItem value="연구기관">연구기관</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>상위 조직</Label>
+                  <Label>하위 카테고리</Label>
                   <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="robo_univ">로보대학교</SelectItem>
-                      <SelectItem value="robo_grad">로보대학교 대학원</SelectItem>
+                      {selectedUniversity === '로보대학교' && (
+                        <>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="사회과학대학">사회과학대학</SelectItem>
+                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                          <SelectItem value="의과대학">의과대학</SelectItem>
+                          <SelectItem value="법과대학">법과대학</SelectItem>
+                          <SelectItem value="예술대학">예술대학</SelectItem>
+                        </>
+                      )}
+                      {selectedUniversity === '대학본부' && (
+                        <>
+                          <SelectItem value="총장실">총장실</SelectItem>
+                          <SelectItem value="기획처">기획처</SelectItem>
+                          <SelectItem value="교무처">교무처</SelectItem>
+                          <SelectItem value="학생처">학생처</SelectItem>
+                          <SelectItem value="총무처">총무처</SelectItem>
+                        </>
+                      )}
+                      {selectedUniversity === '학사부서' && (
+                        <>
+                          <SelectItem value="입학처">입학처</SelectItem>
+                          <SelectItem value="학사관리팀">학사관리팀</SelectItem>
+                          <SelectItem value="도서관">도서관</SelectItem>
+                          <SelectItem value="국제교류센터">국제교류센터</SelectItem>
+                          <SelectItem value="창업지원센터">창업지원센터</SelectItem>
+                        </>
+                      )}
+                      {selectedUniversity === '연구기관' && (
+                        <>
+                          <SelectItem value="산학협력단">산학협력단</SelectItem>
+                          <SelectItem value="연구처">연구처</SelectItem>
+                          <SelectItem value="기술이전센터">기술이전센터</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>하위 카테고리</Label>
+                  <Label>세부 카테고리</Label>
                   <Select value={selectedDepartment} onValueChange={setSelectedDepartment} disabled={selectedCollege === 'all' || selectedUniversity === 'all'}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="engineering">공과대학</SelectItem>
-                      <SelectItem value="business">경영대학</SelectItem>
-                      <SelectItem value="liberal">인문대학</SelectItem>
-                      <SelectItem value="science">자연과학대학</SelectItem>
+                      {selectedCollege === '공과대학' && (
+                        <>
+                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                          <SelectItem value="전자공학과">전자공학과</SelectItem>
+                          <SelectItem value="기계공학과">기계공학과</SelectItem>
+                          <SelectItem value="건축공학과">건축공학과</SelectItem>
+                          <SelectItem value="화학공학과">화학공학과</SelectItem>
+                          <SelectItem value="산업공학과">산업공학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '경영대학' && (
+                        <>
+                          <SelectItem value="경영학과">경영학과</SelectItem>
+                          <SelectItem value="회계학과">회계학과</SelectItem>
+                          <SelectItem value="마케팅학과">마케팅학과</SelectItem>
+                          <SelectItem value="국제경영학과">국제경영학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '인문대학' && (
+                        <>
+                          <SelectItem value="국어국문학과">국어국문학과</SelectItem>
+                          <SelectItem value="영어영문학과">영어영문학과</SelectItem>
+                          <SelectItem value="역사학과">역사학과</SelectItem>
+                          <SelectItem value="철학과">철학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '사회과학대학' && (
+                        <>
+                          <SelectItem value="심리학과">심리학과</SelectItem>
+                          <SelectItem value="사회학과">사회학과</SelectItem>
+                          <SelectItem value="정치외교학과">정치외교학과</SelectItem>
+                          <SelectItem value="경제학과">경제학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '자연과학대학' && (
+                        <>
+                          <SelectItem value="수학과">수학과</SelectItem>
+                          <SelectItem value="물리학과">물리학과</SelectItem>
+                          <SelectItem value="화학과">화학과</SelectItem>
+                          <SelectItem value="생물학과">생물학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '의과대학' && (
+                        <>
+                          <SelectItem value="의학과">의학과</SelectItem>
+                          <SelectItem value="간호학과">간호학과</SelectItem>
+                          <SelectItem value="약학과">약학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '법과대학' && (
+                        <>
+                          <SelectItem value="법학과">법학과</SelectItem>
+                          <SelectItem value="국제법무학과">국제법무학과</SelectItem>
+                        </>
+                      )}
+                      {selectedCollege === '예술대학' && (
+                        <>
+                          <SelectItem value="음악과">음악과</SelectItem>
+                          <SelectItem value="미술과">미술과</SelectItem>
+                          <SelectItem value="연극영화과">연극영화과</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -3430,21 +3528,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   <Button onClick={executeSearch}>
-                    카테고리 검색
-                  </Button>
-                  <Button>
-                    새 조직 추가
+                    검색
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  💡 <strong>*</strong>을 입력하고 검색하면 선택된 필터 범위에서 전체 조직을 조회할 수 있습니다.
-                </p>
               </div>
               
               {/* 검색 결과 표시 */}
               {hasSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: 12개 조직
+                  검색 결과: 9개 조직
                   {userSearchQuery && ` (검색어: "${userSearchQuery}")`}
                 </div>
               )}
@@ -3455,7 +3547,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardTitle>조직 목록</CardTitle>
                 {hasSearched && (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 12개 조직 표시
+                    전체 9개 조직 표시
                   </div>
                 )}
               </CardHeader>
@@ -3495,7 +3587,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">카테고리 검색</p>
                               <p className="text-sm">
-                                위의 검색 조건을 설정하고 "카테고리 검색" 버튼을 클릭하여 조직을 찾아보세요.
+                                위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 조직을 찾아보세요.
                               </p>
                             </div>
                           </td>
@@ -3509,16 +3601,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="outline">대학교</Badge>
+                              <Badge variant="outline">상위 카테고리</Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               -
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              4개 단과대학
+                              8개 단과대학
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              12,500명
+                              15,800명
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
@@ -3547,10 +3639,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               로보대학교
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              8개 학과
+                              6개 학과
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              3,200명
+                              4,200명
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
@@ -3582,7 +3674,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               -
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              320명
+                              420명
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
@@ -3614,7 +3706,135 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               -
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              450명
+                              380명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="소속 인원 보기">
+                                  <Users className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                의과대학
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">하위 카테고리</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              로보대학교
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              3개 학과
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              1,200명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="하위 조직 보기">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                의학과
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">세부 카테고리</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              의과대학
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              800명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="소속 인원 보기">
+                                  <Users className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                대학본부
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">상위 카테고리</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              5개 부서
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              150명
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="조직 편집">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="하위 조직 보기">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                총장실
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="outline">하위 카테고리</Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              대학본부
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              -
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              25명
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <Badge variant="default" className="bg-green-100 text-green-800">활성</Badge>
