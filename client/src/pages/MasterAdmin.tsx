@@ -5139,23 +5139,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <input
                 ref={orgCategoryFileInputRef}
                 type="file"
-                accept=".csv,.xlsx,.xls"
+                accept=".csv,.xls,.xlsx"
                 multiple
                 onChange={handleOrgCategoryFileInputChange}
                 style={{ display: 'none' }}
               />
               <div 
                 className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={(e) => e.preventDefault()}
+                onDragLeave={(e) => e.preventDefault()}
                 onDrop={handleOrgCategoryFileDrop}
                 onClick={handleOrgCategoryFileSelect}
               >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-lg font-medium mb-2">CSV/Excel 파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  CSV, Excel 파일 지원 (최대 50MB)
+                  CSV, XLS, XLSX 파일 지원 (최대 50MB)
                 </p>
                 <Button 
                   variant="outline"
@@ -5164,12 +5164,214 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     handleOrgCategoryFileSelect();
                   }}
                 >
+                  <Upload className="w-4 h-4 mr-2" />
                   파일 선택
                 </Button>
               </div>
 
               {/* 선택된 파일 목록 */}
               {selectedOrgCategoryFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedOrgCategoryFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedOrgCategoryFiles([])}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedUserFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {file.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedUserFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 업로드 옵션 */}
+              <div className="space-y-4">
+                <Label className="text-sm font-medium">업로드 옵션</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="overwriteExisting"
+                      checked={overwriteExisting}
+                      onChange={(e) => setOverwriteExisting(e.target.checked)}
+                      className="rounded border-gray-300"
+                    />
+                    <Label htmlFor="overwriteExisting" className="text-sm">
+                      기존 데이터 덮어쓰기
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="sendWelcome"
+                      checked={sendWelcome}
+                      onChange={(e) => setSendWelcome(e.target.checked)}
+                      className="rounded border-gray-300"
+                    />
+                    <Label htmlFor="sendWelcome" className="text-sm">
+                      가입 환영 메시지 발송
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="validateOnly"
+                      checked={validateOnly}
+                      onChange={(e) => setValidateOnly(e.target.checked)}
+                      className="rounded border-gray-300"
+                    />
+                    <Label htmlFor="validateOnly" className="text-sm">
+                      검증만 수행 (실제 업로드 안함)
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
+              {/* 업로드 진행률 */}
+              {isUserFileUploading && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>업로드 진행률</span>
+                    <span>{Math.round(userFileUploadProgress)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${userFileUploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 버튼 */}
+              <div className="flex justify-between pt-4">
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadSampleFile}
+                  disabled={isUserFileUploading}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  샘플 파일 다운로드
+                </Button>
+                <div className="space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsFileUploadDialogOpen(false)}
+                    disabled={isUserFileUploading}
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      // Handle user file upload
+                      toast({
+                        title: "기능 준비 중",
+                        description: "사용자 파일 업로드 기능을 준비 중입니다.",
+                      });
+                    }}
+                    disabled={selectedUserFiles.length === 0 || isUserFileUploading}
+                  >
+                    {isUserFileUploading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        업로드 중...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        업로드 시작
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
+
+        {/* 사용자 파일 업로드 다이얼로그 */}
+        <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>사용자 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={userFileInputRef}
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                multiple
+                onChange={handleUserFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={(e) => e.preventDefault()}
+                onDragLeave={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const files = Array.from(e.dataTransfer.files);
+                  // Handle user file drop
+                }}
+                onClick={handleUserFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">사용자 파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, Excel 파일 지원 (최대 10MB)
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUserFileSelect();
+                  }}
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedUserFiles.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">선택된 파일 ({selectedOrgCategoryFiles.length}개)</Label>
