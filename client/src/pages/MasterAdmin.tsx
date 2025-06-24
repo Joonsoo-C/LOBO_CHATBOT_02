@@ -2209,9 +2209,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="px-6 min-w-[180px] whitespace-nowrap">
+                  <Button className="px-6 min-w-[180px] whitespace-nowrap flex items-center justify-center">
                     <Plus className="w-4 h-4 mr-2" />
-                    새 에이전트 추가
+                    <span>새 에이전트 추가</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
