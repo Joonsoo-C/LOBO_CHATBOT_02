@@ -1879,11 +1879,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('name')}
                         >
-                          <div className="flex items-center space-x-1">
-                            <span>사용자 정보</span>
+                          <div className="flex items-center justify-center space-x-1">
+                            <span>사용자</span>
                             {userSortField === 'name' && (
                               userSortDirection === 'asc' ? 
                                 <ChevronUp className="w-4 h-4" /> : 
@@ -1892,10 +1892,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('upperCategory')}
                         >
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center justify-center space-x-1">
                             <span>소속 조직</span>
                             {userSortField === 'upperCategory' && (
                               userSortDirection === 'asc' ? 
@@ -1905,10 +1905,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('role')}
                         >
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center justify-center space-x-1">
                             <span>직책/역할</span>
                             {userSortField === 'role' && (
                               userSortDirection === 'asc' ? 
@@ -1918,10 +1918,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('email')}
                         >
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center justify-center space-x-1">
                             <span>이메일</span>
                             {userSortField === 'email' && (
                               userSortDirection === 'asc' ? 
@@ -1931,10 +1931,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('status')}
                         >
-                          <div className="flex items-center space-x-1">
+                          <div className="flex items-center justify-center space-x-1">
                             <span>상태</span>
                             {userSortField === 'status' && (
                               userSortDirection === 'asc' ? 
@@ -1943,28 +1943,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             )}
                           </div>
                         </th>
-                        <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
-                          onClick={() => handleUserSort('createdAt')}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>가입일</span>
-                            {userSortField === 'createdAt' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          작업
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          수정
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredUsers?.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
+                          <td colSpan={6} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -1994,9 +1981,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <div className="text-sm font-medium text-gray-900 dark:text-white">
                                     {(user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
                                   </div>
-                                  <div className="text-xs text-gray-500 flex items-center">
+                                  <div className="text-xs text-gray-500">
                                     <span>{user.username}</span>
-                                    <Edit className="w-3 h-3 ml-1 text-blue-500" />
                                   </div>
                                 </div>
                               </div>
@@ -2049,9 +2035,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                  (user as any).status === 'pending' ? '대기' : '활성'}
                               </Badge>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}
-                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
                                 <Button 
@@ -2064,18 +2047,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   }}
                                 >
                                   <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="text-red-600 hover:text-red-700" 
-                                  title="사용자 비활성화"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    // 사용자 비활성화 로직
-                                  }}
-                                >
-                                  <Trash2 className="w-4 h-4" />
                                 </Button>
                               </div>
                             </td>
