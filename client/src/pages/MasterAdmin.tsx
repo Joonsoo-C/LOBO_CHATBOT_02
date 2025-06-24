@@ -1793,125 +1793,136 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
 
-            {/* 사용자 검색 및 필터링 - 컴팩트 디자인 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border shadow-sm">
-              <div className="p-4 space-y-3">
-                {/* 통합 필터 행 */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 text-xs">
-                  <div>
-                    <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="상위 카테고리" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {upperCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select 
-                      value={selectedCollege} 
-                      onValueChange={handleLowerCategoryChange}
-                      disabled={selectedUniversity === 'all'}
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="하위 카테고리" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {lowerCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select 
-                      value={selectedDepartment} 
-                      onValueChange={handleDetailCategoryChange}
-                      disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="세부 카테고리" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {detailCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select value={selectedDocumentType} onValueChange={(value) => {
-                      setSelectedDocumentType(value);
-                      executeSearch();
-                    }}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="계정 상태" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="active">활성</SelectItem>
-                        <SelectItem value="inactive">비활성</SelectItem>
-                        <SelectItem value="locked">잠금</SelectItem>
-                        <SelectItem value="pending">대기</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select value={selectedDocumentPeriod} onValueChange={(value) => {
-                      setSelectedDocumentPeriod(value);
-                      executeSearch();
-                    }}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="시스템 역할" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="master_admin">마스터 관리자</SelectItem>
-                        <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                        <SelectItem value="category_admin">카테고리 관리자</SelectItem>
-                        <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                        <SelectItem value="qa_admin">QA 관리자</SelectItem>
-                        <SelectItem value="doc_admin">문서 관리자</SelectItem>
-                        <SelectItem value="user">일반 사용자</SelectItem>
-                        <SelectItem value="external">외부 사용자</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-2 md:col-span-1">
+            {/* 사용자 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">사용자 검색</h3>
+              
+              {/* 조직 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>상위 카테고리</Label>
+                  <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {upperCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>하위 카테고리</Label>
+                  <Select 
+                    value={selectedCollege} 
+                    onValueChange={handleLowerCategoryChange}
+                    disabled={selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {lowerCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부 카테고리</Label>
+                  <Select 
+                    value={selectedDepartment} 
+                    onValueChange={handleDetailCategoryChange}
+                    disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {detailCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={resetFilters}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 상태 및 시스템 역할 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>상태</Label>
+                  <Select value={selectedDocumentType} onValueChange={(value) => {
+                    setSelectedDocumentType(value);
+                    executeSearch();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                      <SelectItem value="locked">잠금</SelectItem>
+                      <SelectItem value="pending">대기</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>시스템 역할</Label>
+                  <Select value={selectedDocumentPeriod} onValueChange={(value) => {
+                    setSelectedDocumentPeriod(value);
+                    executeSearch();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                      <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                      <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                      <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                      <SelectItem value="user">일반 사용자</SelectItem>
+                      <SelectItem value="external">외부 사용자</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div></div>
+              </div>
+
+              {/* 사용자 검색 */}
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
                     <Input
-                      placeholder="검색어 입력..."
+                      placeholder="사용자명 또는 이메일 주소를 입력하세요."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
-                      className="h-8 text-xs"
                     />
                   </div>
-                  <div className="col-span-2 md:col-span-1 flex gap-1">
-                    <Button 
-                      onClick={executeSearch}
-                      size="sm"
-                      className="h-8 px-3 text-xs flex-1"
-                    >
-                      검색
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={resetFilters}
-                      size="sm"
-                      className="h-8 px-2 text-xs"
-                      title="필터 초기화"
-                    >
-                      ↻
-                    </Button>
-                  </div>
+                  <Button onClick={executeSearch}>검색</Button>
                 </div>
               </div>
+              
+              {/* 검색 결과 표시 - 숨김 처리됨 */}
             </div>
 
             {/* 사용자 목록 테이블 */}
