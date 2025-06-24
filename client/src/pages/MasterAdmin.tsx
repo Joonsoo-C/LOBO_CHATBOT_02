@@ -3488,7 +3488,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               
             </div>
 
-            <Card>
+            <Card className="rounded-lg border">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>조직 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -3496,8 +3496,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+                <div className="overflow-x-auto rounded-lg">
+                  <table className="w-full rounded-lg overflow-hidden">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -3516,6 +3516,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           에이전트 수
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           설정
                         </th>
                       </tr>
@@ -3523,7 +3526,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredOrganizationCategories.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="px-6 py-12 text-center">
+                          <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -3549,6 +3552,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             return Math.floor(Math.random() * 10) + 1;
                           };
 
+                          // 상태에 따른 배지 스타일
+                          const getStatusBadge = (status: string) => {
+                            switch (status) {
+                              case "활성":
+                                return <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">활성</Badge>;
+                              case "비활성":
+                                return <Badge variant="secondary" className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300">비활성</Badge>;
+                              case "등록 승인 대기중":
+                                return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">등록 승인 대기중</Badge>;
+                              default:
+                                return <Badge variant="secondary">알 수 없음</Badge>;
+                            }
+                          };
+
                           return (
                             <tr key={index}>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -3571,6 +3588,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {getAgentCount()}개
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {getStatusBadge((category as any).status || "활성")}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div className="flex space-x-1">
