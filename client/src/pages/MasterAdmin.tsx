@@ -3453,7 +3453,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardTitle>조직 목록</CardTitle>
                 {hasSearched && (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {organizationCategories.length}개 조직 중 {Math.min(organizationCategories.length, 20)}개 표시 (페이지 {Math.floor((organizationCategories.length - 1) / 20) + 1})
+                    전체 {organizationCategories.length}개 조직 표시
                   </div>
                 )}
               </CardHeader>
