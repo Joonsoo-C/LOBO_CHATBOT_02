@@ -1946,11 +1946,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>사용자</span>
-                            {userSortField === 'name' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1959,11 +1955,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>소속 조직</span>
-                            {userSortField === 'upperCategory' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1972,24 +1964,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>직책/역할</span>
-                            {userSortField === 'role' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronUpDown className="w-4 h-4" />
                           </div>
                         </th>
+
                         <th 
                           className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleUserSort('email')}
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>이메일</span>
-                            {userSortField === 'email' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th 
@@ -1998,11 +1983,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         >
                           <div className="flex items-center justify-center space-x-1">
                             <span>상태</span>
-                            {userSortField === 'status' && (
-                              userSortDirection === 'asc' ? 
-                                <ChevronUp className="w-4 h-4" /> : 
-                                <ChevronDown className="w-4 h-4" />
-                            )}
+                            <ChevronUpDown className="w-4 h-4" />
                           </div>
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -2049,7 +2030,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                               <div>
                                 <div className="font-medium">{(user as any).upperCategory || '미분류'}</div>
                                 <div className="text-xs text-gray-400">
@@ -2057,7 +2038,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                               <div className="space-y-1">
                                 <div className="font-medium text-gray-900 dark:text-white">
                                   {(user as any).position || '일반 구성원'}
@@ -2073,12 +2054,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                               <div className="max-w-48 truncate">
-                                {user.email || '이메일 없음'}
+                                {user.email || `${user.username}@university.ac.kr`}
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4 whitespace-nowrap text-center">
                               <Badge 
                                 variant={
                                   (user as any).status === 'active' ? 'default' :
@@ -2100,15 +2081,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
+                              <div className="flex justify-center">
                                 <Button 
                                   variant="outline" 
                                   size="sm" 
-                                  title="사용자 편집"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     openUserDetailDialog(user);
                                   }}
+                                  className="hover:bg-blue-50 hover:text-blue-600"
+                                  title="사용자 정보 수정"
                                 >
                                   <Edit className="w-4 h-4" />
                                 </Button>
