@@ -26,6 +26,7 @@ import {
 } from "../../../server/organization-categories";
 
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
+import { CategoryEditDialog } from "@/components/CategoryEditDialog";
 
 import { 
   Users, 
@@ -167,6 +168,10 @@ export default function MasterAdmin() {
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+  const [isCategoryEditDialogOpen, setIsCategoryEditDialogOpen] = useState(false);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
+  const [organizationPage, setOrganizationPage] = useState(1);
+  const [organizationPerPage] = useState(10);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
