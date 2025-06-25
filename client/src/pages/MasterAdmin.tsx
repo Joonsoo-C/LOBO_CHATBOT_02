@@ -213,6 +213,7 @@ export default function MasterAdmin() {
   // 페이지네이션 상태
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const usersPerPage = 20;
+  const organizationCategoriesPerPage = 20;
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
