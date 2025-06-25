@@ -4231,7 +4231,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <span className="text-sm text-gray-600 dark:text-gray-400">소속 인원 수</span>
                               <ExternalLink className="w-4 h-4 text-green-600 dark:text-green-400" />
                             </div>
-                            <div className="font-bold text-green-600 dark:text-green-400 text-[18px]">
+                            <div className="font-bold text-green-600 dark:text-green-400 text-[20px]">
                               {editingOrgCategory?.detailCategory ? 
                                 `${Math.floor(Math.random() * 300) + 50}명` : 
                                 `${Math.floor(Math.random() * 5000) + 1000}명`
