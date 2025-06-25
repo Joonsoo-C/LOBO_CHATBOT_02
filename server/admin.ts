@@ -1081,10 +1081,11 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // For now, just simulate processing since we don't have organization storage
-      let createdCount = totalOrganizations.length;
+      // Create organization categories in storage
+      const createdOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations);
+      let createdCount = createdOrganizations.length;
       let updatedCount = 0;
-      let errorCount = 0;
+      let errorCount = totalOrganizations.length - createdCount;
 
       console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
 

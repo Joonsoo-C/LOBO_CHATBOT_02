@@ -106,6 +106,7 @@ export class MemoryStorage implements IStorage {
     try {
       const data = {
         documents: Array.from(this.documents.values()),
+      organizationCategories: Array.from(this.organizationCategories.values()),
         nextId: this.nextId
       };
       fs.writeFileSync(this.documentsFile, JSON.stringify(data, null, 2));

@@ -1207,6 +1207,9 @@ export default function MasterAdmin() {
         description: result.message || `${result.totalProcessed || selectedOrgCategoryFiles.length}개 조직 카테고리가 처리되었습니다.`,
       });
 
+      // Refresh organization categories data
+      await queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+
       setIsOrgCategoryUploadDialogOpen(false);
       setSelectedOrgCategoryFiles([]);
       setOrgCategoryUploadProgress(0);
