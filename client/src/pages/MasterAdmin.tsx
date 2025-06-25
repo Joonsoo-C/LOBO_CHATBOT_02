@@ -2034,9 +2034,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 master-admin-mobile">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50 pt-safe pt-4 sm:pt-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">

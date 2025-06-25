@@ -96,7 +96,20 @@ body {
 
   @media (max-width: 767px) {
     .master-admin-mobile {
-      padding-top: calc(env(safe-area-inset-top) + 20px);
+      padding-top: calc(env(safe-area-inset-top) + 60px);
+    }
+    
+    .master-admin-mobile header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding-top: calc(env(safe-area-inset-top) + 10px);
+      z-index: 1000;
+    }
+    
+    .master-admin-mobile main {
+      padding-top: calc(env(safe-area-inset-top) + 140px);
     }
   }
 
