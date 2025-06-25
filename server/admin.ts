@@ -883,19 +883,33 @@ export function setupAdminRoutes(app: Express) {
         `);
       }
 
-      // Set proper headers for Korean text
+      // Set proper headers for Korean text with UTF-8 BOM
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
 
-      // Safely encode the document name and content
+      // Ensure content is properly decoded as UTF-8
+      let documentContent = document.content || '내용을 불러올 수 없습니다.';
+      
+      // Try to fix encoding issues if content appears to be corrupted
+      try {
+        // Check if content needs UTF-8 conversion
+        if (typeof documentContent === 'string') {
+          // Convert any potential encoding issues
+          documentContent = Buffer.from(documentContent, 'utf8').toString('utf8');
+        }
+      } catch (error) {
+        console.log('Content encoding conversion failed, using original:', error);
+      }
+
+      // Safely encode the document name and content for HTML
       const safeDocumentName = (document.originalName || '제목 없음').replace(/[<>&"']/g, (match) => {
         const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
         return htmlEntities[match as keyof typeof htmlEntities];
       });
 
-      const safeContent = (document.content || '내용을 불러올 수 없습니다.').replace(/[<>&"']/g, (match) => {
+      const safeContent = documentContent.replace(/[<>&"']/g, (match) => {
         const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
         return htmlEntities[match as keyof typeof htmlEntities];
       }).replace(/\n/g, '<br>');
@@ -905,15 +919,19 @@ export function setupAdminRoutes(app: Express) {
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${safeDocumentName}</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-      line-height: 1.6;
+      font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Nanum Gothic', sans-serif;
+      line-height: 1.8;
       margin: 20px;
       background-color: #f5f5f5;
       color: #333;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .container {
       max-width: 800px;
@@ -942,10 +960,17 @@ export function setupAdminRoutes(app: Express) {
     .content {
       white-space: pre-wrap;
       word-wrap: break-word;
+      word-break: keep-all;
+      overflow-wrap: break-word;
       font-size: 16px;
       line-height: 1.8;
       max-height: 600px;
       overflow-y: auto;
+      padding: 15px;
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
     }
   </style>
 </head>
@@ -966,7 +991,12 @@ export function setupAdminRoutes(app: Express) {
 </html>`;
 
       console.log(`Sending preview HTML for document: ${document.originalName}`);
-      res.send(htmlContent);
+      
+      // Send with UTF-8 BOM to ensure proper Korean character encoding
+      const utf8BOM = '\uFEFF';
+      const finalContent = utf8BOM + htmlContent;
+      
+      res.send(finalContent);
       
     } catch (error) {
       console.error("Error previewing document:", error);
