@@ -3911,7 +3911,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                           return (
                             <tr 
-                              key={index}
+                              key={`org-${category.id || index}-${category.upperCategory}-${category.lowerCategory}-${category.detailCategory}`}
                               className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150"
                               onClick={() => openOrgCategoryEditDialog(category)}
                             >
@@ -4034,9 +4034,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 조직 카테고리 편집 다이얼로그 */}
           <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
               <DialogHeader>
                 <DialogTitle>조직 상세 정보 편집</DialogTitle>
+                <div id="org-edit-description" className="sr-only">조직의 상세 정보를 편집하고 관리할 수 있습니다.</div>
               </DialogHeader>
               <Form {...orgCategoryEditForm}>
                 <form onSubmit={orgCategoryEditForm.handleSubmit((data) => {
@@ -4074,7 +4075,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="">없음</SelectItem>
+                                <SelectItem value="none">없음</SelectItem>
                                 {uniqueUpperCategories.map((category) => (
                                   <SelectItem key={category} value={category}>
                                     {category}
@@ -4100,7 +4101,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="">없음</SelectItem>
+                                <SelectItem value="none">없음</SelectItem>
                                 {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
                                   <SelectItem key={category} value={category}>
                                     {category}
@@ -4126,7 +4127,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="">없음</SelectItem>
+                                <SelectItem value="none">없음</SelectItem>
                                 {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
                                   <SelectItem key={category} value={category}>
                                     {category}
