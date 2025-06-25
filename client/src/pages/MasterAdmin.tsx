@@ -4200,7 +4200,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <span className="text-sm text-gray-600 dark:text-gray-400">에이전트 수</span>
                               <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                            <div className="font-bold text-blue-600 dark:text-blue-400 text-[20px]">
                               {Math.floor(Math.random() * 10) + 1}개
                             </div>
                             <div className="text-xs text-gray-500 dark:text-gray-400">
