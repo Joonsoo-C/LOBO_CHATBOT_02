@@ -876,14 +876,14 @@ export class MemoryStorage implements IStorage {
   // Method to reload authentic organization data
   async reloadAuthenticOrganizationData(): Promise<void> {
     console.log('Reloading authentic organization data from Excel file');
-    
+
     // Clear existing data
     this.organizationCategories.clear();
     this.nextOrganizationId = 1;
-    
+
     // Load the authentic data from the processed file
     this.loadPersistedOrganizationCategories();
-    
+
     console.log(`Reloaded ${this.organizationCategories.size} authentic organization categories`);
   }
 
@@ -910,26 +910,32 @@ export class MemoryStorage implements IStorage {
 
       if (fs.existsSync(organizationCategoriesFile)) {
         const data = fs.readFileSync(organizationCategoriesFile, 'utf8');
-        const categories = JSON.parse(data);
+        const categoriesArray = JSON.parse(data);
 
-        categories.forEach((cat: any) => {
-          this.organizationCategories.set(cat.id, {
+        for (const cat of categoriesArray) {
+          // Fix the incorrect data mapping
+          const organizationCategory = {
             ...cat,
+            // Correct the data mapping: upperCategory should be actual upper category
+            upperCategory: cat.upperCategory || null, // This is actually the upper category
+            lowerCategory: cat.lowerCategory || null, // This is actually the lower category  
+            detailCategory: cat.detailCategory === '활성' || cat.detailCategory === '비활성' || cat.detailCategory === '등록 승인 대기중' ? null : cat.detailCategory, // Remove status from detailCategory
+            status: cat.detailCategory === '활성' || cat.detailCategory === '비활성' || cat.detailCategory === '등록 승인 대기중' ? cat.detailCategory : (cat.status || '활성'),
+            name: cat.name && (cat.name === '활성' || cat.name === '비활성' || cat.name === '등록 승인 대기중') ? 
+              `${cat.upperCategory || ''} ${cat.lowerCategory || ''}`.trim() : cat.name,
             createdAt: cat.createdAt ? new Date(cat.createdAt) : new Date(),
             updatedAt: cat.updatedAt ? new Date(cat.updatedAt) : new Date()
-          });
+          };
+          this.organizationCategories.set(cat.id, organizationCategory);
+          this.nextOrganizationId = Math.max(this.nextOrganizationId, cat.id + 1);
+        }
 
-          if (cat.id >= this.nextOrganizationId) {
-            this.nextOrganizationId = cat.id + 1;
-          }
-        });
-
-        console.log(`Loaded ${categories.length} persisted organization categories`);
+        console.log(`Loaded ${this.organizationCategories.size} organization categories from file`);
       } else {
-        console.log('No persisted organization categories found');
+        console.log('No organization categories file found, starting with empty data');
       }
     } catch (error) {
-      console.error('Failed to load persisted organization categories:', error);
+      console.error('Failed to load organization categories from file:', error);
     }
   }
 
