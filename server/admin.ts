@@ -1262,7 +1262,7 @@ export function setupAdminRoutes(app: Express) {
       console.log(`Successfully saved ${createdOrganizations.length} organizations to storage`);
 
       // Verify storage
-      const allOrgs = await storage.getAllOrganizationCategories();
+      const allOrgs = await storage.getOrganizationCategories();
       console.log(`Storage now contains ${allOrgs.length} total organizations`);
 
       res.json({
