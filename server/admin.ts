@@ -1196,30 +1196,83 @@ export function setupAdminRoutes(app: Express) {
       });
     }
   });
-      let errorCount = totalOrganizations.length - createdCount;
 
-      console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
-      
-      // Force cache invalidation
-      if (storage.clearCache) {
-        storage.clearCache();
+  // Document upload endpoint
+  app.post("/api/admin/documents/upload", requireMasterAdmin, adminUpload.single('file'), async (req: any, res) => {
+    try {
+      const file = req.file;
+      const { type, description } = req.body;
+
+      if (!file) {
+        return res.status(400).json({ message: "파일이 업로드되지 않았습니다." });
       }
+
+      console.log(`Processing document upload: ${file.originalname}`);
+      console.log(`File size: ${file.size} bytes, MIME type: ${file.mimetype}`);
+
+      // Fix Korean filename encoding
+      let originalName = file.originalname;
+      try {
+        originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch (encodingError) {
+        console.log('Using original filename as-is');
+      }
+
+      // Validate file type
+      const allowedTypes = [
+        'text/plain',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ];
+
+      const fileExtension = path.extname(originalName).toLowerCase();
+      const allowedExtensions = ['.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'];
+
+      if (!allowedTypes.includes(file.mimetype) && !allowedExtensions.includes(fileExtension)) {
+        return res.status(400).json({ 
+          message: "지원하지 않는 파일 형식입니다. TXT, PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일만 업로드 가능합니다." 
+        });
+      }
+
+      // Create document record
+      const document = {
+        name: originalName,
+        filename: file.filename,
+        size: file.size,
+        mimetype: file.mimetype,
+        type: type || 'general',
+        description: description || '',
+        uploadedAt: new Date(),
+        path: file.path
+      };
+
+      // Save to storage
+      const savedDocument = await storage.createDocument(document);
+      
+      console.log(`Document saved successfully: ${savedDocument.name} (ID: ${savedDocument.id})`);
 
       res.json({
         success: true,
-        message: `조직 카테고리 파일 업로드 완료`,
-        created: createdCount,
-        updated: updatedCount,
-        errors: errorCount,
-        fileResults: processResults,
-        totalProcessed: totalOrganizations.length
+        message: '문서가 성공적으로 업로드되었습니다.',
+        document: savedDocument
       });
 
     } catch (error) {
-      console.error('Organization category upload error:', error);
-      res.status(500).json({ 
-        message: "조직 카테고리 파일 업로드 중 오류가 발생했습니다.",
-        error: error instanceof Error ? error.message : "Unknown error"
+      console.error('Document upload error:', error);
+      
+      // Clean up file on error
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : '문서 업로드 중 오류가 발생했습니다.'
       });
     }
   });
