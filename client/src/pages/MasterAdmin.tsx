@@ -184,6 +184,13 @@ export default function MasterAdmin() {
   const [isOrgCategoryEditDialogOpen, setIsOrgCategoryEditDialogOpen] = useState(false);
   const [editingOrgCategory, setEditingOrgCategory] = useState<any>(null);
   
+  // 카테고리 관리자 선택 다이얼로그 상태
+  const [isCategoryManagerDialogOpen, setIsCategoryManagerDialogOpen] = useState(false);
+  const [managerSearchQuery, setManagerSearchQuery] = useState('');
+  const [selectedManagerUniversity, setSelectedManagerUniversity] = useState('all');
+  const [selectedManagerCollege, setSelectedManagerCollege] = useState('all');
+  const [selectedManagerDepartment, setSelectedManagerDepartment] = useState('all');
+  
   // 문서 상세 팝업 상태
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
@@ -4165,11 +4172,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
 
-                  {/* 조직 기본 정보 추가 사항 */}
+                  {/* 조직 운영 정보 */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold border-b pb-2">조직 기본 정보</h3>
+                    <h3 className="text-lg font-semibold border-b pb-2">조직 운영 정보</h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {/* 연결된 에이전트 수 */}
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">연결된 에이전트</Label>
@@ -4234,6 +4241,34 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </button>
                         </div>
                       </div>
+
+                      {/* 카테고리 관리자 설정 */}
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">카테고리 관리자</Label>
+                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                          <div className="space-y-3">
+                            {/* 현재 관리자 표시 */}
+                            <div>
+                              <span className="text-sm text-gray-600 dark:text-gray-400">현재 관리자</span>
+                              <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">
+                                {editingOrgCategory?.manager || "미지정"}
+                              </div>
+                            </div>
+                            
+                            {/* 관리자 변경 버튼 */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setIsCategoryManagerDialogOpen(true)}
+                              className="w-full"
+                            >
+                              <Users className="w-4 h-4 mr-2" />
+                              관리자 변경
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -4249,7 +4284,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <FormLabel>조직 설명 / 메모</FormLabel>
                           <FormControl>
                             <Textarea 
-                              placeholder="조직에 대한 설명이나 메모를 입력하세요..."
+                              placeholder="조직에 대한 설명이나 메모를 입력하세요."
                               className="min-h-[100px]"
                               {...field} 
                             />
@@ -4274,6 +4309,182 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </form>
               </Form>
+            </DialogContent>
+          </Dialog>
+
+          {/* 카테고리 관리자 선택 다이얼로그 */}
+          <Dialog open={isCategoryManagerDialogOpen} onOpenChange={setIsCategoryManagerDialogOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>카테고리 관리자 선택</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-6">
+                {/* 검색 및 필터 */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <Label>상위 조직</Label>
+                      <Select value={selectedManagerUniversity} onValueChange={setSelectedManagerUniversity}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="상위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {uniqueUpperCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>하위 조직</Label>
+                      <Select value={selectedManagerCollege} onValueChange={setSelectedManagerCollege}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="하위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>세부 조직</Label>
+                      <Select value={selectedManagerDepartment} onValueChange={setSelectedManagerDepartment}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="세부 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>사용자 검색</Label>
+                      <Input
+                        placeholder="이름 또는 ID로 검색"
+                        value={managerSearchQuery}
+                        onChange={(e) => setManagerSearchQuery(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 사용자 목록 */}
+                <div className="border rounded-lg">
+                  <div className="max-h-96 overflow-y-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            선택
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            이름
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            사용자 ID
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            소속 조직
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            직책
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                        {usersList?.filter(user => {
+                          const matchesSearch = !managerSearchQuery || 
+                            user.fullName?.toLowerCase().includes(managerSearchQuery.toLowerCase()) ||
+                            user.username?.toLowerCase().includes(managerSearchQuery.toLowerCase());
+                          
+                          const matchesUniversity = selectedManagerUniversity === 'all' || 
+                            user.upperCategory === selectedManagerUniversity;
+                          
+                          const matchesCollege = selectedManagerCollege === 'all' || 
+                            user.lowerCategory === selectedManagerCollege;
+                          
+                          const matchesDepartment = selectedManagerDepartment === 'all' || 
+                            user.detailCategory === selectedManagerDepartment;
+                          
+                          return matchesSearch && matchesUniversity && matchesCollege && matchesDepartment;
+                        }).slice(0, 50).map((user) => (
+                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <td className="px-4 py-3">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => {
+                                  // Update the editing organization category with new manager
+                                  if (editingOrgCategory) {
+                                    const updatedCategory = {
+                                      ...editingOrgCategory,
+                                      manager: user.fullName || user.username
+                                    };
+                                    setEditingOrgCategory(updatedCategory);
+                                    // Update form data
+                                    orgCategoryEditForm.setValue('manager', user.fullName || user.username);
+                                  }
+                                  setIsCategoryManagerDialogOpen(false);
+                                }}
+                              >
+                                선택
+                              </Button>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.fullName || user.username}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {user.username}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {[user.upperCategory, user.lowerCategory, user.detailCategory]
+                                  .filter(Boolean).join(' > ') || '-'}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {user.position || user.role || '-'}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-4 border-t">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsCategoryManagerDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
 
