@@ -12,6 +12,8 @@ import {
   type AgentStats,
   type MessageReaction,
   type InsertMessageReaction,
+  type OrganizationCategory,
+  type InsertOrganizationCategory,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { cache } from "./cache";
@@ -101,7 +103,7 @@ export class MemoryStorage implements IStorage {
         console.log(`Loaded ${this.documents.size} persisted documents`);
 
         // Load organization categories separately
-        await this.loadOrganizationCategoriesFromFile();
+        this.loadOrganizationCategoriesFromFile();
       }
     } catch (error) {
       console.error('Error loading persisted documents:', error);

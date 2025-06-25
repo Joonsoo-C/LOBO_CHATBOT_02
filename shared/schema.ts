@@ -198,6 +198,16 @@ export const messageReactions = pgTable("message_reactions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Organization categories table for dynamic organization management
+export const organizationCategories = pgTable("organization_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  upperCategory: text("upper_category"),
+  lowerCategory: text("lower_category"), 
+  detailCategory: text("detail_category"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
@@ -348,6 +358,11 @@ export const insertMessageReactionSchema = createInsertSchema(messageReactions).
   createdAt: true,
 });
 
+export const insertOrganizationCategorySchema = createInsertSchema(organizationCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertOrganizationSchema = createInsertSchema(organizations).omit({
   id: true,
   createdAt: true,
@@ -420,6 +435,8 @@ export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type AgentStats = typeof agentStats.$inferSelect;
 export type MessageReaction = typeof messageReactions.$inferSelect;
 export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
+export type OrganizationCategory = typeof organizationCategories.$inferSelect;
+export type InsertOrganizationCategory = z.infer<typeof insertOrganizationCategorySchema>;
 
 // User edit schema for admin interface
 export const userEditSchema = z.object({

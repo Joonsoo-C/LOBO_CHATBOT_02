@@ -6,7 +6,6 @@ import {
   documents,
   agentStats,
   messageReactions,
-  organizationCategories,
   type User,
   type UpsertUser,
   type Agent,
@@ -390,6 +389,35 @@ export class DatabaseStorage implements IStorage {
     });
     
     return result;
+  }
+
+  // Organization category operations - placeholder implementations for DatabaseStorage
+  async getOrganizationCategories(): Promise<any[]> {
+    // Placeholder - would normally query from organizationCategories table
+    return [];
+  }
+
+  async createOrganizationCategory(organization: any): Promise<any> {
+    // Placeholder - would normally insert into organizationCategories table
+    return organization;
+  }
+
+  async updateOrganizationCategory(id: number, organization: any): Promise<any> {
+    // Placeholder - would normally update organizationCategories table
+    return organization;
+  }
+
+  async deleteOrganizationCategory(id: number): Promise<void> {
+    // Placeholder - would normally delete from organizationCategories table
+  }
+
+  async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
+    // Placeholder - would normally bulk insert into organizationCategories table
+    return organizations;
+  }
+
+  async clearAllOrganizationCategories(): Promise<void> {
+    // Placeholder - would normally truncate organizationCategories table
   }
 }
 
