@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import * as mammoth from "mammoth";
+import * as fs from "fs";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ 
@@ -384,15 +386,38 @@ Rules:
   }
 }
 
-export async function extractTextFromContent(content: string, mimeType: string): Promise<string> {
-  // This is a simple text extraction - in production you might want to use specific libraries
-  // for different file types like pdf-parse, mammoth (for docx), etc.
-  
-  if (mimeType.includes('text/plain')) {
-    return content;
+export async function extractTextFromContent(filePath: string, mimeType: string): Promise<string> {
+  try {
+    if (mimeType.includes('text/plain')) {
+      // Read text files with proper UTF-8 encoding
+      return fs.readFileSync(filePath, 'utf-8');
+    }
+    
+    if (mimeType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document') || 
+        mimeType.includes('application/msword')) {
+      // Extract text from Word documents using mammoth
+      console.log('Extracting text from Word document:', filePath);
+      const result = await mammoth.extractRawText({ path: filePath });
+      console.log('Extracted text length:', result.value.length);
+      console.log('First 200 characters:', result.value.substring(0, 200));
+      return result.value;
+    }
+    
+    if (mimeType.includes('application/pdf')) {
+      // For PDF files, return placeholder - would need pdf-parse library
+      return fs.readFileSync(filePath, 'utf-8').catch(() => 'PDF 문서 - 텍스트 추출 기능 준비 중');
+    }
+    
+    // For other file types, try to read as UTF-8 text
+    try {
+      return fs.readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      console.log('Could not read file as UTF-8, returning filename only');
+      return `파일: ${filePath.split('/').pop() || 'unknown'}`;
+    }
+    
+  } catch (error) {
+    console.error('Error extracting text from file:', error);
+    return `파일 텍스트 추출 실패: ${filePath.split('/').pop() || 'unknown'}`;
   }
-  
-  // For now, we'll assume the content is already text
-  // In production, you'd implement proper parsers for different file types
-  return content;
 }

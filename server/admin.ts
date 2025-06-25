@@ -277,13 +277,12 @@ export function setupAdminRoutes(app: Express) {
       // Move file to permanent location
       fs.copyFileSync(file.path, permanentPath);
 
-      // Read file content for processing
-      let fileContent = '';
+      // Extract text content from the uploaded file
       let extractedText = '';
 
       try {
-        fileContent = fs.readFileSync(permanentPath, 'utf-8');
-        extractedText = await extractTextFromContent(fileContent, file.mimetype);
+        extractedText = await extractTextFromContent(permanentPath, file.mimetype);
+        console.log("Extracted text preview:", extractedText.substring(0, 200));
       } catch (contentError) {
         console.log("Could not extract text content, storing file info only");
         extractedText = `Document: ${originalName}`;
@@ -1072,6 +1071,52 @@ export function setupAdminRoutes(app: Express) {
       if (!res.headersSent) {
         res.status(500).json({ message: "문서 다운로드에 실패했습니다" });
       }
+    }
+  });
+
+  // Document reprocess endpoint - fix encoding for existing documents
+  app.post("/api/admin/documents/:id/reprocess", requireMasterAdmin, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
+      }
+
+      // Check if file exists
+      const filePath = path.join(adminUploadDir, document.filename);
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "파일을 찾을 수 없습니다" });
+      }
+
+      console.log(`Reprocessing document: ${document.originalName}`);
+
+      // Re-extract text content using improved extraction
+      let reprocessedText = '';
+      try {
+        reprocessedText = await extractTextFromContent(filePath, document.mimeType);
+        console.log("Reprocessed text preview:", reprocessedText.substring(0, 200));
+      } catch (extractError) {
+        console.error("Failed to reprocess document:", extractError);
+        return res.status(500).json({ message: "문서 재처리에 실패했습니다" });
+      }
+
+      // Update document content in storage
+      await storage.updateDocument(documentId, { content: reprocessedText });
+
+      res.json({
+        success: true,
+        message: "문서가 성공적으로 재처리되었습니다",
+        textLength: reprocessedText.length
+      });
+
+    } catch (error) {
+      console.error("Error reprocessing document:", error);
+      res.status(500).json({ message: "문서 재처리 중 오류가 발생했습니다" });
     }
   });
 
