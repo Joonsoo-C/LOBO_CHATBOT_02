@@ -504,6 +504,11 @@ Changelog:
   * Upload system now fully replaces hardcoded sample data with user-provided organization structures
   * Master admin interface displays uploaded organization data in filters and search results
   * System now supports dynamic organization hierarchy management through file uploads
+  * Enhanced hierarchical organization structure parsing for "상위카테고리", "하위카테고리", "세부카테고리" format
+  * Fixed organization filtering system to display all hierarchy levels in search dropdowns
+  * Improved organization table display to show complete hierarchical structure (상위/하위/세부 조직)
+  * Successfully processed 372 organizations from Excel file with proper categorization
+  * Added duplicate removal logic and enhanced search functionality across all organization levels
 ```
 
 ## User Preferences
