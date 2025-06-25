@@ -873,6 +873,20 @@ export class MemoryStorage implements IStorage {
     console.log('All organization categories have been cleared from memory storage');
   }
 
+  // Method to reload authentic organization data
+  async reloadAuthenticOrganizationData(): Promise<void> {
+    console.log('Reloading authentic organization data from Excel file');
+    
+    // Clear existing data
+    this.organizationCategories.clear();
+    this.nextOrganizationId = 1;
+    
+    // Load the authentic data from the processed file
+    this.loadPersistedOrganizationCategories();
+    
+    console.log(`Reloaded ${this.organizationCategories.size} authentic organization categories`);
+  }
+
   // Enhanced file persistence for organization categories
   private async saveOrganizationCategoriesToFile(): Promise<void> {
     try {
