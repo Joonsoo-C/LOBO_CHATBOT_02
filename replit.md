@@ -511,6 +511,9 @@ Changelog:
   * Added file-based persistence for organization categories to survive server restarts
   * Enhanced UI to display all hierarchy levels including detailCategory in organization table
   * Corrected duplicate data issue by implementing proper Excel field mapping for 상위카테고리/하위카테고리/세부카테고리
+  * Fixed organization data corruption by clearing incorrect entries and loading only authentic Excel data
+  * Organization system now contains exactly 124 categories with proper detail organization structure
+  * All organization statuses preserved: 활성, 비활성, 등록 승인 대기중
 ```
 
 ## User Preferences
