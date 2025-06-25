@@ -134,7 +134,23 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/organizations", requireMasterAdmin, async (req, res) => {
     try {
       const organizations = await storage.getOrganizationCategories();
-      console.log(`Retrieved ${organizations.length} organization categories from storage`);
+      console.log(`Retrieved ${organizations.length} organization categories from storage:`);
+      organizations.forEach((org, index) => {
+        if (index < 10) { // Log first 10 for debugging
+          console.log(`  ${index + 1}. ${org.name} (${org.upperCategory} > ${org.lowerCategory})`);
+        }
+      });
+      if (organizations.length > 10) {
+        console.log(`  ... and ${organizations.length - 10} more organizations`);
+      }
+      
+      // Ensure no caching headers
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      
       res.json(organizations);
     } catch (error) {
       console.error("Failed to get organizations:", error);

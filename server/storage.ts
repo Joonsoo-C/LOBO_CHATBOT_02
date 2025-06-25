@@ -76,6 +76,7 @@ export interface IStorage {
   updateOrganizationCategory(id: number, organization: any): Promise<any>;
   deleteOrganizationCategory(id: number): Promise<void>;
   bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]>;
+  clearCache?(): void;
 }
 
 export class DatabaseStorage implements IStorage {

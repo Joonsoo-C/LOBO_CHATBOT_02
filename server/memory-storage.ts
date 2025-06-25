@@ -814,6 +814,9 @@ export class MemoryStorage implements IStorage {
   async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
     const createdOrganizations: any[] = [];
     
+    console.log(`Starting bulk creation of ${organizations.length} organization categories`);
+    console.log(`Current organization count before bulk creation: ${this.organizationCategories.size}`);
+    
     for (const org of organizations) {
       const id = this.nextOrganizationId++;
       const newOrganization = {
@@ -824,10 +827,18 @@ export class MemoryStorage implements IStorage {
       };
       this.organizationCategories.set(id, newOrganization);
       createdOrganizations.push(newOrganization);
+      console.log(`Created organization: ${newOrganization.name} (ID: ${id})`);
     }
     
+    console.log(`Organization count after bulk creation: ${this.organizationCategories.size}`);
     this.savePersistedDocuments();
-    console.log(`Bulk created ${createdOrganizations.length} organization categories`);
+    console.log(`Bulk created ${createdOrganizations.length} organization categories and saved to persistence`);
     return createdOrganizations;
+  }
+
+  // Add cache clearing method
+  clearCache(): void {
+    console.log("Clearing memory storage cache");
+    // Clear any cached data if needed
   }
 }
