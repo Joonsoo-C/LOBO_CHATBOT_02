@@ -836,6 +836,14 @@ export class MemoryStorage implements IStorage {
     return createdOrganizations;
   }
 
+  async clearAllOrganizationCategories(): Promise<void> {
+    console.log('Clearing all organization categories from memory storage');
+    this.organizationCategories.clear();
+    this.nextOrganizationId = 1;
+    
+    console.log('All organization categories have been cleared from memory storage');
+  }
+
   // Add cache clearing method
   clearCache(): void {
     console.log("Clearing memory storage cache");

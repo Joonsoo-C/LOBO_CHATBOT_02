@@ -2,36 +2,9 @@ import { storage } from "./storage";
 import { allSampleUsers, userCategoryStats } from "./sample-users";
 
 export async function initializeSampleOrganizations() {
-  try {
-    // Check if organization categories already exist to avoid duplicates
-    const existingOrganizations = await storage.getOrganizationCategories?.() || [];
-    if (existingOrganizations.length >= 5) {
-      return; // Silent skip to reduce initialization time
-    }
-    
-    console.log("Initializing sample organization categories...");
-    
-    const sampleOrganizations = [
-      { name: "로보대학교", upperCategory: "대학본부", lowerCategory: "총장실", detailCategory: "기획처", description: "로보대학교 본부" },
-      { name: "공과대학", upperCategory: "로보대학교", lowerCategory: "공과대학", detailCategory: "컴퓨터공학과", description: "공과대학 컴퓨터공학과" },
-      { name: "인문대학", upperCategory: "로보대학교", lowerCategory: "인문대학", detailCategory: "국어국문학과", description: "인문대학 국어국문학과" },
-      { name: "경영대학", upperCategory: "로보대학교", lowerCategory: "경영대학", detailCategory: "경영학과", description: "경영대학 경영학과" },
-      { name: "의과대학", upperCategory: "로보대학교", lowerCategory: "의과대학", detailCategory: "의학과", description: "의과대학 의학과" }
-    ];
-
-    for (const org of sampleOrganizations) {
-      try {
-        await storage.createOrganizationCategory(org);
-        console.log(`✓ Created organization category: ${org.name}`);
-      } catch (error) {
-        console.log(`✗ Failed to create organization category: ${org.name}`, error);
-      }
-    }
-
-    console.log("🎉 Sample organization categories are ready!");
-  } catch (error) {
-    console.error("Failed to initialize sample organization categories:", error);
-  }
+  // Organization category initialization completely disabled per user request
+  console.log("Skipping sample organization categories initialization (disabled by user request)");
+  return;
 }
 
 export async function initializeSampleUsers() {
