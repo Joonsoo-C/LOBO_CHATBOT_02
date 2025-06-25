@@ -357,15 +357,12 @@ export default function MasterAdmin() {
     return filtered;
   }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
 
-  // 페이지네이션된 사용자 목록
-  const paginatedUsers = useMemo(() => {
-    const startIndex = (userCurrentPage - 1) * usersPerPage;
-    const endIndex = startIndex + usersPerPage;
-    return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, userCurrentPage, usersPerPage]);
-
-  // 총 페이지 수 계산
-  const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
+  // 사용자 목록 페이지네이션
+  const userPagination = usePagination({
+    data: filteredUsers,
+    itemsPerPage: 20,
+    initialPage: 1
+  });
 
   const iconMap = {
     User,
@@ -2385,79 +2382,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 페이지네이션 */}
-            {hasSearched && totalUserPages > 1 && (
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700 dark:text-gray-300" style={{ display: 'none' }}>
-                  총 {filteredUsers.length}명의 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={userCurrentPage === 1}
-                  >
-                    이전
-                  </Button>
-                  
-                  <div className="flex items-center space-x-1">
-                    {/* 첫 페이지 */}
-                    {userCurrentPage > 3 && (
-                      <>
-                        <Button
-                          variant={1 === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(1)}
-                        >
-                          1
-                        </Button>
-                        {userCurrentPage > 4 && <span className="px-2">...</span>}
-                      </>
-                    )}
-                    
-                    {/* 현재 페이지 주변 페이지들 */}
-                    {Array.from({ length: Math.min(5, totalUserPages) }, (_, i) => {
-                      const page = Math.max(1, Math.min(userCurrentPage - 2 + i, totalUserPages));
-                      if (page < Math.max(1, userCurrentPage - 2) || page > Math.min(userCurrentPage + 2, totalUserPages)) return null;
-                      return (
-                        <Button
-                          key={page}
-                          variant={page === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(page)}
-                        >
-                          {page}
-                        </Button>
-                      );
-                    })}
-                    
-                    {/* 마지막 페이지 */}
-                    {userCurrentPage < totalUserPages - 2 && (
-                      <>
-                        {userCurrentPage < totalUserPages - 3 && <span className="px-2">...</span>}
-                        <Button
-                          variant={totalUserPages === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(totalUserPages)}
-                        >
-                          {totalUserPages}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
-                    disabled={userCurrentPage === totalUserPages}
-                  >
-                    다음
-                  </Button>
-                </div>
+            {/* 결과 개수 및 페이지네이션 */}
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
+                총 {userPagination.totalItems}개 사용자 중 {userPagination.startIndex}-{userPagination.endIndex}개 표시
               </div>
-            )}
+              {userPagination.totalPages > 1 && (
+                <PaginationComponent
+                  currentPage={userPagination.currentPage}
+                  totalPages={userPagination.totalPages}
+                  onPageChange={userPagination.goToPage}
+                  className="flex-shrink-0"
+                />
+              )}
+            </div>
           </TabsContent>
 
           {/* 에이전트 관리 */}
