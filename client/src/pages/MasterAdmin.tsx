@@ -17,13 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
-// Import organization categories
-import { 
-  organizationCategories, 
-  getUniqueUpperCategories, 
-  getUniqueLowerCategories, 
-  getUniqueDetailCategories 
-} from "../../../server/organization-categories";
+// Remove hardcoded organization categories import - now using API data
 
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
 
@@ -313,11 +307,11 @@ export default function MasterAdmin() {
     }
   }, [users, hasSearched]);
 
-  // 필터된 조직 카테고리 목록 (실시간 필터링)
+  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
-    if (!organizationCategories) return [];
+    if (!organizations || organizations.length === 0) return [];
     
-    let filtered = [...organizationCategories];
+    let filtered = [...organizations];
     
     // 검색어 필터링
     if (userSearchQuery.trim()) {
