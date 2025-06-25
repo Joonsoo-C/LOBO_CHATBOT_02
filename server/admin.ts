@@ -1001,14 +1001,14 @@ export function setupAdminRoutes(app: Express) {
   // Organization category file upload endpoint
   app.post("/api/admin/upload-org-categories", requireMasterAdmin, orgCategoryUpload.array('files', 10), async (req: any, res) => {
     try {
-      console.log('Organization category upload request received');
+      console.log('=== Organization category upload request received ===');
       const files = req.files;
       if (!files || files.length === 0) {
         return res.status(400).json({ message: "파일이 선택되지 않았습니다." });
       }
 
       const { overwriteExisting, validateOnly } = req.body;
-      console.log('Organization category upload options:', { overwriteExisting, validateOnly });
+      console.log('Upload options:', { overwriteExisting, validateOnly });
 
       let totalOrganizations: any[] = [];
       const processResults: any[] = [];
@@ -1016,61 +1016,126 @@ export function setupAdminRoutes(app: Express) {
       // Process each file
       for (const file of files) {
         try {
-          console.log(`Processing organization category file: ${file.originalname}`);
+          console.log(`\n--- Processing file: ${file.originalname} ---`);
+          console.log(`File size: ${file.buffer.length} bytes`);
+          console.log(`File MIME type: ${file.mimetype}`);
           
-          let jsonData: any[][] = [];
+          let organizations: any[] = [];
           const fileName = file.originalname.toLowerCase();
           
-          if (fileName.endsWith('.csv')) {
-            // CSV file processing
-            const csvText = file.buffer.toString('utf-8');
-            const lines = csvText.split('\n').filter(line => line.trim() !== '');
-            jsonData = lines.map(line => line.split(',').map(cell => cell.trim().replace(/^"|"$/g, '')));
-          } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-            // Excel file processing  
+          if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+            // Excel file processing
+            console.log('Processing as Excel file...');
             const workbook = XLSX.read(file.buffer, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             
-            // Convert to JSON
-            jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
-          } else {
-            console.log(`Unsupported file type: ${file.originalname}`);
-            continue;
+            // Convert to JSON with first row as headers
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+            console.log(`Extracted ${jsonData.length} rows from Excel`);
+            
+            if (jsonData.length < 2) {
+              console.log('Not enough data in Excel file');
+              continue;
+            }
+
+            // Get headers and data rows
+            const headers = jsonData[0];
+            const dataRows = jsonData.slice(1);
+            
+            console.log('Headers:', headers);
+            console.log('Sample data row:', dataRows[0]);
+
+            // Process each data row
+            for (let i = 0; i < dataRows.length; i++) {
+              const row = dataRows[i];
+              if (!row || row.length === 0) continue;
+
+              // Create organization object with flexible field mapping
+              const org: any = {};
+              headers.forEach((header: any, index: number) => {
+                if (header && row[index] !== undefined) {
+                  org[header] = row[index];
+                }
+              });
+
+              // Map to standard organization fields with multiple possible column names
+              const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
+                          org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
+                          
+              const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
+                                  org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
+                                  
+              const lowerCategory = org['하위조직'] || org['단과대학'] || org['학부'] || 
+                                  org['lowerCategory'] || org['하위 조직'] || org['LowerCategory'];
+                                  
+              const detailCategory = org['세부조직'] || org['학과'] || org['전공'] || 
+                                   org['detailCategory'] || org['세부 조직'] || org['DetailCategory'];
+
+              if (name && name.toString().trim()) {
+                const organization = {
+                  name: name.toString().trim(),
+                  upperCategory: upperCategory ? upperCategory.toString().trim() : null,
+                  lowerCategory: lowerCategory ? lowerCategory.toString().trim() : null,
+                  detailCategory: detailCategory ? detailCategory.toString().trim() : null,
+                  description: (org['설명'] || org['description'] || org['Description'])?.toString()?.trim() || null,
+                  isActive: true
+                };
+                
+                organizations.push(organization);
+                console.log(`Processed org ${i + 1}: ${organization.name}`);
+              }
+            }
+            
+          } else if (fileName.endsWith('.csv')) {
+            // CSV file processing
+            console.log('Processing as CSV file...');
+            const csvText = file.buffer.toString('utf-8');
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            
+            if (lines.length < 2) {
+              console.log('Not enough data in CSV file');
+              continue;
+            }
+
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            console.log('CSV Headers:', headers);
+
+            for (let i = 1; i < lines.length; i++) {
+              const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+              const org: any = {};
+              
+              headers.forEach((header, index) => {
+                org[header] = values[index] || null;
+              });
+
+              const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
+                          org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
+                          
+              const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
+                                  org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
+
+              if (name && name.toString().trim()) {
+                organizations.push({
+                  name: name.toString().trim(),
+                  upperCategory: upperCategory ? upperCategory.toString().trim() : null,
+                  lowerCategory: (org['하위조직'] || org['단과대학'] || org['lowerCategory'])?.toString()?.trim() || null,
+                  detailCategory: (org['세부조직'] || org['학과'] || org['detailCategory'])?.toString()?.trim() || null,
+                  description: (org['설명'] || org['description'])?.toString()?.trim() || null,
+                  isActive: true
+                });
+              }
+            }
           }
-          
-          if (jsonData.length === 0) {
-            console.log(`Empty file: ${file.originalname}`);
-            continue;
-          }
 
-          // Skip header row and process data
-          const dataRows = jsonData.slice(1);
-          console.log(`Processing ${dataRows.length} organization rows from ${file.originalname}`);
-
-          // Process each row
-          const fileOrganizations = dataRows.map((row, index) => {
-            const rowNum = index + 2; // +2 because we skipped header and array is 0-indexed
-            return {
-              name: row[0] || row.조직명 || row.name,
-              upperCategory: row[1] || row.상위조직 || row.upperCategory,
-              lowerCategory: row[2] || row.하위조직 || row.lowerCategory,
-              detailCategory: row[3] || row.세부조직 || row.detailCategory,
-              description: row[4] || row.설명 || row.description || null,
-              isActive: true,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              sourceFile: file.originalname,
-              sourceRow: rowNum
-            };
-          }).filter(org => org.name); // Only include rows with organization name
-
-          totalOrganizations = totalOrganizations.concat(fileOrganizations);
+          console.log(`Extracted ${organizations.length} valid organizations from ${file.originalname}`);
+          totalOrganizations = totalOrganizations.concat(organizations);
           
           processResults.push({
             filename: file.originalname,
-            processed: fileOrganizations.length,
-            skipped: dataRows.length - fileOrganizations.length
+            processed: organizations.length,
+            skipped: 0,
+            success: true
           });
 
         } catch (fileError) {
@@ -1079,25 +1144,49 @@ export function setupAdminRoutes(app: Express) {
             filename: file.originalname,
             error: fileError instanceof Error ? fileError.message : 'Unknown error',
             processed: 0,
-            skipped: 0
+            skipped: 0,
+            success: false
           });
         }
       }
 
-      if (validateOnly) {
-        return res.json({
-          success: true,
-          message: `검증 완료: ${totalOrganizations.length}개 조직이 유효합니다.`,
-          organizationCount: totalOrganizations.length,
-          fileResults: processResults,
-          preview: totalOrganizations.slice(0, 10) // Show first 10 for preview
+      console.log(`\n=== Total organizations extracted: ${totalOrganizations.length} ===`);
+
+      if (totalOrganizations.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: '업로드된 파일에서 유효한 조직 데이터를 찾을 수 없습니다.',
+          results: processResults
         });
       }
 
-      // Create organization categories in storage
+      if (validateOnly === 'true') {
+        return res.json({
+          success: true,
+          message: `검증 완료: ${totalOrganizations.length}개 조직이 유효합니다.`,
+          validated: totalOrganizations.length,
+          preview: totalOrganizations.slice(0, 5),
+          results: processResults
+        });
+      }
+
+      // Save to storage
+      console.log('Saving organizations to storage...');
       const createdOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations);
-      let createdCount = createdOrganizations.length;
-      let updatedCount = 0;
+      console.log(`Successfully saved ${createdOrganizations.length} organizations to storage`);
+
+      // Verify storage
+      const allOrgs = await storage.getAllOrganizationCategories();
+      console.log(`Storage now contains ${allOrgs.length} total organizations`);
+
+      res.json({
+        success: true,
+        message: '조직 카테고리가 성공적으로 업로드되었습니다.',
+        created: createdOrganizations.length,
+        totalInStorage: allOrgs.length,
+        organizations: createdOrganizations.slice(0, 10), // Return first 10
+        results: processResults
+      });
       let errorCount = totalOrganizations.length - createdCount;
 
       console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
