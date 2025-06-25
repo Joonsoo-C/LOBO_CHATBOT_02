@@ -20,6 +20,8 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 // Remove hardcoded organization categories import - now using API data
 
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
+import { PaginationComponent } from "@/components/PaginationComponent";
+import { usePagination } from "@/hooks/usePagination";
 
 import { 
   Users, 
@@ -876,6 +878,33 @@ export default function MasterAdmin() {
       return 0;
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
+
+  // 페이지네이션 설정
+  const ITEMS_PER_PAGE = 10;
+  
+  // 사용자 목록 페이지네이션
+  const userPagination = usePagination({
+    data: sortedUsers,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 에이전트 목록 페이지네이션  
+  const agentPagination = usePagination({
+    data: sortedAgents,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 조직 카테고리 목록 페이지네이션
+  const organizationPagination = usePagination({
+    data: filteredOrganizationCategories,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 문서 목록 페이지네이션
+  const documentPagination = usePagination({
+    data: documentList || [],
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
 
 
 
