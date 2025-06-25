@@ -4252,7 +4252,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             {/* 현재 관리자 표시 */}
                             <div>
                               <span className="text-sm text-gray-600 dark:text-gray-400">현재 관리자</span>
-                              <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">
+                              <div className="font-semibold text-purple-600 dark:text-purple-400 text-[20px]">
                                 {editingOrgCategory?.manager || "미지정"}
                               </div>
                             </div>
