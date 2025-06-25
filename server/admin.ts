@@ -604,21 +604,36 @@ export function setupAdminRoutes(app: Express) {
           throw new Error('엑셀 파일에 데이터가 없습니다.');
         }
 
-        // Process Excel data for organizations
-        organizations = jsonData.map((row: any) => {
-          return {
-            name: row.조직명 || row.name || row.이름,
-            type: row.조직유형 || row.type || 'department',
-            parentId: null, // Will be resolved later based on hierarchy
-            upperCategory: row.상위조직 || row.upperCategory || row.상위카테고리,
-            lowerCategory: row.하위조직 || row.lowerCategory || row.하위카테고리,
-            detailCategory: row.세부조직 || row.detailCategory || row.세부카테고리,
-            description: row.설명 || row.description || null,
-            isActive: true,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        }).filter(org => org.name); // Only include rows with organization name
+        // Process Excel data for organizations - clean and deduplicate
+        const uniqueOrgs = new Map();
+        
+        jsonData.forEach((row: any) => {
+          const name = row.조직명 || row.name || row.이름;
+          if (!name) return; // Skip rows without organization name
+          
+          const upperCategory = row.상위조직 || row.upperCategory || row.상위카테고리 || null;
+          const lowerCategory = row.하위조직 || row.lowerCategory || row.하위카테고리 || null;
+          const detailCategory = row.세부조직 || row.detailCategory || row.세부카테고리 || null;
+          
+          // Create unique key based on hierarchy
+          const key = `${upperCategory || 'ROOT'}-${lowerCategory || 'NONE'}-${detailCategory || 'NONE'}-${name}`;
+          
+          if (!uniqueOrgs.has(key)) {
+            uniqueOrgs.set(key, {
+              name: name.trim(),
+              upperCategory: upperCategory ? upperCategory.trim() : null,
+              lowerCategory: lowerCategory ? lowerCategory.trim() : null,
+              detailCategory: detailCategory ? detailCategory.trim() : null,
+              description: row.설명 || row.description || null,
+              isActive: true,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            });
+          }
+        });
+        
+        organizations = Array.from(uniqueOrgs.values());
+        console.log(`Extracted ${organizations.length} unique organizations from Excel file`);
 
       } else {
         throw new Error('조직 카테고리 업로드는 엑셀 파일(.xlsx)만 지원됩니다.');
@@ -642,13 +657,18 @@ export function setupAdminRoutes(app: Express) {
 
       // Process and create organization categories using bulk create
       const organizationsToCreate = organizations.map(org => ({
-        name: org.name || '미정',
-        upperCategory: org.upperCategory || null,
-        lowerCategory: org.lowerCategory || null,
-        detailCategory: org.detailCategory || null,
+        name: org.name,
+        upperCategory: org.upperCategory,
+        lowerCategory: org.lowerCategory,
+        detailCategory: org.detailCategory,
         manager: null,
         status: '활성',
       }));
+      
+      console.log(`Creating ${organizationsToCreate.length} organization categories:`);
+      organizationsToCreate.slice(0, 5).forEach((org, i) => {
+        console.log(`  ${i+1}. ${org.name} (${org.upperCategory} > ${org.lowerCategory} > ${org.detailCategory})`);
+      });
 
       const createdCategories = await storage.bulkCreateOrganizationCategories(organizationsToCreate);
       
