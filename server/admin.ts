@@ -1187,6 +1187,15 @@ export function setupAdminRoutes(app: Express) {
         organizations: createdOrganizations.slice(0, 10), // Return first 10
         results: processResults
       });
+
+    } catch (error) {
+      console.error('Organization category upload error:', error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : '조직 카테고리 업로드 중 오류가 발생했습니다.'
+      });
+    }
+  });
       let errorCount = totalOrganizations.length - createdCount;
 
       console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
