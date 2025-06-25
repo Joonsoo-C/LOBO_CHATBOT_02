@@ -3624,6 +3624,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               {/* 카테고리 검색 */}
               <div className="space-y-2">
+                <Label>조직명 검색</Label>
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
@@ -3631,11 +3632,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       value={userSearchQuery}
                       onChange={(e) => {
                         setUserSearchQuery(e.target.value);
-                        setHasSearched(true); // 실시간 검색
                       }}
-                      onKeyPress={(e) => e.key === 'Enter' && setHasSearched(true)}
+                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                     />
                   </div>
+                  <Button onClick={executeSearch} variant="outline">
+                    검색
+                  </Button>
                 </div>
               </div>
               
