@@ -213,7 +213,9 @@ export default function MasterAdmin() {
 
   // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
   const filteredLowerCategories = useMemo(() => {
-    if (selectedUniversity === 'all') return [];
+    if (selectedUniversity === 'all') {
+      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+    }
     if (selectedUniversity === 'all') {
       return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
     }
