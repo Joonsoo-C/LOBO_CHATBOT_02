@@ -294,45 +294,7 @@ export default function MasterAdmin() {
     }
   }, [users, hasSearched]);
 
-  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
-  const filteredOrganizationCategories = useMemo(() => {
-    if (!organizations || organizations.length === 0) return [];
-    
-    let filtered = [...organizations];
-    
-    // 검색어 필터링
-    if (userSearchQuery.trim()) {
-      const query = userSearchQuery.toLowerCase();
-      filtered = filtered.filter(category => 
-        (category.upperCategory && category.upperCategory.toLowerCase().includes(query)) ||
-        (category.lowerCategory && category.lowerCategory.toLowerCase().includes(query)) ||
-        (category.detailCategory && category.detailCategory.toLowerCase().includes(query))
-      );
-    }
-    
-    // 상위 카테고리 필터링
-    if (selectedUniversity !== 'all') {
-      filtered = filtered.filter(category => 
-        category.upperCategory === selectedUniversity
-      );
-    }
-    
-    // 하위 카테고리 필터링
-    if (selectedCollege !== 'all') {
-      filtered = filtered.filter(category => 
-        category.lowerCategory === selectedCollege
-      );
-    }
-    
-    // 세부 카테고리 필터링
-    if (selectedDepartment !== 'all') {
-      filtered = filtered.filter(category => 
-        category.detailCategory === selectedDepartment
-      );
-    }
-    
-    return filtered;
-  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+  // Move this after organizations is declared via useQuery
 
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
@@ -487,6 +449,52 @@ export default function MasterAdmin() {
     }
     return Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
   }, [selectedUniversity, selectedCollege, organizations]);
+
+  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
+  const filteredOrganizationCategories = useMemo(() => {
+    if (!organizations || organizations.length === 0) return [];
+    
+    let filtered = [...organizations];
+    
+    // 검색어 필터링
+    if (userSearchQuery.trim()) {
+      const query = userSearchQuery.toLowerCase();
+      filtered = filtered.filter(category => 
+        (category.upperCategory && category.upperCategory.toLowerCase().includes(query)) ||
+        (category.lowerCategory && category.lowerCategory.toLowerCase().includes(query)) ||
+        (category.detailCategory && category.detailCategory.toLowerCase().includes(query))
+      );
+    }
+    
+    // 상위 카테고리 필터링
+    if (selectedUniversity !== 'all') {
+      filtered = filtered.filter(category => 
+        category.upperCategory === selectedUniversity
+      );
+    }
+    
+    // 하위 카테고리 필터링
+    if (selectedCollege !== 'all') {
+      filtered = filtered.filter(category => 
+        category.lowerCategory === selectedCollege
+      );
+    }
+    
+    // 세부 카테고리 필터링
+    if (selectedDepartment !== 'all') {
+      filtered = filtered.filter(category => 
+        category.detailCategory === selectedDepartment
+      );
+    }
+    
+    return filtered;
+  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+
+  // Organization categories pagination calculations - moved here after filteredOrganizationCategories is declared
+  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
+  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
+  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
+  const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
 
   // 검색 실행 함수
   const executeSearch = () => {
