@@ -819,26 +819,49 @@ export class MemoryStorage implements IStorage {
 
   async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
     const createdOrganizations: any[] = [];
+    const uniqueOrgs = new Map<string, any>();
 
     console.log(`Starting bulk creation of ${organizations.length} organization categories`);
     console.log(`Current organization count before bulk creation: ${this.organizationCategories.size}`);
 
+    // Clear existing data first
+    this.organizationCategories.clear();
+    this.nextOrganizationId = 1;
+
+    // Deduplicate organizations based on name and hierarchy
     for (const org of organizations) {
+      const key = `${org.name || ''}-${org.upperCategory || ''}-${org.lowerCategory || ''}-${org.detailCategory || ''}`;
+      if (!uniqueOrgs.has(key)) {
+        uniqueOrgs.set(key, org);
+      }
+    }
+
+    console.log(`Deduplicated from ${organizations.length} to ${uniqueOrgs.size} unique organizations`);
+
+    // Create organizations with proper hierarchy
+    for (const org of uniqueOrgs.values()) {
       const id = this.nextOrganizationId++;
       const newOrganization = {
         id,
-        ...org,
+        name: org.name,
+        upperCategory: org.upperCategory || null,
+        lowerCategory: org.lowerCategory || null,
+        detailCategory: org.detailCategory || null,
+        description: org.description || null,
+        isActive: org.isActive !== false,
+        status: org.status || '활성',
+        manager: org.manager || null,
         createdAt: new Date(),
         updatedAt: new Date()
       };
       this.organizationCategories.set(id, newOrganization);
       createdOrganizations.push(newOrganization);
-      console.log(`Created organization: ${newOrganization.name} (ID: ${id})`);
+      console.log(`Created organization: ${newOrganization.name} (ID: ${id}) - ${newOrganization.upperCategory} > ${newOrganization.lowerCategory} > ${newOrganization.detailCategory}`);
     }
 
     console.log(`Organization count after bulk creation: ${this.organizationCategories.size}`);
     await this.saveOrganizationCategoriesToFile();
-    console.log(`Bulk created ${createdOrganizations.length} organization categories and saved to persistence`);
+    console.log(`Bulk created ${createdOrganizations.length} unique organization categories and saved to persistence`);
     return createdOrganizations;
   }
 
