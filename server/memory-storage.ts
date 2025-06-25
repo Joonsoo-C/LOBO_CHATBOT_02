@@ -39,28 +39,28 @@ export class MemoryStorage implements IStorage {
     this.loadPersistedDocuments();
     this.loadPersistedOrganizationCategories();
     this.initializeDefaultData();
-    
+
     // Optimize garbage collection
     this.setupPeriodicCleanup();
   }
-  
+
   private setupPeriodicCleanup() {
     // Clean up old conversations and messages every 30 minutes
     setInterval(() => {
       this.cleanupOldData();
     }, 30 * 60 * 1000);
   }
-  
+
   private cleanupOldData() {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
+
     // Remove old conversations without recent activity
     for (const [id, conversation] of this.conversations.entries()) {
       if (conversation.lastMessageAt && conversation.lastMessageAt < thirtyDaysAgo) {
         this.conversations.delete(id);
       }
     }
-    
+
     // Remove orphaned messages
     const validConversationIds = new Set(this.conversations.keys());
     for (const [id, message] of this.messages.entries()) {
@@ -81,7 +81,7 @@ export class MemoryStorage implements IStorage {
       if (fs.existsSync(this.documentsFile)) {
         const data = fs.readFileSync(this.documentsFile, 'utf-8');
         const persistedData = JSON.parse(data);
-        
+
         // Restore documents
         if (persistedData.documents) {
           persistedData.documents.forEach((doc: Document) => {
@@ -92,13 +92,16 @@ export class MemoryStorage implements IStorage {
             this.documents.set(doc.id, doc);
           });
         }
-        
+
         // Update nextId to avoid conflicts
         if (persistedData.nextId) {
           this.nextId = Math.max(this.nextId, persistedData.nextId);
         }
-        
+
         console.log(`Loaded ${this.documents.size} persisted documents`);
+
+        // Load organization categories separately
+        await this.loadOrganizationCategoriesFromFile();
       }
     } catch (error) {
       console.error('Error loading persisted documents:', error);
@@ -398,7 +401,7 @@ export class MemoryStorage implements IStorage {
     const cacheKey = 'all_agents';
     const cached = cache.get(cacheKey);
     if (cached) return cached;
-    
+
     const agents = Array.from(this.agents.values());
     cache.set(cacheKey, agents, 2 * 60 * 1000); // Cache for 2 minutes
     return agents;
@@ -439,10 +442,10 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.agents.set(id, newAgent);
-    
+
     // Invalidate cache
     cache.delete('all_agents');
-    
+
     return newAgent;
   }
 
@@ -489,7 +492,7 @@ export class MemoryStorage implements IStorage {
     const cacheKey = `user_conversations_${userId}`;
     const cached = cache.get(cacheKey);
     if (cached) return cached;
-    
+
     const userConversations = Array.from(this.conversations.values())
       .filter(conv => conv.userId === userId && conv.type === "general")
       .sort((a, b) => {
@@ -552,11 +555,11 @@ export class MemoryStorage implements IStorage {
     const cacheKey = `conversation_messages_${conversationId}`;
     const cached = cache.get(cacheKey);
     if (cached) return cached;
-    
+
     const messages = Array.from(this.messages.values())
       .filter(msg => msg.conversationId === conversationId)
       .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
-    
+
     cache.set(cacheKey, messages, 3 * 60 * 1000); // Cache for 3 minutes
     return messages;
   }
@@ -574,7 +577,7 @@ export class MemoryStorage implements IStorage {
     const conversation = this.conversations.get(message.conversationId);
     if (conversation) {
       conversation.lastMessageAt = newMessage.createdAt;
-      
+
       // Invalidate related caches
       cache.delete(`user_conversations_${conversation.userId}`);
       cache.delete(`conversation_messages_${message.conversationId}`);
@@ -733,12 +736,12 @@ export class MemoryStorage implements IStorage {
     try {
       if (fs.existsSync('./data/memory-storage.json')) {
         const data = JSON.parse(fs.readFileSync('./data/memory-storage.json', 'utf8'));
-        
+
         this.users = new Map(data.users || []);
         this.agents = new Map(data.agents || []);
         this.conversations = new Map(data.conversations || []);
         this.messages = new Map(data.messages || []);
-        
+
         const documentsWithDates = (data.documents || []).map(([id, doc]: [number, any]) => [
           id,
           {
@@ -748,11 +751,11 @@ export class MemoryStorage implements IStorage {
           }
         ]);
         this.documents = new Map(documentsWithDates);
-        
+
         this.agentStats = new Map(data.agentStats || []);
         this.messageReactions = new Map(data.messageReactions || []);
         this.nextId = data.nextId || 1;
-        
+
         if (data.organizationCategories) {
           this.organizationCategories = new Map(data.organizationCategories.map((org: any) => [org.id, {
             ...org,
@@ -761,11 +764,11 @@ export class MemoryStorage implements IStorage {
           }]));
           this.nextOrganizationId = Math.max(...data.organizationCategories.map((org: any) => org.id), 0) + 1;
         }
-        
+
         if (data.nextOrganizationId) {
           this.nextOrganizationId = data.nextOrganizationId;
         }
-        
+
         console.log(`Loaded ${this.documents.size} persisted documents and ${this.organizationCategories.size} organization categories`);
       }
     } catch (error) {
@@ -796,7 +799,7 @@ export class MemoryStorage implements IStorage {
     if (!existingOrganization) {
       throw new Error(`Organization category with id ${id} not found`);
     }
-    
+
     const updatedOrganization = {
       ...existingOrganization,
       ...organization,
@@ -814,10 +817,10 @@ export class MemoryStorage implements IStorage {
 
   async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
     const createdOrganizations: any[] = [];
-    
+
     console.log(`Starting bulk creation of ${organizations.length} organization categories`);
     console.log(`Current organization count before bulk creation: ${this.organizationCategories.size}`);
-    
+
     for (const org of organizations) {
       const id = this.nextOrganizationId++;
       const newOrganization = {
@@ -830,7 +833,7 @@ export class MemoryStorage implements IStorage {
       createdOrganizations.push(newOrganization);
       console.log(`Created organization: ${newOrganization.name} (ID: ${id})`);
     }
-    
+
     console.log(`Organization count after bulk creation: ${this.organizationCategories.size}`);
     await this.saveOrganizationCategoriesToFile();
     console.log(`Bulk created ${createdOrganizations.length} organization categories and saved to persistence`);
@@ -854,7 +857,7 @@ export class MemoryStorage implements IStorage {
         createdAt: cat.createdAt?.toISOString(),
         updatedAt: cat.updatedAt?.toISOString()
       }));
-      
+
       fs.writeFileSync(organizationCategoriesFile, JSON.stringify(categoriesArray, null, 2));
       console.log(`Saved ${categoriesArray.length} organization categories to file`);
     } catch (error) {
@@ -865,23 +868,23 @@ export class MemoryStorage implements IStorage {
   private loadPersistedOrganizationCategories(): void {
     try {
       const organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
-      
+
       if (fs.existsSync(organizationCategoriesFile)) {
         const data = fs.readFileSync(organizationCategoriesFile, 'utf8');
         const categories = JSON.parse(data);
-        
+
         categories.forEach((cat: any) => {
           this.organizationCategories.set(cat.id, {
             ...cat,
             createdAt: cat.createdAt ? new Date(cat.createdAt) : new Date(),
             updatedAt: cat.updatedAt ? new Date(cat.updatedAt) : new Date()
           });
-          
+
           if (cat.id >= this.nextOrganizationId) {
             this.nextOrganizationId = cat.id + 1;
           }
         });
-        
+
         console.log(`Loaded ${categories.length} persisted organization categories`);
       } else {
         console.log('No persisted organization categories found');
@@ -895,5 +898,34 @@ export class MemoryStorage implements IStorage {
   clearCache(): void {
     console.log("Clearing memory storage cache");
     // Clear any cached data if needed
+  }
+
+  private async loadOrganizationCategoriesFromFile(): Promise<void> {
+    try {
+      const organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
+
+      if (fs.existsSync(organizationCategoriesFile)) {
+        const data = fs.readFileSync(organizationCategoriesFile, 'utf8');
+        const categories = JSON.parse(data);
+
+        categories.forEach((cat: any) => {
+          this.organizationCategories.set(cat.id, {
+            ...cat,
+            createdAt: cat.createdAt ? new Date(cat.createdAt) : new Date(),
+            updatedAt: cat.updatedAt ? new Date(cat.updatedAt) : new Date()
+          });
+
+          if (cat.id >= this.nextOrganizationId) {
+            this.nextOrganizationId = cat.id + 1;
+          }
+        });
+
+        console.log(`Loaded ${categories.length} persisted organization categories`);
+      } else {
+        console.log('No persisted organization categories found');
+      }
+    } catch (error) {
+      console.error('Failed to load persisted organization categories:', error);
+    }
   }
 }

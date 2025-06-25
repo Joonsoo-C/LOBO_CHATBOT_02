@@ -137,7 +137,7 @@ export function setupAdminRoutes(app: Express) {
       console.log(`Retrieved ${organizations.length} organization categories from storage:`);
       organizations.forEach((org, index) => {
         if (index < 10) { // Log first 10 for debugging
-          console.log(`  ${index + 1}. ${org.name} (${org.upperCategory} > ${org.lowerCategory})`);
+          console.log(`  ${index + 1}. ${org.name || 'Unknown'} (${org.upperCategory || 'None'} > ${org.lowerCategory || 'None'})`);
         }
       });
       if (organizations.length > 10) {
@@ -148,7 +148,8 @@ export function setupAdminRoutes(app: Express) {
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'Last-Modified': new Date().toUTCString()
       });
       
       res.json(organizations);
@@ -677,13 +678,18 @@ export function setupAdminRoutes(app: Express) {
       const updatedCount = 0;
       const errorCount = organizations.length - createdCount;
 
+      // Verify the data was saved
+      const verifyData = await storage.getOrganizationCategories();
+      console.log(`Verification: ${verifyData.length} organization categories now in storage`);
+
       res.json({
         success: true,
         message: `조직 카테고리 파일 업로드 완료`,
         created: createdCount,
         updated: updatedCount,
         errors: errorCount,
-        total: organizations.length
+        total: organizations.length,
+        totalInStorage: verifyData.length
       });
 
     } catch (error) {

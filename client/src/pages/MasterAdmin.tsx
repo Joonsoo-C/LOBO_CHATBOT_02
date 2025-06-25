@@ -402,12 +402,23 @@ export default function MasterAdmin() {
   const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
     queryKey: ['/api/admin/organizations'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/organizations');
+      const response = await fetch('/api/admin/organizations', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch organizations');
-      return response.json();
+      const data = await response.json();
+      console.log('Fetched organizations data:', data.length, 'items');
+      return data;
     },
     staleTime: 0,
     gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // 문서 목록 조회
@@ -1232,10 +1243,17 @@ export default function MasterAdmin() {
 
       // Refresh organization categories data
       await queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+      await refetchOrganizations();
 
       setIsOrgCategoryUploadDialogOpen(false);
       setSelectedOrgCategoryFiles([]);
       setOrgCategoryUploadProgress(0);
+      
+      // Reset filters to show all data
+      setSelectedUniversity('all');
+      setSelectedCollege('all');
+      setSelectedDepartment('all');
+      setUserSearchQuery('');
       
     } catch (error: any) {
       console.error('Organization category upload error:', error);
