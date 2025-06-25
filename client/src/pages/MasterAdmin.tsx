@@ -867,64 +867,6 @@ export default function MasterAdmin() {
   const executeAgentSearch = () => {
     setHasSearched(true);
   };
-      if (userSearchQuery.trim()) {
-        const query = userSearchQuery.toLowerCase();
-        filtered = filtered.filter(agent => 
-          agent.name.toLowerCase().includes(query) ||
-          agent.description.toLowerCase().includes(query)
-        );
-      }
-      
-      // 카테고리 필터링
-      if (selectedUniversity !== 'all') {
-        const categoryMap = {
-          'school': '학교',
-          'professor': '교수',
-          'student': '학생',
-          'group': '그룹',
-          'function': '기능형'
-        };
-        filtered = filtered.filter(agent => 
-          agent.category === categoryMap[selectedUniversity as keyof typeof categoryMap]
-        );
-      }
-      
-      // 상태 필터링
-      if (selectedCollege !== 'all') {
-        filtered = filtered.filter(agent => 
-          selectedCollege === 'active' ? agent.isActive : !agent.isActive
-        );
-      }
-    }
-    
-    return filtered;
-  }, [agents, hasSearched, userSearchQuery, selectedUniversity, selectedCollege]);
-
-  // 정렬된 에이전트 목록
-  const sortedAgents = useMemo(() => {
-    const agentsToSort = hasSearched ? filteredAgents : agents || [];
-    
-    return [...agentsToSort].sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
-      
-      // 특별한 필드들에 대한 처리
-      if (agentSortField === 'manager') {
-        aValue = (a as any).managerFirstName && (a as any).managerLastName 
-          ? `${(a as any).managerFirstName} ${(a as any).managerLastName}` 
-          : '';
-        bValue = (b as any).managerFirstName && (b as any).managerLastName 
-          ? `${(b as any).managerFirstName} ${(b as any).managerLastName}` 
-          : '';
-      } else if (agentSortField === 'organization') {
-        aValue = (a as any).organizationName || '';
-        bValue = (b as any).organizationName || '';
-      } else if (agentSortField === 'documentCount') {
-        aValue = (a as any).documentCount || 0;
-        bValue = (b as any).documentCount || 0;
-      } else if (agentSortField === 'userCount') {
-        aValue = (a as any).userCount || 0;
-        bValue = (b as any).userCount || 0;
       } else if (agentSortField === 'createdAt') {
         aValue = (a as any).lastUsedAt || a.createdAt || '';
         bValue = (b as any).lastUsedAt || b.createdAt || '';
@@ -4150,7 +4092,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {/* 실제 업로드된 문서 */}
                       {documentList && documentList.length > 0 ? (
-                        documentList.map((doc, index) => (
+                        documentPagination.paginatedData.map((doc, index) => (
                           <tr 
                             key={index}
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
