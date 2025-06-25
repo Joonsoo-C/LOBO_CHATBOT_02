@@ -626,37 +626,37 @@ export default function MasterAdmin() {
     },
   });
 
-  // 사용자 카테고리 데이터 (샘플 데이터 기반)
+  // 사용자 카테고리 데이터 (업로드된 조직 데이터 기반)
   const upperCategories = useMemo(() => {
-    if (!users) return [];
-    const categories = Array.from(new Set(users.map(user => (user as any).upperCategory).filter(Boolean)));
+    if (!organizations || organizations.length === 0) return [];
+    const categories = Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean)));
     return categories.sort();
-  }, [users]);
+  }, [organizations]);
 
   const lowerCategories = useMemo(() => {
-    if (!users || selectedUniversity === 'all') return [];
+    if (!organizations || organizations.length === 0 || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      users
-        .filter(user => (user as any).upperCategory === selectedUniversity)
-        .map(user => (user as any).lowerCategory)
+      organizations
+        .filter(org => org.upperCategory === selectedUniversity)
+        .map(org => org.lowerCategory)
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [users, selectedUniversity]);
+  }, [organizations, selectedUniversity]);
 
   const detailCategories = useMemo(() => {
-    if (!users || selectedCollege === 'all' || selectedUniversity === 'all') return [];
+    if (!organizations || organizations.length === 0 || selectedCollege === 'all' || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      users
-        .filter(user => 
-          (user as any).upperCategory === selectedUniversity && 
-          (user as any).lowerCategory === selectedCollege
+      organizations
+        .filter(org => 
+          org.upperCategory === selectedUniversity && 
+          org.lowerCategory === selectedCollege
         )
-        .map(user => (user as any).detailCategory)
+        .map(org => org.detailCategory)
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [users, selectedUniversity, selectedCollege]);
+  }, [organizations, selectedUniversity, selectedCollege]);
 
   // 상위 카테고리 변경 시 하위 카테고리 초기화 (실시간 적용)
   const handleUpperCategoryChange = (value: string) => {
