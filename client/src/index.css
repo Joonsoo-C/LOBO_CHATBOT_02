@@ -87,6 +87,19 @@ body {
     direction: ltr !important;
   }
   
+
+
+  /* Master admin mobile spacing */
+  .master-admin-mobile {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  @media (max-width: 767px) {
+    .master-admin-mobile {
+      padding-top: calc(env(safe-area-inset-top) + 20px);
+    }
+  }
+
   /* Ensure button text is centered */
   button, [role="button"], .btn {
     text-align: center !important;

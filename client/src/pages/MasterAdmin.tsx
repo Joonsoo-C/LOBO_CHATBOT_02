@@ -2040,13 +2040,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-
-                <Shield className="w-8 h-8 text-blue-600" />
+                <Shield className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                    마스터 관리자 시스템
+                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
+                    관리자 대시보드
                   </h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                     대학교 AI 챗봇 서비스 통합 관리
                   </p>
                 </div>
@@ -2068,7 +2067,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </div>
         </header>
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-8 md:pt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">
