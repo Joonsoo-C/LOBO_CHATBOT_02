@@ -357,12 +357,15 @@ export default function MasterAdmin() {
     return filtered;
   }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
 
-  // 사용자 목록 페이지네이션
-  const userPagination = usePagination({
-    data: filteredUsers,
-    itemsPerPage: 20,
-    initialPage: 1
-  });
+  // 페이지네이션된 사용자 목록
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (userCurrentPage - 1) * usersPerPage;
+    const endIndex = startIndex + usersPerPage;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, userCurrentPage, usersPerPage]);
+
+  // 총 페이지 수 계산
+  const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const iconMap = {
     User,
@@ -432,24 +435,33 @@ export default function MasterAdmin() {
 
   // 고유한 상위 카테고리 추출 (API data 사용) - moved after useQuery
   const uniqueUpperCategories = useMemo(() => {
-    return Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
+    const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
+    console.log('Unique upper categories:', categories);
+    return categories.sort();
   }, [organizations]);
 
   // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
   const filteredLowerCategories = useMemo(() => {
     if (selectedUniversity === 'all') {
-      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+      const categories = Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+      console.log('All lower categories:', categories);
+      return categories.sort();
     }
-    return Array.from(new Set((organizations || [])
+    const categories = Array.from(new Set((organizations || [])
       .filter(org => org.upperCategory === selectedUniversity)
       .map(org => org.lowerCategory).filter(Boolean)));
+    console.log('Filtered lower categories for', selectedUniversity, ':', categories);
+    return categories.sort();
   }, [selectedUniversity, organizations]);
 
   // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
   const filteredDetailCategories = useMemo(() => {
-    if (selectedUniversity === 'all' || selectedCollege === 'all') return [];
-    if (selectedUniversity === 'all' && selectedCollege === 'all') {
-      return Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+    if (selectedUniversity === 'all' || selectedCollege === 'all') {
+      if (selectedUniversity === 'all' && selectedCollege === 'all') {
+        const categories = Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+        return categories.sort();
+      }
+      return [];
     }
     let filtered = organizations || [];
     if (selectedUniversity !== 'all') {
@@ -458,7 +470,9 @@ export default function MasterAdmin() {
     if (selectedCollege !== 'all') {
       filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
     }
-    return Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+    const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+    console.log('Filtered detail categories:', categories);
+    return categories.sort();
   }, [selectedUniversity, selectedCollege, organizations]);
 
   // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
@@ -501,89 +515,16 @@ export default function MasterAdmin() {
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
-  // 조직 카테고리 페이지네이션
-  const organizationPagination = usePagination({
-    data: filteredOrganizationCategories,
-    itemsPerPage: 20,
-    initialPage: 1
-  });
-
-  // 에이전트 상태
-  const [searchAgentQuery, setSearchAgentQuery] = useState('');
-  const [selectedAgentCategory, setSelectedAgentCategory] = useState('all');
-  const [selectedAgentStatus, setSelectedAgentStatus] = useState('all');
-  const [selectedAgentManager, setSelectedAgentManager] = useState('all');
-
-  // 에이전트 목록 필터링
-  const filteredAgents = useMemo(() => {
-    if (!hasSearched) return [];
-    if (!agents) return [];
-    
-    let filtered = [...agents];
-    
-    // 이름으로 검색
-    if (searchAgentQuery.trim()) {
-      filtered = filtered.filter(agent =>
-        agent.name.toLowerCase().includes(searchAgentQuery.toLowerCase()) ||
-        agent.description.toLowerCase().includes(searchAgentQuery.toLowerCase())
-      );
-    }
-    
-    // 카테고리 필터링
-    if (selectedAgentCategory !== 'all') {
-      filtered = filtered.filter(agent => agent.category === selectedAgentCategory);
-    }
-    
-    // 상태 필터링
-    if (selectedAgentStatus !== 'all') {
-      const isActive = selectedAgentStatus === 'active';
-      filtered = filtered.filter(agent => agent.isActive === isActive);
-    }
-    
-    // 관리자 필터링
-    if (selectedAgentManager !== 'all') {
-      filtered = filtered.filter(agent => agent.managerId === selectedAgentManager);
-    }
-    
-    return filtered;
-  }, [agents, hasSearched, searchAgentQuery, selectedAgentCategory, selectedAgentStatus, selectedAgentManager]);
-
-  // 에이전트 정렬 (활성 상태 우선)
-  const sortedAgents = useMemo(() => {
-    return [...filteredAgents].sort((a, b) => {
-      // 활성 상태를 우선 정렬
-      if (a.isActive && !b.isActive) return -1;
-      if (!a.isActive && b.isActive) return 1;
-      // 같은 상태라면 이름 순으로 정렬
-      return a.name.localeCompare(b.name);
-    });
-  }, [filteredAgents]);
-
-  // 에이전트 목록 페이지네이션
-  const agentPagination = usePagination({
-    data: sortedAgents,
-    itemsPerPage: 20,
-    initialPage: 1
-  });
-
-  // 문서 목록 페이지네이션
-  const documentPagination = usePagination({
-    data: documentList || [],
-    itemsPerPage: 20,
-    initialPage: 1
-  });
-
-  // 남은 기존 코드들을 유지
-  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / 20);
-  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * 20;
-  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + 20;
+  // Organization categories pagination calculations - moved here after filteredOrganizationCategories is declared
+  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
+  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
+  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
   const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
-
-
 
   // 검색 실행 함수
   const executeSearch = () => {
     setHasSearched(true);
+    setUserCurrentPage(1); // 검색 시 첫 페이지로 이동
   };
 
   // 필터 초기화 함수
@@ -594,8 +535,9 @@ export default function MasterAdmin() {
     setSelectedDocumentType('all'); // 상태 필터 초기화
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setUserSearchQuery('');
-    setSearchAgentQuery('');
+    setAgentSearchQuery('');
     setHasSearched(false);
+    setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
   };
 
   // 문서 필터 초기화 함수
@@ -863,10 +805,117 @@ export default function MasterAdmin() {
 
 
 
-  // 에이전트 검색 실행 함수
-  const executeAgentSearch = () => {
-    setHasSearched(true);
-  };
+  // 필터된 에이전트 목록
+  const filteredAgents = useMemo(() => {
+    if (!agents) return [];
+    
+    let filtered = [...agents];
+    
+    // 검색이 실행된 경우에만 필터링 적용
+    if (hasSearched) {
+      // 검색 쿼리 필터링
+      if (userSearchQuery.trim()) {
+        const query = userSearchQuery.toLowerCase();
+        filtered = filtered.filter(agent => 
+          agent.name.toLowerCase().includes(query) ||
+          agent.description.toLowerCase().includes(query)
+        );
+      }
+      
+      // 카테고리 필터링
+      if (selectedUniversity !== 'all') {
+        const categoryMap = {
+          'school': '학교',
+          'professor': '교수',
+          'student': '학생',
+          'group': '그룹',
+          'function': '기능형'
+        };
+        filtered = filtered.filter(agent => 
+          agent.category === categoryMap[selectedUniversity as keyof typeof categoryMap]
+        );
+      }
+      
+      // 상태 필터링
+      if (selectedCollege !== 'all') {
+        filtered = filtered.filter(agent => 
+          selectedCollege === 'active' ? agent.isActive : !agent.isActive
+        );
+      }
+    }
+    
+    return filtered;
+  }, [agents, hasSearched, userSearchQuery, selectedUniversity, selectedCollege]);
+
+  // 정렬된 에이전트 목록
+  const sortedAgents = useMemo(() => {
+    const agentsToSort = hasSearched ? filteredAgents : agents || [];
+    
+    return [...agentsToSort].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+      
+      // 특별한 필드들에 대한 처리
+      if (agentSortField === 'manager') {
+        aValue = (a as any).managerFirstName && (a as any).managerLastName 
+          ? `${(a as any).managerFirstName} ${(a as any).managerLastName}` 
+          : '';
+        bValue = (b as any).managerFirstName && (b as any).managerLastName 
+          ? `${(b as any).managerFirstName} ${(b as any).managerLastName}` 
+          : '';
+      } else if (agentSortField === 'organization') {
+        aValue = (a as any).organizationName || '';
+        bValue = (b as any).organizationName || '';
+      } else if (agentSortField === 'documentCount') {
+        aValue = (a as any).documentCount || 0;
+        bValue = (b as any).documentCount || 0;
+      } else if (agentSortField === 'userCount') {
+        aValue = (a as any).userCount || 0;
+        bValue = (b as any).userCount || 0;
+      } else if (agentSortField === 'createdAt') {
+        aValue = (a as any).lastUsedAt || a.createdAt || '';
+        bValue = (b as any).lastUsedAt || b.createdAt || '';
+      } else {
+        aValue = a[agentSortField as keyof Agent];
+        bValue = b[agentSortField as keyof Agent];
+      }
+      
+      // 문자열인 경우 대소문자 구분 없이 정렬
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      
+      if (aValue < bValue) return agentSortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return agentSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
+
+  // 페이지네이션 설정
+  const ITEMS_PER_PAGE = 10;
+  
+  // 사용자 목록 페이지네이션
+  const userPagination = usePagination({
+    data: sortedUsers,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 에이전트 목록 페이지네이션  
+  const agentPagination = usePagination({
+    data: sortedAgents,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 조직 카테고리 목록 페이지네이션
+  const organizationPagination = usePagination({
+    data: filteredOrganizationCategories,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  // 문서 목록 페이지네이션
+  const documentPagination = usePagination({
+    data: documentList || [],
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
 
 
 
@@ -2247,7 +2296,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                         </tr>
                       ) : (
-                        userPagination.paginatedData?.map((user) => (
+                        paginatedUsers?.map((user) => (
                           <tr 
                             key={user.id} 
                             className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150 ${
@@ -2347,20 +2396,79 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 결과 개수 및 페이지네이션 */}
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-700 dark:text-gray-300">
-                총 {userPagination.totalItems}개 사용자 중 {userPagination.startIndex}-{userPagination.endIndex}개 표시
+            {/* 페이지네이션 */}
+            {hasSearched && totalUserPages > 1 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-700 dark:text-gray-300" style={{ display: 'none' }}>
+                  총 {filteredUsers.length}명의 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={userCurrentPage === 1}
+                  >
+                    이전
+                  </Button>
+                  
+                  <div className="flex items-center space-x-1">
+                    {/* 첫 페이지 */}
+                    {userCurrentPage > 3 && (
+                      <>
+                        <Button
+                          variant={1 === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(1)}
+                        >
+                          1
+                        </Button>
+                        {userCurrentPage > 4 && <span className="px-2">...</span>}
+                      </>
+                    )}
+                    
+                    {/* 현재 페이지 주변 페이지들 */}
+                    {Array.from({ length: Math.min(5, totalUserPages) }, (_, i) => {
+                      const page = Math.max(1, Math.min(userCurrentPage - 2 + i, totalUserPages));
+                      if (page < Math.max(1, userCurrentPage - 2) || page > Math.min(userCurrentPage + 2, totalUserPages)) return null;
+                      return (
+                        <Button
+                          key={page}
+                          variant={page === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(page)}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    })}
+                    
+                    {/* 마지막 페이지 */}
+                    {userCurrentPage < totalUserPages - 2 && (
+                      <>
+                        {userCurrentPage < totalUserPages - 3 && <span className="px-2">...</span>}
+                        <Button
+                          variant={totalUserPages === userCurrentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setUserCurrentPage(totalUserPages)}
+                        >
+                          {totalUserPages}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
+                    disabled={userCurrentPage === totalUserPages}
+                  >
+                    다음
+                  </Button>
+                </div>
               </div>
-              {userPagination.totalPages > 1 && (
-                <PaginationComponent
-                  currentPage={userPagination.currentPage}
-                  totalPages={userPagination.totalPages}
-                  onPageChange={userPagination.goToPage}
-                  className="flex-shrink-0"
-                />
-              )}
-            </div>
+            )}
           </TabsContent>
 
           {/* 에이전트 관리 */}
@@ -2705,7 +2813,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                           </tr>
                         ) : (
-                          agentPagination.paginatedData?.map((agent) => (
+                          sortedAgents?.map((agent) => (
                             <tr 
                               key={agent.id} 
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
@@ -3531,11 +3639,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
               
-              {/* 2단계 카테고리 필터 */}
+              {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label>상위조직</Label>
-                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                  <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
@@ -3551,13 +3659,33 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label>하위조직</Label>
-                  <Select value={selectedCollege} onValueChange={setSelectedCollege} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger>
+                  <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
+                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
                       {filteredLowerCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부조직</Label>
+                  <Select 
+                    value={selectedDepartment} 
+                    onValueChange={handleDetailCategoryChange}
+                    disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {filteredDetailCategories.map((category) => (
                         <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
@@ -3724,20 +3852,67 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 결과 개수 및 페이지네이션 */}
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-700 dark:text-gray-300">
-                총 {organizationPagination.totalItems}개 조직 중 {organizationPagination.startIndex}-{organizationPagination.endIndex}개 표시
+            {/* 페이지네이션 */}
+            {filteredOrganizationCategories.length > 20 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
+                  총 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={true}
+                  >
+                    이전
+                  </Button>
+                  
+                  <div className="flex items-center space-x-1">
+                    <Button
+                      variant="default"
+                      size="sm"
+                    >
+                      1
+                    </Button>
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 1 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                      >
+                        2
+                      </Button>
+                    )}
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 2 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                      >
+                        3
+                      </Button>
+                    )}
+                    {Math.ceil(filteredOrganizationCategories.length / 20) > 3 && (
+                      <>
+                        <span className="px-2">...</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                        >
+                          {Math.ceil(filteredOrganizationCategories.length / 20)}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={Math.ceil(filteredOrganizationCategories.length / 20) <= 1}
+                  >
+                    다음
+                  </Button>
+                </div>
               </div>
-              {organizationPagination.totalPages > 1 && (
-                <PaginationComponent
-                  currentPage={organizationPagination.currentPage}
-                  totalPages={organizationPagination.totalPages}
-                  onPageChange={organizationPagination.goToPage}
-                  className="flex-shrink-0"
-                />
-              )}
-            </div>
+            )}
           </TabsContent>
 
           {/* 문서 관리 */}
@@ -4048,7 +4223,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {/* 실제 업로드된 문서 */}
                       {documentList && documentList.length > 0 ? (
-                        documentPagination.paginatedData.map((doc, index) => (
+                        documentList.map((doc, index) => (
                           <tr 
                             key={index}
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
