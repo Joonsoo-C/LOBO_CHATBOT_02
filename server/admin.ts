@@ -578,8 +578,44 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Organization category file upload endpoint
-  app.post("/api/admin/organizations/upload", requireMasterAdmin, adminUpload.single('file'), async (req, res) => {
+  // Organization category file upload endpoint with special file naming
+  const orgUpload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, adminUploadDir);
+      },
+      filename: (req, file, cb) => {
+        // Generate a unique filename with org prefix for organization files
+        const uniqueName = `org-${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.originalname}`;
+        cb(null, uniqueName);
+      }
+    }),
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      const allowedTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv'
+      ];
+
+      // Fix Korean filename encoding immediately
+      try {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch (e) {
+        console.log('Filename encoding conversion failed, keeping original:', file.originalname);
+      }
+
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('지원하지 않는 파일 형식입니다. Excel 또는 CSV 파일만 업로드 가능합니다.'));
+      }
+    }
+  });
+
+  app.post("/api/admin/organizations/upload", requireMasterAdmin, orgUpload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -706,6 +742,63 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ 
         message: error instanceof Error ? error.message : "Failed to upload organization file" 
       });
+    }
+  });
+
+  // Get organization category files
+  app.get("/api/admin/organization-files", requireMasterAdmin, async (req, res) => {
+    try {
+      const uploadDir = path.join(process.cwd(), 'uploads', 'admin');
+      
+      if (!fs.existsSync(uploadDir)) {
+        return res.json([]);
+      }
+      
+      const files = fs.readdirSync(uploadDir);
+      const orgFiles = files
+        .filter(file => file.startsWith('org-'))
+        .map(file => {
+          const filePath = path.join(uploadDir, file);
+          const stats = fs.statSync(filePath);
+          // Extract original name from the org- prefixed filename
+          const originalNameMatch = file.match(/^org-\d+-\d+-(.+)$/);
+          const originalName = originalNameMatch ? originalNameMatch[1] : file;
+          
+          return {
+            fileName: file,
+            originalName: originalName,
+            uploadedAt: stats.birthtime,
+            size: stats.size
+          };
+        })
+        .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+      
+      res.json(orgFiles);
+    } catch (error) {
+      console.error("Error fetching organization files:", error);
+      res.status(500).json({ message: "Failed to fetch organization files" });
+    }
+  });
+
+  // Delete organization category file
+  app.delete("/api/admin/organization-files/:fileName", requireMasterAdmin, async (req, res) => {
+    try {
+      const fileName = decodeURIComponent(req.params.fileName);
+      const filePath = path.join(process.cwd(), 'uploads', 'admin', fileName);
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "파일을 찾을 수 없습니다" });
+      }
+      
+      fs.unlinkSync(filePath);
+      
+      res.json({
+        success: true,
+        message: "파일이 성공적으로 삭제되었습니다"
+      });
+    } catch (error) {
+      console.error("Error deleting organization file:", error);
+      res.status(500).json({ message: "파일 삭제에 실패했습니다" });
     }
   });
 
