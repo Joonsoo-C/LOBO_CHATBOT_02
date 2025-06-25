@@ -136,6 +136,17 @@ const userEditSchema = z.object({
 
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
+const orgCategoryEditSchema = z.object({
+  name: z.string().min(1, "조직명은 필수입니다"),
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
+  description: z.string().optional(),
+  status: z.enum(["활성", "비활성", "등록 승인 대기중"]),
+});
+
+type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
+
 export default function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -168,6 +179,10 @@ export default function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  
+  // 조직 카테고리 편집 관련 상태
+  const [isOrgCategoryEditDialogOpen, setIsOrgCategoryEditDialogOpen] = useState(false);
+  const [editingOrgCategory, setEditingOrgCategory] = useState<any>(null);
   
   // 문서 상세 팝업 상태
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
@@ -576,6 +591,19 @@ export default function MasterAdmin() {
     },
   });
 
+  // 조직 카테고리 편집 폼 초기화
+  const orgCategoryEditForm = useForm<OrgCategoryEditFormData>({
+    resolver: zodResolver(orgCategoryEditSchema),
+    defaultValues: {
+      name: "",
+      upperCategory: "",
+      lowerCategory: "",
+      detailCategory: "",
+      description: "",
+      status: "활성",
+    },
+  });
+
   // 사용자 상세 정보 편집 열기
   const openUserDetailDialog = (user: User) => {
     setSelectedUser(user);
@@ -621,6 +649,44 @@ export default function MasterAdmin() {
       toast({
         title: "오류",
         description: "사용자 정보 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 조직 카테고리 편집 열기
+  const openOrgCategoryEditDialog = (category: any) => {
+    setEditingOrgCategory(category);
+    orgCategoryEditForm.reset({
+      name: category.name || "",
+      upperCategory: category.upperCategory || "",
+      lowerCategory: category.lowerCategory || "",
+      detailCategory: category.detailCategory || "",
+      description: category.description || "",
+      status: category.status || "활성",
+    });
+    setIsOrgCategoryEditDialogOpen(true);
+  };
+
+  // 조직 카테고리 편집 뮤테이션
+  const updateOrgCategoryMutation = useMutation({
+    mutationFn: async (data: OrgCategoryEditFormData & { id: number }) => {
+      const response = await apiRequest("PATCH", `/api/admin/organizations/${data.id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+      toast({
+        title: "성공",
+        description: "조직 정보가 수정되었습니다.",
+      });
+      setIsOrgCategoryEditDialogOpen(false);
+      setEditingOrgCategory(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "조직 정보 수정에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -3830,7 +3896,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           };
 
                           return (
-                            <tr key={index}>
+                            <tr 
+                              key={index}
+                              className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150"
+                              onClick={() => openOrgCategoryEditDialog(category)}
+                            >
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                                   {category.upperCategory || "-"}
@@ -3862,7 +3932,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div className="flex space-x-1">
-                                  <Button variant="outline" size="sm" title="조직 편집">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    title="조직 편집"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openOrgCategoryEditDialog(category);
+                                    }}
+                                  >
                                     <Edit className="w-4 h-4" />
                                   </Button>
                                 </div>
@@ -3939,6 +4017,145 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
             )}
           </TabsContent>
+
+          {/* 조직 카테고리 편집 다이얼로그 */}
+          <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>조직 상세 정보 편집</DialogTitle>
+              </DialogHeader>
+              <Form {...orgCategoryEditForm}>
+                <form onSubmit={orgCategoryEditForm.handleSubmit((data) => {
+                  if (editingOrgCategory) {
+                    updateOrgCategoryMutation.mutate({ ...data, id: editingOrgCategory.id });
+                  }
+                })} className="space-y-6">
+                  
+                  {/* 기본 정보 */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">기본 정보</h3>
+                    
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>조직명</FormLabel>
+                          <FormControl>
+                            <Input placeholder="조직명을 입력하세요" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="upperCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>상위 조직</FormLabel>
+                            <FormControl>
+                              <Input placeholder="상위 조직" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="lowerCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>하위 조직</FormLabel>
+                            <FormControl>
+                              <Input placeholder="하위 조직" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="detailCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>세부 조직</FormLabel>
+                            <FormControl>
+                              <Input placeholder="세부 조직" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>상태</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="상태 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="활성">활성</SelectItem>
+                              <SelectItem value="비활성">비활성</SelectItem>
+                              <SelectItem value="등록 승인 대기중">등록 승인 대기중</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 추가 정보 */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">추가 정보</h3>
+                    
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>조직 설명 / 메모</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="조직에 대한 설명이나 메모를 입력하세요..."
+                              className="min-h-[100px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex justify-end space-x-2 pt-4">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setIsOrgCategoryEditDialogOpen(false)}
+                    >
+                      취소
+                    </Button>
+                    <Button type="submit" disabled={updateOrgCategoryMutation.isPending}>
+                      {updateOrgCategoryMutation.isPending ? "저장 중..." : "저장"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
 
           {/* 문서 관리 */}
           <TabsContent value="documents" className="space-y-6">
