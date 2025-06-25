@@ -143,6 +143,7 @@ const orgCategoryEditSchema = z.object({
   detailCategory: z.string().optional(),
   description: z.string().optional(),
   status: z.enum(["활성", "비활성", "등록 승인 대기중"]),
+  manager: z.string().optional(),
 });
 
 type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
@@ -608,6 +609,7 @@ export default function MasterAdmin() {
       detailCategory: "",
       description: "",
       status: "활성",
+      manager: "",
     },
   });
 
@@ -671,6 +673,7 @@ export default function MasterAdmin() {
       detailCategory: category.detailCategory || "",
       description: category.description || "",
       status: category.status || "활성",
+      manager: category.manager || "",
     });
     setIsOrgCategoryEditDialogOpen(true);
   };
@@ -4409,7 +4412,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {usersList?.filter(user => {
+                        {sortedUsers?.filter((user: any) => {
                           const matchesSearch = !managerSearchQuery || 
                             user.fullName?.toLowerCase().includes(managerSearchQuery.toLowerCase()) ||
                             user.username?.toLowerCase().includes(managerSearchQuery.toLowerCase());
@@ -4424,7 +4427,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             user.detailCategory === selectedManagerDepartment;
                           
                           return matchesSearch && matchesUniversity && matchesCollege && matchesDepartment;
-                        }).slice(0, 50).map((user) => (
+                        }).slice(0, 50).map((user: any) => (
                           <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                             <td className="px-4 py-3">
                               <Button
