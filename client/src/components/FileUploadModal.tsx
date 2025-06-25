@@ -446,6 +446,36 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     setDetailCategory("");
   };
 
+  const handlePreview = async (document: Document) => {
+    try {
+      // 문서 존재 여부 확인
+      const checkResponse = await fetch(`/api/admin/documents/${document.id}`, {
+        method: 'HEAD',
+        credentials: 'include'
+      });
+
+      if (!checkResponse.ok) {
+        throw new Error('문서를 찾을 수 없습니다');
+      }
+
+      // 미리보기 URL로 새 창 열기
+      const previewUrl = `/api/admin/documents/${document.id}/preview`;
+      const newWindow = window.open(previewUrl, '_blank', 'noopener,noreferrer,width=800,height=600');
+
+      if (!newWindow) {
+        throw new Error('팝업 차단으로 인해 미리보기를 열 수 없습니다');
+      }
+
+    } catch (error) {
+      console.error('Preview error:', error);
+      toast({
+        title: "미리보기 오류",
+        description: error instanceof Error ? error.message : "문서 미리보기 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -795,6 +825,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
+                         <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handlePreview(document)}
+                        >
+                          <FileText className="w-4 h-4" />
+                        </Button>
                       </div>
                     </div>
                   ))}

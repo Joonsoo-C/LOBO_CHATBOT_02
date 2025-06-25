@@ -825,6 +825,26 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Document existence check endpoint
+  app.head("/api/admin/documents/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      if (isNaN(documentId)) {
+        return res.status(400).end();
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).end();
+      }
+
+      res.status(200).end();
+    } catch (error) {
+      console.error("Error checking document:", error);
+      res.status(500).end();
+    }
+  });
+
   // Document preview endpoint
   app.get("/api/admin/documents/:id/preview", requireMasterAdmin, async (req, res) => {
     try {
