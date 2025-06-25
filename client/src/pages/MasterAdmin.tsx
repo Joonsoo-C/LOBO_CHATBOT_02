@@ -867,50 +867,6 @@ export default function MasterAdmin() {
   const executeAgentSearch = () => {
     setHasSearched(true);
   };
-      } else if (agentSortField === 'createdAt') {
-        aValue = (a as any).lastUsedAt || a.createdAt || '';
-        bValue = (b as any).lastUsedAt || b.createdAt || '';
-      } else {
-        aValue = a[agentSortField as keyof Agent];
-        bValue = b[agentSortField as keyof Agent];
-      }
-      
-      // 문자열인 경우 대소문자 구분 없이 정렬
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-      
-      if (aValue < bValue) return agentSortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return agentSortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
-
-  // 페이지네이션 설정
-  const ITEMS_PER_PAGE = 10;
-  
-  // 사용자 목록 페이지네이션
-  const userPagination = usePagination({
-    data: sortedUsers,
-    itemsPerPage: ITEMS_PER_PAGE,
-  });
-
-  // 에이전트 목록 페이지네이션  
-  const agentPagination = usePagination({
-    data: sortedAgents,
-    itemsPerPage: ITEMS_PER_PAGE,
-  });
-
-  // 조직 카테고리 목록 페이지네이션
-  const organizationPagination = usePagination({
-    data: filteredOrganizationCategories,
-    itemsPerPage: ITEMS_PER_PAGE,
-  });
-
-  // 문서 목록 페이지네이션
-  const documentPagination = usePagination({
-    data: documentList || [],
-    itemsPerPage: ITEMS_PER_PAGE,
-  });
 
 
 
