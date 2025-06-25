@@ -1635,6 +1635,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     }
   };
 
+  // 문서 재처리 mutation
+  const documentReprocessMutation = useMutation({
+    mutationFn: async (documentId: number) => {
+      const response = await apiRequest("POST", `/api/admin/documents/${documentId}/reprocess`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      toast({
+        title: "재처리 완료",
+        description: "문서 텍스트가 성공적으로 재추출되었습니다.",
+      });
+      setIsDocumentDetailOpen(false);
+    },
+    onError: (error: Error) => {
+      console.error('Document reprocess error:', error);
+      toast({
+        title: "재처리 실패",
+        description: "문서 재처리에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
 
 
   // 에이전트 편집 뮤테이션
@@ -5728,6 +5752,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     >
                       <Download className="w-4 h-4" />
                       <span>문서 다운로드</span>
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      className="flex items-center space-x-2"
+                      onClick={() => documentReprocessMutation.mutate(documentDetailData.id)}
+                      disabled={!documentDetailData || documentReprocessMutation.isPending}
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      <span>{documentReprocessMutation.isPending ? '재처리 중...' : '문서 재처리'}</span>
                     </Button>
                     <Button 
                       variant="destructive" 
