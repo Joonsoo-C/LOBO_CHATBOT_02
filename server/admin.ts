@@ -635,20 +635,26 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // Process organizations in storage
-      let createdCount = 0;
-      let updatedCount = 0;
-      let errorCount = 0;
-
-      for (const orgData of organizations) {
-        try {
-          // For now, just count as created since we don't have organization storage yet
-          createdCount++;
-        } catch (error) {
-          console.error(`Failed to process organization ${orgData.name}:`, error);
-          errorCount++;
-        }
+      // Clear existing organizations if requested
+      if (overwriteExisting) {
+        await storage.deleteAllOrganizationCategories();
       }
+
+      // Process and create organization categories using bulk create
+      const organizationsToCreate = organizations.map(org => ({
+        name: org.name || '미정',
+        upperCategory: org.upperCategory || null,
+        lowerCategory: org.lowerCategory || null,
+        detailCategory: org.detailCategory || null,
+        manager: null,
+        status: '활성',
+      }));
+
+      const createdCategories = await storage.bulkCreateOrganizationCategories(organizationsToCreate);
+      
+      const createdCount = createdCategories.length;
+      const updatedCount = 0;
+      const errorCount = organizations.length - createdCount;
 
       res.json({
         success: true,

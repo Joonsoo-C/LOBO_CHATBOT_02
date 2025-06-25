@@ -787,7 +787,7 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.organizationCategories.set(id, newOrganization);
-    this.savePersistedDocuments();
+    await this.saveOrganizationCategoriesToFile();
     return newOrganization;
   }
 
@@ -803,13 +803,13 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date()
     };
     this.organizationCategories.set(id, updatedOrganization);
-    this.savePersistedDocuments();
+    await this.saveOrganizationCategoriesToFile();
     return updatedOrganization;
   }
 
   async deleteOrganizationCategory(id: number): Promise<void> {
     this.organizationCategories.delete(id);
-    this.savePersistedDocuments();
+    await this.saveOrganizationCategoriesToFile();
   }
 
   async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
@@ -832,17 +832,63 @@ export class MemoryStorage implements IStorage {
     }
     
     console.log(`Organization count after bulk creation: ${this.organizationCategories.size}`);
-    this.savePersistedDocuments();
+    await this.saveOrganizationCategoriesToFile();
     console.log(`Bulk created ${createdOrganizations.length} organization categories and saved to persistence`);
     return createdOrganizations;
   }
 
-  async clearAllOrganizationCategories(): Promise<void> {
+  async deleteAllOrganizationCategories(): Promise<void> {
     console.log('Clearing all organization categories from memory storage');
     this.organizationCategories.clear();
     this.nextOrganizationId = 1;
-    
+    await this.saveOrganizationCategoriesToFile();
     console.log('All organization categories have been cleared from memory storage');
+  }
+
+  // Enhanced file persistence for organization categories
+  private async saveOrganizationCategoriesToFile(): Promise<void> {
+    try {
+      const organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
+      const categoriesArray = Array.from(this.organizationCategories.values()).map(cat => ({
+        ...cat,
+        createdAt: cat.createdAt?.toISOString(),
+        updatedAt: cat.updatedAt?.toISOString()
+      }));
+      
+      fs.writeFileSync(organizationCategoriesFile, JSON.stringify(categoriesArray, null, 2));
+      console.log(`Saved ${categoriesArray.length} organization categories to file`);
+    } catch (error) {
+      console.error('Failed to save organization categories to file:', error);
+    }
+  }
+
+  private loadPersistedOrganizationCategories(): void {
+    try {
+      const organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
+      
+      if (fs.existsSync(organizationCategoriesFile)) {
+        const data = fs.readFileSync(organizationCategoriesFile, 'utf8');
+        const categories = JSON.parse(data);
+        
+        categories.forEach((cat: any) => {
+          this.organizationCategories.set(cat.id, {
+            ...cat,
+            createdAt: cat.createdAt ? new Date(cat.createdAt) : new Date(),
+            updatedAt: cat.updatedAt ? new Date(cat.updatedAt) : new Date()
+          });
+          
+          if (cat.id >= this.nextOrganizationId) {
+            this.nextOrganizationId = cat.id + 1;
+          }
+        });
+        
+        console.log(`Loaded ${categories.length} persisted organization categories`);
+      } else {
+        console.log('No persisted organization categories found');
+      }
+    } catch (error) {
+      console.error('Failed to load persisted organization categories:', error);
+    }
   }
 
   // Add cache clearing method
