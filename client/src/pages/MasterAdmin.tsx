@@ -332,7 +332,7 @@ export default function MasterAdmin() {
     }
     
     return filtered;
-  }, [organizationCategories, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
