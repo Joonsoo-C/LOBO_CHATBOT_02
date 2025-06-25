@@ -1101,6 +1101,11 @@ export function setupAdminRoutes(app: Express) {
       let errorCount = totalOrganizations.length - createdCount;
 
       console.log(`Organization category upload summary: ${createdCount} created, ${updatedCount} updated, ${errorCount} errors`);
+      
+      // Force cache invalidation
+      if (storage.clearCache) {
+        storage.clearCache();
+      }
 
       res.json({
         success: true,

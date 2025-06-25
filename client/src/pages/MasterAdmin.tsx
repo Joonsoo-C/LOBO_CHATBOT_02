@@ -209,18 +209,33 @@ export default function MasterAdmin() {
   const { t } = useLanguage();
 
   // 고유한 상위 카테고리 추출 (imported data 사용)
-  const uniqueUpperCategories = getUniqueUpperCategories();
+  const uniqueUpperCategories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
 
   // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
   const filteredLowerCategories = useMemo(() => {
     if (selectedUniversity === 'all') return [];
-    return getUniqueLowerCategories(selectedUniversity);
+    if (selectedUniversity === 'all') {
+      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+    }
+    return Array.from(new Set((organizations || [])
+      .filter(org => org.upperCategory === selectedUniversity)
+      .map(org => org.lowerCategory).filter(Boolean)));
   }, [selectedUniversity]);
 
   // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
   const filteredDetailCategories = useMemo(() => {
     if (selectedUniversity === 'all' || selectedCollege === 'all') return [];
-    return getUniqueDetailCategories(selectedUniversity, selectedCollege);
+    if (selectedUniversity === 'all' && selectedCollege === 'all') {
+      return Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+    }
+    let filtered = organizations || [];
+    if (selectedUniversity !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === selectedUniversity);
+    }
+    if (selectedCollege !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
+    }
+    return Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
   }, [selectedUniversity, selectedCollege]);
 
   // 페이지네이션 상태
@@ -449,13 +464,15 @@ export default function MasterAdmin() {
   });
 
   // 조직 목록 조회
-  const { data: organizations } = useQuery<any[]>({
+  const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
     queryKey: ['/api/admin/organizations'],
     queryFn: async () => {
       const response = await fetch('/api/admin/organizations');
       if (!response.ok) throw new Error('Failed to fetch organizations');
       return response.json();
-    }
+    },
+    staleTime: 0,
+    gcTime: 0,
   });
 
   // 문서 목록 조회
