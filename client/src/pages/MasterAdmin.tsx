@@ -501,16 +501,89 @@ export default function MasterAdmin() {
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
-  // Organization categories pagination calculations - moved here after filteredOrganizationCategories is declared
-  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
-  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
-  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
+  // 조직 카테고리 페이지네이션
+  const organizationPagination = usePagination({
+    data: filteredOrganizationCategories,
+    itemsPerPage: 20,
+    initialPage: 1
+  });
+
+  // 에이전트 상태
+  const [searchAgentQuery, setSearchAgentQuery] = useState('');
+  const [selectedAgentCategory, setSelectedAgentCategory] = useState('all');
+  const [selectedAgentStatus, setSelectedAgentStatus] = useState('all');
+  const [selectedAgentManager, setSelectedAgentManager] = useState('all');
+
+  // 에이전트 목록 필터링
+  const filteredAgents = useMemo(() => {
+    if (!hasSearched) return [];
+    if (!agents) return [];
+    
+    let filtered = [...agents];
+    
+    // 이름으로 검색
+    if (searchAgentQuery.trim()) {
+      filtered = filtered.filter(agent =>
+        agent.name.toLowerCase().includes(searchAgentQuery.toLowerCase()) ||
+        agent.description.toLowerCase().includes(searchAgentQuery.toLowerCase())
+      );
+    }
+    
+    // 카테고리 필터링
+    if (selectedAgentCategory !== 'all') {
+      filtered = filtered.filter(agent => agent.category === selectedAgentCategory);
+    }
+    
+    // 상태 필터링
+    if (selectedAgentStatus !== 'all') {
+      const isActive = selectedAgentStatus === 'active';
+      filtered = filtered.filter(agent => agent.isActive === isActive);
+    }
+    
+    // 관리자 필터링
+    if (selectedAgentManager !== 'all') {
+      filtered = filtered.filter(agent => agent.managerId === selectedAgentManager);
+    }
+    
+    return filtered;
+  }, [agents, hasSearched, searchAgentQuery, selectedAgentCategory, selectedAgentStatus, selectedAgentManager]);
+
+  // 에이전트 정렬 (활성 상태 우선)
+  const sortedAgents = useMemo(() => {
+    return [...filteredAgents].sort((a, b) => {
+      // 활성 상태를 우선 정렬
+      if (a.isActive && !b.isActive) return -1;
+      if (!a.isActive && b.isActive) return 1;
+      // 같은 상태라면 이름 순으로 정렬
+      return a.name.localeCompare(b.name);
+    });
+  }, [filteredAgents]);
+
+  // 에이전트 목록 페이지네이션
+  const agentPagination = usePagination({
+    data: sortedAgents,
+    itemsPerPage: 20,
+    initialPage: 1
+  });
+
+  // 문서 목록 페이지네이션
+  const documentPagination = usePagination({
+    data: documentList || [],
+    itemsPerPage: 20,
+    initialPage: 1
+  });
+
+  // 남은 기존 코드들을 유지
+  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / 20);
+  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * 20;
+  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + 20;
   const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
+
+
 
   // 검색 실행 함수
   const executeSearch = () => {
     setHasSearched(true);
-    setUserCurrentPage(1); // 검색 시 첫 페이지로 이동
   };
 
   // 필터 초기화 함수
@@ -521,9 +594,8 @@ export default function MasterAdmin() {
     setSelectedDocumentType('all'); // 상태 필터 초기화
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setUserSearchQuery('');
-    setAgentSearchQuery('');
+    setSearchAgentQuery('');
     setHasSearched(false);
-    setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
   };
 
   // 문서 필터 초기화 함수
@@ -791,15 +863,10 @@ export default function MasterAdmin() {
 
 
 
-  // 필터된 에이전트 목록
-  const filteredAgents = useMemo(() => {
-    if (!agents) return [];
-    
-    let filtered = [...agents];
-    
-    // 검색이 실행된 경우에만 필터링 적용
-    if (hasSearched) {
-      // 검색 쿼리 필터링
+  // 에이전트 검색 실행 함수
+  const executeAgentSearch = () => {
+    setHasSearched(true);
+  };
       if (userSearchQuery.trim()) {
         const query = userSearchQuery.toLowerCase();
         filtered = filtered.filter(agent => 
@@ -2740,7 +2807,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                           </tr>
                         ) : (
-                          sortedAgents?.map((agent) => (
+                          agentPagination.paginatedData?.map((agent) => (
                             <tr 
                               key={agent.id} 
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
