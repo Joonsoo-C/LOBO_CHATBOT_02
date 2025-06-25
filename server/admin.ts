@@ -608,12 +608,13 @@ export function setupAdminRoutes(app: Express) {
         const uniqueOrgs = new Map();
         
         jsonData.forEach((row: any) => {
-          const name = row.조직명 || row.name || row.이름;
+          // Excel has hierarchy structure without name field - use detailCategory as name
+          const name = row.세부카테고리 || row.detailCategory || row.조직명 || row.name;
           if (!name) return; // Skip rows without organization name
           
-          const upperCategory = row.상위조직 || row.upperCategory || row.상위카테고리 || null;
-          const lowerCategory = row.하위조직 || row.lowerCategory || row.하위카테고리 || null;
-          const detailCategory = row.세부조직 || row.detailCategory || row.세부카테고리 || null;
+          const upperCategory = row.상위카테고리 || row.upperCategory || null;
+          const lowerCategory = row.하위카테고리 || row.lowerCategory || null;
+          const detailCategory = row.세부카테고리 || row.detailCategory || null;
           
           // Create unique key based on hierarchy
           const key = `${upperCategory || 'ROOT'}-${lowerCategory || 'NONE'}-${detailCategory || 'NONE'}-${name}`;
