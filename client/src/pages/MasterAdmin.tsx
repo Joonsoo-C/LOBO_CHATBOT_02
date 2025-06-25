@@ -457,6 +457,23 @@ export default function MasterAdmin() {
     }
   });
 
+  // 업로드된 조직 카테고리 파일 목록 조회
+  const { data: uploadedOrgFiles = [], refetch: refetchOrgFiles } = useQuery<any[]>({
+    queryKey: ['/api/admin/organization-files'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organization-files', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
+      if (!response.ok) return [];
+      return response.json();
+    }
+  });
+
   // 고유한 상위 카테고리 추출 (API data 사용) - moved after useQuery
   const uniqueUpperCategories = useMemo(() => {
     const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
@@ -1749,7 +1766,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
-
+  // 조직 카테고리 파일 삭제 뮤테이션
+  const deleteOrgFileMutation = useMutation({
+    mutationFn: async (fileName: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/organization-files/${encodeURIComponent(fileName)}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchOrgFiles();
+      toast({
+        title: "파일 삭제 완료",
+        description: "조직 카테고리 파일이 성공적으로 삭제되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      console.error('조직 파일 삭제 오류:', error);
+      toast({
+        title: "삭제 실패",
+        description: "파일 삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // 에이전트 편집 뮤테이션
   const updateAgentMutation = useMutation({
@@ -5848,6 +5886,50 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
                           >
                             ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 업로드된 파일 목록 */}
+              {uploadedOrgFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">업로드된 파일 ({uploadedOrgFiles.length}개)</Label>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {uploadedOrgFiles.map((file: any, index: number) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteOrgFileMutation.mutate(file.fileName)}
+                            disabled={deleteOrgFileMutation.isPending}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            {deleteOrgFileMutation.isPending ? '...' : '삭제'}
                           </Button>
                         </div>
                       ))}
