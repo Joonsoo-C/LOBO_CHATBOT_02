@@ -208,37 +208,7 @@ export default function MasterAdmin() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  // 고유한 상위 카테고리 추출 (imported data 사용)
-  const uniqueUpperCategories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
-
-  // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
-  const filteredLowerCategories = useMemo(() => {
-    if (selectedUniversity === 'all') {
-      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
-    }
-    if (selectedUniversity === 'all') {
-      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
-    }
-    return Array.from(new Set((organizations || [])
-      .filter(org => org.upperCategory === selectedUniversity)
-      .map(org => org.lowerCategory).filter(Boolean)));
-  }, [selectedUniversity]);
-
-  // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
-  const filteredDetailCategories = useMemo(() => {
-    if (selectedUniversity === 'all' || selectedCollege === 'all') return [];
-    if (selectedUniversity === 'all' && selectedCollege === 'all') {
-      return Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
-    }
-    let filtered = organizations || [];
-    if (selectedUniversity !== 'all') {
-      filtered = filtered.filter(org => org.upperCategory === selectedUniversity);
-    }
-    if (selectedCollege !== 'all') {
-      filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
-    }
-    return Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
-  }, [selectedUniversity, selectedCollege]);
+  // Move organization-dependent calculations after useQuery declarations
 
   // 페이지네이션 상태
   const [userCurrentPage, setUserCurrentPage] = useState(1);
@@ -486,6 +456,37 @@ export default function MasterAdmin() {
       return response.json();
     }
   });
+
+  // 고유한 상위 카테고리 추출 (API data 사용) - moved after useQuery
+  const uniqueUpperCategories = useMemo(() => {
+    return Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
+  }, [organizations]);
+
+  // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
+  const filteredLowerCategories = useMemo(() => {
+    if (selectedUniversity === 'all') {
+      return Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+    }
+    return Array.from(new Set((organizations || [])
+      .filter(org => org.upperCategory === selectedUniversity)
+      .map(org => org.lowerCategory).filter(Boolean)));
+  }, [selectedUniversity, organizations]);
+
+  // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
+  const filteredDetailCategories = useMemo(() => {
+    if (selectedUniversity === 'all' || selectedCollege === 'all') return [];
+    if (selectedUniversity === 'all' && selectedCollege === 'all') {
+      return Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+    }
+    let filtered = organizations || [];
+    if (selectedUniversity !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === selectedUniversity);
+    }
+    if (selectedCollege !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
+    }
+    return Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+  }, [selectedUniversity, selectedCollege, organizations]);
 
   // 검색 실행 함수
   const executeSearch = () => {
