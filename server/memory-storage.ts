@@ -865,23 +865,7 @@ export class MemoryStorage implements IStorage {
     return createdOrganizations;
   }
 
-  updateOrganizationCategory(id: number, updateData: Partial<OrganizationCategory>): OrganizationCategory | null {
-    const existingCategory = this.organizationCategories.get(id);
-    if (!existingCategory) {
-      return null;
-    }
 
-    const updatedCategory: any = {
-      ...existingCategory,
-      ...updateData,
-      updatedAt: new Date()
-    };
-
-    this.organizationCategories.set(id, updatedCategory);
-    await this.saveOrganizationCategoriesToFile();
-
-    return updatedCategory;
-  }
 
   async deleteAllOrganizationCategories(): Promise<void> {
     console.log('Clearing all organization categories from memory storage');
