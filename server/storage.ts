@@ -6,6 +6,7 @@ import {
   documents,
   agentStats,
   messageReactions,
+  organizationCategories,
   type User,
   type UpsertUser,
   type Agent,
@@ -19,6 +20,8 @@ import {
   type AgentStats,
   type MessageReaction,
   type InsertMessageReaction,
+  type OrganizationCategory,
+  type InsertOrganizationCategory,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, inArray } from "drizzle-orm";
