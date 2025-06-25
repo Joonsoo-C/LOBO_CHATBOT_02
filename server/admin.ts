@@ -1059,31 +1059,75 @@ export function setupAdminRoutes(app: Express) {
                 }
               });
 
-              // Map to standard organization fields with multiple possible column names
-              const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
-                          org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
-                          
-              const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
-                                  org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
-                                  
-              const lowerCategory = org['하위조직'] || org['단과대학'] || org['학부'] || 
-                                  org['lowerCategory'] || org['하위 조직'] || org['LowerCategory'];
-                                  
-              const detailCategory = org['세부조직'] || org['학과'] || org['전공'] || 
-                                   org['detailCategory'] || org['세부 조직'] || org['DetailCategory'];
+              // Handle hierarchical category structure (상위카테고리, 하위카테고리, 세부카테고리)
+              if (org['상위카테고리'] || org['하위카테고리'] || org['세부카테고리']) {
+                const upperCat = org['상위카테고리']?.toString()?.trim();
+                const lowerCat = org['하위카테고리']?.toString()?.trim();
+                const detailCat = org['세부카테고리']?.toString()?.trim();
+                const status = org['상태']?.toString()?.trim() || '활성';
 
-              if (name && name.toString().trim()) {
-                const organization = {
-                  name: name.toString().trim(),
-                  upperCategory: upperCategory ? upperCategory.toString().trim() : null,
-                  lowerCategory: lowerCategory ? lowerCategory.toString().trim() : null,
-                  detailCategory: detailCategory ? detailCategory.toString().trim() : null,
-                  description: (org['설명'] || org['description'] || org['Description'])?.toString()?.trim() || null,
-                  isActive: true
-                };
-                
-                organizations.push(organization);
-                console.log(`Processed org ${i + 1}: ${organization.name}`);
+                // Create organization entries for each non-empty category level
+                if (upperCat) {
+                  organizations.push({
+                    name: upperCat,
+                    upperCategory: null,
+                    lowerCategory: null,
+                    detailCategory: null,
+                    description: `상위 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+
+                if (lowerCat) {
+                  organizations.push({
+                    name: lowerCat,
+                    upperCategory: upperCat || null,
+                    lowerCategory: null,
+                    detailCategory: null,
+                    description: `하위 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+
+                if (detailCat) {
+                  organizations.push({
+                    name: detailCat,
+                    upperCategory: upperCat || null,
+                    lowerCategory: lowerCat || null,
+                    detailCategory: null,
+                    description: `세부 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+
+                console.log(`Processed hierarchical org ${i + 1}: ${upperCat} > ${lowerCat} > ${detailCat}`);
+              } else {
+                // Handle standard organization name mapping
+                const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
+                            org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
+                            
+                const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
+                                    org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
+                                    
+                const lowerCategory = org['하위조직'] || org['단과대학'] || org['학부'] || 
+                                    org['lowerCategory'] || org['하위 조직'] || org['LowerCategory'];
+                                    
+                const detailCategory = org['세부조직'] || org['학과'] || org['전공'] || 
+                                     org['detailCategory'] || org['세부 조직'] || org['DetailCategory'];
+
+                if (name && name.toString().trim()) {
+                  const organization = {
+                    name: name.toString().trim(),
+                    upperCategory: upperCategory ? upperCategory.toString().trim() : null,
+                    lowerCategory: lowerCategory ? lowerCategory.toString().trim() : null,
+                    detailCategory: detailCategory ? detailCategory.toString().trim() : null,
+                    description: (org['설명'] || org['description'] || org['Description'])?.toString()?.trim() || null,
+                    isActive: true
+                  };
+                  
+                  organizations.push(organization);
+                  console.log(`Processed org ${i + 1}: ${organization.name}`);
+                }
               }
             }
             
@@ -1109,21 +1153,63 @@ export function setupAdminRoutes(app: Express) {
                 org[header] = values[index] || null;
               });
 
-              const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
-                          org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
-                          
-              const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
-                                  org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
+              // Handle hierarchical category structure for CSV
+              if (org['상위카테고리'] || org['하위카테고리'] || org['세부카테고리']) {
+                const upperCat = org['상위카테고리']?.toString()?.trim();
+                const lowerCat = org['하위카테고리']?.toString()?.trim();
+                const detailCat = org['세부카테고리']?.toString()?.trim();
+                const status = org['상태']?.toString()?.trim() || '활성';
 
-              if (name && name.toString().trim()) {
-                organizations.push({
-                  name: name.toString().trim(),
-                  upperCategory: upperCategory ? upperCategory.toString().trim() : null,
-                  lowerCategory: (org['하위조직'] || org['단과대학'] || org['lowerCategory'])?.toString()?.trim() || null,
-                  detailCategory: (org['세부조직'] || org['학과'] || org['detailCategory'])?.toString()?.trim() || null,
-                  description: (org['설명'] || org['description'])?.toString()?.trim() || null,
-                  isActive: true
-                });
+                if (upperCat) {
+                  organizations.push({
+                    name: upperCat,
+                    upperCategory: null,
+                    lowerCategory: null,
+                    detailCategory: null,
+                    description: `상위 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+
+                if (lowerCat) {
+                  organizations.push({
+                    name: lowerCat,
+                    upperCategory: upperCat || null,
+                    lowerCategory: null,
+                    detailCategory: null,
+                    description: `하위 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+
+                if (detailCat) {
+                  organizations.push({
+                    name: detailCat,
+                    upperCategory: upperCat || null,
+                    lowerCategory: lowerCat || null,
+                    detailCategory: null,
+                    description: `세부 조직 (${status})`,
+                    isActive: status === '활성'
+                  });
+                }
+              } else {
+                // Standard name mapping
+                const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
+                            org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
+                            
+                const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
+                                    org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
+
+                if (name && name.toString().trim()) {
+                  organizations.push({
+                    name: name.toString().trim(),
+                    upperCategory: upperCategory ? upperCategory.toString().trim() : null,
+                    lowerCategory: (org['하위조직'] || org['단과대학'] || org['lowerCategory'])?.toString()?.trim() || null,
+                    detailCategory: (org['세부조직'] || org['학과'] || org['detailCategory'])?.toString()?.trim() || null,
+                    description: (org['설명'] || org['description'])?.toString()?.trim() || null,
+                    isActive: true
+                  });
+                }
               }
             }
           }
