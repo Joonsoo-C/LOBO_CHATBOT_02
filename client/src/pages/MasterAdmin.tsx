@@ -3671,6 +3671,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          조직명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           상위 조직
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -3696,7 +3699,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredOrganizationCategories.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
+                          <td colSpan={8} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
