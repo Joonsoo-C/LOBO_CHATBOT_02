@@ -1995,7 +1995,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -4232,7 +4231,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <span className="text-sm text-gray-600 dark:text-gray-400">소속 인원 수</span>
                               <ExternalLink className="w-4 h-4 text-green-600 dark:text-green-400" />
                             </div>
-                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                            <div className="font-bold text-green-600 dark:text-green-400 text-[18px]">
                               {editingOrgCategory?.detailCategory ? 
                                 `${Math.floor(Math.random() * 300) + 50}명` : 
                                 `${Math.floor(Math.random() * 5000) + 1000}명`
