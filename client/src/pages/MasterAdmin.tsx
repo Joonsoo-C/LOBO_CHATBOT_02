@@ -2285,7 +2285,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                         </tr>
                       ) : (
-                        paginatedUsers?.map((user) => (
+                        userPagination.paginatedData?.map((user) => (
                           <tr 
                             key={user.id} 
                             className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150 ${
@@ -3821,67 +3821,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardContent>
             </Card>
 
-            {/* 페이지네이션 */}
-            {filteredOrganizationCategories.length > 20 && (
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  총 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={true}
-                  >
-                    이전
-                  </Button>
-                  
-                  <div className="flex items-center space-x-1">
-                    <Button
-                      variant="default"
-                      size="sm"
-                    >
-                      1
-                    </Button>
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 1 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                      >
-                        2
-                      </Button>
-                    )}
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 2 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                      >
-                        3
-                      </Button>
-                    )}
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 3 && (
-                      <>
-                        <span className="px-2">...</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          {Math.ceil(filteredOrganizationCategories.length / 20)}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={Math.ceil(filteredOrganizationCategories.length / 20) <= 1}
-                  >
-                    다음
-                  </Button>
-                </div>
+            {/* 결과 개수 및 페이지네이션 */}
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
+                총 {organizationPagination.totalItems}개 조직 중 {organizationPagination.startIndex}-{organizationPagination.endIndex}개 표시
               </div>
-            )}
+              {organizationPagination.totalPages > 1 && (
+                <PaginationComponent
+                  currentPage={organizationPagination.currentPage}
+                  totalPages={organizationPagination.totalPages}
+                  onPageChange={organizationPagination.goToPage}
+                  className="flex-shrink-0"
+                />
+              )}
+            </div>
           </TabsContent>
 
           {/* 문서 관리 */}
