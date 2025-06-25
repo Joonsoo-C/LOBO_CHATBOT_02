@@ -69,6 +69,13 @@ export interface IStorage {
   createMessageReaction(reaction: InsertMessageReaction): Promise<MessageReaction>;
   deleteMessageReaction(messageId: number, userId: string): Promise<void>;
   getMessageReactions(messageIds: number[]): Promise<{ [messageId: number]: MessageReaction | undefined }>;
+
+  // Organization category operations
+  getOrganizationCategories(): Promise<any[]>;
+  createOrganizationCategory(organization: any): Promise<any>;
+  updateOrganizationCategory(id: number, organization: any): Promise<any>;
+  deleteOrganizationCategory(id: number): Promise<void>;
+  bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {

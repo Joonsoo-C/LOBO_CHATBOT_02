@@ -93,7 +93,8 @@ app.use((req, res, next) => {
   // Initialize sample data asynchronously to speed up startup
   Promise.all([
     initializeSampleAgents(),
-    initializeSampleUsers()
+    initializeSampleUsers(),
+    initializeSampleOrganizations()
   ]).then(() => {
     console.log("Sample data initialization completed");
   }).catch((error) => {

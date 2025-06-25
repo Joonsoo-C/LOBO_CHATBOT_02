@@ -27,6 +27,8 @@ export class MemoryStorage implements IStorage {
   private documents: Map<number, Document> = new Map();
   private agentStats: Map<number, AgentStats> = new Map();
   private messageReactions: Map<number, MessageReaction> = new Map();
+  private organizationCategories: Map<number, any> = new Map();
+  private nextOrganizationId: number = 1;
 
   private nextId = 1;
   private readonly persistenceDir = path.join(process.cwd(), 'data');
@@ -106,8 +108,9 @@ export class MemoryStorage implements IStorage {
     try {
       const data = {
         documents: Array.from(this.documents.values()),
-      organizationCategories: Array.from(this.organizationCategories.values()),
-        nextId: this.nextId
+        organizationCategories: Array.from(this.organizationCategories.values()),
+        nextId: this.nextId,
+        nextOrganizationId: this.nextOrganizationId
       };
       fs.writeFileSync(this.documentsFile, JSON.stringify(data, null, 2));
     } catch (error) {
@@ -749,10 +752,82 @@ export class MemoryStorage implements IStorage {
         this.messageReactions = new Map(data.messageReactions || []);
         this.nextId = data.nextId || 1;
         
-        console.log(`Loaded ${this.documents.size} persisted documents`);
+        if (data.organizationCategories) {
+          this.organizationCategories = new Map(data.organizationCategories.map((org: any) => [org.id, {
+            ...org,
+            createdAt: new Date(org.createdAt),
+            updatedAt: new Date(org.updatedAt)
+          }]));
+          this.nextOrganizationId = Math.max(...data.organizationCategories.map((org: any) => org.id), 0) + 1;
+        }
+        
+        if (data.nextOrganizationId) {
+          this.nextOrganizationId = data.nextOrganizationId;
+        }
+        
+        console.log(`Loaded ${this.documents.size} persisted documents and ${this.organizationCategories.size} organization categories`);
       }
     } catch (error) {
       console.error('Failed to load persistent data:', error);
     }
+  }
+
+  // Organization category management
+  async getOrganizationCategories(): Promise<any[]> {
+    return Array.from(this.organizationCategories.values());
+  }
+
+  async createOrganizationCategory(organization: any): Promise<any> {
+    const id = this.nextOrganizationId++;
+    const newOrganization = {
+      id,
+      ...organization,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.organizationCategories.set(id, newOrganization);
+    this.savePersistedDocuments();
+    return newOrganization;
+  }
+
+  async updateOrganizationCategory(id: number, organization: any): Promise<any> {
+    const existingOrganization = this.organizationCategories.get(id);
+    if (!existingOrganization) {
+      throw new Error(`Organization category with id ${id} not found`);
+    }
+    
+    const updatedOrganization = {
+      ...existingOrganization,
+      ...organization,
+      updatedAt: new Date()
+    };
+    this.organizationCategories.set(id, updatedOrganization);
+    this.savePersistedDocuments();
+    return updatedOrganization;
+  }
+
+  async deleteOrganizationCategory(id: number): Promise<void> {
+    this.organizationCategories.delete(id);
+    this.savePersistedDocuments();
+  }
+
+  async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
+    const createdOrganizations: any[] = [];
+    
+    for (const org of organizations) {
+      const id = this.nextOrganizationId++;
+      const newOrganization = {
+        id,
+        ...org,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.organizationCategories.set(id, newOrganization);
+      createdOrganizations.push(newOrganization);
+    }
+    
+    this.savePersistedDocuments();
+    console.log(`Bulk created ${createdOrganizations.length} organization categories`);
+    return createdOrganizations;
   }
 }
