@@ -143,7 +143,7 @@ export function setupAdminRoutes(app: Express) {
       if (organizations.length > 10) {
         console.log(`  ... and ${organizations.length - 10} more organizations`);
       }
-      
+
       // Ensure no caching headers
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -151,7 +151,7 @@ export function setupAdminRoutes(app: Express) {
         'Expires': '0',
         'Last-Modified': new Date().toUTCString()
       });
-      
+
       res.json(organizations);
     } catch (error) {
       console.error("Failed to get organizations:", error);
@@ -234,7 +234,7 @@ export function setupAdminRoutes(app: Express) {
         } else {
           // Clean filename but preserve Korean characters
           originalName = originalName.replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
-          
+
           // Ensure filename is not empty after cleanup
           if (!originalName.trim()) {
             const ext = file.mimetype.includes('pdf') ? '.pdf' :
@@ -273,7 +273,7 @@ export function setupAdminRoutes(app: Express) {
       // Generate a unique filename for permanent storage
       const permanentFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${originalName}`;
       const permanentPath = path.join(adminUploadDir, permanentFilename);
-      
+
       // Move file to permanent location
       fs.copyFileSync(file.path, permanentPath);
 
@@ -300,7 +300,7 @@ export function setupAdminRoutes(app: Express) {
       };
 
       const document = await storage.createDocument(documentData);
-      
+
       // Clean up temporary file
       fs.unlinkSync(file.path);
 
@@ -349,25 +349,25 @@ export function setupAdminRoutes(app: Express) {
 
       // Check file type and parse accordingly
       const fileExtension = path.extname(req.file.originalname).toLowerCase();
-      
+
       if (fileExtension === '.xlsx' || fileExtension === '.xls') {
         // Parse Excel file
         console.log('Parsing Excel file:', req.file.originalname);
-        
+
         const workbook = XLSX.readFile(filePath);
         const sheetName = workbook.SheetNames[0]; // Use first sheet
         const worksheet = workbook.Sheets[sheetName];
-        
+
         // Convert sheet to JSON
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        
+
         if (jsonData.length < 2) {
           throw new Error('엑셀 파일에 충분한 데이터가 없습니다.');
         }
-        
+
         const headers = jsonData[0] as string[];
         console.log('Excel headers:', headers);
-        
+
         // Process each row
         for (let i = 1; i < jsonData.length; i++) {
           const values = jsonData[i] as any[];
@@ -378,7 +378,7 @@ export function setupAdminRoutes(app: Express) {
                 user[header.toString().trim()] = values[index].toString().trim();
               }
             });
-            
+
             // Validate required fields
             if (user.username && user.userType) {
               users.push({
@@ -402,20 +402,20 @@ export function setupAdminRoutes(app: Express) {
             }
           }
         }
-        
+
       } else if (fileExtension === '.csv') {
         // Parse CSV file
         console.log('Parsing CSV file:', req.file.originalname);
-        
+
         const fileContent = fs.readFileSync(filePath, 'utf8');
         const lines = fileContent.split('\n').filter(line => line.trim());
-        
+
         if (lines.length < 2) {
           throw new Error('CSV 파일에 충분한 데이터가 없습니다.');
         }
 
         const headers = lines[0].split(',').map(h => h.trim());
-        
+
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',').map(v => v.trim());
           if (values.length >= headers.length) {
@@ -423,7 +423,7 @@ export function setupAdminRoutes(app: Express) {
             headers.forEach((header, index) => {
               user[header] = values[index] || null;
             });
-            
+
             // Validate required fields
             if (user.username && user.userType) {
               users.push({
@@ -447,7 +447,7 @@ export function setupAdminRoutes(app: Express) {
             }
           }
         }
-        
+
       } else {
         throw new Error('지원하지 않는 파일 형식입니다. CSV 또는 Excel 파일만 업로드 가능합니다.');
       }
@@ -606,19 +606,19 @@ export function setupAdminRoutes(app: Express) {
 
         // Process Excel data for organizations - clean and deduplicate
         const uniqueOrgs = new Map();
-        
+
         jsonData.forEach((row: any) => {
           // Excel has hierarchy structure without name field - use detailCategory as name
           const name = row.세부카테고리 || row.detailCategory || row.조직명 || row.name;
           if (!name) return; // Skip rows without organization name
-          
+
           const upperCategory = row.상위카테고리 || row.upperCategory || null;
           const lowerCategory = row.하위카테고리 || row.lowerCategory || null;
           const detailCategory = row.세부카테고리 || row.detailCategory || null;
-          
+
           // Create unique key based on hierarchy
           const key = `${upperCategory || 'ROOT'}-${lowerCategory || 'NONE'}-${detailCategory || 'NONE'}-${name}`;
-          
+
           if (!uniqueOrgs.has(key)) {
             uniqueOrgs.set(key, {
               name: name.trim(),
@@ -632,7 +632,7 @@ export function setupAdminRoutes(app: Express) {
             });
           }
         });
-        
+
         organizations = Array.from(uniqueOrgs.values());
         console.log(`Extracted ${organizations.length} unique organizations from Excel file`);
 
@@ -665,14 +665,14 @@ export function setupAdminRoutes(app: Express) {
         manager: null,
         status: '활성',
       }));
-      
+
       console.log(`Creating ${organizationsToCreate.length} organization categories:`);
       organizationsToCreate.slice(0, 5).forEach((org, i) => {
         console.log(`  ${i+1}. ${org.name} (${org.upperCategory} > ${org.lowerCategory} > ${org.detailCategory})`);
       });
 
       const createdCategories = await storage.bulkCreateOrganizationCategories(organizationsToCreate);
-      
+
       const createdCount = createdCategories.length;
       const updatedCount = 0;
       const errorCount = organizations.length - createdCount;
@@ -713,7 +713,7 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/users/export", requireMasterAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
-      
+
       if (!users || users.length === 0) {
         return res.status(404).json({ message: "사용자 데이터가 없습니다" });
       }
@@ -829,15 +829,14 @@ export function setupAdminRoutes(app: Express) {
     try {
       const documentId = parseInt(req.params.id);
       console.log(`Checking document existence for ID: ${documentId}`);
-      
+
       if (isNaN(documentId)) {
         console.log("Invalid document ID provided");
-        return res.status(400).end();
-      }
+        return res.status(400).end();        }
 
       const document = await storage.getDocument(documentId);
       console.log(`Document found:`, document ? `${document.originalName} (ID: ${document.id})` : 'null');
-      
+
       if (!document) {
         return res.status(404).end();
       }
@@ -854,7 +853,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const documentId = parseInt(req.params.id);
       console.log(`Document preview requested for ID: ${documentId}`);
-      
+
       if (isNaN(documentId)) {
         console.log("Invalid document ID for preview");
         return res.status(400).send(`
@@ -866,7 +865,7 @@ export function setupAdminRoutes(app: Express) {
 
       const document = await storage.getDocument(documentId);
       console.log(`Document for preview:`, document ? `${document.originalName} (Size: ${document.size})` : 'not found');
-      
+
       if (!document) {
         return res.status(404).send(`
           <!DOCTYPE html>
@@ -890,7 +889,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Ensure content is properly decoded as UTF-8
       let documentContent = document.content || '내용을 불러올 수 없습니다.';
-      
+
       // Try to fix encoding issues if content appears to be corrupted
       try {
         // Check if content needs UTF-8 conversion
@@ -990,13 +989,13 @@ export function setupAdminRoutes(app: Express) {
 </html>`;
 
       console.log(`Sending preview HTML for document: ${document.originalName}`);
-      
+
       // Send with UTF-8 BOM to ensure proper Korean character encoding
       const utf8BOM = '\uFEFF';
       const finalContent = utf8BOM + htmlContent;
-      
+
       res.send(finalContent);
-      
+
     } catch (error) {
       console.error("Error previewing document:", error);
       res.status(500).send(`
@@ -1029,7 +1028,7 @@ export function setupAdminRoutes(app: Express) {
 
       // File should be in admin upload directory
       const filePath = path.join(adminUploadDir, document.filename);
-      
+
       // Check if file exists
       if (!fs.existsSync(filePath)) {
         console.error(`Document file not found: ${document.filename} at ${filePath}`);
@@ -1038,16 +1037,16 @@ export function setupAdminRoutes(app: Express) {
 
       // Get file stats for proper headers
       const stats = fs.statSync(filePath);
-      
+
       // Set headers for file download with proper encoding
       res.setHeader('Content-Type', document.mimeType || 'application/octet-stream');
       res.setHeader('Content-Length', stats.size);
       res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(document.originalName)}`);
       res.setHeader('Cache-Control', 'no-cache');
-      
+
       // Create read stream and handle errors
       const fileStream = fs.createReadStream(filePath);
-      
+
       fileStream.on('error', (streamError) => {
         console.error("File stream error:", streamError);
         if (!res.headersSent) {
@@ -1065,7 +1064,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Pipe file to response
       fileStream.pipe(res);
-      
+
     } catch (error) {
       console.error("Error downloading document:", error);
       if (!res.headersSent) {
@@ -1089,7 +1088,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Check if file exists
       const filePath = path.join(adminUploadDir, document.filename);
-      if (!fs.existsSync(filePath)) {
+      if (fs.existsSync(filePath)) {
         return res.status(404).json({ message: "파일을 찾을 수 없습니다" });
       }
 
@@ -1146,7 +1145,7 @@ export function setupAdminRoutes(app: Express) {
         success: true, 
         message: "문서가 성공적으로 삭제되었습니다" 
       });
-      
+
     } catch (error) {
       console.error("Error deleting document:", error);
       res.status(500).json({ message: "문서 삭제에 실패했습니다" });
@@ -1168,7 +1167,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Update user in storage
       const updatedUser = await storage.updateUser(userId, updateData);
-      
+
       if (!updatedUser) {
         return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
       }
@@ -1221,9 +1220,9 @@ export function setupAdminRoutes(app: Express) {
       ];
       const fileName = file.originalname.toLowerCase();
       const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
-      
+
       console.log(`File validation - MIME valid: ${allowedTypes.includes(file.mimetype)}, Extension valid: ${isValidExtension}`);
-      
+
       if (allowedTypes.includes(file.mimetype) || isValidExtension) {
         console.log(`File accepted: ${file.originalname}`);
         cb(null, true);
@@ -1255,21 +1254,21 @@ export function setupAdminRoutes(app: Express) {
           console.log(`\n--- Processing file: ${file.originalname} ---`);
           console.log(`File size: ${file.buffer.length} bytes`);
           console.log(`File MIME type: ${file.mimetype}`);
-          
+
           let organizations: any[] = [];
           const fileName = file.originalname.toLowerCase();
-          
+
           if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
             // Excel file processing
             console.log('Processing as Excel file...');
             const workbook = XLSX.read(file.buffer, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            
+
             // Convert to JSON with first row as headers
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
             console.log(`Extracted ${jsonData.length} rows from Excel`);
-            
+
             if (jsonData.length < 2) {
               console.log('Not enough data in Excel file');
               continue;
@@ -1278,7 +1277,7 @@ export function setupAdminRoutes(app: Express) {
             // Get headers and data rows
             const headers = jsonData[0];
             const dataRows = jsonData.slice(1);
-            
+
             console.log('Headers:', headers);
             console.log('Sample data row:', dataRows[0]);
 
@@ -1357,13 +1356,13 @@ export function setupAdminRoutes(app: Express) {
                 }
               }
             }
-            
+
           } else if (fileName.endsWith('.csv')) {
             // CSV file processing
             console.log('Processing as CSV file...');
             const csvText = file.buffer.toString('utf-8');
             const lines = csvText.split('\n').filter(line => line.trim() !== '');
-            
+
             if (lines.length < 2) {
               console.log('Not enough data in CSV file');
               continue;
@@ -1375,7 +1374,7 @@ export function setupAdminRoutes(app: Express) {
             for (let i = 1; i < lines.length; i++) {
               const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
               const org: any = {};
-              
+
               headers.forEach((header, index) => {
                 org[header] = values[index] || null;
               });
@@ -1423,7 +1422,7 @@ export function setupAdminRoutes(app: Express) {
                 // Standard name mapping
                 const name = org['조직명'] || org['대학명'] || org['학과명'] || org['조직'] || 
                             org['name'] || org['Name'] || org['조직 명'] || org['기관명'];
-                            
+
                 const upperCategory = org['상위조직'] || org['상위대학'] || org['대학'] || 
                                     org['upperCategory'] || org['상위 조직'] || org['UpperCategory'];
 
@@ -1443,7 +1442,7 @@ export function setupAdminRoutes(app: Express) {
 
           console.log(`Extracted ${organizations.length} valid organizations from ${file.originalname}`);
           totalOrganizations = totalOrganizations.concat(organizations);
-          
+
           processResults.push({
             filename: file.originalname,
             processed: organizations.length,
@@ -1566,7 +1565,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Save to storage
       const savedDocument = await storage.createDocument(document);
-      
+
       console.log(`Document saved successfully: ${savedDocument.name} (ID: ${savedDocument.id})`);
 
       res.json({
@@ -1577,16 +1576,40 @@ export function setupAdminRoutes(app: Express) {
 
     } catch (error) {
       console.error('Document upload error:', error);
-      
+
       // Clean up file on error
       if (req.file && fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path);
       }
-      
+
       res.status(500).json({
         success: false,
         message: error instanceof Error ? error.message : '문서 업로드 중 오류가 발생했습니다.'
       });
+    }
+  });
+
+  // Update organization category endpoint
+  app.patch("/api/admin/organizations/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+
+      console.log(`Updating organization category ${id} with data:`, updateData);
+
+      // Update the organization category in storage
+      const updatedCategory = await storage.updateOrganizationCategory(parseInt(id), updateData);
+
+      if (!updatedCategory) {
+        return res.status(404).json({ message: "Organization category not found" });
+      }
+
+      console.log(`Organization category updated successfully: ${id}`);
+
+      res.json(updatedCategory);
+    } catch (error) {
+      console.error("Error updating organization category:", error);
+      res.status(500).json({ message: "Failed to update organization category" });
     }
   });
 }
