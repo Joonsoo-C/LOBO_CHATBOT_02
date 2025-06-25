@@ -37,6 +37,7 @@ export class MemoryStorage implements IStorage {
   constructor() {
     this.ensurePersistenceDir();
     this.loadPersistedDocuments();
+    this.loadPersistedOrganizationCategories();
     this.initializeDefaultData();
     
     // Optimize garbage collection
