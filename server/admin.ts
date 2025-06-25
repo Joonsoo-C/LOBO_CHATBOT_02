@@ -133,15 +133,12 @@ export function setupAdminRoutes(app: Express) {
   // Organizations (simple mock data for memory storage)
   app.get("/api/admin/organizations", requireMasterAdmin, async (req, res) => {
     try {
-      const organizations = [
-        { id: 1, name: '로보대학교', type: 'university' },
-        { id: 2, name: '공과대학', type: 'college' },
-        { id: 3, name: '컴퓨터공학과', type: 'department' }
-      ];
+      const organizations = await storage.getOrganizationCategories();
+      console.log(`Retrieved ${organizations.length} organization categories from storage`);
       res.json(organizations);
     } catch (error) {
-      console.error("Error fetching organizations:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Failed to get organizations:", error);
+      res.status(500).json({ message: "조직 정보를 가져오는데 실패했습니다." });
     }
   });
 

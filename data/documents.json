@@ -12,5 +12,58 @@
       "createdAt": "2025-06-23T17:38:21.872Z"
     }
   ],
-  "nextId": 52
+  "organizationCategories": [
+    {
+      "id": 1,
+      "name": "로보대학교",
+      "upperCategory": "대학본부",
+      "lowerCategory": "총장실",
+      "detailCategory": "기획처",
+      "description": "로보대학교 본부",
+      "createdAt": "2025-06-25T00:09:17.842Z",
+      "updatedAt": "2025-06-25T00:09:17.842Z"
+    },
+    {
+      "id": 2,
+      "name": "공과대학",
+      "upperCategory": "로보대학교",
+      "lowerCategory": "공과대학",
+      "detailCategory": "컴퓨터공학과",
+      "description": "공과대학 컴퓨터공학과",
+      "createdAt": "2025-06-25T00:09:17.856Z",
+      "updatedAt": "2025-06-25T00:09:17.856Z"
+    },
+    {
+      "id": 3,
+      "name": "인문대학",
+      "upperCategory": "로보대학교",
+      "lowerCategory": "인문대학",
+      "detailCategory": "국어국문학과",
+      "description": "인문대학 국어국문학과",
+      "createdAt": "2025-06-25T00:09:17.892Z",
+      "updatedAt": "2025-06-25T00:09:17.892Z"
+    },
+    {
+      "id": 4,
+      "name": "경영대학",
+      "upperCategory": "로보대학교",
+      "lowerCategory": "경영대학",
+      "detailCategory": "경영학과",
+      "description": "경영대학 경영학과",
+      "createdAt": "2025-06-25T00:09:17.955Z",
+      "updatedAt": "2025-06-25T00:09:17.955Z"
+    },
+    {
+      "id": 5,
+      "name": "의과대학",
+      "upperCategory": "로보대학교",
+      "lowerCategory": "의과대학",
+      "detailCategory": "의학과",
+      "description": "의과대학 의학과",
+      "createdAt": "2025-06-25T00:09:18.020Z",
+      "updatedAt": "2025-06-25T00:09:18.020Z"
+    }
+  ],
+  "nextId": 62,
+  "nextOrganizationId": 6
 }

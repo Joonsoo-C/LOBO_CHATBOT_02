@@ -3,7 +3,7 @@ import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleAgents } from "./initialize-sample-agents";
-import { initializeSampleUsers } from "./initialize-sample-users";
+import { initializeSampleUsers, initializeSampleOrganizations } from "./initialize-sample-users";
 
 const app = express();
 
