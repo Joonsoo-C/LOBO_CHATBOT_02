@@ -912,23 +912,6 @@ export function setupAdminRoutes(app: Express) {
       console.error("Error previewing document:", error);
       res.status(500).json({ message: "문서 미리보기 중 오류가 발생했습니다" });
     }
-  });adata as JSON
-      res.json({
-        id: document.id,
-        name: document.originalName,
-        content: document.content || "문서 내용을 읽을 수 없습니다.",
-        size: `${(document.size / 1024).toFixed(1)} KB`,
-        type: document.mimeType.includes('pdf') ? 'PDF' : 
-              document.mimeType.includes('word') ? 'Word' :
-              document.mimeType.includes('excel') ? 'Excel' :
-              document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document',
-        uploadedAt: document.createdAt
-      });
-      
-    } catch (error) {
-      console.error("Error previewing document:", error);
-      res.status(500).json({ message: "문서 미리보기에 실패했습니다" });
-    }
   });
 
   // Document download endpoint
