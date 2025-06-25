@@ -838,7 +838,81 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
-      // Return document content and metadata as JSON
+      // Set proper headers for Korean text
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache');
+
+      // Create HTML response with proper encoding for Korean text
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="ko">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${document.originalName}</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+              line-height: 1.6;
+              margin: 20px;
+              background-color: #f5f5f5;
+              color: #333;
+            }
+            .container {
+              max-width: 800px;
+              margin: 0 auto;
+              background: white;
+              padding: 30px;
+              border-radius: 8px;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .header {
+              border-bottom: 2px solid #e0e0e0;
+              margin-bottom: 20px;
+              padding-bottom: 15px;
+            }
+            .title {
+              font-size: 24px;
+              font-weight: bold;
+              margin-bottom: 10px;
+              color: #2c3e50;
+            }
+            .meta {
+              color: #666;
+              font-size: 14px;
+              margin: 5px 0;
+            }
+            .content {
+              white-space: pre-wrap;
+              word-wrap: break-word;
+              font-size: 16px;
+              line-height: 1.8;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="title">${document.originalName}</div>
+              <div class="meta">파일 크기: ${(document.size / 1024 / 1024).toFixed(2)} MB</div>
+              <div class="meta">업로드 날짜: ${new Date(document.createdAt).toLocaleDateString('ko-KR')}</div>
+              <div class="meta">파일 형식: ${document.mimeType.includes('word') ? 'Word' : 
+                                         document.mimeType.includes('pdf') ? 'PDF' :
+                                         document.mimeType.includes('excel') ? 'Excel' :
+                                         document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document'}</div>
+            </div>
+            <div class="content">${(document.content || '내용을 불러올 수 없습니다.').replace(/\n/g, '<br>')}</div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      res.send(htmlContent);
+    } catch (error) {
+      console.error("Error previewing document:", error);
+      res.status(500).json({ message: "문서 미리보기 중 오류가 발생했습니다" });
+    }
+  });adata as JSON
       res.json({
         id: document.id,
         name: document.originalName,
