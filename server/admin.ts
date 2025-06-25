@@ -829,11 +829,16 @@ export function setupAdminRoutes(app: Express) {
   app.head("/api/admin/documents/:id", requireMasterAdmin, async (req, res) => {
     try {
       const documentId = parseInt(req.params.id);
+      console.log(`Checking document existence for ID: ${documentId}`);
+      
       if (isNaN(documentId)) {
+        console.log("Invalid document ID provided");
         return res.status(400).end();
       }
 
       const document = await storage.getDocument(documentId);
+      console.log(`Document found:`, document ? `${document.originalName} (ID: ${document.id})` : 'null');
+      
       if (!document) {
         return res.status(404).end();
       }
@@ -849,88 +854,134 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/documents/:id/preview", requireMasterAdmin, async (req, res) => {
     try {
       const documentId = parseInt(req.params.id);
+      console.log(`Document preview requested for ID: ${documentId}`);
+      
       if (isNaN(documentId)) {
-        return res.status(400).json({ message: "Invalid document ID" });
+        console.log("Invalid document ID for preview");
+        return res.status(400).send(`
+          <!DOCTYPE html>
+          <html><head><meta charset="UTF-8"><title>오류</title></head>
+          <body><h1>잘못된 문서 ID입니다</h1></body></html>
+        `);
       }
 
       const document = await storage.getDocument(documentId);
+      console.log(`Document for preview:`, document ? `${document.originalName} (Size: ${document.size})` : 'not found');
+      
       if (!document) {
-        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
+        return res.status(404).send(`
+          <!DOCTYPE html>
+          <html lang="ko">
+          <head><meta charset="UTF-8"><title>문서를 찾을 수 없음</title></head>
+          <body>
+            <div style="padding: 20px; font-family: Arial, sans-serif;">
+              <h1>문서를 찾을 수 없습니다</h1>
+              <p>요청하신 문서(ID: ${documentId})를 찾을 수 없습니다.</p>
+            </div>
+          </body>
+          </html>
+        `);
       }
 
       // Set proper headers for Korean text
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+
+      // Safely encode the document name and content
+      const safeDocumentName = (document.originalName || '제목 없음').replace(/[<>&"']/g, (match) => {
+        const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
+        return htmlEntities[match as keyof typeof htmlEntities];
+      });
+
+      const safeContent = (document.content || '내용을 불러올 수 없습니다.').replace(/[<>&"']/g, (match) => {
+        const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
+        return htmlEntities[match as keyof typeof htmlEntities];
+      }).replace(/\n/g, '<br>');
 
       // Create HTML response with proper encoding for Korean text
-      const htmlContent = `
+      const htmlContent = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${safeDocumentName}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    .meta {
+      color: #666;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .content {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 16px;
+      line-height: 1.8;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">${safeDocumentName}</div>
+      <div class="meta">파일 크기: ${(document.size / 1024 / 1024).toFixed(2)} MB</div>
+      <div class="meta">업로드 날짜: ${new Date(document.createdAt).toLocaleDateString('ko-KR')}</div>
+      <div class="meta">파일 형식: ${document.mimeType && document.mimeType.includes('word') ? 'Word' : 
+                                     document.mimeType && document.mimeType.includes('pdf') ? 'PDF' :
+                                     document.mimeType && document.mimeType.includes('excel') ? 'Excel' :
+                                     document.mimeType && document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document'}</div>
+    </div>
+    <div class="content">${safeContent}</div>
+  </div>
+</body>
+</html>`;
+
+      console.log(`Sending preview HTML for document: ${document.originalName}`);
+      res.send(htmlContent);
+      
+    } catch (error) {
+      console.error("Error previewing document:", error);
+      res.status(500).send(`
         <!DOCTYPE html>
         <html lang="ko">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${document.originalName}</title>
-          <style>
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-              line-height: 1.6;
-              margin: 20px;
-              background-color: #f5f5f5;
-              color: #333;
-            }
-            .container {
-              max-width: 800px;
-              margin: 0 auto;
-              background: white;
-              padding: 30px;
-              border-radius: 8px;
-              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .header {
-              border-bottom: 2px solid #e0e0e0;
-              margin-bottom: 20px;
-              padding-bottom: 15px;
-            }
-            .title {
-              font-size: 24px;
-              font-weight: bold;
-              margin-bottom: 10px;
-              color: #2c3e50;
-            }
-            .meta {
-              color: #666;
-              font-size: 14px;
-              margin: 5px 0;
-            }
-            .content {
-              white-space: pre-wrap;
-              word-wrap: break-word;
-              font-size: 16px;
-              line-height: 1.8;
-            }
-          </style>
-        </head>
+        <head><meta charset="UTF-8"><title>미리보기 오류</title></head>
         <body>
-          <div class="container">
-            <div class="header">
-              <div class="title">${document.originalName}</div>
-              <div class="meta">파일 크기: ${(document.size / 1024 / 1024).toFixed(2)} MB</div>
-              <div class="meta">업로드 날짜: ${new Date(document.createdAt).toLocaleDateString('ko-KR')}</div>
-              <div class="meta">파일 형식: ${document.mimeType.includes('word') ? 'Word' : 
-                                         document.mimeType.includes('pdf') ? 'PDF' :
-                                         document.mimeType.includes('excel') ? 'Excel' :
-                                         document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document'}</div>
-            </div>
-            <div class="content">${(document.content || '내용을 불러올 수 없습니다.').replace(/\n/g, '<br>')}</div>
+          <div style="padding: 20px; font-family: Arial, sans-serif;">
+            <h1>문서 미리보기 오류</h1>
+            <p>문서 미리보기 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}</p>
           </div>
         </body>
         </html>
-      `;
-
-      res.send(htmlContent);
-    } catch (error) {
-      console.error("Error previewing document:", error);
-      res.status(500).json({ message: "문서 미리보기 중 오류가 발생했습니다" });
+      `);
     }
   });
 

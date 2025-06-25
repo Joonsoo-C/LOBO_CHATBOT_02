@@ -447,24 +447,25 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   };
 
   const handlePreview = async (document: Document) => {
+    console.log('Preview requested for document:', document.id, document.originalName);
+    
     try {
-      // 문서 존재 여부 확인
-      const checkResponse = await fetch(`/api/admin/documents/${document.id}`, {
-        method: 'HEAD',
-        credentials: 'include'
-      });
-
-      if (!checkResponse.ok) {
-        throw new Error('문서를 찾을 수 없습니다');
-      }
-
-      // 미리보기 URL로 새 창 열기
+      // 미리보기 URL로 바로 새 창 열기 (HEAD 체크 제거)
       const previewUrl = `/api/admin/documents/${document.id}/preview`;
-      const newWindow = window.open(previewUrl, '_blank', 'noopener,noreferrer,width=800,height=600');
+      console.log('Opening preview URL:', previewUrl);
+      
+      const newWindow = window.open(previewUrl, '_blank', 'noopener,noreferrer,width=1000,height=700,scrollbars=yes,resizable=yes');
 
       if (!newWindow) {
-        throw new Error('팝업 차단으로 인해 미리보기를 열 수 없습니다');
+        throw new Error('팝업 차단으로 인해 미리보기를 열 수 없습니다. 브라우저의 팝업 차단을 해제해 주세요.');
       }
+
+      // 창이 로드될 때까지 잠시 기다린 후 포커스
+      setTimeout(() => {
+        if (newWindow && !newWindow.closed) {
+          newWindow.focus();
+        }
+      }, 100);
 
     } catch (error) {
       console.error('Preview error:', error);
