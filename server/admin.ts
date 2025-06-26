@@ -751,27 +751,53 @@ export function setupAdminRoutes(app: Express) {
       const uploadDir = path.join(process.cwd(), 'uploads', 'admin');
       
       if (!fs.existsSync(uploadDir)) {
+        console.log('Upload directory does not exist:', uploadDir);
         return res.json([]);
       }
       
       const files = fs.readdirSync(uploadDir);
+      console.log('All files in upload directory:', files.length, files.slice(0, 5));
       const orgFiles = files
-        .filter(file => file.startsWith('org-'))
+        .filter(file => {
+          // Accept files that start with 'org-' or contain Excel/CSV extensions
+          const isOrgFile = file.startsWith('org-');
+          const isExcelFile = file.endsWith('.xlsx') || file.endsWith('.xls') || file.endsWith('.csv');
+          const result = isOrgFile || isExcelFile;
+          console.log(`File: ${file}, isOrg: ${isOrgFile}, isExcel: ${isExcelFile}, included: ${result}`);
+          return result;
+        })
         .map(file => {
           const filePath = path.join(uploadDir, file);
           const stats = fs.statSync(filePath);
-          // Extract original name from the org- prefixed filename
-          const originalNameMatch = file.match(/^org-\d+-\d+-(.+)$/);
-          const originalName = originalNameMatch ? originalNameMatch[1] : file;
+          
+          // Extract original name based on file naming pattern
+          let originalName = file;
+          
+          if (file.startsWith('org-')) {
+            // New org- prefixed files
+            const originalNameMatch = file.match(/^org-\d+-\d+-(.+)$/);
+            originalName = originalNameMatch ? originalNameMatch[1] : file;
+          } else {
+            // Legacy files with timestamp-random-originalname pattern
+            const legacyMatch = file.match(/^\d+-\d+-(.+)$/);
+            originalName = legacyMatch ? legacyMatch[1] : file;
+          }
           
           return {
             fileName: file,
             originalName: originalName,
             uploadedAt: stats.birthtime,
-            size: stats.size
+            size: stats.size,
+            type: file.startsWith('org-') ? 'organization' : 'legacy'
           };
         })
-        .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+        .sort((a, b) => {
+          // Sort by type (organization files first) then by upload date
+          if (a.type !== b.type) {
+            return a.type === 'organization' ? -1 : 1;
+          }
+          return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime();
+        });
       
       res.json(orgFiles);
     } catch (error) {
