@@ -5,7 +5,6 @@ import fs from "fs";
 import path from "path";
 import { insertDocumentSchema } from "../shared/schema";
 import { extractTextFromContent, analyzeDocument } from "./openai";
-import * as Papa from "papaparse";
 // XLSX will be imported dynamically when needed
 
 // Configure multer for admin document uploads
