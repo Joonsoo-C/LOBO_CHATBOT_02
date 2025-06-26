@@ -136,6 +136,22 @@ const userEditSchema = z.object({
 
 type UserEditFormData = z.infer<typeof userEditSchema>;
 
+// 새 사용자 생성 스키마
+const newUserSchema = z.object({
+  name: z.string().min(1, "이름을 입력해주세요"),
+  email: z.string().email("유효한 이메일 주소를 입력해주세요"),
+  userId: z.string().min(1, "사용자 ID를 입력해주세요"),
+  userType: z.enum(["student", "faculty"], { required_error: "사용자 타입을 선택해주세요" }),
+  upperCategory: z.string().optional(),
+  lowerCategory: z.string().optional(),
+  detailCategory: z.string().optional(),
+  position: z.string().optional(),
+  role: z.enum(["user", "faculty", "admin"], { required_error: "역할을 선택해주세요" }),
+  status: z.enum(["active", "inactive", "pending"], { required_error: "상태를 선택해주세요" }),
+});
+
+type NewUserFormData = z.infer<typeof newUserSchema>;
+
 const orgCategoryEditSchema = z.object({
   name: z.string().min(1, "조직명은 필수입니다"),
   upperCategory: z.string().optional(),
@@ -154,6 +170,7 @@ export default function MasterAdmin() {
 
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
   const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
