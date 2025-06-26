@@ -1996,29 +1996,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
-  // 에이전트 교체 뮤테이션
-  const replaceAllAgentsMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/admin/agents/replace-all", {});
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
-      toast({
-        title: "성공",
-        description: `에이전트 교체가 완료되었습니다. (성공: ${data.success}개, 실패: ${data.failed}개)`,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "오류",
-        description: "에이전트 교체에 실패했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
+
 
   // 에이전트 편집 뮤테이션
   const updateAgentMutation = useMutation({
@@ -2916,14 +2894,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <div className="flex space-x-2">
-                <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="flex items-center space-x-2 whitespace-nowrap px-4 py-2 h-auto min-w-fit">
-                      <Plus className="w-4 h-4 flex-shrink-0" />
-                      <span className="whitespace-nowrap">+ 에이전트 추가</span>
-                    </Button>
-                  </DialogTrigger>
+              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center space-x-2 whitespace-nowrap px-4 py-2 h-auto min-w-fit">
+                    <Plus className="w-4 h-4 flex-shrink-0" />
+                    <span className="whitespace-nowrap">+ 에이전트 추가</span>
+                  </Button>
+                </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
