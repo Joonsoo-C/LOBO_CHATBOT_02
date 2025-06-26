@@ -542,14 +542,7 @@ export function setupAdminRoutes(app: Express) {
       if (clearExisting) {
         console.log('기존 에이전트 모두 삭제 중...');
         // 기존 에이전트 모두 삭제
-        const existingAgents = await storage.getAllAgents();
-        for (const agent of existingAgents) {
-          try {
-            await storage.deleteAgent(agent.id);
-          } catch (error) {
-            console.error(`에이전트 ${agent.id} 삭제 실패:`, error);
-          }
-        }
+        await storage.clearAllAgents();
       }
 
       // 새 에이전트 생성
@@ -598,6 +591,76 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({
         success: false,
         message: "에이전트 파일 업로드 중 오류가 발생했습니다.",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Agent data clear and load endpoint
+  app.post("/api/admin/agents/clear-and-load", requireMasterAdmin, async (req, res) => {
+    try {
+      console.log('🔄 에이전트 데이터 교체 시작...');
+      
+      const { agents } = req.body;
+      
+      if (!agents || !Array.isArray(agents)) {
+        return res.status(400).json({ message: '유효한 에이전트 데이터가 필요합니다.' });
+      }
+
+      // 기존 에이전트 모두 삭제
+      console.log('기존 에이전트 삭제 중...');
+      await storage.clearAllAgents();
+
+      // 새 에이전트 생성
+      let createdCount = 0;
+      let errorCount = 0;
+
+      for (const agentData of agents) {
+        try {
+          const processedAgent = {
+            name: agentData.name || '에이전트',
+            description: agentData.description || '',
+            creatorId: 'master_admin',
+            icon: agentData.icon || 'Bot',
+            backgroundColor: agentData.backgroundColor || '#3B82F6',
+            category: agentData.category || '기능',
+            isActive: true,
+            managerId: agentData.managerId || 'prof001',
+            organizationId: agentData.organizationId || 1,
+            status: 'active',
+            visibility: agentData.visibility || 'public',
+            maxInputLength: agentData.maxInputLength || 1000,
+            llmModel: agentData.llmModel || 'gpt-4o',
+            chatbotType: agentData.chatbotType || 'general-llm',
+            speakingStyle: agentData.speakingStyle || '친근하고 도움이 되는 말투',
+            personalityTraits: agentData.personalityTraits || '친절하고 전문적인 성격으로 정확한 정보를 제공',
+            documentManagerIds: agentData.documentManagerIds || [],
+            agentEditorIds: agentData.agentEditorIds || []
+          };
+
+          await storage.createAgent(processedAgent);
+          createdCount++;
+          console.log(`✅ 에이전트 생성 성공: ${processedAgent.name}`);
+        } catch (error) {
+          console.error(`에이전트 ${agentData.name} 생성 실패:`, error);
+          errorCount++;
+        }
+      }
+
+      console.log(`📊 에이전트 교체 완료: 성공 ${createdCount}개, 실패 ${errorCount}개`);
+
+      res.json({
+        success: true,
+        message: `기존 에이전트를 모두 삭제하고 ${createdCount}개의 새 에이전트로 교체했습니다.`,
+        count: createdCount,
+        errors: errorCount
+      });
+
+    } catch (error) {
+      console.error("에이전트 데이터 교체 오류:", error);
+      res.status(500).json({
+        success: false,
+        message: "에이전트 데이터 교체 중 오류가 발생했습니다.",
         error: error instanceof Error ? error.message : String(error)
       });
     }

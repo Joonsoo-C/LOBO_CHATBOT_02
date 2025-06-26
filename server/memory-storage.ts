@@ -129,6 +129,70 @@ export class MemoryStorage implements IStorage {
     }
   }
 
+  async loadNewAgentData() {
+    try {
+      const fs = await import('fs');
+      const agentDataPath = './new_agents.json';
+      
+      if (fs.existsSync(agentDataPath)) {
+        console.log('새 에이전트 데이터 로드 중...');
+        
+        const agentData = JSON.parse(fs.readFileSync(agentDataPath, 'utf8'));
+        
+        // 기존 에이전트 모두 삭제
+        this.agents.clear();
+        
+        // 새 에이전트 추가
+        let loadedCount = 0;
+        for (const agent of agentData) {
+          const newAgent: any = {
+            id: agent.id,
+            name: agent.name,
+            description: agent.description,
+            creatorId: 'master_admin',
+            icon: agent.icon || 'Bot',
+            backgroundColor: agent.backgroundColor || '#3B82F6',
+            category: agent.category || '기능',
+            isActive: true,
+            status: 'active',
+            managerId: agent.managerId || 'prof001',
+            organizationId: agent.organizationId || 1,
+            visibility: 'public',
+            maxInputLength: 1000,
+            llmModel: 'gpt-4o',
+            chatbotType: 'general-llm',
+            speakingStyle: '친근하고 도움이 되는 말투',
+            personalityTraits: '친절하고 전문적인 성격으로 정확한 정보를 제공',
+            documentManagerIds: [],
+            agentEditorIds: [],
+            isCustomIcon: false,
+            maxResponseLength: null,
+            prohibitedWordResponse: '죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.',
+            upperCategory: null,
+            lowerCategory: null,
+            detailCategory: null,
+            personaName: null,
+            rolePrompt: null,
+            uploadFormats: [],
+            uploadMethod: null,
+            maxFileCount: null,
+            maxFileSizeMB: null,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+          
+          this.agents.set(agent.id, newAgent);
+          loadedCount++;
+        }
+        
+        console.log(`✅ ${loadedCount}개의 새 에이전트가 로드되었습니다.`);
+        this.nextId = Math.max(this.nextId, loadedCount + 1);
+      }
+    } catch (error) {
+      console.error('새 에이전트 데이터 로드 오류:', error);
+    }
+  }
+
   private initializeDefaultData() {
     // Create users with pre-hashed passwords (using any type to avoid complex type mismatches)
     const masterAdmin: any = {
@@ -416,6 +480,11 @@ export class MemoryStorage implements IStorage {
 
   async getAgent(id: number): Promise<Agent | undefined> {
     return this.agents.get(id);
+  }
+
+  async clearAllAgents(): Promise<void> {
+    this.agents.clear();
+    cache.del('all_agents');
   }
 
   async createAgent(agent: InsertAgent): Promise<Agent> {
