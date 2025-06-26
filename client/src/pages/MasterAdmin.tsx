@@ -2801,14 +2801,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
-            </div>
-
-            <div className="flex justify-between items-center">
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    새 에이전트 추가
+                  <Button className="flex items-center space-x-2 whitespace-nowrap">
+                    <Plus className="w-4 h-4" />
+                    <span>새 에이전트 추가</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
