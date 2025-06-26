@@ -664,18 +664,60 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // Create users in storage - using simpler approach for memory storage
+      // Process users based on overwrite setting
       let createdCount = 0;
+      let updatedCount = 0;
       let errorCount = 0;
 
-      for (const userData of users) {
-        try {
-          // For memory storage, we'll just try to create the user
-          await storage.createUser(userData);
-          createdCount++;
-        } catch (error) {
-          console.error(`Failed to process user ${userData.username}:`, error);
-          errorCount++;
+      if (overwriteExisting) {
+        console.log('Overwrite mode: Clearing all existing users except master_admin');
+        // Clear all existing users except master_admin
+        const allUsers = await storage.getAllUsers();
+        for (const user of allUsers) {
+          if (user.id !== 'master_admin' && user.username !== 'master_admin') {
+            try {
+              await storage.deleteUser(user.id);
+            } catch (error) {
+              console.error(`Failed to delete user ${user.id}:`, error);
+            }
+          }
+        }
+
+        // Create all new users
+        for (const userData of users) {
+          try {
+            await storage.createUser(userData);
+            createdCount++;
+          } catch (error) {
+            console.error(`Failed to create user ${userData.username}:`, error);
+            errorCount++;
+          }
+        }
+      } else {
+        console.log('Merge mode: Adding only new users, preserving existing');
+        // Get existing users
+        const existingUsers = await storage.getAllUsers();
+        const existingUserIds = new Set(existingUsers.map(u => u.id));
+        const existingUserEmails = new Set(existingUsers.map(u => u.email).filter(Boolean));
+
+        for (const userData of users) {
+          try {
+            // Check if user already exists by ID or email
+            const userExists = existingUserIds.has(userData.id) || 
+                             (userData.email && existingUserEmails.has(userData.email));
+
+            if (userExists) {
+              console.log(`User ${userData.username} already exists, skipping (preserving existing data)`);
+              updatedCount++; // Count as "preserved"
+            } else {
+              await storage.createUser(userData);
+              createdCount++;
+              console.log(`Created new user: ${userData.username}`);
+            }
+          } catch (error) {
+            console.error(`Failed to process user ${userData.username}:`, error);
+            errorCount++;
+          }
         }
       }
 
@@ -698,13 +740,18 @@ export function setupAdminRoutes(app: Express) {
         console.error('Error cleaning up temporary file:', cleanupError);
       }
 
+      const responseMessage = overwriteExisting 
+        ? `기존 사용자 데이터를 모두 삭제하고 ${createdCount}명의 새 사용자로 교체했습니다.`
+        : `기존 사용자 데이터를 보존하며 ${createdCount}명의 새 사용자를 추가했습니다. ${updatedCount}명의 기존 사용자는 그대로 유지되었습니다.`;
+
       res.json({
         success: true,
-        message: `사용자 파일 업로드 완료`,
+        message: responseMessage,
         created: createdCount,
-        updated: 0,
+        updated: updatedCount,
         errors: errorCount,
-        total: users.length
+        total: users.length,
+        mode: overwriteExisting ? 'overwrite' : 'merge'
       });
 
     } catch (error) {
