@@ -1203,17 +1203,35 @@ function MasterAdmin() {
   const editAgentForm = useForm<AgentFormData>({
     resolver: zodResolver(agentSchema),
     defaultValues: {
+      // 📌 기본 정보
       name: "",
       description: "",
       category: "",
-      personality: "",
-      managerId: "",
-      organizationId: "",
-      upperCategory: "전체",
-      lowerCategory: "전체", 
-      detailCategoryField: "전체",
+      
+      // 📌 소속 및 상태
+      upperCategory: "",
+      lowerCategory: "",
+      detailCategory: "",
+      status: "active",
+      
+      // 📌 모델 및 응답 설정
       llmModel: "gpt-4o",
-      chatbotType: "general-llm",
+      chatbotType: "doc-fallback-llm",
+      maxInputLength: 2048,
+      maxOutputLength: 1024,
+      
+      // 📌 역할 및 페르소나 설정
+      rolePrompt: "",
+      personaNickname: "",
+      speechStyle: "",
+      personality: "",
+      prohibitedWords: "",
+      
+      // 📌 권한 및 접근 설정
+      visibility: "organization",
+      managerId: "",
+      agentEditorIds: [],
+      documentManagerIds: [],
     },
   });
 
@@ -1949,12 +1967,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   const updateAgentMutation = useMutation({
     mutationFn: async (data: AgentFormData & { id: number }) => {
       const payload = {
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        personality: data.personality,
-        managerId: data.managerId,
-        organizationId: parseInt(data.organizationId),
+        ...data,
+        isActive: data.status === "active",
       };
       const response = await apiRequest("PATCH", `/api/admin/agents/${data.id}`, payload);
       return response.json();
@@ -1985,9 +1999,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       name: agent.name,
       description: agent.description,
       category: agent.category,
-      personality: (agent as any).personalityTraits || "",
+      upperCategory: (agent as any).upperCategory || "",
+      lowerCategory: (agent as any).lowerCategory || "",
+      detailCategory: (agent as any).detailCategory || "",
+      status: (agent as any).status || "active",
+      llmModel: (agent as any).llmModel || "gpt-4o",
+      chatbotType: (agent as any).chatbotType || "doc-fallback-llm",
+      maxInputLength: (agent as any).maxInputLength || 2048,
+      maxOutputLength: (agent as any).maxOutputLength || 1024,
+      rolePrompt: (agent as any).rolePrompt || "",
+      personaNickname: (agent as any).personaNickname || "",
+      speechStyle: (agent as any).speechStyle || "",
+      personality: (agent as any).personality || "",
+      prohibitedWords: (agent as any).prohibitedWords || "",
+      visibility: (agent as any).visibility || "organization",
       managerId: (agent as any).managerId || "",
-      organizationId: (agent as any).organizationId?.toString() || "",
+      agentEditorIds: (agent as any).agentEditorIds || [],
+      documentManagerIds: (agent as any).documentManagerIds || [],
     });
     setIsEditAgentDialogOpen(true);
   };
@@ -5666,18 +5694,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   )}
                 />
 
-                {/* 숨겨진 조직 ID 필드 */}
-                <FormField
-                  control={editAgentForm.control}
-                  name="organizationId"
-                  render={({ field }) => (
-                    <FormItem style={{ display: 'none' }}>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+
 
                 <FormField
                   control={editAgentForm.control}
