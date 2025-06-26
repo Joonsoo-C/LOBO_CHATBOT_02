@@ -258,9 +258,11 @@ body {
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
+    text-align: center !important;
+    line-height: 1 !important;
   }
 
-  /* Ensure active pagination links maintain same size */
+  /* Ensure active pagination links maintain same size and center text */
   .pagination-link[aria-current="page"] {
     width: 40px !important;
     height: 40px !important;
@@ -268,6 +270,11 @@ body {
     min-height: 40px !important;
     border-width: 1px !important;
     box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1 !important;
   }
 
   @media (min-width: 1280px) {
