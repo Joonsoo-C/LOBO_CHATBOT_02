@@ -361,15 +361,9 @@ function MasterAdmin() {
       
       // 상위 카테고리 필터링
       if (selectedUniversity !== 'all') {
-        console.log('필터링 전 사용자 수:', filtered.length);
-        console.log('선택된 상위 카테고리:', selectedUniversity);
-        console.log('사용자들의 상위 카테고리:', filtered.map(u => ({ id: u.id, upperCategory: (u as any).upperCategory })).slice(0, 5));
-        
         filtered = filtered.filter(user => 
           (user as any).upperCategory === selectedUniversity
         );
-        
-        console.log('필터링 후 사용자 수:', filtered.length);
       }
       
       // 하위 카테고리 필터링
@@ -854,37 +848,37 @@ function MasterAdmin() {
     },
   });
 
-  // 사용자 카테고리 데이터 (업로드된 조직 데이터 기반)
+  // 사용자 카테고리 데이터 (실제 사용자 데이터 기반)
   const upperCategories = useMemo(() => {
-    if (!organizations || organizations.length === 0) return [];
-    const categories = Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean)));
+    if (!users || users.length === 0) return [];
+    const categories = Array.from(new Set(users.map(user => (user as any).upperCategory).filter(Boolean)));
     return categories.sort();
-  }, [organizations]);
+  }, [users]);
 
   const lowerCategories = useMemo(() => {
-    if (!organizations || organizations.length === 0 || selectedUniversity === 'all') return [];
+    if (!users || users.length === 0 || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      organizations
-        .filter(org => org.upperCategory === selectedUniversity)
-        .map(org => org.lowerCategory)
+      users
+        .filter(user => (user as any).upperCategory === selectedUniversity)
+        .map(user => (user as any).lowerCategory)
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [organizations, selectedUniversity]);
+  }, [users, selectedUniversity]);
 
   const detailCategories = useMemo(() => {
-    if (!organizations || organizations.length === 0 || selectedCollege === 'all' || selectedUniversity === 'all') return [];
+    if (!users || users.length === 0 || selectedCollege === 'all' || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      organizations
-        .filter(org => 
-          org.upperCategory === selectedUniversity && 
-          org.lowerCategory === selectedCollege
+      users
+        .filter(user => 
+          (user as any).upperCategory === selectedUniversity && 
+          (user as any).lowerCategory === selectedCollege
         )
-        .map(org => org.detailCategory)
+        .map(user => (user as any).detailCategory)
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [organizations, selectedUniversity, selectedCollege]);
+  }, [users, selectedUniversity, selectedCollege]);
 
   // 상위 카테고리 변경 시 하위 카테고리 초기화 (실시간 적용)
   const handleUpperCategoryChange = (value: string) => {
@@ -2392,7 +2386,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="flex items-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>새 사용자 추가</span>
+                  <span>+ 사용자 추가</span>
                 </Button>
               </div>
             </div>
@@ -2805,7 +2799,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <DialogTrigger asChild>
                   <Button className="flex items-center space-x-2 whitespace-nowrap px-4 py-2 h-auto min-w-fit">
                     <Plus className="w-4 h-4 flex-shrink-0" />
-                    <span className="whitespace-nowrap">새 에이전트 추가</span>
+                    <span className="whitespace-nowrap">+ 에이전트 추가</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
