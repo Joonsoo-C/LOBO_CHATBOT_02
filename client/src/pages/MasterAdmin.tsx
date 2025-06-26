@@ -1171,6 +1171,8 @@ function MasterAdmin() {
       name: "",
       description: "",
       category: "",
+      icon: "Bot",
+      backgroundColor: "#3B82F6",
       
       // 📌 소속 및 상태
       upperCategory: "",
@@ -2916,6 +2918,69 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             )}
                           />
                         </div>
+                        
+                        {/* 아이콘 및 배경색 */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={agentForm.control}
+                            name="icon"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>아이콘</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value || "Bot"}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="아이콘 선택" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Bot">Bot</SelectItem>
+                                    <SelectItem value="User">User</SelectItem>
+                                    <SelectItem value="GraduationCap">GraduationCap</SelectItem>
+                                    <SelectItem value="BookOpen">BookOpen</SelectItem>
+                                    <SelectItem value="Building2">Building2</SelectItem>
+                                    <SelectItem value="Users">Users</SelectItem>
+                                    <SelectItem value="Settings">Settings</SelectItem>
+                                    <SelectItem value="Heart">Heart</SelectItem>
+                                    <SelectItem value="Briefcase">Briefcase</SelectItem>
+                                    <SelectItem value="MessageCircle">MessageCircle</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={agentForm.control}
+                            name="backgroundColor"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>배경색</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value || "#3B82F6"}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="배경색 선택" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="#3B82F6">파란색</SelectItem>
+                                    <SelectItem value="#10B981">초록색</SelectItem>
+                                    <SelectItem value="#F59E0B">노란색</SelectItem>
+                                    <SelectItem value="#EF4444">빨간색</SelectItem>
+                                    <SelectItem value="#8B5CF6">보라색</SelectItem>
+                                    <SelectItem value="#F97316">주황색</SelectItem>
+                                    <SelectItem value="#06B6D4">청록색</SelectItem>
+                                    <SelectItem value="#84CC16">연두색</SelectItem>
+                                    <SelectItem value="#EC4899">분홍색</SelectItem>
+                                    <SelectItem value="#6B7280">회색</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
                         <FormField
                           control={agentForm.control}
                           name="description"
