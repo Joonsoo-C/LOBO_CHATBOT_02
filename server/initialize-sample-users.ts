@@ -11,7 +11,8 @@ export async function initializeSampleUsers() {
   try {
     // Check if users already exist to avoid duplicates
     const existingUsers = await storage.getAllUsers?.() || [];
-    if (existingUsers.length >= 50) {
+    if (existingUsers.length >= 10) {
+      console.log(`Skipping sample users initialization - ${existingUsers.length} users already exist`);
       return; // Silent skip to reduce initialization time
     }
     

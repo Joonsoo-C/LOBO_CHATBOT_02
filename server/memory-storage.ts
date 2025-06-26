@@ -40,11 +40,43 @@ export class MemoryStorage implements IStorage {
   private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
 
   constructor() {
-    this.ensurePersistenceDir();
+    this.users = new Map();
+    this.agents = new Map();
+    this.conversations = new Map();
+    this.messages = new Map();
+    this.documents = new Map();
+    this.agentStats = new Map();
+    this.messageReactions = new Map();
+    this.organizationCategories = new Map();
+    this.organizationFiles = new Map();
+    this.userFiles = new Map();
+
+    this.nextUserId = 1;
+    this.nextAgentId = 1;
+    this.nextConversationId = 1;
+    this.nextMessageId = 1;
+    this.nextDocumentId = 1;
+    this.nextOrganizationId = 1;
+
+    this.persistenceDir = path.join(process.cwd(), 'data');
+    this.documentsFile = path.join(this.persistenceDir, 'documents.json');
+    this.organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
+    this.userFilesFile = path.join(this.persistenceDir, 'user-files.json');
+    this.usersFile = path.join(this.persistenceDir, 'users.json');
+
+    // Create data directory if it doesn't exist
+    if (!fs.existsSync(this.persistenceDir)) {
+      fs.mkdirSync(this.persistenceDir, { recursive: true });
+    }
+
+    // Load persisted data in correct order
+    this.loadPersistedUsers();
     this.loadPersistedDocuments();
-    this.loadPersistedOrganizationCategories();
+    this.loadOrganizationCategoriesFromFile();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
+
+    console.log(`Memory storage initialized with ${this.users.size} users and ${this.organizationCategories.size} organization categories`);
     this.initializeDefaultData();
 
     // Optimize garbage collection
@@ -133,15 +165,15 @@ export class MemoryStorage implements IStorage {
     try {
       const fs = await import('fs');
       const agentDataPath = './new_agents.json';
-      
+
       if (fs.existsSync(agentDataPath)) {
         console.log('새 에이전트 데이터 로드 중...');
-        
+
         const agentData = JSON.parse(fs.readFileSync(agentDataPath, 'utf8'));
-        
+
         // 기존 에이전트 모두 삭제
         this.agents.clear();
-        
+
         // 새 에이전트 추가
         let loadedCount = 0;
         for (const agent of agentData) {
@@ -180,11 +212,11 @@ export class MemoryStorage implements IStorage {
             createdAt: new Date(),
             updatedAt: new Date()
           };
-          
+
           this.agents.set(agent.id, newAgent);
           loadedCount++;
         }
-        
+
         console.log(`✅ ${loadedCount}개의 새 에이전트가 로드되었습니다.`);
         this.nextId = Math.max(this.nextId, loadedCount + 1);
       }
@@ -365,91 +397,77 @@ export class MemoryStorage implements IStorage {
     return Array.from(this.users.values()).find(user => user.username === username);
   }
 
-  async createUser(user: UpsertUser): Promise<User> {
-    const newUser: User = {
-      ...user,
-      name: user.name || null,
-      email: user.email || null,
-      firstName: user.firstName || null,
-      lastName: user.lastName || null,
-      profileImageUrl: user.profileImageUrl || null,
-      userType: user.userType || "student",
-      passwordHash: user.passwordHash || null,
-      lastLoginAt: user.lastLoginAt || null,
-      termsAcceptedAt: user.termsAcceptedAt || null,
-      groups: user.groups || [],
-      usingAgents: user.usingAgents || [],
-      managedCategories: user.managedCategories || [],
-      managedAgents: user.managedAgents || [],
-      organizationAffiliations: user.organizationAffiliations || [],
-      agentPermissions: user.agentPermissions || [],
-      userMemo: user.userMemo || null,
-      permissions: user.permissions || {},
-      position: user.position || null,
-      upperCategory: user.upperCategory || null,
-      lowerCategory: user.lowerCategory || null,
-      detailCategory: user.detailCategory || null,
-      position: user.position || null,
-      status: user.status || "active",
-      role: user.role || "user",
-      groups: user.groups || [],
-      usingAgents: user.usingAgents || [],
-      managedCategories: user.managedCategories || [],
-      permissions: user.permissions || {},
-      loginFailCount: user.loginFailCount || 0,
-      lastLoginIP: user.lastLoginIP || null,
-      lockedReason: user.lockedReason || null,
-      authProvider: user.authProvider || null,
-      deactivatedAt: user.deactivatedAt || null,
+  async createUser(userData: UpsertUser): Promise<User> {
+    const user: User = {
+      id: userData.id,
+      username: userData.username,
+      email: userData.email || null,
+      firstName: userData.firstName || "",
+      lastName: userData.lastName || "",
+      role: userData.role || "user",
+      isActive: userData.isActive !== false,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      lastLoginAt: userData.lastLoginAt || null,
+      profileImageUrl: userData.profileImageUrl || null,
+      passwordHash: userData.passwordHash || "",
+      groups: userData.groups || [],
+      usingAgents: userData.usingAgents || [],
+      managedCategories: userData.managedCategories || [],
+      managedAgents: userData.managedAgents || [],
+      organizationAffiliations: userData.organizationAffiliations || [],
+      agentPermissions: userData.agentPermissions || [],
+      userMemo: userData.userMemo || null,
+      permissions: userData.permissions || {},
+      lockedReason: userData.lockedReason || null,
+      deactivatedAt: userData.deactivatedAt || null,
+      loginFailCount: userData.loginFailCount || 0,
+      lastLoginIP: userData.lastLoginIP || null,
+      authProvider: userData.authProvider || "email",
+      termsAcceptedAt: userData.termsAcceptedAt || null
     };
-    this.users.set(user.id, newUser);
-    return newUser;
+
+    this.users.set(user.id, user);
+    this.savePersistedUsers(); // Auto-save after creating user
+    return user;
   }
 
-  async upsertUser(user: UpsertUser): Promise<User> {
-    const existingUser = this.users.get(user.id);
-    const newUser: User = {
-      ...user,
-      name: user.name || null,
-      email: user.email || null,
-      firstName: user.firstName || null,
-      lastName: user.lastName || null,
-      profileImageUrl: user.profileImageUrl || null,
-      userType: user.userType || "student",
-      passwordHash: user.passwordHash || null,
-      lastLoginAt: user.lastLoginAt || null,
-      termsAcceptedAt: user.termsAcceptedAt || null,
-      groups: user.groups || [],
-      usingAgents: user.usingAgents || [],
-      managedCategories: user.managedCategories || [],
-      managedAgents: user.managedAgents || [],
-      organizationAffiliations: user.organizationAffiliations || [],
-      agentPermissions: user.agentPermissions || [],
-      userMemo: user.userMemo || null,
-      permissions: user.permissions || {},
-      position: user.position || null,
-      upperCategory: user.upperCategory || null,
-      lowerCategory: user.lowerCategory || null,
-      detailCategory: user.detailCategory || null,
-      position: user.position || null,
-      status: user.status || "active",
-      role: user.role || "user",
-      groups: user.groups || [],
-      usingAgents: user.usingAgents || [],
-      managedCategories: user.managedCategories || [],
-      permissions: user.permissions || {},
-      loginFailCount: user.loginFailCount || 0,
-      lastLoginIP: user.lastLoginIP || null,
-      lockedReason: user.lockedReason || null,
-      authProvider: user.authProvider || null,
-      deactivatedAt: user.deactivatedAt || null,
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existingUser = this.users.get(userData.id);
+
+    const user: User = {
+      ...existingUser,
+      id: userData.id,
+      username: userData.username,
+      email: userData.email || existingUser?.email || null,
+      firstName: userData.firstName || existingUser?.firstName || "",
+      lastName: userData.lastName || existingUser?.lastName || "",
+      role: userData.role || existingUser?.role || "user",
+      isActive: userData.isActive !== undefined ? userData.isActive : (existingUser?.isActive !== false),
       createdAt: existingUser?.createdAt || new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      lastLoginAt: userData.lastLoginAt || existingUser?.lastLoginAt || null,
+      profileImageUrl: userData.profileImageUrl || existingUser?.profileImageUrl || null,
+      passwordHash: userData.passwordHash || existingUser?.passwordHash || "",
+      groups: userData.groups || existingUser?.groups || [],
+      usingAgents: userData.usingAgents || existingUser?.usingAgents || [],
+      managedCategories: userData.managedCategories || existingUser?.managedCategories || [],
+      managedAgents: userData.managedAgents || existingUser?.managedAgents || [],
+      organizationAffiliations: userData.organizationAffiliations || existingUser?.organizationAffiliations || [],
+      agentPermissions: userData.agentPermissions || existingUser?.agentPermissions || [],
+      userMemo: userData.userMemo || existingUser?.userMemo || null,
+      permissions: userData.permissions || existingUser?.permissions || {},
+      lockedReason: userData.lockedReason || existingUser?.lockedReason || null,
+      deactivatedAt: userData.deactivatedAt || existingUser?.deactivatedAt || null,
+      loginFailCount: userData.loginFailCount !== undefined ? userData.loginFailCount : (existingUser?.loginFailCount || 0),
+      lastLoginIP: userData.lastLoginIP || existingUser?.lastLoginIP || null,
+      authProvider: userData.authProvider || existingUser?.authProvider || "email",
+      termsAcceptedAt: userData.termsAcceptedAt || existingUser?.termsAcceptedAt || null
     };
-    this.users.set(user.id, newUser);
-    return newUser;
+
+    this.users.set(user.id, user);
+    this.savePersistedUsers(); // Auto-save after upserting user
+    return user;
   }
 
   async updateUser(id: string, updates: any): Promise<User | undefined> {
@@ -461,9 +479,12 @@ export class MemoryStorage implements IStorage {
     const updatedUser: User = {
       ...existingUser,
       ...updates,
-      updatedAt: new Date()
+      id, // Ensure ID doesn't change
+      updatedAt: new Date(),
     };
+
     this.users.set(id, updatedUser);
+    this.savePersistedUsers(); // Auto-save after updating user
     return updatedUser;
   }
 
@@ -882,10 +903,10 @@ export class MemoryStorage implements IStorage {
       manager: organization.manager !== undefined ? organization.manager : existingOrganization.manager,
       updatedAt: new Date()
     };
-    
+
     this.organizationCategories.set(id, updatedOrganization);
     console.log(`Updated organization category ${id}:`, updatedOrganization);
-    
+
     await this.saveOrganizationCategoriesToFile();
     return updatedOrganization;
   }
@@ -929,7 +950,7 @@ export class MemoryStorage implements IStorage {
       if (existingOrg && !shouldOverwrite) {
         // Merge mode: Update existing organization while preserving critical data
         console.log(`Merging existing organization: ${existingOrg.name} (ID: ${existingOrg.id})`);
-        
+
         const updatedOrganization = {
           ...existingOrg, // Preserve existing data including connections
           // Only update non-critical fields if they have new values
@@ -939,15 +960,15 @@ export class MemoryStorage implements IStorage {
           updatedAt: new Date()
           // Preserve: id, name, hierarchy, manager, createdAt, and any other connected data
         };
-        
+
         this.organizationCategories.set(existingOrg.id, updatedOrganization);
         updatedOrganizations.push(updatedOrganization);
-        
+
       } else {
         // Create new organization
         const id = shouldOverwrite ? this.nextOrganizationId++ : Math.max(...Array.from(this.organizationCategories.keys()), this.nextOrganizationId - 1) + 1;
         this.nextOrganizationId = Math.max(this.nextOrganizationId, id + 1);
-        
+
         const newOrganization = {
           id,
           name: org.name,
@@ -970,7 +991,7 @@ export class MemoryStorage implements IStorage {
     console.log(`Organization count after bulk operation: ${this.organizationCategories.size}`);
     console.log(`Created: ${createdOrganizations.length}, Updated: ${updatedOrganizations.length}`);
     await this.saveOrganizationCategoriesToFile();
-    
+
     const totalProcessed = [...createdOrganizations, ...updatedOrganizations];
     console.log(`Bulk processed ${totalProcessed.length} organization categories and saved to persistence`);
     return totalProcessed;
@@ -1178,6 +1199,46 @@ export class MemoryStorage implements IStorage {
     }
   }
 
+   private loadPersistedUsers(): void {
+    try {
+      const usersFile = path.join(this.persistenceDir, 'users.json');
+
+      if (fs.existsSync(usersFile)) {
+        const data = fs.readFileSync(usersFile, 'utf8');
+        const usersArray = JSON.parse(data);
+
+        for (const user of usersArray) {
+          this.users.set(user.id, {
+            ...user,
+            createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
+            updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
+          });
+        }
+
+        console.log(`Loaded ${this.users.size} users from persistence`);
+      } else {
+        console.log('No users file found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Failed to load users from persistence:', error);
+    }
+  }
+
+   private async savePersistedUsers(): Promise<void> {
+    try {
+      const usersFile = path.join(this.persistenceDir, 'users.json');
+      const usersArray = Array.from(this.users.values()).map(user => ({
+        ...user,
+        createdAt: user.createdAt?.toISOString(),
+        updatedAt: user.updatedAt?.toISOString()
+      }));
+
+      fs.writeFileSync(usersFile, JSON.stringify(usersArray, null, 2));
+      console.log(`Saved ${usersArray.length} users to persistence`);
+    } catch (error) {
+      console.error('Failed to save users to persistence:', error);
+    }
+  }
   // Add cache clearing method
   clearCache(): void {
     console.log("Clearing memory storage cache");

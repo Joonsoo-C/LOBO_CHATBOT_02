@@ -2519,10 +2519,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                                 <div>
                                   <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {(user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}
+                                    {(user as any).name || 
+                                     `${user.firstName || ''} ${user.lastName || ''}`.trim() || 
+                                     user.username}
                                   </div>
                                   <div className="text-xs text-gray-500">
                                     <span>{user.username}</span>
+                                    {user.email && (
+                                      <span className="ml-2 text-blue-600">✓</span>
+                                    )}
                                   </div>
                                 </div>
                               </div>
