@@ -28,5 +28,15 @@
     "status": "failed",
     "userCount": 0,
     "path": "/home/runner/workspace/uploads/admin/1750922260287-948003279-대학_AI챗봇_사용자_샘플_전체정보포함.xlsx"
+  },
+  {
+    "id": "1750924352233",
+    "filename": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "originalName": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "size": 24986,
+    "uploadedAt": "2025-06-26T07:52:32.233Z",
+    "status": "applied",
+    "userCount": 400,
+    "path": "/home/runner/workspace/uploads/admin/1750924351792-645639742-대학_AI챗봇_사용자_샘플_전체정보포함.xlsx"
   }
 ]
