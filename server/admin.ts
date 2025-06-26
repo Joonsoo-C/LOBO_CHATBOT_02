@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import { insertDocumentSchema } from "../shared/schema";
 import { extractTextFromContent, analyzeDocument } from "./openai";
-import * as XLSX from 'xlsx';
+// XLSX will be imported dynamically when needed
 
 // Configure multer for admin document uploads
 const adminUploadDir = path.join(process.cwd(), 'uploads', 'admin');
@@ -488,6 +488,7 @@ export function setupAdminRoutes(app: Express) {
         // Parse Excel file
         console.log('Parsing Excel file:', req.file.originalname);
 
+        const { default: XLSX } = await import('xlsx');
         const workbook = XLSX.readFile(filePath);
         const sheetName = workbook.SheetNames[0]; // Use first sheet
         const worksheet = workbook.Sheets[sheetName];
