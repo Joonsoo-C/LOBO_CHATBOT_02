@@ -2925,6 +2925,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           />
                           <FormField
                             control={agentForm.control}
+                            name="type"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>유형 *</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="유형 선택" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="학교">학교</SelectItem>
+                                    <SelectItem value="교수">교수</SelectItem>
+                                    <SelectItem value="학생">학생</SelectItem>
+                                    <SelectItem value="그룹">그룹</SelectItem>
+                                    <SelectItem value="기능형">기능형</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={agentForm.control}
                             name="category"
                             render={({ field }) => (
                               <FormItem>

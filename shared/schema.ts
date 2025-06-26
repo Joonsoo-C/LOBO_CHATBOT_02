@@ -142,6 +142,9 @@ export const agents = pgTable("agents", {
   backgroundColor: text("background_color").notNull(),
   isCustomIcon: boolean("is_custom_icon").default(false),
   
+  // 에이전트 유형 정보
+  type: varchar("type").notNull().default("기능형"), // 에이전트 유형 (학교, 교수, 학생, 그룹, 기능형)
+  
   // 기존 레거시 필드들 (호환성 유지)
   category: text("category").notNull(),
   managerId: varchar("manager_id").references(() => users.id),
