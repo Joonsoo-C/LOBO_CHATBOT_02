@@ -7154,6 +7154,14 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
   form: any;
   organizationHierarchy: any;
 }) {
+  const [organizationAffiliations, setOrganizationAffiliations] = React.useState([
+    { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
+  ]);
+  const [agentPermissions, setAgentPermissions] = React.useState([
+    { agentName: "", permissions: [] }
+  ]);
+  const [userMemo, setUserMemo] = React.useState("");
+
   const positionOptions = [
     "학생", "학부생", "대학원생", "박사과정", "석사과정",
     "교수", "부교수", "조교수", "전임강사", "시간강사",
@@ -7162,8 +7170,73 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
     "학과장", "학장", "처장", "원장", "총장", "부총장"
   ];
 
+  const agentOptions = [
+    "학교 종합 안내", "입학처 안내봇", "학사지원팀", "도서관 사서",
+    "컴퓨터공학과 도우미", "의학과 안내센터", "경영학과 길잡이",
+    "김교수의 미적분학", "박교수의 데이터베이스", "이교수의 영미문학",
+    "AI 논문 작성 도우미", "프로그래밍 튜터", "영어회화 트레이너"
+  ];
+
+  const systemRoleOptions = [
+    "일반 사용자", "외부 사용자", "문서 관리자", "QA 관리자", 
+    "에이전트 관리자", "카테고리 관리자", "운영 관리자", "마스터 관리자"
+  ];
+
+  const permissionOptions = ["에이전트 관리자", "QA 관리자", "문서 관리자"];
+
+  const addOrganizationAffiliation = () => {
+    setOrganizationAffiliations([...organizationAffiliations, 
+      { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
+    ]);
+  };
+
+  const removeOrganizationAffiliation = (index: number) => {
+    if (organizationAffiliations.length > 1) {
+      setOrganizationAffiliations(organizationAffiliations.filter((_: any, i: number) => i !== index));
+    }
+  };
+
+  const updateOrganizationAffiliation = (index: number, field: string, value: string) => {
+    const updated = [...organizationAffiliations];
+    updated[index] = { ...updated[index], [field]: value };
+    
+    // 상위 카테고리 변경 시 하위/세부 카테고리 초기화
+    if (field === 'upperCategory') {
+      updated[index].lowerCategory = "";
+      updated[index].detailCategory = "";
+    }
+    // 하위 카테고리 변경 시 세부 카테고리 초기화
+    if (field === 'lowerCategory') {
+      updated[index].detailCategory = "";
+    }
+    
+    setOrganizationAffiliations(updated);
+  };
+
+  const addAgentPermission = () => {
+    setAgentPermissions([...agentPermissions, { agentName: "", permissions: [] }]);
+  };
+
+  const removeAgentPermission = (index: number) => {
+    if (agentPermissions.length > 1) {
+      setAgentPermissions(agentPermissions.filter((_: any, i: number) => i !== index));
+    }
+  };
+
+  const updateAgentPermission = (index: number, field: string, value: any) => {
+    const updated = [...agentPermissions];
+    updated[index] = { ...updated[index], [field]: value };
+    setAgentPermissions(updated);
+  };
+
   const handleSubmit = (data: NewUserFormData) => {
-    onSave(data);
+    const submitData = {
+      ...data,
+      organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
+      agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
+      userMemo
+    };
+    onSave(submitData);
   };
 
   return (
@@ -7178,9 +7251,9 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>이름 *</FormLabel>
+                  <FormLabel>이름</FormLabel>
                   <FormControl>
-                    <Input placeholder="이름을 입력하세요" {...field} />
+                    <Input placeholder="Master Admin" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -7191,9 +7264,9 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>이메일 *</FormLabel>
+                  <FormLabel>이메일</FormLabel>
                   <FormControl>
-                    <Input placeholder="이메일을 입력하세요" type="email" {...field} />
+                    <Input placeholder="admin@lobo.edu" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -7204,9 +7277,9 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               name="userId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>사용자 ID *</FormLabel>
+                  <FormLabel>사용자 ID</FormLabel>
                   <FormControl>
-                    <Input placeholder="사용자 ID를 입력하세요" {...field} />
+                    <Input placeholder="master_admin" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -7217,36 +7290,15 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               name="userType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>사용자 타입 *</FormLabel>
+                  <FormLabel>사용자 타입</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="사용자 타입 선택" />
+                        <SelectValue placeholder="활성" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="student">학생</SelectItem>
-                      <SelectItem value="faculty">교직원</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>시스템 역할 *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="역할 선택" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="user">일반 사용자</SelectItem>
                       <SelectItem value="faculty">교직원</SelectItem>
                       <SelectItem value="admin">관리자</SelectItem>
                     </SelectContent>
@@ -7260,11 +7312,11 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>계정 상태 *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>계정 상태</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value || "active"}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="상태 선택" />
+                        <SelectValue placeholder="활성" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -7278,117 +7330,209 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
               )}
             />
           </div>
+          <div className="text-sm text-gray-500">
+            가입 날짜: {new Date().toLocaleDateString('ko-KR')}
+          </div>
         </div>
 
         {/* 조직 소속 정보 */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">조직 소속 정보 (선택사항)</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <FormField
-              control={form.control}
-              name="upperCategory"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>상위 카테고리</FormLabel>
-                  <Select onValueChange={(value) => {
-                    field.onChange(value);
-                    form.setValue("lowerCategory", "");
-                    form.setValue("detailCategory", "");
-                  }} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="선택" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.keys(organizationHierarchy).map(category => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lowerCategory"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>하위 카테고리</FormLabel>
-                  <Select 
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      form.setValue("detailCategory", "");
-                    }} 
-                    value={field.value}
-                    disabled={!form.watch("upperCategory")}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="선택" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {form.watch("upperCategory") && Object.keys((organizationHierarchy as any)[form.watch("upperCategory")] || {}).map((subcategory: string) => (
-                        <SelectItem key={subcategory} value={subcategory}>{subcategory}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="detailCategory"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>세부 카테고리</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    value={field.value}
-                    disabled={!form.watch("lowerCategory")}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="선택" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {form.watch("lowerCategory") && form.watch("upperCategory") && 
-                       ((organizationHierarchy as any)[form.watch("upperCategory")]?.[form.watch("lowerCategory")] || []).map((detail: string) => (
-                        <SelectItem key={detail} value={detail}>{detail}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="position"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>직책/역할</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="선택" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {positionOptions.map(position => (
-                        <SelectItem key={position} value={position}>{position}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">조직 소속 정보</h3>
+            <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
+              <Plus className="w-4 h-4 mr-1" />
+              소속 추가
+            </Button>
           </div>
+          
+          {organizationAffiliations.map((org: any, index: number) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-medium">소속 정보 #{index + 1}</h4>
+                {organizationAffiliations.length > 1 && (
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => removeOrganizationAffiliation(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    제거
+                  </Button>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                  <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                  <Select 
+                    value={org.upperCategory} 
+                    onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.keys(organizationHierarchy).map((category: string, catIndex: number) => (
+                        <SelectItem key={`org-upper-${index}-${catIndex}`} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                  <Select 
+                    value={org.lowerCategory} 
+                    onValueChange={(value) => updateOrganizationAffiliation(index, 'lowerCategory', value)}
+                    disabled={!org.upperCategory}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {org.upperCategory && Object.keys((organizationHierarchy as any)[org.upperCategory] || {}).map((subcategory: string, subIndex: number) => (
+                        <SelectItem key={`org-lower-${index}-${subIndex}`} value={subcategory}>{subcategory}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                  <Select 
+                    value={org.detailCategory} 
+                    onValueChange={(value) => updateOrganizationAffiliation(index, 'detailCategory', value)}
+                    disabled={!org.lowerCategory}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {org.lowerCategory && org.upperCategory && 
+                       ((organizationHierarchy as any)[org.upperCategory]?.[org.lowerCategory] || []).map((detail: string, detailIndex: number) => (
+                        <SelectItem key={`org-detail-${index}-${detailIndex}`} value={detail}>{detail}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">직책/역할</Label>
+                  <Select 
+                    value={org.position} 
+                    onValueChange={(value) => updateOrganizationAffiliation(index, 'position', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {positionOptions.map((position: string, posIndex: number) => (
+                        <SelectItem key={`org-pos-${index}-${posIndex}`} value={position}>{position}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">시스템 역할</Label>
+                  <Select 
+                    value={org.systemRole} 
+                    onValueChange={(value) => updateOrganizationAffiliation(index, 'systemRole', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {systemRoleOptions.map((role: string, roleIndex: number) => (
+                        <SelectItem key={`org-role-${index}-${roleIndex}`} value={role}>{role}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 에이전트 권한 정보 */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">에이전트 권한 정보</h3>
+            <Button type="button" variant="outline" size="sm" onClick={addAgentPermission}>
+              <Plus className="w-4 h-4 mr-1" />
+              권한 추가
+            </Button>
+          </div>
+          
+          {agentPermissions.map((agent: any, index: number) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-medium">에이전트 권한 #{index + 1}</h4>
+                {agentPermissions.length > 1 && (
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => removeAgentPermission(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    제거
+                  </Button>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label>에이전트</Label>
+                  <Select 
+                    value={agent.agentName} 
+                    onValueChange={(value) => updateAgentPermission(index, 'agentName', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="에이전트 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {agentOptions.map((agentName: string, agentIndex: number) => (
+                        <SelectItem key={`agent-${index}-${agentIndex}`} value={agentName}>{agentName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>사용 권한</Label>
+                  <div className="grid grid-cols-3 gap-2 mt-2">
+                    {permissionOptions.map((permission: string, permIndex: number) => (
+                      <div key={`perm-${index}-${permIndex}`} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={`${index}-${permission}`}
+                          checked={agent.permissions.includes(permission)}
+                          onChange={(e) => {
+                            const newPermissions = e.target.checked
+                              ? [...agent.permissions, permission]
+                              : agent.permissions.filter((p: string) => p !== permission);
+                            updateAgentPermission(index, 'permissions', newPermissions);
+                          }}
+                          className="rounded"
+                        />
+                        <Label htmlFor={`${index}-${permission}`} className="text-sm">
+                          {permission}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 사용자 메모 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">사용자 메모</h3>
+          <Textarea
+            value={userMemo}
+            onChange={(e) => setUserMemo(e.target.value)}
+            placeholder="사용자에 대한 간단한 메모를 입력하세요..."
+            rows={4}
+          />
         </div>
 
         {/* 버튼 그룹 */}
@@ -7397,7 +7541,7 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
             취소
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "생성 중..." : "사용자 생성"}
+            {isLoading ? "저장 중..." : "저장"}
           </Button>
         </div>
       </form>
