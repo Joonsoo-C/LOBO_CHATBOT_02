@@ -503,34 +503,86 @@ export function setupAdminRoutes(app: Express) {
         const headers = jsonData[0] as string[];
         console.log('Excel headers:', headers);
 
+        // Create column mapping for Korean headers
+        const columnMapping: { [key: string]: string } = {
+          '사용자ID': 'username',
+          '이름': 'name',
+          '이메일': 'email',
+          '상위카테고리': 'upperCategory',
+          '하위카테고리': 'lowerCategory',
+          '세부카테고리': 'detailCategory',
+          '직책': 'position',
+          '상태': 'status',
+          '시스템 역할': 'userType',
+          'username': 'username',
+          'firstName': 'firstName',
+          'lastName': 'lastName',
+          'name': 'name',
+          'email': 'email',
+          'userType': 'userType',
+          'upperCategory': 'upperCategory',
+          'lowerCategory': 'lowerCategory',
+          'detailCategory': 'detailCategory',
+          'position': 'position'
+        };
+
         // Process each row
         for (let i = 1; i < jsonData.length; i++) {
           const values = jsonData[i] as any[];
-          if (values && values.length > 0) {
+          if (values && values.length > 0 && values.some(v => v !== null && v !== undefined && v !== '')) {
             const user: any = {};
+            
             headers.forEach((header, index) => {
-              if (header && values[index] !== undefined && values[index] !== null) {
-                user[header.toString().trim()] = values[index].toString().trim();
+              if (header && values[index] !== undefined && values[index] !== null && values[index] !== '') {
+                const mappedField = columnMapping[header.toString().trim()];
+                if (mappedField) {
+                  user[mappedField] = values[index].toString().trim();
+                }
               }
             });
 
-            // Validate required fields
-            if (user.username && user.userType) {
+            // Extract name parts if full name is provided
+            if (user.name && !user.firstName && !user.lastName) {
+              const nameParts = user.name.trim().split(' ');
+              if (nameParts.length >= 2) {
+                user.firstName = nameParts[0];
+                user.lastName = nameParts.slice(1).join(' ');
+              }
+            }
+
+            // Generate username if not provided
+            if (!user.username && user.name) {
+              user.username = user.name.replace(/\s+/g, '') + Math.floor(Math.random() * 1000);
+            }
+
+            // Determine user type from role/position
+            if (!user.userType) {
+              if (user.position && (user.position.includes('교수') || user.position.includes('Professor') || user.position.includes('교직원'))) {
+                user.userType = 'faculty';
+              } else {
+                user.userType = 'student';
+              }
+            }
+
+            // Validate required fields and create user
+            if (user.username && (user.name || (user.firstName && user.lastName))) {
+              const fullName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
+              
               users.push({
                 id: user.username,
                 username: user.username,
-                firstName: user.firstName || null,
-                lastName: user.lastName || null,
-                email: user.email || null,
-                name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
+                firstName: user.firstName || fullName.split(' ')[0] || null,
+                lastName: user.lastName || fullName.split(' ').slice(1).join(' ') || null,
+                email: user.email || `${user.username}@university.ac.kr`,
+                name: fullName,
                 password: 'defaultPassword123',
                 userType: user.userType,
                 role: user.userType === 'faculty' ? 'faculty' : 'student',
                 upperCategory: user.upperCategory || '로보대학교',
                 lowerCategory: user.lowerCategory || (user.userType === 'faculty' ? '교직원' : '학생'),
                 detailCategory: user.detailCategory || null,
-                position: user.position || null,
-                status: 'active',
+                position: user.position || (user.userType === 'faculty' ? '교수' : '학생'),
+                status: user.status || 'active',
                 createdAt: new Date(),
                 updatedAt: new Date()
               });

@@ -31,17 +31,20 @@ export class MemoryStorage implements IStorage {
   private messageReactions: Map<number, MessageReaction> = new Map();
   private organizationCategories: Map<number, any> = new Map();
   private organizationFiles: Map<string, any> = new Map();
+  private userFiles: Map<string, any> = new Map();
   private nextOrganizationId: number = 1;
 
   private nextId = 1;
   private readonly persistenceDir = path.join(process.cwd(), 'data');
   private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
+  private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
 
   constructor() {
     this.ensurePersistenceDir();
     this.loadPersistedDocuments();
     this.loadPersistedOrganizationCategories();
     this.loadPersistedOrganizationFiles();
+    this.loadPersistedUserFiles();
     this.initializeDefaultData();
 
     // Optimize garbage collection
@@ -1049,6 +1052,60 @@ export class MemoryStorage implements IStorage {
       }
     } catch (error) {
       console.error('Failed to load organization files from persistence:', error);
+    }
+  }
+
+  // User file management methods
+  async saveUserFile(fileInfo: any): Promise<void> {
+    this.userFiles.set(fileInfo.id, {
+      ...fileInfo,
+      uploadedAt: new Date(fileInfo.uploadedAt)
+    });
+    this.savePersistedUserFiles();
+  }
+
+  async getUserFiles(): Promise<any[]> {
+    return Array.from(this.userFiles.values());
+  }
+
+  async deleteUserFile(fileId: string): Promise<void> {
+    this.userFiles.delete(fileId);
+    this.savePersistedUserFiles();
+  }
+
+  private savePersistedUserFiles(): void {
+    try {
+      const userFilesArray = Array.from(this.userFiles.values()).map(file => ({
+        ...file,
+        uploadedAt: file.uploadedAt?.toISOString()
+      }));
+
+      fs.writeFileSync(this.userFilesFile, JSON.stringify(userFilesArray, null, 2));
+      console.log(`Saved ${userFilesArray.length} user files to persistence`);
+    } catch (error) {
+      console.error('Failed to save user files to persistence:', error);
+    }
+  }
+
+  private loadPersistedUserFiles(): void {
+    try {
+      if (fs.existsSync(this.userFilesFile)) {
+        const data = fs.readFileSync(this.userFilesFile, 'utf8');
+        const userFilesArray = JSON.parse(data);
+
+        for (const file of userFilesArray) {
+          this.userFiles.set(file.id, {
+            ...file,
+            uploadedAt: file.uploadedAt ? new Date(file.uploadedAt) : new Date()
+          });
+        }
+
+        console.log(`Loaded ${this.userFiles.size} user files from persistence`);
+      } else {
+        console.log('No user files found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Failed to load user files from persistence:', error);
     }
   }
 
