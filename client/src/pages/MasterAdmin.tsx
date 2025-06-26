@@ -4401,17 +4401,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectContent>
                           <SelectItem value="all">전체</SelectItem>
                           {selectedManagerUniversity === 'all' ? 
-                            Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            )) :
+                            [] :
                             Array.from(new Set(
                               organizations
                                 ?.filter(org => org.upperCategory === selectedManagerUniversity)
                                 .map(org => org.lowerCategory)
                                 .filter(Boolean)
-                            )).map((category) => (
+                            )).sort().map((category) => (
                               <SelectItem key={category} value={category}>
                                 {category}
                               </SelectItem>
@@ -4434,11 +4430,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectContent>
                           <SelectItem value="all">전체</SelectItem>
                           {selectedManagerUniversity === 'all' || selectedManagerCollege === 'all' ? 
-                            Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            )) :
+                            [] :
                             Array.from(new Set(
                               organizations
                                 ?.filter(org => 
@@ -4447,7 +4439,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 )
                                 .map(org => org.detailCategory)
                                 .filter(Boolean)
-                            )).map((category) => (
+                            )).sort().map((category) => (
                               <SelectItem key={category} value={category}>
                                 {category}
                               </SelectItem>
