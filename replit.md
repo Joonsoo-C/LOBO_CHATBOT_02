@@ -514,6 +514,17 @@ Changelog:
   * Fixed organization data corruption by clearing incorrect entries and loading only authentic Excel data
   * Organization system now contains exactly 124 categories with proper detail organization structure
   * All organization statuses preserved: 활성, 비활성, 등록 승인 대기중
+- June 25, 2025. Enhanced organization category file upload dialog with document management:
+  * Added uploaded document list display in organization category upload dialog
+  * Implemented file listing with original filenames and upload timestamps
+  * Created individual file deletion functionality with confirmation
+  * Added server API endpoints for file listing (/api/admin/organization-files) and deletion
+  * Enhanced file filtering to include all document types (.xlsx, .xls, .csv, .docx, .pdf)
+  * Improved file naming with org- prefix for organization-specific uploads
+  * Added visual file type indicators and badges for organization files
+  * Implemented automatic list refresh after upload and deletion operations
+  * Fixed file filtering logic to properly identify and display uploaded files
+  * Complete document management workflow now available in organization upload interface
 ```
 
 ## User Preferences
