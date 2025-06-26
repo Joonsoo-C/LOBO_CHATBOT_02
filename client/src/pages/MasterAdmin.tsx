@@ -1625,10 +1625,12 @@ export default function MasterAdmin() {
           description: `${successCount}개 파일이 성공적으로 처리되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
         });
         
-        // 사용자 목록 새로고침
-        queryClient.invalidateQueries({
-          queryKey: ['/api/admin/users']
-        });
+        // Real-time refresh of both user list and user files
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/user-files'] });
+        
+        // Also refresh organization data if users have organization affiliations
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
       }
 
       if (errorCount > 0 && successCount === 0) {
