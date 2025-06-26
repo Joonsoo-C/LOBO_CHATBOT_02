@@ -8,9 +8,9 @@
     "description": "세부 조직 (활성)",
     "isActive": true,
     "status": "활성",
-    "manager": null,
+    "manager": "ACA003",
     "createdAt": "2025-06-26T01:09:30.761Z",
-    "updatedAt": "2025-06-26T03:28:32.128Z"
+    "updatedAt": "2025-06-26T03:37:50.996Z"
   },
   {
     "id": 2,
