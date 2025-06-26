@@ -214,7 +214,9 @@ export function setupAdminRoutes(app: Express) {
         lastUsedAt: agent.createdAt,
         managerFirstName: 'System',
         managerLastName: 'Admin',
-        organizationName: '로보대학교'
+        organizationName: '로보대학교',
+        upperCategory: agent.upperCategory || null,
+        lowerCategory: agent.lowerCategory || null
       }));
 
       res.json(agentsWithStats);
