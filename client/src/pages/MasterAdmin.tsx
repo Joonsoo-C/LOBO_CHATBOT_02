@@ -164,7 +164,7 @@ const orgCategoryEditSchema = z.object({
 
 type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
 
-export default function MasterAdmin() {
+function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
 
@@ -7118,3 +7118,263 @@ function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
     </div>
   );
 }
+
+// 새 사용자 생성 폼 컴포넌트
+function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy }: {
+  onSave: (data: NewUserFormData) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+  form: any;
+  organizationHierarchy: any;
+}) {
+  const positionOptions = [
+    "학생", "학부생", "대학원생", "박사과정", "석사과정",
+    "교수", "부교수", "조교수", "전임강사", "시간강사",
+    "연구원", "선임연구원", "책임연구원", "연구교수",
+    "직원", "주임", "과장", "부장", "팀장", "실장",
+    "학과장", "학장", "처장", "원장", "총장", "부총장"
+  ];
+
+  const handleSubmit = (data: NewUserFormData) => {
+    onSave(data);
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        {/* 기본 정보 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">기본 정보</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>이름 *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="이름을 입력하세요" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>이메일 *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="이메일을 입력하세요" type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="userId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>사용자 ID *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="사용자 ID를 입력하세요" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="userType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>사용자 타입 *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="사용자 타입 선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="student">학생</SelectItem>
+                      <SelectItem value="faculty">교직원</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>시스템 역할 *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="역할 선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="user">일반 사용자</SelectItem>
+                      <SelectItem value="faculty">교직원</SelectItem>
+                      <SelectItem value="admin">관리자</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>계정 상태 *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="상태 선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                      <SelectItem value="pending">대기</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* 조직 소속 정보 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">조직 소속 정보 (선택사항)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <FormField
+              control={form.control}
+              name="upperCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>상위 카테고리</FormLabel>
+                  <Select onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue("lowerCategory", "");
+                    form.setValue("detailCategory", "");
+                  }} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.keys(organizationHierarchy).map(category => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lowerCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>하위 카테고리</FormLabel>
+                  <Select 
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue("detailCategory", "");
+                    }} 
+                    value={field.value}
+                    disabled={!form.watch("upperCategory")}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {form.watch("upperCategory") && Object.keys((organizationHierarchy as any)[form.watch("upperCategory")] || {}).map((subcategory: string) => (
+                        <SelectItem key={subcategory} value={subcategory}>{subcategory}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="detailCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>세부 카테고리</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    value={field.value}
+                    disabled={!form.watch("lowerCategory")}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {form.watch("lowerCategory") && form.watch("upperCategory") && 
+                       ((organizationHierarchy as any)[form.watch("upperCategory")]?.[form.watch("lowerCategory")] || []).map((detail: string) => (
+                        <SelectItem key={detail} value={detail}>{detail}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="position"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>직책/역할</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="선택" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {positionOptions.map(position => (
+                        <SelectItem key={position} value={position}>{position}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* 버튼 그룹 */}
+        <div className="flex justify-end space-x-2 pt-6">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            취소
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "생성 중..." : "사용자 생성"}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+}
+
