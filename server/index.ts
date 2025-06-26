@@ -88,7 +88,7 @@ app.use((req, res, next) => {
     reusePort: true,
   }, async () => {
     log(`serving on port ${port}`);
-    
+
     // 새 에이전트 데이터 로드
     const { storage } = await import("./storage.js");
     if (storage && typeof (storage as any).loadNewAgentData === 'function') {
@@ -101,8 +101,16 @@ app.use((req, res, next) => {
     initializeSampleAgents(),
     initializeSampleUsers(),
     initializeSampleOrganizations()
-  ]).then(() => {
+  ]).then(async () => {
     console.log("Sample data initialization completed");
+
+    // Clean up 로보대학교 affiliated agents
+    const { storage } = await import("./storage.js");
+    const deletedCount = await storage.deleteAgentsByOrganization('로보대학교');
+    if (deletedCount > 0) {
+      console.log(`🧹 Cleaned up ${deletedCount} 로보대학교 affiliated agents from system`);
+    }
+
   }).catch((error) => {
     console.error("Error during sample data initialization:", error);
   });

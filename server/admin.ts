@@ -206,17 +206,25 @@ export function setupAdminRoutes(app: Express) {
     try {
       const agents = await storage.getAllAgents();
 
-      // Format agents for admin display with additional stats
-      const agentsWithStats = agents.map(agent => ({
+      // Filter out agents with 로보대학교 affiliation and format remaining agents
+      const filteredAgents = agents.filter(agent => {
+        const hasRoboUnivAffiliation = 
+          agent.upperCategory === '로보대학교' || 
+          agent.lowerCategory === '로보대학교' ||
+          (agent as any).organizationName === '로보대학교';
+        return !hasRoboUnivAffiliation;
+      });
+
+      const agentsWithStats = filteredAgents.map(agent => ({
         ...agent,
         documentCount: Math.floor(Math.random() * 10),
         userCount: Math.floor(Math.random() * 50) + 5,
         lastUsedAt: agent.createdAt,
         managerFirstName: 'System',
         managerLastName: 'Admin',
-        organizationName: '로보대학교',
-        upperCategory: agent.upperCategory === '로보대학교' ? null : (agent.upperCategory || null),
-        lowerCategory: agent.lowerCategory === '로보대학교' ? null : (agent.lowerCategory || null)
+        organizationName: null, // Remove hardcoded organization name
+        upperCategory: agent.upperCategory || null,
+        lowerCategory: agent.lowerCategory || null
       }));
 
       res.json(agentsWithStats);
@@ -1775,6 +1783,29 @@ export function setupAdminRoutes(app: Express) {
       console.error("Failed to update user:", error);
       res.status(500).json({ 
         message: "사용자 정보 수정에 실패했습니다.",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Delete agents by organization endpoint
+  app.delete("/api/admin/agents/organization/:name", requireMasterAdmin, async (req, res) => {
+    try {
+      const organizationName = decodeURIComponent(req.params.name);
+      
+      console.log(`Deleting agents with organization affiliation: ${organizationName}`);
+      
+      const deletedCount = await storage.deleteAgentsByOrganization(organizationName);
+      
+      res.json({
+        success: true,
+        message: `${deletedCount}개의 ${organizationName} 소속 에이전트가 삭제되었습니다.`,
+        deletedCount
+      });
+    } catch (error) {
+      console.error("Error deleting agents by organization:", error);
+      res.status(500).json({ 
+        message: "조직별 에이전트 삭제에 실패했습니다.",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }

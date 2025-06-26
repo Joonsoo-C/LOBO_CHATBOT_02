@@ -421,7 +421,7 @@ export class MemoryStorage implements IStorage {
       permissions: userData.permissions || {},
       lockedReason: userData.lockedReason || null,
       deactivatedAt: userData.deactivatedAt || null,
-      loginFailCount: userData.loginFailCount || 0,
+      loginFailCount: 0,
       lastLoginIP: userData.lastLoginIP || null,
       authProvider: userData.authProvider || "email",
       termsAcceptedAt: userData.termsAcceptedAt || null
@@ -1272,5 +1272,32 @@ export class MemoryStorage implements IStorage {
     } catch (error) {
       console.error('Failed to load persisted organization categories:', error);
     }
+  }
+
+  async deleteAgentsByOrganization(organizationName: string): Promise<number> {
+    const initialCount = this.agents.size;
+    const agentsToDelete: number[] = [];
+
+    for (const [agentId, agent] of this.agents.entries()) {
+      const hasOrgAffiliation =
+        agent.upperCategory === organizationName ||
+        agent.lowerCategory === organizationName ||
+        (agent as any).organizationName === organizationName;
+
+      if (hasOrgAffiliation) {
+        agentsToDelete.push(agentId);
+      }
+    }
+
+    agentsToDelete.forEach(agentId => this.agents.delete(agentId));
+
+    const deletedCount = agentsToDelete.length;
+
+    if (deletedCount > 0) {
+      console.log(`🗑️ Deleted ${deletedCount} agents with ${organizationName} affiliation`);
+      cache.delete('all_agents'); // Invalidate agent cache
+    }
+
+    return deletedCount;
   }
 }
