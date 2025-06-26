@@ -648,6 +648,23 @@ export default function MasterAdmin() {
     },
   });
 
+  // 새 사용자 생성 폼 초기화
+  const newUserForm = useForm<NewUserFormData>({
+    resolver: zodResolver(newUserSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      userId: "",
+      userType: "student",
+      upperCategory: "",
+      lowerCategory: "",
+      detailCategory: "",
+      position: "",
+      role: "user",
+      status: "active",
+    },
+  });
+
   // 조직 카테고리 편집 폼 초기화
   const orgCategoryEditForm = useForm<OrgCategoryEditFormData>({
     resolver: zodResolver(orgCategoryEditSchema),
@@ -707,6 +724,44 @@ export default function MasterAdmin() {
       toast({
         title: "오류",
         description: "사용자 정보 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 새 사용자 생성 뮤테이션
+  const createUserMutation = useMutation({
+    mutationFn: async (data: NewUserFormData) => {
+      const payload = {
+        id: data.userId,
+        username: data.userId,
+        name: data.name,
+        email: data.email,
+        userType: data.userType,
+        role: data.role,
+        status: data.status,
+        upperCategory: data.upperCategory || null,
+        lowerCategory: data.lowerCategory || null,
+        detailCategory: data.detailCategory || null,
+        position: data.position || null,
+        password: "defaultPassword123!", // 기본 비밀번호
+      };
+      const response = await apiRequest("POST", "/api/admin/users", payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      toast({
+        title: "성공",
+        description: "새 사용자가 생성되었습니다.",
+      });
+      setIsNewUserDialogOpen(false);
+      newUserForm.reset();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "사용자 생성에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -2289,14 +2344,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="users" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">사용자 관리</h2>
-              <Button 
-                variant="outline"
-                onClick={handleExcelExport}
-                className="flex items-center space-x-2"
-              >
-                <Download className="w-4 h-4" />
-                <span>엑셀 내보내기</span>
-              </Button>
+              <div className="flex space-x-2">
+                <Button 
+                  variant="default"
+                  onClick={() => setIsNewUserDialogOpen(true)}
+                  className="flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>새 사용자 추가</span>
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={handleExcelExport}
+                  className="flex items-center space-x-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>엑셀 내보내기</span>
+                </Button>
+              </div>
             </div>
 
             {/* 사용자 관리 방법 안내 */}
@@ -6563,6 +6628,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               }}
               isLoading={updateUserMutation.isPending} 
             />}
+          </DialogContent>
+        </Dialog>
+
+        {/* 새 사용자 생성 다이얼로그 */}
+        <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>새 사용자 추가</DialogTitle>
+            </DialogHeader>
+            <NewUserForm 
+              onSave={(data) => createUserMutation.mutate(data)}
+              onCancel={() => setIsNewUserDialogOpen(false)}
+              isLoading={createUserMutation.isPending}
+              form={newUserForm}
+              organizationHierarchy={organizationHierarchy}
+            />
           </DialogContent>
         </Dialog>
       </main>
