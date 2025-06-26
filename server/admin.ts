@@ -672,6 +672,7 @@ export function setupAdminRoutes(app: Express) {
       ];
 
       // Create workbook and worksheet
+      const { default: XLSX } = await import('xlsx');
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(sampleData);
 
@@ -766,6 +767,7 @@ export function setupAdminRoutes(app: Express) {
       // Check file type and parse accordingly
       if (req.file.mimetype.includes('excel') || req.file.mimetype.includes('spreadsheetml')) {
         // Excel file parsing
+        const { default: XLSX } = await import('xlsx');
         const workbook = XLSX.readFile(filePath);
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
@@ -962,6 +964,7 @@ export function setupAdminRoutes(app: Express) {
       }));
 
       // Create workbook and worksheet
+      const { default: XLSX } = await import('xlsx');
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(excelData);
 
@@ -1483,6 +1486,7 @@ export function setupAdminRoutes(app: Express) {
           if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
             // Excel file processing
             console.log('Processing as Excel file...');
+            const { default: XLSX } = await import('xlsx');
             const workbook = XLSX.read(file.buffer, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
