@@ -70,6 +70,48 @@ const requireMasterAdmin = (req: any, res: any, next: any) => {
 };
 
 export function setupAdminRoutes(app: Express) {
+  // User file upload configuration
+  const userUpload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, adminUploadDir);
+      },
+      filename: (req, file, cb) => {
+        // Generate a unique filename
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.originalname}`;
+        cb(null, uniqueName);
+      }
+    }),
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      // Fix Korean filename encoding immediately
+      try {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch (e) {
+        console.log('Filename encoding conversion failed, keeping original:', file.originalname);
+      }
+
+      const allowedTypes = [
+        'application/vnd.ms-excel', // .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'text/csv', // .csv
+        'application/csv', // .csv alternative
+        'text/comma-separated-values', // .csv alternative
+        'application/excel', // Excel alternative
+        'application/x-excel', // Excel alternative
+        'application/x-msexcel' // Excel alternative
+      ];
+
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('지원되지 않는 파일 형식입니다. Excel 또는 CSV 파일만 업로드 가능합니다.') as any, false);
+      }
+    }
+  });
+
   // System statistics
   app.get("/api/admin/stats", requireMasterAdmin, async (req, res) => {
     try {
@@ -1712,61 +1754,6 @@ export function setupAdminRoutes(app: Express) {
         success: false,
         message: error instanceof Error ? error.message : '문서 업로드 중 오류가 발생했습니다.'
       });
-    }
-  });
-
-  // User file upload configuration
-  const userUpload = multer({
-    storage: multer.diskStorage({
-      destination: (req, file, cb) => {
-        cb(null, adminUploadDir);
-      },
-      filename: (req, file, cb) => {
-        // Generate a unique filename
-        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.originalname}`;
-        cb(null, uniqueName);
-      }
-    }),
-    limits: {
-      fileSize: 50 * 1024 * 1024, // 50MB limit
-    },
-    fileFilter: (req, file, cb) => {
-      // Fix Korean filename encoding immediately
-      try {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
-      } catch (e) {
-        console.log('Filename encoding conversion failed, keeping original:', file.originalname);
-      }
-
-      const allowedTypes = [
-        'application/vnd.ms-excel', // .xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-        'text/csv', // .csv
-        'application/csv', // .csv alternative
-        'text/comma-separated-values', // .csv alternative
-        'application/excel', // Excel alternative
-        'application/x-excel', // Excel alternative
-        'application/x-msexcel' // Excel alternative
-      ];
-
-      // Check both MIME type and file extension
-      const fileName = file.originalname.toLowerCase();
-      const hasValidExtension = fileName.endsWith('.xlsx') || 
-                               fileName.endsWith('.xls') || 
-                               fileName.endsWith('.csv');
-
-      const hasValidMimeType = allowedTypes.includes(file.mimetype);
-
-      console.log(`User file validation - Name: ${file.originalname}, MIME: ${file.mimetype}, Valid extension: ${hasValidExtension}, Valid MIME: ${hasValidMimeType}`);
-
-      // Accept if either MIME type is valid OR file extension is valid
-      if (hasValidMimeType || hasValidExtension) {
-        console.log(`User file accepted: ${file.originalname}`);
-        cb(null, true);
-      } else {
-        console.log(`User file rejected: ${file.originalname} with MIME type: ${file.mimetype}`);
-        cb(new Error('지원하지 않는 파일 형식입니다. Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.'));
-      }
     }
   });
 
