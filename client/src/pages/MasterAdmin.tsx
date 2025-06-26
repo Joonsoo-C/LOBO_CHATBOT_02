@@ -251,6 +251,19 @@ function MasterAdmin() {
   const { toast } = useToast();
   const { t } = useLanguage();
 
+  // Logout function
+  const logoutUser = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/auth/logout");
+      if (response.ok) {
+        window.location.href = "/auth";
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.href = "/auth";
+    }
+  };
+
   // Move organization-dependent calculations after useQuery declarations
 
   // 페이지네이션 상태
@@ -871,4 +884,115 @@ function MasterAdmin() {
     const categories = Array.from(new Set(
       users
         .filter(user => 
-          (user as any).upperCategory === selectedUniversity && Applying requested changes: fixing button text wrapping, improving styling, adding pagination hook import and replacing agent list with paginated version and item count display.
+          (user as any).upperCategory === selectedUniversity && 
+          (user as any).lowerCategory === selectedCollege
+        )
+        .map(user => (user as any).detailCategory)
+        .filter(Boolean)
+    ));
+    return categories.sort();
+  }, [users, selectedUniversity, selectedCollege]);
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Master Admin Dashboard
+              </h1>
+              <p className="text-gray-600 mt-2">
+                LoBo AI 챗봇 시스템 관리자 페널
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => window.open('/', '_blank')}
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                메인 서비스
+              </Button>
+              <Button
+                variant="outline"
+                onClick={logoutUser}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                로그아웃
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">총 사용자</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalUsers || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                활성: {stats?.activeUsers || 0}명
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">AI 에이전트</CardTitle>
+              <Bot className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalAgents || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                활성: {stats?.activeAgents || 0}개
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">대화</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalConversations || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                총 대화방
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">메시지</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalMessages || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                오늘: {stats?.todayMessages || 0}개
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Content area with tabs */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          {/* Content placeholder */}
+          <div className="p-6">
+            <p className="text-center text-gray-500">
+              Admin interface content will be rendered here
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
