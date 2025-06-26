@@ -86,8 +86,14 @@ app.use((req, res, next) => {
     port,
     host: "0.0.0.0",
     reusePort: true,
-  }, () => {
+  }, async () => {
     log(`serving on port ${port}`);
+    
+    // 새 에이전트 데이터 로드
+    const { storage } = await import("./storage.js");
+    if (storage && typeof (storage as any).loadNewAgentData === 'function') {
+      await (storage as any).loadNewAgentData();
+    }
   });
 
   // Initialize sample data asynchronously to speed up startup
