@@ -641,10 +641,22 @@ export function setupAdminRoutes(app: Express) {
 
       console.log(`Parsed ${users.length} users from ${fileExtension} file`);
 
-      // Clean up temporary file
-      fs.unlinkSync(filePath);
+      // Save file information for tracking
+      const userFileInfo = {
+        id: Date.now().toString(),
+        filename: req.file.originalname,
+        originalName: req.file.originalname,
+        size: req.file.size,
+        uploadedAt: new Date(),
+        status: 'processing',
+        userCount: users.length,
+        path: filePath
+      };
 
       if (validateOnly) {
+        userFileInfo.status = 'validated';
+        await storage.saveUserFile(userFileInfo);
+        
         return res.json({
           success: true,
           message: `검증 완료: ${users.length}개 사용자 레코드가 유효합니다.`,
@@ -665,6 +677,25 @@ export function setupAdminRoutes(app: Express) {
           console.error(`Failed to process user ${userData.username}:`, error);
           errorCount++;
         }
+      }
+
+      // Update file status based on results
+      if (createdCount === users.length) {
+        userFileInfo.status = 'applied';
+      } else if (createdCount > 0) {
+        userFileInfo.status = 'partially_applied';
+      } else {
+        userFileInfo.status = 'failed';
+      }
+
+      userFileInfo.userCount = createdCount;
+      await storage.saveUserFile(userFileInfo);
+
+      // Clean up temporary file after processing
+      try {
+        fs.unlinkSync(filePath);
+      } catch (cleanupError) {
+        console.error('Error cleaning up temporary file:', cleanupError);
       }
 
       res.json({
@@ -1936,4 +1967,58 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Failed to update organization category" });
     }
   });
+
+  // User file management endpoints
+  app.get("/api/admin/user-files", requireMasterAdmin, async (req, res) => {
+    try {
+      const userFiles = await storage.getUserFiles();
+      
+      // Sort by upload date, newest first
+      const sortedFiles = userFiles.sort((a, b) => 
+        new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+      );
+
+      const formattedFiles = sortedFiles.map(file => ({
+        id: file.id,
+        filename: file.originalName,
+        originalName: file.originalName,
+        size: file.size,
+        uploadedAt: file.uploadedAt,
+        status: file.status,
+        userCount: file.userCount || 0,
+        statusText: getStatusText(file.status)
+      }));
+
+      res.json(formattedFiles);
+    } catch (error) {
+      console.error("Error fetching user files:", error);
+      res.status(500).json({ message: "Failed to fetch user files" });
+    }
+  });
+
+  app.delete("/api/admin/user-files/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const fileId = req.params.id;
+      await storage.deleteUserFile(fileId);
+      
+      res.json({
+        success: true,
+        message: "파일이 성공적으로 삭제되었습니다."
+      });
+    } catch (error) {
+      console.error("Error deleting user file:", error);
+      res.status(500).json({ message: "Failed to delete user file" });
+    }
+  });
+
+  function getStatusText(status: string): string {
+    switch (status) {
+      case 'applied': return '최종 반영됨';
+      case 'validated': return '검증됨';
+      case 'partially_applied': return '부분 반영됨';
+      case 'failed': return '미반영';
+      case 'processing': return '처리 중';
+      default: return '알 수 없음';
+    }
+  }
 }
