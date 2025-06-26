@@ -759,11 +759,15 @@ export function setupAdminRoutes(app: Express) {
       console.log('All files in upload directory:', files.length, files.slice(0, 5));
       const orgFiles = files
         .filter(file => {
-          // Accept files that start with 'org-' or contain Excel/CSV extensions
+          // Accept files that start with 'org-' or contain acceptable extensions
           const isOrgFile = file.startsWith('org-');
           const isExcelFile = file.endsWith('.xlsx') || file.endsWith('.xls') || file.endsWith('.csv');
-          const result = isOrgFile || isExcelFile;
-          console.log(`File: ${file}, isOrg: ${isOrgFile}, isExcel: ${isExcelFile}, included: ${result}`);
+          const isDocFile = file.endsWith('.docx') || file.endsWith('.doc');
+          const isPdfFile = file.endsWith('.pdf');
+          
+          // Include all document types for now (can be refined later)
+          const result = isOrgFile || isExcelFile || isDocFile || isPdfFile;
+          console.log(`File: ${file}, isOrg: ${isOrgFile}, isExcel: ${isExcelFile}, isDoc: ${isDocFile}, isPdf: ${isPdfFile}, included: ${result}`);
           return result;
         })
         .map(file => {

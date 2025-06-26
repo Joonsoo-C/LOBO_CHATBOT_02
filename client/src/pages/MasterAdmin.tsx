@@ -5900,6 +5900,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">업로드된 파일 ({uploadedOrgFiles.length}개)</Label>
+                    <span className="text-xs text-gray-500">조직 데이터 관련 파일들</span>
                   </div>
                   <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <div className="space-y-2">
@@ -5909,9 +5910,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
                         >
                           <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <FileText className={`w-4 h-4 flex-shrink-0 ${
+                              file.type === 'organization' ? 'text-green-500' : 
+                              file.originalName?.endsWith('.xlsx') || file.originalName?.endsWith('.xls') || file.originalName?.endsWith('.csv') ? 'text-blue-500' : 
+                              'text-gray-500'
+                            }`} />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
+                              <div className="flex items-center space-x-2">
+                                <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
+                                {file.type === 'organization' && (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                    조직
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-xs text-gray-500">
                                 {new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
                                   year: 'numeric',
@@ -5919,7 +5931,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   day: 'numeric',
                                   hour: '2-digit',
                                   minute: '2-digit'
-                                })}
+                                })} • {(file.size / 1024 / 1024).toFixed(2)} MB
                               </p>
                             </div>
                           </div>
