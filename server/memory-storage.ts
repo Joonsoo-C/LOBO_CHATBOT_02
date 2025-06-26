@@ -488,6 +488,28 @@ export class MemoryStorage implements IStorage {
     return updatedUser;
   }
 
+  async clearAllUsers(): Promise<{ deletedCount: number; deletedUsers: string[] }> {
+    const deletedUsers: string[] = [];
+    let deletedCount = 0;
+
+    // 마스터 관리자 계정은 보존
+    for (const [id, user] of this.users.entries()) {
+      if (id !== 'master_admin') {
+        deletedUsers.push(`${user.name || user.username} (ID: ${id})`);
+        this.users.delete(id);
+        deletedCount++;
+      }
+    }
+
+    // 변경사항 저장
+    this.savePersistedUsers();
+
+    console.log(`🗑️ ${deletedCount}개의 사용자가 삭제되었습니다 (master_admin 제외):`);
+    deletedUsers.forEach(userName => console.log(`   - ${userName}`));
+
+    return { deletedCount, deletedUsers };
+  }
+
   // Agent operations
   async getAllAgents(): Promise<Agent[]> {
     const cacheKey = 'all_agents';
@@ -506,6 +528,28 @@ export class MemoryStorage implements IStorage {
   async clearAllAgents(): Promise<void> {
     this.agents.clear();
     cache.del('all_agents');
+  }
+
+  async deleteRoboUniversityAgents(): Promise<{ deletedCount: number; deletedAgents: string[] }> {
+    const deletedAgents: string[] = [];
+    let deletedCount = 0;
+
+    // 로보대학교 관련 에이전트 찾기 및 삭제
+    for (const [id, agent] of this.agents.entries()) {
+      if (agent.description && agent.description.includes('로보대학교')) {
+        deletedAgents.push(`${agent.name} (ID: ${id})`);
+        this.agents.delete(id);
+        deletedCount++;
+      }
+    }
+
+    // 캐시 무효화
+    cache.del('all_agents');
+    
+    console.log(`🗑️ ${deletedCount}개의 로보대학교 에이전트가 삭제되었습니다:`);
+    deletedAgents.forEach(agentName => console.log(`   - ${agentName}`));
+
+    return { deletedCount, deletedAgents };
   }
 
   async createAgent(agent: InsertAgent): Promise<Agent> {

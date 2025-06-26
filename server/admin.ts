@@ -201,6 +201,22 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Clear all users (except master admin)
+  app.delete("/api/admin/users/bulk/clear-all", requireMasterAdmin, async (req, res) => {
+    try {
+      const result = await (storage as any).clearAllUsers();
+      
+      res.json({
+        message: `${result.deletedCount}개의 사용자가 성공적으로 삭제되었습니다 (master_admin 제외).`,
+        deletedCount: result.deletedCount,
+        deletedUsers: result.deletedUsers
+      });
+    } catch (error) {
+      console.error("Error clearing all users:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Agent management
   app.get("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
