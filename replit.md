@@ -536,6 +536,14 @@ Changelog:
   * Added CSS classes with !important rules to ensure consistent 40px x 40px size for all pagination buttons
   * Applied uniform border width, padding, and box-sizing to both active and inactive page buttons
   * Maintained visual distinction through color changes only while preserving consistent button dimensions
+- June 26, 2025. Fixed critical user file upload validation system:
+  * Resolved "지원되지 않는 파일 형식" error for valid Excel and CSV files
+  * Fixed variable initialization order error that caused server startup failure
+  * Enhanced file validation with comprehensive MIME type detection for Excel (.xlsx, .xls) and CSV (.csv) files
+  * Added detailed logging system for debugging file upload issues
+  * Implemented robust error handling with specific feedback for unsupported file types
+  * Prioritized file extension validation over MIME type checking for better reliability
+  * Fixed Korean filename encoding handling for international file names
 ```
 
 ## User Preferences

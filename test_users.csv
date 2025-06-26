@@ -1,0 +1,4 @@
+username,firstName,lastName,email,userType,upperCategory,lowerCategory
+test001,김,학생,test001@example.com,student,로보대학교,공과대학
+test002,박,교수,test002@example.com,faculty,로보대학교,공과대학
+test003,이,학생,test003@example.com,student,로보대학교,인문대학

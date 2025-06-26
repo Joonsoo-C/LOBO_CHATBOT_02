@@ -88,36 +88,78 @@ export function setupAdminRoutes(app: Express) {
     fileFilter: (req, file, cb) => {
       // Fix Korean filename encoding immediately
       try {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        const originalBuffer = Buffer.from(file.originalname, 'latin1');
+        file.originalname = originalBuffer.toString('utf8');
       } catch (e) {
         console.log('Filename encoding conversion failed, keeping original:', file.originalname);
       }
 
-      console.log('User file upload filter - File:', file.originalname, 'MIME:', file.mimetype);
+      console.log('🔍 사용자 파일 업로드 검증 시작:', {
+        filename: file.originalname,
+        mimetype: file.mimetype,
+        fieldname: file.fieldname
+      });
 
-      // Check file extension as fallback
+      // Primary validation: Check file extension (most reliable)
       const fileName = file.originalname.toLowerCase();
-      const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+      const validExcelExtensions = ['.xlsx', '.xls'];
+      const validCsvExtensions = ['.csv'];
+      const allValidExtensions = [...validExcelExtensions, ...validCsvExtensions];
+      
+      const hasValidExtension = allValidExtensions.some(ext => fileName.endsWith(ext));
+      const isExcelFile = validExcelExtensions.some(ext => fileName.endsWith(ext));
+      const isCsvFile = validCsvExtensions.some(ext => fileName.endsWith(ext));
 
-      const allowedTypes = [
-        'application/vnd.ms-excel', // .xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-        'text/csv', // .csv
-        'application/csv', // .csv alternative
-        'text/comma-separated-values', // .csv alternative
-        'application/excel', // Excel alternative
-        'application/x-excel', // Excel alternative
-        'application/x-msexcel', // Excel alternative
-        'application/octet-stream' // Generic binary - check extension
+      // Secondary validation: MIME type check (less reliable due to browser differences)
+      const excelMimeTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/excel',
+        'application/x-excel',
+        'application/x-msexcel',
+        'application/msexcel',
+        'application/x-dos_ms_excel',
+        'application/xls',
+        'application/x-xls',
+        'application/zip', // .xlsx sometimes detected as zip
+        'application/x-zip-compressed',
+        'application/octet-stream' // Generic binary
       ];
 
-      // Accept if MIME type matches OR if file extension is valid
-      if (allowedTypes.includes(file.mimetype) || isValidExtension) {
-        console.log('User file accepted:', file.originalname);
+      const csvMimeTypes = [
+        'text/csv',
+        'application/csv',
+        'text/comma-separated-values',
+        'application/excel', // Sometimes CSV detected as Excel
+        'text/plain' // Plain text CSV
+      ];
+
+      const allValidMimeTypes = [...excelMimeTypes, ...csvMimeTypes];
+      const hasValidMimeType = allValidMimeTypes.includes(file.mimetype);
+
+      console.log('📊 파일 검증 결과:', {
+        filename: file.originalname,
+        extension_valid: hasValidExtension,
+        is_excel: isExcelFile,
+        is_csv: isCsvFile,
+        mimetype: file.mimetype,
+        mimetype_valid: hasValidMimeType
+      });
+
+      // Accept file if extension is valid (priority) OR if MIME type suggests Excel/CSV
+      if (hasValidExtension) {
+        console.log('✅ 파일 확장자 기준으로 승인:', file.originalname);
+        cb(null, true);
+      } else if (hasValidMimeType && (file.mimetype.includes('excel') || file.mimetype.includes('csv') || file.mimetype.includes('sheet'))) {
+        console.log('✅ MIME 타입 기준으로 승인:', file.originalname, file.mimetype);
         cb(null, true);
       } else {
-        console.log('User file rejected:', file.originalname, 'MIME:', file.mimetype);
-        cb(new Error('지원되지 않는 파일 형식입니다. Excel 또는 CSV 파일만 업로드 가능합니다.') as any, false);
+        console.log('❌ 파일 거부:', {
+          filename: file.originalname,
+          mimetype: file.mimetype,
+          reason: '지원되지 않는 파일 형식'
+        });
+        cb(new Error('지원되지 않는 파일 형식입니다. Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.') as any, false);
       }
     }
   });
@@ -385,11 +427,51 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // User file upload endpoint
-  app.post("/api/admin/users/upload", requireMasterAdmin, userUpload.single('file'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+  app.post("/api/admin/users/upload", requireMasterAdmin, (req, res, next) => {
+    console.log('📁 사용자 파일 업로드 요청 시작');
+    
+    userUpload.single('file')(req, res, (err) => {
+      if (err) {
+        console.log('❌ 파일 업로드 multer 오류:', {
+          error: err.message,
+          code: err.code,
+          field: err.field
+        });
+        
+        // Check if it's a file validation error
+        if (err.message && err.message.includes('지원되지 않는 파일 형식')) {
+          return res.status(400).json({ 
+            message: err.message,
+            details: 'Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.',
+            supported_formats: ['.xlsx', '.xls', '.csv']
+          });
+        }
+        
+        // Other multer errors
+        return res.status(400).json({ 
+          message: '파일 업로드 중 오류가 발생했습니다.',
+          error: err.message 
+        });
       }
+      
+      // Continue with file processing
+      next();
+    });
+  }, async (req, res) => {
+    try {
+      console.log('📋 사용자 파일 처리 시작');
+      
+      if (!req.file) {
+        console.log('❌ 업로드된 파일이 없음');
+        return res.status(400).json({ message: "업로드된 파일이 없습니다." });
+      }
+
+      console.log('✅ 파일 업로드 성공:', {
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+      });
 
       const overwriteExisting = req.body.overwriteExisting === 'true';
       const sendWelcome = req.body.sendWelcome === 'true';
