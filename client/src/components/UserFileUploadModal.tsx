@@ -388,6 +388,66 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
             />
           </div>
 
+          {/* Applied Files List */}
+          <div className="mb-6">
+            <h4 className="font-semibold text-sm mb-3 korean-text">현재 시스템에 적용된 사용자 파일</h4>
+            {isLoadingUserFiles ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : userFiles.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 korean-text">
+                <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>적용된 사용자 파일이 없습니다.</p>
+              </div>
+            ) : (
+              <div className="border rounded-lg bg-gray-50 dark:bg-gray-800/50 max-h-48 overflow-y-auto">
+                <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {userFiles.map((file) => (
+                    <div key={file.id} className="p-4 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <FileText className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate korean-text">{file.originalName}</p>
+                            <div className="flex items-center space-x-4 mt-1">
+                              <p className="text-xs text-gray-500">
+                                {new Date(file.uploadedAt).toLocaleDateString('ko-KR')} {new Date(file.uploadedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {file.userCount}명 사용자
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2 flex-shrink-0">
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium korean-text ${
+                            file.status === 'applied' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                              : file.status === 'verified'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                          }`}>
+                            {file.status === 'applied' ? '최종 반영됨' : 
+                             file.status === 'verified' ? '검증됨' : '미반영'}
+                          </span>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleDelete(file)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Upload Options */}
           <div className="mb-6">
             <Label className="text-sm font-medium mb-3 block korean-text">업로드 옵션</Label>
