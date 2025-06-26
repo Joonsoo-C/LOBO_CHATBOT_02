@@ -1431,25 +1431,24 @@ export default function MasterAdmin() {
     const files = Array.from(e.target.files || []);
     
     if (files.length > 0) {
-      const allowedTypes = [
-        'text/csv',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      ];
-      
       const validFiles: File[] = [];
       const invalidFiles: string[] = [];
       
       for (const file of files) {
-        // 파일 크기 체크 (10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          invalidFiles.push(`${file.name} (크기 초과)`);
+        // 파일 크기 체크 (50MB로 증가)
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과 - 최대 50MB)`);
           continue;
         }
         
-        // 파일 타입 체크
-        if (!allowedTypes.includes(file.type)) {
-          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+        // 파일 확장자로 검증 (가장 신뢰할 수 있는 방법)
+        const fileName = file.name.toLowerCase();
+        const isValidFile = fileName.endsWith('.csv') || 
+                           fileName.endsWith('.xlsx') || 
+                           fileName.endsWith('.xls');
+        
+        if (!isValidFile) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식 - .csv, .xlsx, .xls만 가능)`);
           continue;
         }
         
@@ -1459,7 +1458,7 @@ export default function MasterAdmin() {
       if (invalidFiles.length > 0) {
         toast({
           title: "일부 파일이 제외됨",
-          description: `${invalidFiles.join(', ')}`,
+          description: invalidFiles.join(', '),
           variant: "destructive",
         });
       }
@@ -1483,25 +1482,24 @@ export default function MasterAdmin() {
     
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      const allowedTypes = [
-        'text/csv',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      ];
-      
       const validFiles: File[] = [];
       const invalidFiles: string[] = [];
       
       for (const file of files) {
-        // 파일 크기 체크 (10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          invalidFiles.push(`${file.name} (크기 초과)`);
+        // 파일 크기 체크 (50MB로 증가)
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (크기 초과 - 최대 50MB)`);
           continue;
         }
         
-        // 파일 타입 체크
-        if (!allowedTypes.includes(file.type)) {
-          invalidFiles.push(`${file.name} (지원하지 않는 형식)`);
+        // 파일 확장자로 검증 (가장 신뢰할 수 있는 방법)
+        const fileName = file.name.toLowerCase();
+        const isValidFile = fileName.endsWith('.csv') || 
+                           fileName.endsWith('.xlsx') || 
+                           fileName.endsWith('.xls');
+        
+        if (!isValidFile) {
+          invalidFiles.push(`${file.name} (지원하지 않는 형식 - .csv, .xlsx, .xls만 가능)`);
           continue;
         }
         
@@ -1511,7 +1509,7 @@ export default function MasterAdmin() {
       if (invalidFiles.length > 0) {
         toast({
           title: "일부 파일이 제외됨",
-          description: `${invalidFiles.join(', ')}`,
+          description: invalidFiles.join(', '),
           variant: "destructive",
         });
       }
@@ -5854,7 +5852,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 10MB)
+                  CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 50MB)
                 </p>
                 <Button 
                   variant="outline"
