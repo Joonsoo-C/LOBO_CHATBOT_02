@@ -457,6 +457,16 @@ export default function MasterAdmin() {
     }
   });
 
+  // 사용자 파일 조회
+  const { data: userFiles = [], refetch: refetchUserFiles } = useQuery({
+    queryKey: ['/api/admin/user-files'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/user-files');
+      if (!response.ok) throw new Error('Failed to fetch user files');
+      return response.json();
+    }
+  });
+
   // 업로드된 조직 카테고리 파일 목록 조회
   const { data: uploadedOrgFiles = [], refetch: refetchOrgFiles } = useQuery<any[]>({
     queryKey: ['/api/admin/organization-files'],
@@ -2037,6 +2047,38 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   const handleDocumentDelete = (document: any) => {
     if (window.confirm(`"${document.name}" 문서를 정말 삭제하시겠습니까?`)) {
       deleteDocumentMutation.mutate(document.id);
+    }
+  };
+
+  // 사용자 파일 삭제 핸들러
+  const handleUserFileDelete = async (fileId: string, fileName: string) => {
+    if (!window.confirm(`"${fileName}" 파일을 정말 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/user-files/${fileId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete user file');
+      }
+      
+      await refetchUserFiles();
+      
+      toast({
+        title: "파일 삭제 완료",
+        description: "사용자 파일이 성공적으로 삭제되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "삭제 실패",
+        description: error instanceof Error ? error.message : "파일 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
