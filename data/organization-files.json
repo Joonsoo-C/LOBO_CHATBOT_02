@@ -1,10 +1,10 @@
 [
   {
-    "originalName": "test_org_categories.csv",
-    "uploadedAt": "2025-06-26T00:48:45.417Z",
-    "size": 313,
+    "originalName": "대학_조직_카테고리_목록.xlsx",
+    "uploadedAt": "2025-06-26T00:59:19.800Z",
+    "size": 14140,
     "type": "organization",
     "status": "applied",
-    "organizationsCount": 11
+    "organizationsCount": 124
   }
 ]
