@@ -333,7 +333,7 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // User file upload endpoint
-  app.post("/api/admin/users/upload", requireMasterAdmin, adminUpload.single('file'), async (req, res) => {
+  app.post("/api/admin/users/upload", requireMasterAdmin, userUpload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -1715,37 +1715,6 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Update organization category endpoint
-  app.patch("/api/admin/organizations/:id", requireMasterAdmin, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const updateData = req.body;
-
-      console.log(`Updating organization category ${id} with data:`, updateData);
-
-      // Ensure manager field is properly handled
-      const updateDataProcessed = {
-        ...updateData,
-        manager: updateData.manager || null,
-        updatedAt: new Date()
-      };
-
-      // Update the organization category in storage
-      const updatedCategory = await storage.updateOrganizationCategory(parseInt(id), updateDataProcessed);
-
-      if (!updatedCategory) {
-        return res.status(404).json({ message: "Organization category not found" });
-      }
-
-      console.log(`Organization category updated successfully: ${id}`);
-
-      res.json(updatedCategory);
-    } catch (error) {
-      console.error("Error updating organization category:", error);
-      res.status(500).json({ message: "Failed to update organization category" });
-    }
-  });
-
   // User file upload configuration
   const userUpload = multer({
     storage: multer.diskStorage({
@@ -1788,15 +1757,47 @@ export function setupAdminRoutes(app: Express) {
 
       const hasValidMimeType = allowedTypes.includes(file.mimetype);
 
-      console.log(`File validation - Name: ${file.originalname}, MIME: ${file.mimetype}, Valid extension: ${hasValidExtension}, Valid MIME: ${hasValidMimeType}`);
+      console.log(`User file validation - Name: ${file.originalname}, MIME: ${file.mimetype}, Valid extension: ${hasValidExtension}, Valid MIME: ${hasValidMimeType}`);
 
       // Accept if either MIME type is valid OR file extension is valid
       if (hasValidMimeType || hasValidExtension) {
+        console.log(`User file accepted: ${file.originalname}`);
         cb(null, true);
       } else {
-        console.log(`Rejected file: ${file.originalname} with MIME type: ${file.mimetype}`);
+        console.log(`User file rejected: ${file.originalname} with MIME type: ${file.mimetype}`);
         cb(new Error('지원하지 않는 파일 형식입니다. Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.'));
       }
+    }
+  });
+
+  // Update organization category endpoint
+  app.patch("/api/admin/organizations/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+
+      console.log(`Updating organization category ${id} with data:`, updateData);
+
+      // Ensure manager field is properly handled
+      const updateDataProcessed = {
+        ...updateData,
+        manager: updateData.manager || null,
+        updatedAt: new Date()
+      };
+
+      // Update the organization category in storage
+      const updatedCategory = await storage.updateOrganizationCategory(parseInt(id), updateDataProcessed);
+
+      if (!updatedCategory) {
+        return res.status(404).json({ message: "Organization category not found" });
+      }
+
+      console.log(`Organization category updated successfully: ${id}`);
+
+      res.json(updatedCategory);
+    } catch (error) {
+      console.error("Error updating organization category:", error);
+      res.status(500).json({ message: "Failed to update organization category" });
     }
   });
 }
