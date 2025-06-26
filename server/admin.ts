@@ -93,6 +93,12 @@ export function setupAdminRoutes(app: Express) {
         console.log('Filename encoding conversion failed, keeping original:', file.originalname);
       }
 
+      console.log('User file upload filter - File:', file.originalname, 'MIME:', file.mimetype);
+
+      // Check file extension as fallback
+      const fileName = file.originalname.toLowerCase();
+      const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+
       const allowedTypes = [
         'application/vnd.ms-excel', // .xls
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
@@ -101,12 +107,16 @@ export function setupAdminRoutes(app: Express) {
         'text/comma-separated-values', // .csv alternative
         'application/excel', // Excel alternative
         'application/x-excel', // Excel alternative
-        'application/x-msexcel' // Excel alternative
+        'application/x-msexcel', // Excel alternative
+        'application/octet-stream' // Generic binary - check extension
       ];
 
-      if (allowedTypes.includes(file.mimetype)) {
+      // Accept if MIME type matches OR if file extension is valid
+      if (allowedTypes.includes(file.mimetype) || isValidExtension) {
+        console.log('User file accepted:', file.originalname);
         cb(null, true);
       } else {
+        console.log('User file rejected:', file.originalname, 'MIME:', file.mimetype);
         cb(new Error('지원되지 않는 파일 형식입니다. Excel 또는 CSV 파일만 업로드 가능합니다.') as any, false);
       }
     }
