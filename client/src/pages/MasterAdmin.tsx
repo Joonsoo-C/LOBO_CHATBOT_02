@@ -2803,7 +2803,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="flex items-center space-x-2 whitespace-nowrap">
+                  <Button className="flex items-center space-x-2 whitespace-nowrap min-w-[160px]">
                     <Plus className="w-4 h-4" />
                     <span>새 에이전트 추가</span>
                   </Button>
