@@ -466,7 +466,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 <Checkbox
                   id="validate-only"
                   checked={validateOnly}
-                  onCheckedChange={setValidateOnly}
+                  onCheckedChange={(checked) => setValidateOnly(checked === true)}
                 />
                 <Label htmlFor="validate-only" className="text-sm korean-text">
                   검증만 수행 (실제 저장하지 않고 파일 유효성만 확인)
