@@ -556,9 +556,12 @@ export default function MasterAdmin() {
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
-  // Organization categories pagination calculations - moved here after filteredOrganizationCategories is declared
-  const organizationCategoriesCurrentPage = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
-  const organizationCategoriesStartIndex = (organizationCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
+  // Organization categories pagination state
+  const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
+
+  // Organization categories pagination calculations
+  const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
+  const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
   const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
   const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
 
@@ -566,6 +569,7 @@ export default function MasterAdmin() {
   const executeSearch = () => {
     setHasSearched(true);
     setUserCurrentPage(1); // 검색 시 첫 페이지로 이동
+    setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
   };
 
   // 필터 초기화 함수
@@ -579,6 +583,7 @@ export default function MasterAdmin() {
     setAgentSearchQuery('');
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
+    setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
   };
 
   // 문서 필터 초기화 함수
@@ -771,6 +776,7 @@ export default function MasterAdmin() {
     setSelectedCollege('all');
     setSelectedDepartment('all');
     setHasSearched(true); // 실시간 적용
+    setOrgCategoriesCurrentPage(1); // 페이지 리셋
   };
 
   // 하위 카테고리 변경 시 세부 카테고리 초기화 (실시간 적용)
@@ -778,12 +784,14 @@ export default function MasterAdmin() {
     setSelectedCollege(value);
     setSelectedDepartment('all');
     setHasSearched(true); // 실시간 적용
+    setOrgCategoriesCurrentPage(1); // 페이지 리셋
   };
 
   // 세부 카테고리 변경 시 실시간 적용
   const handleDetailCategoryChange = (value: string) => {
     setSelectedDepartment(value);
     setHasSearched(true); // 실시간 적용
+    setOrgCategoriesCurrentPage(1); // 페이지 리셋
   };
 
   // 에이전트 검색 함수
@@ -3880,7 +3888,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>조직 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
+                  전체 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -3928,7 +3936,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                         </tr>
                       ) : (
-                        filteredOrganizationCategories.slice(0, 20).map((category, index) => {
+                        paginatedOrganizationCategories.map((category, index) => {
                           // 소속 인원 수 (랜덤 생성)
                           const getPersonnelCount = () => {
                             if (!category.detailCategory) {
@@ -4018,64 +4026,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
 
             {/* 페이지네이션 */}
-            {filteredOrganizationCategories.length > 20 && (
+            {totalOrgCategoriesPages > 1 && (
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-700 dark:text-gray-300">
-                  총 {filteredOrganizationCategories.length}개 조직 중 1-{Math.min(20, filteredOrganizationCategories.length)}개 표시
+                  총 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={true}
-                  >
-                    이전
-                  </Button>
-                  
-                  <div className="flex items-center space-x-1">
-                    <Button
-                      variant="default"
-                      size="sm"
-                    >
-                      1
-                    </Button>
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 1 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                      >
-                        2
-                      </Button>
-                    )}
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 2 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                      >
-                        3
-                      </Button>
-                    )}
-                    {Math.ceil(filteredOrganizationCategories.length / 20) > 3 && (
-                      <>
-                        <span className="px-2">...</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          {Math.ceil(filteredOrganizationCategories.length / 20)}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={Math.ceil(filteredOrganizationCategories.length / 20) <= 1}
-                  >
-                    다음
-                  </Button>
-                </div>
+                <PaginationComponent
+                  currentPage={orgCategoriesCurrentPage}
+                  totalPages={totalOrgCategoriesPages}
+                  onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
+                />
               </div>
             )}
           </TabsContent>
