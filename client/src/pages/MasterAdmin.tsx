@@ -4467,9 +4467,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
                         <tr>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            선택
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                             이름
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -4480,6 +4477,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                             직책
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            선택
                           </th>
                         </tr>
                       </thead>
@@ -4502,27 +4502,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         }).slice(0, 50).map((user: any) => (
                           <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                             <td className="px-4 py-3">
-                              <Button
-                                type="button"
-                                size="sm"
-                                onClick={() => {
-                                  // Update the editing organization category with new manager
-                                  if (editingOrgCategory) {
-                                    const updatedCategory = {
-                                      ...editingOrgCategory,
-                                      manager: user.fullName || user.username
-                                    };
-                                    setEditingOrgCategory(updatedCategory);
-                                    // Update form data
-                                    orgCategoryEditForm.setValue('manager', user.fullName || user.username);
-                                  }
-                                  setIsCategoryManagerDialogOpen(false);
-                                }}
-                              >
-                                선택
-                              </Button>
-                            </td>
-                            <td className="px-4 py-3">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
                                 {user.fullName || user.username}
                               </div>
@@ -4542,6 +4521,27 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <div className="text-sm text-gray-500">
                                 {user.position || user.role || '-'}
                               </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => {
+                                  // Update the editing organization category with new manager
+                                  if (editingOrgCategory) {
+                                    const updatedCategory = {
+                                      ...editingOrgCategory,
+                                      manager: user.fullName || user.username
+                                    };
+                                    setEditingOrgCategory(updatedCategory);
+                                    // Update form data
+                                    orgCategoryEditForm.setValue('manager', user.fullName || user.username);
+                                  }
+                                  setIsCategoryManagerDialogOpen(false);
+                                }}
+                              >
+                                선택
+                              </Button>
                             </td>
                           </tr>
                         ))}
