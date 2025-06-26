@@ -527,7 +527,7 @@ export class MemoryStorage implements IStorage {
 
   async clearAllAgents(): Promise<void> {
     this.agents.clear();
-    cache.del('all_agents');
+    cache.delete('all_agents');
   }
 
   async deleteRoboUniversityAgents(): Promise<{ deletedCount: number; deletedAgents: string[] }> {
@@ -543,9 +543,6 @@ export class MemoryStorage implements IStorage {
         deletedCount++;
       }
     }
-
-    // 캐시 무효화
-    cache.del('all_agents');
     
     console.log(`🗑️ ${deletedCount}개의 로보대학교 에이전트가 삭제되었습니다:`);
     deletedAgents.forEach(agentName => console.log(`   - ${agentName}`));
