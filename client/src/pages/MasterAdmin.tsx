@@ -779,6 +779,28 @@ function MasterAdmin() {
     },
   });
 
+  // 로보대학교 조직 삭제 뮤테이션
+  const deleteRoboUniversityMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("DELETE", "/api/admin/organizations/robo-university");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
+      toast({
+        title: "삭제 완료",
+        description: data.message,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "삭제 실패",
+        description: "로보대학교 조직 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // 새 사용자 생성 뮤테이션
   const createUserMutation = useMutation({
     mutationFn: async (data: NewUserFormData) => {
@@ -6669,16 +6691,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
-                  취소
-                </Button>
+              <div className="flex justify-between">
                 <Button 
-                  onClick={handleOrgCategoryUpload}
-                  disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
+                  variant="destructive" 
+                  onClick={() => {
+                    if (confirm("로보대학교 관련 조직 카테고리를 모두 삭제하시겠습니까?")) {
+                      deleteRoboUniversityMutation.mutate();
+                    }
+                  }}
+                  disabled={deleteRoboUniversityMutation.isPending}
                 >
-                  {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작 (${selectedOrgCategoryFiles.length}개 파일)`}
+                  {deleteRoboUniversityMutation.isPending ? "삭제 중..." : "로보대학교 조직 삭제"}
                 </Button>
+                <div className="flex space-x-2">
+                  <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
+                    취소
+                  </Button>
+                  <Button 
+                    onClick={handleOrgCategoryUpload}
+                    disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
+                  >
+                    {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작 (${selectedOrgCategoryFiles.length}개 파일)`}
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogContent>
