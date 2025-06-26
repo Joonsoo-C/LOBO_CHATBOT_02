@@ -995,4 +995,6 @@ function MasterAdmin() {
       </div>
     </div>
   );
-};
+}
+
+export default MasterAdmin;
