@@ -819,16 +819,21 @@ export class MemoryStorage implements IStorage {
     await this.saveOrganizationCategoriesToFile();
   }
 
-  async bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]> {
+  async bulkCreateOrganizationCategories(organizations: any[], shouldOverwrite: boolean = false): Promise<any[]> {
     const createdOrganizations: any[] = [];
+    const updatedOrganizations: any[] = [];
     const uniqueOrgs = new Map<string, any>();
 
     console.log(`Starting bulk creation of ${organizations.length} organization categories`);
     console.log(`Current organization count before bulk creation: ${this.organizationCategories.size}`);
+    console.log(`Overwrite mode: ${shouldOverwrite}`);
 
-    // Clear existing data first
-    this.organizationCategories.clear();
-    this.nextOrganizationId = 1;
+    // Only clear existing data if explicitly requested to overwrite
+    if (shouldOverwrite) {
+      console.log('Overwrite mode: Clearing existing organization categories');
+      this.organizationCategories.clear();
+      this.nextOrganizationId = 1;
+    }
 
     // Deduplicate organizations based on name and hierarchy
     for (const org of organizations) {
@@ -840,31 +845,59 @@ export class MemoryStorage implements IStorage {
 
     console.log(`Deduplicated from ${organizations.length} to ${uniqueOrgs.size} unique organizations`);
 
-    // Create organizations with proper hierarchy
+    // Process organizations - merge or create
     for (const org of uniqueOrgs.values()) {
-      const id = this.nextOrganizationId++;
-      const newOrganization = {
-        id,
-        name: org.name,
-        upperCategory: org.upperCategory || null,
-        lowerCategory: org.lowerCategory || null,
-        detailCategory: org.detailCategory || null,
-        description: org.description || null,
+      // Check if organization already exists by matching name and hierarchy
+      const existingOrg = this.findExistingOrganization(org.name, org.upperCategory, org.lowerCategory, org.detailCategory);
+
+      if (existingOrg && !shouldOverwrite) {
+        // Merge mode: Update existing organization while preserving critical data
+        console.log(`Merging existing organization: ${existingOrg.name} (ID: ${existingOrg.id})`);
+        
+        const updatedOrganization = {
+          ...existingOrg, // Preserve existing data including connections
+          // Only update non-critical fields if they have new values
+          description: org.description || existingOrg.description,
+          status: org.status || existingOrg.status,
+          isActive: org.isActive !== undefined ? org.isActive : existingOrg.isActive,
+          updatedAt: new Date()
+          // Preserve: id, name, hierarchy, manager, createdAt, and any other connected data
+        };
+        
+        this.organizationCategories.set(existingOrg.id, updatedOrganization);
+        updatedOrganizations.push(updatedOrganization);
+        
+      } else {
+        // Create new organization
+        const id = shouldOverwrite ? this.nextOrganizationId++ : Math.max(...Array.from(this.organizationCategories.keys()), this.nextOrganizationId - 1) + 1;
+        this.nextOrganizationId = Math.max(this.nextOrganizationId, id + 1);
+        
+        const newOrganization = {
+          id,
+          name: org.name,
+          upperCategory: org.upperCategory || null,
+          lowerCategory: org.lowerCategory || null,
+          detailCategory: org.detailCategory || null,
+          description: org.description || null,
         isActive: org.isActive !== false,
-        status: org.status || '활성',
-        manager: org.manager || null,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      this.organizationCategories.set(id, newOrganization);
-      createdOrganizations.push(newOrganization);
-      console.log(`Created organization: ${newOrganization.name} (ID: ${id}) - ${newOrganization.upperCategory} > ${newOrganization.lowerCategory} > ${newOrganization.detailCategory}`);
+          status: org.status || '활성',
+          manager: org.manager || null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        this.organizationCategories.set(id, newOrganization);
+        createdOrganizations.push(newOrganization);
+        console.log(`Created organization: ${newOrganization.name} (ID: ${id}) - ${newOrganization.upperCategory} > ${newOrganization.lowerCategory} > ${newOrganization.detailCategory}`);
+      }
     }
 
-    console.log(`Organization count after bulk creation: ${this.organizationCategories.size}`);
+    console.log(`Organization count after bulk operation: ${this.organizationCategories.size}`);
+    console.log(`Created: ${createdOrganizations.length}, Updated: ${updatedOrganizations.length}`);
     await this.saveOrganizationCategoriesToFile();
-    console.log(`Bulk created ${createdOrganizations.length} unique organization categories and saved to persistence`);
-    return createdOrganizations;
+    
+    const totalProcessed = [...createdOrganizations, ...updatedOrganizations];
+    console.log(`Bulk processed ${totalProcessed.length} organization categories and saved to persistence`);
+    return totalProcessed;
   }
 
 
@@ -875,6 +908,20 @@ export class MemoryStorage implements IStorage {
     this.nextOrganizationId = 1;
     await this.saveOrganizationCategoriesToFile();
     console.log('All organization categories have been cleared from memory storage');
+  }
+
+  // Helper method to find existing organization by name and hierarchy
+  private findExistingOrganization(name: string, upperCategory?: string, lowerCategory?: string, detailCategory?: string): any | null {
+    for (const org of this.organizationCategories.values()) {
+      // Match by name and full hierarchy
+      if (org.name === name && 
+          org.upperCategory === (upperCategory || null) &&
+          org.lowerCategory === (lowerCategory || null) &&
+          org.detailCategory === (detailCategory || null)) {
+        return org;
+      }
+    }
+    return null;
   }
 
   // Method to reload authentic organization data

@@ -687,44 +687,56 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // Clear existing organizations if requested
-      if (overwriteExisting) {
-        await storage.deleteAllOrganizationCategories();
-      }
-
-      // Process and create organization categories using bulk create
+      // Process and create organization categories using bulk create with merge logic
       const organizationsToCreate = organizations.map(org => ({
         name: org.name,
         upperCategory: org.upperCategory,
         lowerCategory: org.lowerCategory,
         detailCategory: org.detailCategory,
-        manager: null,
-        status: '활성',
+        description: org.description,
+        manager: org.manager || null,
+        status: org.status || '활성',
+        isActive: org.isActive !== false
       }));
 
-      console.log(`Creating ${organizationsToCreate.length} organization categories:`);
+      console.log(`Processing ${organizationsToCreate.length} organization categories with merge logic:`);
+      console.log(`Overwrite existing: ${overwriteExisting}`);
       organizationsToCreate.slice(0, 5).forEach((org, i) => {
         console.log(`  ${i+1}. ${org.name} (${org.upperCategory} > ${org.lowerCategory} > ${org.detailCategory})`);
       });
 
-      const createdCategories = await storage.bulkCreateOrganizationCategories(organizationsToCreate);
+      // Clear existing organizations only if explicitly requested
+      if (overwriteExisting) {
+        console.log('Overwrite mode: Clearing existing organization categories');
+        await storage.deleteAllOrganizationCategories();
+      }
 
-      const createdCount = createdCategories.length;
-      const updatedCount = 0;
-      const errorCount = organizations.length - createdCount;
+      const processedCategories = await storage.bulkCreateOrganizationCategories(organizationsToCreate, overwriteExisting);
+
+      // Count actual created vs updated
+      const beforeCount = await storage.getOrganizationCategories();
+      const currentCount = beforeCount.length;
+      const createdCount = Math.max(0, currentCount - (overwriteExisting ? 0 : beforeCount.length - processedCategories.length));
+      const updatedCount = processedCategories.length - createdCount;
+      const errorCount = Math.max(0, organizations.length - processedCategories.length);
 
       // Verify the data was saved
       const verifyData = await storage.getOrganizationCategories();
       console.log(`Verification: ${verifyData.length} organization categories now in storage`);
 
+      const message = overwriteExisting 
+        ? `조직 카테고리가 완전히 교체되었습니다.`
+        : `조직 카테고리가 안전하게 병합되었습니다. 기존 데이터는 보존되었습니다.`;
+
       res.json({
         success: true,
-        message: `조직 카테고리 파일 업로드 완료`,
-        created: createdCount,
-        updated: updatedCount,
+        message: message,
+        created: overwriteExisting ? processedCategories.length : Math.max(0, verifyData.length - (beforeCount.length || 0)),
+        updated: overwriteExisting ? 0 : Math.min(processedCategories.length, beforeCount.length || 0),
         errors: errorCount,
         total: organizations.length,
-        totalInStorage: verifyData.length
+        totalInStorage: verifyData.length,
+        mode: overwriteExisting ? 'overwrite' : 'merge'
       });
 
     } catch (error) {
@@ -1557,10 +1569,19 @@ export function setupAdminRoutes(app: Express) {
         });
       }
 
-      // Save to storage
+      // Save to storage with proper merge logic
       console.log('Saving organizations to storage...');
-      const createdOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations);
-      console.log(`Successfully saved ${createdOrganizations.length} organizations to storage`);
+      const shouldOverwrite = overwriteExisting === 'true';
+      
+      if (shouldOverwrite) {
+        console.log('Overwrite mode: Will replace all existing organization categories');
+        await storage.deleteAllOrganizationCategories();
+      } else {
+        console.log('Merge mode: Will preserve existing organization categories and merge new data');
+      }
+      
+      const processedOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations, shouldOverwrite);
+      console.log(`Successfully processed ${processedOrganizations.length} organizations to storage`);
 
       // Record each uploaded organization file with status
       for (const file of files) {
@@ -1578,8 +1599,8 @@ export function setupAdminRoutes(app: Express) {
           uploadedAt: new Date(),
           size: file.size,
           type: 'organization',
-          status: 'applied', // 최종 반영됨
-          organizationsCount: createdOrganizations.length
+          status: shouldOverwrite ? 'replaced' : 'merged', // 작업 모드 표시
+          organizationsCount: processedOrganizations.length
         };
 
         // Save organization file metadata
@@ -1591,12 +1612,18 @@ export function setupAdminRoutes(app: Express) {
       const allOrgs = await storage.getOrganizationCategories();
       console.log(`Storage now contains ${allOrgs.length} total organizations`);
 
+      const responseMessage = shouldOverwrite 
+        ? '조직 카테고리가 완전히 교체되었습니다.'
+        : '조직 카테고리가 안전하게 병합되었습니다. 기존 데이터는 보존되었습니다.';
+
       res.json({
         success: true,
-        message: '조직 카테고리가 성공적으로 업로드되었습니다.',
-        created: createdOrganizations.length,
+        message: responseMessage,
+        created: shouldOverwrite ? processedOrganizations.length : Math.max(0, allOrgs.length - (totalOrganizations.length || 0)),
+        updated: shouldOverwrite ? 0 : Math.min(processedOrganizations.length, allOrgs.length - processedOrganizations.length),
         totalInStorage: allOrgs.length,
-        organizations: createdOrganizations.slice(0, 10), // Return first 10
+        mode: shouldOverwrite ? 'overwrite' : 'merge',
+        organizations: processedOrganizations.slice(0, 10), // Return first 10
         results: processResults
       });
 
