@@ -250,6 +250,22 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Delete Robo University agents
+  app.delete("/api/admin/agents/bulk/robo-university", requireMasterAdmin, async (req, res) => {
+    try {
+      const result = await (storage as any).deleteRoboUniversityAgents();
+      
+      res.json({
+        message: `${result.deletedCount}개의 로보대학교 에이전트가 성공적으로 삭제되었습니다.`,
+        deletedCount: result.deletedCount,
+        deletedAgents: result.deletedAgents
+      });
+    } catch (error) {
+      console.error("Error deleting Robo University agents:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Organizations (simple mock data for memory storage)
   app.get("/api/admin/organizations", requireMasterAdmin, async (req, res) => {
     try {

@@ -534,9 +534,10 @@ export class MemoryStorage implements IStorage {
     const deletedAgents: string[] = [];
     let deletedCount = 0;
 
-    // 로보대학교 관련 에이전트 찾기 및 삭제
+    // 로보대학교 관련 에이전트 찾기 및 삭제 (이름 또는 설명에 포함된 경우)
     for (const [id, agent] of this.agents.entries()) {
-      if (agent.description && agent.description.includes('로보대학교')) {
+      if ((agent.name && agent.name.includes('로보대학교')) || 
+          (agent.description && agent.description.includes('로보대학교'))) {
         deletedAgents.push(`${agent.name} (ID: ${id})`);
         this.agents.delete(id);
         deletedCount++;

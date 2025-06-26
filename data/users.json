@@ -7,8 +7,8 @@
     "password": "$2b$10$e097KpT.lX7HTqlHodUO5.3gIU26TfoFaDbkINPo5egSeY/zf4sb6",
     "email": "admin@lobo.edu",
     "userType": "admin",
-    "createdAt": "2025-06-26T08:01:02.106Z",
-    "updatedAt": "2025-06-26T08:01:02.106Z",
+    "createdAt": "2025-06-26T14:39:04.920Z",
+    "updatedAt": "2025-06-26T14:39:04.920Z",
     "profileImageUrl": null,
     "name": "Master Admin",
     "upperCategory": null,
@@ -36,8 +36,8 @@
     "password": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "email": "student@lobo.edu",
     "userType": "student",
-    "createdAt": "2025-06-26T08:01:02.106Z",
-    "updatedAt": "2025-06-26T08:01:02.106Z",
+    "createdAt": "2025-06-26T14:39:04.920Z",
+    "updatedAt": "2025-06-26T14:39:04.920Z",
     "profileImageUrl": null,
     "name": "김학생",
     "upperCategory": "로보대학교",
@@ -65,8 +65,8 @@
     "password": "$2b$10$eYu4kIdi2oqmILaVljmuNOELydq3vW920HbVQhTiiG8xPT5WyiLeO",
     "email": "faculty@lobo.edu",
     "userType": "faculty",
-    "createdAt": "2025-06-26T08:01:02.106Z",
-    "updatedAt": "2025-06-26T08:01:02.106Z",
+    "createdAt": "2025-06-26T14:39:04.920Z",
+    "updatedAt": "2025-06-26T14:39:04.920Z",
     "profileImageUrl": null,
     "name": "이교수",
     "upperCategory": "로보대학교",
@@ -94,8 +94,8 @@
     "lastName": "김",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.357Z",
-    "updatedAt": "2025-06-26T08:01:02.357Z",
+    "createdAt": "2025-06-26T14:39:05.152Z",
+    "updatedAt": "2025-06-26T14:39:05.152Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -120,7 +120,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.357Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.152Z"
   },
   {
     "id": "ADM002",
@@ -130,15 +130,13 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.358Z",
-    "updatedAt": "2025-06-26T08:01:02.358Z",
+    "createdAt": "2025-06-26T14:39:05.153Z",
+    "updatedAt": "2025-06-26T14:39:05.153Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "2"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -158,7 +156,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.358Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.153Z"
   },
   {
     "id": "ADM003",
@@ -168,15 +166,13 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.358Z",
-    "updatedAt": "2025-06-26T08:01:02.358Z",
+    "createdAt": "2025-06-26T14:39:05.162Z",
+    "updatedAt": "2025-06-26T14:39:05.162Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "4"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -196,7 +192,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.358Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.162Z"
   },
   {
     "id": "ADM004",
@@ -206,15 +202,13 @@
     "lastName": "최",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.372Z",
-    "updatedAt": "2025-06-26T08:01:02.372Z",
+    "createdAt": "2025-06-26T14:39:05.163Z",
+    "updatedAt": "2025-06-26T14:39:05.163Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "4"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -234,7 +228,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.372Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.163Z"
   },
   {
     "id": "ADM005",
@@ -244,13 +238,15 @@
     "lastName": "정",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.373Z",
-    "updatedAt": "2025-06-26T08:01:02.373Z",
+    "createdAt": "2025-06-26T14:39:05.164Z",
+    "updatedAt": "2025-06-26T14:39:05.164Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "3"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -270,7 +266,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.373Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.164Z"
   },
   {
     "id": "ADM006",
@@ -280,14 +276,14 @@
     "lastName": "한",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.374Z",
-    "updatedAt": "2025-06-26T08:01:02.374Z",
+    "createdAt": "2025-06-26T14:39:05.164Z",
+    "updatedAt": "2025-06-26T14:39:05.164Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "3"
+      "2"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -308,7 +304,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.374Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.164Z"
   },
   {
     "id": "ADM007",
@@ -318,8 +314,8 @@
     "lastName": "송",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.390Z",
-    "updatedAt": "2025-06-26T08:01:02.390Z",
+    "createdAt": "2025-06-26T14:39:05.165Z",
+    "updatedAt": "2025-06-26T14:39:05.165Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -344,7 +340,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.390Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.165Z"
   },
   {
     "id": "ADM008",
@@ -354,13 +350,15 @@
     "lastName": "오",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.412Z",
-    "updatedAt": "2025-06-26T08:01:02.412Z",
+    "createdAt": "2025-06-26T14:39:05.167Z",
+    "updatedAt": "2025-06-26T14:39:05.167Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "4"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -380,7 +378,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.412Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.167Z"
   },
   {
     "id": "ADM009",
@@ -390,14 +388,14 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.426Z",
-    "updatedAt": "2025-06-26T08:01:02.426Z",
+    "createdAt": "2025-06-26T14:39:05.168Z",
+    "updatedAt": "2025-06-26T14:39:05.168Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "5"
+      "4"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -418,7 +416,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.426Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.168Z"
   },
   {
     "id": "ADM010",
@@ -428,13 +426,15 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.428Z",
-    "updatedAt": "2025-06-26T08:01:02.428Z",
+    "createdAt": "2025-06-26T14:39:05.169Z",
+    "updatedAt": "2025-06-26T14:39:05.169Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "1"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -454,7 +454,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.428Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.169Z"
   },
   {
     "id": "ADM011",
@@ -464,13 +464,15 @@
     "lastName": "박",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.437Z",
-    "updatedAt": "2025-06-26T08:01:02.437Z",
+    "createdAt": "2025-06-26T14:39:05.170Z",
+    "updatedAt": "2025-06-26T14:39:05.170Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "2"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -490,7 +492,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.437Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.170Z"
   },
   {
     "id": "ACA001",
@@ -500,15 +502,13 @@
     "lastName": "최",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.450Z",
-    "updatedAt": "2025-06-26T08:01:02.450Z",
+    "createdAt": "2025-06-26T14:39:05.172Z",
+    "updatedAt": "2025-06-26T14:39:05.172Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "2"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -528,7 +528,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.450Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.172Z"
   },
   {
     "id": "ACA002",
@@ -538,8 +538,8 @@
     "lastName": "정",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.458Z",
-    "updatedAt": "2025-06-26T08:01:02.458Z",
+    "createdAt": "2025-06-26T14:39:05.173Z",
+    "updatedAt": "2025-06-26T14:39:05.173Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -566,7 +566,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.458Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.173Z"
   },
   {
     "id": "ACA003",
@@ -576,14 +576,14 @@
     "lastName": "한",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.470Z",
-    "updatedAt": "2025-06-26T08:01:02.470Z",
+    "createdAt": "2025-06-26T14:39:05.174Z",
+    "updatedAt": "2025-06-26T14:39:05.174Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "3"
+      "1"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -604,7 +604,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.470Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.174Z"
   },
   {
     "id": "HUM001",
@@ -614,14 +614,14 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.476Z",
-    "updatedAt": "2025-06-26T08:01:02.476Z",
+    "createdAt": "2025-06-26T14:39:05.174Z",
+    "updatedAt": "2025-06-26T14:39:05.174Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "1"
+      "2"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -642,7 +642,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.476Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.174Z"
   },
   {
     "id": "HUM002",
@@ -652,8 +652,8 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.483Z",
-    "updatedAt": "2025-06-26T08:01:02.483Z",
+    "createdAt": "2025-06-26T14:39:05.175Z",
+    "updatedAt": "2025-06-26T14:39:05.175Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -678,7 +678,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.483Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.175Z"
   },
   {
     "id": "2024101001",
@@ -688,8 +688,8 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.484Z",
-    "updatedAt": "2025-06-26T08:01:02.484Z",
+    "createdAt": "2025-06-26T14:39:05.177Z",
+    "updatedAt": "2025-06-26T14:39:05.177Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -714,7 +714,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.484Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.177Z"
   },
   {
     "id": "2024101002",
@@ -724,15 +724,13 @@
     "lastName": "최",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.490Z",
-    "updatedAt": "2025-06-26T08:01:02.490Z",
+    "createdAt": "2025-06-26T14:39:05.184Z",
+    "updatedAt": "2025-06-26T14:39:05.184Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "1"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -752,7 +750,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.490Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.184Z"
   },
   {
     "id": "HUM010",
@@ -762,8 +760,8 @@
     "lastName": "S",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.497Z",
-    "updatedAt": "2025-06-26T08:01:02.497Z",
+    "createdAt": "2025-06-26T14:39:05.184Z",
+    "updatedAt": "2025-06-26T14:39:05.184Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -788,7 +786,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.497Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.184Z"
   },
   {
     "id": "HUM011",
@@ -798,14 +796,14 @@
     "lastName": "J",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.501Z",
-    "updatedAt": "2025-06-26T08:01:02.501Z",
+    "createdAt": "2025-06-26T14:39:05.202Z",
+    "updatedAt": "2025-06-26T14:39:05.202Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "3"
+      "4"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -826,7 +824,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.501Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.202Z"
   },
   {
     "id": "2024102001",
@@ -836,15 +834,13 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.508Z",
-    "updatedAt": "2025-06-26T08:01:02.508Z",
+    "createdAt": "2025-06-26T14:39:05.218Z",
+    "updatedAt": "2025-06-26T14:39:05.218Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "1"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -864,7 +860,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.508Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.218Z"
   },
   {
     "id": "SOC001",
@@ -874,8 +870,8 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.508Z",
-    "updatedAt": "2025-06-26T08:01:02.508Z",
+    "createdAt": "2025-06-26T14:39:05.218Z",
+    "updatedAt": "2025-06-26T14:39:05.218Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -900,7 +896,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.508Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.218Z"
   },
   {
     "id": "SOC002",
@@ -910,8 +906,8 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.509Z",
-    "updatedAt": "2025-06-26T08:01:02.509Z",
+    "createdAt": "2025-06-26T14:39:05.228Z",
+    "updatedAt": "2025-06-26T14:39:05.228Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -936,7 +932,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.509Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.228Z"
   },
   {
     "id": "2024201001",
@@ -946,15 +942,13 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.510Z",
-    "updatedAt": "2025-06-26T08:01:02.510Z",
+    "createdAt": "2025-06-26T14:39:05.231Z",
+    "updatedAt": "2025-06-26T14:39:05.231Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "3"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -974,7 +968,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.510Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.231Z"
   },
   {
     "id": "SCI001",
@@ -984,15 +978,13 @@
     "lastName": "오",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.517Z",
-    "updatedAt": "2025-06-26T08:01:02.517Z",
+    "createdAt": "2025-06-26T14:39:05.248Z",
+    "updatedAt": "2025-06-26T14:39:05.248Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "1"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1012,7 +1004,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.517Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.248Z"
   },
   {
     "id": "SCI002",
@@ -1022,13 +1014,15 @@
     "lastName": "유",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.520Z",
-    "updatedAt": "2025-06-26T08:01:02.520Z",
+    "createdAt": "2025-06-26T14:39:05.285Z",
+    "updatedAt": "2025-06-26T14:39:05.285Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "3"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1048,7 +1042,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.520Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.285Z"
   },
   {
     "id": "2024401001",
@@ -1058,14 +1052,14 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.526Z",
-    "updatedAt": "2025-06-26T08:01:02.526Z",
+    "createdAt": "2025-06-26T14:39:05.317Z",
+    "updatedAt": "2025-06-26T14:39:05.317Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "5"
+      "3"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -1086,7 +1080,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.526Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.317Z"
   },
   {
     "id": "ENG001",
@@ -1096,15 +1090,13 @@
     "lastName": "김",
     "role": "agent_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.527Z",
-    "updatedAt": "2025-06-26T08:01:02.527Z",
+    "createdAt": "2025-06-26T14:39:05.318Z",
+    "updatedAt": "2025-06-26T14:39:05.318Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "5"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [
       "에이전트5"
@@ -1120,7 +1112,7 @@
     ],
     "agentPermissions": [
       {
-        "agentName": "에이전트4",
+        "agentName": "에이전트2",
         "permissions": [
           "에이전트 관리자"
         ]
@@ -1133,7 +1125,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.527Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.318Z"
   },
   {
     "id": "ENG002",
@@ -1143,13 +1135,15 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.527Z",
-    "updatedAt": "2025-06-26T08:01:02.527Z",
+    "createdAt": "2025-06-26T14:39:05.322Z",
+    "updatedAt": "2025-06-26T14:39:05.322Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "1"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1169,7 +1163,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.527Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.322Z"
   },
   {
     "id": "ENG003",
@@ -1179,15 +1173,13 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.528Z",
-    "updatedAt": "2025-06-26T08:01:02.528Z",
+    "createdAt": "2025-06-26T14:39:05.344Z",
+    "updatedAt": "2025-06-26T14:39:05.344Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "1"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1207,7 +1199,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.528Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.344Z"
   },
   {
     "id": "2024501001",
@@ -1217,13 +1209,15 @@
     "lastName": "최",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.529Z",
-    "updatedAt": "2025-06-26T08:01:02.529Z",
+    "createdAt": "2025-06-26T14:39:05.357Z",
+    "updatedAt": "2025-06-26T14:39:05.357Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "4"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1243,7 +1237,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.529Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.357Z"
   },
   {
     "id": "2024501002",
@@ -1253,8 +1247,8 @@
     "lastName": "정",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.530Z",
-    "updatedAt": "2025-06-26T08:01:02.530Z",
+    "createdAt": "2025-06-26T14:39:05.362Z",
+    "updatedAt": "2025-06-26T14:39:05.362Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -1281,7 +1275,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.530Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.362Z"
   },
   {
     "id": "BUS001",
@@ -1291,13 +1285,15 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.530Z",
-    "updatedAt": "2025-06-26T08:01:02.530Z",
+    "createdAt": "2025-06-26T14:39:05.373Z",
+    "updatedAt": "2025-06-26T14:39:05.373Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "4"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1317,7 +1313,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.530Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.373Z"
   },
   {
     "id": "BUS002",
@@ -1327,15 +1323,13 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.533Z",
-    "updatedAt": "2025-06-26T08:01:02.533Z",
+    "createdAt": "2025-06-26T14:39:05.379Z",
+    "updatedAt": "2025-06-26T14:39:05.379Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "2"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1355,7 +1349,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.533Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.379Z"
   },
   {
     "id": "2024601001",
@@ -1365,8 +1359,8 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.535Z",
-    "updatedAt": "2025-06-26T08:01:02.535Z",
+    "createdAt": "2025-06-26T14:39:05.399Z",
+    "updatedAt": "2025-06-26T14:39:05.399Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -1393,7 +1387,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.535Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.399Z"
   },
   {
     "id": "MED001",
@@ -1403,8 +1397,8 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.545Z",
-    "updatedAt": "2025-06-26T08:01:02.545Z",
+    "createdAt": "2025-06-26T14:39:05.411Z",
+    "updatedAt": "2025-06-26T14:39:05.411Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -1431,7 +1425,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.545Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.411Z"
   },
   {
     "id": "MED002",
@@ -1441,15 +1435,13 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.546Z",
-    "updatedAt": "2025-06-26T08:01:02.546Z",
+    "createdAt": "2025-06-26T14:39:05.417Z",
+    "updatedAt": "2025-06-26T14:39:05.417Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "5"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1469,7 +1461,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.546Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.417Z"
   },
   {
     "id": "2024701001",
@@ -1479,14 +1471,14 @@
     "lastName": "박",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.548Z",
-    "updatedAt": "2025-06-26T08:01:02.548Z",
+    "createdAt": "2025-06-26T14:39:05.426Z",
+    "updatedAt": "2025-06-26T14:39:05.426Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "2"
+      "1"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -1507,7 +1499,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.548Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.426Z"
   },
   {
     "id": "GRAD001",
@@ -1517,14 +1509,14 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.551Z",
-    "updatedAt": "2025-06-26T08:01:02.551Z",
+    "createdAt": "2025-06-26T14:39:05.441Z",
+    "updatedAt": "2025-06-26T14:39:05.441Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "1"
+      "4"
     ],
     "managedCategories": [],
     "managedAgents": [],
@@ -1545,7 +1537,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.551Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.441Z"
   },
   {
     "id": "GRAD002",
@@ -1555,15 +1547,13 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.552Z",
-    "updatedAt": "2025-06-26T08:01:02.552Z",
+    "createdAt": "2025-06-26T14:39:05.445Z",
+    "updatedAt": "2025-06-26T14:39:05.445Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "4"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1583,7 +1573,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.552Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.445Z"
   },
   {
     "id": "RES001",
@@ -1593,15 +1583,13 @@
     "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.554Z",
-    "updatedAt": "2025-06-26T08:01:02.554Z",
+    "createdAt": "2025-06-26T14:39:05.460Z",
+    "updatedAt": "2025-06-26T14:39:05.460Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [
-      "2"
-    ],
+    "usingAgents": [],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1621,7 +1609,7 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.554Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.460Z"
   },
   {
     "id": "RES002",
@@ -1631,13 +1619,15 @@
     "lastName": "이",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.577Z",
-    "updatedAt": "2025-06-26T08:01:02.577Z",
+    "createdAt": "2025-06-26T14:39:05.469Z",
+    "updatedAt": "2025-06-26T14:39:05.469Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "2"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1657,18 +1647,18 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.577Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.469Z"
   },
   {
     "id": "USR1001",
     "username": "USR1001",
     "email": "user1001@university.edu",
-    "firstName": "지",
-    "lastName": "정",
+    "firstName": "현",
+    "lastName": "김",
     "role": "user",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.578Z",
-    "updatedAt": "2025-06-26T08:01:02.578Z",
+    "createdAt": "2025-06-26T14:39:05.469Z",
+    "updatedAt": "2025-06-26T14:39:05.469Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -1681,7 +1671,7 @@
         "upperCategory": "인문대학",
         "lowerCategory": "국어국문학과",
         "detailCategory": "현대문학전공",
-        "position": "연구원",
+        "position": "박사과정",
         "systemRole": "일반 사용자"
       }
     ],
@@ -1693,28 +1683,100 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.578Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.469Z"
   },
   {
     "id": "USR1002",
     "username": "USR1002",
     "email": "user1002@university.edu",
-    "firstName": "영",
-    "lastName": "조",
-    "role": "agent_admin",
+    "firstName": "지",
+    "lastName": "강",
+    "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.579Z",
-    "updatedAt": "2025-06-26T08:01:02.579Z",
+    "createdAt": "2025-06-26T14:39:05.473Z",
+    "updatedAt": "2025-06-26T14:39:05.473Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
     "usingAgents": [
-      "5"
+      "1"
     ],
     "managedCategories": [],
+    "managedAgents": [],
+    "organizationAffiliations": [
+      {
+        "upperCategory": "인문대학",
+        "lowerCategory": "국어국문학과",
+        "detailCategory": "현대문학전공",
+        "position": "연구소장",
+        "systemRole": "operation_admin"
+      }
+    ],
+    "agentPermissions": [],
+    "userMemo": null,
+    "permissions": {},
+    "lockedReason": null,
+    "deactivatedAt": null,
+    "loginFailCount": 0,
+    "lastLoginIP": null,
+    "authProvider": "email",
+    "termsAcceptedAt": "2025-06-26T14:39:05.473Z"
+  },
+  {
+    "id": "USR1003",
+    "username": "USR1003",
+    "email": "user1003@university.edu",
+    "firstName": "은",
+    "lastName": "최",
+    "role": "operation_admin",
+    "isActive": true,
+    "createdAt": "2025-06-26T14:39:05.476Z",
+    "updatedAt": "2025-06-26T14:39:05.476Z",
+    "lastLoginAt": null,
+    "profileImageUrl": null,
+    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
+    "groups": [],
+    "usingAgents": [],
+    "managedCategories": [],
+    "managedAgents": [],
+    "organizationAffiliations": [
+      {
+        "upperCategory": "인문대학",
+        "lowerCategory": "국어국문학과",
+        "detailCategory": "현대문학전공",
+        "position": "학과장",
+        "systemRole": "operation_admin"
+      }
+    ],
+    "agentPermissions": [],
+    "userMemo": null,
+    "permissions": {},
+    "lockedReason": null,
+    "deactivatedAt": null,
+    "loginFailCount": 0,
+    "lastLoginIP": null,
+    "authProvider": "email",
+    "termsAcceptedAt": "2025-06-26T14:39:05.476Z"
+  },
+  {
+    "id": "USR1004",
+    "username": "USR1004",
+    "email": "user1004@university.edu",
+    "firstName": "수",
+    "lastName": "장",
+    "role": "agent_admin",
+    "isActive": true,
+    "createdAt": "2025-06-26T14:39:05.476Z",
+    "updatedAt": "2025-06-26T14:39:05.476Z",
+    "lastLoginAt": null,
+    "profileImageUrl": null,
+    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
+    "groups": [],
+    "usingAgents": [],
+    "managedCategories": [],
     "managedAgents": [
-      "에이전트5"
+      "에이전트2"
     ],
     "organizationAffiliations": [
       {
@@ -1727,7 +1789,7 @@
     ],
     "agentPermissions": [
       {
-        "agentName": "에이전트3",
+        "agentName": "에이전트8",
         "permissions": [
           "에이전트 관리자"
         ]
@@ -1740,18 +1802,92 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.579Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.476Z"
   },
   {
-    "id": "USR1003",
-    "username": "USR1003",
-    "email": "user1003@university.edu",
-    "firstName": "민",
-    "lastName": "오",
+    "id": "USR1005",
+    "username": "USR1005",
+    "email": "user1005@university.edu",
+    "firstName": "은",
+    "lastName": "최",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.579Z",
-    "updatedAt": "2025-06-26T08:01:02.579Z",
+    "createdAt": "2025-06-26T14:39:05.479Z",
+    "updatedAt": "2025-06-26T14:39:05.479Z",
+    "lastLoginAt": null,
+    "profileImageUrl": null,
+    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
+    "groups": [],
+    "usingAgents": [],
+    "managedCategories": [],
+    "managedAgents": [],
+    "organizationAffiliations": [
+      {
+        "upperCategory": "인문대학",
+        "lowerCategory": "국어국문학과",
+        "detailCategory": "현대문학전공",
+        "position": "연구소장",
+        "systemRole": "operation_admin"
+      }
+    ],
+    "agentPermissions": [],
+    "userMemo": null,
+    "permissions": {},
+    "lockedReason": null,
+    "deactivatedAt": null,
+    "loginFailCount": 0,
+    "lastLoginIP": null,
+    "authProvider": "email",
+    "termsAcceptedAt": "2025-06-26T14:39:05.479Z"
+  },
+  {
+    "id": "USR1006",
+    "username": "USR1006",
+    "email": "user1006@university.edu",
+    "firstName": "수",
+    "lastName": "서",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2025-06-26T14:39:05.503Z",
+    "updatedAt": "2025-06-26T14:39:05.503Z",
+    "lastLoginAt": null,
+    "profileImageUrl": null,
+    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
+    "groups": [],
+    "usingAgents": [
+      "1"
+    ],
+    "managedCategories": [],
+    "managedAgents": [],
+    "organizationAffiliations": [
+      {
+        "upperCategory": "인문대학",
+        "lowerCategory": "국어국문학과",
+        "detailCategory": "현대문학전공",
+        "position": "학부생",
+        "systemRole": "일반 사용자"
+      }
+    ],
+    "agentPermissions": [],
+    "userMemo": null,
+    "permissions": {},
+    "lockedReason": null,
+    "deactivatedAt": null,
+    "loginFailCount": 0,
+    "lastLoginIP": null,
+    "authProvider": "email",
+    "termsAcceptedAt": "2025-06-26T14:39:05.503Z"
+  },
+  {
+    "id": "USR1007",
+    "username": "USR1007",
+    "email": "user1007@university.edu",
+    "firstName": "진",
+    "lastName": "최",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2025-06-26T14:39:05.504Z",
+    "updatedAt": "2025-06-26T14:39:05.504Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
@@ -1766,42 +1902,6 @@
         "upperCategory": "인문대학",
         "lowerCategory": "국어국문학과",
         "detailCategory": "현대문학전공",
-        "position": "교수",
-        "systemRole": "operation_admin"
-      }
-    ],
-    "agentPermissions": [],
-    "userMemo": null,
-    "permissions": {},
-    "lockedReason": null,
-    "deactivatedAt": null,
-    "loginFailCount": 0,
-    "lastLoginIP": null,
-    "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.579Z"
-  },
-  {
-    "id": "USR1004",
-    "username": "USR1004",
-    "email": "user1004@university.edu",
-    "firstName": "지",
-    "lastName": "유",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.580Z",
-    "updatedAt": "2025-06-26T08:01:02.580Z",
-    "lastLoginAt": null,
-    "profileImageUrl": null,
-    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
-    "groups": [],
-    "usingAgents": [],
-    "managedCategories": [],
-    "managedAgents": [],
-    "organizationAffiliations": [
-      {
-        "upperCategory": "인문대학",
-        "lowerCategory": "국어국문학과",
-        "detailCategory": "현대문학전공",
         "position": "연구원",
         "systemRole": "일반 사용자"
       }
@@ -1814,140 +1914,25 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.580Z"
-  },
-  {
-    "id": "USR1005",
-    "username": "USR1005",
-    "email": "user1005@university.edu",
-    "firstName": "지",
-    "lastName": "윤",
-    "role": "agent_admin",
-    "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.583Z",
-    "updatedAt": "2025-06-26T08:01:02.583Z",
-    "lastLoginAt": null,
-    "profileImageUrl": null,
-    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
-    "groups": [],
-    "usingAgents": [],
-    "managedCategories": [],
-    "managedAgents": [
-      "에이전트4"
-    ],
-    "organizationAffiliations": [
-      {
-        "upperCategory": "인문대학",
-        "lowerCategory": "국어국문학과",
-        "detailCategory": "현대문학전공",
-        "position": "부교수",
-        "systemRole": "agent_admin"
-      }
-    ],
-    "agentPermissions": [
-      {
-        "agentName": "에이전트3",
-        "permissions": [
-          "에이전트 관리자"
-        ]
-      }
-    ],
-    "userMemo": null,
-    "permissions": {},
-    "lockedReason": null,
-    "deactivatedAt": null,
-    "loginFailCount": 0,
-    "lastLoginIP": null,
-    "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.583Z"
-  },
-  {
-    "id": "USR1006",
-    "username": "USR1006",
-    "email": "user1006@university.edu",
-    "firstName": "영",
-    "lastName": "장",
-    "role": "operation_admin",
-    "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.585Z",
-    "updatedAt": "2025-06-26T08:01:02.585Z",
-    "lastLoginAt": null,
-    "profileImageUrl": null,
-    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
-    "groups": [],
-    "usingAgents": [],
-    "managedCategories": [],
-    "managedAgents": [],
-    "organizationAffiliations": [
-      {
-        "upperCategory": "인문대학",
-        "lowerCategory": "국어국문학과",
-        "detailCategory": "현대문학전공",
-        "position": "교수",
-        "systemRole": "operation_admin"
-      }
-    ],
-    "agentPermissions": [],
-    "userMemo": null,
-    "permissions": {},
-    "lockedReason": null,
-    "deactivatedAt": null,
-    "loginFailCount": 0,
-    "lastLoginIP": null,
-    "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.585Z"
-  },
-  {
-    "id": "USR1007",
-    "username": "USR1007",
-    "email": "user1007@university.edu",
-    "firstName": "현",
-    "lastName": "이",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.596Z",
-    "updatedAt": "2025-06-26T08:01:02.596Z",
-    "lastLoginAt": null,
-    "profileImageUrl": null,
-    "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
-    "groups": [],
-    "usingAgents": [],
-    "managedCategories": [],
-    "managedAgents": [],
-    "organizationAffiliations": [
-      {
-        "upperCategory": "인문대학",
-        "lowerCategory": "국어국문학과",
-        "detailCategory": "현대문학전공",
-        "position": "연구원",
-        "systemRole": "일반 사용자"
-      }
-    ],
-    "agentPermissions": [],
-    "userMemo": null,
-    "permissions": {},
-    "lockedReason": null,
-    "deactivatedAt": null,
-    "loginFailCount": 0,
-    "lastLoginIP": null,
-    "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.596Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.504Z"
   },
   {
     "id": "USR1008",
     "username": "USR1008",
     "email": "user1008@university.edu",
-    "firstName": "현",
-    "lastName": "한",
+    "firstName": "수",
+    "lastName": "신",
     "role": "operation_admin",
     "isActive": true,
-    "createdAt": "2025-06-26T08:01:02.605Z",
-    "updatedAt": "2025-06-26T08:01:02.605Z",
+    "createdAt": "2025-06-26T14:39:05.504Z",
+    "updatedAt": "2025-06-26T14:39:05.504Z",
     "lastLoginAt": null,
     "profileImageUrl": null,
     "passwordHash": "$2b$10$N8XSxPz/zitNI7exEyKVHuh/AS.CnxoperLS.zOa7UEBmNsUJ7EDO",
     "groups": [],
-    "usingAgents": [],
+    "usingAgents": [
+      "2"
+    ],
     "managedCategories": [],
     "managedAgents": [],
     "organizationAffiliations": [
@@ -1955,7 +1940,7 @@
         "upperCategory": "인문대학",
         "lowerCategory": "국어국문학과",
         "detailCategory": "현대문학전공",
-        "position": "교수",
+        "position": "연구소장",
         "systemRole": "operation_admin"
       }
     ],
@@ -1967,6 +1952,6 @@
     "loginFailCount": 0,
     "lastLoginIP": null,
     "authProvider": "email",
-    "termsAcceptedAt": "2025-06-26T08:01:02.605Z"
+    "termsAcceptedAt": "2025-06-26T14:39:05.504Z"
   }
 ]
