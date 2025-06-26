@@ -289,7 +289,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 업로드된 파일 ({userFiles.filter(file => file.status === 'applied').length}개)
               </h4>
               <span className="text-xs text-blue-700 dark:text-blue-300 korean-text">
-                조직 데이터 관련 파일들
+                사용자 데이터 관련 파일들
               </span>
             </div>
             

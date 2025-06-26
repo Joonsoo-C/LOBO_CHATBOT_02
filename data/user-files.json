@@ -8,5 +8,25 @@
     "status": "applied",
     "userCount": 400,
     "path": "/home/runner/workspace/uploads/admin/1750916232185-838338936-대학_AI챗봇_사용자_샘플_직책포함_학생중심.xlsx"
+  },
+  {
+    "id": "1750922216066",
+    "filename": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "originalName": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "size": 24986,
+    "uploadedAt": "2025-06-26T07:16:56.066Z",
+    "status": "applied",
+    "userCount": 400,
+    "path": "/home/runner/workspace/uploads/admin/1750922215614-211806831-대학_AI챗봇_사용자_샘플_전체정보포함.xlsx"
+  },
+  {
+    "id": "1750922260522",
+    "filename": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "originalName": "대학_AI챗봇_사용자_샘플_전체정보포함.xlsx",
+    "size": 24986,
+    "uploadedAt": "2025-06-26T07:17:40.522Z",
+    "status": "failed",
+    "userCount": 0,
+    "path": "/home/runner/workspace/uploads/admin/1750922260287-948003279-대학_AI챗봇_사용자_샘플_전체정보포함.xlsx"
   }
 ]
