@@ -103,6 +103,8 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다").max(20, "에이전트 이름은 최대 20자입니다"),
   description: z.string().max(200, "설명은 최대 200자입니다").optional(),
   category: z.string().min(1, "카테고리를 선택해주세요"),
+  icon: z.string().optional(),
+  backgroundColor: z.string().optional(),
   
   // 📌 소속 및 상태
   upperCategory: z.string().optional(),
@@ -122,6 +124,9 @@ const agentSchema = z.object({
   speechStyle: z.string().optional(),
   personality: z.string().optional(),
   prohibitedWords: z.string().optional(),
+  persona: z.string().optional(),
+  systemPrompt: z.string().optional(),
+  responseStyle: z.string().optional(),
   
   // 📌 권한 및 접근 설정
   visibility: z.string().optional(),
@@ -1192,6 +1197,9 @@ function MasterAdmin() {
       speechStyle: "",
       personality: "",
       prohibitedWords: "",
+      persona: "",
+      systemPrompt: "",
+      responseStyle: "default",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -3270,6 +3278,68 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </FormItem>
                           )}
                         />
+                        
+                        {/* 추가 페르소나 설정 */}
+                        <div className="grid grid-cols-1 gap-4">
+                          <FormField
+                            control={agentForm.control}
+                            name="persona"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>페르소나 (기존 호환성)</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="기존 시스템과의 호환성을 위한 페르소나 설정"
+                                    className="min-h-[60px]"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={agentForm.control}
+                            name="systemPrompt"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>시스템 프롬프트</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="AI 시스템에게 전달할 기본 지시사항"
+                                    className="min-h-[80px]"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={agentForm.control}
+                            name="responseStyle"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>응답 스타일</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value || "default"}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="default">기본 스타일</SelectItem>
+                                    <SelectItem value="formal">정중한 스타일</SelectItem>
+                                    <SelectItem value="friendly">친근한 스타일</SelectItem>
+                                    <SelectItem value="professional">전문적 스타일</SelectItem>
+                                    <SelectItem value="casual">캐주얼 스타일</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
                       {/* 📌 권한 및 접근 설정 */}
