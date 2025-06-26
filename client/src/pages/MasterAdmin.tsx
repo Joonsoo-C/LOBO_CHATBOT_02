@@ -4366,7 +4366,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                       <Label>상위 조직</Label>
-                      <Select value={selectedManagerUniversity} onValueChange={setSelectedManagerUniversity}>
+                      <Select value={selectedManagerUniversity} onValueChange={(value) => {
+                        setSelectedManagerUniversity(value);
+                        setSelectedManagerCollege('all');
+                        setSelectedManagerDepartment('all');
+                      }}>
                         <SelectTrigger>
                           <SelectValue placeholder="상위 조직 선택" />
                         </SelectTrigger>
@@ -4383,34 +4387,72 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     
                     <div>
                       <Label>하위 조직</Label>
-                      <Select value={selectedManagerCollege} onValueChange={setSelectedManagerCollege}>
-                        <SelectTrigger>
+                      <Select 
+                        value={selectedManagerCollege} 
+                        onValueChange={(value) => {
+                          setSelectedManagerCollege(value);
+                          setSelectedManagerDepartment('all');
+                        }}
+                        disabled={selectedManagerUniversity === 'all'}
+                      >
+                        <SelectTrigger className={selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                           <SelectValue placeholder="하위 조직 선택" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">전체</SelectItem>
-                          {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
+                          {selectedManagerUniversity === 'all' ? 
+                            Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            )) :
+                            Array.from(new Set(
+                              organizations
+                                ?.filter(org => org.upperCategory === selectedManagerUniversity)
+                                .map(org => org.lowerCategory)
+                                .filter(Boolean)
+                            )).map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))
+                          }
                         </SelectContent>
                       </Select>
                     </div>
                     
                     <div>
                       <Label>세부 조직</Label>
-                      <Select value={selectedManagerDepartment} onValueChange={setSelectedManagerDepartment}>
-                        <SelectTrigger>
+                      <Select 
+                        value={selectedManagerDepartment} 
+                        onValueChange={setSelectedManagerDepartment}
+                        disabled={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all'}
+                      >
+                        <SelectTrigger className={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                           <SelectValue placeholder="세부 조직 선택" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">전체</SelectItem>
-                          {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
+                          {selectedManagerUniversity === 'all' || selectedManagerCollege === 'all' ? 
+                            Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            )) :
+                            Array.from(new Set(
+                              organizations
+                                ?.filter(org => 
+                                  org.upperCategory === selectedManagerUniversity && 
+                                  org.lowerCategory === selectedManagerCollege
+                                )
+                                .map(org => org.detailCategory)
+                                .filter(Boolean)
+                            )).map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))
+                          }
                         </SelectContent>
                       </Select>
                     </div>
