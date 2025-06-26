@@ -535,13 +535,25 @@ export class MemoryStorage implements IStorage {
     let deletedCount = 0;
 
     // 로보대학교 관련 에이전트 찾기 및 삭제 (이름 또는 설명에 포함된 경우)
-    for (const [id, agent] of this.agents.entries()) {
+    console.log(`현재 에이전트 수: ${this.agents.size}`);
+    
+    // Map을 배열로 변환하여 안전하게 순회
+    const agentsToDelete: number[] = [];
+    
+    this.agents.forEach((agent, id) => {
+      console.log(`검사 중: ${agent.name} (ID: ${id})`);
       if ((agent.name && agent.name.includes('로보대학교')) || 
           (agent.description && agent.description.includes('로보대학교'))) {
+        console.log(`삭제 대상 발견: ${agent.name}`);
+        agentsToDelete.push(id);
         deletedAgents.push(`${agent.name} (ID: ${id})`);
-        this.agents.delete(id);
-        deletedCount++;
       }
+    });
+    
+    // 실제 삭제 수행
+    for (const agentId of agentsToDelete) {
+      this.agents.delete(agentId);
+      deletedCount++;
     }
     
     console.log(`🗑️ ${deletedCount}개의 로보대학교 에이전트가 삭제되었습니다:`);
