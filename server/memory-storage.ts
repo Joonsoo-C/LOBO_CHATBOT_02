@@ -30,6 +30,7 @@ export class MemoryStorage implements IStorage {
   private agentStats: Map<number, AgentStats> = new Map();
   private messageReactions: Map<number, MessageReaction> = new Map();
   private organizationCategories: Map<number, any> = new Map();
+  private organizationFiles: Map<string, any> = new Map();
   private nextOrganizationId: number = 1;
 
   private nextId = 1;
@@ -40,6 +41,7 @@ export class MemoryStorage implements IStorage {
     this.ensurePersistenceDir();
     this.loadPersistedDocuments();
     this.loadPersistedOrganizationCategories();
+    this.loadPersistedOrganizationFiles();
     this.initializeDefaultData();
 
     // Optimize garbage collection
@@ -938,6 +940,64 @@ export class MemoryStorage implements IStorage {
       }
     } catch (error) {
       console.error('Failed to load organization categories from file:', error);
+    }
+  }
+
+  // Organization file management methods
+  async saveOrganizationFileRecord(fileRecord: any): Promise<void> {
+    this.organizationFiles.set(fileRecord.fileName, fileRecord);
+    this.savePersistedOrganizationFiles();
+  }
+
+  async getOrganizationFiles(): Promise<any[]> {
+    return Array.from(this.organizationFiles.values());
+  }
+
+  async deleteOrganizationFile(fileName: string): Promise<boolean> {
+    const deleted = this.organizationFiles.delete(fileName);
+    if (deleted) {
+      this.savePersistedOrganizationFiles();
+    }
+    return deleted;
+  }
+
+  private savePersistedOrganizationFiles(): void {
+    try {
+      const organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
+      const filesArray = Array.from(this.organizationFiles.values()).map(file => ({
+        ...file,
+        uploadedAt: file.uploadedAt?.toISOString ? file.uploadedAt.toISOString() : file.uploadedAt
+      }));
+
+      fs.writeFileSync(organizationFilesFile, JSON.stringify(filesArray, null, 2));
+      console.log(`Saved ${filesArray.length} organization files to persistence`);
+    } catch (error) {
+      console.error('Failed to save organization files to file:', error);
+    }
+  }
+
+  private loadPersistedOrganizationFiles(): void {
+    try {
+      const organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
+
+      if (fs.existsSync(organizationFilesFile)) {
+        const data = fs.readFileSync(organizationFilesFile, 'utf8');
+        const filesArray = JSON.parse(data);
+
+        for (const file of filesArray) {
+          const fileRecord = {
+            ...file,
+            uploadedAt: file.uploadedAt ? new Date(file.uploadedAt) : new Date()
+          };
+          this.organizationFiles.set(file.fileName, fileRecord);
+        }
+
+        console.log(`Loaded ${this.organizationFiles.size} organization files from persistence`);
+      } else {
+        console.log('No organization files found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Failed to load organization files from persistence:', error);
     }
   }
 

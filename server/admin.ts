@@ -748,65 +748,18 @@ export function setupAdminRoutes(app: Express) {
   // Get organization category files
   app.get("/api/admin/organization-files", requireMasterAdmin, async (req, res) => {
     try {
-      const uploadDir = path.join(process.cwd(), 'uploads', 'admin');
+      // Get organization files from storage instead of filesystem scanning
+      const organizationFiles = await storage.getOrganizationFiles();
       
-      if (!fs.existsSync(uploadDir)) {
-        console.log('Upload directory does not exist:', uploadDir);
-        return res.json([]);
-      }
-      
-      const files = fs.readdirSync(uploadDir);
-      console.log('All files in upload directory:', files.length, files.slice(0, 5));
-      const orgFiles = files
-        .filter(file => {
-          // Accept files that start with 'org-' or contain acceptable extensions
-          const isOrgFile = file.startsWith('org-');
-          const isExcelFile = file.endsWith('.xlsx') || file.endsWith('.xls') || file.endsWith('.csv');
-          const isDocFile = file.endsWith('.docx') || file.endsWith('.doc');
-          const isPdfFile = file.endsWith('.pdf');
-          
-          // Include all document types for now (can be refined later)
-          const result = isOrgFile || isExcelFile || isDocFile || isPdfFile;
-          console.log(`File: ${file}, isOrg: ${isOrgFile}, isExcel: ${isExcelFile}, isDoc: ${isDocFile}, isPdf: ${isPdfFile}, included: ${result}`);
-          return result;
-        })
-        .map(file => {
-          const filePath = path.join(uploadDir, file);
-          const stats = fs.statSync(filePath);
-          
-          // Extract original name based on file naming pattern
-          let originalName = file;
-          
-          if (file.startsWith('org-')) {
-            // New org- prefixed files
-            const originalNameMatch = file.match(/^org-\d+-\d+-(.+)$/);
-            originalName = originalNameMatch ? originalNameMatch[1] : file;
-          } else {
-            // Legacy files with timestamp-random-originalname pattern
-            const legacyMatch = file.match(/^\d+-\d+-(.+)$/);
-            originalName = legacyMatch ? legacyMatch[1] : file;
-          }
-          
-          return {
-            fileName: file,
-            originalName: originalName,
-            uploadedAt: stats.birthtime,
-            size: stats.size,
-            type: file.startsWith('org-') ? 'organization' : 'legacy'
-          };
-        })
-        .sort((a, b) => {
-          // Sort by type (organization files first) then by upload date
-          if (a.type !== b.type) {
-            return a.type === 'organization' ? -1 : 1;
-          }
-          return new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime();
-        });
-      
-      res.json(orgFiles);
+      console.log(`Found ${organizationFiles.length} organization files in storage`);
+
+      // Sort by upload date (newest first)
+      organizationFiles.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+
+      res.json(organizationFiles);
     } catch (error) {
-      console.error("Error fetching organization files:", error);
-      res.status(500).json({ message: "Failed to fetch organization files" });
+      console.error('Error fetching organization files:', error);
+      res.status(500).json({ error: 'Failed to fetch organization files' });
     }
   });
 
@@ -1609,6 +1562,31 @@ export function setupAdminRoutes(app: Express) {
       console.log('Saving organizations to storage...');
       const createdOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations);
       console.log(`Successfully saved ${createdOrganizations.length} organizations to storage`);
+
+      // Record each uploaded organization file with status
+      for (const file of files) {
+        // Fix Korean filename encoding
+        let originalName = file.originalname;
+        try {
+          originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        } catch (encodingError) {
+          console.log('Using original filename as-is');
+        }
+
+        const orgFileRecord = {
+          fileName: file.filename,
+          originalName: originalName,
+          uploadedAt: new Date(),
+          size: file.size,
+          type: 'organization',
+          status: 'applied', // 최종 반영됨
+          organizationsCount: createdOrganizations.length
+        };
+
+        // Save organization file metadata
+        await storage.saveOrganizationFileRecord(orgFileRecord);
+        console.log(`Organization file record saved: ${orgFileRecord.originalName}`);
+      }
 
       // Verify storage
       const allOrgs = await storage.getOrganizationCategories();
