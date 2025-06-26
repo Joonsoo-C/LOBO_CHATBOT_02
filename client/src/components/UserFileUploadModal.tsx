@@ -467,7 +467,12 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
           {/* Uploaded Files List */}
           <div className="pt-6 border-t border-border">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-base font-medium text-foreground korean-text">업로드된 사용자 파일</h4>
+              <div>
+                <h4 className="text-base font-medium text-foreground korean-text">업로드된 사용자 파일</h4>
+                <p className="text-xs text-muted-foreground korean-text mt-1">
+                  시스템에 반영된 최신 사용자 파일 목록입니다
+                </p>
+              </div>
               <Button
                 size="sm"
                 variant="outline"
@@ -480,36 +485,115 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
             </div>
             
             {isLoadingUserFiles ? (
-              <div className="text-center py-4">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <div className="text-center py-8">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                 <p className="text-sm text-muted-foreground korean-text">파일 목록 로딩 중...</p>
               </div>
             ) : userFiles && userFiles.length > 0 ? (
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="space-y-3 max-h-80 overflow-y-auto">
                 {userFiles.map((file) => (
-                  <div key={file.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex-1 min-w-0">
-                      <h5 className="text-sm font-medium korean-text truncate">{file.filename}</h5>
-                      <div className="flex items-center space-x-4 text-xs text-muted-foreground mt-1">
-                        <span>크기: {(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                        <span>업로드: {new Date(file.uploadedAt).toLocaleDateString('ko-KR')}</span>
-                        <span>사용자: {file.userCount}명</span>
-                        <Badge variant={
-                          file.status === 'applied' ? 'default' :
-                          file.status === 'validated' ? 'secondary' :
-                          file.status === 'partially_applied' ? 'outline' : 'destructive'
-                        }>
+                  <div key={file.id} className="flex items-start justify-between p-4 bg-muted rounded-lg border border-border hover:bg-muted/80 transition-colors">
+                    <div className="flex-1 min-w-0 mr-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                        <h5 className="text-sm font-medium korean-text truncate">{file.filename}</h5>
+                        <Badge 
+                          variant={
+                            file.status === 'applied' ? 'default' :
+                            file.status === 'validated' ? 'secondary' :
+                            file.status === 'partially_applied' ? 'outline' : 'destructive'
+                          }
+                          className={`text-xs px-2 py-1 ${
+                            file.status === 'applied' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                            file.status === 'validated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                            file.status === 'partially_applied' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                            'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                          }`}
+                        >
                           {file.statusText}
                         </Badge>
                       </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-1">
+                          <span className="font-medium">크기:</span>
+                          <span>{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span className="font-medium">사용자:</span>
+                          <span className="font-medium text-primary">{file.userCount}명</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span className="font-medium">업로드:</span>
+                          <span>{new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span className="font-medium">상태:</span>
+                          <span className={
+                            file.status === 'applied' ? 'text-green-600 dark:text-green-400 font-medium' :
+                            file.status === 'validated' ? 'text-blue-600 dark:text-blue-400 font-medium' :
+                            file.status === 'partially_applied' ? 'text-yellow-600 dark:text-yellow-400 font-medium' :
+                            'text-red-600 dark:text-red-400 font-medium'
+                          }>
+                            {file.status === 'applied' ? '시스템 반영 완료' :
+                             file.status === 'validated' ? '검증 완료 (미반영)' :
+                             file.status === 'partially_applied' ? '부분 반영' :
+                             file.status === 'processing' ? '처리 중' : '반영 실패'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* 상태별 추가 정보 */}
+                      {file.status === 'applied' && (
+                        <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border-l-2 border-green-500">
+                          <p className="text-xs text-green-700 dark:text-green-300 korean-text">
+                            ✅ 이 파일의 모든 사용자 데이터가 시스템에 성공적으로 반영되었습니다.
+                          </p>
+                        </div>
+                      )}
+                      
+                      {file.status === 'validated' && (
+                        <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border-l-2 border-blue-500">
+                          <p className="text-xs text-blue-700 dark:text-blue-300 korean-text">
+                            ℹ️ 파일 검증은 완료되었으나 실제 시스템에는 반영되지 않았습니다.
+                          </p>
+                        </div>
+                      )}
+                      
+                      {file.status === 'partially_applied' && (
+                        <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border-l-2 border-yellow-500">
+                          <p className="text-xs text-yellow-700 dark:text-yellow-300 korean-text">
+                            ⚠️ 일부 사용자 데이터만 반영되었습니다. 중복 또는 오류가 있는 데이터는 제외되었습니다.
+                          </p>
+                        </div>
+                      )}
+                      
+                      {(file.status === 'failed' || file.status === 'processing') && (
+                        <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded border-l-2 border-red-500">
+                          <p className="text-xs text-red-700 dark:text-red-300 korean-text">
+                            {file.status === 'processing' ? 
+                              '🔄 파일 처리가 진행 중입니다...' : 
+                              '❌ 파일 처리 중 오류가 발생했습니다. 파일 형식이나 내용을 확인해 주세요.'
+                            }
+                          </p>
+                        </div>
+                      )}
                     </div>
+                    
                     <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                       <AlertDialogTrigger asChild>
                         <Button
                           size="icon"
                           variant="ghost"
                           onClick={() => handleDelete(file)}
-                          className="text-destructive hover:text-destructive-foreground hover:bg-destructive ml-2"
+                          className="text-destructive hover:text-destructive-foreground hover:bg-destructive/10 ml-2 flex-shrink-0"
+                          title="파일 삭제"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -518,8 +602,9 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                         <AlertDialogHeader>
                           <AlertDialogTitle className="korean-text">파일 삭제 확인</AlertDialogTitle>
                           <AlertDialogDescription className="korean-text">
-                            '{fileToDelete?.filename}' 파일을 정말로 삭제하시겠습니까? 
-                            이 작업은 되돌릴 수 없습니다.
+                            '{fileToDelete?.filename}' 파일을 정말로 삭제하시겠습니까?<br/>
+                            이 작업은 되돌릴 수 없으며, 파일 기록만 삭제됩니다.<br/>
+                            (이미 반영된 사용자 데이터는 유지됩니다)
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -537,9 +622,14 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 ))}
               </div>
             ) : (
-              <div className="text-center py-6 text-muted-foreground">
-                <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                <p className="korean-text">업로드된 사용자 파일이 없습니다</p>
+              <div className="text-center py-12 text-muted-foreground">
+                <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
+                  <FileText className="w-8 h-8 opacity-50" />
+                </div>
+                <h5 className="text-sm font-medium mb-2 korean-text">업로드된 사용자 파일이 없습니다</h5>
+                <p className="text-xs korean-text">
+                  Excel 또는 CSV 파일을 업로드하여 사용자 데이터를 관리해보세요
+                </p>
               </div>
             )}
           </div>
