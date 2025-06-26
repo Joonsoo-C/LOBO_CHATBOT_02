@@ -361,9 +361,15 @@ function MasterAdmin() {
       
       // 상위 카테고리 필터링
       if (selectedUniversity !== 'all') {
+        console.log('필터링 전 사용자 수:', filtered.length);
+        console.log('선택된 상위 카테고리:', selectedUniversity);
+        console.log('사용자들의 상위 카테고리:', filtered.map(u => ({ id: u.id, upperCategory: (u as any).upperCategory })).slice(0, 5));
+        
         filtered = filtered.filter(user => 
           (user as any).upperCategory === selectedUniversity
         );
+        
+        console.log('필터링 후 사용자 수:', filtered.length);
       }
       
       // 하위 카테고리 필터링
@@ -886,7 +892,7 @@ function MasterAdmin() {
     setSelectedCollege('all');
     setSelectedDepartment('all');
     setHasSearched(true); // 실시간 적용
-    setOrgCategoriesCurrentPage(1); // 페이지 리셋
+    setUserCurrentPage(1); // 사용자 페이지 리셋
   };
 
   // 하위 카테고리 변경 시 세부 카테고리 초기화 (실시간 적용)
@@ -894,14 +900,14 @@ function MasterAdmin() {
     setSelectedCollege(value);
     setSelectedDepartment('all');
     setHasSearched(true); // 실시간 적용
-    setOrgCategoriesCurrentPage(1); // 페이지 리셋
+    setUserCurrentPage(1); // 사용자 페이지 리셋
   };
 
   // 세부 카테고리 변경 시 실시간 적용
   const handleDetailCategoryChange = (value: string) => {
     setSelectedDepartment(value);
     setHasSearched(true); // 실시간 적용
-    setOrgCategoriesCurrentPage(1); // 페이지 리셋
+    setUserCurrentPage(1); // 사용자 페이지 리셋
   };
 
   // 에이전트 검색 함수
