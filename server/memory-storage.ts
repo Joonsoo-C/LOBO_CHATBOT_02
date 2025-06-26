@@ -611,8 +611,7 @@ export class MemoryStorage implements IStorage {
     // Invalidate cache
     cache.delete('all_agents');
 
-    // Save to persistence immediately
-    this.saveAgentsToPersistence();
+
 
     return newAgent;
   }

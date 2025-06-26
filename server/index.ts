@@ -157,10 +157,28 @@ app.use((req, res, next) => {
         const allAgents = await storage.getAllAgents();
         console.log(`📊 현재 전체 에이전트 수: ${allAgents.length}개`);
         
-        // Force save to persistence
-        if (typeof storage.saveAgentsToPersistence === 'function') {
-          await storage.saveAgentsToPersistence();
-          console.log('💾 에이전트 데이터 영구 저장 완료');
+        // Force manual agent data save
+        try {
+          const fs = await import('fs');
+          const path = await import('path');
+          
+          const agentsMap = {};
+          const allCurrentAgents = await storage.getAllAgents();
+          
+          allCurrentAgents.forEach(agent => {
+            agentsMap[agent.id] = agent;
+          });
+          
+          const dataDir = path.join(process.cwd(), 'data');
+          if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+          }
+          
+          const agentsPath = path.join(dataDir, 'memory-storage-agents.json');
+          fs.writeFileSync(agentsPath, JSON.stringify(agentsMap, null, 2));
+          console.log('💾 에이전트 데이터 수동 저장 완료:', agentsPath);
+        } catch (saveError) {
+          console.error('💾 에이전트 저장 중 오류:', saveError.message);
         }
       }
     } catch (error) {
