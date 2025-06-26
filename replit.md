@@ -553,6 +553,13 @@ Changelog:
   * Fixed real-time data synchronization ensuring search results reflect newly uploaded users
   * Added comprehensive status badge system with color-coded visual indicators
   * Implemented file-based persistence for user file metadata to survive server restarts
+- June 26, 2025. Enhanced user file upload UI and operation modes:
+  * Moved uploaded file list from main user management screen to file upload popup dialog
+  * Clarified overwrite option behavior with detailed explanations in UI
+  * Default mode (unchecked): preserves existing user data, adds only new users, maintains existing connections
+  * Overwrite mode (checked): completely replaces all user data with uploaded file contents
+  * Enhanced upload dialog with comprehensive file management and status tracking within popup
+  * Improved user experience with clear operation mode descriptions and real-time status updates
 ```
 
 ## User Preferences
