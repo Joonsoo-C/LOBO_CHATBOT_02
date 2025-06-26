@@ -2433,6 +2433,88 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // 모든 에이전트 데이터 교체
+  app.post('/api/admin/agents/replace-all', requireMasterAdmin, async (req, res) => {
+    try {
+      const { agents } = req.body;
+      
+      if (!Array.isArray(agents)) {
+        return res.status(400).json({ message: "유효하지 않은 에이전트 데이터입니다." });
+      }
+
+      console.log(`🔄 ${agents.length}개의 에이전트로 전체 데이터 교체 시작...`);
+
+      // 기존 모든 에이전트 삭제
+      await storage.clearAllAgents();
+      console.log('✅ 기존 에이전트 데이터 삭제 완료');
+
+      // 새 에이전트 데이터 추가
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const agentData of agents) {
+        try {
+          const agent = await storage.createAgent({
+            name: agentData.name,
+            description: agentData.description,
+            category: agentData.category,
+            icon: agentData.icon,
+            backgroundColor: agentData.backgroundColor,
+            isActive: agentData.isActive,
+            status: agentData.status,
+            managerId: agentData.managerId,
+            organizationId: agentData.organizationId,
+            upperCategory: agentData.upperCategory,
+            lowerCategory: agentData.lowerCategory,
+            detailCategory: agentData.detailCategory,
+            llmModel: agentData.llmModel,
+            chatbotType: agentData.chatbotType,
+            maxInputLength: agentData.maxInputLength,
+            maxResponseLength: agentData.maxResponseLength,
+            visibility: agentData.visibility,
+            rolePrompt: agentData.rolePrompt,
+            persona: agentData.persona,
+            systemPrompt: agentData.systemPrompt,
+            speechStyle: agentData.speechStyle,
+            personality: agentData.personality,
+            prohibitedWords: agentData.prohibitedWords,
+            responseStyle: agentData.responseStyle,
+            uploadFormats: agentData.uploadFormats,
+            uploadMethod: agentData.uploadMethod,
+            maxFileCount: agentData.maxFileCount,
+            maxFileSizeMB: agentData.maxFileSizeMB,
+            isCustomIcon: agentData.isCustomIcon,
+            agentManagerIds: agentData.agentManagerIds,
+            documentManagerIds: agentData.documentManagerIds,
+            agentEditorIds: agentData.agentEditorIds,
+            allowedGroups: agentData.allowedGroups,
+            creatorId: agentData.creatorId,
+            type: agentData.type
+          });
+          successCount++;
+          console.log(`✓ 에이전트 생성 완료: ${agentData.name}`);
+        } catch (error) {
+          failCount++;
+          console.log(`❌ 에이전트 생성 실패: ${agentData.name} - ${error.message}`);
+        }
+      }
+
+      console.log(`🎉 에이전트 교체 완료: 성공 ${successCount}개, 실패 ${failCount}개`);
+
+      res.json({
+        success: true,
+        message: `에이전트 데이터가 성공적으로 교체되었습니다.`,
+        totalAgents: successCount,
+        successCount,
+        failCount
+      });
+
+    } catch (error) {
+      console.error("Error replacing agents:", error);
+      res.status(500).json({ message: "에이전트 교체에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';
