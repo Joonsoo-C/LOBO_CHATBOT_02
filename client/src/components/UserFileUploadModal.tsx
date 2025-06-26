@@ -282,6 +282,80 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
 
         {/* Modal Content */}
         <div className="p-6 max-h-[75vh] overflow-y-auto">
+          {/* 현재 시스템에 적용된 문서 정보 */}
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100 korean-text">
+                업로드된 파일 ({userFiles.filter(file => file.status === 'applied').length}개)
+              </h4>
+              <span className="text-xs text-blue-700 dark:text-blue-300 korean-text">
+                조직 데이터 관련 파일들
+              </span>
+            </div>
+            
+            {isLoadingUserFiles ? (
+              <div className="flex items-center justify-center py-4">
+                <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
+                <span className="ml-2 text-sm text-blue-700 dark:text-blue-300">로딩 중...</span>
+              </div>
+            ) : userFiles.filter(file => file.status === 'applied').length > 0 ? (
+              <div className="space-y-2">
+                {userFiles
+                  .filter(file => file.status === 'applied')
+                  .slice(0, 3)
+                  .map((file) => (
+                    <div key={file.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate korean-text">
+                            {file.originalName}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {new Date(file.uploadedAt).toLocaleString('ko-KR', {
+                              year: 'numeric',
+                              month: '2-digit', 
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })} • {(file.size / (1024 * 1024)).toFixed(2)} MB
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge 
+                          variant="secondary" 
+                          className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 korean-text"
+                        >
+                          {file.userCount}명 조직 반영됨
+                        </Badge>
+                        <Badge 
+                          variant="secondary"
+                          className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 korean-text"
+                        >
+                          최종 반영됨
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                {userFiles.filter(file => file.status === 'applied').length > 3 && (
+                  <div className="text-center pt-2">
+                    <span className="text-xs text-blue-600 dark:text-blue-400 korean-text">
+                      외 {userFiles.filter(file => file.status === 'applied').length - 3}개 파일 더 있음
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <FileText className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                <p className="text-sm text-blue-600 dark:text-blue-400 korean-text">
+                  아직 시스템에 적용된 사용자 파일이 없습니다.
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* File Upload Section */}
           <div 
             className={`mb-6 p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer ${
