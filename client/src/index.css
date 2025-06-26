@@ -247,6 +247,29 @@ body {
     }
   }
 
+  /* Pagination button consistency fix */
+  .pagination-link {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-width: 1px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure active pagination links maintain same size */
+  .pagination-link[aria-current="page"] {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-width: 1px !important;
+    box-sizing: border-box !important;
+  }
+
   @media (min-width: 1280px) {
     .responsive-agent-grid {
       grid-template-columns: repeat(4, 1fr) !important;
