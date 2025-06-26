@@ -456,7 +456,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 <Checkbox
                   id="overwrite-existing"
                   checked={overwriteExisting}
-                  onCheckedChange={setOverwriteExisting}
+                  onCheckedChange={(checked) => setOverwriteExisting(checked === true)}
                 />
                 <Label htmlFor="overwrite-existing" className="text-sm korean-text">
                   기존 사용자 정보 덮어쓰기 (모든 기존 사용자 데이터 삭제 후 새 데이터로 교체)
