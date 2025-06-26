@@ -205,6 +205,7 @@ function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedAgentType, setSelectedAgentType] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [documentSearchQuery, setDocumentSearchQuery] = useState('');
@@ -3579,8 +3580,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </div>
                 
-                {/* 상태 필터 행 */}
+                {/* 유형 및 상태 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">유형</Label>
+                    <Select value={selectedAgentType} onValueChange={setSelectedAgentType}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="학교">학교</SelectItem>
+                        <SelectItem value="교수">교수</SelectItem>
+                        <SelectItem value="학생">학생</SelectItem>
+                        <SelectItem value="그룹">그룹</SelectItem>
+                        <SelectItem value="기능형">기능형</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div>
                     <Label className="text-sm font-medium">상태</Label>
                     <Select value={selectedCollege} onValueChange={setSelectedCollege}>

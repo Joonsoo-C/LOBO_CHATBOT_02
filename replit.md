@@ -560,6 +560,12 @@ Changelog:
   * Overwrite mode (checked): completely replaces all user data with uploaded file contents
   * Enhanced upload dialog with comprehensive file management and status tracking within popup
   * Improved user experience with clear operation mode descriptions and real-time status updates
+- June 26, 2025. Implemented type filtering in agent management search:
+  * Added "유형" (Type) filter dropdown to agent search and management section in master admin interface
+  * Filter options include: 전체, 학교, 교수, 학생, 그룹, 기능형
+  * Improved agent categorization using "유형" terminology instead of "기본 카테고리"
+  * Enhanced search functionality now supports filtering by both type and status
+  * Type filter positioned alongside status filter in responsive grid layout
 - June 26, 2025. Completed comprehensive agent data replacement system:
   * Successfully processed and uploaded 100 new agent records from Excel file (대학_AI챗봇_에이전트_100개_페르소나고유)
   * Implemented complete agent data replacement functionality with clearAllAgents() method
