@@ -79,6 +79,7 @@ export interface IStorage {
   deleteOrganizationCategory(id: number): Promise<void>;
   bulkCreateOrganizationCategories(organizations: any[]): Promise<any[]>;
   clearAllOrganizationCategories(): Promise<void>;
+  deleteRoboUniversityOrganizations(): Promise<{ deletedCount: number }>;
   clearCache?(): void;
 }
 
@@ -418,6 +419,11 @@ export class DatabaseStorage implements IStorage {
 
   async clearAllOrganizationCategories(): Promise<void> {
     // Placeholder - would normally truncate organizationCategories table
+  }
+
+  async deleteRoboUniversityOrganizations(): Promise<{ deletedCount: number }> {
+    // Placeholder - would normally delete Robo University organizations from database
+    return { deletedCount: 0 };
   }
 }
 

@@ -2363,6 +2363,22 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Delete Robo University organization categories
+  app.delete("/api/admin/organizations/robo-university", requireMasterAdmin, async (req, res) => {
+    try {
+      const result = await storage.deleteRoboUniversityOrganizations();
+      
+      res.json({
+        success: true,
+        message: `로보대학교 관련 조직 카테고리 ${result.deletedCount}개가 성공적으로 삭제되었습니다.`,
+        deletedCount: result.deletedCount
+      });
+    } catch (error) {
+      console.error("Error deleting Robo University organizations:", error);
+      res.status(500).json({ message: "로보대학교 조직 삭제 중 오류가 발생했습니다." });
+    }
+  });
+
   // Manual user creation endpoint
   app.post("/api/admin/users/create", requireMasterAdmin, async (req, res) => {
     try {

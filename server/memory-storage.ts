@@ -1368,4 +1368,41 @@ export class MemoryStorage implements IStorage {
 
     return deletedCount;
   }
+
+  async deleteRoboUniversityOrganizations(): Promise<{ deletedCount: number }> {
+    const organizationsToDelete: number[] = [];
+    
+    for (const [orgId, org] of this.organizationCategories.entries()) {
+      const hasRoboAffiliation =
+        org.upperCategory === "로보대학교" ||
+        org.lowerCategory === "로보대학교" ||
+        org.detailCategory === "로보대학교" ||
+        org.name === "로보대학교" ||
+        (org.name && org.name.includes("로보대학교")) ||
+        (org.upperCategory && org.upperCategory.includes("로보대학교")) ||
+        (org.lowerCategory && org.lowerCategory.includes("로보대학교")) ||
+        (org.detailCategory && org.detailCategory.includes("로보대학교"));
+
+      if (hasRoboAffiliation) {
+        organizationsToDelete.push(orgId);
+      }
+    }
+
+    organizationsToDelete.forEach(orgId => this.organizationCategories.delete(orgId));
+
+    const deletedCount = organizationsToDelete.length;
+
+    if (deletedCount > 0) {
+      console.log(`🗑️ Deleted ${deletedCount} organization categories with 로보대학교 affiliation`);
+      // Save to persistence file
+      this.saveOrganizationCategoriesToFile();
+      // Clear cache
+      if (cache) {
+        cache.delete('all_organizations');
+        cache.delete('organization_categories');
+      }
+    }
+
+    return { deletedCount };
+  }
 }
