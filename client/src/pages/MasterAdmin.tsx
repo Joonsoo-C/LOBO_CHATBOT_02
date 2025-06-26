@@ -5918,21 +5918,45 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center space-x-2">
                                 <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
-                                {file.type === 'organization' && (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                    조직
-                                  </span>
+                                <div className="flex items-center space-x-1">
+                                  {file.type === 'organization' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                      조직 파일
+                                    </span>
+                                  )}
+                                  {file.status === 'applied' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                      최종 반영됨
+                                    </span>
+                                  )}
+                                  {file.status === 'validated' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                      검증됨
+                                    </span>
+                                  )}
+                                  {file.status === 'pending' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                                      미반영
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <p className="text-xs text-gray-500">
+                                  {new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })} • {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                                {file.organizationsCount && (
+                                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                                    {file.organizationsCount}개 조직 반영
+                                  </p>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-500">
-                                {new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })} • {(file.size / 1024 / 1024).toFixed(2)} MB
-                              </p>
                             </div>
                           </div>
                           <Button
