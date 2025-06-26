@@ -2444,8 +2444,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {upperCategories.map(category => (
-                        <SelectItem key={category} value={category}>
+                      {upperCategories.map((category, index) => (
+                        <SelectItem key={`upper-${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -2464,8 +2464,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {lowerCategories.map(category => (
-                        <SelectItem key={category} value={category}>
+                      {lowerCategories.map((category, index) => (
+                        <SelectItem key={`lower-${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -2484,8 +2484,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {detailCategories.map(category => (
-                        <SelectItem key={category} value={category}>
+                      {detailCategories.map((category, index) => (
+                        <SelectItem key={`detail-${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}

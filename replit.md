@@ -582,6 +582,14 @@ Changelog:
   * Found 0 "로보대학교" agents requiring deletion in current system state
   * Enhanced deletion logic with comprehensive agent name and description checking
   * System now equipped with selective agent deletion capability for future management needs
+- June 26, 2025. Implemented comprehensive manual user creation system:
+  * Added "+ 새 사용자 추가" button with complete form UI in master admin interface
+  * Created server API endpoint /api/admin/users/create with validation and duplicate checking
+  * Implemented NewUserForm component with organization hierarchy selection functionality
+  * Added real-time data refresh after user creation with automatic cache invalidation
+  * Integrated with existing organization categories for proper user categorization
+  * Fixed React duplicate key warnings by adding unique identifiers to SelectItem components
+  * Manual user creation now fully functional alongside bulk file upload capabilities
 ```
 
 ## User Preferences
