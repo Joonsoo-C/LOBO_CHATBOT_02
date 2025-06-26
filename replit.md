@@ -560,18 +560,6 @@ Changelog:
   * Overwrite mode (checked): completely replaces all user data with uploaded file contents
   * Enhanced upload dialog with comprehensive file management and status tracking within popup
   * Improved user experience with clear operation mode descriptions and real-time status updates
-- June 26, 2025. Completed user file upload modal with applied files list display:
-  * Added "현재 시스템에 적용된 사용자 파일" section to popup dialog similar to organization category system
-  * Displays uploaded user files with status indicators ("최종 반영됨", "검증됨", "미반영")
-  * Shows file upload timestamp, user count processed, and individual file deletion functionality
-  * Files list includes real-time loading states and empty state handling
-  * Complete file management workflow integrated within user file upload popup interface
-- June 26, 2025. Fixed user file upload system data persistence and sample data conflicts:
-  * Completely removed sample user data initialization to prevent conflicts with uploaded data
-  * Fixed file-based persistence for user files to survive server restarts
-  * Cleared existing user data storage to ensure only uploaded user data is used
-  * Fixed Checkbox component type errors in UserFileUploadModal
-  * System now starts clean with only master admin account and uploaded user data
 ```
 
 ## User Preferences

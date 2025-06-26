@@ -41,10 +41,6 @@ export class MemoryStorage implements IStorage {
 
   constructor() {
     this.ensurePersistenceDir();
-    
-    // Clear existing user data to ensure fresh start
-    this.users.clear();
-    
     this.loadPersistedDocuments();
     this.loadPersistedOrganizationCategories();
     this.loadPersistedOrganizationFiles();
