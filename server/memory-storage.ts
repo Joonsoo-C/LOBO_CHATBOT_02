@@ -807,9 +807,13 @@ export class MemoryStorage implements IStorage {
     const updatedOrganization = {
       ...existingOrganization,
       ...organization,
+      manager: organization.manager !== undefined ? organization.manager : existingOrganization.manager,
       updatedAt: new Date()
     };
+    
     this.organizationCategories.set(id, updatedOrganization);
+    console.log(`Updated organization category ${id}:`, updatedOrganization);
+    
     await this.saveOrganizationCategoriesToFile();
     return updatedOrganization;
   }

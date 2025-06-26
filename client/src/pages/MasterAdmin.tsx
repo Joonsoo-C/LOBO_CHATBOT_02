@@ -710,6 +710,7 @@ export default function MasterAdmin() {
         detailCategory: data.detailCategory || null,
         description: data.description || null,
         status: data.status,
+        manager: data.manager || null, // 관리자 정보 포함
       };
       const response = await apiRequest("PATCH", `/api/admin/organizations/${data.id}`, updatePayload);
       return response.json();
@@ -4252,7 +4253,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <div>
                               <span className="text-sm text-gray-600 dark:text-gray-400">현재 관리자</span>
                               <div className="font-semibold text-purple-600 dark:text-purple-400 text-[20px]">
-                                {editingOrgCategory?.manager || "미지정"}
+                                {orgCategoryEditForm.watch('manager') || editingOrgCategory?.manager || "미지정"}
                               </div>
                             </div>
                             
@@ -4291,6 +4292,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Hidden manager field for form handling */}
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="manager"
+                      render={({ field }) => (
+                        <FormItem className="hidden">
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
                         </FormItem>
                       )}
                     />
@@ -4487,17 +4501,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 type="button"
                                 size="sm"
                                 onClick={() => {
-                                  // Update the editing organization category with new manager
+                                  const managerName = user.fullName || user.username;
+                                  
+                                  // Update form field first
+                                  orgCategoryEditForm.setValue('manager', managerName);
+                                  
+                                  // Update the editing organization category state
                                   if (editingOrgCategory) {
                                     const updatedCategory = {
                                       ...editingOrgCategory,
-                                      manager: user.fullName || user.username
+                                      manager: managerName
                                     };
                                     setEditingOrgCategory(updatedCategory);
-                                    // Update form data
-                                    orgCategoryEditForm.setValue('manager', user.fullName || user.username);
                                   }
+                                  
                                   setIsCategoryManagerDialogOpen(false);
+                                  
+                                  toast({
+                                    title: "관리자 선택됨",
+                                    description: `${managerName}이(가) 카테고리 관리자로 선택되었습니다.`,
+                                  });
                                 }}
                               >
                                 선택

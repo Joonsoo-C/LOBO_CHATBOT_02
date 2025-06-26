@@ -762,7 +762,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       // Get organization files from storage instead of filesystem scanning
       const organizationFiles = await storage.getOrganizationFiles();
-      
+
       console.log(`Found ${organizationFiles.length} organization files in storage`);
 
       // Sort by upload date (newest first)
@@ -780,13 +780,13 @@ export function setupAdminRoutes(app: Express) {
     try {
       const fileName = decodeURIComponent(req.params.fileName);
       const filePath = path.join(process.cwd(), 'uploads', 'admin', fileName);
-      
+
       if (!fs.existsSync(filePath)) {
         return res.status(404).json({ message: "파일을 찾을 수 없습니다" });
       }
-      
+
       fs.unlinkSync(filePath);
-      
+
       res.json({
         success: true,
         message: "파일이 성공적으로 삭제되었습니다"
@@ -1572,14 +1572,14 @@ export function setupAdminRoutes(app: Express) {
       // Save to storage with proper merge logic
       console.log('Saving organizations to storage...');
       const shouldOverwrite = overwriteExisting === 'true';
-      
+
       if (shouldOverwrite) {
         console.log('Overwrite mode: Will replace all existing organization categories');
         await storage.deleteAllOrganizationCategories();
       } else {
         console.log('Merge mode: Will preserve existing organization categories and merge new data');
       }
-      
+
       const processedOrganizations = await storage.bulkCreateOrganizationCategories(totalOrganizations, shouldOverwrite);
       console.log(`Successfully processed ${processedOrganizations.length} organizations to storage`);
 
@@ -1724,8 +1724,15 @@ export function setupAdminRoutes(app: Express) {
 
       console.log(`Updating organization category ${id} with data:`, updateData);
 
+      // Ensure manager field is properly handled
+      const updateDataProcessed = {
+        ...updateData,
+        manager: updateData.manager || null,
+        updatedAt: new Date()
+      };
+
       // Update the organization category in storage
-      const updatedCategory = await storage.updateOrganizationCategory(parseInt(id), updateData);
+      const updatedCategory = await storage.updateOrganizationCategory(parseInt(id), updateDataProcessed);
 
       if (!updatedCategory) {
         return res.status(404).json({ message: "Organization category not found" });
