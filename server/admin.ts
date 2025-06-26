@@ -834,8 +834,7 @@ export function setupAdminRoutes(app: Express) {
       const colWidths = [
         { wch: 15 }, // ID
         { wch: 15 }, // 사용자명
-        { wch: 20 }, // 이름
-        { wch: 30 }, // 이메일
+        { wch: 20 }, // 이름        { wch: 30 }, // 이메일
         { wch: 10 }, // 사용자유형
         { wch: 15 }, // 상위카테고리
         { wch: 20 }, // 하위카테고리
@@ -1744,6 +1743,60 @@ export function setupAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error updating organization category:", error);
       res.status(500).json({ message: "Failed to update organization category" });
+    }
+  });
+
+  // User file upload configuration
+  const userUpload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, adminUploadDir);
+      },
+      filename: (req, file, cb) => {
+        // Generate a unique filename
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.originalname}`;
+        cb(null, uniqueName);
+      }
+    }),
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      // Fix Korean filename encoding immediately
+      try {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch (e) {
+        console.log('Filename encoding conversion failed, keeping original:', file.originalname);
+      }
+
+      const allowedTypes = [
+        'application/vnd.ms-excel', // .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'text/csv', // .csv
+        'application/csv', // .csv alternative
+        'text/comma-separated-values', // .csv alternative
+        'application/excel', // Excel alternative
+        'application/x-excel', // Excel alternative
+        'application/x-msexcel' // Excel alternative
+      ];
+
+      // Check both MIME type and file extension
+      const fileName = file.originalname.toLowerCase();
+      const hasValidExtension = fileName.endsWith('.xlsx') || 
+                               fileName.endsWith('.xls') || 
+                               fileName.endsWith('.csv');
+
+      const hasValidMimeType = allowedTypes.includes(file.mimetype);
+
+      console.log(`File validation - Name: ${file.originalname}, MIME: ${file.mimetype}, Valid extension: ${hasValidExtension}, Valid MIME: ${hasValidMimeType}`);
+
+      // Accept if either MIME type is valid OR file extension is valid
+      if (hasValidMimeType || hasValidExtension) {
+        cb(null, true);
+      } else {
+        console.log(`Rejected file: ${file.originalname} with MIME type: ${file.mimetype}`);
+        cb(new Error('지원하지 않는 파일 형식입니다. Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.'));
+      }
     }
   });
 }
