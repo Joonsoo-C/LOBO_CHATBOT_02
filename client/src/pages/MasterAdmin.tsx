@@ -543,6 +543,33 @@ function MasterAdmin() {
     return categories.sort();
   }, [selectedUniversity, selectedCollege, organizations]);
 
+  // 조직 계층 구조 생성 (NewUserForm에서 사용)
+  const organizationHierarchy = useMemo(() => {
+    if (!organizations) return {};
+    
+    const hierarchy: any = {};
+    
+    organizations.forEach(org => {
+      if (org.upperCategory) {
+        if (!hierarchy[org.upperCategory]) {
+          hierarchy[org.upperCategory] = {};
+        }
+        
+        if (org.lowerCategory) {
+          if (!hierarchy[org.upperCategory][org.lowerCategory]) {
+            hierarchy[org.upperCategory][org.lowerCategory] = [];
+          }
+          
+          if (org.detailCategory && !hierarchy[org.upperCategory][org.lowerCategory].includes(org.detailCategory)) {
+            hierarchy[org.upperCategory][org.lowerCategory].push(org.detailCategory);
+          }
+        }
+      }
+    });
+    
+    return hierarchy;
+  }, [organizations]);
+
   // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
@@ -7378,3 +7405,4 @@ function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy 
   );
 }
 
+export default MasterAdmin;

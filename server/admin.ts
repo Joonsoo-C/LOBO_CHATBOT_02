@@ -2363,6 +2363,60 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Manual user creation endpoint
+  app.post("/api/admin/users/create", requireMasterAdmin, async (req, res) => {
+    try {
+      const userData = req.body;
+      
+      // Validate required fields
+      if (!userData.name || !userData.email || !userData.userId) {
+        return res.status(400).json({ 
+          message: "이름, 이메일, 사용자 ID는 필수 입력 항목입니다." 
+        });
+      }
+
+      // Check if user ID already exists
+      const existingUser = await storage.getUserByUsername(userData.userId);
+      if (existingUser) {
+        return res.status(400).json({ 
+          message: "이미 존재하는 사용자 ID입니다." 
+        });
+      }
+
+      // Create new user with default password
+      const newUser = await storage.createUser({
+        id: userData.userId,
+        username: userData.userId,
+        password: "defaultPassword123!", // Default password
+        name: userData.name,
+        email: userData.email,
+        userType: userData.userType || 'student',
+        role: userData.role || 'user',
+        status: userData.status || 'active',
+        upperCategory: userData.upperCategory || null,
+        lowerCategory: userData.lowerCategory || null,
+        detailCategory: userData.detailCategory || null,
+        position: userData.position || null,
+        createdAt: new Date(),
+        lastLoginAt: null,
+        profileImageUrl: null,
+        isEmailVerified: false,
+        termsAcceptedAt: new Date()
+      });
+
+      console.log(`New user created successfully: ${userData.userId}`);
+
+      res.json({
+        success: true,
+        message: "사용자가 성공적으로 생성되었습니다.",
+        user: newUser
+      });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "사용자 생성에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';
