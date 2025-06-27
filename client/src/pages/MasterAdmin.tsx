@@ -3620,7 +3620,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     </thead>
                                     <tbody>
                                       {/* 필터링된 사용자 목록 표시 */}
-                                      {usersData?.data?.filter(user => {
+                                      {users?.filter(user => {
                                         const matchesSearch = !userFilterSearchQuery || 
                                           user.name?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
                                           user.id?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
