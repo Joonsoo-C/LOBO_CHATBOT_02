@@ -334,11 +334,11 @@ function MasterAdmin() {
         user.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.username?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesUpperCategory = !filterUpperCategory || filterUpperCategory === 'all' || 
+      const matchesUpperCategory = !filterUpperCategory || filterUpperCategory === 'all' || filterUpperCategory === '' || 
         user.upperCategory === filterUpperCategory;
-      const matchesLowerCategory = !filterLowerCategory || filterLowerCategory === 'all' || 
+      const matchesLowerCategory = !filterLowerCategory || filterLowerCategory === 'all' || filterLowerCategory === '' || 
         user.lowerCategory === filterLowerCategory;
-      const matchesDetailCategory = !filterDetailCategory || filterDetailCategory === 'all' || 
+      const matchesDetailCategory = !filterDetailCategory || filterDetailCategory === 'all' || filterDetailCategory === '' || 
         user.detailCategory === filterDetailCategory;
         
       return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
@@ -359,7 +359,7 @@ function MasterAdmin() {
               <SelectValue placeholder="상위 조직" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">전체</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
               {getUpperCategories().map((cat) => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
