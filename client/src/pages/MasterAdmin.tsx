@@ -3261,7 +3261,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="llmModel"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>사용 LLM 모델</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">사용 LLM 모델</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o"}>
                                       <FormControl>
                                         <SelectTrigger>
@@ -3346,7 +3346,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 파일 업로드 탭 */}
                         <TabsContent value="upload" className="space-y-6">
                           <div className="space-y-4">
-                            <div className="grid grid-cols-1 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="documentType"
@@ -3355,7 +3355,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <FormLabel className="text-sm font-medium text-gray-700">문서 유형</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "manual"}>
                                       <FormControl>
-                                        <SelectTrigger className="max-w-xs">
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
                                           <SelectValue />
                                         </SelectTrigger>
                                       </FormControl>
@@ -3407,29 +3407,31 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 공유 설정 탭 */}
                         <TabsContent value="sharing" className="space-y-6">
                           <div className="space-y-4">
-                            <FormField
-                              control={agentForm.control}
-                              name="visibility"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>공유 모드</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value || "organization"}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
-                                      <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
-                                      <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
-                                      <SelectItem value="private">프라이빗 - 관리자만 사용 가능</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="visibility"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">공유 모드</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "organization"}>
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
+                                        <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
+                                        <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
+                                        <SelectItem value="private">프라이빗 - 관리자만 사용 가능</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
                             
                             {/* 그룹 지정 옵션 - 완전 새로운 구조 */}
                             {agentForm.watch('visibility') === 'group' && (
