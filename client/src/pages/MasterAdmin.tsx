@@ -657,6 +657,7 @@ function MasterAdmin() {
     setSelectedDepartment('all');
     setSelectedDocumentType('all'); // 상태 필터 초기화
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
+    setSelectedAgentType('all'); // 유형 필터 초기화
     setUserSearchQuery('');
     setAgentSearchQuery('');
     setHasSearched(false);
