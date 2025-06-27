@@ -312,69 +312,23 @@ export function setupAdminRoutes(app: Express) {
   // Agent creation
   app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
-      console.log("Creating new agent with data:", req.body);
-      
-      const {
-        name,
-        description,
-        category,
-        managerId,
-        upperCategory,
-        lowerCategory,
-        detailCategory,
-        status,
-        visibility,
-        llmModel,
-        chatbotType,
-        maxInputLength,
-        maxOutputLength,
-        rolePrompt,
-        personaNickname,
-        speechStyle,
-        personality,
-        prohibitedWords,
-        icon,
-        backgroundColor
-      } = req.body;
-
-      // Validate required fields
-      if (!name || !category || !managerId) {
-        return res.status(400).json({ 
-          message: "필수 필드가 누락되었습니다: 이름, 카테고리, 관리자를 모두 입력해주세요." 
-        });
-      }
+      const { name, description, category, managerId, organizationId } = req.body;
 
       const newAgent = await storage.createAgent({
         name,
-        description: description || '',
+        description,
         creatorId: req.user?.id || 'master_admin',
         category,
-        icon: icon || 'User',
-        backgroundColor: backgroundColor || 'blue',
-        managerId: managerId,
-        upperCategory: upperCategory || null,
-        lowerCategory: lowerCategory || null,
-        detailCategory: detailCategory || null,
-        status: status || 'active',
-        visibility: visibility || 'organization',
-        llmModel: llmModel || 'gpt-4o',
-        chatbotType: chatbotType || 'doc-fallback-llm',
-        maxInputLength: maxInputLength || 2048,
-        maxResponseLength: maxOutputLength || 1024,
-        personaNickname: personaNickname || '',
-        speechStyle: speechStyle || '',
-        personality: personality || '',
-        forbiddenResponseStyle: prohibitedWords || ''
+        icon: 'user',
+        backgroundColor: '#3B82F6',
+        managerId: managerId || null,
+        organizationId: organizationId ? parseInt(organizationId) : null
       });
 
-      console.log("Agent created successfully:", newAgent);
       res.json(newAgent);
     } catch (error) {
       console.error("Error creating agent:", error);
-      res.status(500).json({ 
-        message: "에이전트 생성 중 오류가 발생했습니다.",
-        error: error instanceof Error ? error.message : String(error)
-      });
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
@@ -1566,6 +1520,7 @@ export function setupAdminRoutes(app: Express) {
 
       // Set proper headers for Korean text with UTF-8 encoding
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Content-Encoding', 'identity');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
@@ -1576,100 +1531,10 @@ export function setupAdminRoutes(app: Express) {
       const isBinaryContent = documentContent && (
         documentContent.includes('PK') || // ZIP signature (docx files)
         documentContent.includes('\u0000') || // NULL bytes
-        documentContent.includes('��') || // Common encoding corruption
-        documentContent.includes('\uFFFD') || // Unicode replacement character
-        documentContent.includes('PK\u0003\u0004') || // ZIP header
-        documentContent.includes('[Content_Types].xml') || // DOCX structure
-        documentContent.includes('word/document.xml') || // DOCX structure
         documentContent.length > 100 && documentContent.split('').filter(c => c.charCodeAt(0) < 32 && c !== '\n' && c !== '\r' && c !== '\t').length > documentContent.length * 0.1
       );
 
-      // Safely encode the document name first
-      const safeDocumentName = (document.originalName || '제목 없음').replace(/[<>&"']/g, (match) => {
-        const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
-        return htmlEntities[match as keyof typeof htmlEntities];
-      });
-
-      // Check if it's a PDF file and provide direct PDF viewing
-      if (document.mimeType === 'application/pdf') {
-        const filePath = path.join(adminUploadDir, document.filename);
-        
-        if (fs.existsSync(filePath)) {
-          // For PDF files, provide a direct PDF viewer
-          const pdfViewerHtml = `<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${safeDocumentName}</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f5f5f5;
-    }
-    .header {
-      background: white;
-      padding: 15px 20px;
-      border-bottom: 1px solid #ddd;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin: 0;
-    }
-    .pdf-container {
-      width: 100%;
-      height: calc(100vh - 80px);
-      background: white;
-    }
-    .pdf-viewer {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .download-link {
-      display: inline-block;
-      background: #007bff;
-      color: white;
-      padding: 8px 16px;
-      text-decoration: none;
-      border-radius: 4px;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .download-link:hover {
-      background: #0056b3;
-    }
-    .error-message {
-      text-align: center;
-      padding: 40px 20px;
-      color: #666;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1 class="title">${safeDocumentName}</h1>
-    <a href="/api/admin/documents/${documentId}/download" class="download-link" target="_blank">파일 다운로드</a>
-  </div>
-  <div class="pdf-container">
-    <iframe src="/api/admin/documents/${documentId}/pdf" class="pdf-viewer" type="application/pdf">
-      <div class="error-message">
-        <p>PDF를 표시할 수 없습니다.</p>
-        <p><a href="/api/admin/documents/${documentId}/download">파일을 다운로드</a>하여 확인해주세요.</p>
-      </div>
-    </iframe>
-  </div>
-</body>
-</html>`;
-          return res.send(pdfViewerHtml);
-        } else {
-          documentContent = 'PDF 파일을 찾을 수 없습니다. 파일이 삭제되었거나 이동되었을 가능성이 있습니다.';
-        }
-      } else if (isBinaryContent || !documentContent.trim()) {
+      if (isBinaryContent || !documentContent.trim()) {
         // If content is binary or empty, try to re-extract text from the file
         console.log('Detected binary content or empty content, attempting to re-extract text');
         const filePath = path.join(adminUploadDir, document.filename);
@@ -1687,8 +1552,28 @@ export function setupAdminRoutes(app: Express) {
         }
       }
 
-      // Clean up any remaining binary characters
-      documentContent = documentContent.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '');
+      // Clean up any remaining binary characters but preserve Korean characters
+      documentContent = documentContent.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+
+      // Ensure proper UTF-8 encoding for Korean text
+      if (Buffer.isBuffer(documentContent)) {
+        documentContent = documentContent.toString('utf8');
+      }
+      
+      // Fix any encoding issues by converting to proper UTF-8
+      try {
+        // Convert to buffer and back to ensure proper UTF-8 encoding
+        const buffer = Buffer.from(documentContent, 'utf8');
+        documentContent = buffer.toString('utf8');
+      } catch (e) {
+        console.log('UTF-8 conversion warning:', e.message);
+      }
+
+      // Safely encode the document name and content for HTML
+      const safeDocumentName = (document.originalName || '제목 없음').replace(/[<>&"']/g, (match) => {
+        const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
+        return htmlEntities[match as keyof typeof htmlEntities];
+      });
 
       const safeContent = documentContent.replace(/[<>&"']/g, (match) => {
         const htmlEntities = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;' };
@@ -1701,18 +1586,21 @@ export function setupAdminRoutes(app: Express) {
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Language" content="ko">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${safeDocumentName}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
     body {
-      font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Nanum Gothic', sans-serif;
+      font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Nanum Gothic', 'Arial Unicode MS', sans-serif;
       line-height: 1.8;
       margin: 20px;
       background-color: #f5f5f5;
       color: #333;
       word-break: keep-all;
       overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .container {
       max-width: 800px;
@@ -1784,11 +1672,8 @@ export function setupAdminRoutes(app: Express) {
 
       console.log(`Sending preview HTML for document: ${document.originalName}`);
 
-      // Send with UTF-8 BOM to ensure proper Korean character encoding
-      const utf8BOM = '\uFEFF';
-      const finalContent = utf8BOM + htmlContent;
-
-      res.send(finalContent);
+      // Send response with proper UTF-8 encoding
+      res.send(htmlContent);
 
     } catch (error) {
       console.error("Error previewing document:", error);
@@ -1805,52 +1690,6 @@ export function setupAdminRoutes(app: Express) {
         </body>
         </html>
       `);
-    }
-  });
-
-  // PDF direct view endpoint
-  app.get("/api/admin/documents/:id/pdf", requireMasterAdmin, async (req, res) => {
-    try {
-      const documentId = parseInt(req.params.id);
-      if (isNaN(documentId)) {
-        return res.status(400).json({ error: '유효하지 않은 문서 ID입니다.' });
-      }
-
-      const document = await storage.getDocument(documentId);
-      if (!document) {
-        return res.status(404).json({ error: '문서를 찾을 수 없습니다.' });
-      }
-
-      // Check if it's a PDF file
-      if (document.mimeType !== 'application/pdf') {
-        return res.status(400).json({ error: 'PDF 파일이 아닙니다.' });
-      }
-
-      const filePath = path.join(adminUploadDir, document.filename);
-      
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: 'PDF 파일을 찾을 수 없습니다.' });
-      }
-
-      // Set appropriate headers for PDF viewing
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(document.originalName || 'document.pdf')}"`);
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-
-      // Stream the PDF file
-      const fileStream = fs.createReadStream(filePath);
-      fileStream.on('error', (err) => {
-        console.error('PDF stream error:', err);
-        res.status(500).json({ error: 'PDF 파일 스트리밍 중 오류가 발생했습니다.' });
-      });
-      
-      fileStream.pipe(res);
-
-    } catch (error) {
-      console.error('PDF viewer error:', error);
-      res.status(500).json({ error: 'PDF 파일 로드 중 오류가 발생했습니다.' });
     }
   });
 
