@@ -3,120 +3,111 @@ import fs from 'fs';
 
 async function forceReplaceAgents() {
   try {
-    console.log('🔄 강제 에이전트 데이터 교체 시작...');
+    console.log('🔄 강제 에이전트 데이터 교체 및 final_agents.json 생성...');
     
-    // 1. 기존 에이전트 파일 삭제
-    const agentFile = 'data/memory-storage-agents.json';
-    if (fs.existsSync(agentFile)) {
-      fs.unlinkSync(agentFile);
-      console.log('✅ 기존 에이전트 파일 삭제 완료');
-    }
-    
-    // 2. 최신 Excel 파일 읽기
-    const workbook = xlsx.readFile('attached_assets/AI 에이전트 0627_1751054472984.xlsx');
+    // Excel 파일 읽기
+    const workbook = xlsx.readFile('attached_assets/AI 에이전트 0627_2_1751056559643.xlsx');
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(worksheet);
     
     console.log(`📊 Excel에서 ${jsonData.length}개의 에이전트 데이터를 읽었습니다.`);
     
-    // 3. 에이전트 데이터 변환 (Excel 구조에 맞게)
+    // 에이전트 데이터 변환 - 올바른 조직 정보 사용
     const agents = jsonData.map((row, index) => {
+      const id = parseInt(row.id) || (100 + index + 1);
+      const name = (row.name || `에이전트 ${index + 1}`).toString().trim();
+      const description = (row.description || '').toString().trim();
+      
+      // Excel 원본 조직 정보 사용
+      const upperCategory = (row.upperCategory || '공과대학').toString().trim();
+      const lowerCategory = (row.lowerCategory || '컴퓨터공학과').toString().trim();
+      const detailCategory = (row.detailCategory || row.lowerCategory || '컴퓨터공학과').toString().trim();
+      
+      const category = (row['유형'] || '학생').toString().trim(); // 유형 컬럼 사용
+      const managerId = (row.managerId || 'prof001').toString().trim();
+      
       return {
-        id: parseInt(row.id) || (69 + index),
-        name: (row.name || `에이전트 ${index + 1}`).toString().trim(),
-        description: (row.description || '').toString().trim(),
-        category: (row['유형'] || row.category || '학생').toString().trim(), // '유형' 컬럼 우선
-        icon: 'Bot',
-        backgroundColor: 'bg-blue-500',
-        upperCategory: (row.upperCategory || '공과대학').toString().trim(),
-        lowerCategory: (row.lowerCategory || '컴퓨터공학과').toString().trim(),
-        detailCategory: (row.detailCategory || row.lowerCategory || '컴퓨터공학과').toString().trim(),
-        status: (row.status || 'active').toString().trim(),
-        manager: (row.managerId || 'prof001').toString().trim(),
+        id: id,
+        name: name,
+        description: description,
+        category: category,
+        icon: "Bot",
+        backgroundColor: "#3B82F6",
+        upperCategory: upperCategory,
+        lowerCategory: lowerCategory,
+        detailCategory: detailCategory,
+        status: "active",
+        llmModel: "gpt-4o",
+        chatbotType: "doc-fallback-llm",
+        maxInputLength: 2048,
+        maxOutputLength: 1024,
+        personaNickname: (row.personaName || '').toString().trim(),
+        speechStyle: (row.speakingStyle || '').toString().trim(),
         personality: (row.personalityTraits || '').toString().trim(),
-        llmModel: (row.llmModel || 'gpt-4o').toString().trim(),
-        chatbotType: (row.chatbotType || 'doc-fallback-llm').toString().trim(),
-        maxInputLength: parseInt(row.maxInputLength) || 2048,
-        maxOutputLength: parseInt(row.maxResponseLength) || 1024,
-        temperature: 0.7,
-        visibility: (row.visibility || 'organization').toString().trim(),
-        isActive: Boolean(row.isActive !== false),
-        personaName: (row.personaName || '').toString().trim(),
-        speakingStyle: (row.speakingStyle || '').toString().trim(),
-        personalityTraits: (row.personalityTraits || '').toString().trim(),
-        rolePrompt: (row.rolePrompt || '').toString().trim(),
-        prohibitedWordResponse: (row.prohibitedWordResponse || '').toString().trim(),
+        forbiddenResponseStyle: (row.prohibitedWordResponse || '').toString().trim(),
+        visibility: "organization",
+        managerId: managerId,
+        agentEditorIds: [],
+        documentManagerIds: [],
+        isActive: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        averageRating: null,
+        messageCount: 0
       };
     });
     
     console.log(`✅ ${agents.length}개의 에이전트 데이터 변환 완료`);
     
-    // 4. 유형별 통계
-    const categoryStats = {};
+    // final_agents.json 파일 생성 (서버가 이 파일을 찾음)
+    fs.writeFileSync('final_agents.json', JSON.stringify(agents, null, 2), 'utf8');
+    console.log('💾 final_agents.json 파일 생성 완료');
+    
+    // 기존 memory-storage-agents.json도 업데이트
+    const agentDataPath = 'data/memory-storage-agents.json';
+    const dataToSave = {};
     agents.forEach(agent => {
-      categoryStats[agent.category] = (categoryStats[agent.category] || 0) + 1;
+      dataToSave[agent.id] = agent;
     });
     
-    console.log('\n📊 유형별 통계:');
+    // 디렉토리 생성
+    const dataDir = 'data';
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(agentDataPath, JSON.stringify(dataToSave, null, 2), 'utf8');
+    console.log(`💾 memory-storage-agents.json 업데이트 완료: ${agents.length}개`);
+    
+    // 화학과 멘토링 Q&A 에이전트 확인
+    const chemicalAgent = agents.find(a => a.name.includes('화학과') && a.name.includes('멘토링'));
+    if (chemicalAgent) {
+      console.log('\\n🔍 화학과 멘토링 Q&A 에이전트 확인:');
+      console.log(`  이름: ${chemicalAgent.name}`);
+      console.log(`  상위 조직: ${chemicalAgent.upperCategory}`);
+      console.log(`  하위 조직: ${chemicalAgent.lowerCategory}`);
+      console.log(`  세부 조직: ${chemicalAgent.detailCategory}`);
+      console.log(`  유형: ${chemicalAgent.category}`);
+    }
+    
+    // 통계 출력
+    const categoryStats = agents.reduce((acc, agent) => {
+      acc[agent.category] = (acc[agent.category] || 0) + 1;
+      return acc;
+    }, {});
+    
+    console.log('\\n📊 에이전트 유형별 통계:');
     Object.entries(categoryStats).forEach(([category, count]) => {
-      console.log(`  ${category}: ${count}개`);
+      console.log(`  - ${category}: ${count}개`);
     });
     
-    // 5. 새 에이전트 파일 생성
-    const agentsData = { 
-      agents, 
-      lastModified: new Date().toISOString(),
-      source: 'AI 에이전트 0627_1751054472984.xlsx'
-    };
-    
-    if (!fs.existsSync('data')) {
-      fs.mkdirSync('data', { recursive: true });
-    }
-    
-    fs.writeFileSync(agentFile, JSON.stringify(agentsData, null, 2));
-    console.log(`💾 새 에이전트 데이터를 ${agentFile}에 저장했습니다.`);
-    
-    // 6. API를 통한 강제 업데이트
-    try {
-      const response = await fetch('http://localhost:5000/api/admin/agents/force-reload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ agents })
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('✅ API를 통한 에이전트 데이터 강제 로드 성공:', result.message);
-      } else {
-        console.log('ℹ️ API 엔드포인트가 없으므로 서버 재시작이 필요합니다.');
-      }
-    } catch (error) {
-      console.log('ℹ️ API 호출 실패. 서버 재시작이 필요합니다.');
-    }
-    
-    console.log('\n🎉 에이전트 데이터 강제 교체 완료!');
-    console.log('서버를 재시작하면 새 데이터가 확실히 적용됩니다.');
-    
-    return agents;
+    console.log('\\n🎉 강제 에이전트 데이터 교체 완료!');
+    console.log('서버를 재시작하면 final_agents.json이 로드되어 올바른 조직 정보로 업데이트됩니다.');
     
   } catch (error) {
-    console.error('❌ 강제 교체 실패:', error);
+    console.error('❌ 강제 에이전트 데이터 교체 중 오류:', error);
     throw error;
   }
 }
 
-// 실행
-forceReplaceAgents()
-  .then(() => {
-    console.log('✅ 강제 에이전트 교체 완료');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('❌ 강제 교체 실패:', error);
-    process.exit(1);
-  });
-
-export { forceReplaceAgents };
+forceReplaceAgents().catch(console.error);
