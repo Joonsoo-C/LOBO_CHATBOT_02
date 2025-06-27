@@ -3284,7 +3284,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="chatbotType"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>응답 방식</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">응답 방식</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
                                       <FormControl>
                                         <SelectTrigger>
@@ -3306,7 +3306,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="maxInputLength"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>최대 입력 글자 수</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">최대 입력 글자 수</FormLabel>
                                     <FormControl>
                                       <Input 
                                         type="number" 
@@ -3325,7 +3325,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="maxOutputLength"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>최대 응답 글자 수</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">최대 응답 글자 수</FormLabel>
                                     <FormControl>
                                       <Input 
                                         type="number" 
