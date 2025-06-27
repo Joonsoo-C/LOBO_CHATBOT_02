@@ -150,7 +150,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                 <Files className="w-4 h-4" />
               </Button>
             )}
-
+            
             {isManagementMode && (
               <div className="relative">
                 <Button 
@@ -161,7 +161,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                 >
                   기능선택
                 </Button>
-
+              
                 {/* Dropdown Menu */}
                 {showMenu && (
                   <>
@@ -244,12 +244,12 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           onClick={async () => {
                             setShowMenu(false);
                             addSystemMessage("에이전트 성과 분석을 실행합니다...");
-
+                            
                             try {
                               const response = await fetch(`/api/agents/${agent.id}/performance`, {
                                 credentials: 'include'
                               });
-
+                              
                               if (response.ok) {
                                 const data = await response.json();
                                 const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
@@ -268,7 +268,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
 • 메시지 증가율: ${data.trends.messageGrowth}
 • 사용자 증가율: ${data.trends.userGrowth}
 • 참여율: ${data.trends.engagementRate}`;
-
+                                
                                 addSystemMessage(performanceMessage);
                               } else {
                                 addSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다. 다시 시도해주세요.");
@@ -375,9 +375,9 @@ export default function TabletLayout() {
       const matchesSearch = searchQuery === "" || 
         agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         agent.description.toLowerCase().includes(searchQuery.toLowerCase());
-
+      
       const matchesCategory = selectedCategory === "전체" || agent.category === selectedCategory;
-
+      
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
@@ -385,10 +385,10 @@ export default function TabletLayout() {
       if (activeTab === "chat") {
         const conversationA = conversations.find(conv => conv.agentId === a.id);
         const conversationB = conversations.find(conv => conv.agentId === b.id);
-
+        
         const hasRecentA = conversationA?.lastMessageAt;
         const hasRecentB = conversationB?.lastMessageAt;
-
+        
         if (hasRecentA && hasRecentB) {
           // Both have messages - sort by most recent first
           const timeA = new Date(conversationA.lastMessageAt).getTime();
@@ -408,7 +408,7 @@ export default function TabletLayout() {
           return (categoryOrder[a.category] || 6) - (categoryOrder[b.category] || 6);
         }
       }
-
+      
       // For management mode, maintain category order
       const categoryOrder: Record<string, number> = { 
         "학교": 1, "교수": 2, "그룹": 3, "학생": 4, "기능형": 5 
@@ -454,7 +454,7 @@ export default function TabletLayout() {
                 className="pl-10 pr-3 bg-muted border-none korean-text h-11"
               />
             </div>
-
+            
             {/* Category Filter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -484,7 +484,7 @@ export default function TabletLayout() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="korean-text h-11 px-4 flex-shrink-0">
@@ -520,7 +520,7 @@ export default function TabletLayout() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-
+          
           {/* Tab Navigation */}
           <div className="grid grid-cols-2 gap-0 bg-muted rounded-xl p-1">
             <Button
@@ -555,7 +555,7 @@ export default function TabletLayout() {
               {filteredAgents.map((agent) => {
                 const conversation = conversations.find(conv => conv.agentId === agent.id);
                 const isSelected = selectedAgentId === agent.id;
-
+                
                 return (
                   <div
                     key={agent.id}

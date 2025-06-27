@@ -22,7 +22,7 @@ function getIconComponent(iconName: string) {
     'heart': Heart,
     'message-circle': MessageCircle,
   };
-
+  
   return iconMap[iconName] || Users;
 }
 

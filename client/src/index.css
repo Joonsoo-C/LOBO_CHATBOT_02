@@ -70,16 +70,21 @@ body {
     text-align: justify !important;
   }
   
-  /* Force text content to left align but allow UI components flexibility */
-  p, h1, h2, h3, h4, h5, h6, span:not([role]), div:not([role]):not([class*="flex"]):not([class*="grid"]) {
+  /* Force all elements to left align with maximum specificity */
+  html, body, div, span, p, h1, h2, h3, h4, h5, h6 {
     text-align: left !important;
     direction: ltr !important;
+    writing-mode: horizontal-tb !important;
+    unicode-bidi: normal !important;
   }
   
-  /* Allow proper alignment for interactive elements and layouts */
-  [role="tablist"], [role="tab"], .tab-navigation, .flex, .grid, 
-  [class*="justify-"], [class*="items-"], button, [role="button"], .btn {
-    text-align: initial !important;
+  /* Override ALL possible alignment classes except buttons */
+  [class*="text-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="justify-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="items-"]:not(button):not([role="button"]):not(.btn), 
+  [class*="content-"]:not(button):not([role="button"]):not(.btn) {
+    text-align: left !important;
+    direction: ltr !important;
   }
   
 
@@ -108,47 +113,29 @@ body {
     }
   }
 
-  /* Button text centering */
+  /* Ensure button text is centered */
   button, [role="button"], .btn {
-    text-align: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
   
-  /* Message content styling */
-  .message-content {
-    text-align: left;
-    direction: ltr;
+  /* Force every possible element selector */
+  .bg-primary, .bg-primary *,
+  .bg-muted, .bg-muted *,
+  .system-message, .system-message *,
+  .text-primary-foreground, .text-muted-foreground {
+    text-align: left !important;
+    direction: ltr !important;
+    writing-mode: horizontal-tb !important;
+    unicode-bidi: normal !important;
   }
   
-  /* System message styling */
-  .system-message {
-    text-align: left;
-    direction: ltr;
-    display: block;
-    width: fit-content;
-    overflow-wrap: break-word;
-  }
-  
-  /* Layout containers */
-  .container, .content-container {
-    text-align: left;
-  }
-  
-  /* Card and panel styling */
-  .card, .panel {
-    text-align: left;
-  }
-  
-  .card-header, .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .card-content, .panel-content {
-    text-align: left;
+  /* Clean message bubble styling */
+  .bg-primary, .bg-muted, .system-message {
+    display: inline-block !important;
+    width: fit-content !important;
+    overflow-wrap: break-word !important;
   }
 }
 
@@ -718,122 +705,18 @@ body {
   }
 }
 
-/* Tab navigation layout with proper alignment */
+/* Tab navigation force single row layout */
 .tab-navigation {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 2px;
-  width: 100%;
-  background-color: var(--muted);
-  border-radius: 6px;
-  padding: 4px;
-  margin-bottom: 16px;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 !important;
+  width: 100% !important;
 }
 
 .tab-navigation button {
-  width: 100%;
-  height: 40px;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* Modal content proper alignment */
-.modal-content {
-  text-align: left;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-/* Form elements alignment */
-.form-container {
-  text-align: left;
-}
-
-.form-container label {
-  display: block;
-  text-align: left;
-  margin-bottom: 6px;
-}
-
-.form-container input,
-.form-container select,
-.form-container textarea {
-  width: 100%;
-  text-align: left;
-}
-
-/* Button groups alignment */
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.button-group.center {
-  justify-content: center;
-}
-
-.button-group.start {
-  justify-content: flex-start;
-}
-
-/* Consistent tab content layout */
-.tab-content-container {
-  position: relative !important;
-  min-height: 400px !important;
-  padding: 16px !important;
-  background-color: transparent !important;
-}
-
-/* Ensure consistent spacing for all tab panels */
-[role="tabpanel"] {
-  padding: 0 !important;
-  margin: 0 !important;
   width: 100% !important;
-}
-
-/* Tab navigation wrapper for consistent positioning */
-.tabs-wrapper {
-  position: relative !important;
-  width: 100% !important;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
-  .tab-navigation {
-    margin-bottom: 12px !important;
-  }
-  
-  .tab-navigation button {
-    height: 36px !important;
-    font-size: 13px !important;
-    padding: 6px 10px !important;
-  }
-  
-  .tab-content-container {
-    padding: 12px !important;
-    min-height: 350px !important;
-  }
+  min-width: 0 !important;
+  flex: none !important;
 }
 
 /* Reduced motion support */
