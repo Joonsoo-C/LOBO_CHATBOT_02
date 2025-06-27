@@ -284,7 +284,43 @@ function MasterAdmin() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // 에이전트 생성 탭 상태
-  const [agentCreationTab, setAgentCreationTab] = useState<'basic' | 'advanced'>('basic');
+  const [agentCreationTab, setAgentCreationTab] = useState<'basic' | 'persona' | 'model' | 'upload' | 'sharing'>('basic');
+  
+  // 조직 선택 상태
+  const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
+  const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
+  
+  // 파일 업로드 상태
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [documentType, setDocumentType] = useState<string>('');
+  
+  // 공유 설정 상태
+  const [sharingMode, setSharingMode] = useState<'organization' | 'group' | 'user' | 'private'>('organization');
+  const [sharingGroups, setSharingGroups] = useState<Array<{upperCategory: string, lowerCategory: string, detailCategory: string}>>([]);
+  
+  // 조직 필터링 함수들
+  const getUpperCategories = () => {
+    if (!organizations?.data) return [];
+    const unique = [...new Set(organizations.data.map((org: any) => org.upperCategory).filter(Boolean))];
+    return unique.sort();
+  };
+  
+  const getLowerCategories = (upperCategory: string) => {
+    if (!organizations?.data || !upperCategory) return [];
+    const filtered = organizations.data.filter((org: any) => org.upperCategory === upperCategory);
+    const unique = [...new Set(filtered.map((org: any) => org.lowerCategory).filter(Boolean))];
+    return unique.sort();
+  };
+  
+  const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
+    if (!organizations?.data || !upperCategory || !lowerCategory) return [];
+    const filtered = organizations.data.filter((org: any) => 
+      org.upperCategory === upperCategory && org.lowerCategory === lowerCategory
+    );
+    const unique = [...new Set(filtered.map((org: any) => org.detailCategory).filter(Boolean))];
+    return unique.sort();
+  };
   
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -2903,13 +2939,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </DialogHeader>
                   
                   {/* 탭 네비게이션 */}
-                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as 'basic' | 'advanced')} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-6">
-                      <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as 'basic' | 'persona' | 'model' | 'upload' | 'sharing')} className="w-full">
+                    <TabsList className="grid w-full grid-cols-5 mb-6">
+                      <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
                         기본 정보
                       </TabsTrigger>
-                      <TabsTrigger value="advanced" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
-                        고급 설정
+                      <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        페르소나
+                      </TabsTrigger>
+                      <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        모델 설정
+                      </TabsTrigger>
+                      <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        파일 업로드
+                      </TabsTrigger>
+                      <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        공유 설정
                       </TabsTrigger>
                     </TabsList>
 
@@ -2918,16 +2963,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         
                         {/* 기본 정보 탭 */}
                         <TabsContent value="basic" className="space-y-6">
-                          {/* 필수 정보 */}
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-blue-700">📌 필수 정보</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="name"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트명 *</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
                                     <FormControl>
                                       <Input 
                                         placeholder="최대 20자" 
@@ -2967,9 +3010,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                             </div>
                             
-                            {/* 조직 선택 (순차적) */}
+                            {/* 소속 조직 선택 (순차적) */}
                             <div className="space-y-4">
-                              <Label className="text-sm font-medium text-gray-700">조직 선택 *</Label>
+                              <Label className="text-sm font-medium text-gray-700">소속 *</Label>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <FormField
                                   control={agentForm.control}
