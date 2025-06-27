@@ -88,6 +88,9 @@ interface Agent {
   createdAt: string;
   messageCount: number;
   averageRating?: number;
+  upperCategory?: string;
+  lowerCategory?: string;
+  detailCategory?: string;
 }
 
 interface SystemStats {
@@ -479,6 +482,130 @@ function MasterAdmin() {
     }
   });
 
+  // 조직 카테고리 데이터 조회
+  const { data: organizationHierarchy } = useQuery({
+    queryKey: ['/api/admin/organization-categories'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organization-categories');
+      if (!response.ok) throw new Error('Failed to fetch organization categories');
+      return response.json();
+    }
+  });
+
+  // 상위, 하위, 세부 카테고리 옵션 계산
+  const uniqueUpperCategories = useMemo(() => {
+    if (!organizationHierarchy) return [];
+    return [...new Set(organizationHierarchy.map((org: any) => org.upperCategory).filter(Boolean))];
+  }, [organizationHierarchy]);
+
+  const filteredLowerCategories = useMemo(() => {
+    if (!organizationHierarchy || selectedUpperCategory === 'all') return [];
+    return [...new Set(
+      organizationHierarchy
+        .filter((org: any) => org.upperCategory === selectedUpperCategory)
+        .map((org: any) => org.lowerCategory)
+        .filter(Boolean)
+    )];
+  }, [organizationHierarchy, selectedUpperCategory]);
+
+  const filteredDetailCategories = useMemo(() => {
+    if (!organizationHierarchy || selectedLowerCategory === 'all') return [];
+    return [...new Set(
+      organizationHierarchy
+        .filter((org: any) => 
+          org.upperCategory === selectedUpperCategory && 
+          org.lowerCategory === selectedLowerCategory
+        )
+        .map((org: any) => org.detailCategory)
+        .filter(Boolean)
+    )];
+  }, [organizationHierarchy, selectedUpperCategory, selectedLowerCategory]);
+
+  // 에이전트 필터링 로직
+  const filteredAgents = useMemo(() => {
+    if (!agents) return [];
+    
+    let filtered = [...agents];
+
+    // 검색어 필터
+    if (agentSearchQuery.trim()) {
+      const query = agentSearchQuery.toLowerCase();
+      filtered = filtered.filter(agent => 
+        agent.name.toLowerCase().includes(query) ||
+        agent.description.toLowerCase().includes(query)
+      );
+    }
+
+    // 타입 필터
+    if (selectedAgentType !== 'all') {
+      filtered = filtered.filter(agent => agent.type === selectedAgentType);
+    }
+
+    // 상태 필터
+    if (selectedAgentStatus !== 'all') {
+      if (selectedAgentStatus === 'active') {
+        filtered = filtered.filter(agent => agent.isActive);
+      } else if (selectedAgentStatus === 'inactive') {
+        filtered = filtered.filter(agent => !agent.isActive);
+      }
+    }
+
+    // 상위 카테고리 필터
+    if (selectedUpperCategory !== 'all') {
+      filtered = filtered.filter(agent => agent.upperCategory === selectedUpperCategory);
+    }
+
+    // 하위 카테고리 필터
+    if (selectedLowerCategory !== 'all') {
+      filtered = filtered.filter(agent => agent.lowerCategory === selectedLowerCategory);
+    }
+
+    // 세부 카테고리 필터
+    if (selectedDetailCategory !== 'all') {
+      filtered = filtered.filter(agent => agent.detailCategory === selectedDetailCategory);
+    }
+
+    return filtered;
+  }, [agents, agentSearchQuery, selectedAgentType, selectedAgentStatus, selectedUpperCategory, selectedLowerCategory, selectedDetailCategory]);
+
+  // 정렬된 에이전트 목록
+  const sortedAgents = useMemo(() => {
+    if (!filteredAgents) return [];
+    
+    return [...filteredAgents].sort((a, b) => {
+      let aValue = '';
+      let bValue = '';
+      
+      switch (agentSortField) {
+        case 'name':
+          aValue = a.name;
+          bValue = b.name;
+          break;
+        case 'type':
+          aValue = a.type || '';
+          bValue = b.type || '';
+          break;
+        case 'status':
+          aValue = a.isActive ? '사용 중' : '미사용';
+          bValue = b.isActive ? '사용 중' : '미사용';
+          break;
+        case 'createdAt':
+          aValue = a.createdAt;
+          bValue = b.createdAt;
+          break;
+        default:
+          aValue = a.name;
+          bValue = b.name;
+      }
+      
+      if (agentSortDirection === 'asc') {
+        return aValue.localeCompare(bValue);
+      } else {
+        return bValue.localeCompare(aValue);
+      }
+    });
+  }, [filteredAgents, agentSortField, agentSortDirection]);
+
   // 조직 목록 조회
   const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
     queryKey: ['/api/admin/organizations'],
@@ -539,50 +666,8 @@ function MasterAdmin() {
     }
   });
 
-  // 고유한 상위 카테고리 추출 (API data 사용) - moved after useQuery
-  const uniqueUpperCategories = useMemo(() => {
-    const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
-    console.log('Unique upper categories:', categories);
-    return categories.sort();
-  }, [organizations]);
-
-  // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
-  const filteredLowerCategories = useMemo(() => {
-    if (selectedUniversity === 'all') {
-      const categories = Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
-      console.log('All lower categories:', categories);
-      return categories.sort();
-    }
-    const categories = Array.from(new Set((organizations || [])
-      .filter(org => org.upperCategory === selectedUniversity)
-      .map(org => org.lowerCategory).filter(Boolean)));
-    console.log('Filtered lower categories for', selectedUniversity, ':', categories);
-    return categories.sort();
-  }, [selectedUniversity, organizations]);
-
-  // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
-  const filteredDetailCategories = useMemo(() => {
-    if (selectedUniversity === 'all' || selectedCollege === 'all') {
-      if (selectedUniversity === 'all' && selectedCollege === 'all') {
-        const categories = Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
-        return categories.sort();
-      }
-      return [];
-    }
-    let filtered = organizations || [];
-    if (selectedUniversity !== 'all') {
-      filtered = filtered.filter(org => org.upperCategory === selectedUniversity);
-    }
-    if (selectedCollege !== 'all') {
-      filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
-    }
-    const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
-    console.log('Filtered detail categories:', categories);
-    return categories.sort();
-  }, [selectedUniversity, selectedCollege, organizations]);
-
   // 조직 계층 구조 생성 (NewUserForm에서 사용)
-  const organizationHierarchy = useMemo(() => {
+  const userFormHierarchy = useMemo(() => {
     if (!organizations) return {};
     
     const hierarchy: any = {};
