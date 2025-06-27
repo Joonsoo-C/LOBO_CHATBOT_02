@@ -1287,10 +1287,7 @@ function MasterAdmin() {
       personaNickname: "",
       speechStyle: "",
       personality: "",
-      prohibitedWords: "",
-      persona: "",
-      systemPrompt: "",
-      responseStyle: "default",
+      forbiddenResponseStyle: "",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -1325,7 +1322,7 @@ function MasterAdmin() {
       personaNickname: "",
       speechStyle: "",
       personality: "",
-      prohibitedWords: "",
+      forbiddenResponseStyle: "",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -2113,7 +2110,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       personaNickname: (agent as any).personaNickname || "",
       speechStyle: (agent as any).speechStyle || "",
       personality: (agent as any).personality || "",
-      prohibitedWords: (agent as any).prohibitedWords || "",
+      forbiddenResponseStyle: (agent as any).forbiddenResponseStyle || "",
       visibility: (agent as any).visibility || "organization",
       managerId: (agent as any).managerId || "",
       agentEditorIds: (agent as any).agentEditorIds || [],
