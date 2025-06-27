@@ -399,12 +399,7 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
       console.log('Extracting text from Word document:', filePath);
       try {
         const result = await mammoth.extractRawText({ 
-          path: filePath,
-          // Ensure proper text extraction with Korean support
-          options: {
-            preserveEmptyParagraphs: false,
-            includeDefaultStyleMap: true
-          }
+          path: filePath
         });
         
         // Clean extracted text to remove any residual binary characters
