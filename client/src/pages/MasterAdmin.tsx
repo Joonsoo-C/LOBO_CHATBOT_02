@@ -3431,6 +3431,27 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </FormItem>
                                 )}
                               />
+                              <FormField
+                                control={agentForm.control}
+                                name="status"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 상태</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "active"}>
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="active">활성</SelectItem>
+                                        <SelectItem value="inactive">비활성</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                             </div>
                             
                             {/* 그룹 지정 옵션 - 완전 새로운 구조 */}
