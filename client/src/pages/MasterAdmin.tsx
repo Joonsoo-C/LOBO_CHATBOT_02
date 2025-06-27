@@ -58,7 +58,7 @@ import {
   Eye,
   X,
   ChevronsUpDown,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -2903,7 +2903,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </DialogHeader>
                   
                   {/* 탭 네비게이션 */}
-                  <Tabs value={agentCreationTab} onValueChange={setAgentCreationTab} className="w-full">
+                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as 'basic' | 'advanced')} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-6">
                       <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                         기본 정보
