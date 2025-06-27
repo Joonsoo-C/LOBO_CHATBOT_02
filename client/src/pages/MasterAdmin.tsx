@@ -353,11 +353,11 @@ function MasterAdmin() {
   });
 
   // 사용자 목록 조회
-  const { data: users } = useQuery<User[]>({
-    queryKey: ['/api/admin/users'],
+  const { data: usersData } = useQuery<User[]>({
+    queryKey: ['/api/admin/usersData'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) throw new Error('Failed to fetch users');
+      const response = await fetch('/api/admin/usersData');
+      if (!response.ok) throw new Error('Failed to fetch usersData');
       return response.json();
     }
   });
@@ -374,9 +374,9 @@ function MasterAdmin() {
 
   // 정렬된 사용자 목록
   const sortedUsers = useMemo(() => {
-    if (!users) return [];
+    if (!usersData) return [];
     
-    return [...users].sort((a, b) => {
+    return [...usersData].sort((a, b) => {
       let aValue: any = '';
       let bValue: any = '';
       
@@ -413,22 +413,22 @@ function MasterAdmin() {
       if (aValue > bValue) return userSortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [users, userSortField, userSortDirection]);
+  }, [usersData, userSortField, userSortDirection]);
 
   // 사용자 데이터가 로드되면 자동으로 검색 상태를 true로 설정
   React.useEffect(() => {
-    if (users && users.length > 0 && !hasSearched) {
+    if (usersData && usersData.length > 0 && !hasSearched) {
       setHasSearched(true);
     }
-  }, [users, hasSearched]);
+  }, [usersData, hasSearched]);
 
   // Move this after organizations is declared via useQuery
 
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
-    if (!users) return [];
+    if (!usersData) return [];
     
-    let filtered = [...users];
+    let filtered = [...usersData];
     
     // 검색이 실행된 경우 또는 초기 상태에서 필터링 적용
     if (hasSearched || !hasSearched) {
@@ -480,7 +480,7 @@ function MasterAdmin() {
     }
     
     return filtered;
-  }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
+  }, [usersData, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
 
   // 페이지네이션된 사용자 목록
   const paginatedUsers = useMemo(() => {
@@ -820,11 +820,11 @@ function MasterAdmin() {
         role: data.role,
         status: data.status,
       };
-      const response = await apiRequest("PATCH", `/api/admin/users/${data.id}`, payload);
+      const response = await apiRequest("PATCH", `/api/admin/usersData/${data.id}`, payload);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/usersData'] });
       toast({
         title: "성공",
         description: "사용자 정보가 수정되었습니다.",
@@ -880,11 +880,11 @@ function MasterAdmin() {
         position: data.position || null,
         password: "defaultPassword123!", // 기본 비밀번호
       };
-      const response = await apiRequest("POST", "/api/admin/users", payload);
+      const response = await apiRequest("POST", "/api/admin/usersData", payload);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/usersData'] });
       toast({
         title: "성공",
         description: "새 사용자가 생성되었습니다.",
@@ -957,26 +957,26 @@ function MasterAdmin() {
 
   // 사용자 카테고리 데이터 (실제 사용자 데이터 기반)
   const upperCategories = useMemo(() => {
-    if (!users || users.length === 0) return [];
-    const categories = Array.from(new Set(users.map(user => (user as any).upperCategory).filter(Boolean)));
+    if (!usersData || usersData.length === 0) return [];
+    const categories = Array.from(new Set(usersData.map(user => (user as any).upperCategory).filter(Boolean)));
     return categories.sort();
-  }, [users]);
+  }, [usersData]);
 
   const lowerCategories = useMemo(() => {
-    if (!users || users.length === 0 || selectedUniversity === 'all') return [];
+    if (!usersData || usersData.length === 0 || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      users
+      usersData
         .filter(user => (user as any).upperCategory === selectedUniversity)
         .map(user => (user as any).lowerCategory)
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [users, selectedUniversity]);
+  }, [usersData, selectedUniversity]);
 
   const detailCategories = useMemo(() => {
-    if (!users || users.length === 0 || selectedCollege === 'all' || selectedUniversity === 'all') return [];
+    if (!usersData || usersData.length === 0 || selectedCollege === 'all' || selectedUniversity === 'all') return [];
     const categories = Array.from(new Set(
-      users
+      usersData
         .filter(user => 
           (user as any).upperCategory === selectedUniversity && 
           (user as any).lowerCategory === selectedCollege
@@ -985,7 +985,7 @@ function MasterAdmin() {
         .filter(Boolean)
     ));
     return categories.sort();
-  }, [users, selectedUniversity, selectedCollege]);
+  }, [usersData, selectedUniversity, selectedCollege]);
 
 
 
@@ -1786,7 +1786,7 @@ function MasterAdmin() {
   // 사용자 엑셀 내보내기 핸들러
   const handleExcelExport = async () => {
     try {
-      const response = await fetch('/api/admin/users/export', {
+      const response = await fetch('/api/admin/usersData/export', {
         method: 'GET',
         credentials: 'include',
       });
@@ -1849,7 +1849,7 @@ function MasterAdmin() {
           formData.append('sendWelcome', sendWelcome.toString());
           formData.append('validateOnly', validateOnly.toString());
 
-          const response = await fetch('/api/admin/users/upload', {
+          const response = await fetch('/api/admin/usersData/upload', {
             method: 'POST',
             body: formData,
           });
@@ -1875,10 +1875,10 @@ function MasterAdmin() {
         });
         
         // Real-time refresh of both user list and user files
-        queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/usersData'] });
         queryClient.invalidateQueries({ queryKey: ['/api/admin/user-files'] });
         
-        // Also refresh organization data if users have organization affiliations
+        // Also refresh organization data if usersData have organization affiliations
         queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
       }
 
@@ -2371,7 +2371,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <Database className="w-4 h-4 mr-2" />
               조직 카테고리 관리
             </TabsTrigger>
-            <TabsTrigger value="users">
+            <TabsTrigger value="usersData">
               <Users className="w-4 h-4 mr-2" />
               사용자 관리
             </TabsTrigger>
@@ -2511,7 +2511,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </TabsContent>
 
           {/* 사용자 관리 */}
-          <TabsContent value="users" className="space-y-6">
+          <TabsContent value="usersData" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">사용자 관리</h2>
               <div className="flex space-x-2">
@@ -5157,7 +5157,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             type="button"
                             onClick={() => {
                               // 사용자 관리 탭으로 이동하고 해당 조직으로 필터링
-                              setActiveTab("users");
+                              setActiveTab("usersData");
                               setSelectedUniversity(editingOrgCategory?.upperCategory || 'all');
                               setSelectedCollege(editingOrgCategory?.lowerCategory || 'all');
                               setSelectedDepartment(editingOrgCategory?.detailCategory || 'all');
@@ -6648,8 +6648,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label htmlFor="extract-keywords">키워드 자동 추출</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="notify-users" className="rounded" />
-                    <Label htmlFor="notify-users">해당 범위 사용자에게 알림 발송</Label>
+                    <input type="checkbox" id="notify-usersData" className="rounded" />
+                    <Label htmlFor="notify-usersData">해당 범위 사용자에게 알림 발송</Label>
                   </div>
                 </div>
               </div>
