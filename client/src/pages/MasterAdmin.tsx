@@ -749,60 +749,7 @@ function MasterAdmin() {
     setHasDocumentSearched(true);
   };
 
-  // 에이전트 필터링 로직
-  const filteredAgents = useMemo(() => {
-    if (!agents || !hasAgentSearched) return [];
-    
-    let filtered = [...agents];
-    
-    // 검색어 필터링
-    if (agentSearchQuery.trim()) {
-      const query = agentSearchQuery.toLowerCase();
-      filtered = filtered.filter(agent => 
-        agent.name.toLowerCase().includes(query) ||
-        agent.description.toLowerCase().includes(query)
-      );
-    }
-    
-    // 상위 카테고리 필터링
-    if (agentFilterUpperCategory !== 'all') {
-      filtered = filtered.filter(agent => 
-        (agent as any).upperCategory === agentFilterUpperCategory
-      );
-    }
-    
-    // 하위 카테고리 필터링
-    if (agentFilterLowerCategory !== 'all') {
-      filtered = filtered.filter(agent => 
-        (agent as any).lowerCategory === agentFilterLowerCategory
-      );
-    }
-    
-    // 세부 카테고리 필터링
-    if (agentFilterDetailCategory !== 'all') {
-      filtered = filtered.filter(agent => 
-        (agent as any).detailCategory === agentFilterDetailCategory
-      );
-    }
-    
-    // 에이전트 유형 필터링
-    if (agentFilterType !== 'all') {
-      filtered = filtered.filter(agent => 
-        agent.category === agentFilterType
-      );
-    }
-    
-    // 상태 필터링
-    if (agentFilterStatus !== 'all') {
-      filtered = filtered.filter(agent => {
-        if (agentFilterStatus === 'active') return agent.isActive;
-        if (agentFilterStatus === 'inactive') return !agent.isActive;
-        return true;
-      });
-    }
-    
-    return filtered;
-  }, [agents, agentSearchQuery, agentFilterUpperCategory, agentFilterLowerCategory, agentFilterDetailCategory, agentFilterType, agentFilterStatus, hasAgentSearched]);
+
 
   // 사용자 편집 폼 초기화
   const userEditForm = useForm<UserEditFormData>({
@@ -1097,6 +1044,61 @@ function MasterAdmin() {
     setHasAgentSearched(false);
   };
 
+  // 에이전트 필터링 로직
+  const filteredAgents = useMemo(() => {
+    if (!agents || !hasAgentSearched) return [];
+    
+    let filtered = [...agents];
+    
+    // 검색어 필터링
+    if (agentSearchQuery.trim()) {
+      const query = agentSearchQuery.toLowerCase();
+      filtered = filtered.filter(agent => 
+        agent.name.toLowerCase().includes(query) ||
+        agent.description.toLowerCase().includes(query)
+      );
+    }
+    
+    // 상위 카테고리 필터링
+    if (agentFilterUpperCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).upperCategory === agentFilterUpperCategory
+      );
+    }
+    
+    // 하위 카테고리 필터링
+    if (agentFilterLowerCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).lowerCategory === agentFilterLowerCategory
+      );
+    }
+    
+    // 세부 카테고리 필터링
+    if (agentFilterDetailCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).detailCategory === agentFilterDetailCategory
+      );
+    }
+    
+    // 에이전트 유형 필터링
+    if (agentFilterType !== 'all') {
+      filtered = filtered.filter(agent => 
+        agent.category === agentFilterType
+      );
+    }
+    
+    // 상태 필터링
+    if (agentFilterStatus !== 'all') {
+      filtered = filtered.filter(agent => {
+        if (agentFilterStatus === 'active') return agent.isActive;
+        if (agentFilterStatus === 'inactive') return !agent.isActive;
+        return true;
+      });
+    }
+    
+    return filtered;
+  }, [agents, agentSearchQuery, agentFilterUpperCategory, agentFilterLowerCategory, agentFilterDetailCategory, agentFilterType, agentFilterStatus, hasAgentSearched]);
+
 
 
   // 에이전트 정렬 핸들러
@@ -1225,7 +1227,7 @@ function MasterAdmin() {
 
   // 정렬된 에이전트 목록
   const sortedAgents = useMemo(() => {
-    const agentsToSort = hasSearched ? filteredAgents : agents || [];
+    const agentsToSort = hasAgentSearched ? filteredAgents : agents || [];
     
     return [...agentsToSort].sort((a, b) => {
       let aValue: any;
@@ -1264,7 +1266,7 @@ function MasterAdmin() {
       if (aValue > bValue) return agentSortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [agents, filteredAgents, agentSortField, agentSortDirection, hasSearched]);
+  }, [agents, filteredAgents, agentSortField, agentSortDirection, hasAgentSearched]);
 
   // 페이지네이션 설정
   const ITEMS_PER_PAGE = 10;
