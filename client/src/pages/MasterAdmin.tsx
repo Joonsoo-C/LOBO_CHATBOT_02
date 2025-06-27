@@ -248,6 +248,13 @@ function MasterAdmin() {
   const [documentSortField, setDocumentSortField] = useState<string>('name');
   const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('asc');
   
+  // 문서 상세 팝업 조직 필터 상태
+  const [selectedDocumentUpperCategory, setSelectedDocumentUpperCategory] = useState('');
+  const [selectedDocumentLowerCategory, setSelectedDocumentLowerCategory] = useState('');
+  const [selectedDocumentDetailCategory, setSelectedDocumentDetailCategory] = useState('');
+  const [selectedDocumentAgentType, setSelectedDocumentAgentType] = useState('');
+  const [documentAgentSearchQuery, setDocumentAgentSearchQuery] = useState('');
+  
   // 문서 업로드 관련 상태
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
   const [selectedDocumentFiles, setSelectedDocumentFiles] = useState<File[]>([]);
@@ -2914,7 +2921,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           />
                           <FormField
                             control={agentForm.control}
-                            name="type"
+                            name="category"
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>유형 *</FormLabel>
@@ -3718,7 +3725,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <Badge variant="outline">
-                                  {agent.type || agent.category}
+                                  {agent.category}
                                 </Badge>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -7316,3 +7323,5 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     </div>
   );
 }
+
+export default MasterAdmin;
