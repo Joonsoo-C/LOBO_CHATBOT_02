@@ -287,6 +287,14 @@ function MasterAdmin() {
   // 에이전트 생성 탭 상태
   const [agentCreationTab, setAgentCreationTab] = useState<'basic' | 'persona' | 'model' | 'upload' | 'sharing'>('basic');
   
+  // 공유 설정 상태
+  const [selectedGroups, setSelectedGroups] = useState<Array<{id: string, upperCategory: string, lowerCategory?: string, detailCategory?: string}>>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [userFilterSearchQuery, setUserFilterSearchQuery] = useState('');
+  const [userFilterUpperCategory, setUserFilterUpperCategory] = useState('');
+  const [userFilterLowerCategory, setUserFilterLowerCategory] = useState('');
+  const [userFilterDetailCategory, setUserFilterDetailCategory] = useState('');
+  
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
@@ -3334,7 +3342,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 파일 업로드 탭 */}
                         <TabsContent value="upload" className="space-y-6">
                           <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="documentType"
@@ -3343,7 +3351,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <FormLabel className="text-sm font-medium text-gray-700">문서 유형</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "manual"}>
                                       <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="max-w-xs">
                                           <SelectValue />
                                         </SelectTrigger>
                                       </FormControl>
@@ -3362,36 +3370,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </FormItem>
                                 )}
                               />
-                              <FormField
-                                control={agentForm.control}
-                                name="maxFileSize"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">최대 파일 크기</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value || "50mb"}>
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        <SelectItem value="10mb">10MB</SelectItem>
-                                        <SelectItem value="25mb">25MB</SelectItem>
-                                        <SelectItem value="50mb">50MB</SelectItem>
-                                        <SelectItem value="100mb">100MB</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
                             </div>
                             
                             {/* 드래그 앤 드롭 영역 */}
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors">
                               <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                               <div className="space-y-2">
-                                <p className="text-lg font-medium text-gray-700">파일을 여기로 드래그하거나</p>
+                                <p className="text-lg font-medium text-gray-700">파일을 여기로 드래그하거나 클릭해서 업로드하세요</p>
                                 <Button type="button" variant="outline" size="lg" className="bg-white">
                                   <Upload className="w-4 h-4 mr-2" />
                                   파일 선택
@@ -3399,7 +3384,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                               <div className="mt-4 text-sm text-gray-500">
                                 <p>지원 형식: PDF, DOC, DOCX, TXT, PPT, PPTX</p>
-                                <p>최대 크기: {agentForm.watch('maxFileSize') || '50MB'}</p>
+                                <p>최대 크기: 50MB</p>
                               </div>
                             </div>
                             
