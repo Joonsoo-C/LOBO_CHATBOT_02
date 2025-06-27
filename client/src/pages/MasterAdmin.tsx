@@ -3732,7 +3732,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <Badge variant="outline">
-                                  {agent.category}
+                                  {agent.type || agent.category}
                                 </Badge>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
