@@ -310,25 +310,31 @@ function MasterAdmin() {
   
   // 조직 필터링 함수들 - 조직 데이터 사용
   const getUpperCategories = () => {
-    if (!organizations?.data) return [];
-    const unique = Array.from(new Set(organizations.data.map((org: any) => org.upperCategory).filter(Boolean)));
+    console.log('Getting upper categories, organizations:', organizations);
+    if (!organizations) return [];
+    const unique = Array.from(new Set(organizations.map((org: any) => org.upperCategory).filter(Boolean)));
+    console.log('Upper categories found:', unique);
     return unique.sort();
   };
   
   const getLowerCategories = (upperCategory: string) => {
-    if (!organizations?.data || !upperCategory) return [];
-    const filtered = organizations.data.filter((org: any) => org.upperCategory === upperCategory);
+    console.log('Getting lower categories for:', upperCategory, 'organizations:', organizations);
+    if (!organizations || !upperCategory) return [];
+    const filtered = organizations.filter((org: any) => org.upperCategory === upperCategory);
     const unique = Array.from(new Set(filtered.map((org: any) => org.lowerCategory).filter(Boolean)));
+    console.log('Lower categories found:', unique);
     return unique.sort();
   };
   
   const getDetailCategories = (upperCategory: string, lowerCategory?: string) => {
-    if (!organizations?.data || !upperCategory) return [];
-    const filtered = organizations.data.filter((org: any) => 
+    console.log('Getting detail categories for:', upperCategory, lowerCategory, 'organizations:', organizations);
+    if (!organizations || !upperCategory) return [];
+    const filtered = organizations.filter((org: any) => 
       org.upperCategory === upperCategory && 
       (!lowerCategory || org.lowerCategory === lowerCategory)
     );
     const unique = Array.from(new Set(filtered.map((org: any) => org.detailCategory).filter(Boolean)));
+    console.log('Detail categories found:', unique);
     return unique.sort();
   };
   
