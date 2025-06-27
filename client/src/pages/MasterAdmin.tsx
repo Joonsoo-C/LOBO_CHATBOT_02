@@ -7095,56 +7095,78 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   {/* 에이전트 검색 및 필터 */}
                   <div className="space-y-4 mb-4">
-                    {/* 에이전트 검색 */}
-                    <div>
-                      <Label className="text-sm font-medium">에이전트 검색</Label>
-                      <Input
-                        placeholder="에이전트 이름 또는 설명에 포함된 키워드로 검색..."
-                        value={agentSearchQuery}
-                        onChange={(e) => setAgentSearchQuery(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-
-                    {/* 관리자별 필터 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* 조직 카테고리 필터 */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <Label className="text-sm font-medium">에이전트 관리자</Label>
-                        <Select value={selectedAgentManager || "all"} onValueChange={(value) => setSelectedAgentManager(value === "all" ? "" : value)}>
+                        <Label className="text-sm font-medium">상위 카테고리</Label>
+                        <Select value={selectedDocumentUpperCategory} onValueChange={setSelectedDocumentUpperCategory}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
-                            {['prof001', 'prof002', 'prof003', 'dean001', 'dean002'].map((manager) => (
-                              <SelectItem key={manager} value={manager}>
-                                {manager}
+                            {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
-
+                      
                       <div>
-                        <Label className="text-sm font-medium">활성 상태</Label>
-                        <Select value={selectedAgentStatus || "all"} onValueChange={(value) => setSelectedAgentStatus(value === "all" ? "" : value)}>
+                        <Label className="text-sm font-medium">하위 카테고리</Label>
+                        <Select value={selectedDocumentLowerCategory} onValueChange={setSelectedDocumentLowerCategory}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
-                            <SelectItem value="active">활성</SelectItem>
-                            <SelectItem value="inactive">비활성</SelectItem>
+                            {Array.from(new Set(
+                              organizations
+                                .filter(org => selectedDocumentUpperCategory === 'all' || org.upperCategory === selectedDocumentUpperCategory)
+                                .map(org => org.lowerCategory)
+                                .filter(Boolean)
+                            )).sort().map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium">세부 카테고리</Label>
+                        <Select value={selectedDocumentDetailCategory} onValueChange={setSelectedDocumentDetailCategory}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            {Array.from(new Set(
+                              organizations
+                                .filter(org => 
+                                  (selectedDocumentUpperCategory === 'all' || org.upperCategory === selectedDocumentUpperCategory) &&
+                                  (selectedDocumentLowerCategory === 'all' || org.lowerCategory === selectedDocumentLowerCategory)
+                                )
+                                .map(org => org.detailCategory)
+                                .filter(Boolean)
+                            )).sort().map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
-                    {/* 에이전트 유형 필터 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* 에이전트 유형 필터와 검색 */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <Label className="text-sm font-medium">에이전트 유형</Label>
-                        <Select value={selectedAgentType || "all"} onValueChange={(value) => setSelectedAgentType(value === "all" ? "" : value)}>
+                        <Select value={selectedDocumentAgentType} onValueChange={setSelectedDocumentAgentType}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
@@ -7158,17 +7180,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </SelectContent>
                         </Select>
                       </div>
-
-                      <div className="flex items-end">
+                      
+                      <div>
+                        <Label className="text-sm font-medium">에이전트 검색</Label>
+                        <Input
+                          placeholder="에이전트 이름 또는 설명에 포함된 키워드로 검색..."
+                          value={documentAgentSearchQuery}
+                          onChange={(e) => setDocumentAgentSearchQuery(e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                      
+                      <div>
                         <Button 
                           variant="outline" 
                           onClick={() => {
-                            setAgentSearchQuery("");
-                            setSelectedAgentManager("");
-                            setSelectedAgentStatus("");
-                            setSelectedAgentType("all");
+                            setDocumentAgentSearchQuery("");
+                            setSelectedDocumentUpperCategory("all");
+                            setSelectedDocumentLowerCategory("all");
+                            setSelectedDocumentDetailCategory("all");
+                            setSelectedDocumentAgentType("all");
                           }}
-                          className="w-full"
+                          className="mt-6"
                         >
                           필터 초기화
                         </Button>
@@ -7176,1041 +7209,110 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </div>
                   </div>
 
-                  {/* 사용 가능한 에이전트 목록 */}
-                  <div>
-                    <Label className="text-sm font-medium">사용 가능한 에이전트</Label>
-                    <div className="border rounded-lg p-4 max-h-60 overflow-y-auto mt-2 bg-white dark:bg-gray-900">
-                      <div className="space-y-2">
-                        {agents && agents.length > 0 ? (
-                          agents
-                            .filter(agent => {
-                              // 검색어 필터
-                              const searchMatch = !agentSearchQuery || 
-                                agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
-                                (agent.description && agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase()));
-                              
-                              // 조직 필터 (에이전트는 조직 정보가 없으므로 생략)
-                              const orgMatch = true;
-                              
-                              // 유형 필터
-                              const typeMatch = !selectedAgentType || agent.category === selectedAgentType;
-                              
-                              // 이미 선택된 에이전트 제외
-                              const notSelected = !selectedDocumentAgents.includes(agent.name);
-                              
-                              return searchMatch && orgMatch && typeMatch && notSelected;
-                            })
-                            .map((agent, index) => (
-                              <div key={agent.id} className="flex items-start space-x-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
-                                <input
-                                  type="checkbox"
-                                  id={`agent-${agent.id}`}
-                                  onChange={(e) => {
-                                    if (e.target.checked) {
-                                      setSelectedDocumentAgents(prev => [...prev, agent.name]);
-                                    }
-                                  }}
-                                  className="rounded mt-1"
-                                />
-                                <div className="flex-1">
-                                  <Label htmlFor={`agent-${agent.id}`} className="text-sm font-medium cursor-pointer">
-                                    {agent.name}
-                                  </Label>
-                                  {agent.description && (
-                                    <p className="text-xs text-gray-500 mt-1">{agent.description}</p>
-                                  )}
-                                  <div className="flex items-center space-x-2 mt-1">
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                      {agent.category}
-                                    </span>
-                                    {agent.isActive && (
-                                      <span className="text-xs text-green-600">
-                                        ✓ 활성
-                                      </span>
+                  {/* 에이전트 테이블 */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3">
+                      <h4 className="font-medium">사용 가능한 에이전트</h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-gray-800">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              에이전트명
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              유형
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              소속
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              문서
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              사용자
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              선택
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                          {agents?.filter(agent => {
+                            // 검색어 필터
+                            const searchMatch = !documentAgentSearchQuery.trim() || 
+                              agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
+                              (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
+                            
+                            // 유형 필터
+                            const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
+                            
+                            return searchMatch && typeMatch;
+                          }).map((agent) => (
+                            <tr key={agent.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                              <td className="px-4 py-4">
+                                <div className="flex items-center">
+                                  <div className={`w-8 h-8 rounded-full ${agent.backgroundColor} flex items-center justify-center text-white text-sm font-medium mr-3`}>
+                                    {agent.icon}
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                      {agent.name}
+                                    </div>
+                                    {agent.description && (
+                                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        {agent.description.length > 50 ? `${agent.description.substring(0, 50)}...` : agent.description}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
-                              </div>
-                            ))
-                        ) : (
-                          <p className="text-sm text-gray-500">조건에 맞는 에이전트가 없습니다.</p>
-                        )}
-                      </div>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                  {agent.category}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                  예술대학
+                                </div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                  음악학과
+                                </div>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="text-sm text-gray-900 dark:text-gray-100">3개</span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="text-sm text-gray-900 dark:text-gray-100">13명</span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <input
+                                  type="checkbox"
+                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                  checked={selectedDocumentAgents.includes(agent.name)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedDocumentAgents(prev => [...prev, agent.name]);
+                                    } else {
+                                      setSelectedDocumentAgents(prev => prev.filter(name => name !== agent.name));
+                                    }
+                                  }}
+                                />
+                              </td>
+                            </tr>
+                          )) || []}
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
-                </div>
-
-                {/* 문서 액션 버튼들 */}
-                <div className="flex justify-between items-center pt-4 border-t">
-                  <div className="flex space-x-2">
-                    <Button 
-                      variant="outline" 
-                      className="flex items-center space-x-2 mr-2"
-                      onClick={() => handleDocumentPreview(documentDetailData)}
-                      disabled={!documentDetailData}
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>문서 미리보기</span>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="flex items-center space-x-2"
-                      onClick={() => handleDocumentDownload(documentDetailData)}
-                      disabled={!documentDetailData}
-                    >
-                      <Download className="w-4 h-4" />
-                      <span>문서 다운로드</span>
-                    </Button>
-                    <Button 
-                      variant="secondary" 
-                      className="flex items-center space-x-2"
-                      onClick={() => documentReprocessMutation.mutate(documentDetailData.id)}
-                      disabled={!documentDetailData || documentReprocessMutation.isPending}
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                      <span>{documentReprocessMutation.isPending ? '재처리 중...' : '문서 재처리'}</span>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      className="flex items-center space-x-2"
-                      onClick={() => handleDocumentDelete(documentDetailData)}
-                      disabled={!documentDetailData || deleteDocumentMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>{deleteDocumentMutation.isPending ? '삭제 중...' : '문서 삭제'}</span>
-                    </Button>
-                  </div>
-                  
-                  <div className="flex space-x-2">
-                    <Button variant="outline" onClick={() => setIsDocumentDetailOpen(false)}>
-                      취소
-                    </Button>
-                    <Button onClick={() => {
-                      setIsDocumentDetailOpen(false);
-                      toast({
-                        title: "에이전트 연결 완료",
-                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
-                      });
-                    }}>
-                      저장
-                    </Button>
                   </div>
                 </div>
               </div>
             )}
           </DialogContent>
         </Dialog>
-
-        {/* 사용자 상세 정보 편집 다이얼로그 */}
-        <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>사용자 상세 정보 편집</DialogTitle>
-            </DialogHeader>
-            
-            {selectedUser && <UserEditForm 
-              user={selectedUser} 
-              onSave={(userData) => {
-                updateUserMutation.mutate({ ...userData, id: selectedUser.id });
-              }} 
-              onCancel={() => setIsUserDetailDialogOpen(false)} 
-              onDelete={(userId) => {
-                updateUserMutation.mutate({ id: userId, action: 'delete' } as any);
-              }}
-              isLoading={updateUserMutation.isPending} 
-            />}
-          </DialogContent>
-        </Dialog>
-
-        {/* 새 사용자 생성 다이얼로그 */}
-        <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>새 사용자 추가</DialogTitle>
-            </DialogHeader>
-            <NewUserForm 
-              onSave={(data) => createUserMutation.mutate(data)}
-              onCancel={() => setIsNewUserDialogOpen(false)}
-              isLoading={createUserMutation.isPending}
-              form={newUserForm}
-              organizationHierarchy={organizationHierarchy}
-            />
-          </DialogContent>
-        </Dialog>
       </main>
     </div>
   );
 }
-
-// 사용자 편집 폼 컴포넌트
-function UserEditForm({ user, onSave, onCancel, onDelete, isLoading }: {
-  user: any;
-  onSave: (data: any) => void;
-  onCancel: () => void;
-  onDelete?: (userId: string) => void;
-  isLoading: boolean;
-}) {
-  const [organizationAffiliations, setOrganizationAffiliations] = useState(
-    Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
-      ? user.organizationAffiliations
-      : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
-  );
-  
-  const [agentPermissions, setAgentPermissions] = useState(
-    Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
-      ? user.agentPermissions
-      : [{ agentName: "", permissions: [] }]
-  );
-
-  const [userMemo, setUserMemo] = useState(user.userMemo || "");
-  const [accountStatus, setAccountStatus] = useState(user.status || "active");
-  const [userType, setUserType] = useState(user.userType || "student");
-
-  // Update state when user prop changes
-  React.useEffect(() => {
-    setOrganizationAffiliations(
-      Array.isArray(user.organizationAffiliations) && user.organizationAffiliations.length > 0 
-        ? user.organizationAffiliations
-        : [{ upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }]
-    );
-    setAgentPermissions(
-      Array.isArray(user.agentPermissions) && user.agentPermissions.length > 0 
-        ? user.agentPermissions
-        : [{ agentName: "", permissions: [] }]
-    );
-    setUserMemo(user.userMemo || "");
-    setAccountStatus(user.status || "active");
-    setUserType(user.userType || "student");
-  }, [user]);
-
-  // 조직 계층 구조 데이터
-  const organizationHierarchy = {
-    "대학본부": {
-      "총장실": ["기획팀", "인사팀", "홍보팀"],
-      "교무처": ["교무팀", "학사팀", "입학팀"],
-      "행정처": ["총무팀", "재무팀", "시설팀"]
-    },
-    "인문대학": {
-      "국어국문학과": ["현대문학전공", "고전문학전공", "국어학전공"],
-      "영어영문학과": ["영문학전공", "영어학전공", "번역학전공"],
-      "철학과": ["서양철학전공", "동양철학전공", "논리학전공"]
-    },
-    "사회과학대학": {
-      "정치외교학과": ["정치학전공", "외교학전공", "국제관계전공"],
-      "행정학과": ["일반행정전공", "지방행정전공", "정책학전공"],
-      "심리학과": ["임상심리전공", "인지심리전공", "사회심리전공"]
-    },
-    "자연과학대학": {
-      "수학과": ["순수수학전공", "응용수학전공", "통계학전공"],
-      "물리학과": ["이론물리전공", "실험물리전공", "응용물리전공"],
-      "화학과": ["유기화학전공", "무기화학전공", "물리화학전공"],
-      "생명과학과": ["분자생물학전공", "생화학전공", "생태학전공"]
-    },
-    "공과대학": {
-      "컴퓨터공학과": ["소프트웨어전공", "하드웨어전공", "AI전공"],
-      "전자공학과": ["통신전공", "반도체전공", "제어전공"],
-      "기계공학과": ["설계전공", "열유체전공", "생산전공"],
-      "건축공학과": ["구조전공", "환경전공", "시공전공"]
-    },
-    "경영대학": {
-      "경영학과": ["전략경영전공", "마케팅전공", "재무전공"],
-      "회계학과": ["재무회계전공", "관리회계전공", "세무회계전공"],
-      "국제통상학과": ["무역실무전공", "국제경영전공", "통상정책전공"]
-    },
-    "의과대학": {
-      "의학과": ["기초의학전공", "임상의학전공", "예방의학전공"],
-      "간호학과": ["기본간호전공", "성인간호전공", "소아간호전공"],
-      "약학과": ["약물학전공", "약제학전공", "임상약학전공"]
-    },
-    "대학원": {
-      "일반대학원": ["석사과정", "박사과정", "석박통합과정"],
-      "특수대학원": ["경영대학원", "교육대학원", "공학대학원"],
-      "전문대학원": ["법학전문대학원", "의학전문대학원", "치의학전문대학원"]
-    },
-    "연구기관": {
-      "중앙연구소": ["기초과학연구소", "응용과학연구소", "융합기술연구소"],
-      "산학협력단": ["기술이전팀", "창업지원팀", "산학협력팀"],
-      "부설연구소": ["AI연구소", "바이오연구소", "나노연구소"]
-    }
-  };
-
-  const positionOptions = [
-    "학생", "학부생", "대학원생", "석사과정", "박사과정",
-    "교수", "부교수", "조교수", "전임강사", "시간강사",
-    "연구원", "선임연구원", "책임연구원", "연구교수",
-    "직원", "주임", "과장", "부장", "팀장", "실장",
-    "학과장", "학장", "처장", "원장", "총장", "부총장"
-  ];
-
-  const agentOptions = [
-    "학교 종합 안내", "입학처 안내봇", "학사지원팀", "도서관 사서",
-    "컴퓨터공학과 도우미", "의학과 안내센터", "경영학과 길잡이",
-    "김교수의 미적분학", "박교수의 데이터베이스", "이교수의 영미문학",
-    "AI 논문 작성 도우미", "프로그래밍 튜터", "영어회화 트레이너"
-  ];
-
-  const systemRoleOptions = [
-    "일반 사용자", "외부 사용자", "문서 관리자", "QA 관리자", 
-    "에이전트 관리자", "카테고리 관리자", "운영 관리자", "마스터 관리자"
-  ];
-
-  const permissionOptions = ["에이전트 관리자", "QA 관리자", "문서 관리자"];
-
-  const addOrganizationAffiliation = () => {
-    setOrganizationAffiliations([...organizationAffiliations, 
-      { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
-    ]);
-  };
-
-  const removeOrganizationAffiliation = (index: number) => {
-    if (organizationAffiliations.length > 1) {
-      setOrganizationAffiliations(organizationAffiliations.filter((_: any, i: number) => i !== index));
-    }
-  };
-
-  const updateOrganizationAffiliation = (index: number, field: string, value: string) => {
-    const updated = [...organizationAffiliations];
-    updated[index] = { ...updated[index], [field]: value };
-    
-    // 상위 카테고리 변경 시 하위/세부 카테고리 초기화
-    if (field === 'upperCategory') {
-      updated[index].lowerCategory = "";
-      updated[index].detailCategory = "";
-    }
-    // 하위 카테고리 변경 시 세부 카테고리 초기화
-    if (field === 'lowerCategory') {
-      updated[index].detailCategory = "";
-    }
-    
-    setOrganizationAffiliations(updated);
-  };
-
-  const addAgentPermission = () => {
-    setAgentPermissions([...agentPermissions, { agentName: "", permissions: [] }]);
-  };
-
-  const removeAgentPermission = (index: number) => {
-    if (agentPermissions.length > 1) {
-      setAgentPermissions(agentPermissions.filter((_: any, i: number) => i !== index));
-    }
-  };
-
-  const updateAgentPermission = (index: number, field: string, value: any) => {
-    const updated = [...agentPermissions];
-    updated[index] = { ...updated[index], [field]: value };
-    setAgentPermissions(updated);
-  };
-
-  const handleSave = () => {
-    onSave({
-      name: user.name,
-      email: user.email,
-      organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
-      agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
-      userMemo,
-      status: accountStatus,
-      userType: userType,
-      role: user.role
-    });
-  };
-
-  const handleDelete = () => {
-    if (window.confirm('정말로 이 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-      if (onDelete) {
-        onDelete(user.id);
-      }
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* 기본 정보 */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">기본 정보</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label>이름</Label>
-            <Input value={user.name || ""} disabled className="bg-gray-50" />
-          </div>
-          <div>
-            <Label>이메일</Label>
-            <Input value={user.email || ""} disabled className="bg-gray-50" />
-          </div>
-          <div>
-            <Label>사용자 ID</Label>
-            <Input value={user.id || ""} disabled className="bg-gray-50" />
-          </div>
-          <div>
-            <Label>사용자 타입</Label>
-            <Select value={userType} onValueChange={setUserType}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">학생</SelectItem>
-                <SelectItem value="faculty">교직원</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>계정 상태</Label>
-            <Select value={accountStatus} onValueChange={setAccountStatus}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">활성</SelectItem>
-                <SelectItem value="inactive">비활성</SelectItem>
-                <SelectItem value="locked">잠김</SelectItem>
-                <SelectItem value="pending">대기</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
-          <div>가입 날짜: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}</div>
-          {user.lastLoginAt && <div>최종 접속 시간: {new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</div>}
-        </div>
-      </div>
-
-      {/* 조직 소속 정보 */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">조직 소속 정보</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
-            <Plus className="w-4 h-4 mr-2" />
-            소속 추가
-          </Button>
-        </div>
-        
-        {organizationAffiliations.map((affiliation: any, index: number) => (
-          <div key={index} className="border rounded-lg p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium">소속 정보 #{index + 1}</h4>
-              {organizationAffiliations.length > 1 && (
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => removeOrganizationAffiliation(index)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {/* 상위 카테고리 */}
-              <div>
-                <Label>상위 카테고리</Label>
-                <Select 
-                  value={affiliation.upperCategory} 
-                  onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.keys(organizationHierarchy).map(category => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 하위 카테고리 */}
-              <div>
-                <Label>하위 카테고리</Label>
-                <Select 
-                  value={affiliation.lowerCategory} 
-                  onValueChange={(value) => updateOrganizationAffiliation(index, 'lowerCategory', value)}
-                  disabled={!affiliation.upperCategory}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {affiliation.upperCategory && Object.keys((organizationHierarchy as any)[affiliation.upperCategory] || {}).map((subcategory: string) => (
-                      <SelectItem key={subcategory} value={subcategory}>{subcategory}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 세부 카테고리 */}
-              <div>
-                <Label>세부 카테고리</Label>
-                <Select 
-                  value={affiliation.detailCategory} 
-                  onValueChange={(value) => updateOrganizationAffiliation(index, 'detailCategory', value)}
-                  disabled={!affiliation.lowerCategory}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {affiliation.lowerCategory && affiliation.upperCategory && 
-                     ((organizationHierarchy as any)[affiliation.upperCategory]?.[affiliation.lowerCategory] || []).map((detail: string) => (
-                      <SelectItem key={detail} value={detail}>{detail}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 직책/역할 */}
-              <div>
-                <Label>직책/역할</Label>
-                <Select 
-                  value={affiliation.position} 
-                  onValueChange={(value) => updateOrganizationAffiliation(index, 'position', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {positionOptions.map(position => (
-                      <SelectItem key={position} value={position}>{position}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 시스템 역할 */}
-              <div>
-                <Label>시스템 역할</Label>
-                <Select 
-                  value={affiliation.systemRole} 
-                  onValueChange={(value) => updateOrganizationAffiliation(index, 'systemRole', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {systemRoleOptions.map(role => (
-                      <SelectItem key={role} value={role}>{role}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 에이전트 권한 정보 */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">에이전트 권한 정보</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addAgentPermission}>
-            <Plus className="w-4 h-4 mr-2" />
-            권한 추가
-          </Button>
-        </div>
-        
-        {agentPermissions.map((agentPerm: any, index: number) => (
-          <div key={index} className="border rounded-lg p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium">에이전트 권한 #{index + 1}</h4>
-              {agentPermissions.length > 1 && (
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => removeAgentPermission(index)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 에이전트 선택 */}
-              <div>
-                <Label>에이전트</Label>
-                <Select 
-                  value={agentPerm.agentName} 
-                  onValueChange={(value) => updateAgentPermission(index, 'agentName', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="에이전트 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {agentOptions.map(agent => (
-                      <SelectItem key={agent} value={agent}>{agent}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 권한 선택 */}
-              <div>
-                <Label>관리 권한</Label>
-                <div className="space-y-2">
-                  {permissionOptions.map(permission => (
-                    <div key={permission} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id={`${index}-${permission}`}
-                        checked={agentPerm.permissions.includes(permission)}
-                        onChange={(e) => {
-                          const currentPermissions = agentPerm.permissions || [];
-                          const newPermissions = e.target.checked
-                            ? [...currentPermissions, permission]
-                            : currentPermissions.filter((p: string) => p !== permission);
-                          updateAgentPermission(index, 'permissions', newPermissions);
-                        }}
-                        className="rounded border-gray-300"
-                      />
-                      <Label htmlFor={`${index}-${permission}`} className="text-sm">
-                        {permission}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 사용자 메모 */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">사용자 메모</h3>
-        <Textarea
-          value={userMemo}
-          onChange={(e) => setUserMemo(e.target.value)}
-          placeholder="사용자에 대한 간단한 메모를 입력하세요..."
-          rows={4}
-        />
-      </div>
-
-      
-
-      {/* 버튼 그룹 */}
-      <div className="flex justify-between">
-        <Button 
-          type="button" 
-          variant="destructive" 
-          onClick={handleDelete}
-          disabled={isLoading || user.id === 'master_admin'}
-        >
-          <Trash2 className="w-4 h-4 mr-2" />
-          계정 삭제
-        </Button>
-        <div className="space-x-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading ? "저장 중..." : "저장"}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// 새 사용자 생성 폼 컴포넌트
-function NewUserForm({ onSave, onCancel, isLoading, form, organizationHierarchy }: {
-  onSave: (data: NewUserFormData) => void;
-  onCancel: () => void;
-  isLoading: boolean;
-  form: any;
-  organizationHierarchy: any;
-}) {
-  const [organizationAffiliations, setOrganizationAffiliations] = React.useState([
-    { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
-  ]);
-  const [agentPermissions, setAgentPermissions] = React.useState([
-    { agentName: "", permissions: [] }
-  ]);
-  const [userMemo, setUserMemo] = React.useState("");
-
-  const positionOptions = [
-    "학생", "학부생", "대학원생", "박사과정", "석사과정",
-    "교수", "부교수", "조교수", "전임강사", "시간강사",
-    "연구원", "선임연구원", "책임연구원", "연구교수",
-    "직원", "주임", "과장", "부장", "팀장", "실장",
-    "학과장", "학장", "처장", "원장", "총장", "부총장"
-  ];
-
-  const agentOptions = [
-    "학교 종합 안내", "입학처 안내봇", "학사지원팀", "도서관 사서",
-    "컴퓨터공학과 도우미", "의학과 안내센터", "경영학과 길잡이",
-    "김교수의 미적분학", "박교수의 데이터베이스", "이교수의 영미문학",
-    "AI 논문 작성 도우미", "프로그래밍 튜터", "영어회화 트레이너"
-  ];
-
-  const systemRoleOptions = [
-    "일반 사용자", "외부 사용자", "문서 관리자", "QA 관리자", 
-    "에이전트 관리자", "카테고리 관리자", "운영 관리자", "마스터 관리자"
-  ];
-
-  const permissionOptions = ["에이전트 관리자", "QA 관리자", "문서 관리자"];
-
-  const addOrganizationAffiliation = () => {
-    setOrganizationAffiliations([...organizationAffiliations, 
-      { upperCategory: "", lowerCategory: "", detailCategory: "", position: "", systemRole: "" }
-    ]);
-  };
-
-  const removeOrganizationAffiliation = (index: number) => {
-    if (organizationAffiliations.length > 1) {
-      setOrganizationAffiliations(organizationAffiliations.filter((_: any, i: number) => i !== index));
-    }
-  };
-
-  const updateOrganizationAffiliation = (index: number, field: string, value: string) => {
-    const updated = [...organizationAffiliations];
-    updated[index] = { ...updated[index], [field]: value };
-    
-    // 상위 카테고리 변경 시 하위/세부 카테고리 초기화
-    if (field === 'upperCategory') {
-      updated[index].lowerCategory = "";
-      updated[index].detailCategory = "";
-    }
-    // 하위 카테고리 변경 시 세부 카테고리 초기화
-    if (field === 'lowerCategory') {
-      updated[index].detailCategory = "";
-    }
-    
-    setOrganizationAffiliations(updated);
-  };
-
-  const addAgentPermission = () => {
-    setAgentPermissions([...agentPermissions, { agentName: "", permissions: [] }]);
-  };
-
-  const removeAgentPermission = (index: number) => {
-    if (agentPermissions.length > 1) {
-      setAgentPermissions(agentPermissions.filter((_: any, i: number) => i !== index));
-    }
-  };
-
-  const updateAgentPermission = (index: number, field: string, value: any) => {
-    const updated = [...agentPermissions];
-    updated[index] = { ...updated[index], [field]: value };
-    setAgentPermissions(updated);
-  };
-
-  const handleSubmit = (data: NewUserFormData) => {
-    const submitData = {
-      ...data,
-      organizationAffiliations: organizationAffiliations.filter((org: any) => org.upperCategory),
-      agentPermissions: agentPermissions.filter((agent: any) => agent.agentName),
-      userMemo
-    };
-    onSave(submitData);
-  };
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        {/* 기본 정보 */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">기본 정보</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>이름</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Master Admin" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>이메일</FormLabel>
-                  <FormControl>
-                    <Input placeholder="admin@lobo.edu" type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>사용자 ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="master_admin" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="userType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>사용자 타입</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="활성" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="student">학생</SelectItem>
-                      <SelectItem value="faculty">교직원</SelectItem>
-                      <SelectItem value="admin">관리자</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>계정 상태</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value || "active"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="활성" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="active">활성</SelectItem>
-                      <SelectItem value="inactive">비활성</SelectItem>
-                      <SelectItem value="pending">대기</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="text-sm text-gray-500">
-            가입 날짜: {new Date().toLocaleDateString('ko-KR')}
-          </div>
-        </div>
-
-        {/* 조직 소속 정보 */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">조직 소속 정보</h3>
-            <Button type="button" variant="outline" size="sm" onClick={addOrganizationAffiliation}>
-              <Plus className="w-4 h-4 mr-1" />
-              소속 추가
-            </Button>
-          </div>
-          
-          {organizationAffiliations.map((org: any, index: number) => (
-            <div key={index} className="border rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="font-medium">소속 정보 #{index + 1}</h4>
-                {organizationAffiliations.length > 1 && (
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => removeOrganizationAffiliation(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    제거
-                  </Button>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div>
-                  <Label className="text-sm text-gray-600">상위 카테고리</Label>
-                  <Select 
-                    value={org.upperCategory} 
-                    onValueChange={(value) => updateOrganizationAffiliation(index, 'upperCategory', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.keys(organizationHierarchy).map((category: string, catIndex: number) => (
-                        <SelectItem key={`org-upper-${index}-${catIndex}`} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-gray-600">하위 카테고리</Label>
-                  <Select 
-                    value={org.lowerCategory} 
-                    onValueChange={(value) => updateOrganizationAffiliation(index, 'lowerCategory', value)}
-                    disabled={!org.upperCategory}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {org.upperCategory && Object.keys((organizationHierarchy as any)[org.upperCategory] || {}).map((subcategory: string, subIndex: number) => (
-                        <SelectItem key={`org-lower-${index}-${subIndex}`} value={subcategory}>{subcategory}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-gray-600">세부 카테고리</Label>
-                  <Select 
-                    value={org.detailCategory} 
-                    onValueChange={(value) => updateOrganizationAffiliation(index, 'detailCategory', value)}
-                    disabled={!org.lowerCategory}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {org.lowerCategory && org.upperCategory && 
-                       ((organizationHierarchy as any)[org.upperCategory]?.[org.lowerCategory] || []).map((detail: string, detailIndex: number) => (
-                        <SelectItem key={`org-detail-${index}-${detailIndex}`} value={detail}>{detail}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-gray-600">직책/역할</Label>
-                  <Select 
-                    value={org.position} 
-                    onValueChange={(value) => updateOrganizationAffiliation(index, 'position', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {positionOptions.map((position: string, posIndex: number) => (
-                        <SelectItem key={`org-pos-${index}-${posIndex}`} value={position}>{position}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm text-gray-600">시스템 역할</Label>
-                  <Select 
-                    value={org.systemRole} 
-                    onValueChange={(value) => updateOrganizationAffiliation(index, 'systemRole', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {systemRoleOptions.map((role: string, roleIndex: number) => (
-                        <SelectItem key={`org-role-${index}-${roleIndex}`} value={role}>{role}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 에이전트 권한 정보 */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">에이전트 권한 정보</h3>
-            <Button type="button" variant="outline" size="sm" onClick={addAgentPermission}>
-              <Plus className="w-4 h-4 mr-1" />
-              권한 추가
-            </Button>
-          </div>
-          
-          {agentPermissions.map((agent: any, index: number) => (
-            <div key={index} className="border rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="font-medium">에이전트 권한 #{index + 1}</h4>
-                {agentPermissions.length > 1 && (
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => removeAgentPermission(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    제거
-                  </Button>
-                )}
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label>에이전트</Label>
-                  <Select 
-                    value={agent.agentName} 
-                    onValueChange={(value) => updateAgentPermission(index, 'agentName', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="에이전트 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {agentOptions.map((agentName: string, agentIndex: number) => (
-                        <SelectItem key={`agent-${index}-${agentIndex}`} value={agentName}>{agentName}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>사용 권한</Label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {permissionOptions.map((permission: string, permIndex: number) => (
-                      <div key={`perm-${index}-${permIndex}`} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id={`${index}-${permission}`}
-                          checked={agent.permissions.includes(permission)}
-                          onChange={(e) => {
-                            const newPermissions = e.target.checked
-                              ? [...agent.permissions, permission]
-                              : agent.permissions.filter((p: string) => p !== permission);
-                            updateAgentPermission(index, 'permissions', newPermissions);
-                          }}
-                          className="rounded"
-                        />
-                        <Label htmlFor={`${index}-${permission}`} className="text-sm">
-                          {permission}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 사용자 메모 */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">사용자 메모</h3>
-          <Textarea
-            value={userMemo}
-            onChange={(e) => setUserMemo(e.target.value)}
-            placeholder="사용자에 대한 간단한 메모를 입력하세요..."
-            rows={4}
-          />
-        </div>
-
-        {/* 버튼 그룹 */}
-        <div className="flex justify-end space-x-2 pt-6">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            취소
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "저장 중..." : "저장"}
-          </Button>
-        </div>
-      </form>
-    </Form>
-  );
-}
-
-export default MasterAdmin;
