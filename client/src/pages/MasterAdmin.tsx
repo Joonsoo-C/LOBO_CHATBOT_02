@@ -3155,7 +3155,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         </SelectTrigger>
                                       </FormControl>
                                       <SelectContent>
-                                        {managersQuery.data?.map((manager) => (
+                                        {managers?.map((manager) => (
                                           <SelectItem key={manager.id} value={manager.id}>
                                             {manager.firstName} {manager.lastName} ({manager.username})
                                           </SelectItem>
