@@ -48,9 +48,6 @@ import {
   Coffee,
   Music,
   Heart,
-  Search,
-  X,
-  RotateCcw,
   Upload,
   ChevronUp,
   ChevronDown,
@@ -59,6 +56,7 @@ import {
   Download,
   ExternalLink,
   Eye,
+  X,
   ChevronsUpDown,
   RefreshCw
 } from "lucide-react";
@@ -81,16 +79,12 @@ interface Agent {
   name: string;
   description: string;
   category: string;
-  type: string;
   icon: string;
   backgroundColor: string;
   isActive: boolean;
   createdAt: string;
   messageCount: number;
   averageRating?: number;
-  upperCategory?: string;
-  lowerCategory?: string;
-  detailCategory?: string;
 }
 
 interface SystemStats {
@@ -109,7 +103,6 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다").max(20, "에이전트 이름은 최대 20자입니다"),
   description: z.string().max(200, "설명은 최대 200자입니다").optional(),
   category: z.string().min(1, "카테고리를 선택해주세요"),
-  type: z.string().optional(),
   icon: z.string().optional(),
   backgroundColor: z.string().optional(),
   
@@ -212,9 +205,9 @@ function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedAgentTypeFilter, setSelectedAgentTypeFilter] = useState('all');
+  const [selectedAgentType, setSelectedAgentType] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
-  const [hasUserSearched, setHasUserSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [documentSearchQuery, setDocumentSearchQuery] = useState('');
   const [hasDocumentSearched, setHasDocumentSearched] = useState(false);
   const [isDocumentUploadDialogOpen, setIsDocumentUploadDialogOpen] = useState(false);
@@ -248,14 +241,6 @@ function MasterAdmin() {
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
-  
-  // 에이전트 검색 및 필터 상태
-  const [selectedAgentType, setSelectedAgentType] = useState('all');
-  const [selectedAgentStatus, setSelectedAgentStatus] = useState('all');
-  const [selectedUpperCategory, setSelectedUpperCategory] = useState('all');
-  const [selectedLowerCategory, setSelectedLowerCategory] = useState('all');
-  const [selectedDetailCategory, setSelectedDetailCategory] = useState('all');
-  const [hasSearched, setHasSearched] = useState(false);
   const [documentSortField, setDocumentSortField] = useState<string>('name');
   const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('asc');
   
@@ -289,8 +274,6 @@ function MasterAdmin() {
   
   const { toast } = useToast();
   const { t } = useLanguage();
-
-
 
   // Move organization-dependent calculations after useQuery declarations
 
@@ -482,130 +465,6 @@ function MasterAdmin() {
     }
   });
 
-  // 조직 카테고리 데이터 조회
-  const { data: organizationHierarchy } = useQuery({
-    queryKey: ['/api/admin/organization-categories'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/organization-categories');
-      if (!response.ok) throw new Error('Failed to fetch organization categories');
-      return response.json();
-    }
-  });
-
-  // 상위, 하위, 세부 카테고리 옵션 계산
-  const uniqueUpperCategories = useMemo(() => {
-    if (!organizationHierarchy) return [];
-    return [...new Set(organizationHierarchy.map((org: any) => org.upperCategory).filter(Boolean))];
-  }, [organizationHierarchy]);
-
-  const filteredLowerCategories = useMemo(() => {
-    if (!organizationHierarchy || selectedUpperCategory === 'all') return [];
-    return [...new Set(
-      organizationHierarchy
-        .filter((org: any) => org.upperCategory === selectedUpperCategory)
-        .map((org: any) => org.lowerCategory)
-        .filter(Boolean)
-    )];
-  }, [organizationHierarchy, selectedUpperCategory]);
-
-  const filteredDetailCategories = useMemo(() => {
-    if (!organizationHierarchy || selectedLowerCategory === 'all') return [];
-    return [...new Set(
-      organizationHierarchy
-        .filter((org: any) => 
-          org.upperCategory === selectedUpperCategory && 
-          org.lowerCategory === selectedLowerCategory
-        )
-        .map((org: any) => org.detailCategory)
-        .filter(Boolean)
-    )];
-  }, [organizationHierarchy, selectedUpperCategory, selectedLowerCategory]);
-
-  // 에이전트 필터링 로직
-  const filteredAgents = useMemo(() => {
-    if (!agents) return [];
-    
-    let filtered = [...agents];
-
-    // 검색어 필터
-    if (agentSearchQuery.trim()) {
-      const query = agentSearchQuery.toLowerCase();
-      filtered = filtered.filter(agent => 
-        agent.name.toLowerCase().includes(query) ||
-        agent.description.toLowerCase().includes(query)
-      );
-    }
-
-    // 타입 필터
-    if (selectedAgentType !== 'all') {
-      filtered = filtered.filter(agent => agent.type === selectedAgentType);
-    }
-
-    // 상태 필터
-    if (selectedAgentStatus !== 'all') {
-      if (selectedAgentStatus === 'active') {
-        filtered = filtered.filter(agent => agent.isActive);
-      } else if (selectedAgentStatus === 'inactive') {
-        filtered = filtered.filter(agent => !agent.isActive);
-      }
-    }
-
-    // 상위 카테고리 필터
-    if (selectedUpperCategory !== 'all') {
-      filtered = filtered.filter(agent => agent.upperCategory === selectedUpperCategory);
-    }
-
-    // 하위 카테고리 필터
-    if (selectedLowerCategory !== 'all') {
-      filtered = filtered.filter(agent => agent.lowerCategory === selectedLowerCategory);
-    }
-
-    // 세부 카테고리 필터
-    if (selectedDetailCategory !== 'all') {
-      filtered = filtered.filter(agent => agent.detailCategory === selectedDetailCategory);
-    }
-
-    return filtered;
-  }, [agents, agentSearchQuery, selectedAgentType, selectedAgentStatus, selectedUpperCategory, selectedLowerCategory, selectedDetailCategory]);
-
-  // 정렬된 에이전트 목록
-  const sortedAgents = useMemo(() => {
-    if (!filteredAgents) return [];
-    
-    return [...filteredAgents].sort((a, b) => {
-      let aValue = '';
-      let bValue = '';
-      
-      switch (agentSortField) {
-        case 'name':
-          aValue = a.name;
-          bValue = b.name;
-          break;
-        case 'type':
-          aValue = a.type || '';
-          bValue = b.type || '';
-          break;
-        case 'status':
-          aValue = a.isActive ? '사용 중' : '미사용';
-          bValue = b.isActive ? '사용 중' : '미사용';
-          break;
-        case 'createdAt':
-          aValue = a.createdAt;
-          bValue = b.createdAt;
-          break;
-        default:
-          aValue = a.name;
-          bValue = b.name;
-      }
-      
-      if (agentSortDirection === 'asc') {
-        return aValue.localeCompare(bValue);
-      } else {
-        return bValue.localeCompare(aValue);
-      }
-    });
-  }, [filteredAgents, agentSortField, agentSortDirection]);
-
   // 조직 목록 조회
   const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
     queryKey: ['/api/admin/organizations'],
@@ -666,8 +525,50 @@ function MasterAdmin() {
     }
   });
 
+  // 고유한 상위 카테고리 추출 (API data 사용) - moved after useQuery
+  const uniqueUpperCategories = useMemo(() => {
+    const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
+    console.log('Unique upper categories:', categories);
+    return categories.sort();
+  }, [organizations]);
+
+  // 선택된 상위 카테고리에 따른 하위 카테고리 필터링
+  const filteredLowerCategories = useMemo(() => {
+    if (selectedUniversity === 'all') {
+      const categories = Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+      console.log('All lower categories:', categories);
+      return categories.sort();
+    }
+    const categories = Array.from(new Set((organizations || [])
+      .filter(org => org.upperCategory === selectedUniversity)
+      .map(org => org.lowerCategory).filter(Boolean)));
+    console.log('Filtered lower categories for', selectedUniversity, ':', categories);
+    return categories.sort();
+  }, [selectedUniversity, organizations]);
+
+  // 선택된 상위/하위 카테고리에 따른 세부 카테고리 필터링
+  const filteredDetailCategories = useMemo(() => {
+    if (selectedUniversity === 'all' || selectedCollege === 'all') {
+      if (selectedUniversity === 'all' && selectedCollege === 'all') {
+        const categories = Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+        return categories.sort();
+      }
+      return [];
+    }
+    let filtered = organizations || [];
+    if (selectedUniversity !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === selectedUniversity);
+    }
+    if (selectedCollege !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === selectedCollege);
+    }
+    const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+    console.log('Filtered detail categories:', categories);
+    return categories.sort();
+  }, [selectedUniversity, selectedCollege, organizations]);
+
   // 조직 계층 구조 생성 (NewUserForm에서 사용)
-  const userFormHierarchy = useMemo(() => {
+  const organizationHierarchy = useMemo(() => {
     if (!organizations) return {};
     
     const hierarchy: any = {};
@@ -3663,13 +3564,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </div>
                 
-                {/* 에이전트 검색 필터 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* 에이전트 유형 */}
+                {/* 유형 및 상태 필터 행 */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">에이전트 유형</Label>
+                    <Label className="text-sm font-medium">유형</Label>
                     <Select value={selectedAgentType} onValueChange={setSelectedAgentType}>
-                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -3682,151 +3582,38 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* 조직별 필터 */}
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">상위 조직</Label>
-                    <Select value={selectedUpperCategory} onValueChange={setSelectedUpperCategory}>
-                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
+                    <Label className="text-sm font-medium">상태</Label>
+                    <Select value={selectedCollege} onValueChange={setSelectedCollege}>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {uniqueUpperCategories.map(category => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 하위 조직 */}
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">하위 조직</Label>
-                    <Select 
-                      value={selectedLowerCategory} 
-                      onValueChange={setSelectedLowerCategory}
-                      disabled={selectedUpperCategory === 'all'}
-                    >
-                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredLowerCategories.map(category => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 세부 조직 */}
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">세부 조직</Label>
-                    <Select 
-                      value={selectedDetailCategory} 
-                      onValueChange={setSelectedDetailCategory}
-                      disabled={selectedLowerCategory === 'all'}
-                    >
-                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredDetailCategories.map(category => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 상태 */}
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">상태</Label>
-                    <Select value={selectedAgentStatus} onValueChange={setSelectedAgentStatus}>
-                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="active">사용 중</SelectItem>
-                        <SelectItem value="inactive">미사용</SelectItem>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="inactive">비활성</SelectItem>
                         <SelectItem value="pending">승인 대기 중</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* 초기화 버튼 */}
-                  <div className="flex items-end">
-                    <Button 
-                      variant="outline" 
-                      className="w-full h-10 border-gray-300 dark:border-gray-600"
-                      onClick={() => {
-                        setSelectedAgentType('all');
-                        setSelectedAgentStatus('all');
-                        setSelectedUpperCategory('all');
-                        setSelectedLowerCategory('all');
-                        setSelectedDetailCategory('all');
-                        setAgentSearchQuery('');
-                        setHasSearched(false);
-                      }}
-                    >
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      필터 초기화
-                    </Button>
-                  </div>
                 </div>
                 
-                {/* 에이전트 검색 입력창 */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">에이전트 검색</Label>
-                  <div className="flex gap-3">
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        placeholder="에이전트명 또는 설명에 포함된 키워드를 입력하세요"
-                        value={agentSearchQuery}
-                        onChange={(e) => setAgentSearchQuery(e.target.value)}
-                        className="h-11 pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            handleAgentSearch();
-                          }
-                        }}
-                      />
-                    </div>
-                    <Button 
-                      onClick={handleAgentSearch}
-                      className="h-11 px-8 bg-blue-600 hover:bg-blue-700"
-                      disabled={!agentSearchQuery.trim() && selectedAgentType === 'all' && selectedAgentStatus === 'all' && selectedUpperCategory === 'all'}
-                    >
-                      <Search className="w-4 h-4 mr-2" />
-                      검색
-                    </Button>
-                    {hasSearched && (
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          setAgentSearchQuery('');
-                          setSelectedAgentType('all');
-                          setSelectedAgentStatus('all');
-                          setSelectedUpperCategory('all');
-                          setSelectedLowerCategory('all');
-                          setSelectedDetailCategory('all');
-                          setHasSearched(false);
-                        }}
-                        className="h-11 px-6 border-gray-300 dark:border-gray-600"
-                      >
-                        <X className="w-4 h-4 mr-2" />
-                        초기화
-                      </Button>
-                    )}
+                {/* 검색 행 */}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="에이전트명 또는 설명 키워드를 입력하세요"
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      className="h-10"
+                    />
                   </div>
+                  <Button 
+                    onClick={handleAgentSearch}
+                    className="h-10 px-6"
+                  >
+                    검색
+                  </Button>
                 </div>
                 
 
