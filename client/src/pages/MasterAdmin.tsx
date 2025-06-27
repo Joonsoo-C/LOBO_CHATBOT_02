@@ -3932,7 +3932,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 검색 결과 표시 */}
                 {hasAgentSearched && (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    검색 결과: {filteredAgents?.length || 0}개 에이전트
+                    검색 결과: {sortedAgents?.length || 0}개 에이전트
                     {agentSearchQuery && ` (검색어: "${agentSearchQuery}")`}
                   </div>
                 )}
@@ -3948,7 +3948,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>에이전트 목록</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {filteredAgents?.length || 0}개 에이전트 표시
+                    전체 {sortedAgents?.length || 0}개 에이전트 표시
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
