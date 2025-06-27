@@ -229,7 +229,7 @@ function MasterAdmin() {
   
   // 카테고리 관리자 선택 다이얼로그 상태
   const [isCategoryManagerDialogOpen, setIsCategoryManagerDialogOpen] = useState(false);
-  const [managerSearchQuery, setManagerSearchQuery] = useState('');
+  const [categoryManagerSearchQuery, setCategoryManagerSearchQuery] = useState('');
   const [selectedManagerUniversity, setSelectedManagerUniversity] = useState('all');
   const [selectedManagerCollege, setSelectedManagerCollege] = useState('all');
   const [selectedManagerDepartment, setSelectedManagerDepartment] = useState('all');
@@ -284,7 +284,26 @@ function MasterAdmin() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // 에이전트 생성 탭 상태
-  const [agentCreationTab, setAgentCreationTab] = useState<'basic' | 'persona' | 'model' | 'upload' | 'sharing'>('basic');
+  type AgentCreationTab = 'basic' | 'persona' | 'model' | 'upload' | 'sharing' | 'managers';
+  const [agentCreationTab, setAgentCreationTab] = useState<AgentCreationTab>('basic');
+  
+  // 관리자 선정 상태
+  type ManagerInfo = {
+    id: string;
+    name: string;
+    email: string;
+    upperCategory: string;
+    lowerCategory: string;
+  };
+  const [selectedAgentManagers, setSelectedAgentManagers] = useState<ManagerInfo[]>([]);
+  const [selectedDocumentManagers, setSelectedDocumentManagers] = useState<ManagerInfo[]>([]);
+  const [selectedQaManagers, setSelectedQaManagers] = useState<ManagerInfo[]>([]);
+  
+  // 관리자 검색 상태
+  const [managerSearchQuery, setManagerSearchQuery] = useState('');
+  const [managerFilterUpperCategory, setManagerFilterUpperCategory] = useState('');
+  const [managerFilterLowerCategory, setManagerFilterLowerCategory] = useState('');
+  const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('');
   
   // 공유 설정 상태
   const [selectedGroups, setSelectedGroups] = useState<Array<{id: string, upperCategory: string, lowerCategory?: string, detailCategory?: string}>>([]);
