@@ -238,7 +238,6 @@ function MasterAdmin() {
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
-  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   
   // 문서 상세 팝업 필터 상태
   const [selectedAgentManager, setSelectedAgentManager] = useState('');
@@ -725,7 +724,7 @@ function MasterAdmin() {
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setSelectedAgentType('all'); // 유형 필터 초기화
     setUserSearchQuery('');
-    setAgentSearchQuery('');
+
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
     setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
