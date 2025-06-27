@@ -312,23 +312,69 @@ export function setupAdminRoutes(app: Express) {
   // Agent creation
   app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
-      const { name, description, category, managerId, organizationId } = req.body;
+      console.log("Creating new agent with data:", req.body);
+      
+      const {
+        name,
+        description,
+        category,
+        managerId,
+        upperCategory,
+        lowerCategory,
+        detailCategory,
+        status,
+        visibility,
+        llmModel,
+        chatbotType,
+        maxInputLength,
+        maxOutputLength,
+        rolePrompt,
+        personaNickname,
+        speechStyle,
+        personality,
+        prohibitedWords,
+        icon,
+        backgroundColor
+      } = req.body;
+
+      // Validate required fields
+      if (!name || !category || !managerId) {
+        return res.status(400).json({ 
+          message: "필수 필드가 누락되었습니다: 이름, 카테고리, 관리자를 모두 입력해주세요." 
+        });
+      }
 
       const newAgent = await storage.createAgent({
         name,
-        description,
+        description: description || '',
         creatorId: req.user?.id || 'master_admin',
         category,
-        icon: 'user',
-        backgroundColor: '#3B82F6',
-        managerId: managerId || null,
-        organizationId: organizationId ? parseInt(organizationId) : null
+        icon: icon || 'User',
+        backgroundColor: backgroundColor || 'blue',
+        managerId: managerId,
+        upperCategory: upperCategory || null,
+        lowerCategory: lowerCategory || null,
+        detailCategory: detailCategory || null,
+        status: status || 'active',
+        visibility: visibility || 'organization',
+        llmModel: llmModel || 'gpt-4o',
+        chatbotType: chatbotType || 'doc-fallback-llm',
+        maxInputLength: maxInputLength || 2048,
+        maxResponseLength: maxOutputLength || 1024,
+        personaNickname: personaNickname || '',
+        speechStyle: speechStyle || '',
+        personality: personality || '',
+        forbiddenResponseStyle: prohibitedWords || ''
       });
 
+      console.log("Agent created successfully:", newAgent);
       res.json(newAgent);
     } catch (error) {
       console.error("Error creating agent:", error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ 
+        message: "에이전트 생성 중 오류가 발생했습니다.",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
