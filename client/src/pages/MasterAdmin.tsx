@@ -3617,13 +3617,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       {/* 필터링된 사용자 목록 표시 */}
                                       {users?.filter(user => {
                                         const matchesSearch = !userFilterSearchQuery || 
-                                          user.name?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
+                                          (user as any).name?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
                                           user.id?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
                                           user.email?.toLowerCase().includes(userFilterSearchQuery.toLowerCase());
                                         
-                                        const matchesUpper = !userFilterUpperCategory || user.upperCategory === userFilterUpperCategory;
-                                        const matchesLower = !userFilterLowerCategory || user.lowerCategory === userFilterLowerCategory;
-                                        const matchesDetail = !userFilterDetailCategory || user.detailCategory === userFilterDetailCategory;
+                                        const matchesUpper = !userFilterUpperCategory || (user as any).upperCategory === userFilterUpperCategory;
+                                        const matchesLower = !userFilterLowerCategory || (user as any).lowerCategory === userFilterLowerCategory;
+                                        const matchesDetail = !userFilterDetailCategory || (user as any).detailCategory === userFilterDetailCategory;
                                         
                                         return matchesSearch && matchesUpper && matchesLower && matchesDetail;
                                       }).slice(0, 50).map((user) => (
@@ -3642,15 +3642,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               className="rounded"
                                             />
                                           </td>
-                                          <td className="px-2 py-2">{user.name}</td>
+                                          <td className="px-2 py-2">{(user as any).name}</td>
                                           <td className="px-2 py-2">{user.id}</td>
                                           <td className="px-2 py-2">{user.email}</td>
                                           <td className="px-2 py-2">
-                                            {[user.upperCategory, user.lowerCategory, user.detailCategory].filter(Boolean).join(' > ')}
+                                            {[(user as any).upperCategory, (user as any).lowerCategory, (user as any).detailCategory].filter(Boolean).join(' > ')}
                                           </td>
                                         </tr>
                                       )) || []}
-                                      {(!usersData?.data || usersData.data.length === 0) && (
+                                      {(!users || users.length === 0) && (
                                         <tr>
                                           <td colSpan={5} className="px-2 py-4 text-center text-gray-500">
                                             사용자가 없습니다
