@@ -7011,7 +7011,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
         <Dialog open={isDocumentDetailOpen} onOpenChange={setIsDocumentDetailOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>문서 상세 정보 및 에이전트 연결</DialogTitle>
             </DialogHeader>
@@ -7035,16 +7035,31 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <p className="text-sm mt-1">{documentDetailData.uploader}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">문서 종류</Label>
-                      <p className="text-sm mt-1">{documentDetailData.type}</p>
-                    </div>
-                    <div>
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
                       <p className="text-sm mt-1">{documentDetailData.name.split('.').pop()?.toUpperCase()}</p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 크기</Label>
                       <p className="text-sm mt-1">{documentDetailData.size}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 상태 영역 */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">상태</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">문서 상태</Label>
+                      <Select defaultValue="active">
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">사용 중</SelectItem>
+                          <SelectItem value="inactive">미사용</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
