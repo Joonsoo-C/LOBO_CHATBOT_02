@@ -1509,7 +1509,7 @@ export function setupAdminRoutes(app: Express) {
           <html lang="ko">
           <head><meta charset="UTF-8"><title>문서를 찾을 수 없음</title></head>
           <body>
-            <div style="padding: 20px; font-family: Arial, sans-serif;">
+            <div style="padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
               <h1>문서를 찾을 수 없습니다</h1>
               <p>요청하신 문서(ID: ${documentId})를 찾을 수 없습니다.</p>
             </div>
@@ -1518,25 +1518,41 @@ export function setupAdminRoutes(app: Express) {
         `);
       }
 
-      // Set proper headers for Korean text with UTF-8 BOM
+      // Set proper headers for Korean text with UTF-8 encoding
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
 
-      // Ensure content is properly decoded as UTF-8
-      let documentContent = document.content || '내용을 불러올 수 없습니다.';
+      let documentContent = document.content || '';
 
-      // Try to fix encoding issues if content appears to be corrupted
-      try {
-        // Check if content needs UTF-8 conversion
-        if (typeof documentContent === 'string') {
-          // Convert any potential encoding issues
-          documentContent = Buffer.from(documentContent, 'utf8').toString('utf8');
+      // Check if content appears to be binary/corrupted data
+      const isBinaryContent = documentContent && (
+        documentContent.includes('PK') || // ZIP signature (docx files)
+        documentContent.includes('\u0000') || // NULL bytes
+        documentContent.length > 100 && documentContent.split('').filter(c => c.charCodeAt(0) < 32 && c !== '\n' && c !== '\r' && c !== '\t').length > documentContent.length * 0.1
+      );
+
+      if (isBinaryContent || !documentContent.trim()) {
+        // If content is binary or empty, try to re-extract text from the file
+        console.log('Detected binary content or empty content, attempting to re-extract text');
+        const filePath = path.join(adminUploadDir, document.filename);
+        
+        if (fs.existsSync(filePath)) {
+          try {
+            const reExtractedText = await extractTextFromContent(filePath, document.mimeType);
+            documentContent = reExtractedText || '텍스트를 추출할 수 없습니다. 원본 파일을 다운로드하여 확인해주세요.';
+          } catch (extractError) {
+            console.error('Re-extraction failed:', extractError);
+            documentContent = '텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+          }
+        } else {
+          documentContent = '원본 파일을 찾을 수 없습니다. 파일이 삭제되었거나 이동되었을 가능성이 있습니다.';
         }
-      } catch (error) {
-        console.log('Content encoding conversion failed, using original:', error);
       }
+
+      // Clean up any remaining binary characters
+      documentContent = documentContent.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '');
 
       // Safely encode the document name and content for HTML
       const safeDocumentName = (document.originalName || '제목 없음').replace(/[<>&"']/g, (match) => {
@@ -1607,6 +1623,14 @@ export function setupAdminRoutes(app: Express) {
       border-radius: 5px;
       font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
     }
+    .error-notice {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -1615,12 +1639,15 @@ export function setupAdminRoutes(app: Express) {
       <div class="title">${safeDocumentName}</div>
       <div class="meta">파일 크기: ${(document.size / 1024 / 1024).toFixed(2)} MB</div>
       <div class="meta">업로드 날짜: ${new Date(document.createdAt).toLocaleDateString('ko-KR')}</div>
-      <div class="meta">파일 형식: ${document.mimeType && document.mimeType.includes('word') ? 'Word' : 
-                                     document.mimeType && document.mimeType.includes('pdf') ? 'PDF' :
-                                     document.mimeType && document.mimeType.includes('excel') ? 'Excel' :
-                                     document.mimeType && document.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document'}</div>
+      <div class="meta">파일 형식: ${document.mimeType && document.mimeType.includes('word') ? 'Word 문서' : 
+                                     document.mimeType && document.mimeType.includes('pdf') ? 'PDF 문서' :
+                                     document.mimeType && document.mimeType.includes('excel') ? 'Excel 문서' :
+                                     document.mimeType && document.mimeType.includes('powerpoint') ? 'PowerPoint 문서' : '문서'}</div>
     </div>
-    <div class="content">${safeContent}</div>
+    ${safeContent.includes('텍스트를 추출할 수 없습니다') || safeContent.includes('원본 파일을 찾을 수 없습니다') ? 
+      '<div class="error-notice">⚠️ 이 문서의 텍스트를 완전히 추출하지 못했습니다. 정확한 내용을 확인하려면 원본 파일을 다운로드해주세요.</div>' : ''
+    }
+    <div class="content">${safeContent || '문서 내용이 없습니다.'}</div>
   </div>
 </body>
 </html>`;
@@ -1640,9 +1667,10 @@ export function setupAdminRoutes(app: Express) {
         <html lang="ko">
         <head><meta charset="UTF-8"><title>미리보기 오류</title></head>
         <body>
-          <div style="padding: 20px; font-family: Arial, sans-serif;">
+          <div style="padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
             <h1>문서 미리보기 오류</h1>
             <p>문서 미리보기 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}</p>
+            <p>원본 파일을 다운로드하여 확인해주세요.</p>
           </div>
         </body>
         </html>
