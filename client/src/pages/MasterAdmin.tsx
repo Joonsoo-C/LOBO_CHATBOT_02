@@ -329,12 +329,7 @@ function MasterAdmin() {
     filterDetailCategory: string;
     onFilterDetailCategoryChange: (category: string) => void;
   }) {
-    const { data: allUsersData } = useQuery({
-      queryKey: ['/api/admin/users'],
-      enabled: true
-    });
-    
-    const filteredUsers = allUsersData?.filter((user: any) => {
+    const filteredUsers = users?.filter((user: any) => {
       const matchesSearch = !searchQuery || 
         user.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.username?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -1503,6 +1498,10 @@ function MasterAdmin() {
         backgroundColor: "blue", // 기본 배경색
         creatorId: "admin", // 기본 생성자
         isActive: data.status === "active",
+        // 관리자 정보 추가
+        agentManagerIds: selectedAgentManagers.map(m => m.id),
+        documentManagerIds: selectedDocumentManagers.map(m => m.id),
+        qaManagerIds: selectedQaManagers.map(m => m.id),
       };
       const response = await apiRequest("POST", "/api/admin/agents", payload);
       return response.json();
@@ -3243,7 +3242,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {getLowerCategories(agentForm.watch('upperCategory')).map((category) => (
+                                          {getLowerCategories(agentForm.watch('upperCategory') || '').map((category) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
                                             </SelectItem>
@@ -3271,7 +3270,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {getDetailCategories(agentForm.watch('upperCategory'), agentForm.watch('lowerCategory')).map((category) => (
+                                          {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
                                             </SelectItem>
