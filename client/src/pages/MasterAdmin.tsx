@@ -118,15 +118,16 @@ const agentSchema = z.object({
   maxInputLength: z.number().optional(),
   maxOutputLength: z.number().optional(),
   
-  // 📌 역할 및 페르소나 설정
-  rolePrompt: z.string().optional(),
+  // 📌 페르소나 설정 (새로운 필드들)
   personaNickname: z.string().optional(),
   speechStyle: z.string().optional(),
+  expertiseArea: z.string().optional(),
   personality: z.string().optional(),
-  prohibitedWords: z.string().optional(),
-  persona: z.string().optional(),
-  systemPrompt: z.string().optional(),
-  responseStyle: z.string().optional(),
+  forbiddenResponseStyle: z.string().optional(),
+  
+  // 📌 파일 업로드 설정
+  documentType: z.string().optional(),
+  maxFileSize: z.string().optional(),
   
   // 📌 권한 및 접근 설정
   visibility: z.string().optional(),
