@@ -1284,7 +1284,6 @@ function MasterAdmin() {
       maxOutputLength: 1024,
       
       // 📌 역할 및 페르소나 설정
-      rolePrompt: "",
       personaNickname: "",
       speechStyle: "",
       personality: "",
@@ -1323,7 +1322,6 @@ function MasterAdmin() {
       maxOutputLength: 1024,
       
       // 📌 역할 및 페르소나 설정
-      rolePrompt: "",
       personaNickname: "",
       speechStyle: "",
       personality: "",
@@ -2111,7 +2109,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       chatbotType: (agent as any).chatbotType || "doc-fallback-llm",
       maxInputLength: (agent as any).maxInputLength || 2048,
       maxOutputLength: (agent as any).maxOutputLength || 1024,
-      rolePrompt: (agent as any).rolePrompt || "",
+
       personaNickname: (agent as any).personaNickname || "",
       speechStyle: (agent as any).speechStyle || "",
       personality: (agent as any).personality || "",
