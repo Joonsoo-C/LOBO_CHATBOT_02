@@ -986,6 +986,37 @@ function MasterAdmin() {
     return categories.sort();
   }, [users, selectedUniversity, selectedCollege]);
 
+  // 조직 카테고리 데이터 가져오기
+  const { data: organizationsData } = useQuery({
+    queryKey: ['/api/admin/organizations'],
+    select: (data: any) => {
+      const organizations = data.data || [];
+      return {
+        ...data,
+        data: organizations
+      };
+    }
+  });
+
+  // 조직 카테고리 헬퍼 함수들
+  const getOrgUpperCategories = () => {
+    if (!organizationsData?.data) return [];
+    return [...new Set(organizationsData.data.map(org => org.upperCategory).filter(Boolean))];
+  };
+  
+  const getOrgLowerCategories = (upperCategory: string) => {
+    if (!upperCategory || !organizationsData?.data) return [];
+    return [...new Set(organizationsData.data.filter(org => org.upperCategory === upperCategory).map(org => org.lowerCategory).filter(Boolean))];
+  };
+  
+  const getOrgDetailCategories = (upperCategory: string, lowerCategory?: string) => {
+    if (!upperCategory || !organizationsData?.data) return [];
+    return [...new Set(organizationsData.data.filter(org => 
+      org.upperCategory === upperCategory && 
+      (!lowerCategory || org.lowerCategory === lowerCategory)
+    ).map(org => org.detailCategory).filter(Boolean))];
+  };
+
   // 상위 카테고리 변경 시 하위 카테고리 초기화 (실시간 적용)
   const handleUpperCategoryChange = (value: string) => {
     setSelectedUniversity(value);
@@ -3431,36 +3462,92 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             {agentForm.watch('visibility') === 'group' && (
                               <div className="space-y-3 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                                 <Label className="text-sm font-medium">그룹 선택 (최대 10개)</Label>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                  {[...Array(3)].map((_, index) => (
-                                    <div key={index} className="grid grid-cols-3 gap-2">
-                                      <Select>
+                                
+                                {/* 선택된 그룹들 */}
+                                <div className="space-y-3">
+                                  {selectedGroups.map((group, index) => (
+                                    <div key={group.id} className="grid grid-cols-4 gap-2 p-3 bg-white rounded border">
+                                      <Select 
+                                        value={group.upperCategory} 
+                                        onValueChange={(value) => {
+                                          const newGroups = [...selectedGroups];
+                                          newGroups[index] = { ...group, upperCategory: value, lowerCategory: '', detailCategory: '' };
+                                          setSelectedGroups(newGroups);
+                                        }}
+                                      >
                                         <SelectTrigger className="text-xs">
-                                          <SelectValue placeholder="상위" />
+                                          <SelectValue placeholder="상위 조직" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          {upperCategories.map((cat) => (
+                                          {getUpperCategories().map((cat) => (
                                             <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                           ))}
                                         </SelectContent>
                                       </Select>
-                                      <Select>
+                                      
+                                      <Select 
+                                        value={group.lowerCategory || ''} 
+                                        onValueChange={(value) => {
+                                          const newGroups = [...selectedGroups];
+                                          newGroups[index] = { ...group, lowerCategory: value, detailCategory: '' };
+                                          setSelectedGroups(newGroups);
+                                        }}
+                                        disabled={!group.upperCategory}
+                                      >
                                         <SelectTrigger className="text-xs">
-                                          <SelectValue placeholder="하위" />
+                                          <SelectValue placeholder="하위 조직" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          {lowerCategories.map((cat) => (
+                                          {getLowerCategories(group.upperCategory).map((cat) => (
                                             <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                           ))}
                                         </SelectContent>
                                       </Select>
-                                      <Input placeholder="세부" className="text-xs" />
+                                      
+                                      <Select 
+                                        value={group.detailCategory || ''} 
+                                        onValueChange={(value) => {
+                                          const newGroups = [...selectedGroups];
+                                          newGroups[index] = { ...group, detailCategory: value };
+                                          setSelectedGroups(newGroups);
+                                        }}
+                                        disabled={!group.lowerCategory}
+                                      >
+                                        <SelectTrigger className="text-xs">
+                                          <SelectValue placeholder="세부 조직" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {getDetailCategories(group.upperCategory, group.lowerCategory).map((cat) => (
+                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      
+                                      <Button 
+                                        type="button" 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => setSelectedGroups(selectedGroups.filter((_, i) => i !== index))}
+                                        className="text-red-600 hover:text-red-700"
+                                      >
+                                        삭제
+                                      </Button>
                                     </div>
                                   ))}
                                 </div>
-                                <Button type="button" variant="outline" size="sm" className="w-full">
-                                  + 그룹 추가
-                                </Button>
+                                
+                                {/* 그룹 추가 버튼 */}
+                                {selectedGroups.length < 10 && (
+                                  <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="w-full"
+                                    onClick={() => setSelectedGroups([...selectedGroups, { id: Date.now().toString(), upperCategory: '', lowerCategory: '', detailCategory: '' }])}
+                                  >
+                                    + 그룹 추가
+                                  </Button>
+                                )}
                               </div>
                             )}
                             
