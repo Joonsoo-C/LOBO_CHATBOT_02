@@ -2134,53 +2134,34 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   // 문서 미리보기 핸들러
   const handleDocumentPreview = async (document: any) => {
     try {
+      console.log('문서 미리보기 요청:', document.id, document.name);
+      
       const response = await fetch(`/api/admin/documents/${document.id}/preview`);
-      if (!response.ok) throw new Error('미리보기 실패');
-      
-      const data = await response.json();
-      
-      // 새 창에서 문서 내용 표시
-      const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes');
-      if (previewWindow) {
-        previewWindow.document.write(`
-          <html>
-            <head>
-              <title>${document.name} - 문서 미리보기</title>
-              <style>
-                body { 
-                  font-family: 'Malgun Gothic', sans-serif; 
-                  padding: 20px; 
-                  line-height: 1.6;
-                  max-width: 800px;
-                  margin: 0 auto;
-                }
-                h1 { color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-                .meta { color: #666; font-size: 14px; margin-bottom: 20px; }
-                .content { white-space: pre-wrap; word-wrap: break-word; }
-              </style>
-            </head>
-            <body>
-              <h1>${document.name}</h1>
-              <div class="meta">
-                <p>파일 크기: ${document.size}</p>
-                <p>업로드 날짜: ${document.date}</p>
-                <p>파일 형식: ${document.type}</p>
-              </div>
-              <div class="content">${data.content || '문서 내용을 표시할 수 없습니다.'}</div>
-            </body>
-          </html>
-        `);
-        previewWindow.document.close();
+      if (!response.ok) {
+        throw new Error(`미리보기 실패: ${response.status}`);
       }
       
-      toast({
-        title: "미리보기 열림",
-        description: "새 창에서 문서를 확인할 수 있습니다.",
-      });
+      // 서버에서 HTML 응답을 받아서 새 창에 직접 표시
+      const htmlContent = await response.text();
+      
+      const previewWindow = window.open('', '_blank', 'width=900,height=700,scrollbars=yes');
+      if (previewWindow) {
+        previewWindow.document.write(htmlContent);
+        previewWindow.document.close();
+        
+        toast({
+          title: "미리보기 열림",
+          description: "새 창에서 문서를 확인할 수 있습니다.",
+        });
+      } else {
+        throw new Error('팝업 창을 열 수 없습니다. 팝업 차단을 해제해주세요.');
+      }
+      
     } catch (error) {
+      console.error('문서 미리보기 오류:', error);
       toast({
         title: "미리보기 실패",
-        description: "문서 미리보기 중 오류가 발생했습니다.",
+        description: error instanceof Error ? error.message : "문서 미리보기 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
