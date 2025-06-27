@@ -749,6 +749,61 @@ function MasterAdmin() {
     setHasDocumentSearched(true);
   };
 
+  // 에이전트 필터링 로직
+  const filteredAgents = useMemo(() => {
+    if (!agents || !hasAgentSearched) return [];
+    
+    let filtered = [...agents];
+    
+    // 검색어 필터링
+    if (agentSearchQuery.trim()) {
+      const query = agentSearchQuery.toLowerCase();
+      filtered = filtered.filter(agent => 
+        agent.name.toLowerCase().includes(query) ||
+        agent.description.toLowerCase().includes(query)
+      );
+    }
+    
+    // 상위 카테고리 필터링
+    if (agentFilterUpperCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).upperCategory === agentFilterUpperCategory
+      );
+    }
+    
+    // 하위 카테고리 필터링
+    if (agentFilterLowerCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).lowerCategory === agentFilterLowerCategory
+      );
+    }
+    
+    // 세부 카테고리 필터링
+    if (agentFilterDetailCategory !== 'all') {
+      filtered = filtered.filter(agent => 
+        (agent as any).detailCategory === agentFilterDetailCategory
+      );
+    }
+    
+    // 에이전트 유형 필터링
+    if (agentFilterType !== 'all') {
+      filtered = filtered.filter(agent => 
+        agent.category === agentFilterType
+      );
+    }
+    
+    // 상태 필터링
+    if (agentFilterStatus !== 'all') {
+      filtered = filtered.filter(agent => {
+        if (agentFilterStatus === 'active') return agent.isActive;
+        if (agentFilterStatus === 'inactive') return !agent.isActive;
+        return true;
+      });
+    }
+    
+    return filtered;
+  }, [agents, agentSearchQuery, agentFilterUpperCategory, agentFilterLowerCategory, agentFilterDetailCategory, agentFilterType, agentFilterStatus, hasAgentSearched]);
+
   // 사용자 편집 폼 초기화
   const userEditForm = useForm<UserEditFormData>({
     resolver: zodResolver(userEditSchema),
@@ -1166,28 +1221,7 @@ function MasterAdmin() {
 
 
 
-  // 필터된 에이전트 목록 - 에이전트 스키마에 맞게 수정
-  const filteredAgents = useMemo(() => {
-    if (!agents) return [];
-    
-    return agents.filter(agent => {
-      // 텍스트 검색 필터링
-      const matchesText = !agentSearchQuery || 
-        agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
-        agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase());
-      
-      // 유형 필터링 - agent.category 사용
-      const matchesType = agentFilterType === 'all' || 
-        agent.category === agentFilterType;
-      
-      // 상태 필터링
-      const matchesStatus = agentFilterStatus === 'all' || 
-        (agentFilterStatus === 'active' && agent.isActive) ||
-        (agentFilterStatus === 'inactive' && !agent.isActive);
-      
-      return matchesText && matchesType && matchesStatus;
-    });
-  }, [agents, agentSearchQuery, agentFilterType, agentFilterStatus]);
+
 
   // 정렬된 에이전트 목록
   const sortedAgents = useMemo(() => {
@@ -3748,17 +3782,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 에이전트 검색 섹션 */}
             <Card>
               <CardHeader>
-                <CardTitle>에이전트 검색</CardTitle>
+                <CardTitle>에이전트 검색 및 관리</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <Label className="text-sm font-medium">상위 카테고리</Label>
-                    <Select value={selectedUniversity} onValueChange={(value) => {
-                      setSelectedUniversity(value);
-                      setSelectedCollege('all');
-                      setSelectedDepartment('all');
+                    <Select value={agentFilterUpperCategory} onValueChange={(value) => {
+                      setAgentFilterUpperCategory(value);
+                      setAgentFilterLowerCategory('all');
+                      setAgentFilterDetailCategory('all');
+                      setHasAgentSearched(true);
                     }}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
@@ -3777,19 +3812,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div>
                     <Label className="text-sm font-medium">하위 카테고리</Label>
                     <Select 
-                      value={selectedCollege} 
+                      value={agentFilterLowerCategory} 
                       onValueChange={(value) => {
-                        setSelectedCollege(value);
-                        setSelectedDepartment('all');
+                        setAgentFilterLowerCategory(value);
+                        setAgentFilterDetailCategory('all');
+                        setHasAgentSearched(true);
                       }}
-                      disabled={selectedUniversity === 'all'}
+                      disabled={agentFilterUpperCategory === 'all'}
                     >
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {filteredLowerCategories.map((category) => (
+                        {getLowerCategories(agentFilterUpperCategory).map((category) => (
                           <SelectItem key={category} value={category}>
                             {category}
                           </SelectItem>
@@ -3801,16 +3837,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div>
                     <Label className="text-sm font-medium">세부 카테고리</Label>
                     <Select 
-                      value={selectedDepartment} 
-                      onValueChange={setSelectedDepartment}
-                      disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                      value={agentFilterDetailCategory} 
+                      onValueChange={(value) => {
+                        setAgentFilterDetailCategory(value);
+                        setHasAgentSearched(true);
+                      }}
+                      disabled={agentFilterLowerCategory === 'all' || agentFilterUpperCategory === 'all'}
                     >
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {filteredDetailCategories.map((category) => (
+                        {getDetailCategories(agentFilterUpperCategory, agentFilterLowerCategory).map((category) => (
                           <SelectItem key={category} value={category}>
                             {category}
                           </SelectItem>
@@ -3823,7 +3862,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Button 
                       variant="outline" 
                       className="w-full h-10 mt-6"
-                      onClick={resetFilters}
+                      onClick={resetAgentFilters}
                     >
                       필터 초기화
                     </Button>
@@ -3834,7 +3873,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <Label className="text-sm font-medium">유형</Label>
-                    <Select value={selectedAgentType} onValueChange={setSelectedAgentType}>
+                    <Select value={agentFilterType} onValueChange={(value) => {
+                      setAgentFilterType(value);
+                      setHasAgentSearched(true);
+                    }}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
@@ -3850,7 +3892,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   <div>
                     <Label className="text-sm font-medium">상태</Label>
-                    <Select value={selectedCollege} onValueChange={setSelectedCollege}>
+                    <Select value={agentFilterStatus} onValueChange={(value) => {
+                      setAgentFilterStatus(value);
+                      setHasAgentSearched(true);
+                    }}>
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
@@ -3858,7 +3903,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="active">활성</SelectItem>
                         <SelectItem value="inactive">비활성</SelectItem>
-                        <SelectItem value="pending">승인 대기 중</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -3869,8 +3913,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="flex-1">
                     <Input
                       placeholder="에이전트명 또는 설명 키워드를 입력하세요"
-                      value={userSearchQuery}
-                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      value={agentSearchQuery}
+                      onChange={(e) => setAgentSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAgentSearch()}
                       className="h-10"
                     />
                   </div>
@@ -3882,6 +3927,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
                 
+                {/* 검색 결과 표시 */}
+                {hasAgentSearched && (
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    검색 결과: {filteredAgents?.length || 0}개 에이전트
+                    {agentSearchQuery && ` (검색어: "${agentSearchQuery}")`}
+                  </div>
+                )}
 
               </CardContent>
             </Card>
@@ -3889,12 +3941,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             
 
             {/* 에이전트 목록 */}
-            {hasSearched ? (
+            {hasAgentSearched ? (
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>에이전트 목록</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {sortedAgents?.length || 0}개 에이전트 표시
+                    전체 {filteredAgents?.length || 0}개 에이전트 표시
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
