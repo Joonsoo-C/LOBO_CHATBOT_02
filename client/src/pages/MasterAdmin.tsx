@@ -48,6 +48,9 @@ import {
   Coffee,
   Music,
   Heart,
+  Search,
+  X,
+  RotateCcw,
   Upload,
   ChevronUp,
   ChevronDown,
@@ -56,7 +59,6 @@ import {
   Download,
   ExternalLink,
   Eye,
-  X,
   ChevronsUpDown,
   RefreshCw
 } from "lucide-react";
@@ -205,9 +207,9 @@ function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedAgentType, setSelectedAgentType] = useState('all');
+  const [selectedAgentTypeFilter, setSelectedAgentTypeFilter] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasUserSearched, setHasUserSearched] = useState(false);
   const [documentSearchQuery, setDocumentSearchQuery] = useState('');
   const [hasDocumentSearched, setHasDocumentSearched] = useState(false);
   const [isDocumentUploadDialogOpen, setIsDocumentUploadDialogOpen] = useState(false);
@@ -241,6 +243,14 @@ function MasterAdmin() {
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
+  
+  // 에이전트 검색 및 필터 상태
+  const [selectedAgentType, setSelectedAgentType] = useState('all');
+  const [selectedAgentStatus, setSelectedAgentStatus] = useState('all');
+  const [selectedUpperCategory, setSelectedUpperCategory] = useState('all');
+  const [selectedLowerCategory, setSelectedLowerCategory] = useState('all');
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState('all');
+  const [hasSearched, setHasSearched] = useState(false);
   const [documentSortField, setDocumentSortField] = useState<string>('name');
   const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('asc');
   
@@ -3564,12 +3574,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </div>
                 
-                {/* 유형 및 상태 필터 행 */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* 에이전트 검색 필터 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* 에이전트 유형 */}
                   <div>
-                    <Label className="text-sm font-medium">유형</Label>
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">에이전트 유형</Label>
                     <Select value={selectedAgentType} onValueChange={setSelectedAgentType}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -3582,38 +3593,135 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* 조직별 필터 */}
                   <div>
-                    <Label className="text-sm font-medium">상태</Label>
-                    <Select value={selectedCollege} onValueChange={setSelectedCollege}>
-                      <SelectTrigger className="h-10">
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">상위 조직</Label>
+                    <Select value={selectedUpperCategory} onValueChange={setSelectedUpperCategory}>
+                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="active">활성</SelectItem>
-                        <SelectItem value="inactive">비활성</SelectItem>
+                        {uniqueUpperCategories.map(category => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 하위 조직 */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">하위 조직</Label>
+                    <Select 
+                      value={selectedLowerCategory} 
+                      onValueChange={setSelectedLowerCategory}
+                      disabled={selectedUpperCategory === 'all'}
+                    >
+                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredLowerCategories.map(category => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 세부 조직 */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">세부 조직</Label>
+                    <Select 
+                      value={selectedDetailCategory} 
+                      onValueChange={setSelectedDetailCategory}
+                      disabled={selectedLowerCategory === 'all'}
+                    >
+                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredDetailCategories.map(category => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 상태 */}
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">상태</Label>
+                    <Select value={selectedAgentStatus} onValueChange={setSelectedAgentStatus}>
+                      <SelectTrigger className="h-10 border-gray-300 dark:border-gray-600">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="active">사용 중</SelectItem>
+                        <SelectItem value="inactive">미사용</SelectItem>
                         <SelectItem value="pending">승인 대기 중</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* 초기화 버튼 */}
+                  <div className="flex items-end">
+                    <Button 
+                      variant="outline" 
+                      className="w-full h-10 border-gray-300 dark:border-gray-600"
+                      onClick={resetAgentFilters}
+                    >
+                      <RotateCcw className="w-4 h-4 mr-2" />
+                      필터 초기화
+                    </Button>
+                  </div>
                 </div>
                 
-                {/* 검색 행 */}
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="에이전트명 또는 설명 키워드를 입력하세요"
-                      value={userSearchQuery}
-                      onChange={(e) => setUserSearchQuery(e.target.value)}
-                      className="h-10"
-                    />
+                {/* 에이전트 검색 입력창 */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">에이전트 검색</Label>
+                  <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="에이전트명 또는 설명에 포함된 키워드를 입력하세요"
+                        value={agentSearchQuery}
+                        onChange={(e) => setAgentSearchQuery(e.target.value)}
+                        className="h-11 pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            handleAgentSearch();
+                          }
+                        }}
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleAgentSearch}
+                      className="h-11 px-8 bg-blue-600 hover:bg-blue-700"
+                      disabled={!agentSearchQuery.trim() && selectedAgentType === 'all' && selectedAgentStatus === 'all' && selectedUpperCategory === 'all'}
+                    >
+                      <Search className="w-4 h-4 mr-2" />
+                      검색
+                    </Button>
+                    {hasSearched && (
+                      <Button 
+                        variant="outline" 
+                        onClick={clearAgentSearch}
+                        className="h-11 px-6 border-gray-300 dark:border-gray-600"
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        초기화
+                      </Button>
+                    )}
                   </div>
-                  <Button 
-                    onClick={handleAgentSearch}
-                    className="h-10 px-6"
-                  >
-                    검색
-                  </Button>
                 </div>
                 
 
