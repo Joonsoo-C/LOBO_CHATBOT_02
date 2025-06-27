@@ -724,7 +724,6 @@ function MasterAdmin() {
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setSelectedAgentType('all'); // 유형 필터 초기화
     setUserSearchQuery('');
-
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
     setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
@@ -1018,10 +1017,32 @@ function MasterAdmin() {
     setUserCurrentPage(1); // 사용자 페이지 리셋
   };
 
+  // 에이전트 전용 상태 (사용자 검색과 분리)
+  const [agentSearchQuery, setAgentSearchQuery] = useState('');
+  const [agentFilterUpperCategory, setAgentFilterUpperCategory] = useState('all');
+  const [agentFilterLowerCategory, setAgentFilterLowerCategory] = useState('all');
+  const [agentFilterDetailCategory, setAgentFilterDetailCategory] = useState('all');
+  const [agentFilterType, setAgentFilterType] = useState('all');
+  const [agentFilterStatus, setAgentFilterStatus] = useState('all');
+  const [hasAgentSearched, setHasAgentSearched] = useState(false);
+
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
-    setHasSearched(true);
+    setHasAgentSearched(true);
   };
+
+  // 에이전트 필터 초기화 함수
+  const resetAgentFilters = () => {
+    setAgentSearchQuery('');
+    setAgentFilterUpperCategory('all');
+    setAgentFilterLowerCategory('all');
+    setAgentFilterDetailCategory('all');
+    setAgentFilterType('all');
+    setAgentFilterStatus('all');
+    setHasAgentSearched(false);
+  };
+
+
 
   // 에이전트 정렬 핸들러
   const handleAgentSort = (field: string) => {
@@ -1145,47 +1166,28 @@ function MasterAdmin() {
 
 
 
-  // 필터된 에이전트 목록
+  // 필터된 에이전트 목록 - 에이전트 스키마에 맞게 수정
   const filteredAgents = useMemo(() => {
     if (!agents) return [];
     
-    let filtered = [...agents];
-    
-    // 검색이 실행된 경우에만 필터링 적용
-    if (hasSearched) {
-      // 검색 쿼리 필터링
-      if (userSearchQuery.trim()) {
-        const query = userSearchQuery.toLowerCase();
-        filtered = filtered.filter(agent => 
-          agent.name.toLowerCase().includes(query) ||
-          agent.description.toLowerCase().includes(query)
-        );
-      }
+    return agents.filter(agent => {
+      // 텍스트 검색 필터링
+      const matchesText = !agentSearchQuery || 
+        agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
+        agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase());
       
-      // 카테고리 필터링
-      if (selectedUniversity !== 'all') {
-        const categoryMap = {
-          'school': '학교',
-          'professor': '교수',
-          'student': '학생',
-          'group': '그룹',
-          'function': '기능형'
-        };
-        filtered = filtered.filter(agent => 
-          agent.category === categoryMap[selectedUniversity as keyof typeof categoryMap]
-        );
-      }
+      // 유형 필터링 - agent.category 사용
+      const matchesType = agentFilterType === 'all' || 
+        agent.category === agentFilterType;
       
       // 상태 필터링
-      if (selectedCollege !== 'all') {
-        filtered = filtered.filter(agent => 
-          selectedCollege === 'active' ? agent.isActive : !agent.isActive
-        );
-      }
-    }
-    
-    return filtered;
-  }, [agents, hasSearched, userSearchQuery, selectedUniversity, selectedCollege]);
+      const matchesStatus = agentFilterStatus === 'all' || 
+        (agentFilterStatus === 'active' && agent.isActive) ||
+        (agentFilterStatus === 'inactive' && !agent.isActive);
+      
+      return matchesText && matchesType && matchesStatus;
+    });
+  }, [agents, agentSearchQuery, agentFilterType, agentFilterStatus]);
 
   // 정렬된 에이전트 목록
   const sortedAgents = useMemo(() => {
