@@ -3034,7 +3034,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {upperCategories.map((category) => (
+                                          {getUpperCategories().map((category) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
                                             </SelectItem>
@@ -3065,12 +3065,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {lowerCategories.filter(cat => 
-                                            organizations?.some(org => 
-                                              org.upperCategory === agentForm.watch('upperCategory') && 
-                                              org.lowerCategory === cat
-                                            )
-                                          ).map((category) => (
+                                          {getLowerCategories(agentForm.watch('upperCategory')).map((category) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
                                             </SelectItem>
@@ -3087,14 +3082,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel className="text-xs text-gray-600">세부 조직 (선택)</FormLabel>
-                                      <FormControl>
-                                        <Input 
-                                          placeholder="세부 조직 입력" 
-                                          className="focus:ring-2 focus:ring-blue-500"
-                                          disabled={!agentForm.watch('lowerCategory')}
-                                          {...field} 
-                                        />
-                                      </FormControl>
+                                      <Select 
+                                        onValueChange={field.onChange} 
+                                        defaultValue={field.value}
+                                        disabled={!agentForm.watch('upperCategory') || !agentForm.watch('lowerCategory')}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                            <SelectValue placeholder="세부 조직 선택" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {getDetailCategories(agentForm.watch('upperCategory'), agentForm.watch('lowerCategory')).map((category) => (
+                                            <SelectItem key={category} value={category}>
+                                              {category}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
                                       <FormMessage />
                                     </FormItem>
                                   )}
@@ -3103,9 +3108,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
                           </div>
 
-                          {/* 선택 정보 */}
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-gray-700">📝 선택 정보</h3>
                             <FormField
                               control={agentForm.control}
                               name="description"
@@ -3145,20 +3148,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 고급 설정 탭 */}
-                        <TabsContent value="advanced" className="space-y-6">
-                          {/* 페르소나 설정 */}
+                        {/* 페르소나 탭 */}
+                        <TabsContent value="persona" className="space-y-6">
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-purple-700">🎭 페르소나</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="personaNickname"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>페르소나 닉네임</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">닉네임</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="예: 도우미 민지, 교수 어시스턴트" {...field} />
+                                      <Input placeholder="예: 민지, 교수님 어시스턴트" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -3169,11 +3170,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="speechStyle"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>말투 스타일</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 공손하고 친절한 말투"
-                                        className="min-h-[60px]"
+                                        placeholder="예: 공손하고 친절한 말투로 대화합니다"
+                                        className="min-h-[60px] focus:ring-2 focus:ring-blue-500"
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            <div className="grid grid-cols-1 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="expertiseArea"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">지식/전문 분야</FormLabel>
+                                    <FormControl>
+                                      <Textarea 
+                                        placeholder="예: 컴퓨터공학, 프로그래밍, 학사업무, 입학상담 등"
+                                        className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
                                     </FormControl>
@@ -3186,11 +3206,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="personality"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>성격 특성</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">성격특성</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 친절함, 논리적, 재치있음"
-                                        className="min-h-[60px]"
+                                        placeholder="예: 친절하고 도움이 되는 성격, 논리적 사고, 인내심 있음"
+                                        className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
                                     </FormControl>
@@ -3200,24 +3220,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                               <FormField
                                 control={agentForm.control}
-                                name="responseStyle"
+                                name="forbiddenResponseStyle"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>응답 스타일</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value || "default"}>
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        <SelectItem value="default">기본 스타일</SelectItem>
-                                        <SelectItem value="formal">정중한 스타일</SelectItem>
-                                        <SelectItem value="friendly">친근한 스타일</SelectItem>
-                                        <SelectItem value="professional">전문적 스타일</SelectItem>
-                                        <SelectItem value="casual">캐주얼 스타일</SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                    <FormLabel className="text-sm font-medium text-gray-700">금칙어 반응 방식</FormLabel>
+                                    <FormControl>
+                                      <Textarea 
+                                        placeholder="예: 죄송하지만 해당 질문에 대해서는 답변드릴 수 없습니다. 다른 주제로 대화해주세요."
+                                        className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                        {...field} 
+                                      />
+                                    </FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
