@@ -2946,7 +2946,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <span className="whitespace-nowrap">+ 에이전트 추가</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
                   </DialogHeader>
@@ -3621,9 +3621,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           user.id?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
                                           user.email?.toLowerCase().includes(userFilterSearchQuery.toLowerCase());
                                         
-                                        const matchesUpper = !userFilterUpperCategory || (user as any).upperCategory === userFilterUpperCategory;
-                                        const matchesLower = !userFilterLowerCategory || (user as any).lowerCategory === userFilterLowerCategory;
-                                        const matchesDetail = !userFilterDetailCategory || (user as any).detailCategory === userFilterDetailCategory;
+                                        const matchesUpper = !userFilterUpperCategory || userFilterUpperCategory === "all" || (user as any).upperCategory === userFilterUpperCategory;
+                                        const matchesLower = !userFilterLowerCategory || userFilterLowerCategory === "all" || (user as any).lowerCategory === userFilterLowerCategory;
+                                        const matchesDetail = !userFilterDetailCategory || userFilterDetailCategory === "all" || (user as any).detailCategory === userFilterDetailCategory;
                                         
                                         return matchesSearch && matchesUpper && matchesLower && matchesDetail;
                                       }).slice(0, 50).map((user) => (
