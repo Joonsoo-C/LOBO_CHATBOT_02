@@ -81,6 +81,7 @@ interface Agent {
   name: string;
   description: string;
   category: string;
+  type: string;
   icon: string;
   backgroundColor: string;
   isActive: boolean;
@@ -105,6 +106,7 @@ const agentSchema = z.object({
   name: z.string().min(1, "에이전트 이름은 필수입니다").max(20, "에이전트 이름은 최대 20자입니다"),
   description: z.string().max(200, "설명은 최대 200자입니다").optional(),
   category: z.string().min(1, "카테고리를 선택해주세요"),
+  type: z.string().optional(),
   icon: z.string().optional(),
   backgroundColor: z.string().optional(),
   
@@ -284,6 +286,8 @@ function MasterAdmin() {
   
   const { toast } = useToast();
   const { t } = useLanguage();
+
+
 
   // Move organization-dependent calculations after useQuery declarations
 
@@ -3677,7 +3681,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Button 
                       variant="outline" 
                       className="w-full h-10 border-gray-300 dark:border-gray-600"
-                      onClick={resetAgentFilters}
+                      onClick={() => {
+                        setSelectedAgentType('all');
+                        setSelectedAgentStatus('all');
+                        setSelectedUpperCategory('all');
+                        setSelectedLowerCategory('all');
+                        setSelectedDetailCategory('all');
+                        setAgentSearchQuery('');
+                        setHasSearched(false);
+                      }}
                     >
                       <RotateCcw className="w-4 h-4 mr-2" />
                       필터 초기화
@@ -3714,7 +3726,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     {hasSearched && (
                       <Button 
                         variant="outline" 
-                        onClick={clearAgentSearch}
+                        onClick={() => {
+                          setAgentSearchQuery('');
+                          setSelectedAgentType('all');
+                          setSelectedAgentStatus('all');
+                          setSelectedUpperCategory('all');
+                          setSelectedLowerCategory('all');
+                          setSelectedDetailCategory('all');
+                          setHasSearched(false);
+                        }}
                         className="h-11 px-6 border-gray-300 dark:border-gray-600"
                       >
                         <X className="w-4 h-4 mr-2" />
