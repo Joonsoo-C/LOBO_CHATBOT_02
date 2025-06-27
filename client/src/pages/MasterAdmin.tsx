@@ -283,6 +283,9 @@ function MasterAdmin() {
   // 파일 입력 참조
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  // 에이전트 생성 탭 상태
+  const [agentCreationTab, setAgentCreationTab] = useState<'basic' | 'advanced'>('basic');
+  
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -2898,594 +2901,507 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
                   </DialogHeader>
-                  <Form {...agentForm}>
-                    <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="space-y-8">
-                      
-                      {/* 📌 기본 정보 */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">📌 기본 정보</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>에이전트명 *</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="최대 20자" maxLength={20} {...field} />
-                                </FormControl>
-                                <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="category"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>유형 *</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="유형 선택" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="학교">학교</SelectItem>
-                                    <SelectItem value="교수">교수</SelectItem>
-                                    <SelectItem value="학생">학생</SelectItem>
-                                    <SelectItem value="그룹">그룹</SelectItem>
-                                    <SelectItem value="기능형">기능형</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="category"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>기본 카테고리 *</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="카테고리 선택" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="학교">학교</SelectItem>
-                                    <SelectItem value="교수">교수</SelectItem>
-                                    <SelectItem value="학생">학생</SelectItem>
-                                    <SelectItem value="그룹">그룹</SelectItem>
-                                    <SelectItem value="기능형">기능형</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
+                  
+                  {/* 탭 네비게이션 */}
+                  <Tabs value={agentCreationTab} onValueChange={setAgentCreationTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-6">
+                      <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                        기본 정보
+                      </TabsTrigger>
+                      <TabsTrigger value="advanced" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                        고급 설정
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <Form {...agentForm}>
+                      <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="space-y-6">
                         
-                        {/* 아이콘 및 배경색 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="icon"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>아이콘</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "Bot"}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="아이콘 선택" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="Bot">Bot</SelectItem>
-                                    <SelectItem value="User">User</SelectItem>
-                                    <SelectItem value="GraduationCap">GraduationCap</SelectItem>
-                                    <SelectItem value="BookOpen">BookOpen</SelectItem>
-                                    <SelectItem value="Building2">Building2</SelectItem>
-                                    <SelectItem value="Users">Users</SelectItem>
-                                    <SelectItem value="Settings">Settings</SelectItem>
-                                    <SelectItem value="Heart">Heart</SelectItem>
-                                    <SelectItem value="Briefcase">Briefcase</SelectItem>
-                                    <SelectItem value="MessageCircle">MessageCircle</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="backgroundColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>배경색</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "#3B82F6"}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="배경색 선택" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="#3B82F6">파란색</SelectItem>
-                                    <SelectItem value="#10B981">초록색</SelectItem>
-                                    <SelectItem value="#F59E0B">노란색</SelectItem>
-                                    <SelectItem value="#EF4444">빨간색</SelectItem>
-                                    <SelectItem value="#8B5CF6">보라색</SelectItem>
-                                    <SelectItem value="#F97316">주황색</SelectItem>
-                                    <SelectItem value="#06B6D4">청록색</SelectItem>
-                                    <SelectItem value="#84CC16">연두색</SelectItem>
-                                    <SelectItem value="#EC4899">분홍색</SelectItem>
-                                    <SelectItem value="#6B7280">회색</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        
-                        <FormField
-                          control={agentForm.control}
-                          name="description"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>에이전트 설명</FormLabel>
-                              <FormControl>
-                                <Textarea 
-                                  placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)" 
-                                  maxLength={200}
-                                  className="min-h-[80px]"
-                                  {...field} 
+                        {/* 기본 정보 탭 */}
+                        <TabsContent value="basic" className="space-y-6">
+                          {/* 필수 정보 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-blue-700">📌 필수 정보</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="name"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트명 *</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder="최대 20자" 
+                                        maxLength={20} 
+                                        className="focus:ring-2 focus:ring-blue-500"
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="category"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue placeholder="유형 선택" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="학교">학교</SelectItem>
+                                        <SelectItem value="교수">교수</SelectItem>
+                                        <SelectItem value="학생">학생</SelectItem>
+                                        <SelectItem value="그룹">그룹</SelectItem>
+                                        <SelectItem value="기능형">기능형</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            
+                            {/* 조직 선택 (순차적) */}
+                            <div className="space-y-4">
+                              <Label className="text-sm font-medium text-gray-700">조직 선택 *</Label>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <FormField
+                                  control={agentForm.control}
+                                  name="upperCategory"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-xs text-gray-600">상위 조직</FormLabel>
+                                      <Select 
+                                        onValueChange={(value) => {
+                                          field.onChange(value);
+                                          agentForm.setValue('lowerCategory', '');
+                                          agentForm.setValue('detailCategory', '');
+                                        }} 
+                                        defaultValue={field.value}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                            <SelectValue placeholder="상위 조직 선택" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {upperCategories.map((category) => (
+                                            <SelectItem key={category} value={category}>
+                                              {category}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
                                 />
-                              </FormControl>
-                              <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* 📌 소속 및 상태 */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">📌 소속 및 상태</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="upperCategory"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>상위 카테고리</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="예: 인문대학, 공과대학" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {upperCategories.map((category) => (
-                                      <SelectItem key={category} value={category}>
-                                        {category}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="lowerCategory"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>하위 카테고리</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="예: 국문학과, 기계공학과" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {lowerCategories.map((category) => (
-                                      <SelectItem key={category} value={category}>
-                                        {category}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="detailCategory"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>세부 카테고리</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="선택사항" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <FormField
-                          control={agentForm.control}
-                          name="status"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>상태</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value || "active"}>
-                                <FormControl>
-                                  <SelectTrigger className="w-48">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="active">활성</SelectItem>
-                                  <SelectItem value="inactive">비활성</SelectItem>
-                                  <SelectItem value="pending">승인 대기</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* 📌 모델 및 응답 설정 */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">📌 모델 및 응답 설정</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="llmModel"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>사용 LLM 모델</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o"}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                                    <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                                    <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                                    <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="chatbotType"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>응답 방식 설정</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="doc-fallback-llm">문서 우선 + LLM</SelectItem>
-                                    <SelectItem value="general-llm">LLM 우선</SelectItem>
-                                    <SelectItem value="strict-doc">문서 only</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="maxInputLength"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>최대 입력 글자 수</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="number" 
-                                    placeholder="2048" 
-                                    defaultValue={2048}
-                                    {...field} 
-                                    onChange={e => field.onChange(parseInt(e.target.value) || 2048)}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="maxOutputLength"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>최대 응답 글자 수</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="number" 
-                                    placeholder="1024" 
-                                    defaultValue={1024}
-                                    {...field} 
-                                    onChange={e => field.onChange(parseInt(e.target.value) || 1024)}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      {/* 📌 역할 및 페르소나 설정 */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">📌 역할 및 페르소나 설정</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="rolePrompt"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>역할 프롬프트</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="예: 대학원 논문 첨삭 도우미"
-                                    className="min-h-[80px]"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="personaNickname"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>페르소나 닉네임</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="예: 도우미 민지, 교수 어시스턴트" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="speechStyle"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>말투 스타일</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="예: 공손하고 친절한 말투"
-                                    className="min-h-[80px]"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="personality"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>성격 설명</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="예: 친절함, 논리적, 재치있음"
-                                    className="min-h-[80px]"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <FormField
-                          control={agentForm.control}
-                          name="prohibitedWords"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>금칙어 응답 방식</FormLabel>
-                              <FormControl>
-                                <Textarea 
-                                  placeholder="부적절한 질문을 받았을 때의 응답 방식을 설정하세요"
-                                  className="min-h-[60px]"
-                                  {...field} 
+                                <FormField
+                                  control={agentForm.control}
+                                  name="lowerCategory"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-xs text-gray-600">하위 조직</FormLabel>
+                                      <Select 
+                                        onValueChange={(value) => {
+                                          field.onChange(value);
+                                          agentForm.setValue('detailCategory', '');
+                                        }} 
+                                        defaultValue={field.value}
+                                        disabled={!agentForm.watch('upperCategory')}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                            <SelectValue placeholder="하위 조직 선택" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {lowerCategories.filter(cat => 
+                                            organizations?.some(org => 
+                                              org.upperCategory === agentForm.watch('upperCategory') && 
+                                              org.lowerCategory === cat
+                                            )
+                                          ).map((category) => (
+                                            <SelectItem key={category} value={category}>
+                                              {category}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
                                 />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        {/* 추가 페르소나 설정 */}
-                        <div className="grid grid-cols-1 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="persona"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>페르소나 (기존 호환성)</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="기존 시스템과의 호환성을 위한 페르소나 설정"
-                                    className="min-h-[60px]"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="systemPrompt"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>시스템 프롬프트</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="AI 시스템에게 전달할 기본 지시사항"
-                                    className="min-h-[80px]"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="responseStyle"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>응답 스타일</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "default"}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="default">기본 스타일</SelectItem>
-                                    <SelectItem value="formal">정중한 스타일</SelectItem>
-                                    <SelectItem value="friendly">친근한 스타일</SelectItem>
-                                    <SelectItem value="professional">전문적 스타일</SelectItem>
-                                    <SelectItem value="casual">캐주얼 스타일</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
+                                <FormField
+                                  control={agentForm.control}
+                                  name="detailCategory"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-xs text-gray-600">세부 조직 (선택)</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder="세부 조직 입력" 
+                                          className="focus:ring-2 focus:ring-blue-500"
+                                          disabled={!agentForm.watch('lowerCategory')}
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </div>
 
-                      {/* 📌 권한 및 접근 설정 */}
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">📌 권한 및 접근 설정</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="visibility"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>공유 범위</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value || "organization"}>
+                          {/* 선택 정보 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-gray-700">📝 선택 정보</h3>
+                            <FormField
+                              control={agentForm.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 설명</FormLabel>
                                   <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
+                                    <Textarea 
+                                      placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)" 
+                                      maxLength={200}
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
                                   </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="private">프라이빗</SelectItem>
-                                    <SelectItem value="custom">사용자 지정</SelectItem>
-                                    <SelectItem value="group">그룹</SelectItem>
-                                    <SelectItem value="organization">조직 전체</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="managerId"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>에이전트 관리자</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="rolePrompt"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">역할/프롬프트</FormLabel>
                                   <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="관리자 선택" />
-                                    </SelectTrigger>
+                                    <Textarea 
+                                      placeholder="예: 대학원 논문 첨삭 도우미, 학과 정보 안내 봇"
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
                                   </FormControl>
-                                  <SelectContent>
-                                    {managers?.map((manager) => (
-                                      <SelectItem key={manager.id} value={manager.id}>
-                                        {manager.firstName} {manager.lastName} ({manager.username})
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="agentEditorIds"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>편집 권한자 ID</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    placeholder="콤마로 구분하여 입력 (예: user1, user2)"
-                                    {...field} 
-                                    onChange={e => field.onChange(e.target.value.split(',').map(id => id.trim()).filter(Boolean))}
-                                    value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={agentForm.control}
-                            name="documentManagerIds"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>문서 관리 권한자 ID</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    placeholder="콤마로 구분하여 입력 (예: user1, user2)"
-                                    {...field} 
-                                    onChange={e => field.onChange(e.target.value.split(',').map(id => id.trim()).filter(Boolean))}
-                                    value={Array.isArray(field.value) ? field.value.join(', ') : field.value || ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </TabsContent>
 
-                      <div className="flex justify-end space-x-2 pt-4 border-t">
-                        <Button type="button" variant="outline" onClick={() => setIsAgentDialogOpen(false)}>
-                          취소
-                        </Button>
-                        <Button type="submit" disabled={createAgentMutation.isPending}>
-                          {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
+                        {/* 고급 설정 탭 */}
+                        <TabsContent value="advanced" className="space-y-6">
+                          {/* 페르소나 설정 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-purple-700">🎭 페르소나</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="personaNickname"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>페르소나 닉네임</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="예: 도우미 민지, 교수 어시스턴트" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="speechStyle"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>말투 스타일</FormLabel>
+                                    <FormControl>
+                                      <Textarea 
+                                        placeholder="예: 공손하고 친절한 말투"
+                                        className="min-h-[60px]"
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="personality"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>성격 특성</FormLabel>
+                                    <FormControl>
+                                      <Textarea 
+                                        placeholder="예: 친절함, 논리적, 재치있음"
+                                        className="min-h-[60px]"
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="responseStyle"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>응답 스타일</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "default"}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="default">기본 스타일</SelectItem>
+                                        <SelectItem value="formal">정중한 스타일</SelectItem>
+                                        <SelectItem value="friendly">친근한 스타일</SelectItem>
+                                        <SelectItem value="professional">전문적 스타일</SelectItem>
+                                        <SelectItem value="casual">캐주얼 스타일</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+
+                          {/* 모델 설정 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-green-700">⚙️ 모델 설정</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="llmModel"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>사용 LLM 모델</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o"}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="chatbotType"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>응답 방식</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="doc-fallback-llm">문서 우선 + LLM</SelectItem>
+                                        <SelectItem value="general-llm">LLM 우선</SelectItem>
+                                        <SelectItem value="strict-doc">문서 only</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="maxInputLength"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>최대 입력 글자 수</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="number" 
+                                        placeholder="2048" 
+                                        defaultValue={2048}
+                                        {...field} 
+                                        onChange={e => field.onChange(parseInt(e.target.value) || 2048)}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="maxOutputLength"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>최대 응답 글자 수</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="number" 
+                                        placeholder="1024" 
+                                        defaultValue={1024}
+                                        {...field} 
+                                        onChange={e => field.onChange(parseInt(e.target.value) || 1024)}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+
+                          {/* 파일 업로드 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-orange-700">📁 파일 업로드</h3>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+                              <FileText className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                              <p className="text-sm text-gray-600 mb-2">에이전트용 문서 파일 업로드</p>
+                              <Button type="button" variant="outline" size="sm">
+                                파일 선택
+                              </Button>
+                              <p className="text-xs text-gray-500 mt-2">PDF, DOC, TXT 파일 지원 (최대 10MB)</p>
+                            </div>
+                          </div>
+
+                          {/* 공유 설정 */}
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2 text-blue-700">🔗 공유 설정</h3>
+                            <FormField
+                              control={agentForm.control}
+                              name="visibility"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>공유 모드</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value || "organization"}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
+                                      <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
+                                      <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
+                                      <SelectItem value="private">프라이빗 - 관리자만 사용 가능</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
+                            {/* 그룹 지정 옵션 */}
+                            {agentForm.watch('visibility') === 'group' && (
+                              <div className="space-y-3 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <Label className="text-sm font-medium">그룹 선택 (최대 10개)</Label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  {[...Array(3)].map((_, index) => (
+                                    <div key={index} className="grid grid-cols-3 gap-2">
+                                      <Select>
+                                        <SelectTrigger className="text-xs">
+                                          <SelectValue placeholder="상위" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {upperCategories.map((cat) => (
+                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <Select>
+                                        <SelectTrigger className="text-xs">
+                                          <SelectValue placeholder="하위" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {lowerCategories.map((cat) => (
+                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <Input placeholder="세부" className="text-xs" />
+                                    </div>
+                                  ))}
+                                </div>
+                                <Button type="button" variant="outline" size="sm" className="w-full">
+                                  + 그룹 추가
+                                </Button>
+                              </div>
+                            )}
+                            
+                            {/* 사용자 지정 옵션 */}
+                            {agentForm.watch('visibility') === 'custom' && (
+                              <div className="space-y-3 mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                                <Label className="text-sm font-medium">사용자 검색 및 선택</Label>
+                                <Input 
+                                  placeholder="이름, 학번, 이메일로 검색..." 
+                                  className="focus:ring-2 focus:ring-green-500"
+                                />
+                                <div className="max-h-32 overflow-y-auto border rounded p-2 bg-white">
+                                  <p className="text-xs text-gray-500 text-center py-2">
+                                    검색 후 사용자를 선택하세요
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </TabsContent>
+
+                        {/* 하단 버튼 */}
+                        <div className="flex justify-between pt-6 border-t">
+                          <div className="flex space-x-2">
+                            {agentCreationTab === 'advanced' && (
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => setAgentCreationTab('basic')}
+                              >
+                                ← 이전
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button type="button" variant="outline" onClick={() => setIsAgentDialogOpen(false)}>
+                              취소
+                            </Button>
+                            {agentCreationTab === 'basic' ? (
+                              <Button 
+                                type="button" 
+                                onClick={() => setAgentCreationTab('advanced')}
+                                disabled={!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory')}
+                              >
+                                다음 →
+                              </Button>
+                            ) : (
+                              <Button type="submit" disabled={createAgentMutation.isPending}>
+                                {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </Form>
+                  </Tabs>
                 </DialogContent>
               </Dialog>
             </div>
