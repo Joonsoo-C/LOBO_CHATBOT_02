@@ -1516,6 +1516,11 @@ function MasterAdmin() {
       });
       setIsAgentDialogOpen(false);
       agentForm.reset();
+      // 관리자 선정 상태 초기화
+      setSelectedAgentManagers([]);
+      setSelectedDocumentManagers([]);
+      setSelectedQaManagers([]);
+      setManagerSearchQuery('');
     },
     onError: (error: Error) => {
       toast({
@@ -3307,7 +3312,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             />
                             <FormField
                               control={agentForm.control}
-                              name="rolePrompt"
+                              name="personality"
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="text-sm font-medium text-gray-700">역할/프롬프트</FormLabel>
