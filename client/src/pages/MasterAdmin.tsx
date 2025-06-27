@@ -238,6 +238,10 @@ function MasterAdmin() {
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
   const [agentSearchQuery, setAgentSearchQuery] = useState('');
+  
+  // 문서 상세 팝업 필터 상태
+  const [selectedAgentManager, setSelectedAgentManager] = useState('');
+  const [selectedAgentStatus, setSelectedAgentStatus] = useState('');
   const [tokenPeriod, setTokenPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
   const [agentSortField, setAgentSortField] = useState<string>('name');
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -7086,49 +7090,153 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 에이전트 연결 영역 */}
-                <div>
-                  <h3 className="text-lg font-medium mb-3">에이전트 연결</h3>
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">에이전트 연결</h3>
                   
-                  {/* 에이전트 검색 */}
-                  <div className="mb-4">
-                    <Input
-                      placeholder="에이전트 이름으로 검색..."
-                      value={agentSearchQuery}
-                      onChange={(e) => setAgentSearchQuery(e.target.value)}
-                      className="w-full"
-                    />
+                  {/* 에이전트 검색 및 필터 */}
+                  <div className="space-y-4 mb-4">
+                    {/* 에이전트 검색 */}
+                    <div>
+                      <Label className="text-sm font-medium">에이전트 검색</Label>
+                      <Input
+                        placeholder="에이전트 이름 또는 설명에 포함된 키워드로 검색..."
+                        value={agentSearchQuery}
+                        onChange={(e) => setAgentSearchQuery(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+
+                    {/* 관리자별 필터 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">에이전트 관리자</Label>
+                        <Select value={selectedAgentManager || "all"} onValueChange={(value) => setSelectedAgentManager(value === "all" ? "" : value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            {agentManagers.map((manager) => (
+                              <SelectItem key={manager} value={manager}>
+                                {manager}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium">활성 상태</Label>
+                        <Select value={selectedAgentStatus || "all"} onValueChange={(value) => setSelectedAgentStatus(value === "all" ? "" : value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            <SelectItem value="active">활성</SelectItem>
+                            <SelectItem value="inactive">비활성</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* 에이전트 유형 필터 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">에이전트 유형</Label>
+                        <Select value={selectedAgentType || "all"} onValueChange={(value) => setSelectedAgentType(value === "all" ? "" : value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex items-end">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            setAgentSearchQuery("");
+                            setSelectedUpperCategory("");
+                            setSelectedLowerCategory("");
+                            setSelectedDetailCategory("");
+                            setSelectedAgentType("");
+                          }}
+                          className="w-full"
+                        >
+                          필터 초기화
+                        </Button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* 사용 가능한 에이전트 목록 */}
-                  <div className="border rounded-lg p-4 max-h-60 overflow-y-auto">
-                    <div className="space-y-2">
-                      {[
-                        "학사 안내봇", "입학처 안내봇", "교수 상담봇", "학생 지원봇", "학과 안내봇",
-                        "도서관 봇", "생활관 안내봇", "취업 상담봇", "학생회 봇", "안전관리 봇",
-                        "국제교류 봇", "체육시설 봇", "재무 안내봇", "대학원 안내봇", "동아리 안내봇",
-                        "상담 안내봇", "교육대학 봇", "시설관리 봇", "연구지원 봇", "교수 개발봇"
-                      ]
-                        .filter(agent => 
-                          agent.toLowerCase().includes(agentSearchQuery.toLowerCase()) &&
-                          !selectedDocumentAgents.includes(agent)
-                        )
-                        .map((agent, index) => (
-                          <div key={index} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id={`agent-${index}`}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedDocumentAgents(prev => [...prev, agent]);
-                                }
-                              }}
-                              className="rounded"
-                            />
-                            <Label htmlFor={`agent-${index}`} className="text-sm">
-                              {agent}
-                            </Label>
-                          </div>
-                        ))}
+                  <div>
+                    <Label className="text-sm font-medium">사용 가능한 에이전트</Label>
+                    <div className="border rounded-lg p-4 max-h-60 overflow-y-auto mt-2 bg-white dark:bg-gray-900">
+                      <div className="space-y-2">
+                        {agents && agents.length > 0 ? (
+                          agents
+                            .filter(agent => {
+                              // 검색어 필터
+                              const searchMatch = !agentSearchQuery || 
+                                agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
+                                (agent.description && agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase()));
+                              
+                              // 조직 필터 (에이전트는 조직 정보가 없으므로 생략)
+                              const orgMatch = true;
+                              
+                              // 유형 필터
+                              const typeMatch = !selectedAgentType || agent.category === selectedAgentType;
+                              
+                              // 이미 선택된 에이전트 제외
+                              const notSelected = !selectedDocumentAgents.includes(agent.name);
+                              
+                              return searchMatch && orgMatch && typeMatch && notSelected;
+                            })
+                            .map((agent, index) => (
+                              <div key={agent.id} className="flex items-start space-x-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded">
+                                <input
+                                  type="checkbox"
+                                  id={`agent-${agent.id}`}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedDocumentAgents(prev => [...prev, agent.name]);
+                                    }
+                                  }}
+                                  className="rounded mt-1"
+                                />
+                                <div className="flex-1">
+                                  <Label htmlFor={`agent-${agent.id}`} className="text-sm font-medium cursor-pointer">
+                                    {agent.name}
+                                  </Label>
+                                  {agent.description && (
+                                    <p className="text-xs text-gray-500 mt-1">{agent.description}</p>
+                                  )}
+                                  <div className="flex items-center space-x-2 mt-1">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                      {agent.category}
+                                    </span>
+                                    {agent.managerId && (
+                                      <span className="text-xs text-gray-500">
+                                        관리자: {agent.managerId}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                        ) : (
+                          <p className="text-sm text-gray-500">조건에 맞는 에이전트가 없습니다.</p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
