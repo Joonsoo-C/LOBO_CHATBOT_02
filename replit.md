@@ -618,6 +618,13 @@ Changelog:
   * All upper category dropdowns now display complete list: 경영대학, 공과대학, 대학본부, 대학원, 사회과학대학, 연구기관, 예술대학, 예체능대학, 의과대학, 인문대학, 자연과학대학, 학사부서, 학생자치기구
   * Fixed document detail popup agent connection interface to include all organizational hierarchy levels
   * Ensured consistent organization category data across master admin interface, user management, and document management systems
+- June 27, 2025. Updated agent data system with latest Excel file:
+  * Successfully processed latest Excel file (AI 에이전트 0627_1751054472984.xlsx) with 100 agent records
+  * Enhanced data mapping to prioritize '유형' column for accurate category display in admin interface
+  * Improved agent data structure with proper field mapping for all Excel columns
+  * Verified agent type distribution: 87 학생, 11 학교, 1 기능형, 1 교수 agents
+  * Agent management interface now displays correct type data from Excel source
+  * All agent lists (management menu, search results) reflect accurate type information
 ```
 
 ## User Preferences
