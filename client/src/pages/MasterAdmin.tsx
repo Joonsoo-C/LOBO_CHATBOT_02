@@ -7116,7 +7116,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
-                            {agentManagers.map((manager) => (
+                            {['prof001', 'prof002', 'prof003', 'dean001', 'dean002'].map((manager) => (
                               <SelectItem key={manager} value={manager}>
                                 {manager}
                               </SelectItem>
@@ -7164,10 +7164,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           variant="outline" 
                           onClick={() => {
                             setAgentSearchQuery("");
-                            setSelectedUpperCategory("");
-                            setSelectedLowerCategory("");
-                            setSelectedDetailCategory("");
-                            setSelectedAgentType("");
+                            setSelectedAgentManager("");
+                            setSelectedAgentStatus("");
+                            setSelectedAgentType("all");
                           }}
                           className="w-full"
                         >
@@ -7224,9 +7223,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                                       {agent.category}
                                     </span>
-                                    {agent.managerId && (
-                                      <span className="text-xs text-gray-500">
-                                        관리자: {agent.managerId}
+                                    {agent.isActive && (
+                                      <span className="text-xs text-green-600">
+                                        ✓ 활성
                                       </span>
                                     )}
                                   </div>
