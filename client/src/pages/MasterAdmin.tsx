@@ -3122,51 +3122,42 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
 
                           <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={agentForm.control}
-                                name="description"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 설명</FormLabel>
-                                    <FormControl>
-                                      <Textarea 
-                                        placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)" 
-                                        maxLength={200}
-                                        className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
-                                        {...field} 
-                                      />
-                                    </FormControl>
-                                    <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={agentForm.control}
-                                name="managerId"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">담당 관리자 *</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                      <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                          <SelectValue placeholder="관리자 선택" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        {managers?.map((manager) => (
-                                          <SelectItem key={manager.id} value={manager.id}>
-                                            {manager.firstName} {manager.lastName} ({manager.username})
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
+                            <FormField
+                              control={agentForm.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 설명</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)" 
+                                      maxLength={200}
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="rolePrompt"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">역할/프롬프트</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder="예: 대학원 논문 첨삭 도우미, 학과 정보 안내 봇"
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
                         </TabsContent>
 
@@ -3205,7 +3196,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 )}
                               />
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="expertiseArea"
@@ -3240,8 +3231,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </FormItem>
                                 )}
                               />
-                            </div>
-                            <div className="grid grid-cols-1 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="forbiddenResponseStyle"
