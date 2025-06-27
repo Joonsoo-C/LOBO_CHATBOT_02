@@ -85,7 +85,7 @@ function Home() {
     return filtered.sort((a, b) => {
       const aConv = agentConversationMap.get(a.id);
       const bConv = agentConversationMap.get(b.id);
-      
+
       if (aConv && bConv && aConv.lastMessage && bConv.lastMessage) {
         return new Date(bConv.lastMessage.createdAt).getTime() - new Date(aConv.lastMessage.createdAt).getTime();
       } else if (aConv && aConv.lastMessage) {
@@ -107,7 +107,7 @@ function Home() {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
         window.location.href = '/auth';
       }
@@ -134,7 +134,7 @@ function Home() {
                 className="pl-10 pr-3 bg-muted border-none korean-text md:h-11"
               />
             </div>
-            
+
             {/* Category Filter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -164,7 +164,7 @@ function Home() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            
+
             {/* Settings Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
