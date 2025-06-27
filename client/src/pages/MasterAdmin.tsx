@@ -3237,10 +3237,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                             </div>
                           </div>
+                        </TabsContent>
 
-                          {/* 모델 설정 */}
+                        {/* 모델 설정 탭 */}
+                        <TabsContent value="model" className="space-y-6">
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-green-700">⚙️ 모델 설정</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={agentForm.control}
@@ -3327,23 +3328,95 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                             </div>
                           </div>
+                        </TabsContent>
 
-                          {/* 파일 업로드 */}
+                        {/* 파일 업로드 탭 */}
+                        <TabsContent value="upload" className="space-y-6">
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-orange-700">📁 파일 업로드</h3>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
-                              <FileText className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                              <p className="text-sm text-gray-600 mb-2">에이전트용 문서 파일 업로드</p>
-                              <Button type="button" variant="outline" size="sm">
-                                파일 선택
-                              </Button>
-                              <p className="text-xs text-gray-500 mt-2">PDF, DOC, TXT 파일 지원 (최대 10MB)</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="documentType"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">문서 유형</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "manual"}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="manual">매뉴얼/가이드</SelectItem>
+                                        <SelectItem value="faq">FAQ/질답</SelectItem>
+                                        <SelectItem value="policy">정책/규정</SelectItem>
+                                        <SelectItem value="procedure">절차/프로세스</SelectItem>
+                                        <SelectItem value="reference">참고자료</SelectItem>
+                                        <SelectItem value="course">강의자료</SelectItem>
+                                        <SelectItem value="research">연구자료</SelectItem>
+                                        <SelectItem value="other">기타</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="maxFileSize"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">최대 파일 크기</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value || "50mb"}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="10mb">10MB</SelectItem>
+                                        <SelectItem value="25mb">25MB</SelectItem>
+                                        <SelectItem value="50mb">50MB</SelectItem>
+                                        <SelectItem value="100mb">100MB</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            
+                            {/* 드래그 앤 드롭 영역 */}
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors">
+                              <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                              <div className="space-y-2">
+                                <p className="text-lg font-medium text-gray-700">파일을 여기로 드래그하거나</p>
+                                <Button type="button" variant="outline" size="lg" className="bg-white">
+                                  <Upload className="w-4 h-4 mr-2" />
+                                  파일 선택
+                                </Button>
+                              </div>
+                              <div className="mt-4 text-sm text-gray-500">
+                                <p>지원 형식: PDF, DOC, DOCX, TXT, PPT, PPTX</p>
+                                <p>최대 크기: {agentForm.watch('maxFileSize') || '50MB'}</p>
+                              </div>
+                            </div>
+                            
+                            {/* 업로드된 파일 목록 */}
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium text-gray-700">업로드된 파일</Label>
+                              <div className="border rounded-lg p-3 bg-white min-h-[100px]">
+                                <div className="text-center text-sm text-gray-500 py-4">
+                                  아직 업로드된 파일이 없습니다
+                                </div>
+                              </div>
                             </div>
                           </div>
+                        </TabsContent>
 
-                          {/* 공유 설정 */}
+                        {/* 공유 설정 탭 */}
+                        <TabsContent value="sharing" className="space-y-6">
                           <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2 text-blue-700">🔗 공유 설정</h3>
                             <FormField
                               control={agentForm.control}
                               name="visibility"
@@ -3426,11 +3499,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 하단 버튼 */}
                         <div className="flex justify-between pt-6 border-t">
                           <div className="flex space-x-2">
-                            {agentCreationTab === 'advanced' && (
+                            {agentCreationTab !== 'basic' && (
                               <Button 
                                 type="button" 
                                 variant="outline" 
-                                onClick={() => setAgentCreationTab('basic')}
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex > 0) {
+                                    setAgentCreationTab(tabs[currentIndex - 1] as any);
+                                  }
+                                }}
                               >
                                 ← 이전
                               </Button>
@@ -3440,11 +3519,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <Button type="button" variant="outline" onClick={() => setIsAgentDialogOpen(false)}>
                               취소
                             </Button>
-                            {agentCreationTab === 'basic' ? (
+                            {agentCreationTab !== 'sharing' ? (
                               <Button 
                                 type="button" 
-                                onClick={() => setAgentCreationTab('advanced')}
-                                disabled={!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory')}
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex < tabs.length - 1) {
+                                    setAgentCreationTab(tabs[currentIndex + 1] as any);
+                                  }
+                                }}
+                                disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
                               >
                                 다음 →
                               </Button>

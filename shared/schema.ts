@@ -118,11 +118,15 @@ export const agents = pgTable("agents", {
   maxResponseLength: integer("max_response_length").default(1024), // 최대 응답 길이
   
   // 4. 역할 및 페르소나 설정
-  personaName: varchar("persona_name"), // 페르소나 닉네임
-  speakingStyle: text("speaking_style").default("공손하고 친절한 말투"),
-  personalityTraits: text("personality_traits").default("친절하고 전문적인 성격으로 정확한 정보를 제공"),
-  rolePrompt: text("role_prompt"), // 역할 프롬프트
-  prohibitedWordResponse: text("prohibited_word_response").default("죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."),
+  personaNickname: varchar("persona_nickname"), // 닉네임
+  speechStyle: text("speech_style").default("공손하고 친절한 말투로 대화합니다"), // 말투 스타일
+  expertiseArea: text("expertise_area"), // 지식/전문 분야
+  personality: text("personality").default("친절하고 도움이 되는 성격"), // 성격특성
+  forbiddenResponseStyle: text("forbidden_response_style").default("죄송하지만 해당 질문에 대해서는 답변드릴 수 없습니다. 다른 주제로 대화해주세요."), // 금칙어 반응 방식
+  
+  // 파일 업로드 설정 추가
+  documentType: varchar("document_type").default("manual"), // 문서 유형 (manual, faq, policy, etc.)
+  maxFileSize: varchar("max_file_size").default("50mb"), // 최대 파일 크기
   
   // 5. 문서 연결 및 업로드
   uploadFormats: jsonb("upload_formats").default(JSON.stringify(["PDF", "DOCX", "TXT"])), // 업로드 가능한 포맷
@@ -320,11 +324,15 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   maxResponseLength: z.number().min(1).max(10000).optional(),
   
   // 페르소나 설정
-  personaName: z.string().optional(),
-  speakingStyle: z.string().optional(),
-  personalityTraits: z.string().optional(),
-  rolePrompt: z.string().optional(),
-  prohibitedWordResponse: z.string().optional(),
+  personaNickname: z.string().optional(),
+  speechStyle: z.string().optional(),
+  expertiseArea: z.string().optional(),
+  personality: z.string().optional(),
+  forbiddenResponseStyle: z.string().optional(),
+  
+  // 파일 업로드 설정
+  documentType: z.string().optional(),
+  maxFileSize: z.string().optional(),
   
   // 문서 설정
   uploadFormats: z.array(z.string()).optional(),
