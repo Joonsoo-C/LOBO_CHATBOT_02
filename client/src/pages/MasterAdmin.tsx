@@ -308,26 +308,27 @@ function MasterAdmin() {
   const [sharingMode, setSharingMode] = useState<'organization' | 'group' | 'user' | 'private'>('organization');
   const [sharingGroups, setSharingGroups] = useState<Array<{upperCategory: string, lowerCategory: string, detailCategory: string}>>([]);
   
-  // 조직 필터링 함수들
+  // 조직 필터링 함수들 - 조직 데이터 사용
   const getUpperCategories = () => {
     if (!organizations?.data) return [];
-    const unique = [...new Set(organizations.data.map((org: any) => org.upperCategory).filter(Boolean))];
+    const unique = Array.from(new Set(organizations.data.map((org: any) => org.upperCategory).filter(Boolean)));
     return unique.sort();
   };
   
   const getLowerCategories = (upperCategory: string) => {
     if (!organizations?.data || !upperCategory) return [];
     const filtered = organizations.data.filter((org: any) => org.upperCategory === upperCategory);
-    const unique = [...new Set(filtered.map((org: any) => org.lowerCategory).filter(Boolean))];
+    const unique = Array.from(new Set(filtered.map((org: any) => org.lowerCategory).filter(Boolean)));
     return unique.sort();
   };
   
-  const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
-    if (!organizations?.data || !upperCategory || !lowerCategory) return [];
+  const getDetailCategories = (upperCategory: string, lowerCategory?: string) => {
+    if (!organizations?.data || !upperCategory) return [];
     const filtered = organizations.data.filter((org: any) => 
-      org.upperCategory === upperCategory && org.lowerCategory === lowerCategory
+      org.upperCategory === upperCategory && 
+      (!lowerCategory || org.lowerCategory === lowerCategory)
     );
-    const unique = [...new Set(filtered.map((org: any) => org.detailCategory).filter(Boolean))];
+    const unique = Array.from(new Set(filtered.map((org: any) => org.detailCategory).filter(Boolean)));
     return unique.sort();
   };
   
@@ -986,36 +987,7 @@ function MasterAdmin() {
     return categories.sort();
   }, [users, selectedUniversity, selectedCollege]);
 
-  // 조직 카테고리 데이터 가져오기
-  const { data: organizationsData } = useQuery({
-    queryKey: ['/api/admin/organizations'],
-    select: (data: any) => {
-      const organizations = data.data || [];
-      return {
-        ...data,
-        data: organizations
-      };
-    }
-  });
 
-  // 조직 카테고리 헬퍼 함수들
-  const getOrgUpperCategories = () => {
-    if (!organizationsData?.data) return [];
-    return [...new Set(organizationsData.data.map(org => org.upperCategory).filter(Boolean))];
-  };
-  
-  const getOrgLowerCategories = (upperCategory: string) => {
-    if (!upperCategory || !organizationsData?.data) return [];
-    return [...new Set(organizationsData.data.filter(org => org.upperCategory === upperCategory).map(org => org.lowerCategory).filter(Boolean))];
-  };
-  
-  const getOrgDetailCategories = (upperCategory: string, lowerCategory?: string) => {
-    if (!upperCategory || !organizationsData?.data) return [];
-    return [...new Set(organizationsData.data.filter(org => 
-      org.upperCategory === upperCategory && 
-      (!lowerCategory || org.lowerCategory === lowerCategory)
-    ).map(org => org.detailCategory).filter(Boolean))];
-  };
 
   // 상위 카테고리 변경 시 하위 카테고리 초기화 (실시간 적용)
   const handleUpperCategoryChange = (value: string) => {
@@ -3458,111 +3430,239 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               )}
                             />
                             
-                            {/* 그룹 지정 옵션 */}
+                            {/* 그룹 지정 옵션 - 완전 새로운 구조 */}
                             {agentForm.watch('visibility') === 'group' && (
-                              <div className="space-y-3 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <Label className="text-sm font-medium">그룹 선택 (최대 10개)</Label>
+                              <div className="space-y-4 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <Label className="text-sm font-medium">조직 그룹 지정</Label>
                                 
-                                {/* 선택된 그룹들 */}
-                                <div className="space-y-3">
-                                  {selectedGroups.map((group, index) => (
-                                    <div key={group.id} className="grid grid-cols-4 gap-2 p-3 bg-white rounded border">
-                                      <Select 
-                                        value={group.upperCategory} 
-                                        onValueChange={(value) => {
-                                          const newGroups = [...selectedGroups];
-                                          newGroups[index] = { ...group, upperCategory: value, lowerCategory: '', detailCategory: '' };
-                                          setSelectedGroups(newGroups);
-                                        }}
-                                      >
-                                        <SelectTrigger className="text-xs">
-                                          <SelectValue placeholder="상위 조직" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {getUpperCategories().map((cat) => (
-                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      
-                                      <Select 
-                                        value={group.lowerCategory || ''} 
-                                        onValueChange={(value) => {
-                                          const newGroups = [...selectedGroups];
-                                          newGroups[index] = { ...group, lowerCategory: value, detailCategory: '' };
-                                          setSelectedGroups(newGroups);
-                                        }}
-                                        disabled={!group.upperCategory}
-                                      >
-                                        <SelectTrigger className="text-xs">
-                                          <SelectValue placeholder="하위 조직" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {getLowerCategories(group.upperCategory).map((cat) => (
-                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      
-                                      <Select 
-                                        value={group.detailCategory || ''} 
-                                        onValueChange={(value) => {
-                                          const newGroups = [...selectedGroups];
-                                          newGroups[index] = { ...group, detailCategory: value };
-                                          setSelectedGroups(newGroups);
-                                        }}
-                                        disabled={!group.lowerCategory}
-                                      >
-                                        <SelectTrigger className="text-xs">
-                                          <SelectValue placeholder="세부 조직" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {getDetailCategories(group.upperCategory, group.lowerCategory).map((cat) => (
-                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      
-                                      <Button 
-                                        type="button" 
-                                        variant="outline" 
-                                        size="sm" 
-                                        onClick={() => setSelectedGroups(selectedGroups.filter((_, i) => i !== index))}
-                                        className="text-red-600 hover:text-red-700"
-                                      >
-                                        삭제
-                                      </Button>
-                                    </div>
-                                  ))}
+                                {/* 단일 3단계 드롭다운 세트 */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  <Select value={selectedUpperCategory} onValueChange={(value) => {
+                                    setSelectedUpperCategory(value);
+                                    setSelectedLowerCategory('');
+                                    setSelectedDetailCategory('');
+                                  }}>
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="상위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getUpperCategories().map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  
+                                  <Select 
+                                    value={selectedLowerCategory} 
+                                    onValueChange={(value) => {
+                                      setSelectedLowerCategory(value);
+                                      setSelectedDetailCategory('');
+                                    }}
+                                    disabled={!selectedUpperCategory}
+                                  >
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="하위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="">선택 안함</SelectItem>
+                                      {getLowerCategories(selectedUpperCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  
+                                  <Select 
+                                    value={selectedDetailCategory} 
+                                    onValueChange={setSelectedDetailCategory}
+                                    disabled={!selectedLowerCategory}
+                                  >
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="세부 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="">선택 안함</SelectItem>
+                                      {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 </div>
                                 
-                                {/* 그룹 추가 버튼 */}
-                                {selectedGroups.length < 10 && (
+                                {/* 그룹 추가 버튼 - 조건부 활성화 */}
+                                <div className="flex justify-between items-center">
                                   <Button 
-                                    type="button" 
+                                    type="button"
                                     variant="outline" 
                                     size="sm" 
-                                    className="w-full"
-                                    onClick={() => setSelectedGroups([...selectedGroups, { id: Date.now().toString(), upperCategory: '', lowerCategory: '', detailCategory: '' }])}
+                                    onClick={() => {
+                                      if (selectedUpperCategory && selectedGroups.length < 10) {
+                                        const newGroup = {
+                                          id: `group-${Date.now()}`,
+                                          upperCategory: selectedUpperCategory,
+                                          lowerCategory: selectedLowerCategory || undefined,
+                                          detailCategory: selectedDetailCategory || undefined
+                                        };
+                                        setSelectedGroups([...selectedGroups, newGroup]);
+                                        // 입력 필드 초기화
+                                        setSelectedUpperCategory('');
+                                        setSelectedLowerCategory('');
+                                        setSelectedDetailCategory('');
+                                      }
+                                    }}
+                                    disabled={!selectedUpperCategory || selectedGroups.length >= 10}
                                   >
                                     + 그룹 추가
                                   </Button>
+                                  
+                                  <div className="text-xs text-blue-600">
+                                    {selectedGroups.length}/10개 그룹
+                                  </div>
+                                </div>
+                                
+                                {/* 추가된 그룹 목록 */}
+                                {selectedGroups.length > 0 && (
+                                  <div className="space-y-2">
+                                    <Label className="text-xs font-medium">추가된 그룹:</Label>
+                                    <div className="max-h-32 overflow-y-auto space-y-1">
+                                      {selectedGroups.map((group, index) => (
+                                        <div key={group.id} className="flex items-center justify-between bg-white p-2 rounded border text-xs">
+                                          <span>
+                                            {[group.upperCategory, group.lowerCategory, group.detailCategory].filter(Boolean).join(' > ')}
+                                          </span>
+                                          <Button 
+                                            type="button"
+                                            variant="ghost" 
+                                            size="sm" 
+                                            onClick={() => {
+                                              setSelectedGroups(selectedGroups.filter((_, i) => i !== index));
+                                            }}
+                                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                                          >
+                                            ×
+                                          </Button>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
                                 )}
                               </div>
                             )}
                             
                             {/* 사용자 지정 옵션 */}
                             {agentForm.watch('visibility') === 'custom' && (
-                              <div className="space-y-3 mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                              <div className="space-y-4 mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
                                 <Label className="text-sm font-medium">사용자 검색 및 선택</Label>
+                                
+                                {/* 사용자 검색 입력창 */}
                                 <Input 
-                                  placeholder="이름, 학번, 이메일로 검색..." 
+                                  placeholder="사용자 이름, ID, 이메일로 검색..." 
+                                  value={userFilterSearchQuery}
+                                  onChange={(e) => setUserFilterSearchQuery(e.target.value)}
                                   className="focus:ring-2 focus:ring-green-500"
                                 />
-                                <div className="max-h-32 overflow-y-auto border rounded p-2 bg-white">
-                                  <p className="text-xs text-gray-500 text-center py-2">
-                                    검색 후 사용자를 선택하세요
-                                  </p>
+                                
+                                {/* 조직별 필터 */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  <Select value={userFilterUpperCategory} onValueChange={setUserFilterUpperCategory}>
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="상위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="">전체</SelectItem>
+                                      {getUpperCategories().map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  
+                                  <Select value={userFilterLowerCategory} onValueChange={setUserFilterLowerCategory} disabled={!userFilterUpperCategory}>
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="하위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="">전체</SelectItem>
+                                      {getLowerCategories(userFilterUpperCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  
+                                  <Select value={userFilterDetailCategory} onValueChange={setUserFilterDetailCategory} disabled={!userFilterLowerCategory}>
+                                    <SelectTrigger className="text-xs">
+                                      <SelectValue placeholder="세부 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="">전체</SelectItem>
+                                      {getDetailCategories(userFilterUpperCategory, userFilterLowerCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                {/* 사용자 목록 테이블 */}
+                                <div className="max-h-64 overflow-y-auto border rounded bg-white">
+                                  <table className="w-full text-xs">
+                                    <thead className="bg-gray-50 sticky top-0">
+                                      <tr>
+                                        <th className="px-2 py-2 text-left">선택</th>
+                                        <th className="px-2 py-2 text-left">이름</th>
+                                        <th className="px-2 py-2 text-left">ID</th>
+                                        <th className="px-2 py-2 text-left">이메일</th>
+                                        <th className="px-2 py-2 text-left">소속</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {/* 필터링된 사용자 목록 표시 */}
+                                      {usersData?.data?.filter(user => {
+                                        const matchesSearch = !userFilterSearchQuery || 
+                                          user.name?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
+                                          user.id?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
+                                          user.email?.toLowerCase().includes(userFilterSearchQuery.toLowerCase());
+                                        
+                                        const matchesUpper = !userFilterUpperCategory || user.upperCategory === userFilterUpperCategory;
+                                        const matchesLower = !userFilterLowerCategory || user.lowerCategory === userFilterLowerCategory;
+                                        const matchesDetail = !userFilterDetailCategory || user.detailCategory === userFilterDetailCategory;
+                                        
+                                        return matchesSearch && matchesUpper && matchesLower && matchesDetail;
+                                      }).slice(0, 50).map((user) => (
+                                        <tr key={user.id} className="hover:bg-gray-50">
+                                          <td className="px-2 py-2">
+                                            <input 
+                                              type="checkbox" 
+                                              checked={selectedUsers.includes(user.id)}
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  setSelectedUsers([...selectedUsers, user.id]);
+                                                } else {
+                                                  setSelectedUsers(selectedUsers.filter(id => id !== user.id));
+                                                }
+                                              }}
+                                              className="rounded"
+                                            />
+                                          </td>
+                                          <td className="px-2 py-2">{user.name}</td>
+                                          <td className="px-2 py-2">{user.id}</td>
+                                          <td className="px-2 py-2">{user.email}</td>
+                                          <td className="px-2 py-2">
+                                            {[user.upperCategory, user.lowerCategory, user.detailCategory].filter(Boolean).join(' > ')}
+                                          </td>
+                                        </tr>
+                                      )) || []}
+                                      {(!usersData?.data || usersData.data.length === 0) && (
+                                        <tr>
+                                          <td colSpan={5} className="px-2 py-4 text-center text-gray-500">
+                                            사용자가 없습니다
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </div>
+                                
+                                {/* 선택된 사용자 수 표시 */}
+                                <div className="text-sm text-gray-600">
+                                  선택된 사용자: {selectedUsers.length}명
                                 </div>
                               </div>
                             )}
