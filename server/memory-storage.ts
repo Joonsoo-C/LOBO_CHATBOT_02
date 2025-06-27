@@ -32,37 +32,24 @@ export class MemoryStorage implements IStorage {
   private organizationCategories: Map<number, any> = new Map();
   private organizationFiles: Map<string, any> = new Map();
   private userFiles: Map<string, any> = new Map();
-  private nextOrganizationId: number = 1;
-
+  
   private nextId = 1;
+  private nextUserId = 1;
+  private nextAgentId = 1;
+  private nextConversationId = 1;
+  private nextMessageId = 1;
+  private nextDocumentId = 1;
+  private nextOrganizationId = 1;
+  
   private readonly persistenceDir = path.join(process.cwd(), 'data');
   private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
+  private readonly organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
   private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
+  private readonly usersFile = path.join(this.persistenceDir, 'users.json');
 
   constructor() {
-    this.users = new Map();
-    this.agents = new Map();
-    this.conversations = new Map();
-    this.messages = new Map();
-    this.documents = new Map();
-    this.agentStats = new Map();
-    this.messageReactions = new Map();
-    this.organizationCategories = new Map();
-    this.organizationFiles = new Map();
-    this.userFiles = new Map();
-
-    this.nextUserId = 1;
-    this.nextAgentId = 1;
-    this.nextConversationId = 1;
-    this.nextMessageId = 1;
-    this.nextDocumentId = 1;
-    this.nextOrganizationId = 1;
-
-    this.persistenceDir = path.join(process.cwd(), 'data');
-    this.documentsFile = path.join(this.persistenceDir, 'documents.json');
-    this.organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
-    this.userFilesFile = path.join(this.persistenceDir, 'user-files.json');
-    this.usersFile = path.join(this.persistenceDir, 'users.json');
+    // Initialize maps (already declared above)
+    // Initialize IDs (already declared above)
 
     // Create data directory if it doesn't exist
     if (!fs.existsSync(this.persistenceDir)) {
@@ -1406,5 +1393,20 @@ export class MemoryStorage implements IStorage {
     }
 
     return { deletedCount };
+  }
+
+  async clearAllOrganizationCategories(): Promise<void> {
+    this.organizationCategories.clear();
+    this.nextOrganizationId = 1;
+    console.log('All organization categories cleared from memory storage');
+    
+    // Save the cleared state to persistence
+    this.saveOrganizationCategoriesToFile();
+    
+    // Clear cache
+    if (cache) {
+      cache.delete('all_organizations');
+      cache.delete('organization_categories');
+    }
   }
 }
