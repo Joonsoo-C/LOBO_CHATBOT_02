@@ -3465,7 +3465,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectValue placeholder="하위 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">선택 안함</SelectItem>
+                                      <SelectItem value="none">선택 안함</SelectItem>
                                       {getLowerCategories(selectedUpperCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3481,7 +3481,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectValue placeholder="세부 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">선택 안함</SelectItem>
+                                      <SelectItem value="none">선택 안함</SelectItem>
                                       {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3569,7 +3569,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectValue placeholder="상위 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getUpperCategories().map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3581,7 +3581,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectValue placeholder="하위 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getLowerCategories(userFilterUpperCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3593,7 +3593,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectValue placeholder="세부 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getDetailCategories(userFilterUpperCategory, userFilterLowerCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
