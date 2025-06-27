@@ -395,17 +395,45 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
     
     if (mimeType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document') || 
         mimeType.includes('application/msword')) {
-      // Extract text from Word documents using mammoth
+      // Extract text from Word documents using mammoth with proper encoding
       console.log('Extracting text from Word document:', filePath);
-      const result = await mammoth.extractRawText({ path: filePath });
-      console.log('Extracted text length:', result.value.length);
-      console.log('First 200 characters:', result.value.substring(0, 200));
-      return result.value;
+      try {
+        const result = await mammoth.extractRawText({ 
+          path: filePath,
+          // Ensure proper text extraction with Korean support
+          options: {
+            preserveEmptyParagraphs: false,
+            includeDefaultStyleMap: true
+          }
+        });
+        
+        // Clean extracted text to remove any residual binary characters
+        let cleanText = result.value
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // Remove control characters
+          .replace(/\uFFFD/g, '') // Remove replacement characters
+          .trim();
+        
+        console.log('Extracted text length:', cleanText.length);
+        console.log('First 200 characters:', cleanText.substring(0, 200));
+        
+        // Verify text is not corrupted
+        if (cleanText.includes('PK') || cleanText.includes('[Content_Types]') || 
+            cleanText.includes('word/document.xml') || cleanText.length < 10) {
+          console.warn('Extracted text appears corrupted, returning error message');
+          return '워드 문서 텍스트 추출에 실패했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+        }
+        
+        return cleanText;
+      } catch (extractError) {
+        console.error('Mammoth extraction failed:', extractError);
+        return '워드 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+      }
     }
     
     if (mimeType.includes('application/pdf')) {
       // For PDF files, return placeholder - would need pdf-parse library
-      return fs.readFileSync(filePath, 'utf-8').catch(() => 'PDF 문서 - 텍스트 추출 기능 준비 중');
+      console.log('PDF file detected, returning placeholder text');
+      return 'PDF 문서 - 텍스트 추출 기능 준비 중입니다. 정확한 내용을 확인하려면 원본 파일을 다운로드해주세요.';
     }
     
     // For other file types, try to read as UTF-8 text

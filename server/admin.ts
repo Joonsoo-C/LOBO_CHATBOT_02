@@ -1530,6 +1530,11 @@ export function setupAdminRoutes(app: Express) {
       const isBinaryContent = documentContent && (
         documentContent.includes('PK') || // ZIP signature (docx files)
         documentContent.includes('\u0000') || // NULL bytes
+        documentContent.includes('��') || // Common encoding corruption
+        documentContent.includes('\uFFFD') || // Unicode replacement character
+        documentContent.includes('PK\u0003\u0004') || // ZIP header
+        documentContent.includes('[Content_Types].xml') || // DOCX structure
+        documentContent.includes('word/document.xml') || // DOCX structure
         documentContent.length > 100 && documentContent.split('').filter(c => c.charCodeAt(0) < 32 && c !== '\n' && c !== '\r' && c !== '\t').length > documentContent.length * 0.1
       );
 
