@@ -3576,126 +3576,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 관리자 선정 탭 */}
                         <TabsContent value="managers" className="space-y-6">
                           <div className="space-y-6">
-                            {/* 헤더 */}
-                            <div className="text-center space-y-2 bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
-                              <h3 className="text-xl font-bold text-gray-900">관리자 선정</h3>
-                              <p className="text-sm text-gray-600 max-w-2xl mx-auto">
-                                각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
-                              </p>
+                            <div className="text-sm text-gray-600 mb-4">
+                              각 역할별로 최대 3명까지 관리자를 선정할 수 있으며, 동일한 사용자가 여러 역할을 담당할 수 있습니다.
                             </div>
-
-                            {/* 통합 사용자 검색 및 필터링 섹션 */}
-                            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                              <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                                <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                사용자 검색 및 필터링
-                              </h4>
-                              
-                              {/* 검색 입력창 */}
-                              <div className="space-y-2 mb-4">
-                                <label className="text-sm font-medium text-gray-700">이름 또는 ID로 검색</label>
-                                <Input
-                                  type="text"
-                                  placeholder="사용자 이름 또는 ID를 입력하세요..."
-                                  value={managerSearchQuery}
-                                  onChange={(e) => setManagerSearchQuery(e.target.value)}
-                                  className="w-full"
-                                />
-                              </div>
-
-                              {/* 조직 필터링 */}
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                  <label className="text-sm font-medium text-gray-700">상위 조직</label>
-                                  <Select value={managerFilterUpperCategory} onValueChange={setManagerFilterUpperCategory}>
-                                    <SelectTrigger className="text-sm">
-                                      <SelectValue placeholder="상위 조직 선택" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getUpperCategories().map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                            
+                            {/* 에이전트 관리자 */}
+                            <div className="space-y-3">
+                              <Label className="text-sm font-medium text-gray-700">에이전트 관리자 (최대 3명)</Label>
+                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <div className="flex flex-wrap gap-2 mb-3 min-h-[32px]">
+                                  {selectedAgentManagers.map((manager, index) => (
+                                    <span key={index} className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                                      {manager.name} ({manager.email})
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedAgentManagers(prev => prev.filter((_, i) => i !== index))}
+                                        className="ml-2 text-blue-600 hover:text-blue-800"
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  ))}
                                 </div>
-                                <div className="space-y-2">
-                                  <label className="text-sm font-medium text-gray-700">하위 조직</label>
-                                  <Select value={managerFilterLowerCategory} onValueChange={setManagerFilterLowerCategory}>
-                                    <SelectTrigger className="text-sm">
-                                      <SelectValue placeholder="하위 조직 선택" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getLowerCategories(managerFilterUpperCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="space-y-2">
-                                  <label className="text-sm font-medium text-gray-700">세부 조직</label>
-                                  <Select value={managerFilterDetailCategory} onValueChange={setManagerFilterDetailCategory}>
-                                    <SelectTrigger className="text-sm">
-                                      <SelectValue placeholder="세부 조직 선택" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* 관리자 역할별 선정 카드 */}
-                            <div className="grid gap-6">
-                              {/* 에이전트 관리자 카드 */}
-                              <div className="bg-white border border-blue-200 rounded-lg p-6 shadow-sm">
-                                <div className="flex items-center justify-between mb-4">
-                                  <div className="flex items-center">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                      </svg>
-                                    </div>
-                                    <div>
-                                      <h4 className="font-semibold text-gray-900">에이전트 관리자</h4>
-                                      <p className="text-sm text-gray-600">에이전트 설정, 성능 모니터링 및 일반 관리 업무</p>
-                                    </div>
-                                  </div>
-                                  <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                    {selectedAgentManagers.length}/3명
-                                  </span>
-                                </div>
-                                
-                                {/* 선택된 관리자 표시 */}
-                                <div className="flex flex-wrap gap-2 mb-4 min-h-[40px] p-3 bg-blue-50 rounded-lg border border-blue-100">
-                                  {selectedAgentManagers.length === 0 ? (
-                                    <span className="text-sm text-gray-500 italic">선택된 에이전트 관리자가 없습니다</span>
-                                  ) : (
-                                    selectedAgentManagers.map((manager, index) => (
-                                      <span key={index} className="inline-flex items-center px-3 py-1 bg-blue-200 text-blue-800 text-sm rounded-full border border-blue-300">
-                                        <span className="font-medium">{manager.fullName || manager.name}</span>
-                                        <span className="ml-1 text-blue-600">({manager.username})</span>
-                                        <button
-                                          type="button"
-                                          onClick={() => setSelectedAgentManagers(prev => prev.filter((_, i) => i !== index))}
-                                          className="ml-2 text-blue-600 hover:text-blue-800 hover:bg-blue-300 rounded-full w-4 h-4 flex items-center justify-center"
-                                        >
-                                          ×
-                                        </button>
-                                      </span>
-                                    ))
-                                  )}
-                                </div>
-                                
-                                {/* 사용자 선택 드롭다운 */}
                                 <ManagerSelector
                                   selectedManagers={selectedAgentManagers}
                                   onManagerSelect={(manager) => {
@@ -3713,48 +3615,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   onFilterDetailCategoryChange={setManagerFilterDetailCategory}
                                 />
                               </div>
+                            </div>
 
-                              {/* 문서 관리자 카드 */}
-                              <div className="bg-white border border-green-200 rounded-lg p-6 shadow-sm">
-                                <div className="flex items-center justify-between mb-4">
-                                  <div className="flex items-center">
-                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                      </svg>
-                                    </div>
-                                    <div>
-                                      <h4 className="font-semibold text-gray-900">문서 관리자</h4>
-                                      <p className="text-sm text-gray-600">문서 업로드, 관리, 분석 및 관련 설정</p>
-                                    </div>
-                                  </div>
-                                  <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                                    {selectedDocumentManagers.length}/3명
-                                  </span>
+                            {/* 문서 관리자 */}
+                            <div className="space-y-3">
+                              <Label className="text-sm font-medium text-gray-700">문서 관리자 (최대 3명)</Label>
+                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <div className="flex flex-wrap gap-2 mb-3 min-h-[32px]">
+                                  {selectedDocumentManagers.map((manager, index) => (
+                                    <span key={index} className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                                      {manager.name} ({manager.email})
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedDocumentManagers(prev => prev.filter((_, i) => i !== index))}
+                                        className="ml-2 text-green-600 hover:text-green-800"
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  ))}
                                 </div>
-                                
-                                {/* 선택된 관리자 표시 */}
-                                <div className="flex flex-wrap gap-2 mb-4 min-h-[40px] p-3 bg-green-50 rounded-lg border border-green-100">
-                                  {selectedDocumentManagers.length === 0 ? (
-                                    <span className="text-sm text-gray-500 italic">선택된 문서 관리자가 없습니다</span>
-                                  ) : (
-                                    selectedDocumentManagers.map((manager, index) => (
-                                      <span key={index} className="inline-flex items-center px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full border border-green-300">
-                                        <span className="font-medium">{manager.fullName || manager.name}</span>
-                                        <span className="ml-1 text-green-600">({manager.username})</span>
-                                        <button
-                                          type="button"
-                                          onClick={() => setSelectedDocumentManagers(prev => prev.filter((_, i) => i !== index))}
-                                          className="ml-2 text-green-600 hover:text-green-800 hover:bg-green-300 rounded-full w-4 h-4 flex items-center justify-center"
-                                        >
-                                          ×
-                                        </button>
-                                      </span>
-                                    ))
-                                  )}
-                                </div>
-                                
-                                {/* 사용자 선택 드롭다운 */}
                                 <ManagerSelector
                                   selectedManagers={selectedDocumentManagers}
                                   onManagerSelect={(manager) => {
@@ -3772,48 +3652,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   onFilterDetailCategoryChange={setManagerFilterDetailCategory}
                                 />
                               </div>
+                            </div>
 
-                              {/* QA 관리자 카드 */}
-                              <div className="bg-white border border-purple-200 rounded-lg p-6 shadow-sm">
-                                <div className="flex items-center justify-between mb-4">
-                                  <div className="flex items-center">
-                                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                      </svg>
-                                    </div>
-                                    <div>
-                                      <h4 className="font-semibold text-gray-900">QA 관리자</h4>
-                                      <p className="text-sm text-gray-600">질의응답 품질 관리, 대화 로그 분석 및 성능 개선</p>
-                                    </div>
-                                  </div>
-                                  <span className="text-sm font-medium text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
-                                    {selectedQaManagers.length}/3명
-                                  </span>
+                            {/* QA 관리자 */}
+                            <div className="space-y-3">
+                              <Label className="text-sm font-medium text-gray-700">QA 관리자 (최대 3명)</Label>
+                              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <div className="flex flex-wrap gap-2 mb-3 min-h-[32px]">
+                                  {selectedQaManagers.map((manager, index) => (
+                                    <span key={index} className="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
+                                      {manager.name} ({manager.email})
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedQaManagers(prev => prev.filter((_, i) => i !== index))}
+                                        className="ml-2 text-purple-600 hover:text-purple-800"
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  ))}
                                 </div>
-                                
-                                {/* 선택된 관리자 표시 */}
-                                <div className="flex flex-wrap gap-2 mb-4 min-h-[40px] p-3 bg-purple-50 rounded-lg border border-purple-100">
-                                  {selectedQaManagers.length === 0 ? (
-                                    <span className="text-sm text-gray-500 italic">선택된 QA 관리자가 없습니다</span>
-                                  ) : (
-                                    selectedQaManagers.map((manager, index) => (
-                                      <span key={index} className="inline-flex items-center px-3 py-1 bg-purple-200 text-purple-800 text-sm rounded-full border border-purple-300">
-                                        <span className="font-medium">{manager.fullName || manager.name}</span>
-                                        <span className="ml-1 text-purple-600">({manager.username})</span>
-                                        <button
-                                          type="button"
-                                          onClick={() => setSelectedQaManagers(prev => prev.filter((_, i) => i !== index))}
-                                          className="ml-2 text-purple-600 hover:text-purple-800 hover:bg-purple-300 rounded-full w-4 h-4 flex items-center justify-center"
-                                        >
-                                          ×
-                                        </button>
-                                      </span>
-                                    ))
-                                  )}
-                                </div>
-                                
-                                {/* 사용자 선택 드롭다운 */}
                                 <ManagerSelector
                                   selectedManagers={selectedQaManagers}
                                   onManagerSelect={(manager) => {
@@ -3830,28 +3688,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   filterDetailCategory={managerFilterDetailCategory}
                                   onFilterDetailCategoryChange={setManagerFilterDetailCategory}
                                 />
-                              </div>
-                            </div>
-
-                            {/* 선정 현황 요약 */}
-                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-gray-200">
-                              <h4 className="font-semibold text-gray-900 mb-4 text-center">관리자 선정 현황</h4>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="text-center p-4 bg-white rounded-lg border border-blue-200">
-                                  <div className="text-2xl font-bold text-blue-600">{selectedAgentManagers.length}</div>
-                                  <div className="text-sm text-blue-700">에이전트 관리자</div>
-                                  <div className="text-xs text-gray-500 mt-1">최대 3명</div>
-                                </div>
-                                <div className="text-center p-4 bg-white rounded-lg border border-green-200">
-                                  <div className="text-2xl font-bold text-green-600">{selectedDocumentManagers.length}</div>
-                                  <div className="text-sm text-green-700">문서 관리자</div>
-                                  <div className="text-xs text-gray-500 mt-1">최대 3명</div>
-                                </div>
-                                <div className="text-center p-4 bg-white rounded-lg border border-purple-200">
-                                  <div className="text-2xl font-bold text-purple-600">{selectedQaManagers.length}</div>
-                                  <div className="text-sm text-purple-700">QA 관리자</div>
-                                  <div className="text-xs text-gray-500 mt-1">최대 3명</div>
-                                </div>
                               </div>
                             </div>
                           </div>
