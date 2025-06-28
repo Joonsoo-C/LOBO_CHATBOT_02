@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "wouter/use-browser-location";
+import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,7 +76,7 @@ interface OrganizationCategory {
 }
 
 export default function MasterAdmin() {
-  const navigate = useNavigate();
+  const [location, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const [currentTab, setCurrentTab] = useState("dashboard");
   const [showPassword, setShowPassword] = useState(false);
@@ -99,22 +99,22 @@ export default function MasterAdmin() {
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
 
   // Fetch users
-  const { data: users = [], isLoading: usersLoading } = useQuery({
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ["/api/admin/users"],
   });
 
   // Fetch agents
-  const { data: agents = [], isLoading: agentsLoading } = useQuery({
+  const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/admin/agents"],
   });
 
   // Fetch documents
-  const { data: documents = [], isLoading: documentsLoading } = useQuery({
+  const { data: documents = [], isLoading: documentsLoading } = useQuery<Document[]>({
     queryKey: ["/api/admin/documents"],
   });
 
   // Fetch organization categories
-  const { data: organizationCategories = [], isLoading: organizationCategoriesLoading } = useQuery({
+  const { data: organizationCategories = [], isLoading: organizationCategoriesLoading } = useQuery<OrganizationCategory[]>({
     queryKey: ["/api/organization-categories"],
   });
 
@@ -129,7 +129,7 @@ export default function MasterAdmin() {
       return response.json();
     },
     onSuccess: () => {
-      navigate("/auth");
+      setLocation("/auth");
     },
     onError: (error) => {
       console.error("Logout failed:", error);
@@ -146,7 +146,7 @@ export default function MasterAdmin() {
   };
 
   // Filter users
-  const filteredUsers = users.filter((user: User) => {
+  const filteredUsers = (users as User[]).filter((user: User) => {
     const matchesSearch = user.username.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
                          user.fullName.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
                          user.email.toLowerCase().includes(userSearchQuery.toLowerCase());
@@ -156,7 +156,7 @@ export default function MasterAdmin() {
   });
 
   // Filter agents
-  const filteredAgents = agents.filter((agent: Agent) => {
+  const filteredAgents = (agents as Agent[]).filter((agent: Agent) => {
     const matchesSearch = agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
                          agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase());
     const matchesStatus = agentStatusFilter === "all" || agent.status === agentStatusFilter;
@@ -179,11 +179,11 @@ export default function MasterAdmin() {
   );
 
   // Calculate statistics
-  const totalUsers = users.length;
-  const activeUsers = users.filter((u: User) => u.status === "active").length;
-  const totalAgents = agents.length;
-  const activeAgents = agents.filter((a: Agent) => a.isActive).length;
-  const totalDocuments = documents.length;
+  const totalUsers = (users as User[]).length;
+  const activeUsers = (users as User[]).filter((u: User) => u.status === "active").length;
+  const totalAgents = (agents as Agent[]).length;
+  const activeAgents = (agents as Agent[]).filter((a: Agent) => a.isActive).length;
+  const totalDocuments = (documents as Document[]).length;
 
   return (
     <div className="min-h-screen bg-gray-50">
