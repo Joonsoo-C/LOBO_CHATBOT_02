@@ -625,6 +625,14 @@ Changelog:
   * Verified agent type distribution: 87 학생, 11 학교, 1 기능형, 1 교수 agents
   * Agent management interface now displays correct type data from Excel source
   * All agent lists (management menu, search results) reflect accurate type information
+- June 28, 2025. Implemented independent manager tab sessions with automatic state reset:
+  * Added currentManagerTab state tracking for agent/document/QA manager role tabs
+  * Created resetManagerSearchState function to clear search query, organization filters, and pagination
+  * Implemented handleManagerTabChange handler that automatically resets search state when switching tabs
+  * Updated Tabs component to use controlled value and onValueChange for proper state management
+  * Fixed TypeScript errors by adding optional role property to ManagerInfo type
+  * Each manager role tab now operates as independent search/selection session
+  * Tab switching automatically clears previous search conditions while preserving selected managers
 ```
 
 ## User Preferences
