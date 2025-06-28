@@ -3909,6 +3909,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </Tabs>
                             </div>
                           </div>
+                          </div>
                         </TabsContent>
 
                         {/* 공유 설정 탭 */}
