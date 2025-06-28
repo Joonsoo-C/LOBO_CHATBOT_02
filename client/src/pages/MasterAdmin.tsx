@@ -301,9 +301,9 @@ function MasterAdmin() {
   
   // 관리자 검색 상태
   const [managerSearchQuery, setManagerSearchQuery] = useState('');
-  const [managerFilterUpperCategory, setManagerFilterUpperCategory] = useState('');
-  const [managerFilterLowerCategory, setManagerFilterLowerCategory] = useState('');
-  const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('');
+  const [managerFilterUpperCategory, setManagerFilterUpperCategory] = useState('all');
+  const [managerFilterLowerCategory, setManagerFilterLowerCategory] = useState('all');
+  const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('all');
   const [managerCurrentPage, setManagerCurrentPage] = useState(1);
   const [managerItemsPerPage] = useState(10);
 
@@ -3777,15 +3777,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select value={managerFilterUpperCategory} onValueChange={(value) => {
                                     setManagerFilterUpperCategory(value);
-                                    setManagerFilterLowerCategory('');
-                                    setManagerFilterDetailCategory('');
+                                    setManagerFilterLowerCategory('all');
+                                    setManagerFilterDetailCategory('all');
                                     setManagerCurrentPage(1);
                                   }}>
                                     <SelectTrigger className="h-8 text-xs">
                                       <SelectValue placeholder="상위 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getUpperCategories().map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3793,14 +3793,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </Select>
                                   <Select value={managerFilterLowerCategory} onValueChange={(value) => {
                                     setManagerFilterLowerCategory(value);
-                                    setManagerFilterDetailCategory('');
+                                    setManagerFilterDetailCategory('all');
                                     setManagerCurrentPage(1);
-                                  }} disabled={!managerFilterUpperCategory}>
+                                  }} disabled={managerFilterUpperCategory === 'all'}>
                                     <SelectTrigger className="h-8 text-xs">
                                       <SelectValue placeholder="하위 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getLowerCategories(managerFilterUpperCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -3809,12 +3809,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <Select value={managerFilterDetailCategory} onValueChange={(value) => {
                                     setManagerFilterDetailCategory(value);
                                     setManagerCurrentPage(1);
-                                  }} disabled={!managerFilterLowerCategory}>
+                                  }} disabled={managerFilterLowerCategory === 'all'}>
                                     <SelectTrigger className="h-8 text-xs">
                                       <SelectValue placeholder="세부 조직" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="">전체</SelectItem>
+                                      <SelectItem value="all">전체</SelectItem>
                                       {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
