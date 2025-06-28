@@ -8115,6 +8115,520 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             )}
           </DialogContent>
         </Dialog>
+
+        {/* 사용자 상세 정보 편집 다이얼로그 */}
+        <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>사용자 정보 편집</DialogTitle>
+              <p className="text-sm text-gray-600">사용자 정보를 수정합니다.</p>
+            </DialogHeader>
+            
+            <Form {...userEditForm}>
+              <form onSubmit={userEditForm.handleSubmit((data) => {
+                if (selectedUser) {
+                  updateUserMutation.mutate({ ...data, id: selectedUser.id });
+                }
+              })} className="space-y-6">
+                
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={userEditForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자명</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="서지원200" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={userEditForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>이메일</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="서.지원200@university.edu" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={userEditForm.control}
+                    name="position"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자 이름</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="서지원" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={userEditForm.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자 닉네임 (옵션)</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 소속 정보 */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Label className="text-sm font-medium">소속 정보</Label>
+                    <Button type="button" variant="outline" size="sm" className="text-xs">
+                      + 소속된 카테고리 추가
+                    </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="upperCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {upperCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="lowerCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="생활관" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">선택</SelectItem>
+                              {lowerCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="detailCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">선택</SelectItem>
+                              {detailCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={userEditForm.control}
+                    name="detailCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">세부 카테고리</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="">선택</SelectItem>
+                            {detailCategories.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 계정 상태 */}
+                <FormField
+                  control={userEditForm.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>계정 상태</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="active">활성</SelectItem>
+                          <SelectItem value="inactive">비활성</SelectItem>
+                          <SelectItem value="pending">대기</SelectItem>
+                          <SelectItem value="locked">잠금</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 계정 등록일 */}
+                <div className="text-sm text-gray-600">
+                  <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
+                  <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
+                </div>
+
+                {/* 담당 에이전트 선택 */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">담당 에이전트 선택</Label>
+                  <div className="max-h-32 overflow-y-auto space-y-2 border rounded p-3">
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" id="agent1" className="rounded" />
+                      <label htmlFor="agent1" className="text-sm">
+                        <div className="font-medium">생활관 도우미</div>
+                        <div className="text-xs text-gray-500">기숙사 및 생활관 관련 업무를 도와드립니다</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" id="agent2" className="rounded" />
+                      <label htmlFor="agent2" className="text-sm">
+                        <div className="font-medium">기숙사 생활 가이드</div>
+                        <div className="text-xs text-gray-500">기숙사 규정 및 생활 수칙</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="checkbox" id="agent3" className="rounded" />
+                      <label htmlFor="agent3" className="text-sm">
+                        <div className="font-medium">시설 이용 안내</div>
+                        <div className="text-xs text-gray-500">학습실 예약과 시설 이용 내역</div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 사용자 설명/메모 */}
+                <FormField
+                  control={userEditForm.control}
+                  name="detailCategory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>사용자 설명/메모</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          placeholder="사용자에 대한 추가 정보나 메모를 입력하세요..."
+                          className="min-h-20"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 버튼 */}
+                <div className="flex justify-between pt-4">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsUserDetailDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" disabled={updateUserMutation.isPending}>
+                    {updateUserMutation.isPending ? '저장 중...' : '저장'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* 새 사용자 생성 다이얼로그 */}
+        <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>새 사용자 추가</DialogTitle>
+              <p className="text-sm text-gray-600">새로운 사용자를 생성합니다.</p>
+            </DialogHeader>
+            
+            <Form {...newUserForm}>
+              <form onSubmit={newUserForm.handleSubmit((data) => {
+                createUserMutation.mutate(data);
+              })} className="space-y-6">
+                
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={newUserForm.control}
+                    name="userId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자 ID *</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="user001" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={newUserForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자명 *</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="홍길동" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={newUserForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>이메일</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="user@university.edu" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={newUserForm.control}
+                    name="userType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자 유형</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택하세요" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="student">학생</SelectItem>
+                            <SelectItem value="faculty">교직원</SelectItem>
+                            <SelectItem value="staff">직원</SelectItem>
+                            <SelectItem value="external">외부인</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 소속 정보 */}
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium">소속 정보</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="upperCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">상위 조직</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">선택</SelectItem>
+                              {upperCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="lowerCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">하위 조직</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">선택</SelectItem>
+                              {lowerCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="detailCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">세부 조직</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">선택</SelectItem>
+                              {detailCategories.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={newUserForm.control}
+                    name="position"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>직책/역할</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="학생/교수/직원" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={newUserForm.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>계정 상태</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">활성</SelectItem>
+                            <SelectItem value="inactive">비활성</SelectItem>
+                            <SelectItem value="pending">대기</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-between pt-4">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsNewUserDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" disabled={createUserMutation.isPending}>
+                    {createUserMutation.isPending ? '생성 중...' : '사용자 생성'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
