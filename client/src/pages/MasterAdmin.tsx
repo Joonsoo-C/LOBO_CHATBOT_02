@@ -3302,8 +3302,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {getUpperCategories().map((category) => (
-                                            <SelectItem key={category} value={category}>
+                                          {getUpperCategories().map((category, index) => (
+                                            <SelectItem key={`${category}-${index}`} value={category}>
                                               {category}
                                             </SelectItem>
                                           ))}
@@ -3333,8 +3333,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {getLowerCategories(agentForm.watch('upperCategory') || '').map((category) => (
-                                            <SelectItem key={category} value={category}>
+                                          {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
+                                            <SelectItem key={`${category}-${index}`} value={category}>
                                               {category}
                                             </SelectItem>
                                           ))}
@@ -3361,8 +3361,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category) => (
-                                            <SelectItem key={category} value={category}>
+                                          {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category, index) => (
+                                            <SelectItem key={`${category}-${index}`} value={category}>
                                               {category}
                                             </SelectItem>
                                           ))}
@@ -4289,8 +4289,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {uniqueUpperCategories.map((category) => (
-                          <SelectItem key={category} value={category}>
+                        {uniqueUpperCategories.map((category, index) => (
+                          <SelectItem key={`${category}-${index}`} value={category}>
                             {category}
                           </SelectItem>
                         ))}
@@ -4314,8 +4314,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {getLowerCategories(agentFilterUpperCategory).map((category) => (
-                          <SelectItem key={category} value={category}>
+                        {getLowerCategories(agentFilterUpperCategory).map((category, index) => (
+                          <SelectItem key={`${category}-${index}`} value={category}>
                             {category}
                           </SelectItem>
                         ))}
@@ -4338,8 +4338,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {getDetailCategories(agentFilterUpperCategory, agentFilterLowerCategory).map((category) => (
-                          <SelectItem key={category} value={category}>
+                        {getDetailCategories(agentFilterUpperCategory, agentFilterLowerCategory).map((category, index) => (
+                          <SelectItem key={`${category}-${index}`} value={category}>
                             {category}
                           </SelectItem>
                         ))}
@@ -5316,8 +5316,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {uniqueUpperCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
+                      {uniqueUpperCategories.map((category, index) => (
+                        <SelectItem key={`${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -5332,8 +5332,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {filteredLowerCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
+                      {filteredLowerCategories.map((category, index) => (
+                        <SelectItem key={`${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -5352,8 +5352,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {filteredDetailCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
+                      {filteredDetailCategories.map((category, index) => (
+                        <SelectItem key={`${category}-${index}`} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -5590,8 +5590,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="none">없음</SelectItem>
-                                {uniqueUpperCategories.map((category) => (
-                                  <SelectItem key={category} value={category}>
+                                {uniqueUpperCategories.map((category, index) => (
+                                  <SelectItem key={`${category}-${index}`} value={category}>
                                     {category}
                                   </SelectItem>
                                 ))}
@@ -5616,8 +5616,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="none">없음</SelectItem>
-                                {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category) => (
-                                  <SelectItem key={category} value={category}>
+                                {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category, index) => (
+                                  <SelectItem key={`${category}-${index}`} value={category}>
                                     {category}
                                   </SelectItem>
                                 ))}
@@ -5642,8 +5642,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="none">없음</SelectItem>
-                                {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category) => (
-                                  <SelectItem key={category} value={category}>
+                                {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category, index) => (
+                                  <SelectItem key={`${category}-${index}`} value={category}>
                                     {category}
                                   </SelectItem>
                                 ))}
@@ -5855,8 +5855,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">전체</SelectItem>
-                          {uniqueUpperCategories.map((category) => (
-                            <SelectItem key={category} value={category}>
+                          {uniqueUpperCategories.map((category, index) => (
+                            <SelectItem key={`${category}-${index}`} value={category}>
                               {category}
                             </SelectItem>
                           ))}
@@ -5886,8 +5886,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 ?.filter(org => org.upperCategory === selectedManagerUniversity)
                                 .map(org => org.lowerCategory)
                                 .filter(Boolean)
-                            )).sort().map((category) => (
-                              <SelectItem key={category} value={category}>
+                            )).sort().map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))
@@ -5918,8 +5918,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 )
                                 .map(org => org.detailCategory)
                                 .filter(Boolean)
-                            )).sort().map((category) => (
-                              <SelectItem key={category} value={category}>
+                            )).sort().map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))
@@ -7908,8 +7908,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
-                            {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
-                              <SelectItem key={category} value={category}>
+                            {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))}
@@ -7930,8 +7930,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 .filter(org => selectedDocumentUpperCategory === 'all' || org.upperCategory === selectedDocumentUpperCategory)
                                 .map(org => org.lowerCategory)
                                 .filter(Boolean)
-                            )).sort().map((category) => (
-                              <SelectItem key={category} value={category}>
+                            )).sort().map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))}
@@ -7955,8 +7955,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 )
                                 .map(org => org.detailCategory)
                                 .filter(Boolean)
-                            )).sort().map((category) => (
-                              <SelectItem key={category} value={category}>
+                            )).sort().map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))}
@@ -8121,7 +8121,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>사용자 정보 편집</DialogTitle>
-              <p className="text-sm text-gray-600">사용자 정보를 수정합니다.</p>
+              <DialogDescription>사용자 정보를 수정합니다.</DialogDescription>
             </DialogHeader>
             
             <Form {...userEditForm}>
@@ -8216,8 +8216,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="none">선택</SelectItem>
-                              {upperCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              {upperCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -8241,9 +8241,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
-                              {lowerCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              <SelectItem value="none">선택</SelectItem>
+                              {lowerCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -8267,9 +8267,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
-                              {detailCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              <SelectItem value="none">선택</SelectItem>
+                              {detailCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -8294,9 +8294,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">선택</SelectItem>
-                            {detailCategories.map((category) => (
-                              <SelectItem key={category} value={category}>
+                            <SelectItem value="none">선택</SelectItem>
+                            {detailCategories.map((category, index) => (
+                              <SelectItem key={`${category}-${index}`} value={category}>
                                 {category}
                               </SelectItem>
                             ))}
@@ -8506,9 +8506,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
-                              {upperCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              <SelectItem value="none">선택</SelectItem>
+                              {upperCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -8532,9 +8532,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
-                              {lowerCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              <SelectItem value="none">선택</SelectItem>
+                              {lowerCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
@@ -8558,9 +8558,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
-                              {detailCategories.map((category) => (
-                                <SelectItem key={category} value={category}>
+                              <SelectItem value="none">선택</SelectItem>
+                              {detailCategories.map((category, index) => (
+                                <SelectItem key={`${category}-${index}`} value={category}>
                                   {category}
                                 </SelectItem>
                               ))}
