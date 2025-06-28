@@ -3886,7 +3886,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <div className="min-h-[80px] p-3 border-2 border-dashed border-blue-200 rounded-lg bg-blue-50/30">
                                   {selectedAgentManagers.length === 0 ? (
                                     <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                      <p className="text-sm text-gray-500">상단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
                                     </div>
                                   ) : (
                                     <div className="flex flex-wrap gap-2">
@@ -3913,7 +3913,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <div className="min-h-[80px] p-3 border-2 border-dashed border-green-200 rounded-lg bg-green-50/30">
                                   {selectedDocumentManagers.length === 0 ? (
                                     <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                      <p className="text-sm text-gray-500">상단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
                                     </div>
                                   ) : (
                                     <div className="flex flex-wrap gap-2">
@@ -3940,7 +3940,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <div className="min-h-[80px] p-3 border-2 border-dashed border-purple-200 rounded-lg bg-purple-50/30">
                                   {selectedQaManagers.length === 0 ? (
                                     <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                      <p className="text-sm text-gray-500">상단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
                                     </div>
                                   ) : (
                                     <div className="flex flex-wrap gap-2">
