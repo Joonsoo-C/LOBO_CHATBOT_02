@@ -3868,15 +3868,31 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                               onChange={(e) => {
                                                 if (e.target.checked) {
-                                                  handleUserSelect(user, 'agent');
+                                                  handleUserSelect(user, currentManagerTab);
                                                 } else {
-                                                  // 체크해제 시 선택에서 제거
-                                                  setSelectedAgentManagers(prev => 
-                                                    prev.filter(m => m.id !== user.id)
-                                                  );
+                                                  // 체크해제 시 현재 탭에 해당하는 선택에서 제거
+                                                  if (currentManagerTab === 'agent') {
+                                                    setSelectedAgentManagers(prev => 
+                                                      prev.filter(m => m.id !== user.id)
+                                                    );
+                                                  } else if (currentManagerTab === 'document') {
+                                                    setSelectedDocumentManagers(prev => 
+                                                      prev.filter(m => m.id !== user.id)
+                                                    );
+                                                  } else if (currentManagerTab === 'qa') {
+                                                    setSelectedQaManagers(prev => 
+                                                      prev.filter(m => m.id !== user.id)
+                                                    );
+                                                  }
                                                 }
                                               }}
-                                              checked={selectedAgentManagers.some(m => m.id === user.id)}
+                                              checked={
+                                                currentManagerTab === 'agent' 
+                                                  ? selectedAgentManagers.some(m => m.id === user.id)
+                                                  : currentManagerTab === 'document'
+                                                  ? selectedDocumentManagers.some(m => m.id === user.id)
+                                                  : selectedQaManagers.some(m => m.id === user.id)
+                                              }
                                             />
                                             <div className="flex-1 min-w-0">
                                               <div className="flex items-center space-x-2">
