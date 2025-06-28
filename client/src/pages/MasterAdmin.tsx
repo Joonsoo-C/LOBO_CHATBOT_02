@@ -3754,13 +3754,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 관리자 선정 탭 */}
-                        <TabsContent value="managers" className="space-y-4">
-                          <div className="space-y-4">
-                            {/* 간단한 설명 */}
-                            <div className="text-sm text-gray-600 px-1">
-                              각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
-                            </div>
+                        {/* 공유 설정 탭 */}
 
                             {/* 선정된 관리자 영역 - 상단으로 이동 */}
                             <Tabs defaultValue="agent" className="w-full">
