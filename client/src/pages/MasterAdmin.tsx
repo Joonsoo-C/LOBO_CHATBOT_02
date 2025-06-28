@@ -654,10 +654,13 @@ function MasterAdmin() {
 
   // 사용자 선택 핸들러
   const handleUserSelect = (user: User, managerType: 'agent' | 'document' | 'qa') => {
-    const userInfo = {
+    const userInfo: ManagerInfo = {
       id: user.id,
       name: (user as any).name || user.id,
-      role: user.role
+      role: user.role,
+      email: user.email || '',
+      upperCategory: (user as any).upperCategory || '',
+      lowerCategory: (user as any).lowerCategory || ''
     };
     
     switch (managerType) {
@@ -3822,66 +3825,85 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 {/* 검색 결과 사용자 목록 */}
                                 <div className="space-y-3">
                                   <div className="flex items-center justify-between">
-                                    <h5 className="font-medium text-gray-900">검색 결과</h5>
-                                    <span className="text-sm text-gray-500">{filteredUsers.length}명</span>
+                                    <h5 className="text-sm font-medium text-gray-900">사용자 목록</h5>
+                                    <span className="text-xs text-gray-500">{filteredManagerUsers.length}명</span>
                                   </div>
-                                  <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-xl">
-                                    {filteredUsers.length === 0 ? (
-                                      <div className="p-8 text-center">
-                                        <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl mb-3">
-                                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                                          </svg>
-                                        </div>
-                                        <p className="text-gray-500">검색 조건에 맞는 사용자가 없습니다</p>
-                                      </div>
-                                    ) : (
-                                      <div className="divide-y divide-gray-100">
-                                        {filteredUsers.slice(0, 20).map((user) => (
-                                          <div key={user.id} className="p-4 hover:bg-gray-50/50 transition-colors cursor-pointer">
-                                            <div className="flex items-center justify-between">
-                                              <div className="flex-1 min-w-0">
-                                                <div className="flex items-center space-x-3">
-                                                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                                                    <span className="text-white font-semibold text-sm">
-                                                      {(user.fullName || user.name || user.username)?.charAt(0)?.toUpperCase()}
-                                                    </span>
-                                                  </div>
-                                                  <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center space-x-2">
-                                                      <p className="text-sm font-semibold text-gray-900 truncate">
-                                                        {user.fullName || user.name || user.username}
-                                                      </p>
-                                                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                                        {user.username}
-                                                      </span>
-                                                    </div>
-                                                    <div className="mt-1 flex items-center space-x-2 text-xs text-gray-500">
-                                                      <span>{user.upperCategory || '미지정'}</span>
-                                                      {user.lowerCategory && (
-                                                        <>
-                                                          <span>•</span>
-                                                          <span>{user.lowerCategory}</span>
-                                                        </>
-                                                      )}
-                                                      {user.detailCategory && (
-                                                        <>
-                                                          <span>•</span>
-                                                          <span>{user.detailCategory}</span>
-                                                        </>
-                                                      )}
-                                                    </div>
-                                                    {user.email && (
-                                                      <p className="text-xs text-gray-500 mt-1">{user.email}</p>
-                                                    )}
-                                                  </div>
-                                                </div>
+                                  
+                                  {filteredManagerUsers.length === 0 ? (
+                                    <div className="p-6 text-center border border-gray-200 rounded-lg">
+                                      <p className="text-sm text-gray-500">검색 조건에 맞는 사용자가 없습니다</p>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {/* 사용자 목록 */}
+                                      <div className="border border-gray-200 rounded-lg divide-y divide-gray-100">
+                                        {paginatedManagerUsers.map((user) => (
+                                          <div 
+                                            key={user.id} 
+                                            className="p-3 hover:bg-gray-50 transition-colors flex items-center space-x-3"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  handleUserSelect(user, 'agent');
+                                                } else {
+                                                  // 체크해제 시 선택에서 제거
+                                                  setSelectedAgentManagers(prev => 
+                                                    prev.filter(m => m.id !== user.id)
+                                                  );
+                                                }
+                                              }}
+                                              checked={selectedAgentManagers.some(m => m.id === user.id)}
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex items-center space-x-2">
+                                                <p className="text-sm font-medium text-gray-900 truncate">
+                                                  {(user as any).name || user.id}
+                                                </p>
+                                                <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
+                                                  {user.role}
+                                                </span>
                                               </div>
+                                              {user.email && (
+                                                <p className="text-xs text-gray-500 mt-1">{user.email}</p>
+                                              )}
                                             </div>
                                           </div>
                                         ))}
                                       </div>
-                                    )}
+
+                                      {/* 페이지네이션 */}
+                                      {totalManagerPages > 1 && (
+                                        <div className="flex items-center justify-between">
+                                          <div className="text-xs text-gray-500">
+                                            페이지 {managerCurrentPage} / {totalManagerPages}
+                                          </div>
+                                          <div className="flex items-center space-x-1">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() => setManagerCurrentPage(Math.max(1, managerCurrentPage - 1))}
+                                              disabled={managerCurrentPage <= 1}
+                                              className="h-7 px-2 text-xs"
+                                            >
+                                              이전
+                                            </Button>
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() => setManagerCurrentPage(Math.min(totalManagerPages, managerCurrentPage + 1))}
+                                              disabled={managerCurrentPage >= totalManagerPages}
+                                              className="h-7 px-2 text-xs"
+                                            >
+                                              다음
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -4058,7 +4080,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </TabsContent>
                               </Tabs>
                             </div>
-                          </div>
                           </div>
                         </TabsContent>
 
