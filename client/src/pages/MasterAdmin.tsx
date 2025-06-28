@@ -3715,11 +3715,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 {/* 검색 결과 테이블 */}
                                 <div className="space-y-3">
                                   <div className="text-sm text-gray-600">
-                                    총 {filteredManagers.length}명의 사용자 (페이지 {managerCurrentPage} / {Math.ceil(filteredManagers.length / managerItemsPerPage)})
+                                    총 {filteredManagerUsers.length}명의 사용자 (페이지 {managerCurrentPage} / {Math.ceil(filteredManagerUsers.length / managerItemsPerPage)})
                                   </div>
                                   
                                   <div className="space-y-2 max-h-64 overflow-y-auto">
-                                    {currentManagerPageData.map((user) => (
+                                    {paginatedManagerUsers.map((user) => (
                                       <div
                                         key={user.id}
                                         onClick={() => {
@@ -3727,6 +3727,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           const managerInfo: ManagerInfo = {
                                             id: user.id,
                                             name: (user as any).name || user.id,
+                                            email: (user as any).email || '',
+                                            upperCategory: (user as any).upperCategory || '',
+                                            lowerCategory: (user as any).lowerCategory || ''
                                           };
                                           
                                           if (activeManagerTab === 'agent') {
@@ -3765,7 +3768,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </div>
 
                                   {/* 페이지네이션 */}
-                                  {Math.ceil(filteredManagers.length / managerItemsPerPage) > 1 && (
+                                  {Math.ceil(filteredManagerUsers.length / managerItemsPerPage) > 1 && (
                                     <div className="flex justify-center space-x-1">
                                       <Button
                                         variant="outline"
@@ -3777,9 +3780,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         ‹
                                       </Button>
                                       
-                                      {Array.from({ length: Math.ceil(filteredManagers.length / managerItemsPerPage) }, (_, i) => i + 1)
+                                      {Array.from({ length: Math.ceil(filteredManagerUsers.length / managerItemsPerPage) }, (_, i) => i + 1)
                                         .filter(page => {
-                                          const totalPages = Math.ceil(filteredManagers.length / managerItemsPerPage);
+                                          const totalPages = Math.ceil(filteredManagerUsers.length / managerItemsPerPage);
                                           if (totalPages <= 7) return true;
                                           if (page <= 2 || page >= totalPages - 1) return true;
                                           return Math.abs(page - managerCurrentPage) <= 1;
@@ -3829,8 +3832,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => setManagerCurrentPage(Math.min(Math.ceil(filteredManagers.length / managerItemsPerPage), managerCurrentPage + 1))}
-                                        disabled={managerCurrentPage === Math.ceil(filteredManagers.length / managerItemsPerPage)}
+                                        onClick={() => setManagerCurrentPage(Math.min(Math.ceil(filteredManagerUsers.length / managerItemsPerPage), managerCurrentPage + 1))}
+                                        disabled={managerCurrentPage === Math.ceil(filteredManagerUsers.length / managerItemsPerPage)}
                                         className="h-8 w-8 p-0"
                                       >
                                         ›
@@ -3959,157 +3962,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </div>
                               </TabsContent>
                             </Tabs>
-
-                            {/* 검색 시스템 - 하단으로 이동 */}
-                            <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
-                              <div className="p-4 space-y-4">
-                                <h4 className="text-base font-medium text-gray-900">사용자 검색</h4>
-                                
-                                {/* 검색 입력창 */}
-                                <div className="relative">
-                                  <Input
-                                    type="text"
-                                    placeholder="이름 또는 사용자 ID로 검색..."
-                                    value={managerSearchQuery}
-                                    onChange={(e) => setManagerSearchQuery(e.target.value)}
-                                    className="h-9 text-sm"
-                                  />
-                                </div>
-
-                                {/* 조직 필터 */}
-                                <div className="grid grid-cols-3 gap-2">
-                                  <Select value={managerFilterUpperCategory} onValueChange={(value) => {
-                                    setManagerFilterUpperCategory(value);
-                                    setManagerFilterLowerCategory('all');
-                                    setManagerFilterDetailCategory('all');
-                                    setManagerCurrentPage(1);
-                                  }}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="상위 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getUpperCategories().map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <Select value={managerFilterLowerCategory} onValueChange={(value) => {
-                                    setManagerFilterLowerCategory(value);
-                                    setManagerFilterDetailCategory('all');
-                                    setManagerCurrentPage(1);
-                                  }} disabled={managerFilterUpperCategory === 'all'}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="하위 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getLowerCategories(managerFilterUpperCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <Select value={managerFilterDetailCategory} onValueChange={(value) => {
-                                    setManagerFilterDetailCategory(value);
-                                    setManagerCurrentPage(1);
-                                  }} disabled={managerFilterLowerCategory === 'all'}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="세부 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-
-                                {/* 검색 결과 사용자 목록 */}
-                                <div className="space-y-3">
-                                  <div className="flex items-center justify-between">
-                                    <h5 className="text-sm font-medium text-gray-900">사용자 목록</h5>
-                                    <span className="text-xs text-gray-500">{filteredManagerUsers.length}명</span>
-                                  </div>
-                                  
-                                  {filteredManagerUsers.length === 0 ? (
-                                    <div className="p-6 text-center border border-gray-200 rounded-lg">
-                                      <p className="text-sm text-gray-500">검색 조건에 맞는 사용자가 없습니다</p>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      {/* 사용자 목록 */}
-                                      <div className="border border-gray-200 rounded-lg divide-y divide-gray-100">
-                                        {paginatedManagerUsers.map((user) => (
-                                          <div 
-                                            key={user.id} 
-                                            className="p-3 hover:bg-gray-50 transition-colors flex items-center space-x-3"
-                                          >
-                                            <input
-                                              type="checkbox"
-                                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                              onChange={(e) => {
-                                                if (e.target.checked) {
-                                                  handleUserSelect(user, 'agent');
-                                                } else {
-                                                  // 체크해제 시 선택에서 제거
-                                                  setSelectedAgentManagers(prev => 
-                                                    prev.filter(m => m.id !== user.id)
-                                                  );
-                                                }
-                                              }}
-                                              checked={selectedAgentManagers.some(m => m.id === user.id)}
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                              <div className="flex items-center space-x-2">
-                                                <p className="text-sm font-medium text-gray-900 truncate">
-                                                  {(user as any).name || user.id}
-                                                </p>
-                                                <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
-                                                  {user.role}
-                                                </span>
-                                              </div>
-                                              {user.email && (
-                                                <p className="text-xs text-gray-500 mt-1">{user.email}</p>
-                                              )}
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-
-                                      {/* 페이지네이션 */}
-                                      {totalManagerPages > 1 && (
-                                        <div className="flex items-center justify-between">
-                                          <div className="text-xs text-gray-500">
-                                            페이지 {managerCurrentPage} / {totalManagerPages}
-                                          </div>
-                                          <div className="flex items-center space-x-1">
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              onClick={() => setManagerCurrentPage(Math.max(1, managerCurrentPage - 1))}
-                                              disabled={managerCurrentPage <= 1}
-                                              className="h-7 px-2 text-xs"
-                                            >
-                                              이전
-                                            </Button>
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              onClick={() => setManagerCurrentPage(Math.min(totalManagerPages, managerCurrentPage + 1))}
-                                              disabled={managerCurrentPage >= totalManagerPages}
-                                              className="h-7 px-2 text-xs"
-                                            >
-                                              다음
-                                            </Button>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
 
                             {/* 관리자 역할 선정 탭 시스템 */}
                             <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
