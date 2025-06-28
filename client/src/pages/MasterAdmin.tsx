@@ -306,6 +306,7 @@ function MasterAdmin() {
   const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('all');
   const [managerCurrentPage, setManagerCurrentPage] = useState(1);
   const [managerItemsPerPage] = useState(10);
+  const [activeManagerTab, setActiveManagerTab] = useState('agent');
 
   // ManagerSelector 컴포넌트
   function ManagerSelector({ 
@@ -3646,8 +3647,210 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
                             </div>
 
-                            {/* 선정된 관리자 영역 - 상단으로 이동 */}
-                            <Tabs defaultValue="agent" className="w-full">
+                            {/* 사용자 검색 시스템 - 상단으로 이동 */}
+                            <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
+                              <div className="p-4 space-y-4">
+                                <h4 className="text-base font-medium text-gray-900">사용자 검색</h4>
+                                
+                                {/* 검색 입력창 */}
+                                <div className="relative">
+                                  <Input
+                                    type="text"
+                                    placeholder="이름 또는 사용자 ID로 검색..."
+                                    value={managerSearchQuery}
+                                    onChange={(e) => setManagerSearchQuery(e.target.value)}
+                                    className="h-9 text-sm"
+                                  />
+                                </div>
+
+                                {/* 조직 필터 */}
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select value={managerFilterUpperCategory} onValueChange={(value) => {
+                                    setManagerFilterUpperCategory(value);
+                                    setManagerFilterLowerCategory('all');
+                                    setManagerFilterDetailCategory('all');
+                                    setManagerCurrentPage(1);
+                                  }}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                      <SelectValue placeholder="상위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="all">전체</SelectItem>
+                                      {getUpperCategories().map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select value={managerFilterLowerCategory} onValueChange={(value) => {
+                                    setManagerFilterLowerCategory(value);
+                                    setManagerFilterDetailCategory('all');
+                                    setManagerCurrentPage(1);
+                                  }} disabled={managerFilterUpperCategory === 'all'}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                      <SelectValue placeholder="하위 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="all">전체</SelectItem>
+                                      {getLowerCategories(managerFilterUpperCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select value={managerFilterDetailCategory} onValueChange={(value) => {
+                                    setManagerFilterDetailCategory(value);
+                                    setManagerCurrentPage(1);
+                                  }} disabled={managerFilterLowerCategory === 'all'}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                      <SelectValue placeholder="세부 조직" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="all">전체</SelectItem>
+                                      {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                {/* 검색 결과 테이블 */}
+                                <div className="space-y-3">
+                                  <div className="text-sm text-gray-600">
+                                    총 {filteredManagers.length}명의 사용자 (페이지 {managerCurrentPage} / {Math.ceil(filteredManagers.length / managerItemsPerPage)})
+                                  </div>
+                                  
+                                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                                    {currentManagerPageData.map((user) => (
+                                      <div
+                                        key={user.id}
+                                        onClick={() => {
+                                          // 현재 활성 탭에 따라 해당 관리자 목록에 추가
+                                          const managerInfo: ManagerInfo = {
+                                            id: user.id,
+                                            name: (user as any).name || user.id,
+                                          };
+                                          
+                                          if (activeManagerTab === 'agent') {
+                                            setSelectedAgentManagers(prev => {
+                                              if (prev.length >= 3) return prev;
+                                              if (prev.some(m => m.id === user.id)) return prev;
+                                              return [...prev, managerInfo];
+                                            });
+                                          } else if (activeManagerTab === 'document') {
+                                            setSelectedDocumentManagers(prev => {
+                                              if (prev.length >= 3) return prev;
+                                              if (prev.some(m => m.id === user.id)) return prev;
+                                              return [...prev, managerInfo];
+                                            });
+                                          } else if (activeManagerTab === 'qa') {
+                                            setSelectedQaManagers(prev => {
+                                              if (prev.length >= 3) return prev;
+                                              if (prev.some(m => m.id === user.id)) return prev;
+                                              return [...prev, managerInfo];
+                                            });
+                                          }
+                                        }}
+                                        className="flex justify-between items-center p-3 bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg border hover:border-blue-200 transition-colors"
+                                      >
+                                        <div>
+                                          <div className="font-medium text-gray-900">{(user as any).name || user.id}</div>
+                                          <div className="text-sm text-gray-500">
+                                            ID: {user.id} | {(user as any).upperCategory || '미분류'} {'>'} {(user as any).lowerCategory || '미분류'}
+                                          </div>
+                                        </div>
+                                        <button className="text-blue-600 hover:text-blue-800 font-medium">
+                                          선택
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* 페이지네이션 */}
+                                  {Math.ceil(filteredManagers.length / managerItemsPerPage) > 1 && (
+                                    <div className="flex justify-center space-x-1">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setManagerCurrentPage(Math.max(1, managerCurrentPage - 1))}
+                                        disabled={managerCurrentPage === 1}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        ‹
+                                      </Button>
+                                      
+                                      {Array.from({ length: Math.ceil(filteredManagers.length / managerItemsPerPage) }, (_, i) => i + 1)
+                                        .filter(page => {
+                                          const totalPages = Math.ceil(filteredManagers.length / managerItemsPerPage);
+                                          if (totalPages <= 7) return true;
+                                          if (page <= 2 || page >= totalPages - 1) return true;
+                                          return Math.abs(page - managerCurrentPage) <= 1;
+                                        })
+                                        .map((page, index, array) => {
+                                          if (index > 0 && array[index - 1] !== page - 1) {
+                                            return [
+                                              <span key={`ellipsis-${page}`} className="px-2 py-1 text-gray-400">...</span>,
+                                              <Button
+                                                key={page}
+                                                variant={page === managerCurrentPage ? "default" : "outline"}
+                                                size="sm"
+                                                onClick={() => setManagerCurrentPage(page)}
+                                                className="h-8 w-8 p-0 !min-w-[32px] !w-8 !h-8 !border-solid !border"
+                                                style={{ 
+                                                  minWidth: '32px', 
+                                                  width: '32px', 
+                                                  height: '32px',
+                                                  borderWidth: '1px',
+                                                  borderStyle: 'solid'
+                                                }}
+                                              >
+                                                {page}
+                                              </Button>
+                                            ];
+                                          }
+                                          return (
+                                            <Button
+                                              key={page}
+                                              variant={page === managerCurrentPage ? "default" : "outline"}
+                                              size="sm"
+                                              onClick={() => setManagerCurrentPage(page)}
+                                              className="h-8 w-8 p-0 !min-w-[32px] !w-8 !h-8 !border-solid !border"
+                                              style={{ 
+                                                minWidth: '32px', 
+                                                width: '32px', 
+                                                height: '32px',
+                                                borderWidth: '1px',
+                                                borderStyle: 'solid'
+                                              }}
+                                            >
+                                              {page}
+                                            </Button>
+                                          );
+                                        })}
+                                      
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setManagerCurrentPage(Math.min(Math.ceil(filteredManagers.length / managerItemsPerPage), managerCurrentPage + 1))}
+                                        disabled={managerCurrentPage === Math.ceil(filteredManagers.length / managerItemsPerPage)}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        ›
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* 선정된 관리자 영역 */}
+                            <Tabs defaultValue="agent" className="w-full" onValueChange={(value) => {
+                              // 탭 전환 시 검색 필터 초기화
+                              setActiveManagerTab(value);
+                              setManagerSearchQuery('');
+                              setManagerFilterUpperCategory('all');
+                              setManagerFilterLowerCategory('all');
+                              setManagerFilterDetailCategory('all');
+                              setManagerCurrentPage(1);
+                            }}>
                               <TabsList className="grid w-full grid-cols-3">
                                 <TabsTrigger value="agent" className="relative">
                                   에이전트 관리자
