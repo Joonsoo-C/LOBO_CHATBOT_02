@@ -294,10 +294,14 @@ function MasterAdmin() {
     email: string;
     upperCategory: string;
     lowerCategory: string;
+    role?: string;
   };
   const [selectedAgentManagers, setSelectedAgentManagers] = useState<ManagerInfo[]>([]);
   const [selectedDocumentManagers, setSelectedDocumentManagers] = useState<ManagerInfo[]>([]);
   const [selectedQaManagers, setSelectedQaManagers] = useState<ManagerInfo[]>([]);
+  
+  // 관리자 탭 상태 추적
+  const [currentManagerTab, setCurrentManagerTab] = useState<'agent' | 'document' | 'qa'>('agent');
   
   // 관리자 검색 상태
   const [managerSearchQuery, setManagerSearchQuery] = useState('');
@@ -306,6 +310,23 @@ function MasterAdmin() {
   const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('all');
   const [managerCurrentPage, setManagerCurrentPage] = useState(1);
   const [managerItemsPerPage] = useState(10);
+
+  // 관리자 검색 상태 초기화 함수
+  const resetManagerSearchState = () => {
+    setManagerSearchQuery('');
+    setManagerFilterUpperCategory('all');
+    setManagerFilterLowerCategory('all');
+    setManagerFilterDetailCategory('all');
+    setManagerCurrentPage(1);
+  };
+
+  // 관리자 탭 변경 핸들러
+  const handleManagerTabChange = (newTab: 'agent' | 'document' | 'qa') => {
+    if (currentManagerTab !== newTab) {
+      resetManagerSearchState();
+      setCurrentManagerTab(newTab);
+    }
+  };
 
   // ManagerSelector 컴포넌트
   function ManagerSelector({ 
@@ -3647,7 +3668,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
 
                             {/* 선정된 관리자 영역 - 상단으로 이동 */}
-                            <Tabs defaultValue="agent" className="w-full">
+                            <Tabs value={currentManagerTab} onValueChange={(value) => handleManagerTabChange(value as 'agent' | 'document' | 'qa')} className="w-full">
                               <TabsList className="grid w-full grid-cols-3">
                                 <TabsTrigger value="agent" className="relative">
                                   에이전트 관리자
