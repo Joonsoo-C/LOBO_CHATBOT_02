@@ -4043,27 +4043,75 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 공유 설정 탭 */}
                         <TabsContent value="sharing" className="space-y-6">
                           <div className="space-y-4">
-                            <div className="w-full">
-                                    <TabsTrigger 
-                                      value="agent" 
-                                      className="flex-1 h-12 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:text-blue-700"
-                                    >
-                                      <div className="flex items-center space-x-2">
-                                        <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-                                          <svg className="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                          </svg>
-                                        </div>
-                                        <span className="font-medium">에이전트 관리자</span>
-                                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                          {selectedAgentManagers.length}/3
-                                        </span>
-                                      </div>
-                                    </TabsTrigger>
-                                    <TabsTrigger 
-                                      value="document" 
-                                      className="flex-1 h-12 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-green-200 data-[state=active]:text-green-700"
-                                    >
+                            {/* 에이전트 가시성 설정 */}
+                            <div className="space-y-3">
+                              <FormField
+                                control={agentForm.control}
+                                name="visibility"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-base font-semibold text-gray-900">
+                                      에이전트 공개 범위
+                                    </FormLabel>
+                                    <FormControl>
+                                      <RadioGroup
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        className="grid grid-cols-3 gap-4"
+                                      >
+                                        {/* 전체 공개 */}
+                                        <FormItem className="p-4 border-2 rounded-xl border-gray-200 hover:border-blue-300 transition-colors">
+                                          <div className="flex items-center space-x-3">
+                                            <FormControl>
+                                              <RadioGroupItem value="public" id="public" />
+                                            </FormControl>
+                                            <Label htmlFor="public" className="cursor-pointer flex-1">
+                                              <div>
+                                                <div className="font-medium text-gray-900">전체 공개</div>
+                                                <div className="text-sm text-gray-500">모든 사용자가 접근 가능</div>
+                                              </div>
+                                            </Label>
+                                          </div>
+                                        </FormItem>
+
+                                        {/* 그룹별 제한 */}
+                                        <FormItem className="p-4 border-2 rounded-xl border-gray-200 hover:border-orange-300 transition-colors">
+                                          <div className="flex items-center space-x-3">
+                                            <FormControl>
+                                              <RadioGroupItem value="group" id="group" />
+                                            </FormControl>
+                                            <Label htmlFor="group" className="cursor-pointer flex-1">
+                                              <div>
+                                                <div className="font-medium text-gray-900">그룹별 제한</div>
+                                                <div className="text-sm text-gray-500">특정 조직만 접근 가능</div>
+                                              </div>
+                                            </Label>
+                                          </div>
+                                        </FormItem>
+
+                                        {/* 사용자 지정 */}
+                                        <FormItem className="p-4 border-2 rounded-xl border-gray-200 hover:border-green-300 transition-colors">
+                                          <div className="flex items-center space-x-3">
+                                            <FormControl>
+                                              <RadioGroupItem value="custom" id="custom" />
+                                            </FormControl>
+                                            <Label htmlFor="custom" className="cursor-pointer flex-1">
+                                              <div>
+                                                <div className="font-medium text-gray-900">사용자 지정</div>
+                                                <div className="text-sm text-gray-500">특정 사용자만 접근</div>
+                                              </div>
+                                            </Label>
+                                          </div>
+                                        </FormItem>
+                                      </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </TabsContent>
                                       <div className="flex items-center space-x-2">
                                         <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
                                           <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
