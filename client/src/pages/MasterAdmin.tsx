@@ -8440,10 +8440,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 새 사용자 생성 다이얼로그 */}
         <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>새 사용자 추가</DialogTitle>
-              <DialogDescription>새로운 사용자를 생성합니다.</DialogDescription>
+              <DialogTitle className="text-xl font-semibold">새 사용자 추가</DialogTitle>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                새로운 사용자를 시스템에 추가합니다. 필수 정보를 모두 입력해주세요.
+              </div>
             </DialogHeader>
             
             <Form {...newUserForm}>
@@ -8451,75 +8453,100 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 createUserMutation.mutate(data);
               })} className="space-y-6">
                 
-                {/* 기본 정보 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={newUserForm.control}
-                    name="userId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>사용자 ID *</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="user001" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* 사용자 기본 정보 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <Label className="text-sm font-medium">사용자 기본 정보</Label>
                   
-                  <FormField
-                    control={newUserForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>사용자명 *</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="홍길동" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={newUserForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>이메일</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="user@university.edu" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={newUserForm.control}
-                    name="userType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>사용자 유형</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">이름 *</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="선택하세요" />
-                            </SelectTrigger>
+                            <Input {...field} placeholder="홍길동" />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="student">학생</SelectItem>
-                            <SelectItem value="faculty">교직원</SelectItem>
-                            <SelectItem value="staff">직원</SelectItem>
-                            <SelectItem value="external">외부인</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">이메일 *</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="hong@university.edu" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="userId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">사용자 ID *</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="user123" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="userType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">사용자 타입 *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="타입 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="student">학생</SelectItem>
+                              <SelectItem value="faculty">교직원</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">시스템 역할 *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="역할 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">일반 사용자</SelectItem>
+                              <SelectItem value="faculty">교직원</SelectItem>
+                              <SelectItem value="admin">관리자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* 소속 정보 */}
@@ -8634,43 +8661,61 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={newUserForm.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>계정 상태</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {userStatuses.map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {status}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* 계정 설정 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <Label className="text-sm font-medium">계정 설정</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">계정 상태</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="상태 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {userStatuses.map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  {status}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex flex-col justify-center">
+                      <Label className="text-sm mb-2">초기 비밀번호</Label>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 p-3 bg-blue-50 dark:bg-blue-950 rounded border">
+                        시스템에서 자동으로 임시 비밀번호를 생성합니다. <br />
+                        사용자의 첫 로그인 시 비밀번호 변경이 요구됩니다.
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 버튼 */}
-                <div className="flex justify-between pt-4">
+                <div className="flex justify-between pt-6 border-t">
                   <Button 
                     type="button"
                     variant="outline"
                     onClick={() => setIsNewUserDialogOpen(false)}
+                    className="min-w-[120px]"
                   >
                     취소
                   </Button>
-                  <Button type="submit" disabled={createUserMutation.isPending}>
+                  <Button 
+                    type="submit" 
+                    disabled={createUserMutation.isPending}
+                    className="min-w-[120px]"
+                  >
                     {createUserMutation.isPending ? '생성 중...' : '사용자 생성'}
                   </Button>
                 </div>
