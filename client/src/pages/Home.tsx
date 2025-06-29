@@ -226,6 +226,7 @@ function Home() {
               </DropdownMenuContent>
               </DropdownMenu>
             </div>
+          </div>
 
           {/* Tab Navigation */}
           <div className="grid grid-cols-2 gap-0 bg-muted rounded-lg p-1 tab-navigation">
