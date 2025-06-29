@@ -105,7 +105,7 @@ export function setupAdminRoutes(app: Express) {
       const validExcelExtensions = ['.xlsx', '.xls'];
       const validCsvExtensions = ['.csv'];
       const allValidExtensions = [...validExcelExtensions, ...validCsvExtensions];
-      
+
       const hasValidExtension = allValidExtensions.some(ext => fileName.endsWith(ext));
       const isExcelFile = validExcelExtensions.some(ext => fileName.endsWith(ext));
       const isCsvFile = validCsvExtensions.some(ext => fileName.endsWith(ext));
@@ -217,7 +217,7 @@ export function setupAdminRoutes(app: Express) {
   app.delete("/api/admin/users/bulk/clear-all", requireMasterAdmin, async (req, res) => {
     try {
       const result = await (storage as any).clearAllUsers();
-      
+
       res.json({
         message: `${result.deletedCount}개의 사용자가 성공적으로 삭제되었습니다 (master_admin 제외).`,
         deletedCount: result.deletedCount,
@@ -266,7 +266,7 @@ export function setupAdminRoutes(app: Express) {
   app.delete("/api/admin/agents/bulk/robo-university", requireMasterAdmin, async (req, res) => {
     try {
       const result = await (storage as any).deleteRoboUniversityAgents();
-      
+
       res.json({
         message: `${result.deletedCount}개의 로보대학교 에이전트가 성공적으로 삭제되었습니다.`,
         deletedCount: result.deletedCount,
@@ -372,7 +372,7 @@ export function setupAdminRoutes(app: Express) {
         icon: icon,
         backgroundColor: backgroundColor 
       });
-      
+
       res.json({
         success: true,
         message: "아이콘이 성공적으로 변경되었습니다.",
@@ -506,183 +506,13 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Agent file upload endpoint
-  app.post("/api/admin/agents/upload", requireMasterAdmin, (req, res, next) => {
-    console.log('📁 에이전트 파일 업로드 요청 시작');
-    
-    userUpload.single('file')(req, res, (err) => {
-      if (err) {
-        console.log('❌ 파일 업로드 multer 오류:', {
-          error: err.message,
-          code: err.code,
-          field: err.field
-        });
-        
-        // Check if it's a file validation error
-        if (err.message && err.message.includes('지원되지 않는 파일 형식')) {
-          return res.status(400).json({ 
-            message: err.message,
-            details: 'Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.',
-            supported_formats: ['.xlsx', '.xls', '.csv']
-          });
-        }
-        
-        // Other multer errors
-        return res.status(400).json({ 
-          message: '파일 업로드 중 오류가 발생했습니다.',
-          error: err.message 
-        });
-      }
-      
-      // Continue with file processing
-      next();
-    });
-  }, async (req, res) => {
-    try {
-      console.log('📋 에이전트 파일 처리 시작');
-      
-      if (!req.file) {
-        console.log('❌ 업로드된 파일이 없음');
-        return res.status(400).json({ message: '파일이 업로드되지 않았습니다.' });
-      }
-
-      const clearExisting = req.body.clearExisting === 'true';
-      const validateOnly = req.body.validateOnly === 'true';
-      
-      console.log('📊 업로드 옵션:', {
-        clearExisting,
-        validateOnly,
-        filename: req.file.filename,
-        originalname: req.file.originalname,
-        size: req.file.size
-      });
-
-      const filePath = req.file.path;
-      const fileExtension = path.extname(req.file.originalname).toLowerCase();
-      
-      let agents: any[] = [];
-      
-      if (fileExtension === '.csv') {
-        // CSV 파일 처리
-        const csvData = fs.readFileSync(filePath, 'utf8');
-        const parsed = Papa.parse(csvData, { 
-          header: true, 
-          skipEmptyLines: true,
-          encoding: 'utf8'
-        });
-        agents = parsed.data;
-      } else if (fileExtension === '.xlsx' || fileExtension === '.xls') {
-        // Excel 파일 처리
-        const { readFile, utils } = await import('xlsx');
-        const workbook = readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        agents = utils.sheet_to_json(worksheet);
-      } else {
-        return res.status(400).json({ message: '지원되지 않는 파일 형식입니다.' });
-      }
-
-      console.log(`📊 파싱된 에이전트 수: ${agents.length}`);
-
-      // 에이전트 데이터 변환 및 검증
-      const processedAgents = agents.map((agent: any, index: number) => {
-        try {
-          return {
-            name: agent.name || agent['에이전트명'] || agent['이름'] || `에이전트_${index + 1}`,
-            description: agent.description || agent['설명'] || agent['기능설명'] || '',
-            category: agent.category || agent['카테고리'] || agent['분류'] || '기능',
-            icon: agent.icon || agent['아이콘'] || 'Bot',
-            backgroundColor: agent.backgroundColor || agent['배경색'] || '#3B82F6',
-            isActive: true,
-            managerId: agent.managerId || agent['관리자ID'] || 'prof001',
-            organizationId: agent.organizationId || agent['조직ID'] || 1,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          };
-        } catch (error) {
-          console.error(`에이전트 ${index + 1} 처리 중 오류:`, error);
-          return null;
-        }
-      }).filter(Boolean);
-
-      console.log(`✅ 처리된 에이전트 수: ${processedAgents.length}`);
-
-      if (validateOnly) {
-        // 검증만 수행
-        return res.json({
-          success: true,
-          message: `검증 완료: ${processedAgents.length}개 에이전트 레코드가 유효합니다.`,
-          agentCount: processedAgents.length
-        });
-      }
-
-      let createdCount = 0;
-      let errorCount = 0;
-
-      if (clearExisting) {
-        console.log('기존 에이전트 모두 삭제 중...');
-        // 기존 에이전트 모두 삭제
-        await storage.clearAllAgents();
-      }
-
-      // 새 에이전트 생성
-      for (const agentData of processedAgents) {
-        try {
-          await storage.createAgent(agentData);
-          createdCount++;
-          console.log(`✅ 에이전트 생성 성공: ${agentData.name}`);
-        } catch (error) {
-          console.error(`에이전트 ${agentData.name} 생성 실패:`, error);
-          errorCount++;
-        }
-      }
-
-      // 임시 파일 정리
-      try {
-        fs.unlinkSync(filePath);
-      } catch (cleanupError) {
-        console.error('임시 파일 정리 오류:', cleanupError);
-      }
-
-      const responseMessage = clearExisting 
-        ? `기존 에이전트를 모두 삭제하고 ${createdCount}개의 새 에이전트로 교체했습니다.`
-        : `${createdCount}개의 새 에이전트를 추가했습니다.`;
-
-      res.json({
-        success: true,
-        message: responseMessage,
-        created: createdCount,
-        errors: errorCount,
-        total: processedAgents.length
-      });
-
-    } catch (error) {
-      console.error("에이전트 파일 업로드 오류:", error);
-
-      // 임시 파일 정리
-      if (req.file?.path) {
-        try {
-          fs.unlinkSync(req.file.path);
-        } catch (cleanupError) {
-          console.error('임시 파일 정리 오류:', cleanupError);
-        }
-      }
-
-      res.status(500).json({
-        success: false,
-        message: "에이전트 파일 업로드 중 오류가 발생했습니다.",
-        error: error instanceof Error ? error.message : String(error)
-      });
-    }
-  });
-
   // Agent data clear and load endpoint
   app.post("/api/admin/agents/clear-and-load", requireMasterAdmin, async (req, res) => {
     try {
       console.log('🔄 에이전트 데이터 교체 시작...');
-      
+
       const { agents } = req.body;
-      
+
       if (!agents || !Array.isArray(agents)) {
         return res.status(400).json({ message: '유효한 에이전트 데이터가 필요합니다.' });
       }
@@ -749,7 +579,7 @@ export function setupAdminRoutes(app: Express) {
   // User file upload endpoint
   app.post("/api/admin/users/upload", requireMasterAdmin, (req, res, next) => {
     console.log('📁 사용자 파일 업로드 요청 시작');
-    
+
     userUpload.single('file')(req, res, (err) => {
       if (err) {
         console.log('❌ 파일 업로드 multer 오류:', {
@@ -757,7 +587,7 @@ export function setupAdminRoutes(app: Express) {
           code: err.code,
           field: err.field
         });
-        
+
         // Check if it's a file validation error
         if (err.message && err.message.includes('지원되지 않는 파일 형식')) {
           return res.status(400).json({ 
@@ -766,21 +596,21 @@ export function setupAdminRoutes(app: Express) {
             supported_formats: ['.xlsx', '.xls', '.csv']
           });
         }
-        
+
         // Other multer errors
         return res.status(400).json({ 
           message: '파일 업로드 중 오류가 발생했습니다.',
           error: err.message 
         });
       }
-      
+
       // Continue with file processing
       next();
     });
   }, async (req, res) => {
     try {
       console.log('📋 사용자 파일 처리 시작');
-      
+
       if (!req.file) {
         console.log('❌ 업로드된 파일이 없음');
         return res.status(400).json({ message: "업로드된 파일이 없습니다." });
@@ -851,7 +681,7 @@ export function setupAdminRoutes(app: Express) {
           const values = jsonData[i] as any[];
           if (values && values.length > 0 && values.some(v => v !== null && v !== undefined && v !== '')) {
             const user: any = {};
-            
+
             headers.forEach((header, index) => {
               if (header && values[index] !== undefined && values[index] !== null && values[index] !== '') {
                 const mappedField = columnMapping[header.toString().trim()];
@@ -887,7 +717,7 @@ export function setupAdminRoutes(app: Express) {
             // Validate required fields and create user
             if (user.username && (user.name || (user.firstName && user.lastName))) {
               const fullName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim();
-              
+
               users.push({
                 id: user.username,
                 username: user.username,
@@ -976,7 +806,7 @@ export function setupAdminRoutes(app: Express) {
       if (validateOnly) {
         userFileInfo.status = 'validated';
         await storage.saveUserFile(userFileInfo);
-        
+
         return res.json({
           success: true,
           message: `검증 완료: ${users.length}개 사용자 레코드가 유효합니다.`,
@@ -1576,7 +1406,7 @@ export function setupAdminRoutes(app: Express) {
         // If content is binary or empty, try to re-extract text from the file
         console.log('Detected binary content or empty content, attempting to re-extract text');
         const filePath = path.join(adminUploadDir, document.filename);
-        
+
         if (fs.existsSync(filePath)) {
           try {
             const reExtractedText = await extractTextFromContent(filePath, document.mimeType);
@@ -1597,7 +1427,7 @@ export function setupAdminRoutes(app: Express) {
       if (Buffer.isBuffer(documentContent)) {
         documentContent = documentContent.toString('utf8');
       }
-      
+
       // Fix any encoding issues by converting to proper UTF-8
       try {
         // Convert to buffer and back to ensure proper UTF-8 encoding
@@ -1905,11 +1735,11 @@ export function setupAdminRoutes(app: Express) {
   app.delete("/api/admin/agents/organization/:name", requireMasterAdmin, async (req, res) => {
     try {
       const organizationName = decodeURIComponent(req.params.name);
-      
+
       console.log(`Deleting agents with organization affiliation: ${organizationName}`);
-      
+
       const deletedCount = await storage.deleteAgentsByOrganization(organizationName);
-      
+
       res.json({
         success: true,
         message: `${deletedCount}개의 ${organizationName} 소속 에이전트가 삭제되었습니다.`,
@@ -2405,7 +2235,7 @@ export function setupAdminRoutes(app: Express) {
   app.get("/api/admin/user-files", requireMasterAdmin, async (req, res) => {
     try {
       const userFiles = await storage.getUserFiles();
-      
+
       // Sort by upload date, newest first
       const sortedFiles = userFiles.sort((a, b) => 
         new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
@@ -2433,7 +2263,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const fileId = req.params.id;
       await storage.deleteUserFile(fileId);
-      
+
       res.json({
         success: true,
         message: "파일이 성공적으로 삭제되었습니다."
@@ -2448,7 +2278,7 @@ export function setupAdminRoutes(app: Express) {
   app.delete("/api/admin/organizations/robo-university", requireMasterAdmin, async (req, res) => {
     try {
       const result = await storage.deleteRoboUniversityOrganizations();
-      
+
       res.json({
         success: true,
         message: `로보대학교 관련 조직 카테고리 ${result.deletedCount}개가 성공적으로 삭제되었습니다.`,
@@ -2464,7 +2294,7 @@ export function setupAdminRoutes(app: Express) {
   app.post("/api/admin/users/create", requireMasterAdmin, async (req, res) => {
     try {
       const userData = req.body;
-      
+
       // Validate required fields
       if (!userData.name || !userData.email || !userData.userId) {
         return res.status(400).json({ 
@@ -2518,7 +2348,7 @@ export function setupAdminRoutes(app: Express) {
   app.post('/api/admin/agents/replace-all', requireMasterAdmin, async (req, res) => {
     try {
       const { agents } = req.body;
-      
+
       if (!Array.isArray(agents)) {
         return res.status(400).json({ message: "유효하지 않은 에이전트 데이터입니다." });
       }

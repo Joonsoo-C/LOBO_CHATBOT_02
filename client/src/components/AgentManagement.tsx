@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -7,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, AgentStats } from "@/types/agent";
+import AgentFileUploadModal from "./AgentFileUploadModal";
 
 interface ManagedAgent extends Agent {
   stats?: AgentStats;
@@ -30,6 +32,7 @@ export default function AgentManagement() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
@@ -53,8 +56,19 @@ export default function AgentManagement() {
   return (
     <div className="px-4 py-6">
       <div className="text-center mb-6">
-        <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
-        <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
+            <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
+          </div>
+          <Button
+            onClick={() => setIsUploadModalOpen(true)}
+            className="bg-green-600 hover:bg-green-700 text-white korean-text"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            파일 업로드
+          </Button>
+        </div>
       </div>
 
       {managedAgents.length === 0 ? (
@@ -166,6 +180,11 @@ export default function AgentManagement() {
           ))}
         </div>
       )}
+      
+      <AgentFileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
     </div>
   );
 }
