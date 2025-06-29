@@ -326,15 +326,16 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       const conversations = queryClient.getQueryData(["/api/conversations"]) as any[];
       const currentConv = conversations?.find((conv: any) => conv.id === conversation.id);
       
-      // Only mark as read if there are unread messages
-      if (currentConv && currentConv.unreadCount > 0) {
+      // Only mark as read if there are unread messages and not already marked for this conversation
+      if (currentConv && currentConv.unreadCount > 0 && !hasMarkedAsRead) {
+        setHasMarkedAsRead(true);
         markAsReadMutation.mutate(conversation.id);
       }
       
       // Scroll to bottom when new messages arrive
       setTimeout(() => scrollToBottom(), 100);
     }
-  }, [messages?.length, conversation?.id, queryClient, markAsReadMutation]);
+  }, [messages?.length, conversation?.id, queryClient, markAsReadMutation, hasMarkedAsRead]);
 
   // Send message mutation
   const sendMessageMutation = useMutation({

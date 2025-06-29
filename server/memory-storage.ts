@@ -779,11 +779,19 @@ export class MemoryStorage implements IStorage {
   async markConversationAsRead(conversationId: number): Promise<void> {
     const conversation = this.conversations.get(conversationId);
     if (conversation) {
-      this.conversations.set(conversationId, {
+      const updatedConversation = {
         ...conversation,
         unreadCount: 0,
         lastReadAt: new Date()
-      });
+      };
+      this.conversations.set(conversationId, updatedConversation);
+      
+      // Clear cache and save to persistent storage
+      cache.delete(`user_conversations_${conversation.userId}`);
+      cache.delete(`conversation_${conversationId}`);
+      this.savePersistedConversations();
+      
+      console.log(`Marked conversation ${conversationId} as read and persisted`);
     }
   }
 
