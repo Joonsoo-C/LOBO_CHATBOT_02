@@ -670,6 +670,14 @@ Changelog:
   * Added "파일 업로드" button (green) with descriptive text connecting to AgentFileUploadModal for bulk uploads
   * Moved "에이전트 검색 및 관리" to subsection below action buttons for better visual hierarchy
   * Enhanced UI layout matching user's design requirements with card-based button styling
+- June 29, 2025. Implemented enhanced Q&A logs filtering system with hierarchical organization categories:
+  * Added comprehensive hierarchical filtering with 상위/하위/세부 조직 카테고리 dropdown menus
+  * Implemented dynamic dropdown activation based on selection hierarchy (상위 → 하위 → 세부)
+  * Added agent category filter that activates when upper organization category is selected
+  * Enhanced keyword search to include both question content and agent names
+  * Created helper functions for organization category filtering using university data
+  * Fixed TypeScript compatibility issues with Set iteration for robust category processing
+  * Integrated filtering system with existing organization data from Excel uploads
 ```
 
 ## User Preferences
