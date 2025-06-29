@@ -170,6 +170,10 @@ const newUserSchema = z.object({
   lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
   position: z.string().optional(),
+  role: z.enum([
+    "user", "master_admin", "operation_admin", "category_admin", 
+    "agent_admin", "qa_admin", "doc_admin", "external"
+  ]).optional(),
   status: z.string().min(1, "상태를 선택해주세요"),
 });
 
@@ -1022,6 +1026,7 @@ function MasterAdmin() {
       lowerCategory: "",
       detailCategory: "",
       position: "",
+      role: "user",
       status: "active",
     },
   });
@@ -1121,7 +1126,7 @@ function MasterAdmin() {
         name: data.name,
         email: data.email,
         userType: data.userType,
-        role: "user", // 기본값으로 설정
+        role: data.role || "user",
         status: data.status,
         upperCategory: newUserAffiliations[0]?.upperCategory || null,
         lowerCategory: newUserAffiliations[0]?.lowerCategory || null,
@@ -8316,19 +8321,74 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   
-                  <FormField
-                    control={userEditForm.control}
-                    name="position"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">직책/역할</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="학생, 교수, 직원 등" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">직책/역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">시스템 역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="전체" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">전체</SelectItem>
+                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* 계정 상태 */}
@@ -8650,19 +8710,74 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   
-                  <FormField
-                    control={newUserForm.control}
-                    name="position"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">직책/역할</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="학생, 교수, 직원 등" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">직책/역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">시스템 역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="전체" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">전체</SelectItem>
+                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* 계정 설정 */}
