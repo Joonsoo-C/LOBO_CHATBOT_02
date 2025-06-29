@@ -81,7 +81,7 @@ body {
   position: relative;
   height: 100%;
   contain: layout style paint;
-  padding-top: 150px;
+  padding-top: 60px;
 }
 
 /* Desktop adjustments */
