@@ -121,7 +121,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto !z-[9999]">
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="text-xl font-bold korean-text">
             계정 정보
