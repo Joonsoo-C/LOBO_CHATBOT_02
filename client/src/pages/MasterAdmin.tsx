@@ -22,6 +22,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
 import { PaginationComponent } from "@/components/PaginationComponent";
 import { usePagination } from "@/hooks/usePagination";
+import AgentFileUploadModal from "@/components/AgentFileUploadModal";
 
 import { 
   Users, 
@@ -296,6 +297,9 @@ function MasterAdmin() {
   const [sendWelcome, setSendWelcome] = useState(false);
   const [validateOnly, setValidateOnly] = useState(false);
   const userFileInputRef = useRef<HTMLInputElement>(null);
+  
+  // 에이전트 파일 업로드 관련 상태
+  const [isAgentFileUploadModalOpen, setIsAgentFileUploadModalOpen] = useState(false);
 
   // Organization category upload states
   const [isOrgCategoryUploadDialogOpen, setIsOrgCategoryUploadDialogOpen] = useState(false);
@@ -4310,8 +4314,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 에이전트 검색 섹션 */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>에이전트 검색 및 관리</CardTitle>
+                <Button
+                  onClick={() => setIsAgentFileUploadModalOpen(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  에이전트 추가
+                </Button>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 필터 행 */}
