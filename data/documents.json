@@ -109,11 +109,269 @@
       "uploadedBy": "master_admin",
       "id": 109,
       "createdAt": "2025-06-26T16:59:27.822Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "9c9ea62aa50313505c16104b34574a35",
+      "originalName": "세계관.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 39320,
+      "content": "워드 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 110,
+      "createdAt": "2025-06-29T16:19:42.059Z"
     }
   ],
   "organizationCategories": [
     {
       "id": 1,
+      "name": "총장비서실",
+      "upperCategory": "대학본부",
+      "lowerCategory": "총장실",
+      "detailCategory": "총장비서실",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.566Z",
+      "updatedAt": "2025-06-29T10:11:14.566Z"
+    },
+    {
+      "id": 2,
+      "name": "대외협력팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "총장실",
+      "detailCategory": "대외협력팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 3,
+      "name": "홍보팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "총장실",
+      "detailCategory": "홍보팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 4,
+      "name": "기획예산팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "기획처",
+      "detailCategory": "기획예산팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 5,
+      "name": "평가관리팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "기획처",
+      "detailCategory": "평가관리팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 6,
+      "name": "IR팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "기획처",
+      "detailCategory": "IR팀",
+      "description": "세부 조직 (등록 승인 대기중)",
+      "isActive": false,
+      "status": "등록 승인 대기중",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 7,
+      "name": "교무팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "교무처",
+      "detailCategory": "교무팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 8,
+      "name": "학사관리팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "교무처",
+      "detailCategory": "학사관리팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 9,
+      "name": "수업관리팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "교무처",
+      "detailCategory": "수업관리팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 10,
+      "name": "학생지원팀",
+      "upperCategory": "대학본부",
+      "lowerCategory": "학생처",
+      "detailCategory": "학생지원팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 11,
+      "name": "입학사정팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "입학처",
+      "detailCategory": "입학사정팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 12,
+      "name": "입학전형팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "입학처",
+      "detailCategory": "입학전형팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 13,
+      "name": "입학홍보팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "입학처",
+      "detailCategory": "입학홍보팀",
+      "description": "세부 조직 (비활성)",
+      "isActive": false,
+      "status": "비활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 14,
+      "name": "교수학습지원센터",
+      "upperCategory": "학사부서",
+      "lowerCategory": "교육혁신원",
+      "detailCategory": "교수학습지원센터",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 15,
+      "name": "교육과정혁신팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "교육혁신원",
+      "detailCategory": "교육과정혁신팀",
+      "description": "세부 조직 (등록 승인 대기중)",
+      "isActive": false,
+      "status": "등록 승인 대기중",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 16,
+      "name": "이러닝지원센터",
+      "upperCategory": "학사부서",
+      "lowerCategory": "교육혁신원",
+      "detailCategory": "이러닝지원센터",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 17,
+      "name": "국제협력팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "국제교류원",
+      "detailCategory": "국제협력팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 18,
+      "name": "외국인학생지원팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "국제교류원",
+      "detailCategory": "외국인학생지원팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 19,
+      "name": "교환학생팀",
+      "upperCategory": "학사부서",
+      "lowerCategory": "국제교류원",
+      "detailCategory": "교환학생팀",
+      "description": "세부 조직 (활성)",
+      "isActive": true,
+      "status": "활성",
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
+    },
+    {
+      "id": 20,
       "name": "취업지원팀",
       "upperCategory": "학사부서",
       "lowerCategory": "취업진로센터",
@@ -121,12 +379,12 @@
       "description": "세부 조직 (활성)",
       "isActive": true,
       "status": "활성",
-      "manager": "ACA003",
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T03:37:50.996Z"
+      "manager": null,
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 2,
+      "id": 21,
       "name": "현대문학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "국어국문학과",
@@ -135,11 +393,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 3,
+      "id": 22,
       "name": "고전문학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "국어국문학과",
@@ -148,11 +406,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 4,
+      "id": 23,
       "name": "국어학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "국어국문학과",
@@ -161,11 +419,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 5,
+      "id": 24,
       "name": "영문학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "영어영문학과",
@@ -174,11 +432,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T03:27:50.244Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 6,
+      "id": 25,
       "name": "영어학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "영어영문학과",
@@ -187,11 +445,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 7,
+      "id": 26,
       "name": "영어교육전공",
       "upperCategory": "인문대학",
       "lowerCategory": "영어영문학과",
@@ -200,11 +458,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 8,
+      "id": 27,
       "name": "한국사전공",
       "upperCategory": "인문대학",
       "lowerCategory": "사학과",
@@ -213,11 +471,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 9,
+      "id": 28,
       "name": "동양사전공",
       "upperCategory": "인문대학",
       "lowerCategory": "사학과",
@@ -226,11 +484,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 10,
+      "id": 29,
       "name": "서양사전공",
       "upperCategory": "인문대학",
       "lowerCategory": "사학과",
@@ -239,11 +497,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 11,
+      "id": 30,
       "name": "동양철학전공",
       "upperCategory": "인문대학",
       "lowerCategory": "철학과",
@@ -252,11 +510,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 12,
+      "id": 31,
       "name": "정치학전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "정치외교학과",
@@ -265,11 +523,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.761Z",
-      "updatedAt": "2025-06-26T01:09:30.761Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 13,
+      "id": 32,
       "name": "외교학전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "정치외교학과",
@@ -278,11 +536,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 14,
+      "id": 33,
       "name": "국제관계전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "정치외교학과",
@@ -291,11 +549,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 15,
+      "id": 34,
       "name": "일반행정전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "행정학과",
@@ -304,11 +562,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 16,
+      "id": 35,
       "name": "지방행정전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "행정학과",
@@ -317,11 +575,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 17,
+      "id": 36,
       "name": "정책학전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "행정학과",
@@ -330,11 +588,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 18,
+      "id": 37,
       "name": "일반사회학전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "사회학과",
@@ -343,11 +601,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.567Z",
+      "updatedAt": "2025-06-29T10:11:14.567Z"
     },
     {
-      "id": 19,
+      "id": 38,
       "name": "응용사회학전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "사회학과",
@@ -356,11 +614,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 20,
+      "id": 39,
       "name": "임상심리전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "심리학과",
@@ -369,11 +627,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 21,
+      "id": 40,
       "name": "인지심리전공",
       "upperCategory": "사회과학대학",
       "lowerCategory": "심리학과",
@@ -382,11 +640,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 22,
+      "id": 41,
       "name": "순수수학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "수학과",
@@ -395,11 +653,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 23,
+      "id": 42,
       "name": "응용수학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "수학과",
@@ -408,11 +666,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 24,
+      "id": 43,
       "name": "통계학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "수학과",
@@ -421,11 +679,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 25,
+      "id": 44,
       "name": "이론물리전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "물리학과",
@@ -434,11 +692,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 26,
+      "id": 45,
       "name": "실험물리전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "물리학과",
@@ -447,11 +705,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 27,
+      "id": 46,
       "name": "응용물리전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "물리학과",
@@ -460,11 +718,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 28,
+      "id": 47,
       "name": "유기화학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "화학과",
@@ -473,11 +731,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 29,
+      "id": 48,
       "name": "무기화학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "화학과",
@@ -486,11 +744,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 30,
+      "id": 49,
       "name": "물리화학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "화학과",
@@ -499,11 +757,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 31,
+      "id": 50,
       "name": "분자생물학전공",
       "upperCategory": "자연과학대학",
       "lowerCategory": "생명과학과",
@@ -512,11 +770,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 32,
+      "id": 51,
       "name": "소프트웨어공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "컴퓨터공학과",
@@ -525,11 +783,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 33,
+      "id": 52,
       "name": "인공지능전공",
       "upperCategory": "공과대학",
       "lowerCategory": "컴퓨터공학과",
@@ -538,11 +796,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 34,
+      "id": 53,
       "name": "데이터사이언스전공",
       "upperCategory": "공과대학",
       "lowerCategory": "컴퓨터공학과",
@@ -551,11 +809,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 35,
+      "id": 54,
       "name": "반도체공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "전자공학과",
@@ -564,11 +822,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 36,
+      "id": 55,
       "name": "통신공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "전자공학과",
@@ -577,11 +835,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 37,
+      "id": 56,
       "name": "제어공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "전자공학과",
@@ -590,11 +848,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 38,
+      "id": 57,
       "name": "설계공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "기계공학과",
@@ -603,11 +861,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 39,
+      "id": 58,
       "name": "열유체공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "기계공학과",
@@ -616,11 +874,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 40,
+      "id": 59,
       "name": "재료공학전공",
       "upperCategory": "공과대학",
       "lowerCategory": "기계공학과",
@@ -629,11 +887,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 41,
+      "id": 60,
       "name": "건축설계전공",
       "upperCategory": "공과대학",
       "lowerCategory": "건축학과",
@@ -642,11 +900,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 42,
+      "id": 61,
       "name": "경영전략전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경영학과",
@@ -655,11 +913,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 43,
+      "id": 62,
       "name": "마케팅전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경영학과",
@@ -668,11 +926,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 44,
+      "id": 63,
       "name": "재무관리전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경영학과",
@@ -681,11 +939,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 45,
+      "id": 64,
       "name": "인사조직전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경영학과",
@@ -694,11 +952,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 46,
+      "id": 65,
       "name": "재무회계전공",
       "upperCategory": "경영대학",
       "lowerCategory": "회계학과",
@@ -707,11 +965,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 47,
+      "id": 66,
       "name": "관리회계전공",
       "upperCategory": "경영대학",
       "lowerCategory": "회계학과",
@@ -720,11 +978,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 48,
+      "id": 67,
       "name": "세무회계전공",
       "upperCategory": "경영대학",
       "lowerCategory": "회계학과",
@@ -733,11 +991,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.762Z",
-      "updatedAt": "2025-06-26T01:09:30.762Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 49,
+      "id": 68,
       "name": "미시경제전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경제학과",
@@ -746,11 +1004,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 50,
+      "id": 69,
       "name": "거시경제전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경제학과",
@@ -759,11 +1017,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 51,
+      "id": 70,
       "name": "계량경제전공",
       "upperCategory": "경영대학",
       "lowerCategory": "경제학과",
@@ -772,11 +1030,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 52,
+      "id": 71,
       "name": "내과학전공",
       "upperCategory": "의과대학",
       "lowerCategory": "의학과",
@@ -785,11 +1043,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 53,
+      "id": 72,
       "name": "외과학전공",
       "upperCategory": "의과대학",
       "lowerCategory": "의학과",
@@ -798,11 +1056,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 54,
+      "id": 73,
       "name": "소아과학전공",
       "upperCategory": "의과대학",
       "lowerCategory": "의학과",
@@ -811,11 +1069,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.568Z",
+      "updatedAt": "2025-06-29T10:11:14.568Z"
     },
     {
-      "id": 55,
+      "id": 74,
       "name": "성인간호전공",
       "upperCategory": "의과대학",
       "lowerCategory": "간호학과",
@@ -824,11 +1082,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 56,
+      "id": 75,
       "name": "아동간호전공",
       "upperCategory": "의과대학",
       "lowerCategory": "간호학과",
@@ -837,11 +1095,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 57,
+      "id": 76,
       "name": "지역간호전공",
       "upperCategory": "의과대학",
       "lowerCategory": "간호학과",
@@ -850,11 +1108,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 58,
+      "id": 77,
       "name": "임상약학전공",
       "upperCategory": "의과대학",
       "lowerCategory": "약학과",
@@ -863,11 +1121,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 59,
+      "id": 78,
       "name": "제약학전공",
       "upperCategory": "의과대학",
       "lowerCategory": "약학과",
@@ -876,11 +1134,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 60,
+      "id": 79,
       "name": "구강내과전공",
       "upperCategory": "의과대학",
       "lowerCategory": "치의학과",
@@ -889,11 +1147,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 61,
+      "id": 80,
       "name": "구강외과전공",
       "upperCategory": "의과대학",
       "lowerCategory": "치의학과",
@@ -902,11 +1160,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:09:30.763Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 62,
+      "id": 81,
       "name": "시각디자인전공",
       "upperCategory": "예술대학",
       "lowerCategory": "시각디자인학과",
@@ -915,11 +1173,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 63,
+      "id": 82,
       "name": "UX디자인전공",
       "upperCategory": "예술대학",
       "lowerCategory": "시각디자인학과",
@@ -928,11 +1186,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 64,
+      "id": 83,
       "name": "일러스트레이션전공",
       "upperCategory": "예술대학",
       "lowerCategory": "시각디자인학과",
@@ -941,11 +1199,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 65,
+      "id": 84,
       "name": "현대무용전공",
       "upperCategory": "예술대학",
       "lowerCategory": "무용학과",
@@ -954,11 +1212,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 66,
+      "id": 85,
       "name": "한국무용전공",
       "upperCategory": "예술대학",
       "lowerCategory": "무용학과",
@@ -967,11 +1225,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 67,
+      "id": 86,
       "name": "발레전공",
       "upperCategory": "예술대학",
       "lowerCategory": "무용학과",
@@ -980,11 +1238,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 68,
+      "id": 87,
       "name": "성악전공",
       "upperCategory": "예술대학",
       "lowerCategory": "음악학과",
@@ -993,11 +1251,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 69,
+      "id": 88,
       "name": "피아노전공",
       "upperCategory": "예술대학",
       "lowerCategory": "음악학과",
@@ -1006,11 +1264,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 70,
+      "id": 89,
       "name": "작곡전공",
       "upperCategory": "예술대학",
       "lowerCategory": "음악학과",
@@ -1019,11 +1277,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 71,
+      "id": 90,
       "name": "스포츠과학전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "체육학과",
@@ -1032,11 +1290,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 72,
+      "id": 91,
       "name": "건강운동관리전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "체육학과",
@@ -1045,11 +1303,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 73,
+      "id": 92,
       "name": "생활체육전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "체육학과",
@@ -1058,11 +1316,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 74,
+      "id": 93,
       "name": "연극전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "연극영화학과",
@@ -1071,11 +1329,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 75,
+      "id": 94,
       "name": "영화전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "연극영화학과",
@@ -1084,11 +1342,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 76,
+      "id": 95,
       "name": "연기전공",
       "upperCategory": "예체능대학",
       "lowerCategory": "연극영화학과",
@@ -1097,11 +1355,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 77,
+      "id": 96,
       "name": "학생회운영팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "총학생회",
@@ -1110,11 +1368,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.055Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 78,
+      "id": 97,
       "name": "행사기획팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "총학생회",
@@ -1123,11 +1381,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 79,
+      "id": 98,
       "name": "복지증진팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "총학생회",
@@ -1136,11 +1394,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 80,
+      "id": 99,
       "name": "문화동아리지원팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "동아리연합회",
@@ -1149,11 +1407,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 81,
+      "id": 100,
       "name": "체육동아리관리팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "동아리연합회",
@@ -1162,11 +1420,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 82,
+      "id": 101,
       "name": "봉사동아리연계팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "동아리연합회",
@@ -1175,11 +1433,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 83,
+      "id": 102,
       "name": "대학원생복지팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "대학원학생회",
@@ -1188,11 +1446,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 84,
+      "id": 103,
       "name": "연구활동지원팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "대학원학생회",
@@ -1201,11 +1459,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.763Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 85,
+      "id": 104,
       "name": "정책건의팀",
       "upperCategory": "학생자치기구",
       "lowerCategory": "대학원학생회",
@@ -1214,11 +1472,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:27:09.056Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 86,
+      "id": 105,
       "name": "박사과정",
       "upperCategory": "대학원",
       "lowerCategory": "일반대학원",
@@ -1227,11 +1485,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 87,
+      "id": 106,
       "name": "석사과정",
       "upperCategory": "대학원",
       "lowerCategory": "일반대학원",
@@ -1240,11 +1498,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 88,
+      "id": 107,
       "name": "석박통합과정",
       "upperCategory": "대학원",
       "lowerCategory": "일반대학원",
@@ -1253,11 +1511,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 89,
+      "id": 108,
       "name": "경영대학원",
       "upperCategory": "대학원",
       "lowerCategory": "특수대학원",
@@ -1266,11 +1524,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 90,
+      "id": 109,
       "name": "교육대학원",
       "upperCategory": "대학원",
       "lowerCategory": "특수대학원",
@@ -1279,11 +1537,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.569Z",
+      "updatedAt": "2025-06-29T10:11:14.569Z"
     },
     {
-      "id": 91,
+      "id": 110,
       "name": "행정대학원",
       "upperCategory": "대학원",
       "lowerCategory": "특수대학원",
@@ -1292,11 +1550,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 92,
+      "id": 111,
       "name": "의학전문대학원",
       "upperCategory": "대학원",
       "lowerCategory": "전문대학원",
@@ -1305,11 +1563,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 93,
+      "id": 112,
       "name": "법학전문대학원",
       "upperCategory": "대학원",
       "lowerCategory": "전문대학원",
@@ -1318,11 +1576,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 94,
+      "id": 113,
       "name": "경영전문대학원",
       "upperCategory": "대학원",
       "lowerCategory": "전문대학원",
@@ -1331,11 +1589,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 95,
+      "id": 114,
       "name": "국제관계전공",
       "upperCategory": "대학원",
       "lowerCategory": "국제대학원",
@@ -1344,11 +1602,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 96,
+      "id": 115,
       "name": "기초과학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "중앙연구소",
@@ -1357,11 +1615,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 97,
+      "id": 116,
       "name": "응용과학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "중앙연구소",
@@ -1370,11 +1628,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 98,
+      "id": 117,
       "name": "산업기술연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "중앙연구소",
@@ -1383,11 +1641,11 @@
       "isActive": false,
       "status": "등록 승인 대기중",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 99,
+      "id": 118,
       "name": "인문학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "인문사회연구소",
@@ -1396,11 +1654,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 100,
+      "id": 119,
       "name": "사회과학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "인문사회연구소",
@@ -1409,11 +1667,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 101,
+      "id": 120,
       "name": "교육연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "인문사회연구소",
@@ -1422,11 +1680,11 @@
       "isActive": false,
       "status": "비활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 102,
+      "id": 121,
       "name": "임상의학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "의학연구소",
@@ -1435,11 +1693,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 103,
+      "id": 122,
       "name": "기초의학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "의학연구소",
@@ -1448,11 +1706,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 104,
+      "id": 123,
       "name": "신소재연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "공학연구소",
@@ -1461,11 +1719,11 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     },
     {
-      "id": 105,
+      "id": 124,
       "name": "환경공학연구소",
       "upperCategory": "연구기관",
       "lowerCategory": "공학연구소",
@@ -1474,10 +1732,10 @@
       "isActive": true,
       "status": "활성",
       "manager": null,
-      "createdAt": "2025-06-26T01:09:30.764Z",
-      "updatedAt": "2025-06-26T01:09:30.764Z"
+      "createdAt": "2025-06-29T10:11:14.570Z",
+      "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 110,
-  "nextOrganizationId": 106
+  "nextId": 111,
+  "nextOrganizationId": 125
 }
