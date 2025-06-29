@@ -741,15 +741,12 @@ export class MemoryStorage implements IStorage {
 
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
-    const cacheKey = `conversation_messages_${conversationId}`;
-    const cached = cache.get(cacheKey);
-    if (cached) return cached;
-
+    // Always fetch fresh data for management conversations to ensure persistence
     const messages = Array.from(this.messages.values())
       .filter(msg => msg.conversationId === conversationId)
       .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
 
-    cache.set(cacheKey, messages, 3 * 60 * 1000); // Cache for 3 minutes
+    console.log(`Loading messages for conversation ${conversationId}: found ${messages.length} messages`);
     return messages;
   }
 
