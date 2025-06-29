@@ -2,7 +2,7 @@
   {
     "id": "master_admin",
     "username": "master_admin",
-    "password": "MasterAdmin2024!",
+    "password": "$2b$10$u/6Ei6oCPck7/IDAn.x7le40e8QM4zVWt7EVZPaepqfST98kTi8nO",
     "role": "마스터 관리자",
     "firstName": "Master",
     "lastName": "Admin",
@@ -24,7 +24,7 @@
   {
     "id": "user1081",
     "username": "user1081",
-    "password": "faculty123",
+    "password": "$2b$10$XvLFWXCS3snblsiYBRhRweQ5hrcOoErUmCiW9FjIQIj1GqHjgSavO",
     "role": "에이전트 관리자",
     "firstName": "정",
     "lastName": "수빈",
@@ -46,7 +46,7 @@
   {
     "id": "user1082",
     "username": "user1082",
-    "password": "student123",
+    "password": "$2b$10$aXsDNokW66v1jl0NGmhsE.W9UA/zD6nmvoQ0ffntsA0eM4MPpEGuq",
     "role": "일반 사용자",
     "firstName": "장",
     "lastName": "지훈",
@@ -68,6 +68,7 @@
   {
     "id": "agent_admin_001",
     "username": "agent_admin_001",
+    "password": "$2b$10$u2eZhRcYMyJloLhnMo/cxu4aL9jwDbxQJTSFzIiZwNsQbECufrqky",
     "role": "agent_admin",
     "firstName": "에이전트",
     "lastName": "관리자",
