@@ -302,6 +302,35 @@ function MasterAdmin() {
   // 관리자 탭 상태 추적
   const [currentManagerTab, setCurrentManagerTab] = useState<'agent' | 'document' | 'qa'>('agent');
   
+  // 새 사용자 생성 폼의 동적 소속 정보 상태
+  const [newUserAffiliations, setNewUserAffiliations] = useState([
+    { upperCategory: '', lowerCategory: '', detailCategory: '', position: '' }
+  ]);
+
+  // 소속 정보 추가 함수 (최대 3개)
+  const addNewUserAffiliation = () => {
+    if (newUserAffiliations.length < 3) {
+      setNewUserAffiliations(prev => [
+        ...prev,
+        { upperCategory: '', lowerCategory: '', detailCategory: '', position: '' }
+      ]);
+    }
+  };
+
+  // 소속 정보 삭제 함수
+  const removeNewUserAffiliation = (index: number) => {
+    if (newUserAffiliations.length > 1) {
+      setNewUserAffiliations(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  // 소속 정보 업데이트 함수
+  const updateNewUserAffiliation = (index: number, field: string, value: string) => {
+    setNewUserAffiliations(prev => prev.map((affiliation, i) => 
+      i === index ? { ...affiliation, [field]: value } : affiliation
+    ));
+  };
+  
   // 관리자 검색 상태
   const [managerSearchQuery, setManagerSearchQuery] = useState('');
   const [managerFilterUpperCategory, setManagerFilterUpperCategory] = useState('all');
@@ -1094,10 +1123,10 @@ function MasterAdmin() {
         userType: data.userType,
         role: "user", // 기본값으로 설정
         status: data.status,
-        upperCategory: data.upperCategory || null,
-        lowerCategory: data.lowerCategory || null,
-        detailCategory: data.detailCategory || null,
-        position: data.position || null,
+        upperCategory: newUserAffiliations[0]?.upperCategory || null,
+        lowerCategory: newUserAffiliations[0]?.lowerCategory || null,
+        detailCategory: newUserAffiliations[0]?.detailCategory || null,
+        position: newUserAffiliations[0]?.position || null,
         password: "defaultPassword123!", // 기본 비밀번호
       };
       const response = await apiRequest("POST", "/api/admin/users", payload);
