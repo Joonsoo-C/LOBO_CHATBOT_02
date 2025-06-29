@@ -8777,6 +8777,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       )}
                     />
                   </div>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <FormLabel className="text-sm">에이전트 관리자</FormLabel>
+                      <Select 
+                        onValueChange={(value) => {
+                          // Store the selected manager in form state or separate state
+                          console.log('Selected agent manager:', value);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="에이전트 관리자 선택 (선택사항)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">없음</SelectItem>
+                          {managers.map((manager) => (
+                            <SelectItem key={manager.id} value={manager.id}>
+                              {(manager as any).name || manager.id} ({manager.id})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 계정 설정 */}
