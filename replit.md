@@ -656,6 +656,14 @@ Changelog:
     - 마스터계정: Master Admin (master_admin) - LoBo AI 챗봇 통합 관리자 센터 접근
   * Fixed authentication system by implementing proper bcrypt password hashing for all demo accounts
   * Demo account login functionality now working correctly with account settings access
+- June 29, 2025. Implemented account settings modal and enhanced chat interface:
+  * Created AccountSettingsModal component with comprehensive user information display
+  * Added modal trigger to settings dropdown with "계정 설정" option that opens popup instead of dropdown menu
+  * Modal displays username, name, email, user type, account status, and system role with Korean localization
+  * Replaced large centered welcome UI in chat rooms with natural agent greeting message bubble
+  * Agent now greets users with: "안녕하세요! 저는 [agent name]입니다. 궁금한 것이 있으면 언제든지 물어보세요."
+  * Fixed message flickering issue by improving optimistic message handling and cache management
+  * Enhanced message state transitions to prevent visual gaps when AI responses load
 ```
 
 ## User Preferences

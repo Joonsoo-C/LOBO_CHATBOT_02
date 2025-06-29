@@ -371,10 +371,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       setMessage(""); // Clear input immediately
     },
     onSuccess: (data: ChatResponse) => {
-      // Clear optimistic messages and typing indicator
-      setOptimisticMessages([]);
-      setIsTyping(false);
-      
       // Handle trigger actions from AI response
       if ((data as any).aiMessage?.triggerAction) {
         setTimeout(() => {
@@ -395,10 +391,24 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         }, 500);
       }
       
-      // Invalidate messages to refresh with real data
-      queryClient.invalidateQueries({
-        queryKey: [`/api/conversations/${conversation?.id}/messages`]
+      // Update the messages cache directly with the new messages to prevent flickering
+      queryClient.setQueryData([`/api/conversations/${conversation?.id}/messages`], (oldMessages: Message[] = []) => {
+        // Find if user message already exists in the cache
+        const userMessageExists = oldMessages.some(msg => 
+          msg.isFromUser && msg.content === data.userMessage.content && 
+          Math.abs(new Date(msg.createdAt).getTime() - new Date(data.userMessage.createdAt).getTime()) < 5000
+        );
+        
+        // Add user message if it doesn't exist
+        const updatedMessages = userMessageExists ? oldMessages : [...oldMessages, data.userMessage];
+        
+        // Add AI message
+        return [...updatedMessages, data.aiMessage];
       });
+      
+      // Clear optimistic messages and typing indicator after updating cache
+      setOptimisticMessages([]);
+      setIsTyping(false);
       
       // Update conversation list cache with new message data
       queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
