@@ -22,7 +22,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Laugh,
-  Angry
+  Angry,
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1348,7 +1349,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             }}
                             title="문서 삭제"
                           >
-                            <X className="w-4 h-4 text-red-600 dark:text-red-400" />
+                            <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                           </Button>
                         )}
                       </div>
