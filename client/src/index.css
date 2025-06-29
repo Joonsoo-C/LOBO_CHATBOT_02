@@ -81,7 +81,7 @@ body {
   position: relative;
   height: 100%;
   contain: layout style paint;
-  padding-top: 60px;
+  padding-top: 10px;
 }
 
 /* Desktop adjustments */
@@ -100,9 +100,28 @@ body {
 }
 
 /* Force dropdown to use portal positioning */
-.settings-dropdown-content {
+.fixed-dropdown-position {
   position: fixed !important;
+  top: auto !important;
+  right: 16px !important;
+  left: auto !important;
   transform: none !important;
+  will-change: auto !important;
+}
+
+/* Prevent any layout shifts during dropdown operations */
+.fixed-dropdown-position[data-state="open"] {
+  animation: none !important;
+}
+
+/* Ensure dropdowns don't affect document flow */
+[data-radix-popper-content-wrapper] {
+  position: fixed !important;
+  pointer-events: none;
+}
+
+[data-radix-popper-content-wrapper] > * {
+  pointer-events: auto;
 }
 
 /* Basic mobile adjustments */

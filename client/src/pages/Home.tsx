@@ -181,8 +181,11 @@ function Home() {
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
-                className="w-48 z-[99999]" 
+                className="w-48 z-[99999] fixed-dropdown-position" 
                 sideOffset={5}
+                avoidCollisions={false}
+                side="bottom"
+                alignOffset={-10}
               >
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
