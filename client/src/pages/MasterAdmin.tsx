@@ -170,8 +170,7 @@ const newUserSchema = z.object({
   lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
   position: z.string().optional(),
-  role: z.enum(["user", "faculty", "admin"], { required_error: "역할을 선택해주세요" }),
-  status: z.enum(["active", "inactive", "pending"], { required_error: "상태를 선택해주세요" }),
+  status: z.string().min(1, "상태를 선택해주세요"),
 });
 
 type NewUserFormData = z.infer<typeof newUserSchema>;
@@ -994,7 +993,6 @@ function MasterAdmin() {
       lowerCategory: "",
       detailCategory: "",
       position: "",
-      role: "user",
       status: "active",
     },
   });
@@ -1094,7 +1092,7 @@ function MasterAdmin() {
         name: data.name,
         email: data.email,
         userType: data.userType,
-        role: data.role,
+        role: "user", // 기본값으로 설정
         status: data.status,
         upperCategory: data.upperCategory || null,
         lowerCategory: data.lowerCategory || null,
@@ -8524,28 +8522,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       )}
                     />
                     
-                    <FormField
-                      control={newUserForm.control}
-                      name="role"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm">시스템 역할 *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="역할 선택" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="user">일반 사용자</SelectItem>
-                              <SelectItem value="faculty">교직원</SelectItem>
-                              <SelectItem value="admin">관리자</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                   </div>
                 </div>
 
