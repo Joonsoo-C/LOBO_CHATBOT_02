@@ -34,6 +34,7 @@ function Home() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [showAccountModal, setShowAccountModal] = useState(false);
+  const [settingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
   const { t } = useLanguage();
 
   const { data: user } = useQuery<User>({
@@ -168,7 +169,7 @@ function Home() {
             </DropdownMenu>
             
             {/* Settings Dropdown */}
-            <DropdownMenu>
+            <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
@@ -183,6 +184,7 @@ function Home() {
                   className="korean-text cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
+                    setSettingsDropdownOpen(false); // Close dropdown
                     setShowAccountModal(true);
                   }}
                 >
