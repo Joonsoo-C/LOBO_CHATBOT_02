@@ -194,7 +194,47 @@ type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
 function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
+  // API 쿼리들을 먼저 선언
+  // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
+  const { data: allManagers } = useQuery<User[]>({
+    queryKey: ['/api/admin/managers'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/managers');
+      if (!response.ok) throw new Error('Failed to fetch managers');
+      return response.json();
+    }
+  });
 
+  // 에이전트 목록 조회
+  const { data: agents } = useQuery<Agent[]>({
+    queryKey: ['/api/admin/agents'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/agents');
+      if (!response.ok) throw new Error('Failed to fetch agents');
+      return response.json();
+    }
+  });
+
+  // 조직 목록 조회
+  const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
+    queryKey: ['/api/admin/organizations'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organizations');
+      if (!response.ok) throw new Error('Failed to fetch organizations');
+      return response.json();
+    },
+
+  });
+
+  // 사용자 목록 조회
+  const { data: users } = useQuery<User[]>({
+    queryKey: ['/api/admin/users'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+      return response.json();
+    }
+  });
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
@@ -532,16 +572,6 @@ function MasterAdmin() {
     }
   });
 
-  // 사용자 목록 조회
-  const { data: users } = useQuery<User[]>({
-    queryKey: ['/api/admin/users'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) throw new Error('Failed to fetch users');
-      return response.json();
-    }
-  });
-
   // 사용자 상태 목록 조회
   const { data: userStatuses = [] } = useQuery<string[]>({
     queryKey: ['/api/admin/user-statuses'],
@@ -758,26 +788,6 @@ function MasterAdmin() {
     Heart
   };
 
-  // 에이전트 목록 조회
-  const { data: agents } = useQuery<Agent[]>({
-    queryKey: ['/api/admin/agents'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/agents');
-      if (!response.ok) throw new Error('Failed to fetch agents');
-      return response.json();
-    }
-  });
-
-  // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
-  const { data: allManagers } = useQuery<User[]>({
-    queryKey: ['/api/admin/managers'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/managers');
-      if (!response.ok) throw new Error('Failed to fetch managers');
-      return response.json();
-    }
-  });
-
   // 시스템 역할이 "마스터 관리자" 또는 "에이전트 관리자"인 사용자만 필터링
   const managers = useMemo(() => {
     if (!allManagers) return [];
@@ -786,28 +796,7 @@ function MasterAdmin() {
     );
   }, [allManagers]);
 
-  // 조직 목록 조회
-  const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
-    queryKey: ['/api/admin/organizations'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/organizations', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
-      });
-      if (!response.ok) throw new Error('Failed to fetch organizations');
-      const data = await response.json();
-      console.log('Fetched organizations data:', data.length, 'items');
-      return data;
-    },
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-  });
+
 
   // 문서 목록 조회
   const { data: documentList } = useQuery<any[]>({
