@@ -358,6 +358,32 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Agent icon change
+  app.patch("/api/admin/agents/:id/icon", requireMasterAdmin, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const { icon, backgroundColor } = req.body;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      const updatedAgent = await storage.updateAgent(agentId, { 
+        icon: icon,
+        backgroundColor: backgroundColor 
+      });
+      
+      res.json({
+        success: true,
+        message: "아이콘이 성공적으로 변경되었습니다.",
+        agent: updatedAgent
+      });
+    } catch (error) {
+      console.error("Error updating agent icon:", error);
+      res.status(500).json({ message: "아이콘 변경에 실패했습니다." });
+    }
+  });
+
   // Admin document upload endpoint
   app.post("/api/admin/documents/upload", requireMasterAdmin, adminUpload.single('file'), async (req: any, res) => {
     try {
