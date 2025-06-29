@@ -32,7 +32,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       formData.append("clearExisting", clearExisting.toString());
       formData.append("validateOnly", validateOnly.toString());
 
-      const response = await fetch("/api/admin/agents/upload", {
+      const response = await fetch("/api/agents/upload", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -51,6 +51,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       if (!validateOnly) {
         queryClient.invalidateQueries({
           queryKey: ["/api/agents/managed"]
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["/api/agents"]
         });
         queryClient.invalidateQueries({
           queryKey: ["/api/admin/agents"]
