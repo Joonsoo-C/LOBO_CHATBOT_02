@@ -650,6 +650,10 @@ Changelog:
   * Disabled all sample data initialization to prevent conflicts with admin-managed data
   * Added missing agent icon change endpoint (PATCH /api/admin/agents/:id/icon) to fix frontend errors
   * LoBo AI messenger now operates as managed service under admin center's database control
+  * Updated demo accounts in login screen with specific users from admin center database:
+    - 학생계정: 장지훈 (user1082) - 인문대학 / 국어국문학과 / 현대문학전공, 학생
+    - 교직원계정: 정수빈 (user1081) - 인문대학 / 국어국문학과 / 현대문학전공, 교수, 에이전트 관리자
+    - 마스터계정: Master Admin (master_admin) - LoBo AI 챗봇 통합 관리자 센터 접근
 ```
 
 ## User Preferences

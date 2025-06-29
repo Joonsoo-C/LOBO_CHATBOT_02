@@ -281,13 +281,13 @@ export default function AuthPage() {
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
-                    loginForm.setValue("username", "2024001234");
+                    loginForm.setValue("username", "user1082");
                     loginForm.setValue("password", "student123");
                   }}
                 >
-                  {t('auth.studentAccount')}
+                  학생계정 (장지훈)
                   <br />
-                  <span className="text-xs text-muted-foreground">2024001234</span>
+                  <span className="text-xs text-muted-foreground">인문대학 / 국어국문학과 / 현대문학전공</span>
                 </Button>
                 <Button
                   type="button"
@@ -295,13 +295,13 @@ export default function AuthPage() {
                   size="sm"
                   className="w-full text-xs"
                   onClick={() => {
-                    loginForm.setValue("username", "F2024001");
+                    loginForm.setValue("username", "user1081");
                     loginForm.setValue("password", "faculty123");
                   }}
                 >
-                  {t('auth.facultyAccount')}
+                  교직원계정 (정수빈)
                   <br />
-                  <span className="text-xs text-muted-foreground">F2024001</span>
+                  <span className="text-xs text-muted-foreground">인문대학 / 국어국문학과 / 현대문학전공, 교수</span>
                 </Button>
                 <Button
                   type="button"
@@ -319,9 +319,9 @@ export default function AuthPage() {
                     }, 100);
                   }}
                 >
-                  {t('auth.masterAccount')}
+                  마스터계정 (Master Admin)
                   <br />
-                  <span className="text-xs text-muted-foreground">master_admin</span>
+                  <span className="text-xs text-muted-foreground">LoBo AI 챗봇 통합 관리자 센터</span>
                 </Button>
               </div>
               <p className="text-xs text-blue-700">
