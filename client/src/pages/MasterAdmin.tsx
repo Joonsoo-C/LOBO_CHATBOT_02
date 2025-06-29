@@ -2363,7 +2363,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         ...data,
         isActive: data.status === "active",
       };
-      const response = await apiRequest("PATCH", `/api/admin/agents/${data.id}`, payload);
+      const response = await apiRequest("PUT", `/api/admin/agents/${data.id}`, payload);
       return response.json();
     },
     onSuccess: () => {
