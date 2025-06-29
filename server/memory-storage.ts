@@ -646,6 +646,10 @@ export class MemoryStorage implements IStorage {
       createdAt: new Date()
     };
     this.conversations.set(id, newConversation);
+    
+    // Save to persistent storage
+    this.savePersistedConversations();
+    
     return newConversation;
   }
 
@@ -767,6 +771,10 @@ export class MemoryStorage implements IStorage {
       cache.delete(`user_conversations_${conversation.userId}`);
       cache.delete(`conversation_messages_${message.conversationId}`);
     }
+
+    // Save to persistent storage
+    this.savePersistedMessages();
+    this.savePersistedConversations();
 
     return newMessage;
   }
