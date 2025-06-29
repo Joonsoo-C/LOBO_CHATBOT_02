@@ -1,0 +1,22 @@
+[
+  {
+    "id": "agent_admin_001",
+    "username": "agent_admin_001",
+    "role": "agent_admin",
+    "firstName": "에이전트",
+    "lastName": "관리자",
+    "name": "에이전트 관리자",
+    "email": "agent_admin@lobo.edu",
+    "createdAt": "2025-06-29T03:38:07.033Z",
+    "lastLoginAt": "2025-06-29T03:38:07.034Z",
+    "isActive": true,
+    "status": "active",
+    "upperCategory": "대학본부",
+    "lowerCategory": "기획처",
+    "detailCategory": "기획예산팀",
+    "position": "직원",
+    "organizationAffiliations": 0,
+    "agentPermissions": 0,
+    "userMemo": "에이전트 관리 전담 사용자"
+  }
+]
