@@ -261,6 +261,13 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(conversations.lastMessageAt));
   }
 
+  async updateConversation(conversationId: number, updates: Partial<Conversation>): Promise<void> {
+    await db
+      .update(conversations)
+      .set(updates)
+      .where(eq(conversations.id, conversationId));
+  }
+
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
     return await db

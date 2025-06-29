@@ -726,7 +726,7 @@ export class MemoryStorage implements IStorage {
     cache.delete(`conversation_${conversationId}`);
     
     // Save to persistent storage
-    await this.saveToFile();
+    this.savePersistentData();
   }
 
   // Message operations
