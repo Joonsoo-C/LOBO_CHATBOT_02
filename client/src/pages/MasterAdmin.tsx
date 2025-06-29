@@ -174,7 +174,7 @@ const newUserSchema = z.object({
     "user", "master_admin", "operation_admin", "category_admin", 
     "agent_admin", "qa_admin", "doc_admin", "external"
   ]).optional(),
-  status: z.string().min(1, "상태를 선택해주세요"),
+  status: z.enum(["active", "inactive", "locked", "pending"]),
 });
 
 type NewUserFormData = z.infer<typeof newUserSchema>;
@@ -8405,11 +8405,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {userStatuses.map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="active">활성</SelectItem>
+                          <SelectItem value="inactive">비활성</SelectItem>
+                          <SelectItem value="locked">잠금</SelectItem>
+                          <SelectItem value="pending">대기</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -8798,11 +8797,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {userStatuses.map((status) => (
-                                <SelectItem key={status} value={status}>
-                                  {status}
-                                </SelectItem>
-                              ))}
+                              <SelectItem value="active">활성</SelectItem>
+                              <SelectItem value="inactive">비활성</SelectItem>
+                              <SelectItem value="locked">잠금</SelectItem>
+                              <SelectItem value="pending">대기</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
