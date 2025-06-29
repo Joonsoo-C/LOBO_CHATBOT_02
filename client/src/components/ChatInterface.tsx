@@ -1255,35 +1255,91 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 {documents.map((doc: any) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                    className="w-full p-4 bg-muted rounded-lg border border-border"
                   >
-                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium korean-text truncate">
-                          {doc.originalName || doc.filename}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(doc.createdAt).toLocaleDateString('ko-KR')}
-                        </p>
+                    <div className="flex items-start justify-between w-full">
+                      <div className="flex items-start space-x-3 flex-1 min-w-0">
+                        <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium korean-text break-words mb-1">
+                            {doc.originalName || doc.filename}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                            <span>
+                              크기: {doc.size ? (doc.size / (1024 * 1024)).toFixed(2) + ' MB' : '알 수 없음'}
+                            </span>
+                            <span>•</span>
+                            <span>
+                              업로드: {new Date(doc.createdAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 flex-shrink-0 ml-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/20"
+                          onClick={() => {
+                            // Download file
+                            const link = document.createElement('a');
+                            link.href = `/uploads/${doc.filename}`;
+                            link.download = doc.originalName || doc.filename;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }}
+                          title="파일 다운로드"
+                        >
+                          <Download className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </Button>
+                        {isManagementMode && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20"
+                            onClick={async () => {
+                              if (confirm('이 문서를 삭제하시겠습니까?')) {
+                                try {
+                                  const response = await fetch(`/api/agents/${agent.id}/documents/${doc.id}`, {
+                                    method: 'DELETE',
+                                    credentials: 'include'
+                                  });
+                                  
+                                  if (response.ok) {
+                                    toast({
+                                      title: "문서 삭제 완료",
+                                      description: "문서가 성공적으로 삭제되었습니다.",
+                                    });
+                                    // Refresh the documents list
+                                    queryClient.invalidateQueries({
+                                      queryKey: [`/api/agents/${agent.id}/documents`]
+                                    });
+                                  } else {
+                                    throw new Error('삭제 실패');
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: "삭제 실패",
+                                    description: "문서 삭제 중 오류가 발생했습니다.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              }
+                            }}
+                            title="문서 삭제"
+                          >
+                            <X className="w-4 h-4 text-red-600 dark:text-red-400" />
+                          </Button>
+                        )}
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="p-2 flex-shrink-0"
-                      onClick={() => {
-                        // Download file
-                        const link = document.createElement('a');
-                        link.href = `/uploads/${doc.filename}`;
-                        link.download = doc.filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
-                    >
-                      <Download className="w-4 h-4" />
-                    </Button>
                   </div>
                 ))}
               </div>
