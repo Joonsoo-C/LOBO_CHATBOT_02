@@ -8162,43 +8162,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={userEditForm.control}
-                    name="position"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>사용자 이름</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="서지원" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={userEditForm.control}
-                    name="role"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>사용자 닉네임 (옵션)</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
                 {/* 소속 정보 */}
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">소속 정보</Label>
-                    <Button type="button" variant="outline" size="sm" className="text-xs">
-                      + 소속된 카테고리 추가
-                    </Button>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={selectedUser?.role?.includes('admin') ? 'default' : 'secondary'}>
+                        {selectedUser?.role?.includes('admin') ? '카테고리 관리자' : '일반 사용자'}
+                      </Badge>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs"
+                        onClick={() => {
+                          // 소속 카테고리 추가 기능 구현
+                          toast({
+                            title: "기능 준비 중",
+                            description: "소속 카테고리 추가 기능을 준비 중입니다.",
+                          });
+                        }}
+                      >
+                        + 소속된 카테고리 추가
+                      </Button>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -8207,7 +8194,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="upperCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">역할</FormLabel>
+                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
@@ -8233,11 +8220,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="lowerCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
+                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="생활관" />
+                                <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -8259,7 +8246,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="detailCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
+                          <FormLabel className="text-sm">세부 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
@@ -8283,25 +8270,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   <FormField
                     control={userEditForm.control}
-                    name="detailCategory"
+                    name="position"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm">세부 카테고리</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="선택" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="none">선택</SelectItem>
-                            {detailCategories.map((category, index) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormLabel className="text-sm">직책/역할</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="학생, 교수, 직원 등" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -8339,31 +8314,63 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
                 </div>
 
-                {/* 담당 에이전트 선택 */}
+                {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">담당 에이전트 선택</Label>
-                  <div className="max-h-32 overflow-y-auto space-y-2 border rounded p-3">
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" id="agent1" className="rounded" />
-                      <label htmlFor="agent1" className="text-sm">
-                        <div className="font-medium">생활관 도우미</div>
-                        <div className="text-xs text-gray-500">기숙사 및 생활관 관련 업무를 도와드립니다</div>
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" id="agent2" className="rounded" />
-                      <label htmlFor="agent2" className="text-sm">
-                        <div className="font-medium">기숙사 생활 가이드</div>
-                        <div className="text-xs text-gray-500">기숙사 규정 및 생활 수칙</div>
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" id="agent3" className="rounded" />
-                      <label htmlFor="agent3" className="text-sm">
-                        <div className="font-medium">시설 이용 안내</div>
-                        <div className="text-xs text-gray-500">학습실 예약과 시설 이용 내역</div>
-                      </label>
-                    </div>
+                  <Label className="text-sm font-medium">사용 중인 에이전트</Label>
+                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                    {selectedUser?.id ? (
+                      <div className="max-h-48 overflow-y-auto space-y-3">
+                        {/* 실제 사용자의 에이전트 목록을 표시 */}
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">학사 정보 안내</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              학사 일정, 수강신청, 성적 조회 등 학사 관련 업무를 지원합니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline" className="text-xs">일반 사용자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.27</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">생활관 도우미</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              기숙사 및 생활관 관련 업무를 도와드립니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="secondary" className="text-xs">문서 관리자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.26</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-orange-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">취업 상담소</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              취업 정보, 인턴십, 진로 상담을 제공합니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="default" className="text-xs">에이전트 관리자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.25</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <div className="text-sm font-medium mb-2">사용 중인 에이전트가 없습니다</div>
+                        <div className="text-xs">
+                          이 사용자는 아직 어떤 에이전트도 사용하지 않았습니다.
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -8489,7 +8496,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 소속 정보 */}
-                <div className="space-y-4">
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
                   <Label className="text-sm font-medium">소속 정보</Label>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -8498,7 +8505,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="upperCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">상위 조직</FormLabel>
+                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
@@ -8524,7 +8531,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="lowerCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">하위 조직</FormLabel>
+                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
@@ -8550,7 +8557,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="detailCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">세부 조직</FormLabel>
+                          <FormLabel className="text-sm">세부 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
