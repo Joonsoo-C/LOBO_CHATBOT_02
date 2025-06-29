@@ -181,7 +181,10 @@ function Home() {
               <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
-                  onClick={() => setShowAccountModal(true)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowAccountModal(true);
+                  }}
                 >
                   <User className="w-4 h-4 mr-2" />
                   계정 설정
