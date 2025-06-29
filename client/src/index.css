@@ -41,6 +41,24 @@ body {
   padding-right: var(--safe-area-inset-right);
 }
 
+/* Fixed positioning for dropdown menus to prevent layout shifts */
+.agent-list-container {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Prevent layout shifts when dropdown opens */
+.dropdown-open-prevent-shift {
+  position: static !important;
+}
+
+/* Force stable layout during dropdown state changes */
+[data-radix-popper-content-wrapper] {
+  position: fixed !important;
+}
+
 /* Basic mobile adjustments */
 @media screen and (max-width: 768px) {
   body {

@@ -179,7 +179,7 @@ function Home() {
                   <Settings className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
+              <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5} side="bottom" sticky="always">
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
                   onClick={(e) => {
@@ -242,10 +242,12 @@ function Home() {
       {/* Content */}
       <main className="flex-1 main-content md:pt-0">
         {activeTab === "chat" && (
-          <AgentList 
-            agents={filteredAgents as any} 
-            conversations={conversations as any}
-          />
+          <div className="agent-list-container">
+            <AgentList 
+              agents={filteredAgents as any} 
+              conversations={conversations as any}
+            />
+          </div>
         )}
         {activeTab === "management" && (
           <div className="px-6 md:px-0">

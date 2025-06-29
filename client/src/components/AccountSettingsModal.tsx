@@ -15,7 +15,6 @@ import {
   Building, 
   Calendar, 
   Shield, 
-  X,
   Clock,
   MapPin
 } from "lucide-react";
@@ -122,18 +121,10 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto !z-[9999]">
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold korean-text">
             계정 정보
           </DialogTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="h-8 w-8 p-0"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
         {user && user.username && (
