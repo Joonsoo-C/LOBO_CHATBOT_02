@@ -242,12 +242,12 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">계정 생성일</span>
-                  <span className="text-sm">{formatDate(user.createdAt)}</span>
+                  <span className="text-sm">{formatDate(user.createdAt || null)}</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">마지막 로그인</span>
-                  <span className="text-sm">{formatDate(user.lastLoginAt)}</span>
+                  <span className="text-sm">{formatDate(user.lastLoginAt || null)}</span>
                 </div>
               </div>
             </div>

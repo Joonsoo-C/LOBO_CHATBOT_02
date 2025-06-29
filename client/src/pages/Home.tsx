@@ -33,6 +33,7 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const { t } = useLanguage();
 
   const { data: user } = useQuery<User>({
@@ -178,6 +179,14 @@ function Home() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
+                <DropdownMenuItem
+                  className="korean-text cursor-pointer"
+                  onClick={() => setShowAccountModal(true)}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  계정 설정
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <div className="px-3 py-2">
                   <div className="flex items-center gap-2">
                     <Languages className="w-4 h-4" />
@@ -239,6 +248,12 @@ function Home() {
           </div>
         )}
       </main>
+
+      {/* Account Settings Modal */}
+      <AccountSettingsModal 
+        isOpen={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+      />
     </div>
   );
 }
