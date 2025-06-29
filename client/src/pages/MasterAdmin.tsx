@@ -768,8 +768,8 @@ function MasterAdmin() {
     }
   });
 
-  // 관리자 목록 조회
-  const { data: managers } = useQuery<User[]>({
+  // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
+  const { data: allManagers } = useQuery<User[]>({
     queryKey: ['/api/admin/managers'],
     queryFn: async () => {
       const response = await fetch('/api/admin/managers');
@@ -777,6 +777,14 @@ function MasterAdmin() {
       return response.json();
     }
   });
+
+  // 시스템 역할이 "마스터 관리자" 또는 "에이전트 관리자"인 사용자만 필터링
+  const managers = useMemo(() => {
+    if (!allManagers) return [];
+    return allManagers.filter(manager => 
+      manager.role === 'master_admin' || manager.role === 'agent_admin'
+    );
+  }, [allManagers]);
 
   // 조직 목록 조회
   const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({

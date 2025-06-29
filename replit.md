@@ -640,6 +640,8 @@ Changelog:
   * Applied consistent dropdown UI in both user edit and new user creation forms
   * Updated form schemas and mutations to support role field in user creation workflow
   * Enhanced user experience with structured role assignment replacing free-text input
+  * Fixed status dropdown validation errors by aligning English backend values with Korean display labels
+  * Modified manager filtering system to show only users with "마스터 관리자" or "에이전트 관리자" system roles in agent creation dropdown
 ```
 
 ## User Preferences
