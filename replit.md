@@ -633,6 +633,13 @@ Changelog:
   * Fixed TypeScript errors by adding optional role property to ManagerInfo type
   * Each manager role tab now operates as independent search/selection session
   * Tab switching automatically clears previous search conditions while preserving selected managers
+- June 29, 2025. Enhanced user management with dropdown-based role selection system:
+  * Converted position/role input fields from text inputs to comprehensive dropdown menus
+  * Added 19 position options: 학생, 교수, 직원, 연구원, 조교, 대학원생, 박사과정, 석사과정, 학부생, 졸업생, 강사, 부교수, 정교수, 명예교수, 초빙교수, 겸임교수, 시간강사, 연구교수, 외래교수
+  * Implemented system role dropdown with 8 options: 일반 사용자, 마스터 관리자, 운영 관리자, 카테고리 관리자, 에이전트 관리자, QA 관리자, 문서 관리자, 외부 사용자
+  * Applied consistent dropdown UI in both user edit and new user creation forms
+  * Updated form schemas and mutations to support role field in user creation workflow
+  * Enhanced user experience with structured role assignment replacing free-text input
 ```
 
 ## User Preferences

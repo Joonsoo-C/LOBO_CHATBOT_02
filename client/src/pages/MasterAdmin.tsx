@@ -8759,7 +8759,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="전체" />
+                                <SelectValue placeholder="일반 사용자" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
