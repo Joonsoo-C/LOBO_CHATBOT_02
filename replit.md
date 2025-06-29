@@ -642,6 +642,14 @@ Changelog:
   * Enhanced user experience with structured role assignment replacing free-text input
   * Fixed status dropdown validation errors by aligning English backend values with Korean display labels
   * Modified manager filtering system to show only users with "마스터 관리자" or "에이전트 관리자" system roles in agent creation dropdown
+- June 29, 2025. Integrated LoBo AI messenger service with admin center managed database:
+  * Connected messenger service to use admin center's managed database files exclusively
+  * Configured system to load from data/organization-categories.json for organization management
+  * Integrated data/memory-storage.json for user data managed by admin center
+  * Connected data/memory-storage-agents.json for agent management from admin center
+  * Disabled all sample data initialization to prevent conflicts with admin-managed data
+  * Added missing agent icon change endpoint (PATCH /api/admin/agents/:id/icon) to fix frontend errors
+  * LoBo AI messenger now operates as managed service under admin center's database control
 ```
 
 ## User Preferences

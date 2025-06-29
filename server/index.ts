@@ -89,103 +89,10 @@ app.use((req, res, next) => {
   }, async () => {
     log(`serving on port ${port}`);
 
-    // 새 에이전트 데이터 로드
-    const { storage } = await import("./storage.js");
-    if (storage && typeof (storage as any).loadNewAgentData === 'function') {
-      await (storage as any).loadNewAgentData();
-    }
+    // System now uses admin center managed database files only
+    console.log("LoBo AI messenger now using admin center managed database files");
   });
 
-  // Initialize sample data asynchronously to speed up startup
-  Promise.all([
-    initializeSampleAgents(),
-    initializeSampleUsers(),
-    initializeSampleOrganizations()
-  ]).then(async () => {
-    console.log("Sample data initialization completed");
-
-    // Clean up 로보대학교 affiliated agents and replace with new agents
-    const { storage } = await import("./storage.js");
-    const deletedCount = await storage.deleteAgentsByOrganization('로보대학교');
-    if (deletedCount > 0) {
-      console.log(`🧹 Cleaned up ${deletedCount} 로보대학교 affiliated agents from system`);
-    }
-
-    // Replace all agents with new data from Final_Updated_AI_Agents_List
-    try {
-      const fs = await import('fs');
-      const path = await import('path');
-      
-      const finalAgentsPath = path.join(process.cwd(), 'final_agents.json');
-      if (fs.existsSync(finalAgentsPath)) {
-        console.log('🔄 기존 에이전트를 새 데이터로 교체 중...');
-        
-        const finalAgentsData = fs.readFileSync(finalAgentsPath, 'utf8');
-        const finalAgents = JSON.parse(finalAgentsData);
-        
-        // Clear all existing agents first
-        await storage.clearAllAgents();
-        console.log('✅ 기존 에이전트 데이터 삭제 완료');
-        
-        // Add new agents
-        let successCount = 0;
-        let failCount = 0;
-        
-        for (const agentData of finalAgents) {
-          try {
-            const newAgent = {
-              ...agentData,
-              id: undefined, // Let storage assign new ID
-              creatorId: 'system',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              isActive: true,
-              status: agentData.status || 'active'
-            };
-            
-            await storage.createAgent(newAgent);
-            successCount++;
-          } catch (error) {
-            console.error(`❌ 에이전트 생성 실패 (${agentData.name}):`, error.message);
-            failCount++;
-          }
-        }
-        
-        console.log(`✅ 에이전트 교체 완료: ${successCount}개 성공, ${failCount}개 실패`);
-        
-        // Verify final count
-        const allAgents = await storage.getAllAgents();
-        console.log(`📊 현재 전체 에이전트 수: ${allAgents.length}개`);
-        
-        // Force manual agent data save
-        try {
-          const fs = await import('fs');
-          const path = await import('path');
-          
-          const agentsMap = {};
-          const allCurrentAgents = await storage.getAllAgents();
-          
-          allCurrentAgents.forEach(agent => {
-            agentsMap[agent.id] = agent;
-          });
-          
-          const dataDir = path.join(process.cwd(), 'data');
-          if (!fs.existsSync(dataDir)) {
-            fs.mkdirSync(dataDir, { recursive: true });
-          }
-          
-          const agentsPath = path.join(dataDir, 'memory-storage-agents.json');
-          fs.writeFileSync(agentsPath, JSON.stringify(agentsMap, null, 2));
-          console.log('💾 에이전트 데이터 수동 저장 완료:', agentsPath);
-        } catch (saveError) {
-          console.error('💾 에이전트 저장 중 오류:', saveError.message);
-        }
-      }
-    } catch (error) {
-      console.error('❌ 에이전트 교체 중 오류:', error.message);
-    }
-
-  }).catch((error) => {
-    console.error("Error during sample data initialization:", error);
-  });
+  // Skip all sample data initialization - using admin center managed database files only
+  console.log("LoBo AI messenger integrated with admin center managed database files");
 })();
