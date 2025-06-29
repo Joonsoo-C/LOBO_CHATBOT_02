@@ -707,6 +707,28 @@ export class MemoryStorage implements IStorage {
       });
   }
 
+  async updateConversation(conversationId: number, updates: Partial<Conversation>): Promise<void> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) {
+      throw new Error(`Conversation with ID ${conversationId} not found`);
+    }
+
+    // Update the conversation with the provided updates
+    const updatedConversation = {
+      ...conversation,
+      ...updates
+    };
+
+    this.conversations.set(conversationId, updatedConversation);
+    
+    // Clear cache
+    cache.delete(`user_conversations_${conversation.userId}`);
+    cache.delete(`conversation_${conversationId}`);
+    
+    // Save to persistent storage
+    await this.saveToFile();
+  }
+
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
     const cacheKey = `conversation_messages_${conversationId}`;

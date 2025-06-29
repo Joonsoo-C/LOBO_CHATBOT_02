@@ -697,23 +697,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isFromUser: false,
           });
 
-          // Increment unread count for the conversation
+          // Update conversation with unread count and last message time using storage interface
           const currentUnreadCount = conversation.unreadCount ?? 0;
-          await db
-            .update(conversations)
-            .set({ 
-              unreadCount: currentUnreadCount + 1,
-              lastMessageAt: new Date()
-            })
-            .where(eq(conversations.id, conversation.id));
+          await storage.updateConversation(conversation.id, {
+            unreadCount: currentUnreadCount + 1,
+            lastMessageAt: new Date()
+          });
 
           broadcastResults.push({
             userId: conversation.userId,
             messageId: broadcastMessage.id,
             success: true
           });
+          
+          console.log(`✅ Broadcast message sent to user ${conversation.userId}, conversation ${conversation.id}`);
         } catch (error) {
-          console.error(`Failed to send message to user ${conversation.userId}:`, error);
+          console.error(`❌ Failed to send message to user ${conversation.userId}:`, error);
           broadcastResults.push({
             userId: conversation.userId,
             success: false,
