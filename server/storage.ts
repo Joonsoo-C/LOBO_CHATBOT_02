@@ -428,6 +428,12 @@ export class DatabaseStorage implements IStorage {
     // Placeholder - would normally delete Robo University organizations from database
     return { deletedCount: 0 };
   }
+
+  getUniqueUserStatuses(): string[] {
+    // For database implementation, this would need actual SQL query
+    // For now, return default statuses
+    return ['활성', '비활성', '등록 승인 대기중', '휴면'];
+  }
 }
 
 // Use memory storage with enhanced persistence

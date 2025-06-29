@@ -510,6 +510,16 @@ function MasterAdmin() {
     }
   });
 
+  // 사용자 상태 목록 조회
+  const { data: userStatuses = [] } = useQuery<string[]>({
+    queryKey: ['/api/admin/user-statuses'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/user-statuses');
+      if (!response.ok) throw new Error('Failed to fetch user statuses');
+      return response.json();
+    }
+  });
+
   // 사용자 정렬 함수
   const handleUserSort = (field: string) => {
     if (userSortField === field) {
@@ -8310,10 +8320,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="active">활성</SelectItem>
-                          <SelectItem value="inactive">비활성</SelectItem>
-                          <SelectItem value="pending">대기</SelectItem>
-                          <SelectItem value="locked">잠금</SelectItem>
+                          {userStatuses.map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -8637,9 +8648,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="active">활성</SelectItem>
-                            <SelectItem value="inactive">비활성</SelectItem>
-                            <SelectItem value="pending">대기</SelectItem>
+                            {userStatuses.map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {status}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
