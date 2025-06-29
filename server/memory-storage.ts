@@ -1299,7 +1299,19 @@ export class MemoryStorage implements IStorage {
     try {
       if (fs.existsSync(this.agentsFile)) {
         const data = fs.readFileSync(this.agentsFile, 'utf8');
-        const agentsArray = JSON.parse(data);
+        const agentsData = JSON.parse(data);
+
+        // Handle both array and object formats
+        let agentsArray;
+        if (Array.isArray(agentsData)) {
+          agentsArray = agentsData;
+        } else if (typeof agentsData === 'object' && agentsData !== null) {
+          // Convert object format to array
+          agentsArray = Object.values(agentsData);
+        } else {
+          console.log('Invalid agents data format, starting with empty data');
+          return;
+        }
 
         for (const agent of agentsArray) {
           this.agents.set(agent.id, {

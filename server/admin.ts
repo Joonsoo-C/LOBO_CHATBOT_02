@@ -1,5 +1,6 @@
 import { Express } from "express";
 import { storage } from "./storage";
+import { isAuthenticated } from "./auth";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
