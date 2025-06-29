@@ -8875,6 +8875,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Form>
           </DialogContent>
         </Dialog>
+
+        {/* 에이전트 파일 업로드 모달 */}
+        <AgentFileUploadModal
+          isOpen={isAgentFileUploadModalOpen}
+          onClose={() => setIsAgentFileUploadModalOpen(false)}
+        />
       </main>
     </div>
   );
