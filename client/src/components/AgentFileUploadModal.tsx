@@ -52,10 +52,13 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         queryClient.invalidateQueries({
           queryKey: ["/api/agents/managed"]
         });
+        queryClient.invalidateQueries({
+          queryKey: ["/api/admin/agents"]
+        });
         
         toast({
           title: "업로드 완료",
-          description: `${data.agentCount || data.createdCount || 0}개의 에이전트가 ${validateOnly ? '검증' : '업로드'}되었습니다.`,
+          description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 ${validateOnly ? '검증' : '업로드'}되었습니다.`,
         });
       } else {
         toast({
@@ -158,14 +161,15 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   };
 
   const handleDownloadSample = () => {
-    const csvContent = `name,description,category,upperCategory,lowerCategory,detailCategory,managerId,speechStyle,personality
+    const csvContent = `에이전트명,설명,카테고리,상위카테고리,하위카테고리,세부카테고리,관리자ID,말투,성격
 학생 상담 AI,학생들의 고민과 상담을 도와주는 AI입니다,학생,인문대학,국어국문학과,국어국문학과,admin,친근하고 편안한 말투,공감능력이 뛰어나고 따뜻한 성격
-컴퓨터공학과 AI,컴퓨터공학과 관련 정보를 제공하는 AI입니다,학과,공과대학,컴퓨터공학과,컴퓨터공학과,admin,전문적이고 정확한 말투,논리적이고 체계적인 성격`;
+컴퓨터공학과 AI,컴퓨터공학과 관련 정보를 제공하는 AI입니다,학과,공과대학,컴퓨터공학과,컴퓨터공학과,admin,전문적이고 정확한 말투,논리적이고 체계적인 성격
+입학 상담 AI,대학 입학 관련 정보를 제공하는 AI입니다,학교,대학본부,입학처,입학관리팀,admin,정확하고 친절한 말투,정보 제공에 능숙한 전문적인 성격`;
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "agent_sample.csv";
+    link.download = "에이전트_업로드_샘플.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

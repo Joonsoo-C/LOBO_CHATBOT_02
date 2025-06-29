@@ -1731,6 +1731,252 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Agent file upload endpoint
+  app.post("/api/admin/agents/upload", requireMasterAdmin, userUpload.single('file'), async (req, res) => {
+    try {
+      console.log('📁 에이전트 파일 업로드 요청 시작');
+
+      if (!req.file) {
+        console.log('❌ 업로드된 파일이 없음');
+        return res.status(400).json({ message: "업로드된 파일이 없습니다." });
+      }
+
+      console.log('✅ 파일 업로드 성공:', {
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size
+      });
+
+      const clearExisting = req.body.clearExisting === 'true';
+      const validateOnly = req.body.validateOnly === 'true';
+
+      // Read and parse CSV/Excel file
+      const filePath = req.file.path;
+      let agents = [];
+
+      // Check file type and parse accordingly
+      const fileExtension = path.extname(req.file.originalname).toLowerCase();
+
+      if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+        // Parse Excel file
+        console.log('Parsing Excel file:', req.file.originalname);
+
+        const { default: XLSX } = await import('xlsx');
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0]; // Use first sheet
+        const worksheet = workbook.Sheets[sheetName];
+
+        // Convert sheet to JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        if (jsonData.length < 2) {
+          throw new Error('엑셀 파일에 충분한 데이터가 없습니다.');
+        }
+
+        const headers = jsonData[0] as string[];
+        console.log('Excel headers:', headers);
+
+        // Create column mapping for Korean headers
+        const columnMapping: { [key: string]: string } = {
+          '에이전트명': 'name',
+          '이름': 'name',
+          '설명': 'description',
+          '기능설명': 'description',
+          '카테고리': 'category',
+          '분류': 'category',
+          '아이콘': 'icon',
+          '배경색': 'backgroundColor',
+          '관리자ID': 'managerId',
+          '조직ID': 'organizationId',
+          '상위카테고리': 'upperCategory',
+          '하위카테고리': 'lowerCategory',
+          '세부카테고리': 'detailCategory',
+          '페르소나': 'persona',
+          '시스템프롬프트': 'systemPrompt',
+          '말투': 'speechStyle',
+          '성격': 'personality',
+          'name': 'name',
+          'description': 'description',
+          'category': 'category',
+          'icon': 'icon',
+          'backgroundColor': 'backgroundColor',
+          'managerId': 'managerId',
+          'organizationId': 'organizationId',
+          'upperCategory': 'upperCategory',
+          'lowerCategory': 'lowerCategory',
+          'detailCategory': 'detailCategory',
+          'persona': 'persona',
+          'systemPrompt': 'systemPrompt',
+          'speechStyle': 'speechStyle',
+          'personality': 'personality'
+        };
+
+        // Process each row
+        for (let i = 1; i < jsonData.length; i++) {
+          const values = jsonData[i] as any[];
+          if (values && values.length > 0 && values.some(v => v !== null && v !== undefined && v !== '')) {
+            const agent: any = {};
+
+            headers.forEach((header, index) => {
+              if (header && values[index] !== undefined && values[index] !== null && values[index] !== '') {
+                const mappedField = columnMapping[header.toString().trim()];
+                if (mappedField) {
+                  agent[mappedField] = values[index].toString().trim();
+                }
+              }
+            });
+
+            // Validate required fields and create agent
+            if (agent.name) {
+              agents.push({
+                name: agent.name,
+                description: agent.description || '',
+                category: agent.category || '기능',
+                icon: agent.icon || 'Bot',
+                backgroundColor: agent.backgroundColor || '#3B82F6',
+                managerId: agent.managerId || 'admin',
+                organizationId: agent.organizationId ? parseInt(agent.organizationId) : null,
+                upperCategory: agent.upperCategory || null,
+                lowerCategory: agent.lowerCategory || null,
+                detailCategory: agent.detailCategory || null,
+                persona: agent.persona || null,
+                systemPrompt: agent.systemPrompt || null,
+                speechStyle: agent.speechStyle || '친근하고 도움이 되는 말투',
+                personality: agent.personality || '친절하고 전문적인 성격',
+                llmModel: 'gpt-4o',
+                chatbotType: 'general-llm',
+                maxInputLength: 1000,
+                visibility: 'public',
+                isActive: true,
+                status: 'active',
+                creatorId: req.user?.id || 'master_admin'
+              });
+            }
+          }
+        }
+
+      } else if (fileExtension === '.csv') {
+        // Parse CSV file
+        console.log('Parsing CSV file:', req.file.originalname);
+
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const lines = fileContent.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+          throw new Error('CSV 파일에 충분한 데이터가 없습니다.');
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim());
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          if (values.length >= headers.length) {
+            const agent: any = {};
+            headers.forEach((header, index) => {
+              agent[header] = values[index] || null;
+            });
+
+            // Validate required fields
+            if (agent.name || agent['에이전트명']) {
+              agents.push({
+                name: agent.name || agent['에이전트명'],
+                description: agent.description || agent['설명'] || '',
+                category: agent.category || agent['카테고리'] || '기능',
+                icon: agent.icon || agent['아이콘'] || 'Bot',
+                backgroundColor: agent.backgroundColor || agent['배경색'] || '#3B82F6',
+                managerId: agent.managerId || agent['관리자ID'] || 'admin',
+                organizationId: agent.organizationId ? parseInt(agent.organizationId) : null,
+                upperCategory: agent.upperCategory || agent['상위카테고리'] || null,
+                lowerCategory: agent.lowerCategory || agent['하위카테고리'] || null,
+                detailCategory: agent.detailCategory || agent['세부카테고리'] || null,
+                llmModel: 'gpt-4o',
+                chatbotType: 'general-llm',
+                maxInputLength: 1000,
+                visibility: 'public',
+                isActive: true,
+                status: 'active',
+                creatorId: req.user?.id || 'master_admin'
+              });
+            }
+          }
+        }
+
+      } else {
+        throw new Error('지원하지 않는 파일 형식입니다. CSV 또는 Excel 파일만 업로드 가능합니다.');
+      }
+
+      console.log(`Parsed ${agents.length} agents from ${fileExtension} file`);
+
+      if (validateOnly) {
+        // Clean up temporary file
+        fs.unlinkSync(filePath);
+        
+        return res.json({
+          success: true,
+          message: `검증 완료: ${agents.length}개 에이전트가 유효합니다.`,
+          agentCount: agents.length
+        });
+      }
+
+      // Process agents based on clearExisting setting
+      let createdCount = 0;
+      let errorCount = 0;
+
+      if (clearExisting) {
+        console.log('Clear existing mode: Clearing all existing agents');
+        await storage.clearAllAgents();
+      }
+
+      // Create new agents
+      for (const agentData of agents) {
+        try {
+          await storage.createAgent(agentData);
+          createdCount++;
+        } catch (error) {
+          console.error(`Failed to create agent ${agentData.name}:`, error);
+          errorCount++;
+        }
+      }
+
+      // Clean up temporary file after processing
+      try {
+        fs.unlinkSync(filePath);
+      } catch (cleanupError) {
+        console.error('Error cleaning up temporary file:', cleanupError);
+      }
+
+      const responseMessage = clearExisting 
+        ? `기존 에이전트를 모두 삭제하고 ${createdCount}개의 새 에이전트로 교체했습니다.`
+        : `${createdCount}개의 새 에이전트가 추가되었습니다.`;
+
+      res.json({
+        success: true,
+        message: responseMessage,
+        createdCount: createdCount,
+        errors: errorCount,
+        total: agents.length,
+        mode: clearExisting ? 'replace' : 'add'
+      });
+
+    } catch (error) {
+      console.error("Error uploading agent file:", error);
+
+      // Clean up temporary file if it exists
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error("Error cleaning up file:", cleanupError);
+        }
+      }
+
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to upload agent file" 
+      });
+    }
+  });
+
   // Delete agents by organization endpoint
   app.delete("/api/admin/agents/organization/:name", requireMasterAdmin, async (req, res) => {
     try {
