@@ -9,10 +9,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { Settings, Search, ChevronDown, LogOut, Languages } from "lucide-react";
+import { Settings, Search, ChevronDown, LogOut, Languages, User } from "lucide-react";
 import { Agent, Conversation } from "@shared/schema";
 import AgentList from "@/components/AgentList";
 import AgentManagement from "@/components/AgentManagement";
+import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { ThemeSelector } from "@/components/ThemeSelector";

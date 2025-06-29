@@ -654,6 +654,8 @@ Changelog:
     - 학생계정: 장지훈 (user1082) - 인문대학 / 국어국문학과 / 현대문학전공, 학생
     - 교직원계정: 정수빈 (user1081) - 인문대학 / 국어국문학과 / 현대문학전공, 교수, 에이전트 관리자
     - 마스터계정: Master Admin (master_admin) - LoBo AI 챗봇 통합 관리자 센터 접근
+  * Fixed authentication system by implementing proper bcrypt password hashing for all demo accounts
+  * Demo account login functionality now working correctly with account settings access
 ```
 
 ## User Preferences
