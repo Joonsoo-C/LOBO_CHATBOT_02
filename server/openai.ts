@@ -163,12 +163,19 @@ export async function generateChatResponse(
       chatbotType
     });
 
-    // Prepare context from documents
+    // Prepare context from documents with enhanced processing
     const documentContext = availableDocuments.length > 0 
       ? `\n\n참고 문서:\n${availableDocuments.map(doc => 
-          `[${doc.filename}]\n${doc.content.slice(0, 2000)}...`
+          `[문서명: ${doc.filename}]\n${doc.content}`
         ).join('\n\n')}`
       : "";
+
+    // Enhanced document analysis for better responses
+    const hasDocumentQuestion = userMessage.includes("문서") || userMessage.includes("내용") || 
+                               userMessage.includes("세계관") || userMessage.includes("파일") ||
+                               availableDocuments.some(doc => 
+                                 userMessage.includes(doc.filename.replace('.docx', '').replace('.pdf', ''))
+                               );
 
     // Language mapping for responses
     const languageInstructions = {
@@ -227,10 +234,18 @@ REPEAT: ${responseLanguage}`;
 You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
+CRITICAL DOCUMENT ANALYSIS INSTRUCTIONS:
+- You have access to uploaded documents with their full content
+- When users ask about document content, analyze and explain it thoroughly
+- Provide detailed insights about document themes, main points, and specific information
+- Quote relevant sections when explaining document content
+- If asked about a specific document by name, focus on that document's content
+
 Rules:
 - Only use document content to answer questions
+- Analyze documents deeply when asked about their content
 - Stay true to your personality and speaking style
-- Provide helpful information based on the documents${documentContext}`;
+- Provide comprehensive information based on the documents${documentContext}`;
         break;
 
       case "doc-fallback-llm":
@@ -239,8 +254,16 @@ Rules:
 You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
+DOCUMENT ANALYSIS INSTRUCTIONS:
+- When documents are available, prioritize them for answers
+- Analyze document content thoroughly when asked about specific documents
+- Provide detailed explanations of document themes and key points
+- Quote relevant sections when explaining document content
+- Fall back to general knowledge only when documents don't contain relevant information
+
 Rules:
 - Use documents first when available, then general knowledge if needed
+- Analyze documents deeply when asked about their content
 - Stay true to your personality and speaking style
 - Provide helpful and accurate information${documentContext}`;
         break;
@@ -252,8 +275,16 @@ Rules:
 You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
 ${grumpyBehavior}${personalityInstruction}
 
+DOCUMENT INTEGRATION INSTRUCTIONS:
+- When documents are available, use them to enhance your responses
+- Analyze document content when users ask about specific documents
+- Provide detailed insights about document themes and key information
+- Reference document content when relevant to the conversation
+- Combine document knowledge with your general knowledge
+
 Rules:
-- Answer questions using your knowledge
+- Answer questions using your knowledge and available documents
+- Analyze documents thoroughly when asked about their content
 - Stay true to your personality and speaking style
 - Be helpful while maintaining your character${documentContext}`;
         break;
@@ -347,10 +378,13 @@ Rules:
 - Keep the annoyed, bothered tone throughout${documentContext}`;
     }
 
+    // Increase token limit for document analysis responses
+    const maxTokens = hasDocumentQuestion ? 800 : 400; // More tokens for document analysis
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages,
-      max_tokens: 200, // Limit response length for focused answers
+      max_tokens: maxTokens,
       temperature: 0.3, // Lower temperature for more controlled responses
     });
 
