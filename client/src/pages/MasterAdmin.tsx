@@ -498,6 +498,15 @@ function MasterAdmin() {
   
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
+
+  // Q&A 로그 필터링 상태
+  const [qaFilterUpperCategory, setQaFilterUpperCategory] = useState('all');
+  const [qaFilterLowerCategory, setQaFilterLowerCategory] = useState('all');
+  const [qaFilterDetailCategory, setQaFilterDetailCategory] = useState('all');
+  const [qaFilterAgentCategory, setQaFilterAgentCategory] = useState('all');
+  const [qaFilterUserType, setQaFilterUserType] = useState('all');
+  const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
+  const [qaFilterKeyword, setQaFilterKeyword] = useState('');
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
   const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
   
@@ -780,6 +789,69 @@ function MasterAdmin() {
         }
         break;
     }
+  };
+
+  // Q&A 로그 필터링을 위한 조직 카테고리 헬퍼 함수들
+  const getQaUpperCategories = () => {
+    if (!organizations) return [];
+    const uniqueCategories: string[] = [];
+    organizations.forEach(org => {
+      if (org.upperCategory && org.upperCategory.trim() !== '' && !uniqueCategories.includes(org.upperCategory)) {
+        uniqueCategories.push(org.upperCategory);
+      }
+    });
+    return uniqueCategories;
+  };
+
+  const getQaLowerCategories = (upperCategory: string) => {
+    if (!organizations || !upperCategory || upperCategory === 'all') return [];
+    const uniqueCategories: string[] = [];
+    organizations
+      .filter(org => org.upperCategory === upperCategory)
+      .forEach(org => {
+        if (org.lowerCategory && org.lowerCategory.trim() !== '' && !uniqueCategories.includes(org.lowerCategory)) {
+          uniqueCategories.push(org.lowerCategory);
+        }
+      });
+    return uniqueCategories;
+  };
+
+  const getQaDetailCategories = (upperCategory: string, lowerCategory: string) => {
+    if (!organizations || !upperCategory || upperCategory === 'all' || !lowerCategory || lowerCategory === 'all') return [];
+    const uniqueCategories: string[] = [];
+    organizations
+      .filter(org => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
+      .forEach(org => {
+        if (org.detailCategory && org.detailCategory.trim() !== '' && !uniqueCategories.includes(org.detailCategory)) {
+          uniqueCategories.push(org.detailCategory);
+        }
+      });
+    return uniqueCategories;
+  };
+
+  // 에이전트 카테고리 데이터 (AI 에이전트 0627_2 엑셀파일 기반)
+  const getAgentCategories = () => {
+    if (!agents) return [];
+    const uniqueCategories: string[] = [];
+    agents.forEach(agent => {
+      if (agent.category && agent.category.trim() !== '' && !uniqueCategories.includes(agent.category)) {
+        uniqueCategories.push(agent.category);
+      }
+    });
+    return uniqueCategories;
+  };
+
+  // Q&A 로그 필터링 핸들러들
+  const handleQaUpperCategoryChange = (value: string) => {
+    setQaFilterUpperCategory(value);
+    setQaFilterLowerCategory('all');
+    setQaFilterDetailCategory('all');
+    setQaFilterAgentCategory('all'); // 상위 카테고리 변경 시 에이전트 카테고리 초기화
+  };
+
+  const handleQaLowerCategoryChange = (value: string) => {
+    setQaFilterLowerCategory(value);
+    setQaFilterDetailCategory('all');
   };
 
   const iconMap = {
@@ -4675,24 +4747,83 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">로그 필터링</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* 첫 번째 행: 조직 카테고리 필터링 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label>에이전트</Label>
-                  <Select defaultValue="all">
+                  <Label>상위 조직 카테고리</Label>
+                  <Select value={qaFilterUpperCategory} onValueChange={handleQaUpperCategoryChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="에이전트 선택" />
+                      <SelectValue placeholder="상위 조직 선택" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체 에이전트</SelectItem>
-                      <SelectItem value="academic">학사 도우미</SelectItem>
-                      <SelectItem value="student">학생회 도우미</SelectItem>
-                      <SelectItem value="research">연구 지원 도우미</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getQaUpperCategories().map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>하위 조직 카테고리</Label>
+                  <Select 
+                    value={qaFilterLowerCategory} 
+                    onValueChange={handleQaLowerCategoryChange}
+                    disabled={qaFilterUpperCategory === 'all'}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="하위 조직 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getQaLowerCategories(qaFilterUpperCategory).map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부 조직 카테고리</Label>
+                  <Select 
+                    value={qaFilterDetailCategory} 
+                    onValueChange={setQaFilterDetailCategory}
+                    disabled={qaFilterUpperCategory === 'all' || qaFilterLowerCategory === 'all'}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="세부 조직 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getQaDetailCategories(qaFilterUpperCategory, qaFilterLowerCategory).map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* 두 번째 행: 에이전트 카테고리 및 기타 필터링 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>에이전트 카테고리</Label>
+                  <Select 
+                    value={qaFilterAgentCategory} 
+                    onValueChange={setQaFilterAgentCategory}
+                    disabled={qaFilterUpperCategory === 'all'}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="에이전트 카테고리" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getAgentCategories().map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>사용자 유형</Label>
-                  <Select defaultValue="all">
+                  <Select value={qaFilterUserType} onValueChange={setQaFilterUserType}>
                     <SelectTrigger>
                       <SelectValue placeholder="사용자 유형" />
                     </SelectTrigger>
@@ -4706,7 +4837,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label>기간</Label>
-                  <Select defaultValue="today">
+                  <Select value={qaFilterPeriod} onValueChange={setQaFilterPeriod}>
                     <SelectTrigger>
                       <SelectValue placeholder="기간 선택" />
                     </SelectTrigger>
@@ -4720,7 +4851,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label>키워드 검색</Label>
-                  <Input placeholder="질문 내용 검색..." />
+                  <Input 
+                    placeholder="질문 내용 및 에이전트 이름 검색..." 
+                    value={qaFilterKeyword}
+                    onChange={(e) => setQaFilterKeyword(e.target.value)}
+                  />
                 </div>
               </div>
 
