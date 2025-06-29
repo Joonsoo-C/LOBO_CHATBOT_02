@@ -320,12 +320,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   };
 
   const handleUpload = () => {
-    if (selectedFile && mainCategory && subCategory && detailCategory) {
+    if (selectedFile) {
       uploadMutation.mutate(selectedFile);
     } else {
       toast({
-        title: "필수 정보 누락",
-        description: "파일과 모든 카테고리를 선택해주세요.",
+        title: "파일 선택 필요",
+        description: "업로드할 파일을 선택해주세요.",
         variant: "destructive",
       });
     }
@@ -743,7 +743,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             </Button>
             <Button
               onClick={handleUpload}
-              disabled={!selectedFile || !mainCategory || !subCategory || !detailCategory || uploadMutation.isPending}
+              disabled={!selectedFile || uploadMutation.isPending}
               className="flex-1 korean-text relative h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium"
             >
               {uploadMutation.isPending ? (
