@@ -664,6 +664,12 @@ Changelog:
   * Agent now greets users with: "안녕하세요! 저는 [agent name]입니다. 궁금한 것이 있으면 언제든지 물어보세요."
   * Fixed message flickering issue by improving optimistic message handling and cache management
   * Enhanced message state transitions to prevent visual gaps when AI responses load
+- June 29, 2025. Restructured agent management interface with top-positioned action buttons:
+  * Reorganized "에이전트 관리" section with main title and two prominent action buttons at the top
+  * Added "에이전트 수동 추가" button (blue) connecting to manual agent creation dialog
+  * Added "파일 업로드" button (green) with descriptive text connecting to AgentFileUploadModal for bulk uploads
+  * Moved "에이전트 검색 및 관리" to subsection below action buttons for better visual hierarchy
+  * Enhanced UI layout matching user's design requirements with card-based button styling
 ```
 
 ## User Preferences
