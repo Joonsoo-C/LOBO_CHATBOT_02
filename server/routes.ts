@@ -841,6 +841,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent icon/background update endpoint  
+  app.patch('/api/agents/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+      const { icon, backgroundColor, isCustomIcon } = req.body;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Check if user has permission to manage this agent
+      const agent = await storage.getAgent(agentId);
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
+        return res.status(403).json({ message: "Unauthorized to modify this agent" });
+      }
+
+      const updateData: any = {};
+      if (icon !== undefined) updateData.icon = icon;
+      if (backgroundColor !== undefined) updateData.backgroundColor = backgroundColor;
+      if (isCustomIcon !== undefined) updateData.isCustomIcon = isCustomIcon;
+
+      const updatedAgent = await storage.updateAgent(agentId, updateData);
+
+      res.json({
+        success: true,
+        message: "Agent updated successfully",
+        agent: updatedAgent
+      });
+    } catch (error) {
+      console.error("Error updating agent:", error);
+      res.status(500).json({ message: "Failed to update agent" });
+    }
+  });
+
   return httpServer;
 }
 

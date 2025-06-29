@@ -617,6 +617,13 @@ export class MemoryStorage implements IStorage {
     }
     const updatedAgent = { ...existingAgent, ...updates, updatedAt: new Date() };
     this.agents.set(id, updatedAgent);
+    
+    // Invalidate cache
+    cache.delete('all_agents');
+    
+    // Save to persistent storage immediately
+    this.savePersistedAgents();
+    
     return updatedAgent;
   }
 
@@ -1494,6 +1501,26 @@ export class MemoryStorage implements IStorage {
       fs.writeFileSync(this.messagesFile, JSON.stringify(messagesData, null, 2));
     } catch (error) {
       console.error('Failed to save messages to persistence:', error);
+    }
+  }
+
+  private savePersistedAgents(): void {
+    try {
+      const agentsData = {
+        agents: Array.from(this.agents.entries()).map(([id, agent]) => [
+          id,
+          {
+            ...agent,
+            createdAt: agent.createdAt?.toISOString(),
+            updatedAt: agent.updatedAt?.toISOString()
+          }
+        ])
+      };
+
+      fs.writeFileSync(this.agentsFile, JSON.stringify(agentsData, null, 2));
+      console.log('✓ Agent data saved to persistence');
+    } catch (error) {
+      console.error('Failed to save agents to persistence:', error);
     }
   }
 
