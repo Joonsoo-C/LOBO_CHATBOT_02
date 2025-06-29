@@ -81,17 +81,17 @@ body {
   position: relative;
   height: 100%;
   contain: layout style paint;
+  padding-top: 150px;
 }
 
-/* Prevent layout shift in header area */
-.fixed-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.95);
-  contain: layout style;
+/* Desktop adjustments */
+@media (min-width: 768px) {
+  .main-content {
+    padding-top: 0;
+  }
 }
+
+/* Remove duplicate header styles - using the earlier definition */
 
 /* Isolate dropdown menu positioning */
 .settings-dropdown-container {
