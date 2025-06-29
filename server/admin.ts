@@ -201,6 +201,18 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Get user statuses endpoint
+  app.get("/api/admin/user-statuses", requireMasterAdmin, async (req, res) => {
+    try {
+      const statuses = storage.getUniqueUserStatuses();
+      console.log(`Retrieved ${statuses.length} unique user statuses:`, statuses);
+      res.json(statuses);
+    } catch (error) {
+      console.error("Error fetching user statuses:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Clear all users (except master admin)
   app.delete("/api/admin/users/bulk/clear-all", requireMasterAdmin, async (req, res) => {
     try {

@@ -81,6 +81,9 @@ export interface IStorage {
   clearAllOrganizationCategories(): Promise<void>;
   deleteRoboUniversityOrganizations(): Promise<{ deletedCount: number }>;
   clearCache?(): void;
+
+  // User status operations
+  getUniqueUserStatuses(): string[];
 }
 
 export class DatabaseStorage implements IStorage {

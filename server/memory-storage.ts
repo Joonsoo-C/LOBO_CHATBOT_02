@@ -1064,6 +1064,19 @@ export class MemoryStorage implements IStorage {
     console.log('All organization categories have been cleared from memory storage');
   }
 
+  // Get unique user status values from stored users
+  getUniqueUserStatuses(): string[] {
+    const statuses = new Set<string>();
+    
+    for (const user of this.users.values()) {
+      if (user.status && user.status.trim() !== '') {
+        statuses.add(user.status.trim());
+      }
+    }
+    
+    return Array.from(statuses).sort();
+  }
+
   // Helper method to find existing organization by name and hierarchy
   private findExistingOrganization(name: string, upperCategory?: string, lowerCategory?: string, detailCategory?: string): any | null {
     for (const org of this.organizationCategories.values()) {
