@@ -8370,11 +8370,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="전체" />
+                                <SelectValue placeholder="일반 사용자" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="user">전체</SelectItem>
+                              <SelectItem value="user">일반 사용자</SelectItem>
                               <SelectItem value="master_admin">마스터 관리자</SelectItem>
                               <SelectItem value="operation_admin">운영 관리자</SelectItem>
                               <SelectItem value="category_admin">카테고리 관리자</SelectItem>
@@ -8763,7 +8763,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="user">전체</SelectItem>
+                              <SelectItem value="user">일반 사용자</SelectItem>
                               <SelectItem value="master_admin">마스터 관리자</SelectItem>
                               <SelectItem value="operation_admin">운영 관리자</SelectItem>
                               <SelectItem value="category_admin">카테고리 관리자</SelectItem>
