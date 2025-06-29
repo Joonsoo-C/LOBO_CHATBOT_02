@@ -555,6 +555,26 @@ function MasterAdmin() {
     }
   });
 
+  // 조직 목록 조회
+  const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
+    queryKey: ['/api/admin/organizations'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organizations');
+      if (!response.ok) throw new Error('Failed to fetch organizations');
+      return response.json();
+    }
+  });
+
+  // 사용자 목록 조회
+  const { data: users = [] } = useQuery<User[]>({
+    queryKey: ['/api/admin/users'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+      return response.json();
+    }
+  });
+
   // 사용자 상태 목록 조회
   const { data: userStatuses = [] } = useQuery<string[]>({
     queryKey: ['/api/admin/user-statuses'],
@@ -773,11 +793,11 @@ function MasterAdmin() {
 
   // 시스템 역할이 "마스터 관리자" 또는 "에이전트 관리자"인 사용자만 필터링
   const managers = useMemo(() => {
-    if (!allManagers) return [];
-    return allManagers.filter(manager => 
-      manager.role === 'master_admin' || manager.role === 'agent_admin'
+    if (!users) return [];
+    return users.filter(user => 
+      user.role === 'master_admin' || user.role === 'agent_admin'
     );
-  }, [allManagers]);
+  }, [users]);
 
 
 
