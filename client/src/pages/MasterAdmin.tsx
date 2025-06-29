@@ -3236,12 +3236,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">에이전트 관리</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="flex items-center space-x-2 whitespace-nowrap px-4 py-2 h-auto min-w-fit">
-                    <Plus className="w-4 h-4 flex-shrink-0" />
-                    <span className="whitespace-nowrap">+ 에이전트 추가</span>
-                  </Button>
-                </DialogTrigger>
                 <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
@@ -4315,7 +4309,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 에이전트 관리 섹션 */}
             <Card>
               <CardHeader>
-                <CardTitle>에이전트 관리</CardTitle>
                 
                 {/* 상단 버튼 섹션 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -4339,7 +4332,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
                 
-                <div className="mt-6">
+                <div className="mt-6 pt-[-19px] pb-[-19px]">
                   <h3 className="text-lg font-medium mb-4">에이전트 검색 및 관리</h3>
                 </div>
               </CardHeader>
