@@ -8195,15 +8195,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">상위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {upperCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8221,15 +8221,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">하위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {lowerCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => !userEditForm.watch('upperCategory') || org.upperCategory === userEditForm.watch('upperCategory'))
+                                  .map(org => org.lowerCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8247,15 +8252,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">세부 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {detailCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => 
+                                    (!userEditForm.watch('upperCategory') || org.upperCategory === userEditForm.watch('upperCategory')) &&
+                                    (!userEditForm.watch('lowerCategory') || org.lowerCategory === userEditForm.watch('lowerCategory'))
+                                  )
+                                  .map(org => org.detailCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8307,12 +8320,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </FormItem>
                   )}
                 />
-
-                {/* 계정 등록일 */}
-                <div className="text-sm text-gray-600">
-                  <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
-                  <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
-                </div>
 
                 {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
@@ -8371,6 +8378,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                       </div>
                     )}
+                  </div>
+                </div>
+
+                {/* 계정 정보 */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">계정 정보</Label>
+                  <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
+                    <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
                   </div>
                 </div>
 
@@ -8506,15 +8522,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">상위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {upperCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8532,15 +8548,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">하위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {lowerCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => !newUserForm.watch('upperCategory') || org.upperCategory === newUserForm.watch('upperCategory'))
+                                  .map(org => org.lowerCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8558,15 +8579,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">세부 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="none">선택</SelectItem>
-                              {detailCategories.map((category, index) => (
+                              <SelectItem value="">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => 
+                                    (!newUserForm.watch('upperCategory') || org.upperCategory === newUserForm.watch('upperCategory')) &&
+                                    (!newUserForm.watch('lowerCategory') || org.lowerCategory === newUserForm.watch('lowerCategory'))
+                                  )
+                                  .map(org => org.detailCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -8578,23 +8607,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       )}
                     />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
                   <FormField
                     control={newUserForm.control}
                     name="position"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>직책/역할</FormLabel>
+                        <FormLabel className="text-sm">직책/역할</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="학생/교수/직원" />
+                          <Input {...field} placeholder="학생, 교수, 직원 등" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={newUserForm.control}
                     name="status"
