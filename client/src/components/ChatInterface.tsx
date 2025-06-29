@@ -922,6 +922,19 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                               variant="ghost" 
                               size="sm" 
                               className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowFileListModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("문서 관리 창을 열었습니다. 업로드된 문서를 확인하고 삭제할 수 있습니다.");
+                              }}
+                            >
+                              <Files className="w-4 h-4 mr-2" />
+                              문서 관리
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
                               onClick={async () => {
                                 setShowMenu(false);
                                 addSystemMessage("에이전트 성과 분석을 실행합니다...");
