@@ -122,7 +122,8 @@ function Home() {
   return (
     <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">
       {/* Header */}
-      <header className="fixed-header md:static md:bg-transparent md:shadow-none md:mb-0">
+      <header className="fixed-header md:static md:bg-transparent md:shadow-none md:mb-0"
+        style={{ contain: 'layout style' }}>
         <div className="px-6 py-3 md:px-0 md:py-0">
           {/* Header with search and settings */}
           <div className="flex items-center gap-2 mb-4 md:mb-6">
@@ -169,8 +170,9 @@ function Home() {
             </DropdownMenu>
             
             {/* Settings Dropdown */}
-            <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
-              <DropdownMenuTrigger asChild>
+            <div className="settings-dropdown-container">
+              <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
+                <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
@@ -179,7 +181,15 @@ function Home() {
                   <Settings className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5} side="bottom" sticky="always">
+              <DropdownMenuContent 
+                align="end" 
+                className="w-48 z-[99999]" 
+                sideOffset={5} 
+                side="bottom" 
+                sticky="always"
+                avoidCollisions={false}
+                style={{ position: 'fixed' }}
+              >
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
                   onClick={(e) => {
@@ -214,8 +224,8 @@ function Home() {
                   {t('common.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              </DropdownMenu>
+            </div>
 
           {/* Tab Navigation */}
           <div className="grid grid-cols-2 gap-0 bg-muted rounded-lg p-1 tab-navigation">

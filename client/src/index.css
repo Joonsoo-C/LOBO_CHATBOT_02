@@ -43,10 +43,13 @@ body {
 
 /* Fixed positioning for dropdown menus to prevent layout shifts */
 .agent-list-container {
-  position: relative;
-  min-height: 0;
-  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow-y: auto;
+  padding-top: inherit;
 }
 
 /* Prevent layout shifts when dropdown opens */
@@ -57,6 +60,35 @@ body {
 /* Force stable layout during dropdown state changes */
 [data-radix-popper-content-wrapper] {
   position: fixed !important;
+}
+
+/* Stabilize main content during dropdown interactions */
+.main-content {
+  position: relative;
+  height: 100%;
+  contain: layout style paint;
+}
+
+/* Prevent layout shift in header area */
+.fixed-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  contain: layout style;
+}
+
+/* Isolate dropdown menu positioning */
+.settings-dropdown-container {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Force dropdown to use portal positioning */
+.settings-dropdown-content {
+  position: fixed !important;
+  transform: none !important;
 }
 
 /* Basic mobile adjustments */
