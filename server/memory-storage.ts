@@ -45,7 +45,9 @@ export class MemoryStorage implements IStorage {
   private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
   private readonly organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
   private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
-  private readonly usersFile = path.join(this.persistenceDir, 'users.json');
+  private readonly usersFile = path.join(this.persistenceDir, 'memory-storage.json');
+  private readonly agentsFile = path.join(this.persistenceDir, 'memory-storage-agents.json');
+  private readonly organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
 
   constructor() {
     // Initialize maps (already declared above)
@@ -56,15 +58,16 @@ export class MemoryStorage implements IStorage {
       fs.mkdirSync(this.persistenceDir, { recursive: true });
     }
 
-    // Load persisted data in correct order
-    this.loadPersistedUsers();
+    // Load persisted data from admin center managed files
+    this.loadUsersFromAdminCenter();
+    this.loadAgentsFromAdminCenter();
+    this.loadOrganizationCategoriesFromAdminCenter();
     this.loadPersistedDocuments();
-    this.loadOrganizationCategoriesFromFile();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
 
-    console.log(`Memory storage initialized with ${this.users.size} users and ${this.organizationCategories.size} organization categories`);
-    this.initializeDefaultData();
+    console.log(`Memory storage initialized with ${this.users.size} users, ${this.agents.size} agents, and ${this.organizationCategories.size} organization categories`);
+    // Skip default data initialization - use admin center data only
 
     // Optimize garbage collection
     this.setupPeriodicCleanup();
@@ -1269,12 +1272,10 @@ export class MemoryStorage implements IStorage {
     }
   }
 
-   private loadPersistedUsers(): void {
+  private loadUsersFromAdminCenter(): void {
     try {
-      const usersFile = path.join(this.persistenceDir, 'users.json');
-
-      if (fs.existsSync(usersFile)) {
-        const data = fs.readFileSync(usersFile, 'utf8');
+      if (fs.existsSync(this.usersFile)) {
+        const data = fs.readFileSync(this.usersFile, 'utf8');
         const usersArray = JSON.parse(data);
 
         for (const user of usersArray) {
@@ -1285,12 +1286,60 @@ export class MemoryStorage implements IStorage {
           });
         }
 
-        console.log(`Loaded ${this.users.size} users from persistence`);
+        console.log(`Loaded ${this.users.size} users from admin center (memory-storage.json)`);
       } else {
-        console.log('No users file found, starting with empty data');
+        console.log('No admin center users file found, starting with empty data');
       }
     } catch (error) {
-      console.error('Failed to load users from persistence:', error);
+      console.error('Error loading users from admin center:', error);
+    }
+  }
+
+  private loadAgentsFromAdminCenter(): void {
+    try {
+      if (fs.existsSync(this.agentsFile)) {
+        const data = fs.readFileSync(this.agentsFile, 'utf8');
+        const agentsArray = JSON.parse(data);
+
+        for (const agent of agentsArray) {
+          this.agents.set(agent.id, {
+            ...agent,
+            createdAt: agent.createdAt ? new Date(agent.createdAt) : new Date(),
+            updatedAt: agent.updatedAt ? new Date(agent.updatedAt) : new Date()
+          });
+          this.nextAgentId = Math.max(this.nextAgentId, agent.id + 1);
+        }
+
+        console.log(`Loaded ${this.agents.size} agents from admin center (memory-storage-agents.json)`);
+      } else {
+        console.log('No admin center agents file found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Error loading agents from admin center:', error);
+    }
+  }
+
+  private loadOrganizationCategoriesFromAdminCenter(): void {
+    try {
+      if (fs.existsSync(this.organizationCategoriesFile)) {
+        const data = fs.readFileSync(this.organizationCategoriesFile, 'utf8');
+        const categoriesArray = JSON.parse(data);
+
+        for (const category of categoriesArray) {
+          this.organizationCategories.set(category.id, {
+            ...category,
+            createdAt: category.createdAt ? new Date(category.createdAt) : new Date(),
+            updatedAt: category.updatedAt ? new Date(category.updatedAt) : new Date()
+          });
+          this.nextOrganizationId = Math.max(this.nextOrganizationId, category.id + 1);
+        }
+
+        console.log(`Loaded ${this.organizationCategories.size} organization categories from admin center (organization-categories.json)`);
+      } else {
+        console.log('No admin center organization categories file found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Error loading organization categories from admin center:', error);
     }
   }
 

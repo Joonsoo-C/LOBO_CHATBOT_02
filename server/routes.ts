@@ -847,10 +847,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 async function initializeDefaultAgents() {
   try {
-    const existingAgents = await storage.getAllAgents();
-    if (existingAgents.length > 0) {
-      return; // Agents already exist
-    }
+    // Skip default agent initialization - using admin center managed agents only
+    console.log("Skipping default agent initialization - using admin center managed data");
+    return;
 
     const defaultAgents = [
       {
