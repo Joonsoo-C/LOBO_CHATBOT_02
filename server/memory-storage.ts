@@ -47,6 +47,8 @@ export class MemoryStorage implements IStorage {
   private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
   private readonly usersFile = path.join(this.persistenceDir, 'memory-storage.json');
   private readonly agentsFile = path.join(this.persistenceDir, 'memory-storage-agents.json');
+  private readonly conversationsFile = path.join(this.persistenceDir, 'conversations.json');
+  private readonly messagesFile = path.join(this.persistenceDir, 'messages.json');
   private readonly organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
 
   constructor() {
@@ -63,6 +65,8 @@ export class MemoryStorage implements IStorage {
     this.loadAgentsFromAdminCenter();
     this.loadOrganizationCategoriesFromAdminCenter();
     this.loadPersistedDocuments();
+    this.loadPersistedConversations();
+    this.loadPersistedMessages();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
 
@@ -727,6 +731,8 @@ export class MemoryStorage implements IStorage {
     
     // Save to persistent storage
     this.savePersistentData();
+    this.savePersistedConversations();
+    this.savePersistedMessages();
   }
 
   // Message operations
@@ -1396,6 +1402,86 @@ export class MemoryStorage implements IStorage {
   clearCache(): void {
     console.log("Clearing memory storage cache");
     // Clear any cached data if needed
+  }
+
+  private loadPersistedConversations(): void {
+    try {
+      if (fs.existsSync(this.conversationsFile)) {
+        const data = JSON.parse(fs.readFileSync(this.conversationsFile, 'utf8'));
+        const conversationsWithDates = (data.conversations || []).map(([id, conv]: [number, any]) => [
+          id,
+          {
+            ...conv,
+            createdAt: conv.createdAt ? new Date(conv.createdAt) : null,
+            lastReadAt: conv.lastReadAt ? new Date(conv.lastReadAt) : null,
+            lastMessageAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : null
+          }
+        ]);
+        this.conversations = new Map(conversationsWithDates);
+        console.log(`Loaded ${this.conversations.size} conversations from persistence`);
+      }
+    } catch (error) {
+      console.error('Failed to load persisted conversations:', error);
+      this.conversations = new Map();
+    }
+  }
+
+  private loadPersistedMessages(): void {
+    try {
+      if (fs.existsSync(this.messagesFile)) {
+        const data = JSON.parse(fs.readFileSync(this.messagesFile, 'utf8'));
+        const messagesWithDates = (data.messages || []).map(([id, msg]: [number, any]) => [
+          id,
+          {
+            ...msg,
+            createdAt: msg.createdAt ? new Date(msg.createdAt) : null
+          }
+        ]);
+        this.messages = new Map(messagesWithDates);
+        console.log(`Loaded ${this.messages.size} messages from persistence`);
+      }
+    } catch (error) {
+      console.error('Failed to load persisted messages:', error);
+      this.messages = new Map();
+    }
+  }
+
+  private savePersistedConversations(): void {
+    try {
+      const conversationsData = {
+        conversations: Array.from(this.conversations.entries()).map(([id, conv]) => [
+          id,
+          {
+            ...conv,
+            createdAt: conv.createdAt?.toISOString(),
+            lastReadAt: conv.lastReadAt?.toISOString(),
+            lastMessageAt: conv.lastMessageAt?.toISOString()
+          }
+        ])
+      };
+
+      fs.writeFileSync(this.conversationsFile, JSON.stringify(conversationsData, null, 2));
+    } catch (error) {
+      console.error('Failed to save conversations to persistence:', error);
+    }
+  }
+
+  private savePersistedMessages(): void {
+    try {
+      const messagesData = {
+        messages: Array.from(this.messages.entries()).map(([id, msg]) => [
+          id,
+          {
+            ...msg,
+            createdAt: msg.createdAt?.toISOString()
+          }
+        ])
+      };
+
+      fs.writeFileSync(this.messagesFile, JSON.stringify(messagesData, null, 2));
+    } catch (error) {
+      console.error('Failed to save messages to persistence:', error);
+    }
   }
 
   private async loadOrganizationCategoriesFromFile(): Promise<void> {
