@@ -41,13 +41,27 @@ body {
   padding-right: var(--safe-area-inset-right);
 }
 
-/* Fixed positioning for dropdown menus to prevent layout shifts */
-.agent-list-container {
-  position: absolute;
+/* Fixed header positioning */
+.fixed-header {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .fixed-header {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom-color: #334155;
+}
+
+/* Agent list container with proper spacing */
+.agent-list-container {
+  margin-top: 0;
+  padding-top: 0;
   overflow-y: auto;
   padding-top: inherit;
 }

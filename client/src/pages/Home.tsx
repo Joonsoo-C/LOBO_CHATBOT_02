@@ -122,8 +122,7 @@ function Home() {
   return (
     <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">
       {/* Header */}
-      <header className="fixed-header md:static md:bg-transparent md:shadow-none md:mb-0"
-        style={{ contain: 'layout style' }}>
+      <header className="fixed-header md:static md:bg-transparent md:shadow-none md:mb-0">
         <div className="px-6 py-3 md:px-0 md:py-0">
           {/* Header with search and settings */}
           <div className="flex items-center gap-2 mb-4 md:mb-6">
@@ -170,9 +169,8 @@ function Home() {
             </DropdownMenu>
             
             {/* Settings Dropdown */}
-            <div className="settings-dropdown-container">
-              <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
-                <DropdownMenuTrigger asChild>
+            <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
+              <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
@@ -184,11 +182,7 @@ function Home() {
               <DropdownMenuContent 
                 align="end" 
                 className="w-48 z-[99999]" 
-                sideOffset={5} 
-                side="bottom" 
-                sticky="always"
-                avoidCollisions={false}
-                style={{ position: 'fixed' }}
+                sideOffset={5}
               >
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
@@ -224,8 +218,7 @@ function Home() {
                   {t('common.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            </DropdownMenu>
           </div>
 
           {/* Tab Navigation */}
