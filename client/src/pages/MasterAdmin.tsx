@@ -8195,14 +8195,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">상위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
@@ -8221,17 +8221,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">하위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
-                                  .filter(org => !userEditForm.watch('upperCategory') || org.upperCategory === userEditForm.watch('upperCategory'))
+                                  .filter(org => !userEditForm.watch('upperCategory') || userEditForm.watch('upperCategory') === 'none' || org.upperCategory === userEditForm.watch('upperCategory'))
                                   .map(org => org.lowerCategory)
                                   .filter(Boolean)
                               )).sort().map((category) => (
@@ -8252,19 +8252,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">세부 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => 
-                                    (!userEditForm.watch('upperCategory') || org.upperCategory === userEditForm.watch('upperCategory')) &&
-                                    (!userEditForm.watch('lowerCategory') || org.lowerCategory === userEditForm.watch('lowerCategory'))
+                                    (!userEditForm.watch('upperCategory') || userEditForm.watch('upperCategory') === 'none' || org.upperCategory === userEditForm.watch('upperCategory')) &&
+                                    (!userEditForm.watch('lowerCategory') || userEditForm.watch('lowerCategory') === 'none' || org.lowerCategory === userEditForm.watch('lowerCategory'))
                                   )
                                   .map(org => org.detailCategory)
                                   .filter(Boolean)
@@ -8522,14 +8522,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">상위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
@@ -8548,17 +8548,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">하위 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
-                                  .filter(org => !newUserForm.watch('upperCategory') || org.upperCategory === newUserForm.watch('upperCategory'))
+                                  .filter(org => !newUserForm.watch('upperCategory') || newUserForm.watch('upperCategory') === 'none' || org.upperCategory === newUserForm.watch('upperCategory'))
                                   .map(org => org.lowerCategory)
                                   .filter(Boolean)
                               )).sort().map((category) => (
@@ -8579,19 +8579,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">세부 카테고리</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
+                              <SelectItem value="none">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => 
-                                    (!newUserForm.watch('upperCategory') || org.upperCategory === newUserForm.watch('upperCategory')) &&
-                                    (!newUserForm.watch('lowerCategory') || org.lowerCategory === newUserForm.watch('lowerCategory'))
+                                    (!newUserForm.watch('upperCategory') || newUserForm.watch('upperCategory') === 'none' || org.upperCategory === newUserForm.watch('upperCategory')) &&
+                                    (!newUserForm.watch('lowerCategory') || newUserForm.watch('lowerCategory') === 'none' || org.lowerCategory === newUserForm.watch('lowerCategory'))
                                   )
                                   .map(org => org.detailCategory)
                                   .filter(Boolean)
