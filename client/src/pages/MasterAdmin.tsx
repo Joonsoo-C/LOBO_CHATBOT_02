@@ -215,26 +215,9 @@ function MasterAdmin() {
     }
   });
 
-  // 조직 목록 조회
-  const { data: organizations = [], refetch: refetchOrganizations } = useQuery<any[]>({
-    queryKey: ['/api/admin/organizations'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/organizations');
-      if (!response.ok) throw new Error('Failed to fetch organizations');
-      return response.json();
-    },
 
-  });
 
-  // 사용자 목록 조회
-  const { data: users } = useQuery<User[]>({
-    queryKey: ['/api/admin/users'],
-    queryFn: async () => {
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) throw new Error('Failed to fetch users');
-      return response.json();
-    }
-  });
+
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
