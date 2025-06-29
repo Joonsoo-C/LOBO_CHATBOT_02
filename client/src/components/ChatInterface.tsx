@@ -977,23 +977,23 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         }}
       >
         {allMessages.length === 0 ? (
-          <div 
-            className="text-center px-4 md:pt-12 md:pb-16"
-            style={{
-              paddingTop: isTablet ? '3rem' : '40px',
-              paddingBottom: isTablet ? '3rem' : '40px',
-              marginTop: isTablet ? '0' : '20px'
-            }}
-          >
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 md:w-20 md:h-20 md:mb-6">
-              <User className="text-white w-8 h-8 md:w-10 md:h-10" />
+          <div className="flex justify-start">
+            <div 
+              className="relative px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 bg-muted text-muted-foreground"
+              style={{
+                textAlign: 'left',
+                minWidth: '40px',
+                width: 'fit-content',
+                overflowWrap: 'break-word',
+                wordBreak: 'keep-all',
+                maxWidth: '85%',
+                marginTop: isTablet ? '1rem' : '40px'
+              }}
+            >
+              <span className="korean-text">
+                안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
+              </span>
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2 korean-text md:text-xl md:mb-3">
-              {agent.name}과 대화하세요
-            </h3>
-            <p className="text-muted-foreground text-sm korean-text md:text-base">
-              궁금한 것이 있으면 언제든지 물어보세요.
-            </p>
           </div>
         ) : (
           <>
