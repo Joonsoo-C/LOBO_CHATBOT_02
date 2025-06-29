@@ -682,11 +682,11 @@ function MasterAdmin() {
   // 총 페이지 수 계산
   const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-  // 관리자 선정용 사용자 필터링
+  // 관리자 선정용 사용자 필터링 (관리자 권한을 가진 사용자만)
   const filteredManagerUsers = useMemo(() => {
-    if (!users) return [];
+    if (!allManagers) return [];
     
-    return users.filter(user => {
+    return allManagers.filter(user => {
       // 검색어 필터링
       const matchesSearch = !managerSearchQuery || 
         (user as any).name?.toLowerCase().includes(managerSearchQuery.toLowerCase()) ||
@@ -703,7 +703,7 @@ function MasterAdmin() {
       
       return matchesSearch && matchesUpper && matchesLower && matchesDetail;
     });
-  }, [users, managerSearchQuery, managerFilterUpperCategory, managerFilterLowerCategory, managerFilterDetailCategory]);
+  }, [allManagers, managerSearchQuery, managerFilterUpperCategory, managerFilterLowerCategory, managerFilterDetailCategory]);
 
   // 관리자 사용자 페이지네이션
   const paginatedManagerUsers = useMemo(() => {
