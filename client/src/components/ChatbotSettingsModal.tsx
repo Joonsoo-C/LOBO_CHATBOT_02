@@ -60,7 +60,7 @@ const VISIBILITY_OPTIONS = [
     label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" 
   },
   { 
-    value: "organization", 
+    value: "custom", 
     label: "사용자 지정 - 개별 사용자 선택" 
   },
   { 
@@ -143,7 +143,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         
         let message = `챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}\n공유 범위: ${visibilityLabel}`;
         
-        if (settings.visibility === "organization" && settings.upperCategory) {
+        if (settings.visibility === "custom" && settings.upperCategory) {
           message += `\n소속 조직: ${settings.upperCategory}`;
           if (settings.lowerCategory) message += ` > ${settings.lowerCategory}`;
           if (settings.detailCategory) message += ` > ${settings.detailCategory}`;
@@ -271,8 +271,8 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             </Select>
           </div>
 
-          {/* Organization Categories (only show for organization visibility) */}
-          {settings.visibility === "organization" && (
+          {/* Organization Categories (only show for custom visibility) */}
+          {settings.visibility === "custom" && (
             <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <Label className="korean-text text-sm font-medium">소속 조직</Label>
               

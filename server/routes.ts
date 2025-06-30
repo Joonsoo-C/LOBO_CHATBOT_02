@@ -319,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate settings
       const validModels = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
       const validTypes = ["strict-doc", "doc-fallback-llm", "general-llm"];
-      const validVisibility = ["public", "group", "organization", "private"];
+      const validVisibility = ["public", "group", "custom", "private"];
 
       if (!validModels.includes(llmModel)) {
         return res.status(400).json({ message: "Invalid LLM model" });
