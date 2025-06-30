@@ -461,8 +461,8 @@ body {
     max-width: 90%;
     min-width: 40px;
     word-break: keep-all;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    white-space: nowrap;
   }
 
   @media (min-width: 768px) {

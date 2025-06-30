@@ -1066,9 +1066,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         textAlign: 'left',
                         minWidth: msg.isFromUser ? '60px' : '40px',
                         width: 'fit-content',
-                        overflowWrap: 'break-word',
+                        overflowWrap: 'anywhere',
                         wordBreak: 'keep-all',
-                        whiteSpace: msg.content.length <= 8 ? 'nowrap' : 'normal',
+                        whiteSpace: 'nowrap',
                         position: 'relative'
                       }}
                       onClick={() => {

@@ -688,6 +688,7 @@ Changelog:
   * Changed user message bubble color to match user-specified blue (#4A90E2) replacing Apple's gradient
   * Updated send button and hover effects to use consistent blue color scheme
   * Enhanced user message bubble width (95%) and adjusted right margin (8px) for better text flow
+  * Fixed message line breaking to prevent forced wrapping of short messages with white-space: nowrap
 ```
 
 ## User Preferences
