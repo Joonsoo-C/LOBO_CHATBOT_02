@@ -1087,16 +1087,10 @@ function MasterAdmin() {
     return uniqueCategories;
   };
 
-  // 에이전트 카테고리 데이터 (AI 에이전트 0627_2 엑셀파일 기반)
-  const getAgentCategories = () => {
-    if (!agents) return [];
-    const uniqueCategories: string[] = [];
-    agents.forEach(agent => {
-      if (agent.category && agent.category.trim() !== '' && !uniqueCategories.includes(agent.category)) {
-        uniqueCategories.push(agent.category);
-      }
-    });
-    return uniqueCategories;
+  // Q&A 로그의 에이전트 카테고리 (Excel 질의응답 샘플 데이터 기반)
+  const getQaAgentCategories = () => {
+    // Excel 질의응답샘플에서 사용된 에이전트 유형들
+    return ['학교', '기능형', '학과', '교수'];
   };
 
   // Q&A 로그 필터링 핸들러들
@@ -5066,14 +5060,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Select 
                     value={qaFilterAgentCategory} 
                     onValueChange={setQaFilterAgentCategory}
-                    disabled={qaFilterUpperCategory === 'all'}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="에이전트 카테고리" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {getAgentCategories().map((category) => (
+                      {getQaAgentCategories().map((category) => (
                         <SelectItem key={category} value={category}>{category}</SelectItem>
                       ))}
                     </SelectContent>

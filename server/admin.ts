@@ -2979,7 +2979,7 @@ export function setupAdminRoutes(app: Express) {
         qaLogs = qaLogs.filter(log => log.userType === userType);
       }
       
-      if (keyword && keyword.trim()) {
+      if (keyword && typeof keyword === 'string' && keyword.trim()) {
         const searchKeyword = keyword.toLowerCase();
         qaLogs = qaLogs.filter(log => 
           log.questionContent?.toLowerCase().includes(searchKeyword) ||
