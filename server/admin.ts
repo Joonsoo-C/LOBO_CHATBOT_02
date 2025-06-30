@@ -3007,6 +3007,100 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // QA 로그 개선 요청 업데이트
+  app.put('/api/admin/qa-logs/:id/improvement', isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { improvementRequest } = req.body;
+      
+      if (!improvementRequest || typeof improvementRequest !== 'string') {
+        return res.status(400).json({ message: '개선 요청 내용이 필요합니다.' });
+      }
+      
+      const updatedLog = await storage.updateQaLog(id, { improvementRequest });
+      
+      if (!updatedLog) {
+        return res.status(404).json({ message: 'QA 로그를 찾을 수 없습니다.' });
+      }
+      
+      res.json({ message: '개선 요청이 저장되었습니다.', log: updatedLog });
+    } catch (error) {
+      console.error('QA 로그 개선 요청 저장 중 오류:', error);
+      res.status(500).json({ message: '개선 요청 저장 중 오류가 발생했습니다.' });
+    }
+  });
+
+  // QA 로그 새 데이터 업로드 및 교체
+  app.post('/api/admin/qa-logs/upload', isAuthenticated, adminUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: '파일이 업로드되지 않았습니다.' });
+      }
+
+      const XLSX = await import('xlsx');
+      const workbook = XLSX.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet);
+
+      console.log(`QA 로그 업로드: ${data.length}개 항목 처리 중...`);
+
+      // 기존 데이터 삭제
+      await storage.clearAllQaLogs();
+
+      // 새 데이터 생성
+      let successCount = 0;
+      for (const item of data) {
+        try {
+          // Excel 시리얼 날짜를 JavaScript Date로 변환
+          const excelDate = item['대화 시각'];
+          let jsDate: Date;
+          
+          if (typeof excelDate === 'number') {
+            jsDate = new Date((excelDate - 25569) * 86400 * 1000);
+          } else {
+            jsDate = new Date(excelDate || Date.now());
+          }
+          
+          const qaLogData = {
+            timestamp: jsDate,
+            agentType: item['에이전트 유형'] || '기본',
+            agentName: item['에이전트 명'] || '알 수 없음',
+            userType: item['사용자 유형'] || '학생',
+            questionContent: item['질문 내용'] || '',
+            responseContent: item['챗봇 응답내용'] || '',
+            responseType: item['응답 유형'] || 'AI 생성',
+            responseTime: item['응답시간'] || '0.5초',
+            agentId: null,
+            userId: null,
+            improvementRequest: null
+          };
+          
+          await storage.createQaLog(qaLogData);
+          successCount++;
+        } catch (error) {
+          console.error('QA 로그 생성 실패:', error);
+        }
+      }
+
+      // 업로드된 파일 삭제
+      fs.unlinkSync(req.file.path);
+
+      console.log(`✅ ${successCount}개 QA 로그 업로드 완료`);
+      res.json({ 
+        message: `${successCount}개의 QA 로그가 성공적으로 업로드되었습니다.`,
+        count: successCount 
+      });
+
+    } catch (error) {
+      console.error('QA 로그 업로드 중 오류:', error);
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      res.status(500).json({ message: 'QA 로그 업로드 중 오류가 발생했습니다.' });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';

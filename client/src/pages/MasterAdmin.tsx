@@ -4957,82 +4957,42 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <table className="w-full">
                       <thead className="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            시간
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            대화 시각
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            사용자
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            에이전트 유형
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            에이전트
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            에이전트 명
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            질문
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            사용자 유형
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            질문 내용
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            챗봇 응답내용
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             응답 유형
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            응답 시간
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            응답시간
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            작업
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            개선 요청
                           </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                         {qaLogsData?.logs?.map((log: any, index: number) => (
-                          <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(log.createdAt).toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">{log.userId}</div>
-                                  <div className="text-xs text-gray-500">{log.userType || '사용자'}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{log.agentName}</div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                                {log.content}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className={
-                                log.isFromUser ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"
-                              }>
-                                {log.isFromUser ? "사용자 질문" : "AI 응답"}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {Math.random() * 3 + 1}초
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="상세 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                                <Button variant="outline" size="sm" title="피드백">
-                                  <MessageSquare className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
+                          <QALogRow key={log.id || index} log={log} />
                         ))}
                         {qaLogsData?.logs?.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                            <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
                               등록된 Q&A 로그가 없습니다.
                             </td>
                           </tr>
