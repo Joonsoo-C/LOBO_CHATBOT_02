@@ -571,22 +571,28 @@ body {
     flex-shrink: 0;
   }
 
-  /* Tab navigation full width and size */
+  /* Tab navigation to match sample image exactly */
   .tab-navigation {
     width: 100% !important;
-    min-height: 56px !important;
-  }
-
-  .tab-navigation .grid {
-    width: 100% !important;
+    background: hsl(var(--muted)) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 4px !important;
   }
 
   .tab-navigation button {
     width: 100% !important;
-    min-height: 56px !important;
-    font-size: 16px !important;
+    height: 48px !important;
+    font-size: 15px !important;
     font-weight: 500 !important;
+    border-radius: 8px !important;
+  }
+
+  .tab-navigation button[data-state="active"] {
+    background: hsl(var(--background)) !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
   }
 
   @media (min-width: 768px) {
