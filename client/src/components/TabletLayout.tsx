@@ -342,6 +342,9 @@ export default function TabletLayout() {
     queryKey: ["/api/agents"],
     staleTime: 0, // Always consider data stale for immediate updates
     gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
+    refetchOnMount: "always", // Always refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when window gets focus
+    refetchOnReconnect: true, // Refetch when reconnecting
   });
 
   const { data: conversations = [] } = useQuery<Conversation[]>({

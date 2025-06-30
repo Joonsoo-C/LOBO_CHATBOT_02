@@ -197,12 +197,25 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] });
       
-      // Step 6: Force immediate refetch with short delay for instant UI updates
+      // Step 6: NUCLEAR OPTION - Force immediate refetch with multiple strategies
+      // Strategy 1: Immediate invalidation
+      queryClient.removeQueries({ queryKey: ["/api/agents"] });
+      
+      // Strategy 2: Force refetch with delay
+      setTimeout(async () => {
+        await Promise.all([
+          queryClient.refetchQueries({ queryKey: ["/api/agents"], type: "all" }),
+          queryClient.refetchQueries({ queryKey: ["/api/conversations"], type: "all" }),
+          queryClient.refetchQueries({ queryKey: ["/api/admin/agents"], type: "all" }),
+        ]);
+        console.log("Force refetch completed after icon change");
+      }, 50);
+      
+      // Strategy 3: Additional refetch after longer delay to ensure UI update
       setTimeout(() => {
         queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-        queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
-        queryClient.refetchQueries({ queryKey: ["/api/admin/agents"] });
-      }, 50);
+        console.log("Secondary refetch for agents query");
+      }, 200);
       
       // Step 7: Close modal and show success message
       toast({
