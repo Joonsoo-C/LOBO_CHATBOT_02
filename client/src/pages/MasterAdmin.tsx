@@ -27,8 +27,10 @@ import AgentFileUploadModal from "@/components/AgentFileUploadModal";
 import { 
   Users, 
   MessageSquare, 
-  Bot, 
-  BarChart3, 
+  Bot,
+  Clock,
+  BarChart3,
+  DollarSign,
   Settings, 
   Database,
   FileText,
@@ -275,6 +277,8 @@ function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  
+
   
   // 조직 카테고리 편집 관련 상태
   const [isOrgCategoryEditDialogOpen, setIsOrgCategoryEditDialogOpen] = useState(false);
@@ -677,67 +681,69 @@ function MasterAdmin() {
 
   // Move this after organizations is declared via useQuery
 
-  // 샘플 토큰 데이터 생성
+  // 샘플 토큰 데이터 생성 (146개 질문응답 데이터 기반)
   const sampleTokenData = useMemo(() => {
     if (!agents) return [];
     
-    const sampleQuestions = [
-      "입학 절차에 대해 알려주세요",
-      "장학금 신청 방법이 궁금합니다",
-      "학과 커리큘럼에 대해 설명해주세요",
-      "졸업 요건이 무엇인가요?",
-      "동아리 활동에 대해 알려주세요",
-      "기숙사 신청은 어떻게 하나요?",
-      "교환학생 프로그램이 있나요?",
-      "취업 지원 서비스는 무엇이 있나요?",
-      "도서관 이용 시간을 알려주세요",
-      "수강신청 방법에 대해 설명해주세요",
-      "학비 납부 일정을 알려주세요",
-      "휴학 신청은 어떻게 하나요?",
-      "연구실 참여 방법을 알려주세요",
-      "인턴십 프로그램이 있나요?",
-      "학점 인정 기준이 궁금합니다"
+    const qaQuestions = [
+      "입학 절차에 대해 알려주세요", "장학금 신청 방법이 궁금합니다", "학과 커리큘럼에 대해 설명해주세요", "졸업 요건이 무엇인가요?",
+      "동아리 활동에 대해 알려주세요", "기숙사 신청은 어떻게 하나요?", "교환학생 프로그램이 있나요?", "취업 지원 서비스는 무엇이 있나요?",
+      "도서관 이용 시간을 알려주세요", "수강신청 방법에 대해 설명해주세요", "학비 납부 일정을 알려주세요", "휴학 신청은 어떻게 하나요?",
+      "연구실 참여 방법을 알려주세요", "인턴십 프로그램이 있나요?", "학점 인정 기준이 궁금합니다", "전공 선택은 언제 하나요?",
+      "복수전공 신청 방법을 알려주세요", "부전공 이수 요건이 무엇인가요?", "교직 과정은 어떻게 신청하나요?", "외국어 시험 면제 조건이 있나요?",
+      "졸업논문 작성 가이드라인을 알려주세요", "성적 이의신청은 어떻게 하나요?", "학사경고 해제 방법이 궁금합니다", "재수강 신청 절차를 알려주세요",
+      "학점 포기는 어떻게 하나요?", "전과 신청 조건이 무엇인가요?", "학사 일정표를 확인하고 싶습니다", "수업료 감면 혜택이 있나요?",
+      "국가장학금 신청 방법을 알려주세요", "교내 장학금 종류가 궁금합니다", "근로장학생 모집 공고는 언제 나오나요?", "해외연수 프로그램에 대해 알려주세요",
+      "교환학생 선발 기준이 무엇인가요?", "어학연수 지원 제도가 있나요?", "창업 지원 프로그램을 소개해주세요", "취업 상담은 어디서 받을 수 있나요?",
+      "진로 탐색 프로그램이 있나요?", "자격증 취득 지원 제도를 알려주세요", "온라인 강의 수강 방법이 궁금합니다", "출석 인정 기준을 알려주세요",
+      "강의 평가는 언제 실시하나요?", "수업 변경 신청은 어떻게 하나요?", "계절학기 신청 방법을 알려주세요", "학위수여식은 언제 열리나요?",
+      "졸업앨범 주문은 어떻게 하나요?", "학생증 재발급 방법을 알려주세요", "주차장 이용 방법이 궁금합니다", "체육시설 사용 안내를 알려주세요",
+      "동아리 창설 절차가 궁금합니다", "학생회 선거는 언제 열리나요?", "학과 행사 일정을 확인하고 싶습니다", "축제 참가 방법을 알려주세요"
     ];
+
+    // 더 많은 질문을 추가하여 146개 달성
+    for (let i = qaQuestions.length; i < 146; i++) {
+      qaQuestions.push(`대학 생활 관련 질문 ${i + 1}`);
+    }
 
     const models = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
     const tokenData: TokenUsage[] = [];
-
-    // 각 에이전트별로 5-10개의 샘플 데이터 생성
-    agents.slice(0, 20).forEach((agent, agentIndex) => {
-      const numQuestions = Math.floor(Math.random() * 6) + 5; // 5-10개
+    
+    // 146개 질문응답 데이터를 기반으로 토큰 데이터 생성
+    qaQuestions.forEach((question, index) => {
+      const agentIndex = index % agents.length;
+      const agent = agents[agentIndex];
+      const model = models[index % models.length];
       
-      for (let i = 0; i < numQuestions; i++) {
-        const questionIndex = Math.floor(Math.random() * sampleQuestions.length);
-        const question = sampleQuestions[questionIndex];
-        const model = models[Math.floor(Math.random() * models.length)];
-        
-        // 토큰 사용량 계산 (질문 길이와 모델에 따라 다르게)
-        const baseTokens = question.length * 2;
-        const inputTokens = Math.floor(baseTokens + Math.random() * 200 + 100);
-        const outputTokens = Math.floor(inputTokens * 0.3 + Math.random() * 150);
-        const indexTokens = Math.floor(Math.random() * 100 + 50);
-        const preprocessingTokens = Math.floor(Math.random() * 80 + 20);
-        
-        const now = new Date();
-        const daysAgo = Math.floor(Math.random() * 30); // 최근 30일 내
-        const timestamp = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      // 토큰 사용량 계산 (질문 길이와 모델에 따라 다르게)
+      const baseTokens = question.length * 2;
+      const inputTokens = Math.floor(baseTokens + Math.random() * 200 + 100);
+      const outputTokens = Math.floor(inputTokens * 0.3 + Math.random() * 150);
+      const indexTokens = Math.floor(Math.random() * 100 + 50);
+      const preprocessingTokens = Math.floor(Math.random() * 80 + 20);
+      
+      const now = new Date();
+      const daysAgo = Math.floor(Math.random() * 30); // 최근 30일 내
+      const timestamp = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      
+      const orgIndex = index % (organizations?.length || 1);
+      const org = organizations?.[orgIndex];
 
-        tokenData.push({
-          id: `token_${agentIndex}_${i}`,
-          timestamp: timestamp.toISOString(),
-          agentName: agent.name,
-          question,
-          model,
-          inputTokens,
-          outputTokens,
-          indexTokens,
-          preprocessingTokens,
-          totalTokens: inputTokens + outputTokens + indexTokens + preprocessingTokens,
-          upperCategory: organizations?.find(org => Math.random() > 0.5)?.upperCategory,
-          lowerCategory: organizations?.find(org => Math.random() > 0.5)?.lowerCategory,
-          detailCategory: organizations?.find(org => Math.random() > 0.5)?.detailCategory,
-        });
-      }
+      tokenData.push({
+        id: `token_qa_${index}`,
+        timestamp: timestamp.toISOString(),
+        agentName: agent.name,
+        question,
+        model,
+        inputTokens,
+        outputTokens,
+        indexTokens,
+        preprocessingTokens,
+        totalTokens: inputTokens + outputTokens + indexTokens + preprocessingTokens,
+        upperCategory: org?.upperCategory,
+        lowerCategory: org?.lowerCategory,
+        detailCategory: org?.detailCategory,
+      });
     });
 
     return tokenData.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -790,6 +796,11 @@ function MasterAdmin() {
       );
     }
 
+    // 모델 필터링
+    if (tokenModelFilter !== 'all') {
+      filtered = filtered.filter(token => token.model === tokenModelFilter);
+    }
+
     // 정렬
     filtered.sort((a, b) => {
       const aValue = a[tokenSortField];
@@ -798,7 +809,20 @@ function MasterAdmin() {
     });
 
     return filtered;
-  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenSortField, tokenSortOrder]);
+  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortOrder]);
+
+  // 토큰 사용량 통계 계산
+  const tokenStats = useMemo(() => {
+    const totalTokens = filteredTokenData.reduce((sum, token) => sum + token.totalTokens, 0);
+    const dailyAverage = Math.round(totalTokens / 30); // 30일 평균
+    const estimatedCost = Math.round(totalTokens * 0.087); // 토큰당 약 0.087원 가정 (₩127,000 / 146만 토큰)
+    
+    return {
+      monthly: totalTokens,
+      dailyAverage,
+      estimatedCost
+    };
+  }, [filteredTokenData]);
 
   // 토큰 데이터 페이지네이션
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
@@ -6661,8 +6685,46 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </TabsContent>
 
           {/* 토큰 관리 */}
-          <TabsContent value="tokens" className="space-y-6">
+          <TabsContent value="tokens" className="space-y-4">
             <h2 className="text-2xl font-bold">토큰 관리</h2>
+
+            {/* 요약 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">월간 사용량</span>
+                </div>
+                <div className="mt-2">
+                  <div className="text-2xl font-bold">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
+                  <div className="text-xs text-green-600 mt-1">73% 사용</div>
+                </div>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">일일 평균</span>
+                </div>
+                <div className="mt-2">
+                  <div className="text-2xl font-bold">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
+                  <div className="text-xs text-green-600 mt-1">토큰/일</div>
+                  <div className="text-xs text-muted-foreground">↑ 12% 지난 주 대비</div>
+                </div>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center space-x-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">예상 비용</span>
+                </div>
+                <div className="mt-2">
+                  <div className="text-2xl font-bold">₩{tokenStats.estimatedCost.toLocaleString()}</div>
+                  <div className="text-xs text-green-600 mt-1">이번 달</div>
+                  <div className="text-xs text-muted-foreground">예상 내</div>
+                </div>
+              </Card>
+            </div>
 
             {/* 로그 필터링 */}
             <Card>
@@ -6670,24 +6732,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardTitle>로그 필터링</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {/* 기간 */}
-                  <div className="space-y-2">
-                    <Label>기간</Label>
-                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="today">오늘</SelectItem>
-                        <SelectItem value="week">최근 1주일</SelectItem>
-                        <SelectItem value="month">최근 1개월</SelectItem>
-                        <SelectItem value="quarter">최근 3개월</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 상위 조직 */}
+                {/* 상위 - 하위 - 세부 조직 (상단) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div className="space-y-2">
                     <Label>상위 조직</Label>
                     <Select value={tokenUpperCategoryFilter} onValueChange={setTokenUpperCategoryFilter}>
@@ -6703,10 +6749,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  {/* 하위 조직 */}
                   <div className="space-y-2">
                     <Label>하위 조직</Label>
-                    <Select value={tokenLowerCategoryFilter} onValueChange={setTokenLowerCategoryFilter}>
+                    <Select 
+                      value={tokenLowerCategoryFilter} 
+                      onValueChange={setTokenLowerCategoryFilter}
+                      disabled={tokenUpperCategoryFilter === 'all'}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -6719,10 +6768,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  {/* 세부 조직 */}
                   <div className="space-y-2">
                     <Label>세부 조직</Label>
-                    <Select value={tokenDetailCategoryFilter} onValueChange={setTokenDetailCategoryFilter}>
+                    <Select 
+                      value={tokenDetailCategoryFilter} 
+                      onValueChange={setTokenDetailCategoryFilter}
+                      disabled={tokenLowerCategoryFilter === 'all'}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -6734,8 +6786,41 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
 
-                  {/* 키워드 */}
+                {/* 기간, 모델, 키워드 (하단) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>기간</Label>
+                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">오늘</SelectItem>
+                        <SelectItem value="week">최근 1주일</SelectItem>
+                        <SelectItem value="month">최근 1개월</SelectItem>
+                        <SelectItem value="quarter">최근 3개월</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>모델</Label>
+                    <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="space-y-2">
                     <Label>키워드</Label>
                     <Input
