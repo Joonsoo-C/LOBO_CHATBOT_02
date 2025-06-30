@@ -118,15 +118,63 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         return response;
       }
     },
-    onSuccess: () => {
-      // Invalidate all agent-related queries with comprehensive patterns
+    onSuccess: (updatedAgent) => {
+      // First, invalidate all agent-related queries
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
       queryClient.invalidateQueries({ queryKey: [`/api/agents/${agent.id}`] });
+      
+      // Critical: Update conversations cache with new agent data
+      queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
+        if (!oldData) return oldData;
+        return oldData.map((conv: any) => {
+          if (conv.agentId === agent.id) {
+            return {
+              ...conv,
+              agent: {
+                ...conv.agent,
+                icon: isUsingCustomImage ? customImage : selectedIcon,
+                backgroundColor: selectedColor,
+                isCustomIcon: isUsingCustomImage
+              }
+            };
+          }
+          return conv;
+        });
+      });
+      
+      // Invalidate all conversation-related queries to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       
-      // Use queryKey patterns to catch all variations
+      // Also update any cached individual conversation queries
+      queryClient.setQueryData([`/api/conversations`, agent.id], (oldData: any) => {
+        if (!oldData || !oldData.agent) return oldData;
+        return {
+          ...oldData,
+          agent: {
+            ...oldData.agent,
+            icon: isUsingCustomImage ? customImage : selectedIcon,
+            backgroundColor: selectedColor,
+            isCustomIcon: isUsingCustomImage
+          }
+        };
+      });
+      
+      queryClient.setQueryData([`/api/conversations/management`, agent.id], (oldData: any) => {
+        if (!oldData || !oldData.agent) return oldData;
+        return {
+          ...oldData,
+          agent: {
+            ...oldData.agent,
+            icon: isUsingCustomImage ? customImage : selectedIcon,
+            backgroundColor: selectedColor,
+            isCustomIcon: isUsingCustomImage
+          }
+        };
+      });
+      
+      // Use comprehensive predicate matching for any missed queries
       queryClient.invalidateQueries({ 
         predicate: (query) => {
           const key = query.queryKey;
@@ -138,10 +186,10 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         }
       });
       
-      // Force immediate refetch of critical queries
+      // Force immediate refetch of critical data
       queryClient.refetchQueries({ queryKey: ["/api/agents"] });
       queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
-      queryClient.refetchQueries({ queryKey: [`/api/agents/${agent.id}`] });
+      queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
       
       toast({
         title: "아이콘 변경 완료",
