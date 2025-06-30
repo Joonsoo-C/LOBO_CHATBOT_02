@@ -27,6 +27,7 @@ interface User {
   lastName?: string;
   email?: string;
   userType?: string;
+  role?: string;
 }
 
 function Home() {
@@ -274,12 +275,14 @@ function Home() {
             >
               {t('common.chat')}
             </div>
-            <div 
-              className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
-              onClick={() => setActiveTab("management")}
-            >
-              {t('common.management')}
-            </div>
+            {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
+              <div 
+                className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
+                onClick={() => setActiveTab("management")}
+              >
+                {t('common.management')}
+              </div>
+            )}
           </div>
         </div>
       </header>

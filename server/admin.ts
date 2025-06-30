@@ -313,13 +313,10 @@ export function setupAdminRoutes(app: Express) {
     try {
       const allUsers = await storage.getAllUsers();
       
-      // Filter users with manager roles (master admin or agent admin)
+      // Filter users with manager roles (only master admin or agent admin)
       const managers = allUsers.filter(user => 
         user.role === 'master_admin' || 
-        user.role === 'agent_admin' ||
-        (user as any).position === '교수' ||
-        (user as any).position === '부교수' ||
-        (user as any).position === '정교수'
+        user.role === 'agent_admin'
       );
       
       console.log('Filtered managers:', managers.length, 'total users:', allUsers.length);

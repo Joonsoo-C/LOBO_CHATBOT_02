@@ -340,6 +340,10 @@ export default function TabletLayout() {
     { value: "기능형", label: "기능형" }
   ];
 
+  const { data: user } = useQuery<{ id: string; username: string; role: string }>({
+    queryKey: ["/api/user"],
+  });
+
   const { data: agents = [], isLoading: agentsLoading } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
     staleTime: 0, // Always consider data stale for immediate updates
@@ -563,7 +567,7 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="grid grid-cols-2 gap-0 bg-muted rounded-xl p-1">
+          <div className={`grid gap-0 bg-muted rounded-xl p-1 ${(user?.role === 'agent_admin' || user?.role === 'master_admin') ? 'grid-cols-2' : 'grid-cols-1'}`}>
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
@@ -575,17 +579,19 @@ export default function TabletLayout() {
             >
               {t('agent.generalChat')}
             </Button>
-            <Button
-              variant={activeTab === "management" ? "default" : "ghost"}
-              size="lg"
-              className="korean-text h-14"
-              onClick={() => {
-                setActiveTab("management");
-                navigate("/management");
-              }}
-            >
-              {t('agent.management')}
-            </Button>
+            {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
+              <Button
+                variant={activeTab === "management" ? "default" : "ghost"}
+                size="lg"
+                className="korean-text h-14"
+                onClick={() => {
+                  setActiveTab("management");
+                  navigate("/management");
+                }}
+              >
+                {t('agent.management')}
+              </Button>
+            )}
           </div>
         </div>
 
