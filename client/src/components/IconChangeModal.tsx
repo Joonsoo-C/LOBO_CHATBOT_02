@@ -118,42 +118,50 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         return response;
       }
     },
-    onSuccess: (updatedAgent) => {
-      console.log("Icon change success, invalidating caches...");
+    onSuccess: (response) => {
+      console.log("Icon change success, using server response data:", response);
       
-      // Step 1: Update agent cache directly first
+      // Get updated agent data from server response
+      const updatedAgentData = (response as any).agent;
+      
+      if (!updatedAgentData) {
+        console.error("No agent data in server response");
+        return;
+      }
+      
+      // Step 1: Update agent cache with actual server data
       queryClient.setQueryData(["/api/agents"], (oldData: any[]) => {
         if (!oldData) return oldData;
         return oldData.map((agentItem: any) => {
           if (agentItem.id === agent.id) {
             return {
               ...agentItem,
-              icon: isUsingCustomImage ? customImage : selectedIcon,
-              backgroundColor: selectedColor,
-              isCustomIcon: isUsingCustomImage
+              icon: updatedAgentData.icon,
+              backgroundColor: updatedAgentData.backgroundColor,
+              isCustomIcon: updatedAgentData.isCustomIcon
             };
           }
           return agentItem;
         });
       });
 
-      // Step 2: Update managed agents cache
+      // Step 2: Update managed agents cache with actual server data
       queryClient.setQueryData(["/api/agents/managed"], (oldData: any[]) => {
         if (!oldData) return oldData;
         return oldData.map((agentItem: any) => {
           if (agentItem.id === agent.id) {
             return {
               ...agentItem,
-              icon: isUsingCustomImage ? customImage : selectedIcon,
-              backgroundColor: selectedColor,
-              isCustomIcon: isUsingCustomImage
+              icon: updatedAgentData.icon,
+              backgroundColor: updatedAgentData.backgroundColor,
+              isCustomIcon: updatedAgentData.isCustomIcon
             };
           }
           return agentItem;
         });
       });
       
-      // Step 3: Update conversations cache with new agent data
+      // Step 3: Update conversations cache with actual server data
       queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
         if (!oldData) return oldData;
         return oldData.map((conv: any) => {
@@ -162,9 +170,9 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               ...conv,
               agent: {
                 ...conv.agent,
-                icon: isUsingCustomImage ? customImage : selectedIcon,
-                backgroundColor: selectedColor,
-                isCustomIcon: isUsingCustomImage
+                icon: updatedAgentData.icon,
+                backgroundColor: updatedAgentData.backgroundColor,
+                isCustomIcon: updatedAgentData.isCustomIcon
               }
             };
           }
@@ -172,22 +180,24 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         });
       });
       
-      // Step 4: Force invalidation to trigger refetch
+      console.log("Cache updated with server data, forcing UI refresh...");
+      
+      // Step 4: Update modal state to reflect changes immediately
+      setSelectedIcon(updatedAgentData.icon);
+      setSelectedColor(updatedAgentData.backgroundColor);
+      if (updatedAgentData.isCustomIcon && updatedAgentData.icon?.startsWith('/uploads/')) {
+        setCustomImage(updatedAgentData.icon);
+        setIsUsingCustomImage(true);
+      } else {
+        setCustomImage(null);
+        setIsUsingCustomImage(false);
+      }
+      
+      // Step 5: Force invalidation to trigger immediate UI updates
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
-      
-      // Step 5: Comprehensive predicate matching for safety
-      queryClient.invalidateQueries({ 
-        predicate: (query) => {
-          const key = query.queryKey;
-          return (
-            key.includes("/api/agents") || 
-            key.includes("/api/conversations")
-          );
-        }
-      });
       
       toast({
         title: "아이콘 변경 완료",
