@@ -1293,8 +1293,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           agent={agent}
           isOpen={showPersonaModal}
           onClose={() => setShowPersonaModal(false)}
-          onSuccess={addSystemMessage}
-          onCancel={addSystemMessage}
         />
       )}
 

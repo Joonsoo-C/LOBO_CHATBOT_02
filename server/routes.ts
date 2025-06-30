@@ -856,6 +856,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent persona update endpoint
+  app.patch('/api/admin/agents/:id/persona', isAuthenticated, async (req, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      if (isNaN(agentId)) {
+        return res.status(400).json({ error: "Invalid agent ID" });
+      }
+
+      const {
+        name,
+        description,
+        speakingStyle,
+        personalityTraits,
+        prohibitedWordResponse,
+        visibility,
+        upperCategory,
+        lowerCategory,
+        detailCategory
+      } = req.body;
+
+      const agent = await storage.getAgent(agentId);
+      if (!agent) {
+        return res.status(404).json({ error: "Agent not found" });
+      }
+
+      const updatedAgent = await storage.updateAgent(agentId, {
+        name: name || agent.name,
+        description: description || agent.description,
+        speakingStyle: speakingStyle || agent.speakingStyle,
+        personalityTraits: personalityTraits || agent.personalityTraits,
+        prohibitedWordResponse: prohibitedWordResponse || agent.prohibitedWordResponse,
+        visibility: visibility || agent.visibility,
+        upperCategory: upperCategory || agent.upperCategory,
+        lowerCategory: lowerCategory || agent.lowerCategory,
+        detailCategory: detailCategory || agent.detailCategory
+      });
+
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent persona:", error);
+      res.status(500).json({ error: "Failed to update agent persona" });
+    }
+  });
+
   // Setup admin routes
   setupAdminRoutes(app);
 
