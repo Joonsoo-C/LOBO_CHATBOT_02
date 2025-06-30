@@ -81,7 +81,17 @@ async function loadQASampleToMemoryStorage() {
         const questionContent = row['질문 내용'] || row['질문내용'] || row['질문'] || row['questionContent'] || '';
         const responseContent = row['챗봇 응답내용'] || row['챗봇응답내용'] || row['응답내용'] || row['답변'] || row['responseContent'] || '';
         const responseType = row['응답 유형'] || row['응답유형'] || row['responseType'] || 'general';
-        const responseTime = row['응답시간'] || row['responseTime'] || Math.floor(Math.random() * 3) + 1;
+        // 응답 시간 처리 (예: "0.5초" -> 0.5)
+        let responseTime = row['응답시간'] || row['responseTime'] || 1;
+        if (typeof responseTime === 'string') {
+          // "0.5초", "1초" 등의 형태에서 숫자만 추출
+          const timeMatch = responseTime.match(/[\d.]+/);
+          responseTime = timeMatch ? parseFloat(timeMatch[0]) : 1;
+        } else if (typeof responseTime === 'number') {
+          responseTime = responseTime;
+        } else {
+          responseTime = 1;
+        }
         
         if (!questionContent || !responseContent) {
           console.log(`⚠️ 행 ${i + 1}: 질문 또는 응답 내용이 비어있어 건너뜁니다.`);
@@ -99,20 +109,24 @@ async function loadQASampleToMemoryStorage() {
           }
         }
         
-        // 타임스탬프 처리
+        // 타임스탬프 처리 (Excel 시리얼 번호 형식)
         let parsedTimestamp;
-        if (timestamp instanceof Date) {
+        if (typeof timestamp === 'number') {
+          // Excel 날짜 시리얼 번호를 JavaScript Date로 변환
+          // Excel에서 1900년 1월 1일을 기준으로 계산 (Windows Excel 기준)
+          const excelDate = new Date((timestamp - 25569) * 86400 * 1000);
+          parsedTimestamp = excelDate;
+          
+          // 한국 시간대 조정 (UTC+9)
+          const kstOffset = 9 * 60 * 60 * 1000; // 9시간을 밀리초로 변환
+          parsedTimestamp = new Date(excelDate.getTime() + kstOffset);
+          
+        } else if (timestamp instanceof Date) {
           parsedTimestamp = timestamp;
-        } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+        } else if (typeof timestamp === 'string') {
           parsedTimestamp = new Date(timestamp);
           if (isNaN(parsedTimestamp.getTime())) {
-            // 엑셀 날짜 형식 처리
-            if (typeof timestamp === 'number') {
-              const excelDate = new Date((timestamp - 25569) * 86400 * 1000);
-              parsedTimestamp = isNaN(excelDate.getTime()) ? new Date() : excelDate;
-            } else {
-              parsedTimestamp = new Date();
-            }
+            parsedTimestamp = new Date();
           }
         } else {
           parsedTimestamp = new Date();
@@ -127,7 +141,7 @@ async function loadQASampleToMemoryStorage() {
           questionContent: questionContent.toString().substring(0, 1000),
           responseContent: responseContent.toString().substring(0, 2000),
           responseType: responseType.toString(),
-          responseTime: typeof responseTime === 'number' ? responseTime : parseInt(responseTime) || 1,
+          responseTime: responseTime,
           agentId: matchedAgent?.id || null,
           userId: 'user1081' // 기본 사용자 ID
         };
