@@ -187,18 +187,22 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         setIsUsingCustomImage(false);
       }
       
-      // Step 5: Force comprehensive invalidation for immediate UI updates
+      // Step 5: Force comprehensive invalidation across ALL UI components
+      // Invalidate all agent-related queries for Home.tsx, TabletLayout.tsx, AgentManagement.tsx
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
+      
+      // Invalidate conversation queries for agent list display 
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] });
       
-      // Step 6: Force immediate refetch of all data for instant UI updates
+      // Step 6: Force immediate refetch with short delay for instant UI updates
       setTimeout(() => {
         queryClient.refetchQueries({ queryKey: ["/api/agents"] });
         queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
-      }, 100);
+        queryClient.refetchQueries({ queryKey: ["/api/admin/agents"] });
+      }, 50);
       
       // Step 7: Close modal and show success message
       toast({
