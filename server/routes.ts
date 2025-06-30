@@ -212,19 +212,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
 
-      const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse, visibility, upperCategory, lowerCategory, detailCategory } = req.body;
+      const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse } = req.body;
 
-      // Update agent with complete persona and visibility data
+      // Update agent with complete persona data
       const updatedAgent = await storage.updateAgent(agentId, {
         name: nickname,
         description: knowledgeArea,
         speakingStyle,
         personalityTraits,
-        prohibitedWordResponse,
-        visibility,
-        upperCategory,
-        lowerCategory,
-        detailCategory
+        prohibitedWordResponse
       });
 
       res.json(updatedAgent);
@@ -318,12 +314,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
 
-      const { llmModel, chatbotType, visibility, upperCategory, lowerCategory, detailCategory } = req.body;
+      const { llmModel, chatbotType } = req.body;
 
       // Validate settings
       const validModels = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
       const validTypes = ["strict-doc", "doc-fallback-llm", "general-llm"];
-      const validVisibility = ["public", "group", "custom", "private"];
 
       if (!validModels.includes(llmModel)) {
         return res.status(400).json({ message: "Invalid LLM model" });
@@ -333,26 +328,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid chatbot type" });
       }
 
-      if (visibility && !validVisibility.includes(visibility)) {
-        return res.status(400).json({ message: "Invalid visibility setting" });
-      }
-
-      // Prepare update data
-      const updateData: any = {
+      // Update agent settings
+      const updatedAgent = await storage.updateAgent(agentId, {
         llmModel,
         chatbotType
-      };
-
-      // Add visibility settings if provided
-      if (visibility !== undefined) {
-        updateData.visibility = visibility;
-        updateData.upperCategory = upperCategory || "";
-        updateData.lowerCategory = lowerCategory || "";
-        updateData.detailCategory = detailCategory || "";
-      }
-
-      // Update agent settings
-      const updatedAgent = await storage.updateAgent(agentId, updateData);
+      });
 
       res.json(updatedAgent);
     } catch (error) {
@@ -853,50 +833,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to get organization categories:', error);
       res.status(500).json({ error: 'Failed to get organization categories' });
-    }
-  });
-
-  // Agent persona update endpoint
-  app.patch('/api/admin/agents/:id/persona', isAuthenticated, async (req, res) => {
-    try {
-      const agentId = parseInt(req.params.id);
-      if (isNaN(agentId)) {
-        return res.status(400).json({ error: "Invalid agent ID" });
-      }
-
-      const {
-        name,
-        description,
-        speakingStyle,
-        personalityTraits,
-        prohibitedWordResponse,
-        visibility,
-        upperCategory,
-        lowerCategory,
-        detailCategory
-      } = req.body;
-
-      const agent = await storage.getAgent(agentId);
-      if (!agent) {
-        return res.status(404).json({ error: "Agent not found" });
-      }
-
-      const updatedAgent = await storage.updateAgent(agentId, {
-        name: name || agent.name,
-        description: description || agent.description,
-        speakingStyle: speakingStyle || agent.speakingStyle,
-        personalityTraits: personalityTraits || agent.personalityTraits,
-        prohibitedWordResponse: prohibitedWordResponse || agent.prohibitedWordResponse,
-        visibility: visibility || agent.visibility,
-        upperCategory: upperCategory || agent.upperCategory,
-        lowerCategory: lowerCategory || agent.lowerCategory,
-        detailCategory: detailCategory || agent.detailCategory
-      });
-
-      res.json(updatedAgent);
-    } catch (error) {
-      console.error("Error updating agent persona:", error);
-      res.status(500).json({ error: "Failed to update agent persona" });
     }
   });
 

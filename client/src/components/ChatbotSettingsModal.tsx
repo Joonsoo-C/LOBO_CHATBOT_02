@@ -60,7 +60,7 @@ const VISIBILITY_OPTIONS = [
     label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" 
   },
   { 
-    value: "custom", 
+    value: "organization", 
     label: "사용자 지정 - 개별 사용자 선택" 
   },
   { 
@@ -81,38 +81,30 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
   // Get unique upper categories
   const getUpperCategories = () => {
-    if (!Array.isArray(organizationCategories)) return [];
-    const upperCats: string[] = [];
-    organizationCategories.forEach((org: any) => {
-      if (org.upperCategory && !upperCats.includes(org.upperCategory)) {
-        upperCats.push(org.upperCategory);
-      }
-    });
-    return upperCats;
+    const upperCats = [...new Set(organizationCategories.map((org: any) => org.upperCategory))];
+    return upperCats.filter(Boolean);
   };
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
-    if (!upperCategory || !Array.isArray(organizationCategories)) return [];
-    const lowerCats: string[] = [];
-    organizationCategories.forEach((org: any) => {
-      if (org.upperCategory === upperCategory && org.lowerCategory && !lowerCats.includes(org.lowerCategory)) {
-        lowerCats.push(org.lowerCategory);
-      }
-    });
-    return lowerCats;
+    if (!upperCategory) return [];
+    const lowerCats = [...new Set(
+      organizationCategories
+        .filter((org: any) => org.upperCategory === upperCategory)
+        .map((org: any) => org.lowerCategory)
+    )];
+    return lowerCats.filter(Boolean);
   };
 
   // Get detail categories for selected upper and lower categories
   const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
-    if (!upperCategory || !lowerCategory || !Array.isArray(organizationCategories)) return [];
-    const detailCats: string[] = [];
-    organizationCategories.forEach((org: any) => {
-      if (org.upperCategory === upperCategory && org.lowerCategory === lowerCategory && org.detailCategory && !detailCats.includes(org.detailCategory)) {
-        detailCats.push(org.detailCategory);
-      }
-    });
-    return detailCats;
+    if (!upperCategory || !lowerCategory) return [];
+    const detailCats = [...new Set(
+      organizationCategories
+        .filter((org: any) => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
+        .map((org: any) => org.detailCategory)
+    )];
+    return detailCats.filter(Boolean);
   };
   
   const [settings, setSettings] = useState<ChatbotSettings>({
@@ -139,17 +131,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
       if (onSuccess) {
         const modelLabel = LLM_MODELS.find(m => m.value === settings.llmModel)?.label || settings.llmModel;
         const typeLabel = CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label || settings.chatbotType;
-        const visibilityLabel = VISIBILITY_OPTIONS.find(v => v.value === settings.visibility)?.label || "조직 전체";
-        
-        let message = `챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}\n공유 범위: ${visibilityLabel}`;
-        
-        if (settings.visibility === "custom" && settings.upperCategory) {
-          message += `\n소속 조직: ${settings.upperCategory}`;
-          if (settings.lowerCategory) message += ` > ${settings.lowerCategory}`;
-          if (settings.detailCategory) message += ` > ${settings.detailCategory}`;
-        }
-        
-        onSuccess(message);
+        onSuccess(`챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}`);
       }
       
       // Invalidate agent data to refresh
@@ -250,110 +232,6 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
               </SelectContent>
             </Select>
           </div>
-
-          {/* Visibility/Sharing Scope Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="visibility" className="korean-text">공유 범위</Label>
-            <Select
-              value={settings.visibility}
-              onValueChange={(value) => setSettings(prev => ({ ...prev, visibility: value }))}
-            >
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="공유 범위를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {VISIBILITY_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className="korean-text">
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Organization Categories (only show for custom visibility) */}
-          {settings.visibility === "custom" && (
-            <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <Label className="korean-text text-sm font-medium">소속 조직</Label>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Upper Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-xs">상위 카테고리</Label>
-                  <Select
-                    value={settings.upperCategory || ""}
-                    onValueChange={(value) => setSettings(prev => ({ 
-                      ...prev, 
-                      upperCategory: value,
-                      lowerCategory: "",
-                      detailCategory: ""
-                    }))}
-                  >
-                    <SelectTrigger className="korean-text text-sm">
-                      <SelectValue placeholder="전체" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="" className="korean-text">전체</SelectItem>
-                      {getUpperCategories().map((category: string) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Lower Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-xs">하위 카테고리</Label>
-                  <Select
-                    value={settings.lowerCategory || ""}
-                    onValueChange={(value) => setSettings(prev => ({ 
-                      ...prev, 
-                      lowerCategory: value,
-                      detailCategory: ""
-                    }))}
-                  >
-                    <SelectTrigger className="korean-text text-sm">
-                      <SelectValue placeholder="전체" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="" className="korean-text">전체</SelectItem>
-                      {getLowerCategories(settings.upperCategory || "").map((category: string) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Detail Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-xs">세부 카테고리</Label>
-                  <Select
-                    value={settings.detailCategory || ""}
-                    onValueChange={(value) => setSettings(prev => ({ 
-                      ...prev, 
-                      detailCategory: value
-                    }))}
-                  >
-                    <SelectTrigger className="korean-text text-sm">
-                      <SelectValue placeholder="전체" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="" className="korean-text">전체</SelectItem>
-                      {getDetailCategories(settings.upperCategory || "", settings.lowerCategory || "").map((category: string) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4 border-t">

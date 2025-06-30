@@ -1,71 +1,103 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { X, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Save, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import type { Agent } from "@/types/agent";
 
 interface PersonaEditModalProps {
+  agent: Agent;
   isOpen: boolean;
   onClose: () => void;
-  agent: any;
+  onSuccess?: (message: string) => void;
+  onCancel?: (message: string) => void;
 }
 
 interface PersonaData {
-  name: string;
-  description: string;
+  nickname: string;
   speakingStyle: string;
+  knowledgeArea: string;
   personalityTraits: string;
   prohibitedWordResponse: string;
-  visibility: string;
-  upperCategory: string;
-  lowerCategory: string;
-  detailCategory: string;
 }
 
-const VISIBILITY_OPTIONS = [
-  { value: "public", label: "조직 전체 - 소속 조직의 모든 구성원이 사용 가능" },
-  { value: "group", label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" },
-  { value: "custom", label: "사용자 지정 - 개별 사용자 선택" },
-  { value: "private", label: "프라이빗 - 관리자만 사용 가능" }
-];
-
-export default function PersonaEditModal({ isOpen, onClose, agent }: PersonaEditModalProps) {
+export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, onCancel }: PersonaEditModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
+  
   const [personaData, setPersonaData] = useState<PersonaData>({
-    name: "",
-    description: "",
-    speakingStyle: "",
-    personalityTraits: "",
-    prohibitedWordResponse: "",
-    visibility: "public",
-    upperCategory: "",
-    lowerCategory: "",
-    detailCategory: ""
+    nickname: agent.name || "",
+    speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
+    knowledgeArea: agent.description || "",
+    personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+    prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
   });
 
-  // Initialize persona data when agent changes
+  // Update form data when agent changes
   useEffect(() => {
-    if (agent && isOpen) {
-      setPersonaData({
-        name: agent.name || "",
-        description: agent.description || "",
-        speakingStyle: agent.speakingStyle || "",
-        personalityTraits: agent.personalityTraits || "",
-        prohibitedWordResponse: agent.prohibitedWordResponse || "",
-        visibility: agent.visibility || "public",
-        upperCategory: agent.upperCategory || "",
-        lowerCategory: agent.lowerCategory || "",
-        detailCategory: agent.detailCategory || ""
+    setPersonaData({
+      nickname: agent.name || "",
+      speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
+      knowledgeArea: agent.description || "",
+      personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+      prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+    });
+  }, [agent]);
+
+  const updatePersonaMutation = useMutation({
+    mutationFn: async (data: PersonaData) => {
+      const response = await apiRequest("PUT", `/api/agents/${agent.id}/persona`, data);
+      return response.json();
+    },
+    onSuccess: (updatedAgent) => {
+      toast({
+        title: "페르소나 업데이트 완료",
+        description: "에이전트 페르소나가 성공적으로 업데이트되었습니다.",
       });
-    }
-  }, [agent, isOpen]);
+      
+      // Send completion message to chat
+      if (onSuccess) {
+        const changes = [];
+        if (personaData.nickname !== agent.name) changes.push(`닉네임: ${personaData.nickname}`);
+        if (personaData.knowledgeArea !== agent.description) changes.push(`지식 분야: ${personaData.knowledgeArea}`);
+        if (personaData.speakingStyle !== agent.speakingStyle) changes.push(`말투 스타일: ${personaData.speakingStyle}`);
+        
+        const changeText = changes.length > 0 ? changes.join(', ') + ' 변경됨. ' : '';
+        onSuccess(`${changeText}페르소나 설정이 저장되었습니다.`);
+      }
+      
+      // Immediately update the cache with the fresh data from server
+      queryClient.setQueryData(["/api/agents"], (oldAgents: Agent[] | undefined) => {
+        if (!oldAgents) return oldAgents;
+        return oldAgents.map(a => 
+          a.id === agent.id ? updatedAgent : a
+        );
+      });
+      
+      // Force a fresh fetch to ensure consistency
+      queryClient.invalidateQueries({
+        queryKey: ["/api/agents"]
+      });
+      
+      onClose();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "업데이트 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updatePersonaMutation.mutate(personaData);
+  };
 
   const handleInputChange = (field: keyof PersonaData, value: string) => {
     setPersonaData(prev => ({
@@ -74,177 +106,61 @@ export default function PersonaEditModal({ isOpen, onClose, agent }: PersonaEdit
     }));
   };
 
-  const updatePersonaMutation = useMutation({
-    mutationFn: async (data: PersonaData) => {
-      return apiRequest(`/api/admin/agents/${agent.id}/persona`, "PATCH", data);
-    },
-    onSuccess: () => {
-      toast({
-        title: "페르소나 수정 완료",
-        description: "에이전트의 페르소나가 성공적으로 수정되었습니다."
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
-      onClose();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "수정 실패",
-        description: error.message || "페르소나 수정 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
+  const handleClose = () => {
+    if (onCancel) {
+      onCancel("페르소나 편집을 취소하였습니다.");
     }
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updatePersonaMutation.mutate(personaData);
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-lg font-medium korean-text">페르소나 편집</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="w-4 h-4" />
+          <Button variant="ghost" size="sm" onClick={handleClose}>
+            <X className="w-5 h-5" />
           </Button>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Agent Name */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="korean-text">에이전트 이름</Label>
-              <Input
-                id="name"
-                value={personaData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="에이전트 이름을 입력하세요"
-                className="korean-text"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="category" className="korean-text">카테고리</Label>
-              <Select value={agent?.category || ""} disabled>
-                <SelectTrigger>
-                  <SelectValue placeholder="카테고리" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="학교">학교</SelectItem>
-                  <SelectItem value="교수">교수</SelectItem>
-                  <SelectItem value="학생">학생</SelectItem>
-                  <SelectItem value="그룹">그룹</SelectItem>
-                  <SelectItem value="기능형">기능형</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* LLM Model and Chatbot Type */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="llmModel" className="korean-text">LLM 모델 선택</Label>
-              <Select value="gpt-4o" disabled>
-                <SelectTrigger>
-                  <SelectValue placeholder="GPT-4o (권장)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="gpt-4o">GPT-4o (권장)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="chatbotType" className="korean-text">챗봇 유형 선택</Label>
-              <Select value="doc-fallback-llm" disabled>
-                <SelectTrigger>
-                  <SelectValue placeholder="문서 우선 + LLM 보완" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Description */}
+          {/* Nickname */}
           <div className="space-y-2">
-            <Label htmlFor="description" className="korean-text">설명</Label>
+            <Label htmlFor="nickname" className="korean-text">닉네임</Label>
+            <Input
+              id="nickname"
+              value={personaData.nickname}
+              onChange={(e) => handleInputChange('nickname', e.target.value)}
+              placeholder="에이전트 닉네임을 입력하세요"
+              className="korean-text"
+            />
+          </div>
+
+          {/* Speaking Style */}
+          <div className="space-y-2">
+            <Label htmlFor="speakingStyle" className="korean-text">말투 스타일</Label>
             <Textarea
-              id="description"
-              value={personaData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="에이전트의 역할과 기능을 설명하세요"
+              id="speakingStyle"
+              value={personaData.speakingStyle}
+              onChange={(e) => handleInputChange('speakingStyle', e.target.value)}
+              placeholder="말투와 대화 스타일을 설명하세요"
               className="korean-text resize-none"
               rows={3}
             />
           </div>
 
-          {/* Organization Categories */}
-          <div className="space-y-4">
-            <Label className="korean-text">소속 조직</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="upperCategory" className="korean-text text-xs">상위 카테고리</Label>
-                <Select value="전체" disabled>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="전체">전체</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lowerCategory" className="korean-text text-xs">하위 카테고리</Label>
-                <Select value="전체" disabled>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="전체">전체</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="detailCategory" className="korean-text text-xs">세부 카테고리</Label>
-                <Select value="전체" disabled>
-                  <SelectTrigger>
-                    <SelectValue placeholder="전체" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="전체">전체</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <Button type="button" className="w-full korean-text">적용</Button>
-          </div>
-
-          {/* Agent Manager */}
+          {/* Knowledge Area */}
           <div className="space-y-2">
-            <Label htmlFor="manager" className="korean-text">에이전트 관리자</Label>
-            <Select value={agent?.managerId || ""} disabled>
-              <SelectTrigger>
-                <SelectValue placeholder="정 수빈 (user1081)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="user1081">정 수빈 (user1081)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Speaking Style */}
-          <div className="space-y-2">
-            <Label htmlFor="speakingStyle" className="korean-text">성격/말투 (선택사항)</Label>
+            <Label htmlFor="knowledgeArea" className="korean-text">지식/전문 분야</Label>
             <Textarea
-              id="speakingStyle"
-              value={personaData.speakingStyle}
-              onChange={(e) => handleInputChange('speakingStyle', e.target.value)}
-              placeholder="진정하고 전문적인 성격으로 정확한 정보를 제공"
+              id="knowledgeArea"
+              value={personaData.knowledgeArea}
+              onChange={(e) => handleInputChange('knowledgeArea', e.target.value)}
+              placeholder="전문 지식 분야를 설명하세요"
               className="korean-text resize-none"
               rows={3}
             />
@@ -274,98 +190,6 @@ export default function PersonaEditModal({ isOpen, onClose, agent }: PersonaEdit
               className="korean-text resize-none"
               rows={2}
             />
-          </div>
-
-          {/* Sharing Scope */}
-          <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <Label className="korean-text text-sm font-medium">공유 범위 설정</Label>
-            
-            <div className="space-y-2">
-              <Label htmlFor="visibility" className="korean-text text-xs">공유 범위</Label>
-              <Select 
-                value={personaData.visibility} 
-                onValueChange={(value) => handleInputChange('visibility', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="공유 범위를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {VISIBILITY_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Organization Categories for Custom Visibility */}
-            {personaData.visibility === "custom" && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="upperCategory" className="korean-text text-xs">상위 카테고리</Label>
-                  <Select 
-                    value={personaData.upperCategory} 
-                    onValueChange={(value) => {
-                      handleInputChange('upperCategory', value);
-                      handleInputChange('lowerCategory', '');
-                      handleInputChange('detailCategory', '');
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">전체</SelectItem>
-                      <SelectItem value="대학본부">대학본부</SelectItem>
-                      <SelectItem value="인문대학">인문대학</SelectItem>
-                      <SelectItem value="공과대학">공과대학</SelectItem>
-                      <SelectItem value="자연과학대학">자연과학대학</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="lowerCategory" className="korean-text text-xs">하위 카테고리</Label>
-                  <Select 
-                    value={personaData.lowerCategory} 
-                    onValueChange={(value) => {
-                      handleInputChange('lowerCategory', value);
-                      handleInputChange('detailCategory', '');
-                    }}
-                    disabled={!personaData.upperCategory}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">전체</SelectItem>
-                      <SelectItem value="총장실">총장실</SelectItem>
-                      <SelectItem value="국어국문학과">국어국문학과</SelectItem>
-                      <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="detailCategory" className="korean-text text-xs">세부 카테고리</Label>
-                  <Select 
-                    value={personaData.detailCategory} 
-                    onValueChange={(value) => handleInputChange('detailCategory', value)}
-                    disabled={!personaData.upperCategory || !personaData.lowerCategory}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">전체</SelectItem>
-                      <SelectItem value="현대문학전공">현대문학전공</SelectItem>
-                      <SelectItem value="소프트웨어전공">소프트웨어전공</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Action Buttons */}
