@@ -145,7 +145,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
     const systemMessage: Message = {
-      id: Date.now() + Math.random(),
+      id: -(Date.now() + Math.floor(Math.random() * 10000)), // Negative ID for optimistic messages
       conversationId: conversation?.id || 0,
       content: `🔧 ${content}`, // Add system indicator prefix
       isFromUser: false,
@@ -396,7 +396,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
       // Create optimistic user message
       const optimisticUserMessage: Message = {
-        id: Date.now() + Math.random(), // temporary ID
+        id: -(Date.now() + Math.floor(Math.random() * 10000)), // Negative ID for optimistic messages
         conversationId: conversation?.id || 0,
         content,
         isFromUser: true,
@@ -555,6 +555,13 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Combine real messages with optimistic messages
   const allMessages = [...(messages || []), ...optimisticMessages];
+  
+  // Debug logging for message state
+  console.log(`[DEBUG] ChatInterface: messages=${messages?.length || 0}, optimistic=${optimisticMessages.length}, all=${allMessages.length}`, {
+    messagesLoading,
+    conversationId: conversation?.id,
+    agentId: agent.id
+  });
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -1058,7 +1065,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         }}
       >
         <div className="messages-container space-y-4">
-          {allMessages.length === 0 ? (
+          {messagesLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : allMessages.length === 0 ? (
             <div className="flex justify-start">
               <div 
                 className="message-bubble assistant text-sm md:text-base leading-relaxed"
