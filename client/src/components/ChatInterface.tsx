@@ -315,6 +315,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       setConversation(conversationData);
       setHasMarkedAsRead(false);
       
+      // Clear optimistic messages when switching conversations
+      setOptimisticMessages([]);
+      setIsTyping(false);
+      setHasInitialScrolled(false);
+      
       // Mark conversation as read when opened (only for new conversations with unread messages)
       if (!isManagementMode && conversationData.unreadCount > 0 && !hasMarkedAsRead) {
         setHasMarkedAsRead(true);
@@ -424,19 +429,27 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
         }, 500);
       }
       
-      // Update the messages cache directly with the new messages to prevent flickering
+      // Update messages cache more safely
       queryClient.setQueryData([`/api/conversations/${conversation?.id}/messages`], (oldMessages: Message[] = []) => {
-        // Find if user message already exists in the cache
-        const userMessageExists = oldMessages.some(msg => 
-          msg.isFromUser && msg.content === data.userMessage.content && 
-          Math.abs(new Date(msg.createdAt).getTime() - new Date(data.userMessage.createdAt).getTime()) < 5000
+        // Create a copy of existing messages
+        const existingMessages = [...oldMessages];
+        
+        // Check if user message already exists (by content and timestamp proximity)
+        const userMessageExists = existingMessages.some(msg => 
+          msg.isFromUser && 
+          msg.content === data.userMessage.content && 
+          Math.abs(new Date(msg.createdAt).getTime() - new Date(data.userMessage.createdAt).getTime()) < 10000
         );
         
         // Add user message if it doesn't exist
-        const updatedMessages = userMessageExists ? oldMessages : [...oldMessages, data.userMessage];
+        if (!userMessageExists) {
+          existingMessages.push(data.userMessage);
+        }
         
-        // Add AI message
-        return [...updatedMessages, data.aiMessage];
+        // Always add AI message (should be unique)
+        existingMessages.push(data.aiMessage);
+        
+        return existingMessages;
       });
       
       // Clear optimistic messages and typing indicator after updating cache
