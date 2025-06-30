@@ -72,6 +72,11 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
   });
 
   // Filter organization categories
+  console.log("Organizations data:", organizations);
+  console.log("PersonaData:", personaData);
+  console.log("PersonaData visibility:", personaData.visibility);
+  console.log("Modal is open:", isOpen);
+  
   const upperCategories = Array.from(new Set((organizations as any[]).map((org: any) => org.upperCategory))).filter(Boolean);
   const lowerCategories = personaData.upperCategory 
     ? Array.from(new Set((organizations as any[]).filter((org: any) => org.upperCategory === personaData.upperCategory).map((org: any) => org.lowerCategory))).filter(Boolean)
@@ -79,6 +84,10 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
   const detailCategories = personaData.upperCategory && personaData.lowerCategory
     ? Array.from(new Set((organizations as any[]).filter((org: any) => org.upperCategory === personaData.upperCategory && org.lowerCategory === personaData.lowerCategory).map((org: any) => org.detailCategory))).filter(Boolean)
     : [];
+
+  console.log("Upper categories found:", upperCategories);
+  console.log("Lower categories for", personaData.upperCategory, ":", lowerCategories);
+  console.log("Detail categories for", personaData.upperCategory, personaData.lowerCategory, ":", detailCategories);
 
   // Update form data when agent changes
   useEffect(() => {
@@ -175,7 +184,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-lg font-medium korean-text">페르소나 편집</h2>
