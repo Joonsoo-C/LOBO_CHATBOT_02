@@ -708,6 +708,12 @@ Changelog:
   * Implemented hover (#F5F5F5) and active press (#EBEBEB) feedback for better touch interaction
   * Added selected state highlighting with blue background (#E8F4FD) for current conversation
   * Dark mode support with appropriate color variations for all interaction states
+- June 30, 2025. Enhanced icon change modal with improved image upload functionality:
+  * "이미지 업로드" button now automatically triggers file selection dialog when clicked
+  * Added dedicated "이미지 파일 선택" button for clearer user interaction
+  * Enhanced file drop area with hover effects and visual feedback
+  * Supports JPG, PNG, GIF, WEBP formats with 5MB size limit
+  * Improved user experience with multiple ways to access file selection
 ```
 
 ## User Preferences

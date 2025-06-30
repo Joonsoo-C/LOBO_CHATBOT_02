@@ -232,7 +232,13 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               <Button
                 variant={isUsingCustomImage ? "default" : "outline"}
                 size="sm"
-                onClick={() => setIsUsingCustomImage(true)}
+                onClick={() => {
+                  setIsUsingCustomImage(true);
+                  // Trigger file input after setting state
+                  setTimeout(() => {
+                    document.getElementById('image-upload')?.click();
+                  }, 100);
+                }}
                 className="flex-1"
               >
                 이미지 업로드
@@ -244,7 +250,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           {isUsingCustomImage && (
             <div className="space-y-3">
               <Label className="text-sm font-medium">이미지 파일 선택</Label>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
                 <input
                   type="file"
                   accept="image/*"
@@ -254,17 +260,27 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 />
                 <label 
                   htmlFor="image-upload" 
-                  className="cursor-pointer flex flex-col items-center space-y-2"
+                  className="cursor-pointer flex flex-col items-center space-y-2 hover:text-primary transition-colors"
                 >
                   <Camera className="w-8 h-8 text-muted-foreground" />
                   <div className="text-sm text-muted-foreground">
                     {imageFile ? imageFile.name : "클릭하여 이미지 선택"}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    JPG, PNG, GIF (최대 5MB)
+                    JPG, PNG, GIF, WEBP (최대 5MB)
                   </div>
                 </label>
               </div>
+              
+              {/* Additional upload button for better UX */}
+              <Button
+                variant="outline"
+                onClick={() => document.getElementById('image-upload')?.click()}
+                className="w-full"
+              >
+                <Camera className="w-4 h-4 mr-2" />
+                이미지 파일 선택
+              </Button>
             </div>
           )}
 
