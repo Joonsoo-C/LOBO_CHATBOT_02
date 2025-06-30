@@ -70,6 +70,7 @@ export class MemoryStorage implements IStorage {
     this.loadPersistedDocuments();
     this.loadPersistedConversations();
     this.loadPersistedMessages();
+    this.loadPersistedQALogs();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
 
@@ -1471,6 +1472,32 @@ export class MemoryStorage implements IStorage {
     } catch (error) {
       console.error('Failed to load persisted messages:', error);
       this.messages = new Map();
+    }
+  }
+
+  private loadPersistedQALogs(): void {
+    try {
+      // Q&A 로그는 메인 memory-storage.json 파일에서 로드
+      if (fs.existsSync(this.usersFile)) {
+        const data = JSON.parse(fs.readFileSync(this.usersFile, 'utf8'));
+        if (data.qaLogs && Array.isArray(data.qaLogs)) {
+          // QA 로그 데이터를 Map으로 변환하고 Date 객체 복원
+          const qaLogsWithDates = data.qaLogs.map((log: any) => [
+            log.id,
+            {
+              ...log,
+              timestamp: new Date(log.timestamp),
+              createdAt: log.createdAt ? new Date(log.createdAt) : new Date(),
+              updatedAt: log.updatedAt ? new Date(log.updatedAt) : new Date()
+            }
+          ]);
+          this.qaLogs = new Map(qaLogsWithDates);
+          console.log(`Loaded ${this.qaLogs.size} Q&A logs from persistence`);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load persisted Q&A logs:', error);
+      this.qaLogs = new Map();
     }
   }
 
