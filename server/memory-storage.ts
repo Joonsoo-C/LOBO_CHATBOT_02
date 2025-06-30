@@ -1730,6 +1730,9 @@ export class MemoryStorage implements IStorage {
       cache.delete('qa_logs');
     }
 
+    // Save to persistence
+    this.saveToPersistence();
+
     return updated;
   }
 

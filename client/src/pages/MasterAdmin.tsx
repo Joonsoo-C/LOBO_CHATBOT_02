@@ -86,20 +86,22 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
     }
 
     try {
-      const response = await apiRequest(`/api/admin/qa-logs/${log.id}/improvement`, {
-        method: 'POST',
-        body: JSON.stringify({ comment: improvementComment }),
+      const response = await fetch(`/api/admin/qa-logs/${log.id}/improvement`, {
+        method: 'PUT',
+        body: JSON.stringify({ improvementRequest: improvementComment }),
         headers: { 'Content-Type': 'application/json' }
       });
 
-      if (response.ok) {
-        toast({
-          title: "개선 요청 완료",
-          description: "개선 요청이 성공적으로 제출되었습니다.",
-        });
-        setImprovementComment("");
-        setIsImprovementOpen(false);
+      if (!response.ok) {
+        throw new Error('개선 요청 실패');
       }
+
+      toast({
+        title: "개선 요청 완료",
+        description: "개선 요청이 성공적으로 제출되었습니다.",
+      });
+      setImprovementComment("");
+      setIsDetailOpen(false);
     } catch (error) {
       toast({
         title: "개선 요청 실패",
@@ -111,7 +113,7 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
 
   return (
     <>
-      <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
+      <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={() => setIsDetailOpen(true)}>
         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
           {new Date(log.createdAt).toLocaleDateString('ko-KR', {
             year: 'numeric',
@@ -144,12 +146,11 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
         </td>
         <td className="px-4 py-3 whitespace-nowrap">
           <Badge variant="default" className={
-            log.responseType === 'document' ? "bg-blue-100 text-blue-800" : 
-            log.responseType === 'general' ? "bg-green-100 text-green-800" :
+            log.responseType === 'AI 생성' ? "bg-blue-100 text-blue-800" : 
+            log.responseType === 'document' ? "bg-green-100 text-green-800" :
             "bg-gray-100 text-gray-800"
           }>
-            {log.responseType === 'document' ? '문서 기반' : 
-             log.responseType === 'general' ? '일반 응답' : '기타'}
+            {log.responseType || '기타'}
           </Badge>
         </td>
         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
@@ -160,7 +161,10 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => setIsDetailOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDetailOpen(true);
+              }}
               title="상세 보기"
             >
               <Eye className="w-4 h-4" />
@@ -168,7 +172,10 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => setIsImprovementOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsImprovementOpen(true);
+              }}
               title="개선 요청"
             >
               <MessageCircle className="w-4 h-4" />
@@ -232,7 +239,7 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
                     "bg-gray-100 text-gray-800"
                   }>
                     {log.responseType === 'document' ? '문서 기반 응답' : 
-                     log.responseType === 'general' ? '일반 LLM 응답' : '기타 응답'}
+                     log.responseType === 'general' ? '일반 LLM 응답' : log.responseType || '기타 응답'}
                   </Badge>
                 </div>
               </div>
@@ -241,6 +248,26 @@ const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
                 <div className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                   {log.responseTime ? `${log.responseTime}초` : `${(Math.random() * 3 + 1).toFixed(1)}초`}
                 </div>
+              </div>
+            </div>
+
+            {/* 개선 요청 섹션 */}
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <Label className="text-sm font-medium mb-2 block">개선 요청 메시지</Label>
+              <Textarea
+                placeholder="이 응답에 대한 개선 사항이나 피드백을 입력해주세요..."
+                value={improvementComment}
+                onChange={(e) => setImprovementComment(e.target.value)}
+                className="min-h-[100px] resize-none"
+              />
+              <div className="flex justify-end mt-3">
+                <Button 
+                  onClick={handleImprovementSubmit}
+                  disabled={!improvementComment.trim()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  개선 요청 제출
+                </Button>
               </div>
             </div>
           </div>
