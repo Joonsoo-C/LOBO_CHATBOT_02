@@ -216,6 +216,16 @@ function MasterAdmin() {
     }
   });
 
+  // Q&A 로그 데이터 조회
+  const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
+    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage],
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/qa-logs?page=${qaCurrentPage}&limit=${qaLogsPerPage}`);
+      if (!response.ok) throw new Error('Failed to fetch QA logs');
+      return response.json();
+    }
+  });
+
 
 
 
@@ -4865,7 +4875,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <div className="flex justify-between items-center">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  총 <strong>1,247</strong>개의 질문/응답 로그
+                  총 <strong>{qaLogsData?.pagination?.totalCount || 0}</strong>개의 질문/응답 로그
                 </div>
                 <Button>
                   필터 적용
