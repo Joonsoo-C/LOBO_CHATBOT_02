@@ -36,6 +36,18 @@
         "createdAt": "2025-06-29T10:33:08.487Z",
         "lastReadAt": "2025-06-29T16:19:53.744Z"
       }
+    ],
+    [
+      117,
+      {
+        "id": 117,
+        "userId": "user1081",
+        "agentId": 116,
+        "type": "management",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-06-30T19:39:52.519Z",
+        "createdAt": "2025-06-30T19:39:52.519Z"
+      }
     ]
   ]
 }

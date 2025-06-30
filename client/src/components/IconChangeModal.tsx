@@ -61,7 +61,23 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [selectedColor, setSelectedColor] = useState(agent.backgroundColor || "#3b82f6");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
+  const [isUsingCustomImage, setIsUsingCustomImage] = useState(agent.isCustomIcon || false);
+
+  // Reset state when modal opens/closes or agent changes
+  React.useEffect(() => {
+    if (isOpen) {
+      setSelectedIcon(agent.icon || "User");
+      setSelectedColor(agent.backgroundColor || "#3b82f6");
+      setIsUsingCustomImage(agent.isCustomIcon || false);
+      setCustomImage(null);
+      setImageFile(null);
+      
+      // If agent has custom icon, show the current image
+      if (agent.isCustomIcon && agent.icon) {
+        setCustomImage(agent.icon);
+      }
+    }
+  }, [isOpen, agent]);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();

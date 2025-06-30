@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 import { storage } from "./storage";
 import { cache } from "./cache";
 import { setupAuth, isAuthenticated } from "./auth";
@@ -628,18 +629,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to modify this agent" });
       }
 
-      // Generate unique filename
-      const fileExtension = path.extname(req.file.originalname);
-      const uniqueFilename = `agent-${agentId}-${Date.now()}${fileExtension}`;
+      // Generate unique filename with .png extension (converted to PNG for consistency)
+      const uniqueFilename = `agent-${agentId}-${Date.now()}.png`;
       const imagePath = `/uploads/agent-icons/${uniqueFilename}`;
       const fullPath = path.join(process.cwd(), 'uploads', 'agent-icons', uniqueFilename);
 
-      // Move uploaded file to permanent location with unique name
-      fs.renameSync(req.file.path, fullPath);
+      // Ensure the agent-icons directory exists
+      const iconDir = path.join(process.cwd(), 'uploads', 'agent-icons');
+      if (!fs.existsSync(iconDir)) {
+        fs.mkdirSync(iconDir, { recursive: true });
+      }
+
+      // Process and resize image to 64x64 pixels using Sharp
+      await sharp(req.file.path)
+        .resize(64, 64, {
+          fit: 'cover',
+          position: 'center'
+        })
+        .png({ quality: 90 })
+        .toFile(fullPath);
+
+      // Remove the temporary uploaded file
+      fs.unlinkSync(req.file.path);
 
       res.json({
         imagePath,
-        message: "Image uploaded successfully"
+        message: "64픽셀 아이콘이 성공적으로 생성되어 저장되었습니다."
       });
     } catch (error) {
       console.error("Error uploading agent icon:", error);
