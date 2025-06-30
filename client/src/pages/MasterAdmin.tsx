@@ -739,11 +739,30 @@ function MasterAdmin() {
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
   const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
 
-  // Q&A 로그 데이터 조회
+  // Q&A 로그 데이터 조회 (필터링 포함)
   const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
-    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage],
+    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage, qaFilterUpperCategory, qaFilterLowerCategory, qaFilterDetailCategory, qaFilterAgentCategory, qaFilterUserType, qaFilterKeyword, qaFilterPeriod],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/qa-logs?page=${qaCurrentPage}&limit=${qaLogsPerPage}`);
+      const params = new URLSearchParams({
+        page: qaCurrentPage.toString(),
+        limit: qaLogsPerPage.toString(),
+        upperCategory: qaFilterUpperCategory !== 'all' ? qaFilterUpperCategory : '',
+        lowerCategory: qaFilterLowerCategory !== 'all' ? qaFilterLowerCategory : '',
+        detailCategory: qaFilterDetailCategory !== 'all' ? qaFilterDetailCategory : '',
+        agentCategory: qaFilterAgentCategory !== 'all' ? qaFilterAgentCategory : '',
+        userType: qaFilterUserType !== 'all' ? qaFilterUserType : '',
+        keyword: qaFilterKeyword,
+        period: qaFilterPeriod
+      });
+      
+      // 빈 파라미터 제거
+      for (const [key, value] of Array.from(params.entries())) {
+        if (!value) {
+          params.delete(key);
+        }
+      }
+      
+      const response = await fetch(`/api/admin/qa-logs?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch QA logs');
       return response.json();
     }
@@ -5098,14 +5117,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  총 <strong>{qaLogsData?.pagination?.totalCount || 0}</strong>개의 질문/응답 로그
-                </div>
-                <Button>
-                  필터 적용
-                </Button>
-              </div>
+              
             </div>
 
             {/* 통계 카드 */}

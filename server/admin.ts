@@ -2929,25 +2929,39 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Q&A 로그 데이터 조회 API - Excel에서 로드한 실제 Q&A 로그 사용
+  // Q&A 로그 데이터 조회 API - Excel에서 로드한 실제 Q&A 로그 사용 (필터링 포함)
   app.get('/api/admin/qa-logs', requireMasterAdmin, async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = (page - 1) * limit;
+      
+      // 필터링 파라미터
+      const {
+        upperCategory,
+        lowerCategory, 
+        detailCategory,
+        agentCategory,
+        userType,
+        keyword,
+        period
+      } = req.query;
 
       // Excel에서 로드한 실제 Q&A 로그 데이터 가져오기
       const allQaLogs = await storage.getQaLogs();
       
       // Q&A 로그를 API 응답 형식으로 변환
-      const qaLogs = allQaLogs.map(log => ({
+      let qaLogs = allQaLogs.map(log => ({
         id: log.id,
         question: log.questionContent,
         answer: log.responseContent,
-        userName: '샘플 사용자', // Excel 데이터에서는 구체적 사용자 정보 없음
+        questionContent: log.questionContent, // QALogRow에서 사용
+        responseContent: log.responseContent, // QALogRow에서 사용
+        userName: '샘플 사용자',
         userType: log.userType,
         agentName: log.agentName,
         agentCategory: log.agentType,
+        agentType: log.agentType, // QALogRow에서 사용
         createdAt: log.timestamp,
         responseTime: log.responseTime,
         responseType: log.responseType,
@@ -2956,7 +2970,25 @@ export function setupAdminRoutes(app: Express) {
         userDetailCategory: ''
       }));
 
-      // 최신순으로 정렬 (이미 getQaLogs에서 정렬되지만 확실히 하기 위해)
+      // 필터링 적용
+      if (agentCategory && agentCategory !== 'all') {
+        qaLogs = qaLogs.filter(log => log.agentType === agentCategory);
+      }
+      
+      if (userType && userType !== 'all') {
+        qaLogs = qaLogs.filter(log => log.userType === userType);
+      }
+      
+      if (keyword && keyword.trim()) {
+        const searchKeyword = keyword.toLowerCase();
+        qaLogs = qaLogs.filter(log => 
+          log.questionContent?.toLowerCase().includes(searchKeyword) ||
+          log.responseContent?.toLowerCase().includes(searchKeyword) ||
+          log.agentName?.toLowerCase().includes(searchKeyword)
+        );
+      }
+
+      // 최신순으로 정렬
       qaLogs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       // 페이지네이션 적용
@@ -2964,7 +2996,7 @@ export function setupAdminRoutes(app: Express) {
       const paginatedLogs = qaLogs.slice(offset, offset + limit);
       const totalPages = Math.ceil(totalCount / limit);
 
-      console.log(`Q&A 로그 조회: 총 ${totalCount}개 중 ${paginatedLogs.length}개 반환 (페이지 ${page}/${totalPages})`);
+      console.log(`Q&A 로그 조회: 필터링 후 총 ${totalCount}개 중 ${paginatedLogs.length}개 반환 (페이지 ${page}/${totalPages})`);
 
       res.json({
         logs: paginatedLogs,
