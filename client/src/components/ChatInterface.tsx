@@ -317,7 +317,9 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "auto" });
+    }
   };
 
   // Auto-mark conversation as read when new messages arrive while user is viewing
@@ -995,33 +997,38 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
       {/* Chat Messages */}
       <div 
-        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 space-y-4 overflow-y-auto chat-scroll chat-messages md:px-6 md:space-y-5`}
+        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto chat-scroll chat-messages md:px-6`}
         style={{ 
           paddingTop: isTablet ? '1rem' : '0', 
-          paddingBottom: isTablet ? '1rem' : '120px'
+          paddingBottom: isTablet ? '1rem' : '120px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          minHeight: '100%'
         }}
       >
-        {allMessages.length === 0 ? (
-          <div className="flex justify-start">
-            <div 
-              className="message-bubble assistant text-sm md:text-base leading-relaxed"
-              style={{
-                textAlign: 'left',
-                minWidth: '40px',
-                width: 'fit-content',
-                overflowWrap: 'break-word',
-                wordBreak: 'keep-all',
-                marginTop: isTablet ? '1rem' : '40px'
-              }}
-            >
-              <span className="korean-text">
-                안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
-              </span>
+        <div className="flex-1" />
+        <div className="messages-container space-y-4">
+          {allMessages.length === 0 ? (
+            <div className="flex justify-start">
+              <div 
+                className="message-bubble assistant text-sm md:text-base leading-relaxed"
+                style={{
+                  textAlign: 'left',
+                  minWidth: '40px',
+                  width: 'fit-content',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-all'
+                }}
+              >
+                <span className="korean-text">
+                  안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
+                </span>
+              </div>
             </div>
-          </div>
-        ) : (
-          <>
-            {allMessages.map((msg) => {
+          ) : (
+            <>
+              {allMessages.map((msg) => {
               const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
               const showReactionOptions = activeReactionMessageId === msg.id;
               const messageReaction = messageReactions[msg.id];
@@ -1172,10 +1179,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               </div>
             )}
             
-            {/* Auto-scroll anchor */}
-            <div ref={messagesEndRef} />
-          </>
-        )}
+              {/* Auto-scroll anchor */}
+              <div ref={messagesEndRef} />
+            </>
+          )}
+        </div>
       </div>
 
 
