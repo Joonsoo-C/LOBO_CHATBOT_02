@@ -62,6 +62,7 @@ import {
   X,
   ChevronsUpDown,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -1259,19 +1260,23 @@ function MasterAdmin() {
 
   const getOrgLowerCategories = (upperCategory: string) => {
     if (!organizations || upperCategory === 'all') return [];
-    return [...new Set(organizations
+    const lowerCategories = organizations
       .filter(org => org.upperCategory === upperCategory)
       .map(org => org.lowerCategory)
-      .filter(cat => cat && cat.trim() !== ''))];
+      .filter(cat => cat && cat.trim() !== '');
+    return Array.from(new Set(lowerCategories));
   };
 
   const getOrgDetailCategories = (upperCategory: string, lowerCategory: string) => {
     if (!organizations || upperCategory === 'all' || lowerCategory === 'all') return [];
-    return [...new Set(organizations
+    const detailCategories = organizations
       .filter(org => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
       .map(org => org.detailCategory)
-      .filter(cat => cat && cat.trim() !== ''))];
+      .filter(cat => cat && cat.trim() !== '');
+    return Array.from(new Set(detailCategories));
   };
+
+
 
   const getQaLowerCategories = (upperCategory: string) => {
     if (!organizations || !upperCategory || upperCategory === 'all') return [];
@@ -1447,8 +1452,8 @@ function MasterAdmin() {
     return hierarchy;
   }, [organizations]);
 
-  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
-  const filteredOrganizationCategories = useMemo(() => {
+  // User에서 사용하는 조직 카테고리 필터링 (별도 이름)
+  const filteredUserOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
     
     let filtered = [...organizations];
@@ -1486,15 +1491,6 @@ function MasterAdmin() {
     
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
-
-  // Organization categories pagination state
-  const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
-
-  // Organization categories pagination calculations
-  const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
-  const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
-  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
-  const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
 
   // 검색 실행 함수
   const executeSearch = () => {
@@ -1696,7 +1692,7 @@ function MasterAdmin() {
   });
 
   // 조직 카테고리 편집 열기
-  const openOrgCategoryEditDialog = (category: any) => {
+  const openOrgCategoryEdit = (category: any) => {
     setEditingOrgCategory(category);
     orgCategoryEditForm.reset({
       name: category.name || category.detailCategory || "",
