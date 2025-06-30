@@ -1282,7 +1282,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 10px;
+  padding-bottom: 40px;
   min-height: auto;
   justify-content: flex-end;
 }
@@ -1295,6 +1295,6 @@ body {
   }
   
   .messages-container {
-    padding-bottom: 5px;
+    padding-bottom: 50px;
   }
 }

@@ -697,10 +697,11 @@ Changelog:
   * Optimized chat list spacing for messenger-style layout: reduced top margin to 120px, card gaps to 0.25rem, padding to 12px, and margins to 4px for compact messenger-like appearance
 - June 30, 2025. Implemented proper bottom-aligned message positioning like KakaoTalk:
   * Fixed chat messages container to use flex-end justification for last message at bottom
-  * Reduced mobile padding-bottom from 140px to 20px for accurate message positioning
+  * Reduced mobile padding-bottom from 140px to 40px for accurate message positioning
   * Added CSS rules for proper min-height calculations (100vh - 260px on mobile)
   * Created compact agent list with 1px gaps, 8px card padding, and 10x10 icons
   * Messages now appear at screen bottom like standard messenger apps per user screenshot reference
+  * Increased message container padding-bottom to 50px on mobile to prevent message bubble clipping
 ```
 
 ## User Preferences
