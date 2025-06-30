@@ -458,13 +458,13 @@ body {
     border-radius: 18px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    max-width: 75%;
+    max-width: 90%;
     min-width: 120px;
   }
 
   @media (min-width: 768px) {
     .message-bubble {
-      max-width: 80%;
+      max-width: 85%;
     }
   }
 
