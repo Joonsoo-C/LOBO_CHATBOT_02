@@ -70,6 +70,21 @@ const requireMasterAdmin = (req: any, res: any, next: any) => {
   next();
 };
 
+// Middleware to check if user is agent admin or master admin
+const requireAgentAdmin = (req: any, res: any, next: any) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = req.user;
+  // Allow master admin or users with agent_admin role
+  if (user.username === "master_admin" || user.userType === "admin" || user.role === "agent_admin") {
+    return next();
+  }
+
+  return res.status(403).json({ message: "Forbidden - Agent admin access required" });
+};
+
 export function setupAdminRoutes(app: Express) {
   // User file upload configuration
   const userUpload = multer({
@@ -351,7 +366,7 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // Agent update
-  app.put("/api/admin/agents/:id", requireMasterAdmin, async (req, res) => {
+  app.put("/api/admin/agents/:id", requireAgentAdmin, async (req, res) => {
     try {
       const agentId = parseInt(req.params.id);
       const updateData = req.body;
@@ -365,7 +380,7 @@ export function setupAdminRoutes(app: Express) {
   });
 
   // Agent icon change
-  app.patch("/api/admin/agents/:id/icon", requireMasterAdmin, async (req, res) => {
+  app.patch("/api/admin/agents/:id/icon", requireAgentAdmin, async (req, res) => {
     try {
       const agentId = parseInt(req.params.id);
       const { icon, backgroundColor } = req.body;
