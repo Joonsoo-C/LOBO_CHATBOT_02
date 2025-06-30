@@ -62,7 +62,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -230,27 +230,25 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               >
                 기본 아이콘
               </Button>
-              <Button
-                variant={isUsingCustomImage ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setIsUsingCustomImage(true);
-                  fileInputRef.current?.click();
-                }}
-                className="flex-1"
-              >
-                이미지 업로드
-              </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  setIsUsingCustomImage(true);
-                  handleFileChange(e);
-                }}
-                className="hidden"
-              />
+              <label className="flex-1">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={(e) => {
+                    setIsUsingCustomImage(true);
+                    handleFileChange(e);
+                  }}
+                  className="hidden"
+                />
+                <Button
+                  variant={isUsingCustomImage ? "default" : "outline"}
+                  size="sm"
+                  className="w-full cursor-pointer"
+                  type="button"
+                >
+                  이미지 업로드
+                </Button>
+              </label>
             </div>
           </div>
 
