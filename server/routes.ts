@@ -70,13 +70,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('Warning: Could not initialize default agents, database may need setup:', (error as Error).message);
   }
 
-  // Initialize sample agents
-  try {
-    const { initializeSampleAgents } = await import('./initialize-sample-agents');
-    await initializeSampleAgents();
-  } catch (error) {
-    console.log('Warning: Could not initialize sample agents:', (error as Error).message);
-  }
+  // Skip sample agents initialization - using admin center managed data only
+  console.log('Skipping sample agents initialization - using admin center managed data');
 
   // Note: Auth routes are now handled in setupAuth() function
 

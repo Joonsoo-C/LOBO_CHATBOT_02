@@ -714,6 +714,11 @@ Changelog:
   * Enhanced file drop area with hover effects and visual feedback
   * Supports JPG, PNG, GIF, WEBP formats with 5MB size limit
   * Improved user experience with multiple ways to access file selection
+- June 30, 2025. Fixed agent persistence issue in manual agent creation system:
+  * Fixed createAgent method in memory storage to automatically save agents to persistent storage
+  * Disabled sample agents initialization that was overriding manually created agents
+  * Manually created agents now persist correctly across server restarts and user sessions
+  * Agent database operations now properly synchronized with file-based persistence layer
 ```
 
 ## User Preferences
