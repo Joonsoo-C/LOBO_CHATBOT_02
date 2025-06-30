@@ -5094,9 +5094,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
             )}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </main>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
   );
 }
+
+export default MasterAdmin;
