@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -62,6 +62,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -234,15 +235,22 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 size="sm"
                 onClick={() => {
                   setIsUsingCustomImage(true);
-                  // Trigger file input after setting state
-                  setTimeout(() => {
-                    document.getElementById('image-upload')?.click();
-                  }, 100);
+                  fileInputRef.current?.click();
                 }}
                 className="flex-1"
               >
                 이미지 업로드
               </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  setIsUsingCustomImage(true);
+                  handleFileChange(e);
+                }}
+                className="hidden"
+              />
             </div>
           </div>
 
