@@ -208,6 +208,21 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       });
       eventBus.emit(EVENTS.FORCE_REFRESH_AGENTS);
       
+      // Step 6.5: NUCLEAR OPTION - Direct window function call for fallback
+      try {
+        // Call global refresh functions if available for both Home and TabletLayout
+        if (typeof (window as any).forceRefreshAgents === 'function') {
+          console.log("Calling window.forceRefreshAgents for Home...");
+          (window as any).forceRefreshAgents();
+        }
+        if (typeof (window as any).forceRefreshAgentsTablet === 'function') {
+          console.log("Calling window.forceRefreshAgentsTablet for TabletLayout...");
+          (window as any).forceRefreshAgentsTablet();
+        }
+      } catch (e) {
+        console.log("Window function call failed:", e);
+      }
+      
       // Step 7: NUCLEAR OPTION - Force immediate refetch with multiple strategies
       // Strategy 1: Immediate invalidation
       queryClient.removeQueries({ queryKey: ["/api/agents"] });

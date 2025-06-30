@@ -58,19 +58,37 @@ function Home() {
 
   // Listen for agent update events from IconChangeModal
   useEffect(() => {
+    console.log("Home.tsx: Setting up eventBus listeners...");
+    
     const handleAgentUpdate = () => {
       console.log("Home.tsx: Received agent update event, forcing refresh...");
+      // Force remove all cached agent data
       queryClient.removeQueries({ queryKey: ["/api/agents"] });
-      queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-      queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
+      queryClient.removeQueries({ queryKey: ["/api/conversations"] });
+      
+      // Force refetch with immediate execution
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ["/api/agents"], type: 'active' });
+        queryClient.refetchQueries({ queryKey: ["/api/conversations"], type: 'active' });
+      }, 100);
     };
 
     eventBus.on(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
     eventBus.on(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+    
+    // Register global window function for direct refresh fallback
+    (window as any).forceRefreshAgents = () => {
+      console.log("Home.tsx: Global window function called for force refresh");
+      handleAgentUpdate();
+    };
+    
+    console.log("Home.tsx: EventBus listeners and window function registered");
 
     return () => {
+      console.log("Home.tsx: Cleaning up eventBus listeners");
       eventBus.off(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
       eventBus.off(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+      // Don't delete window function as other components might be using it
     };
   }, [queryClient]);
 

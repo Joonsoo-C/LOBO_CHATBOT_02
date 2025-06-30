@@ -357,17 +357,34 @@ export default function TabletLayout() {
 
   // Listen for agent update events from IconChangeModal
   useEffect(() => {
+    console.log("TabletLayout: Setting up eventBus listeners...");
+    
     const handleAgentUpdate = () => {
       console.log("TabletLayout: Received agent update event, forcing refresh...");
+      // Force remove all cached agent data
       queryClientInstance.removeQueries({ queryKey: ["/api/agents"] });
-      queryClientInstance.refetchQueries({ queryKey: ["/api/agents"] });
-      queryClientInstance.refetchQueries({ queryKey: ["/api/conversations"] });
+      queryClientInstance.removeQueries({ queryKey: ["/api/conversations"] });
+      
+      // Force refetch with immediate execution
+      setTimeout(() => {
+        queryClientInstance.refetchQueries({ queryKey: ["/api/agents"], type: 'active' });
+        queryClientInstance.refetchQueries({ queryKey: ["/api/conversations"], type: 'active' });
+      }, 100);
     };
 
     eventBus.on(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
     eventBus.on(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+    
+    // Register global window function for direct refresh fallback
+    (window as any).forceRefreshAgentsTablet = () => {
+      console.log("TabletLayout: Global window function called for force refresh");
+      handleAgentUpdate();
+    };
+    
+    console.log("TabletLayout: EventBus listeners and window function registered");
 
     return () => {
+      console.log("TabletLayout: Cleaning up eventBus listeners");
       eventBus.off(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
       eventBus.off(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
     };
