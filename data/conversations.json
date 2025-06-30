@@ -16,12 +16,12 @@
       111,
       {
         "id": 111,
-        "userId": "user1081",
-        "agentId": 146,
+        "userId": "user1082",
+        "agentId": 184,
         "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-06-30T20:01:12.447Z",
-        "createdAt": "2025-06-30T20:01:12.447Z"
+        "lastMessageAt": "2025-06-30T21:28:11.573Z",
+        "createdAt": "2025-06-30T21:28:11.573Z"
       }
     ],
     [
@@ -47,6 +47,18 @@
         "unreadCount": 0,
         "lastMessageAt": "2025-06-30T19:39:52.519Z",
         "createdAt": "2025-06-30T19:39:52.519Z"
+      }
+    ],
+    [
+      112,
+      {
+        "id": 112,
+        "userId": "user1082",
+        "agentId": 146,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-06-30T21:29:12.982Z",
+        "createdAt": "2025-06-30T21:29:12.982Z"
       }
     ]
   ]
