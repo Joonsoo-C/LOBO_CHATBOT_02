@@ -175,7 +175,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start px-4 py-2 korean-text"
+                          className="w-full justify-start px-4 py-2 korean-text hover:bg-primary/10 transition-colors"
                           onClick={() => {
                             setShowPersonaModal(true);
                             setShowMenu(false);
@@ -451,7 +451,7 @@ export default function TabletLayout() {
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 bg-muted border-none korean-text h-11"
+                className="pl-10 pr-3 bg-[#dcdfe0] border-none korean-text h-11"
               />
             </div>
             
@@ -537,7 +537,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="korean-text w-full flex-1"
+              className="korean-text w-full flex-1 bg-[#ebebeb]"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");

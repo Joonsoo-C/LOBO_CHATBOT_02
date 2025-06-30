@@ -1711,6 +1711,16 @@ export class MemoryStorage implements IStorage {
     return deleted;
   }
 
+  async clearAllQALogs(): Promise<void> {
+    this.qaLogs.clear();
+    console.log('All QA logs cleared from memory storage');
+    
+    // Clear cache
+    if (cache) {
+      cache.delete('qa_logs');
+    }
+  }
+
   async clearAllQaLogs(): Promise<void> {
     this.qaLogs.clear();
     console.log('All QA logs cleared from memory storage');
