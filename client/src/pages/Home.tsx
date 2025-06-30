@@ -224,24 +224,20 @@ function Home() {
             </DropdownMenu>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="grid grid-cols-2 gap-0 bg-muted rounded-lg p-1 tab-navigation">
-            <Button
-              variant={activeTab === "chat" ? "default" : "ghost"}
-              size="lg"
-              className="korean-text h-12 md:h-14"
+          {/* Apple Messages Tab Navigation */}
+          <div className="apple-nav-tabs">
+            <div 
+              className={`apple-nav-tab ${activeTab === "chat" ? "active" : ""}`}
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
-            </Button>
-            <Button
-              variant={activeTab === "management" ? "default" : "ghost"}
-              size="lg"
-              className="korean-text h-12 md:h-14"
+            </div>
+            <div 
+              className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
               onClick={() => setActiveTab("management")}
             >
               {t('common.management')}
-            </Button>
+            </div>
           </div>
         </div>
       </header>

@@ -1004,7 +1004,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         {allMessages.length === 0 ? (
           <div className="flex justify-start">
             <div 
-              className="relative px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 bg-muted text-muted-foreground"
+              className="message-bubble assistant text-sm md:text-base leading-relaxed"
               style={{
                 textAlign: 'left',
                 minWidth: '40px',
@@ -1158,17 +1158,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               );
             })}
             
-            {/* Typing Indicator */}
+            {/* Apple Messages Typing Indicator */}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="max-w-[75%] px-4 py-3 rounded-2xl bg-muted text-muted-foreground">
-                  <div className="flex items-center space-x-1">
+                <div className="message-bubble assistant max-w-[120px]">
+                  <div className="flex items-center justify-center py-1">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
-                    <span className="text-xs text-gray-500 ml-2">{t('chat.typing')}</span>
                   </div>
                 </div>
               </div>
@@ -1183,28 +1182,35 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className={`${isTablet ? "chat-input-area flex-shrink-0" : "fixed-chat-input"} px-4 py-4 border-t border-border bg-card md:px-6 md:py-5`}>
-        <div className="flex items-center space-x-3 md:space-x-4">
+      <div className={`apple-input-container ${isTablet ? "chat-input-area flex-shrink-0" : "fixed-chat-input"}`}>
+        <div className="flex items-end space-x-3">
           <div className="flex-1 relative">
-            <Input
-              type="text"
+            <textarea
               placeholder={t('chat.inputPlaceholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pr-12 korean-text md:h-12 md:text-base md:pr-14"
+              className="apple-chat-input w-full resize-none korean-text"
               disabled={sendMessageMutation.isPending}
+              rows={1}
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+              }}
             />
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 md:p-3 md:right-3"
-              onClick={handleSendMessage}
-              disabled={!message.trim() || sendMessageMutation.isPending}
-            >
-              <Send className="w-4 h-4 md:w-5 md:h-5" />
-            </Button>
           </div>
+          <button
+            className="apple-send-button"
+            onClick={handleSendMessage}
+            disabled={!message.trim() || sendMessageMutation.isPending}
+          >
+            <Send className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

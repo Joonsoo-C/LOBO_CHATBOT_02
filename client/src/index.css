@@ -685,6 +685,106 @@ body {
     border-top-color: rgba(255, 255, 255, 0.1);
   }
 
+  /* Apple Messages Button Styling */
+  .apple-button {
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3);
+  }
+
+  .apple-button:hover {
+    background: #0051D5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 122, 255, 0.4);
+  }
+
+  .apple-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 122, 255, 0.3);
+  }
+
+  .apple-button.secondary {
+    background: #F2F2F7;
+    color: #007AFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .apple-button.secondary:hover {
+    background: #E5E5EA;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark .apple-button.secondary {
+    background: #2C2C2E;
+    color: #007AFF;
+  }
+
+  .dark .apple-button.secondary:hover {
+    background: #48484A;
+  }
+
+  /* Apple Messages Category Badges */
+  .apple-category-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .apple-category-badge.school {
+    background: rgba(0, 122, 255, 0.1);
+    color: #007AFF;
+  }
+
+  .apple-category-badge.professor {
+    background: rgba(142, 142, 147, 0.1);
+    color: #8E8E93;
+  }
+
+  .apple-category-badge.student {
+    background: rgba(52, 199, 89, 0.1);
+    color: #34C759;
+  }
+
+  .apple-category-badge.group {
+    background: rgba(175, 82, 222, 0.1);
+    color: #AF52DE;
+  }
+
+  .apple-category-badge.feature {
+    background: rgba(255, 149, 0, 0.1);
+    color: #FF9500;
+  }
+
+  .dark .apple-category-badge.school {
+    background: rgba(0, 122, 255, 0.2);
+  }
+
+  .dark .apple-category-badge.professor {
+    background: rgba(142, 142, 147, 0.2);
+  }
+
+  .dark .apple-category-badge.student {
+    background: rgba(52, 199, 89, 0.2);
+  }
+
+  .dark .apple-category-badge.group {
+    background: rgba(175, 82, 222, 0.2);
+  }
+
+  .dark .apple-category-badge.feature {
+    background: rgba(255, 149, 0, 0.2);
+  }
+
   /* Agent category badges */
   .category-badge {
     @apply text-xs px-2 py-1 rounded-full;
