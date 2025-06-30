@@ -23,7 +23,18 @@ import {
   ThumbsDown,
   Laugh,
   Angry,
-  Trash2
+  Trash2,
+  GraduationCap,
+  Code,
+  Bot,
+  FlaskRound,
+  Map,
+  Languages,
+  Dumbbell,
+  Database,
+  Lightbulb,
+  Calendar,
+  Pen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +49,24 @@ import IconChangeModal from "./IconChangeModal";
 import { useIsTablet } from "@/hooks/use-tablet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, Message, ChatResponse, Conversation } from "@/types/agent";
+
+// Icon mapping for agent icons
+const iconMap: Record<string, any> = {
+  "fas fa-graduation-cap": GraduationCap,
+  "fas fa-code": Code,
+  "fas fa-robot": Bot,
+  "fas fa-user": User,
+  "fas fa-flask": FlaskRound,
+  "fas fa-map": Map,
+  "fas fa-language": Languages,
+  "fas fa-dumbbell": Dumbbell,
+  "fas fa-database": Database,
+  "fas fa-lightbulb": Lightbulb,
+  "fas fa-heart": Heart,
+  "fas fa-calendar": Calendar,
+  "fas fa-pen": Pen,
+  "fas fa-file-alt": FileText,
+};
 
 interface ChatInterfaceProps {
   agent: Agent;

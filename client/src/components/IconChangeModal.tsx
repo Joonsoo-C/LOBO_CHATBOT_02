@@ -107,7 +107,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           backgroundColor: data.backgroundColor,
           isCustomIcon: true
         });
-        return response;
+        return await response.json();
       } else {
         // Update with standard icon
         const response = await apiRequest("PATCH", `/api/agents/${agent.id}`, {
@@ -115,7 +115,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           backgroundColor: data.backgroundColor,
           isCustomIcon: false
         });
-        return response;
+        return await response.json();
       }
     },
     onSuccess: (response) => {
@@ -198,6 +198,12 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
+      
+      // Step 6: Close modal and show success message
+      onClose();
+      if (onSuccess) {
+        onSuccess("아이콘이 성공적으로 변경되었습니다!");
+      }
       
       toast({
         title: "아이콘 변경 완료",
