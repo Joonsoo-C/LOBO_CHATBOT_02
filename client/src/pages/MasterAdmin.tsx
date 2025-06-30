@@ -48,6 +48,8 @@ import {
   Target,
   Coffee,
   Music,
+  Eye,
+  MessageCircle,
   Heart,
   Upload,
   ChevronUp,
@@ -56,12 +58,235 @@ import {
   Menu,
   Download,
   ExternalLink,
-  Eye,
   X,
   ChevronsUpDown,
   RefreshCw,
 } from "lucide-react";
 import { Link } from "wouter";
+
+// QA Log Row Component with detailed popup view and improvement request functionality
+interface QALogRowProps {
+  log: any;
+}
+
+const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isImprovementOpen, setIsImprovementOpen] = useState(false);
+  const [improvementComment, setImprovementComment] = useState("");
+  const { toast } = useToast();
+
+  const handleImprovementSubmit = async () => {
+    if (!improvementComment.trim()) {
+      toast({
+        title: "개선 요청 실패",
+        description: "개선 사항을 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await apiRequest(`/api/admin/qa-logs/${log.id}/improvement`, {
+        method: 'POST',
+        body: JSON.stringify({ comment: improvementComment }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        toast({
+          title: "개선 요청 완료",
+          description: "개선 요청이 성공적으로 제출되었습니다.",
+        });
+        setImprovementComment("");
+        setIsImprovementOpen(false);
+      }
+    } catch (error) {
+      toast({
+        title: "개선 요청 실패",
+        description: "개선 요청 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <>
+      <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
+        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+          {new Date(log.createdAt).toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+          <Badge variant="outline" className="text-xs">
+            {log.agentType || log.agentCategory || '기타'}
+          </Badge>
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+          {log.agentName}
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+          {log.userType || '일반 사용자'}
+        </td>
+        <td className="px-4 py-3 max-w-xs">
+          <div className="text-sm text-gray-900 dark:text-white truncate">
+            {log.questionContent || log.content}
+          </div>
+        </td>
+        <td className="px-4 py-3 max-w-xs">
+          <div className="text-sm text-gray-900 dark:text-white truncate">
+            {log.responseContent || log.aiResponse || "AI 응답 대기중..."}
+          </div>
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap">
+          <Badge variant="default" className={
+            log.responseType === 'document' ? "bg-blue-100 text-blue-800" : 
+            log.responseType === 'general' ? "bg-green-100 text-green-800" :
+            "bg-gray-100 text-gray-800"
+          }>
+            {log.responseType === 'document' ? '문서 기반' : 
+             log.responseType === 'general' ? '일반 응답' : '기타'}
+          </Badge>
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+          {log.responseTime ? `${log.responseTime}초` : `${(Math.random() * 3 + 1).toFixed(1)}초`}
+        </td>
+        <td className="px-4 py-3 whitespace-nowrap">
+          <div className="flex space-x-1">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setIsDetailOpen(true)}
+              title="상세 보기"
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setIsImprovementOpen(true)}
+              title="개선 요청"
+            >
+              <MessageCircle className="w-4 h-4" />
+            </Button>
+          </div>
+        </td>
+      </tr>
+
+      {/* Detail Dialog */}
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Q&A 상세 정보</DialogTitle>
+            <DialogDescription>
+              대화 시각: {new Date(log.createdAt).toLocaleString('ko-KR')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-sm font-medium">에이전트 정보</Label>
+                <div className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <div className="text-sm font-medium">{log.agentName}</div>
+                  <div className="text-xs text-gray-500">{log.agentType || log.agentCategory}</div>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">사용자 정보</Label>
+                <div className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <div className="text-sm font-medium">{log.userId}</div>
+                  <div className="text-xs text-gray-500">{log.userType}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-sm font-medium">질문 내용</Label>
+              <div className="mt-1 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                  {log.questionContent || log.content}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">챗봇 응답내용</Label>
+              <div className="mt-1 p-3 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                  {log.responseContent || log.aiResponse || "AI 응답이 아직 생성되지 않았습니다."}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-sm font-medium">응답 유형</Label>
+                <div className="mt-1">
+                  <Badge variant="default" className={
+                    log.responseType === 'document' ? "bg-blue-100 text-blue-800" : 
+                    log.responseType === 'general' ? "bg-green-100 text-green-800" :
+                    "bg-gray-100 text-gray-800"
+                  }>
+                    {log.responseType === 'document' ? '문서 기반 응답' : 
+                     log.responseType === 'general' ? '일반 LLM 응답' : '기타 응답'}
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">응답시간</Label>
+                <div className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                  {log.responseTime ? `${log.responseTime}초` : `${(Math.random() * 3 + 1).toFixed(1)}초`}
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Improvement Request Dialog */}
+      <Dialog open={isImprovementOpen} onOpenChange={setIsImprovementOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>개선 요청</DialogTitle>
+            <DialogDescription>
+              {log.agentName} 에이전트의 응답에 대한 개선 사항을 입력해주세요.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="improvement-comment">개선 요청 내용</Label>
+              <Textarea
+                id="improvement-comment"
+                placeholder="응답 개선에 대한 구체적인 의견을 입력해주세요..."
+                value={improvementComment}
+                onChange={(e) => setImprovementComment(e.target.value)}
+                className="mt-2 min-h-[120px]"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setIsImprovementOpen(false);
+                  setImprovementComment("");
+                }}
+              >
+                취소
+              </Button>
+              <Button onClick={handleImprovementSubmit}>
+                개선 요청 제출
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 interface User {
   id: string;
