@@ -526,7 +526,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-14"
+              className="korean-text h-14 w-full flex-1"
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -537,7 +537,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-14"
+              className="korean-text h-14 w-full flex-1"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");
