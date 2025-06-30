@@ -1416,7 +1416,7 @@
         "speechStyle": "공손하고 친절한 말투",
         "personality": "친절하고 전문적인 성격으로 정확한 정보를 제공",
         "forbiddenResponseStyle": "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
-        "visibility": "organization",
+        "visibility": "public",
         "managerId": "user1081",
         "agentEditorIds": [],
         "documentManagerIds": [],

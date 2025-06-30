@@ -38,7 +38,10 @@ export default function AgentManagement() {
     queryKey: ["/api/agents/managed"],
   });
 
+  console.log(`[DEBUG] AgentManagement: managedAgents count: ${managedAgents.length}`, managedAgents);
+
   const handleManagementChat = (agentId: number) => {
+    console.log(`[DEBUG] AgentManagement: Clicking agent ${agentId}, navigating to /management/${agentId}`);
     setLocation(`/management/${agentId}`);
   };
 

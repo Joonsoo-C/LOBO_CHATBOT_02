@@ -17,24 +17,23 @@
       {
         "id": 111,
         "userId": "user1082",
-        "agentId": 184,
-        "type": "management",
+        "agentId": 116,
+        "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-06-30T21:28:11.573Z",
-        "createdAt": "2025-06-30T21:28:11.573Z"
+        "lastMessageAt": "2025-06-30T22:07:18.151Z",
+        "createdAt": "2025-06-30T22:07:18.151Z"
       }
     ],
     [
       114,
       {
         "id": 114,
-        "userId": "user1081",
-        "agentId": 146,
+        "userId": "user1082",
+        "agentId": 117,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-06-30T20:04:22.765Z",
-        "createdAt": "2025-06-29T10:33:08.487Z",
-        "lastReadAt": "2025-06-30T20:05:40.336Z"
+        "lastMessageAt": "2025-06-30T22:07:23.419Z",
+        "createdAt": "2025-06-30T22:07:23.419Z"
       }
     ],
     [
@@ -54,11 +53,35 @@
       {
         "id": 112,
         "userId": "user1082",
-        "agentId": 146,
+        "agentId": 123,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-06-30T21:29:12.982Z",
-        "createdAt": "2025-06-30T21:29:12.982Z"
+        "lastMessageAt": "2025-06-30T22:07:19.734Z",
+        "createdAt": "2025-06-30T22:07:19.734Z"
+      }
+    ],
+    [
+      113,
+      {
+        "id": 113,
+        "userId": "user1082",
+        "agentId": 115,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-06-30T22:07:21.136Z",
+        "createdAt": "2025-06-30T22:07:21.136Z"
+      }
+    ],
+    [
+      115,
+      {
+        "id": 115,
+        "userId": "user1082",
+        "agentId": 118,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-06-30T22:07:25.681Z",
+        "createdAt": "2025-06-30T22:07:25.681Z"
       }
     ]
   ]
