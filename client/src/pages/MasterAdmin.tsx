@@ -359,10 +359,12 @@ function MasterAdmin() {
   
   // 파일 입력 참조
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const agentFileInputRef = useRef<HTMLInputElement>(null);
   
   // 에이전트 생성 탭 상태
   type AgentCreationTab = 'basic' | 'persona' | 'model' | 'upload' | 'sharing' | 'managers';
   const [agentCreationTab, setAgentCreationTab] = useState<AgentCreationTab>('basic');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   
   // 관리자 선정 상태
   type ManagerInfo = {
@@ -1911,6 +1913,50 @@ function MasterAdmin() {
     console.log("파일 선택 버튼 클릭됨");
     if (fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  // 에이전트 파일 선택 핸들러
+  const handleAgentFileSelect = () => {
+    console.log("에이전트 파일 선택 버튼 클릭됨");
+    if (agentFileInputRef.current) {
+      agentFileInputRef.current.click();
+    }
+  };
+
+  // 에이전트 파일 선택 변경 핸들러
+  const handleAgentFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (files.length > 0) {
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      ];
+      
+      const validFiles = files.filter(file => 
+        allowedTypes.includes(file.type) && file.size <= 50 * 1024 * 1024
+      );
+      
+      if (validFiles.length !== files.length) {
+        toast({
+          title: "파일 형식 오류",
+          description: "지원하지 않는 파일 형식이 있거나 크기가 50MB를 초과합니다.",
+          variant: "destructive",
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedFiles((prev: File[]) => [...prev, ...validFiles]);
+        toast({
+          title: "파일 선택됨",
+          description: `${validFiles.length}개 파일이 선택되었습니다.`,
+        });
+      }
     }
   };
 
