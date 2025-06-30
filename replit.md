@@ -670,6 +670,18 @@ Changelog:
   * Added "파일 업로드" button (green) with descriptive text connecting to AgentFileUploadModal for bulk uploads
   * Moved "에이전트 검색 및 관리" to subsection below action buttons for better visual hierarchy
   * Enhanced UI layout matching user's design requirements with card-based button styling
+- June 30, 2025. Implemented comprehensive Apple Messages UI design system:
+  * Redesigned message bubbles with Apple's signature rounded corners and gradient backgrounds
+  * User messages: Blue gradient (#007AFF to #0051D5) with white text and tail on bottom-right
+  * AI messages: Light gray (#F2F2F7) in light mode, dark gray (#2C2C2E) in dark mode with tail on bottom-left
+  * Updated chat input to rounded textarea with Apple's styling and auto-expanding height
+  * Redesigned send button as circular blue gradient button with hover animations
+  * Applied Apple Messages header styling with translucent background and blur effects
+  * Updated agent cards with rounded corners, subtle shadows, and hover animations
+  * Implemented Apple-style navigation tabs with pill design and smooth transitions
+  * Added comprehensive color system matching Apple's design guidelines
+  * Enhanced typing indicator with bouncing dots animation in message bubble format
+  * All UI elements now follow Apple's Human Interface Guidelines for consistency
 ```
 
 ## User Preferences
