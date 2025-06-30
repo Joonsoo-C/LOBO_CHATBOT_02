@@ -523,15 +523,16 @@ body {
     background: #F2F2F7;
     border: 1px solid #D1D1D6;
     border-radius: 20px;
-    padding: 12px 20px;
+    padding: 10px 16px;
     font-size: 16px;
     line-height: 1.4;
     resize: none;
     outline: none;
     transition: all 0.2s ease;
-    min-height: 44px;
+    min-height: 40px;
     max-height: 120px;
     width: 100%;
+    flex: 1;
   }
 
   .apple-chat-input:focus {
@@ -555,8 +556,8 @@ body {
     background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
     border: none;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -681,19 +682,21 @@ body {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 16px 20px;
+    padding: 12px;
     display: flex;
     align-items: flex-end;
-    gap: 16px;
+    gap: 12px;
     position: sticky;
     bottom: 0;
     z-index: 100;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   @media (min-width: 768px) {
     .apple-input-container {
-      padding: 20px 24px;
-      gap: 20px;
+      padding: 16px;
+      gap: 16px;
     }
   }
 
