@@ -74,37 +74,49 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   const queryClient = useQueryClient();
   
   // Fetch organization categories
-  const { data: organizationCategories = [] } = useQuery({
+  const { data: organizationCategories = [], isLoading: isLoadingOrgs } = useQuery({
     queryKey: ["/api/organization-categories"],
     enabled: isOpen,
   });
 
+  // Debug logging
+  console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
+  console.log("Upper categories:", getUpperCategories());
+
   // Get unique upper categories
   const getUpperCategories = () => {
-    const upperCats = Array.from(new Set((organizationCategories as any[]).map((org: any) => org.upperCategory)));
-    return upperCats.filter(Boolean);
+    if (!organizationCategories || !Array.isArray(organizationCategories)) return [];
+    const upperCats = organizationCategories.map((org: any) => org.upperCategory).filter(Boolean);
+    const uniqueSet = new Set(upperCats);
+    const result: string[] = [];
+    uniqueSet.forEach(cat => result.push(cat));
+    return result;
   };
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
-    if (!upperCategory) return [];
-    const lowerCats = Array.from(new Set(
-      (organizationCategories as any[])
-        .filter((org: any) => org.upperCategory === upperCategory)
-        .map((org: any) => org.lowerCategory)
-    ));
-    return lowerCats.filter(Boolean);
+    if (!upperCategory || !organizationCategories || !Array.isArray(organizationCategories)) return [];
+    const lowerCats = organizationCategories
+      .filter((org: any) => org.upperCategory === upperCategory)
+      .map((org: any) => org.lowerCategory)
+      .filter(Boolean);
+    const uniqueSet = new Set(lowerCats);
+    const result: string[] = [];
+    uniqueSet.forEach(cat => result.push(cat));
+    return result;
   };
 
   // Get detail categories for selected upper and lower categories
   const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
-    if (!upperCategory || !lowerCategory) return [];
-    const detailCats = Array.from(new Set(
-      (organizationCategories as any[])
-        .filter((org: any) => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
-        .map((org: any) => org.detailCategory)
-    ));
-    return detailCats.filter(Boolean);
+    if (!upperCategory || !lowerCategory || !organizationCategories || !Array.isArray(organizationCategories)) return [];
+    const detailCats = organizationCategories
+      .filter((org: any) => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
+      .map((org: any) => org.detailCategory)
+      .filter(Boolean);
+    const uniqueSet = new Set(detailCats);
+    const result: string[] = [];
+    uniqueSet.forEach(cat => result.push(cat));
+    return result;
   };
   
   const [settings, setSettings] = useState<ChatbotSettings>({
