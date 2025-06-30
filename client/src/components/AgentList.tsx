@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText } from "lucide-react";
@@ -61,6 +61,7 @@ function getCategoryBadgeStyle(category: string) {
 }
 
 export default function AgentList({ agents, conversations }: AgentListProps) {
+  const [location] = useLocation();
   const getConversationForAgent = useMemo(() => {
     return (agentId: number) => conversations.find(conv => conv.agentId === agentId);
   }, [conversations]);
@@ -121,15 +122,17 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
-    <div className="px-2 py-1 responsive-agent-grid" style={{ gap: '1px' }}>
+    <div className="responsive-agent-grid">
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
         const bgColor = backgroundColorMap[agent.backgroundColor] || "bg-gray-600";
         
+        const isActive = location === `/chat/${agent.id}`;
+        
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`}>
-            <div className="apple-agent-card">
+            <div className={`apple-agent-card ${isActive ? 'active' : ''}`}>
               <div className="flex items-center space-x-2 md:space-x-4">
                 <div className={`w-10 h-10 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
