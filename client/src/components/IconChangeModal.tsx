@@ -119,16 +119,29 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       }
     },
     onSuccess: () => {
-      // Force refresh all related queries
+      // Invalidate all agent-related queries with comprehensive patterns
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/agents", agent.id] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/agents/${agent.id}`] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       
-      // Force refetch to ensure immediate update
+      // Use queryKey patterns to catch all variations
+      queryClient.invalidateQueries({ 
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            key.includes("/api/agents") || 
+            key.includes(`/api/agents/${agent.id}`) ||
+            key.includes("/api/conversations")
+          );
+        }
+      });
+      
+      // Force immediate refetch of critical queries
       queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-      queryClient.refetchQueries({ queryKey: ["/api/agents", agent.id] });
       queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
+      queryClient.refetchQueries({ queryKey: [`/api/agents/${agent.id}`] });
       
       toast({
         title: "아이콘 변경 완료",
@@ -137,11 +150,6 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       
       onSuccess?.("아이콘과 배경색이 성공적으로 변경되었습니다.");
       onClose();
-      
-      // Force page reload if cache isn't updating properly
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     },
     onError: (error: Error) => {
       toast({
