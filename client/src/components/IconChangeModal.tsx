@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -64,7 +64,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [isUsingCustomImage, setIsUsingCustomImage] = useState(agent.isCustomIcon || false);
 
   // Reset state when modal opens/closes or agent changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       setSelectedIcon(agent.icon || "User");
       setSelectedColor(agent.backgroundColor || "#3b82f6");
