@@ -469,7 +469,7 @@ body {
   }
 
   .message-bubble.user {
-    background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+    background: #4A90E2;
     color: white;
     border-bottom-right-radius: 6px;
     margin-left: auto;
@@ -498,7 +498,7 @@ body {
     width: 0;
     height: 0;
     border-left: 6px solid transparent;
-    border-top: 6px solid #007AFF;
+    border-top: 6px solid #4A90E2;
     border-radius: 0 0 6px 0;
   }
 
@@ -553,7 +553,7 @@ body {
 
   /* Apple Messages Send Button */
   .apple-send-button {
-    background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+    background: #4A90E2;
     border: none;
     border-radius: 50%;
     width: 36px;
@@ -564,13 +564,13 @@ body {
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
     flex-shrink: 0;
   }
 
   .apple-send-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
   }
 
   .apple-send-button:active {

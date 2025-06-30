@@ -685,6 +685,8 @@ Changelog:
   * Fixed message input area to use full screen width like standard messaging apps
   * Enhanced message bubble width: mobile 90%, desktop 85% for better text flow and readability
   * Updated AI message bubble color to match user-specified gray (#E5E5E5) for both light and dark modes
+  * Changed user message bubble color to match user-specified blue (#4A90E2) replacing Apple's gradient
+  * Updated send button and hover effects to use consistent blue color scheme
 ```
 
 ## User Preferences
