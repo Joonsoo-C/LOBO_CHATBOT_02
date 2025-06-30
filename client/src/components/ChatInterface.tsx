@@ -1182,7 +1182,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
       {/* Message Input */}
       <div className={`apple-input-container ${isTablet ? "chat-input-area flex-shrink-0" : "fixed-chat-input"}`}>
-        <div className="flex items-end space-x-3">
+        <div className="flex items-end">
           <div className="flex-1 relative">
             <textarea
               placeholder={t('chat.inputPlaceholder')}
