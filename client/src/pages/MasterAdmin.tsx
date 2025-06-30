@@ -192,8 +192,34 @@ const orgCategoryEditSchema = z.object({
 
 type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
 
+// 토큰 사용량 데이터 타입
+interface TokenUsage {
+  id: string;
+  timestamp: string;
+  agentName: string;
+  question: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  indexTokens: number;
+  preprocessingTokens: number;
+  totalTokens: number;
+  upperCategory?: string;
+  lowerCategory?: string;
+  detailCategory?: string;
+}
+
 function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  
+  // 토큰 관리 상태
+  const [tokenPeriodFilter, setTokenPeriodFilter] = useState("today");
+  const [tokenUpperCategoryFilter, setTokenUpperCategoryFilter] = useState("all");
+  const [tokenLowerCategoryFilter, setTokenLowerCategoryFilter] = useState("all");
+  const [tokenDetailCategoryFilter, setTokenDetailCategoryFilter] = useState("all");
+  const [tokenKeywordFilter, setTokenKeywordFilter] = useState("");
+  const [tokenSortField, setTokenSortField] = useState<'inputTokens' | 'outputTokens' | 'indexTokens' | 'preprocessingTokens'>('inputTokens');
+  const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
@@ -650,6 +676,137 @@ function MasterAdmin() {
   }, [users, hasSearched]);
 
   // Move this after organizations is declared via useQuery
+
+  // 샘플 토큰 데이터 생성
+  const sampleTokenData = useMemo(() => {
+    if (!agents) return [];
+    
+    const sampleQuestions = [
+      "입학 절차에 대해 알려주세요",
+      "장학금 신청 방법이 궁금합니다",
+      "학과 커리큘럼에 대해 설명해주세요",
+      "졸업 요건이 무엇인가요?",
+      "동아리 활동에 대해 알려주세요",
+      "기숙사 신청은 어떻게 하나요?",
+      "교환학생 프로그램이 있나요?",
+      "취업 지원 서비스는 무엇이 있나요?",
+      "도서관 이용 시간을 알려주세요",
+      "수강신청 방법에 대해 설명해주세요",
+      "학비 납부 일정을 알려주세요",
+      "휴학 신청은 어떻게 하나요?",
+      "연구실 참여 방법을 알려주세요",
+      "인턴십 프로그램이 있나요?",
+      "학점 인정 기준이 궁금합니다"
+    ];
+
+    const models = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
+    const tokenData: TokenUsage[] = [];
+
+    // 각 에이전트별로 5-10개의 샘플 데이터 생성
+    agents.slice(0, 20).forEach((agent, agentIndex) => {
+      const numQuestions = Math.floor(Math.random() * 6) + 5; // 5-10개
+      
+      for (let i = 0; i < numQuestions; i++) {
+        const questionIndex = Math.floor(Math.random() * sampleQuestions.length);
+        const question = sampleQuestions[questionIndex];
+        const model = models[Math.floor(Math.random() * models.length)];
+        
+        // 토큰 사용량 계산 (질문 길이와 모델에 따라 다르게)
+        const baseTokens = question.length * 2;
+        const inputTokens = Math.floor(baseTokens + Math.random() * 200 + 100);
+        const outputTokens = Math.floor(inputTokens * 0.3 + Math.random() * 150);
+        const indexTokens = Math.floor(Math.random() * 100 + 50);
+        const preprocessingTokens = Math.floor(Math.random() * 80 + 20);
+        
+        const now = new Date();
+        const daysAgo = Math.floor(Math.random() * 30); // 최근 30일 내
+        const timestamp = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+
+        tokenData.push({
+          id: `token_${agentIndex}_${i}`,
+          timestamp: timestamp.toISOString(),
+          agentName: agent.name,
+          question,
+          model,
+          inputTokens,
+          outputTokens,
+          indexTokens,
+          preprocessingTokens,
+          totalTokens: inputTokens + outputTokens + indexTokens + preprocessingTokens,
+          upperCategory: organizations?.find(org => Math.random() > 0.5)?.upperCategory,
+          lowerCategory: organizations?.find(org => Math.random() > 0.5)?.lowerCategory,
+          detailCategory: organizations?.find(org => Math.random() > 0.5)?.detailCategory,
+        });
+      }
+    });
+
+    return tokenData.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, [agents, organizations]);
+
+  // 토큰 데이터 필터링
+  const filteredTokenData = useMemo(() => {
+    let filtered = [...sampleTokenData];
+
+    // 기간 필터링
+    const now = new Date();
+    switch (tokenPeriodFilter) {
+      case 'today':
+        filtered = filtered.filter(token => {
+          const tokenDate = new Date(token.timestamp);
+          return tokenDate.toDateString() === now.toDateString();
+        });
+        break;
+      case 'week':
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(token => new Date(token.timestamp) >= weekAgo);
+        break;
+      case 'month':
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(token => new Date(token.timestamp) >= monthAgo);
+        break;
+      case 'quarter':
+        const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(token => new Date(token.timestamp) >= quarterAgo);
+        break;
+    }
+
+    // 조직 필터링
+    if (tokenUpperCategoryFilter !== 'all') {
+      filtered = filtered.filter(token => token.upperCategory === tokenUpperCategoryFilter);
+    }
+    if (tokenLowerCategoryFilter !== 'all') {
+      filtered = filtered.filter(token => token.lowerCategory === tokenLowerCategoryFilter);
+    }
+    if (tokenDetailCategoryFilter !== 'all') {
+      filtered = filtered.filter(token => token.detailCategory === tokenDetailCategoryFilter);
+    }
+
+    // 키워드 필터링
+    if (tokenKeywordFilter.trim()) {
+      const keyword = tokenKeywordFilter.toLowerCase();
+      filtered = filtered.filter(token => 
+        token.agentName.toLowerCase().includes(keyword) ||
+        token.question.toLowerCase().includes(keyword)
+      );
+    }
+
+    // 정렬
+    filtered.sort((a, b) => {
+      const aValue = a[tokenSortField];
+      const bValue = b[tokenSortField];
+      return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    });
+
+    return filtered;
+  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenSortField, tokenSortOrder]);
+
+  // 토큰 데이터 페이지네이션
+  const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
+  const tokenItemsPerPage = 20;
+  const tokenTotalPages = Math.ceil(filteredTokenData.length / tokenItemsPerPage);
+  const tokenStartIndex = (tokenCurrentPage - 1) * tokenItemsPerPage;
+  const tokenEndIndex = tokenStartIndex + tokenItemsPerPage;
+  const paginatedTokenData = filteredTokenData.slice(tokenStartIndex, tokenEndIndex);
 
   // 필터된 사용자 목록
   const filteredUsers = useMemo(() => {
@@ -2659,7 +2816,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-8 md:pt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">
               <BarChart3 className="w-4 h-4 mr-2" />
               대시보드
@@ -2683,6 +2840,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <TabsTrigger value="conversations">
               <MessageSquare className="w-4 h-4 mr-2" />
               질문/응답 로그
+            </TabsTrigger>
+            <TabsTrigger value="tokens">
+              <Zap className="w-4 h-4 mr-2" />
+              토큰 관리
             </TabsTrigger>
             <TabsTrigger value="system">
               <Settings className="w-4 h-4 mr-2" />
