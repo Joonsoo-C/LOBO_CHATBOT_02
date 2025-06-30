@@ -3485,11 +3485,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             {/* 조직 카테고리 목록 */}
-            {hasOrgSearched && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden">
-                <div className="p-4 border-b">
-                  <h3 className="text-lg font-semibold">조직 카테고리 목록 ({filteredOrganizationCategories?.length || 0}개)</h3>
-                </div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden">
+              <div className="p-4 border-b">
+                <h3 className="text-lg font-semibold">조직 카테고리 목록 ({filteredOrganizationCategories?.length || 0}개)</h3>
+              </div>
                 
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -3628,7 +3627,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 )}
               </div>
-            )}
           </TabsContent>
 
           {/* 사용자 관리 */}
