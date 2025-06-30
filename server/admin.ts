@@ -2929,58 +2929,34 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Q&A 로그 데이터 조회 API
+  // Q&A 로그 데이터 조회 API - Excel에서 로드한 실제 Q&A 로그 사용
   app.get('/api/admin/qa-logs', requireMasterAdmin, async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = (page - 1) * limit;
 
-      // 모든 메시지 가져오기 (질문과 응답 모두)
-      const allMessages = await storage.getAllMessages();
-      const allConversations = await storage.getAllConversations();
-      const allUsers = await storage.getAllUsers();
-      const allAgents = await storage.getAllAgents();
+      // Excel에서 로드한 실제 Q&A 로그 데이터 가져오기
+      const allQaLogs = await storage.getQaLogs();
+      
+      // Q&A 로그를 API 응답 형식으로 변환
+      const qaLogs = allQaLogs.map(log => ({
+        id: log.id,
+        question: log.questionContent,
+        answer: log.responseContent,
+        userName: '샘플 사용자', // Excel 데이터에서는 구체적 사용자 정보 없음
+        userType: log.userType,
+        agentName: log.agentName,
+        agentCategory: log.agentType,
+        createdAt: log.timestamp,
+        responseTime: log.responseTime,
+        responseType: log.responseType,
+        userUpperCategory: '',
+        userLowerCategory: '',
+        userDetailCategory: ''
+      }));
 
-      // 질문 메시지만 필터링 (사용자가 보낸 메시지)
-      const userMessages = allMessages.filter(msg => msg.isFromUser);
-
-      // 질문별로 응답 찾기 및 관련 정보 매핑
-      const qaLogs = [];
-      for (const userMessage of userMessages) {
-        // 해당 질문에 대한 응답 찾기 (같은 대화에서 질문 이후 첫 번째 AI 응답)
-        const aiResponse = allMessages.find(msg => 
-          !msg.isFromUser && 
-          msg.conversationId === userMessage.conversationId &&
-          msg.id > userMessage.id
-        );
-
-        // 대화 정보 찾기
-        const conversation = allConversations.find(conv => conv.id === userMessage.conversationId);
-        if (!conversation) continue;
-
-        // 사용자 정보 찾기
-        const user = allUsers.find(u => u.id === conversation.userId);
-        
-        // 에이전트 정보 찾기
-        const agent = allAgents.find(a => a.id === conversation.agentId);
-
-        qaLogs.push({
-          id: userMessage.id,
-          question: userMessage.content,
-          answer: aiResponse?.content || '응답 없음',
-          userName: user ? ((user as any).name || user.username) : '알 수 없는 사용자',
-          userType: user?.role || '일반 사용자',
-          agentName: agent?.name || '알 수 없는 에이전트',
-          agentCategory: agent?.category || '미분류',
-          createdAt: userMessage.createdAt,
-          userUpperCategory: (user as any)?.upperCategory || '',
-          userLowerCategory: (user as any)?.lowerCategory || '',
-          userDetailCategory: (user as any)?.detailCategory || ''
-        });
-      }
-
-      // 최신순으로 정렬
+      // 최신순으로 정렬 (이미 getQaLogs에서 정렬되지만 확실히 하기 위해)
       qaLogs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       // 페이지네이션 적용
