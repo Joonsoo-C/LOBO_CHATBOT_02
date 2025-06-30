@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Agent } from "@/types/agent";
+import { eventBus, EVENTS } from "@/utils/eventBus";
 import { 
   User, GraduationCap, Code, Bot, FlaskRound, 
   Map, Languages, Dumbbell, Database, Lightbulb, 
@@ -197,7 +198,17 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] });
       
-      // Step 6: NUCLEAR OPTION - Force immediate refetch with multiple strategies
+      // Step 6: Emit global events for immediate UI updates
+      console.log("Emitting global agent update events...");
+      eventBus.emit(EVENTS.AGENT_ICON_CHANGED, { 
+        agentId: agent.id, 
+        icon: updatedAgentData.icon, 
+        backgroundColor: updatedAgentData.backgroundColor,
+        isCustomIcon: updatedAgentData.isCustomIcon 
+      });
+      eventBus.emit(EVENTS.FORCE_REFRESH_AGENTS);
+      
+      // Step 7: NUCLEAR OPTION - Force immediate refetch with multiple strategies
       // Strategy 1: Immediate invalidation
       queryClient.removeQueries({ queryKey: ["/api/agents"] });
       
