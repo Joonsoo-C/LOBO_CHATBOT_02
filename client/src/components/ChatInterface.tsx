@@ -1033,8 +1033,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <div 
                     className="relative flex items-start gap-1 w-fit"
                     style={{ 
-                      maxWidth: '90%', 
-                      marginRight: (!msg.isFromUser && !isSystem) ? '60px' : '0'
+                      maxWidth: msg.isFromUser ? '95%' : '90%', 
+                      marginRight: (!msg.isFromUser && !isSystem) ? '60px' : (msg.isFromUser ? '8px' : '0')
                     }}
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {

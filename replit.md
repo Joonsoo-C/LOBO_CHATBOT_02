@@ -687,6 +687,7 @@ Changelog:
   * Updated AI message bubble color to match user-specified gray (#E5E5E5) for both light and dark modes
   * Changed user message bubble color to match user-specified blue (#4A90E2) replacing Apple's gradient
   * Updated send button and hover effects to use consistent blue color scheme
+  * Enhanced user message bubble width (95%) and adjusted right margin (8px) for better text flow
 ```
 
 ## User Preferences
