@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { X, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Agent } from "@/types/agent";
@@ -23,7 +24,30 @@ interface PersonaData {
   knowledgeArea: string;
   personalityTraits: string;
   prohibitedWordResponse: string;
+  visibility: string;
+  upperCategory: string;
+  lowerCategory: string;
+  detailCategory: string;
 }
+
+const VISIBILITY_OPTIONS = [
+  { 
+    value: "public", 
+    label: "조직 전체 - 소속 조직의 모든 구성원이 사용 가능" 
+  },
+  { 
+    value: "group", 
+    label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" 
+  },
+  { 
+    value: "custom", 
+    label: "사용자 지정 - 개별 사용자 선택" 
+  },
+  { 
+    value: "private", 
+    label: "프라이빗 - 관리자만 사용 가능" 
+  }
+];
 
 export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, onCancel }: PersonaEditModalProps) {
   const { toast } = useToast();
@@ -34,8 +58,27 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
     speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
     knowledgeArea: agent.description || "",
     personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-    prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+    prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+    visibility: agent.visibility || "public",
+    upperCategory: agent.upperCategory || "",
+    lowerCategory: agent.lowerCategory || "",
+    detailCategory: agent.detailCategory || ""
   });
+
+  // Fetch organization data
+  const { data: organizations = [] } = useQuery({
+    queryKey: ["/api/admin/organizations"],
+    enabled: isOpen
+  });
+
+  // Filter organization categories
+  const upperCategories = Array.from(new Set((organizations as any[]).map((org: any) => org.upperCategory))).filter(Boolean);
+  const lowerCategories = personaData.upperCategory 
+    ? Array.from(new Set((organizations as any[]).filter((org: any) => org.upperCategory === personaData.upperCategory).map((org: any) => org.lowerCategory))).filter(Boolean)
+    : [];
+  const detailCategories = personaData.upperCategory && personaData.lowerCategory
+    ? Array.from(new Set((organizations as any[]).filter((org: any) => org.upperCategory === personaData.upperCategory && org.lowerCategory === personaData.lowerCategory).map((org: any) => org.detailCategory))).filter(Boolean)
+    : [];
 
   // Update form data when agent changes
   useEffect(() => {
@@ -44,13 +87,28 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
       speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
       knowledgeArea: agent.description || "",
       personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-      prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+      prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+      visibility: agent.visibility || "public",
+      upperCategory: agent.upperCategory || "",
+      lowerCategory: agent.lowerCategory || "",
+      detailCategory: agent.detailCategory || ""
     });
   }, [agent]);
 
   const updatePersonaMutation = useMutation({
     mutationFn: async (data: PersonaData) => {
-      const response = await apiRequest("PUT", `/api/agents/${agent.id}/persona`, data);
+      // Send both persona and visibility data
+      const response = await apiRequest("PUT", `/api/agents/${agent.id}/persona`, {
+        nickname: data.nickname,
+        speakingStyle: data.speakingStyle,
+        knowledgeArea: data.knowledgeArea,
+        personalityTraits: data.personalityTraits,
+        prohibitedWordResponse: data.prohibitedWordResponse,
+        visibility: data.visibility,
+        upperCategory: data.upperCategory,
+        lowerCategory: data.lowerCategory,
+        detailCategory: data.detailCategory
+      });
       return response.json();
     },
     onSuccess: (updatedAgent) => {
@@ -190,6 +248,101 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               className="korean-text resize-none"
               rows={2}
             />
+          </div>
+
+          {/* Sharing Scope */}
+          <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <Label className="korean-text text-sm font-medium">공유 범위 설정</Label>
+            
+            <div className="space-y-2">
+              <Label htmlFor="visibility" className="korean-text text-xs">공유 범위</Label>
+              <Select value={personaData.visibility} onValueChange={(value) => handleInputChange('visibility', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="공유 범위를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {VISIBILITY_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Organization Categories (only show for custom visibility) */}
+            {personaData.visibility === "custom" && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="upperCategory" className="korean-text text-xs">상위 카테고리</Label>
+                  <Select 
+                    value={personaData.upperCategory} 
+                    onValueChange={(value) => {
+                      handleInputChange('upperCategory', value);
+                      handleInputChange('lowerCategory', '');
+                      handleInputChange('detailCategory', '');
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">전체</SelectItem>
+                      {upperCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lowerCategory" className="korean-text text-xs">하위 카테고리</Label>
+                  <Select 
+                    value={personaData.lowerCategory} 
+                    onValueChange={(value) => {
+                      handleInputChange('lowerCategory', value);
+                      handleInputChange('detailCategory', '');
+                    }}
+                    disabled={!personaData.upperCategory}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">전체</SelectItem>
+                      {lowerCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="detailCategory" className="korean-text text-xs">세부 카테고리</Label>
+                  <Select 
+                    value={personaData.detailCategory} 
+                    onValueChange={(value) => handleInputChange('detailCategory', value)}
+                    disabled={!personaData.upperCategory || !personaData.lowerCategory}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">전체</SelectItem>
+                      {detailCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
