@@ -719,6 +719,13 @@ Changelog:
   * Disabled sample agents initialization that was overriding manually created agents
   * Manually created agents now persist correctly across server restarts and user sessions
   * Agent database operations now properly synchronized with file-based persistence layer
+- June 30, 2025. Fixed agent visibility and user role issues:
+  * Implemented organization-based agent filtering in `/api/agents` endpoint
+  * Added proper visibility control: public agents visible to all, organization agents filtered by user's department
+  * Set first 10 agents to public visibility for consistent access across demo accounts
+  * Fixed user role data consistency by converting Korean role values to English keys
+  * Updated 정수빈 user role from "에이전트 관리자" to "agent_admin" for proper dropdown mapping
+  * Demo accounts now see appropriate agents based on their organizational affiliation
 ```
 
 ## User Preferences
