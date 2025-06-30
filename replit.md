@@ -684,6 +684,7 @@ Changelog:
   * All UI elements now follow Apple's Human Interface Guidelines for consistency
   * Fixed message input area to use full screen width like standard messaging apps
   * Enhanced message bubble width: mobile 90%, desktop 85% for better text flow and readability
+  * Updated AI message bubble color to match user-specified gray (#E5E5E5) for both light and dark modes
 ```
 
 ## User Preferences

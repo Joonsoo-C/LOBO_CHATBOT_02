@@ -477,7 +477,7 @@ body {
   }
 
   .message-bubble.assistant {
-    background: #F2F2F7;
+    background: #E5E5E5;
     color: #000000;
     border-bottom-left-radius: 6px;
     margin-left: 0;
@@ -485,8 +485,8 @@ body {
   }
 
   .dark .message-bubble.assistant {
-    background: #2C2C2E;
-    color: #FFFFFF;
+    background: #E5E5E5;
+    color: #000000;
   }
 
   /* Apple Messages Bubble Tails */
@@ -510,12 +510,12 @@ body {
     width: 0;
     height: 0;
     border-right: 6px solid transparent;
-    border-top: 6px solid #F2F2F7;
+    border-top: 6px solid #E5E5E5;
     border-radius: 0 0 0 6px;
   }
 
   .dark .message-bubble.assistant::after {
-    border-top-color: #2C2C2E;
+    border-top-color: #E5E5E5;
   }
 
   /* Apple Messages Chat Input Styling */
