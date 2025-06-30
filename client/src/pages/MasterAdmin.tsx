@@ -1492,6 +1492,38 @@ function MasterAdmin() {
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
+  // 조직 카테고리 페이지네이션 상태
+  const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
+
+  // 조직 카테고리 필터링 및 관리
+  const filteredOrganizationCategories = useMemo(() => {
+    if (!organizations) return [];
+    
+    return organizations.filter(org => {
+      const matchesSearch = !orgSearchQuery || 
+        (org.name && org.name.toLowerCase().includes(orgSearchQuery.toLowerCase())) ||
+        (org.detailCategory && org.detailCategory.toLowerCase().includes(orgSearchQuery.toLowerCase()));
+      
+      const matchesUpperCategory = orgFilterUpperCategory === 'all' || org.upperCategory === orgFilterUpperCategory;
+      const matchesLowerCategory = orgFilterLowerCategory === 'all' || org.lowerCategory === orgFilterLowerCategory;
+      const matchesDetailCategory = orgFilterDetailCategory === 'all' || org.detailCategory === orgFilterDetailCategory;
+      
+      return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
+    });
+  }, [organizations, orgSearchQuery, orgFilterUpperCategory, orgFilterLowerCategory, orgFilterDetailCategory]);
+
+  // 조직 카테고리 관리용 계산된 값
+  const totalOrgCategoriesPages = Math.ceil(filteredOrganizationCategories.length / organizationCategoriesPerPage);
+  const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
+  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
+  const paginatedOrganizationCategories = filteredOrganizationCategories.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex);
+
+  // 조직 카테고리 편집 함수
+  const openOrgCategoryEditDialog = (org: any) => {
+    console.log('편집할 조직 카테고리:', org);
+    // 편집 다이얼로그 열기 로직 (향후 구현)
+  };
+
   // 검색 실행 함수
   const executeSearch = () => {
     setHasSearched(true);
@@ -3522,7 +3554,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => openOrgCategoryEditDialog(org)}
+                                onClick={() => openOrgCategoryEdit(org)}
                                 className="hover:bg-blue-50 hover:text-blue-600"
                               >
                                 <Edit className="w-4 h-4 mr-1" />
