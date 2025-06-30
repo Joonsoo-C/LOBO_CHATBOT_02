@@ -81,29 +81,29 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
   // Get unique upper categories
   const getUpperCategories = () => {
-    const upperCats = [...new Set(organizationCategories.map((org: any) => org.upperCategory))];
+    const upperCats = Array.from(new Set((organizationCategories as any[]).map((org: any) => org.upperCategory)));
     return upperCats.filter(Boolean);
   };
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
     if (!upperCategory) return [];
-    const lowerCats = [...new Set(
-      organizationCategories
+    const lowerCats = Array.from(new Set(
+      (organizationCategories as any[])
         .filter((org: any) => org.upperCategory === upperCategory)
         .map((org: any) => org.lowerCategory)
-    )];
+    ));
     return lowerCats.filter(Boolean);
   };
 
   // Get detail categories for selected upper and lower categories
   const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
     if (!upperCategory || !lowerCategory) return [];
-    const detailCats = [...new Set(
-      organizationCategories
+    const detailCats = Array.from(new Set(
+      (organizationCategories as any[])
         .filter((org: any) => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
         .map((org: any) => org.detailCategory)
-    )];
+    ));
     return detailCats.filter(Boolean);
   };
   
@@ -231,6 +231,118 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Sharing Scope Selection */}
+          <div className="space-y-4">
+            <Label className="korean-text">공유 범위</Label>
+            <Select
+              value={settings.visibility}
+              onValueChange={(value) => {
+                setSettings(prev => ({ 
+                  ...prev, 
+                  visibility: value,
+                  upperCategory: value === "organization" ? prev.upperCategory : "",
+                  lowerCategory: value === "organization" ? prev.lowerCategory : "",
+                  detailCategory: value === "organization" ? prev.detailCategory : ""
+                }));
+              }}
+            >
+              <SelectTrigger className="korean-text">
+                <SelectValue placeholder="공유 범위를 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {VISIBILITY_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value} className="korean-text">
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Organization Category Selection */}
+            {settings.visibility === 'organization' && (
+              <div className="space-y-4 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Upper Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">상위 카테고리</Label>
+                    <Select
+                      value={settings.upperCategory || ""}
+                      onValueChange={(value) => setSettings(prev => ({ 
+                        ...prev, 
+                        upperCategory: value, 
+                        lowerCategory: "", 
+                        detailCategory: "" 
+                      }))}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">전체</SelectItem>
+                        {getUpperCategories().map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Lower Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">하위 카테고리</Label>
+                    <Select
+                      value={settings.lowerCategory || ""}
+                      onValueChange={(value) => setSettings(prev => ({ 
+                        ...prev, 
+                        lowerCategory: value, 
+                        detailCategory: "" 
+                      }))}
+                      disabled={!settings.upperCategory}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">전체</SelectItem>
+                        {getLowerCategories(settings.upperCategory || "").map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Detail Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">세부 카테고리</Label>
+                    <Select
+                      value={settings.detailCategory || ""}
+                      onValueChange={(value) => setSettings(prev => ({ 
+                        ...prev, 
+                        detailCategory: value 
+                      }))}
+                      disabled={!settings.upperCategory || !settings.lowerCategory}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">전체</SelectItem>
+                        {getDetailCategories(settings.upperCategory || "", settings.lowerCategory || "").map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
