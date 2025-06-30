@@ -690,6 +690,10 @@ Changelog:
   * Enhanced user message bubble width (95%) and adjusted right margin (8px) for better text flow
   * Fixed message line breaking to prevent forced wrapping of short user messages (≤15 chars) while maintaining natural text flow for AI responses
   * Changed text wrapping from word-break: keep-all to word-break: break-all for character-level line breaking in Korean text
+- June 30, 2025. Fixed mobile chat list header overlap issue:
+  * Increased mobile main content margin-top from 140px to 160px to prevent chat list clipping
+  * Set mobile header height to auto with min-height 140px to accommodate search bar and tab navigation
+  * Chat list now displays properly without being cut off by fixed header on mobile devices
 ```
 
 ## User Preferences

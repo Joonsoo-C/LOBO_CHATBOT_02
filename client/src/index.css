@@ -130,8 +130,8 @@ body {
 
 /* Force main content to start below fixed header */
 .main-content {
-  margin-top: 80px !important;
-  padding-top: 20px !important;
+  margin-top: 160px !important;
+  padding-top: 0 !important;
 }
 
 /* Mobile-specific fixes for stable layout */
@@ -145,11 +145,12 @@ body {
     background: var(--background) !important;
     transform: none !important;
     transition: none !important;
-    height: 80px !important;
+    height: auto !important;
+    min-height: 140px !important;
   }
   
   .main-content {
-    margin-top: 80px !important;
+    margin-top: 160px !important;
     padding-top: 0 !important;
     transform: none !important;
     transition: none !important;
