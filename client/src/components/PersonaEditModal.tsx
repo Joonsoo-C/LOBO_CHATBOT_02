@@ -251,12 +251,17 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
             <Label htmlFor="prohibitedWordResponse" className="korean-text">금칙어 반응 방식</Label>
             <Textarea
               id="prohibitedWordResponse"
-              value={personaData.prohibitedWordResponse}
+              value={personaData?.prohibitedWordResponse || ""}
               onChange={(e) => handleInputChange('prohibitedWordResponse', e.target.value)}
               placeholder="금칙어 탐지 시 반응 방식을 설정하세요"
               className="korean-text resize-none"
               rows={2}
             />
+          </div>
+
+          {/* TEST ELEMENT */}
+          <div className="p-4 bg-red-100 border border-red-300 rounded">
+            <p className="text-red-700">테스트: 이 부분이 보이면 렌더링이 되고 있습니다</p>
           </div>
 
           {/* Sharing Scope - TEST */}
