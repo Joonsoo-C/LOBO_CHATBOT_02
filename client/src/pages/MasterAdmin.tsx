@@ -4583,7 +4583,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             )}
                           </div>
                           <div className="flex space-x-2">
-                            <Button type="button" variant="outline" onClick={() => setIsAgentDialogOpen(false)}>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => {
+                                // 폼 상태 초기화
+                                agentForm.reset();
+                                setSelectedAgentManagers([]);
+                                setSelectedDocumentManagers([]);
+                                setSelectedQaManagers([]);
+                                setSelectedFiles([]);
+                                setManagerSearchQuery('');
+                                setAgentCreationTab('basic');
+                                setIsAgentDialogOpen(false);
+                              }}
+                            >
                               취소
                             </Button>
                             {agentCreationTab !== 'sharing' ? (
