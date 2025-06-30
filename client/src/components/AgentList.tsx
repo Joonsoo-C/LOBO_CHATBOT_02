@@ -167,7 +167,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center justify-between space-x-2">
+                  <div className="flex items-center justify-between space-x-1">
                     <p className="text-sm text-muted-foreground truncate korean-text flex-1 md:text-base">
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
