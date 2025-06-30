@@ -6660,6 +6660,207 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
           </TabsContent>
 
+          {/* 토큰 관리 */}
+          <TabsContent value="tokens" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">토큰 관리</h2>
+              <div className="text-sm text-muted-foreground">
+                전체 {filteredTokenData.length}개 중 {paginatedTokenData.length}개 표시
+              </div>
+            </div>
+
+            {/* 로그 필터링 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>로그 필터링</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {/* 기간 */}
+                  <div className="space-y-2">
+                    <Label>기간</Label>
+                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">오늘</SelectItem>
+                        <SelectItem value="week">최근 1주일</SelectItem>
+                        <SelectItem value="month">최근 1개월</SelectItem>
+                        <SelectItem value="quarter">최근 3개월</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 상위 조직 */}
+                  <div className="space-y-2">
+                    <Label>상위 조직</Label>
+                    <Select value={tokenUpperCategoryFilter} onValueChange={setTokenUpperCategoryFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {uniqueUpperCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 하위 조직 */}
+                  <div className="space-y-2">
+                    <Label>하위 조직</Label>
+                    <Select value={tokenLowerCategoryFilter} onValueChange={setTokenLowerCategoryFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredLowerCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 세부 조직 */}
+                  <div className="space-y-2">
+                    <Label>세부 조직</Label>
+                    <Select value={tokenDetailCategoryFilter} onValueChange={setTokenDetailCategoryFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredDetailCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 키워드 */}
+                  <div className="space-y-2">
+                    <Label>키워드</Label>
+                    <Input
+                      placeholder="에이전트명 또는 질문 키워드"
+                      value={tokenKeywordFilter}
+                      onChange={(e) => setTokenKeywordFilter(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 토큰 사용량 테이블 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>토큰 사용량 목록</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3 font-medium">시간</th>
+                        <th className="text-left p-3 font-medium">에이전트</th>
+                        <th className="text-left p-3 font-medium">질문</th>
+                        <th 
+                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
+                          onClick={() => {
+                            if (tokenSortField === 'inputTokens') {
+                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setTokenSortField('inputTokens');
+                              setTokenSortOrder('desc');
+                            }
+                          }}
+                        >
+                          입력 {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
+                          onClick={() => {
+                            if (tokenSortField === 'outputTokens') {
+                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setTokenSortField('outputTokens');
+                              setTokenSortOrder('desc');
+                            }
+                          }}
+                        >
+                          출력 {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
+                          onClick={() => {
+                            if (tokenSortField === 'indexTokens') {
+                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setTokenSortField('indexTokens');
+                              setTokenSortOrder('desc');
+                            }
+                          }}
+                        >
+                          색인 {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th 
+                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
+                          onClick={() => {
+                            if (tokenSortField === 'preprocessingTokens') {
+                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setTokenSortField('preprocessingTokens');
+                              setTokenSortOrder('desc');
+                            }
+                          }}
+                        >
+                          문서 전처리 {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                        </th>
+                        <th className="text-left p-3 font-medium">총합</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedTokenData.map((token) => (
+                        <tr key={token.id} className="border-b hover:bg-muted/50">
+                          <td className="p-3 text-sm">
+                            {new Date(token.timestamp).toLocaleString('ko-KR', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </td>
+                          <td className="p-3 text-sm font-medium">{token.agentName}</td>
+                          <td className="p-3 text-sm max-w-xs truncate" title={token.question}>
+                            {token.question}
+                          </td>
+                          <td className="p-3 text-sm text-right">{token.inputTokens.toLocaleString()}</td>
+                          <td className="p-3 text-sm text-right">{token.outputTokens.toLocaleString()}</td>
+                          <td className="p-3 text-sm text-right">{token.indexTokens.toLocaleString()}</td>
+                          <td className="p-3 text-sm text-right">{token.preprocessingTokens.toLocaleString()}</td>
+                          <td className="p-3 text-sm text-right font-medium">{token.totalTokens.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 페이지네이션 */}
+                {tokenTotalPages > 1 && (
+                  <div className="mt-4">
+                    <PaginationComponent
+                      currentPage={tokenCurrentPage}
+                      totalPages={tokenTotalPages}
+                      onPageChange={setTokenCurrentPage}
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* 시스템 설정 */}
           <TabsContent value="system" className="space-y-6">
             <h2 className="text-2xl font-bold">시스템 설정</h2>
