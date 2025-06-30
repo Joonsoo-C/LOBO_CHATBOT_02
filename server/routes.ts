@@ -136,13 +136,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       const userType = req.user.userType;
+      const userRole = req.user.role;
+
+      console.log(`[DEBUG] /api/agents/managed called by user: ${userId}, type: ${userType}, role: ${userRole}`);
 
       // Master admin can manage all agents
       let agents;
       if (userType === 'admin' || userId === 'master_admin') {
+        console.log(`[DEBUG] User is admin, fetching all agents`);
         agents = await storage.getAllAgents();
       } else {
+        console.log(`[DEBUG] User is not admin, fetching agents managed by: ${userId}`);
         agents = await storage.getAgentsByManager(userId);
+        console.log(`[DEBUG] Found ${agents.length} agents managed by ${userId}:`, agents.map(a => ({ id: a.id, name: a.name, managerId: a.managerId })));
       }
 
       // Get stats for each agent
@@ -153,6 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       );
 
+      console.log(`[DEBUG] Returning ${agentsWithStats.length} agents with stats`);
       res.json(agentsWithStats);
     } catch (error) {
       console.error("Error fetching managed agents:", error);
