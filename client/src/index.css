@@ -582,6 +582,18 @@ body {
     gap: 4px !important;
   }
 
+  /* Custom tab navigation active state */
+  .tab-navigation .btn-default {
+    background: hsl(220 14% 96%) !important;
+    border-color: hsl(220 14% 96%) !important;
+  }
+
+  /* Dark mode support */
+  .dark .tab-navigation .btn-default {
+    background: hsl(220 14% 20%) !important;
+    border-color: hsl(220 14% 20%) !important;
+  }
+
   .tab-navigation button {
     width: 100% !important;
     height: 48px !important;
