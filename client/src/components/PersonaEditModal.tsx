@@ -259,33 +259,32 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
             />
           </div>
 
-          {/* Sharing Scope */}
+          {/* Sharing Scope - TEST */}
           <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <Label className="korean-text text-sm font-medium">공유 범위 설정</Label>
             
             <div className="space-y-2">
               <Label htmlFor="visibility" className="korean-text text-xs">공유 범위</Label>
-              <Select value={personaData.visibility} onValueChange={(value) => handleInputChange('visibility', value)}>
+              <Select value={personaData?.visibility || "public"} onValueChange={(value) => handleInputChange('visibility', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="공유 범위를 선택하세요" />
                 </SelectTrigger>
                 <SelectContent>
-                  {VISIBILITY_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="public">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
+                  <SelectItem value="group">그룹 지정 - 특정 그룹의 사용자만 사용 가능</SelectItem>
+                  <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
+                  <SelectItem value="private">프라이빗 - 관리자만 사용 가능</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Organization Categories (only show for custom visibility) */}
-            {personaData.visibility === "custom" && (
+            {(personaData?.visibility === "custom") && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="upperCategory" className="korean-text text-xs">상위 카테고리</Label>
                   <Select 
-                    value={personaData.upperCategory} 
+                    value={personaData?.upperCategory || ""} 
                     onValueChange={(value) => {
                       handleInputChange('upperCategory', value);
                       handleInputChange('lowerCategory', '');
@@ -297,11 +296,9 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">전체</SelectItem>
-                      {upperCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="대학본부">대학본부</SelectItem>
+                      <SelectItem value="인문대학">인문대학</SelectItem>
+                      <SelectItem value="공과대학">공과대학</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -309,23 +306,20 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
                 <div className="space-y-2">
                   <Label htmlFor="lowerCategory" className="korean-text text-xs">하위 카테고리</Label>
                   <Select 
-                    value={personaData.lowerCategory} 
+                    value={personaData?.lowerCategory || ""} 
                     onValueChange={(value) => {
                       handleInputChange('lowerCategory', value);
                       handleInputChange('detailCategory', '');
                     }}
-                    disabled={!personaData.upperCategory}
+                    disabled={!personaData?.upperCategory}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">전체</SelectItem>
-                      {lowerCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="총장실">총장실</SelectItem>
+                      <SelectItem value="국어국문학과">국어국문학과</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -333,20 +327,16 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
                 <div className="space-y-2">
                   <Label htmlFor="detailCategory" className="korean-text text-xs">세부 카테고리</Label>
                   <Select 
-                    value={personaData.detailCategory} 
+                    value={personaData?.detailCategory || ""} 
                     onValueChange={(value) => handleInputChange('detailCategory', value)}
-                    disabled={!personaData.upperCategory || !personaData.lowerCategory}
+                    disabled={!personaData?.upperCategory || !personaData?.lowerCategory}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">전체</SelectItem>
-                      {detailCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="현대문학전공">현대문학전공</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
