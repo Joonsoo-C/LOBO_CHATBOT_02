@@ -1333,14 +1333,19 @@ export class MemoryStorage implements IStorage {
     try {
       if (fs.existsSync(this.usersFile)) {
         const data = fs.readFileSync(this.usersFile, 'utf8');
-        const usersArray = JSON.parse(data);
-
-        for (const user of usersArray) {
-          this.users.set(user.id, {
-            ...user,
-            createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
-            updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
-          });
+        const parsedData = JSON.parse(data);
+        
+        // 새로운 구조: {users: [...], qaLogs: [...], ...}
+        const usersArray = parsedData.users || parsedData;
+        
+        if (Array.isArray(usersArray)) {
+          for (const user of usersArray) {
+            this.users.set(user.id, {
+              ...user,
+              createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
+              updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
+            });
+          }
         }
 
         console.log(`Loaded ${this.users.size} users from admin center (memory-storage.json)`);
