@@ -43,7 +43,8 @@ function Home() {
 
   const { data: agents = [] } = useQuery<Agent[]>({
     queryKey: ["/api/agents"],
-    refetchInterval: 30000, // Refetch every 30 seconds to catch admin changes
+    staleTime: 0, // Always consider data stale for immediate updates
+    gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
   });
 
   const { data: conversations = [] } = useQuery<(Conversation & { agent: Agent; lastMessage?: any })[]>({

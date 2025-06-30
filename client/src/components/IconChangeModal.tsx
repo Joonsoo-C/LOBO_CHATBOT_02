@@ -187,18 +187,20 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         setIsUsingCustomImage(false);
       }
       
-      // Step 5: Force invalidation to trigger immediate UI updates
+      // Step 5: Force comprehensive invalidation for immediate UI updates
       queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] });
       
-      // Step 6: Close modal and show success message
-      onClose();
-      if (onSuccess) {
-        onSuccess("아이콘이 성공적으로 변경되었습니다!");
-      }
+      // Step 6: Force immediate refetch of all data for instant UI updates
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ["/api/agents"] });
+        queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
+      }, 100);
       
+      // Step 7: Close modal and show success message
       toast({
         title: "아이콘 변경 완료",
         description: "에이전트 아이콘과 배경색이 성공적으로 변경되었습니다.",
