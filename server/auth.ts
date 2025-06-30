@@ -101,7 +101,8 @@ export function setupAuth(app: Express) {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          userType: user.userType
+          userType: user.userType,
+          role: user.role
         });
       });
     } catch (error) {
@@ -118,7 +119,8 @@ export function setupAuth(app: Express) {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      userType: user.userType
+      userType: user.userType,
+      role: user.role
     });
   });
 
@@ -142,7 +144,8 @@ export function setupAuth(app: Express) {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      userType: user.userType
+      userType: user.userType,
+      role: user.role
     });
   });
 }
