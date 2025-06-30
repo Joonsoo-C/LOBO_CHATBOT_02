@@ -6662,12 +6662,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 토큰 관리 */}
           <TabsContent value="tokens" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">토큰 관리</h2>
-              <div className="text-sm text-muted-foreground">
-                전체 {filteredTokenData.length}개 중 {paginatedTokenData.length}개 표시
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold">토큰 관리</h2>
 
             {/* 로그 필터링 */}
             <Card>

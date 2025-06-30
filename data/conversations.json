@@ -17,11 +17,11 @@
       {
         "id": 111,
         "userId": "user1081",
-        "agentId": 146,
-        "type": "management",
+        "agentId": 123,
+        "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-06-29T10:34:24.255Z",
-        "createdAt": "2025-06-29T10:32:44.634Z"
+        "lastMessageAt": "2025-06-30T17:26:23.335Z",
+        "createdAt": "2025-06-30T17:26:23.335Z"
       }
     ],
     [
