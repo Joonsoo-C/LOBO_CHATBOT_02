@@ -522,11 +522,11 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="grid grid-cols-2 gap-1 bg-muted rounded-xl p-1">
+          <div className="tab-navigation">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-12 rounded-lg font-medium"
+              className="korean-text w-full flex-1"
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -537,7 +537,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="korean-text h-12 rounded-lg font-medium"
+              className="korean-text w-full flex-1"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");
