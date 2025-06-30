@@ -702,6 +702,12 @@ Changelog:
   * Created compact agent list with 1px gaps, 8px card padding, and 10x10 icons
   * Messages now appear at screen bottom like standard messenger apps per user screenshot reference
   * Increased message container padding-bottom to 50px on mobile to prevent message bubble clipping
+- June 30, 2025. Redesigned agent list for cleaner messenger-style appearance:
+  * Removed individual card borders and rounded corners for continuous list appearance
+  * Added subtle bottom border (1px) between conversation items instead of card borders
+  * Implemented hover (#F5F5F5) and active press (#EBEBEB) feedback for better touch interaction
+  * Added selected state highlighting with blue background (#E8F4FD) for current conversation
+  * Dark mode support with appropriate color variations for all interaction states
 ```
 
 ## User Preferences
