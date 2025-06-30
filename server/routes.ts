@@ -845,7 +845,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 조직 카테고리 조회
   app.get('/api/organization-categories', async (req, res) => {
     try {
-      res.json(organizationCategories);
+      const categories = await storage.getOrganizationCategories();
+      res.json(categories);
     } catch (error) {
       console.error('Failed to get organization categories:', error);
       res.status(500).json({ error: 'Failed to get organization categories' });

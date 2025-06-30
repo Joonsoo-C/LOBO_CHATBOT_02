@@ -79,10 +79,6 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     enabled: isOpen,
   });
 
-  // Debug logging
-  console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
-  console.log("Upper categories:", getUpperCategories());
-
   // Get unique upper categories
   const getUpperCategories = () => {
     if (!organizationCategories || !Array.isArray(organizationCategories)) return [];
@@ -92,6 +88,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     uniqueSet.forEach(cat => result.push(cat));
     return result;
   };
+
+  // Debug logging
+  console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
+  console.log("Upper categories:", getUpperCategories());
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
