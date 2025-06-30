@@ -1067,7 +1067,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         minWidth: msg.isFromUser ? '60px' : '40px',
                         width: 'fit-content',
                         overflowWrap: 'break-word',
-                        wordBreak: 'keep-all',
+                        wordBreak: 'break-all',
                         whiteSpace: msg.isFromUser && msg.content.length <= 15 ? 'nowrap' : 'pre-wrap',
                         position: 'relative'
                       }}

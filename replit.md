@@ -689,6 +689,7 @@ Changelog:
   * Updated send button and hover effects to use consistent blue color scheme
   * Enhanced user message bubble width (95%) and adjusted right margin (8px) for better text flow
   * Fixed message line breaking to prevent forced wrapping of short user messages (≤15 chars) while maintaining natural text flow for AI responses
+  * Changed text wrapping from word-break: keep-all to word-break: break-all for character-level line breaking in Korean text
 ```
 
 ## User Preferences

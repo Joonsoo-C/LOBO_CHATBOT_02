@@ -460,7 +460,7 @@ body {
     backdrop-filter: blur(10px);
     max-width: 90%;
     min-width: 40px;
-    word-break: keep-all;
+    word-break: break-all;
     overflow-wrap: break-word;
     white-space: pre-wrap;
   }
