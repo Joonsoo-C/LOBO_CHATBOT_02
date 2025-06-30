@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
 import type { Agent, AgentStats } from "@/types/agent";
 import AgentFileUploadModal from "./AgentFileUploadModal";
 
@@ -32,18 +33,40 @@ export default function AgentManagement() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  // Check if user has agent management permissions
+  const hasAgentManagementRole = user?.role === 'agent_admin' || user?.role === 'master_admin' || user?.userType === 'admin' || user?.id === 'master_admin';
 
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
+    enabled: hasAgentManagementRole, // Only fetch if user has permissions
   });
 
-  console.log(`[DEBUG] AgentManagement: managedAgents count: ${managedAgents.length}`, managedAgents);
+  console.log(`[DEBUG] AgentManagement: user role: ${user?.role}, hasPermissions: ${hasAgentManagementRole}, managedAgents count: ${managedAgents.length}`, managedAgents);
 
   const handleManagementChat = (agentId: number) => {
     console.log(`[DEBUG] AgentManagement: Clicking agent ${agentId}, navigating to /management/${agentId}`);
     setLocation(`/management/${agentId}`);
   };
+
+  // Show access denied message if user doesn't have permissions
+  if (!hasAgentManagementRole) {
+    return (
+      <div className="px-4 py-6">
+        <div className="text-center korean-text">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+            <Settings className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-medium mb-2">{t('agent.noManagementPermission')}</h3>
+          <p className="text-muted-foreground">
+            에이전트 관리 권한이 없습니다. 관리자에게 문의하세요.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
