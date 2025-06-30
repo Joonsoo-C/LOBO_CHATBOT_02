@@ -1350,10 +1350,19 @@ export class MemoryStorage implements IStorage {
         const data = fs.readFileSync(this.agentsFile, 'utf8');
         const agentsData = JSON.parse(data);
 
-        // Handle both array and object formats
+        // Handle multiple data formats
         let agentsArray;
+        
         if (Array.isArray(agentsData)) {
           agentsArray = agentsData;
+        } else if (agentsData && agentsData.agents && Array.isArray(agentsData.agents)) {
+          // Handle format: { "agents": [[id, agent_data], ...] }
+          agentsArray = agentsData.agents.map((item: any) => {
+            if (Array.isArray(item) && item.length === 2) {
+              return item[1]; // Extract the agent data from [id, agent_data]
+            }
+            return item;
+          });
         } else if (typeof agentsData === 'object' && agentsData !== null) {
           // Convert object format to array
           agentsArray = Object.values(agentsData);
@@ -1363,12 +1372,14 @@ export class MemoryStorage implements IStorage {
         }
 
         for (const agent of agentsArray) {
-          this.agents.set(agent.id, {
-            ...agent,
-            createdAt: agent.createdAt ? new Date(agent.createdAt) : new Date(),
-            updatedAt: agent.updatedAt ? new Date(agent.updatedAt) : new Date()
-          });
-          this.nextAgentId = Math.max(this.nextAgentId, agent.id + 1);
+          if (agent && agent.id) {
+            this.agents.set(agent.id, {
+              ...agent,
+              createdAt: agent.createdAt ? new Date(agent.createdAt) : new Date(),
+              updatedAt: agent.updatedAt ? new Date(agent.updatedAt) : new Date()
+            });
+            this.nextAgentId = Math.max(this.nextAgentId, agent.id + 1);
+          }
         }
 
         console.log(`Loaded ${this.agents.size} agents from admin center (memory-storage-agents.json)`);
