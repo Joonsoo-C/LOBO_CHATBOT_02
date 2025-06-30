@@ -119,13 +119,41 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       }
     },
     onSuccess: (updatedAgent) => {
-      // First, invalidate all agent-related queries
-      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
-      queryClient.invalidateQueries({ queryKey: [`/api/agents/${agent.id}`] });
+      console.log("Icon change success, invalidating caches...");
       
-      // Critical: Update conversations cache with new agent data
+      // Step 1: Update agent cache directly first
+      queryClient.setQueryData(["/api/agents"], (oldData: any[]) => {
+        if (!oldData) return oldData;
+        return oldData.map((agentItem: any) => {
+          if (agentItem.id === agent.id) {
+            return {
+              ...agentItem,
+              icon: isUsingCustomImage ? customImage : selectedIcon,
+              backgroundColor: selectedColor,
+              isCustomIcon: isUsingCustomImage
+            };
+          }
+          return agentItem;
+        });
+      });
+
+      // Step 2: Update managed agents cache
+      queryClient.setQueryData(["/api/agents/managed"], (oldData: any[]) => {
+        if (!oldData) return oldData;
+        return oldData.map((agentItem: any) => {
+          if (agentItem.id === agent.id) {
+            return {
+              ...agentItem,
+              icon: isUsingCustomImage ? customImage : selectedIcon,
+              backgroundColor: selectedColor,
+              isCustomIcon: isUsingCustomImage
+            };
+          }
+          return agentItem;
+        });
+      });
+      
+      // Step 3: Update conversations cache with new agent data
       queryClient.setQueryData(["/api/conversations"], (oldData: any[]) => {
         if (!oldData) return oldData;
         return oldData.map((conv: any) => {
@@ -144,54 +172,22 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         });
       });
       
-      // Invalidate all conversation-related queries to ensure fresh data
+      // Step 4: Force invalidation to trigger refetch
+      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
       
-      // Also update any cached individual conversation queries
-      queryClient.setQueryData([`/api/conversations`, agent.id], (oldData: any) => {
-        if (!oldData || !oldData.agent) return oldData;
-        return {
-          ...oldData,
-          agent: {
-            ...oldData.agent,
-            icon: isUsingCustomImage ? customImage : selectedIcon,
-            backgroundColor: selectedColor,
-            isCustomIcon: isUsingCustomImage
-          }
-        };
-      });
-      
-      queryClient.setQueryData([`/api/conversations/management`, agent.id], (oldData: any) => {
-        if (!oldData || !oldData.agent) return oldData;
-        return {
-          ...oldData,
-          agent: {
-            ...oldData.agent,
-            icon: isUsingCustomImage ? customImage : selectedIcon,
-            backgroundColor: selectedColor,
-            isCustomIcon: isUsingCustomImage
-          }
-        };
-      });
-      
-      // Use comprehensive predicate matching for any missed queries
+      // Step 5: Comprehensive predicate matching for safety
       queryClient.invalidateQueries({ 
         predicate: (query) => {
           const key = query.queryKey;
           return (
             key.includes("/api/agents") || 
-            key.includes(`/api/agents/${agent.id}`) ||
             key.includes("/api/conversations")
           );
         }
       });
-      
-      // Force immediate refetch of critical data with slight delay for server processing
-      setTimeout(() => {
-        queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-        queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
-        queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
-      }, 100);
       
       toast({
         title: "아이콘 변경 완료",
