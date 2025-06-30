@@ -830,7 +830,7 @@ function MasterAdmin() {
   const [orgFilterLowerCategory, setOrgFilterLowerCategory] = useState('all');
   const [orgFilterDetailCategory, setOrgFilterDetailCategory] = useState('all');
   const [orgSearchQuery, setOrgSearchQuery] = useState('');
-  const [hasOrgSearched, setHasOrgSearched] = useState(false);
+  const [hasOrgSearched, setHasOrgSearched] = useState(true);
   
   // Q&A 로그 페이지네이션 상태
   const [qaCurrentPage, setQaCurrentPage] = useState(1);
@@ -5822,8 +5822,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
                         {uniqueAgents.map((agent, index) => (
-                          <SelectItem key={`agent-${agent}-${index}`} value={agent}>
-                            {agent}
+                          <SelectItem key={`agent-${agent}-${index}`} value={String(agent)}>
+                            {String(agent)}
                           </SelectItem>
                         ))}
                       </SelectContent>
