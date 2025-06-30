@@ -602,6 +602,19 @@ body {
     border-radius: 8px !important;
   }
 
+  /* Make unselected tabs darker for better contrast */
+  .tab-navigation .btn-ghost {
+    background: hsl(220 14% 88%) !important;
+    border-color: hsl(220 14% 88%) !important;
+    color: hsl(220 14% 40%) !important;
+  }
+
+  .dark .tab-navigation .btn-ghost {
+    background: hsl(220 14% 12%) !important;
+    border-color: hsl(220 14% 12%) !important;
+    color: hsl(220 14% 70%) !important;
+  }
+
   .tab-navigation button[data-state="active"] {
     background: hsl(var(--background)) !important;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
