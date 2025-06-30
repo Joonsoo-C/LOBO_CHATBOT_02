@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMutation } from "@tanstack/react-query";
 import type { Agent, Conversation } from "@/types/agent";
+import { eventBus, EVENTS } from "@/utils/eventBus";
 
 const iconMap: Record<string, any> = {
   "fas fa-graduation-cap": GraduationCap,
@@ -304,6 +305,7 @@ export default function TabletLayout() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const queryClientInstance = useQueryClient();
 
   // Parse URL to get selected agent
   useEffect(() => {
@@ -352,6 +354,24 @@ export default function TabletLayout() {
     refetchInterval: 3000,
     refetchIntervalInBackground: true,
   });
+
+  // Listen for agent update events from IconChangeModal
+  useEffect(() => {
+    const handleAgentUpdate = () => {
+      console.log("TabletLayout: Received agent update event, forcing refresh...");
+      queryClientInstance.removeQueries({ queryKey: ["/api/agents"] });
+      queryClientInstance.refetchQueries({ queryKey: ["/api/agents"] });
+      queryClientInstance.refetchQueries({ queryKey: ["/api/conversations"] });
+    };
+
+    eventBus.on(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
+    eventBus.on(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+
+    return () => {
+      eventBus.off(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
+      eventBus.off(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+    };
+  }, [queryClientInstance]);
 
   const logout = useMutation({
     mutationFn: async () => {

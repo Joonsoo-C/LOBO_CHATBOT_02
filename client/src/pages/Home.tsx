@@ -37,6 +37,7 @@ function Home() {
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [settingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
   const { t } = useLanguage();
+  const queryClient = useQueryClient();
 
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"],
@@ -54,6 +55,24 @@ function Home() {
   const { data: conversations = [] } = useQuery<(Conversation & { agent: Agent; lastMessage?: any })[]>({
     queryKey: ["/api/conversations"],
   });
+
+  // Listen for agent update events from IconChangeModal
+  useEffect(() => {
+    const handleAgentUpdate = () => {
+      console.log("Home.tsx: Received agent update event, forcing refresh...");
+      queryClient.removeQueries({ queryKey: ["/api/agents"] });
+      queryClient.refetchQueries({ queryKey: ["/api/agents"] });
+      queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
+    };
+
+    eventBus.on(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
+    eventBus.on(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+
+    return () => {
+      eventBus.off(EVENTS.FORCE_REFRESH_AGENTS, handleAgentUpdate);
+      eventBus.off(EVENTS.AGENT_ICON_CHANGED, handleAgentUpdate);
+    };
+  }, [queryClient]);
 
   const categories = [
     { value: "전체", label: "전체" },
