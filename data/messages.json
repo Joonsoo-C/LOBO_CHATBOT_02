@@ -4,10 +4,10 @@
       112,
       {
         "conversationId": 112,
-        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        "content": "물론입니다! 무엇을 도와드릴까요? 궁금한 점이 있으면 언제든지 말씀해 주세요.",
         "isFromUser": false,
         "id": 112,
-        "createdAt": "2025-06-30T22:36:05.645Z"
+        "createdAt": "2025-06-30T22:39:52.373Z"
       }
     ],
     [
@@ -74,10 +74,10 @@
       111,
       {
         "conversationId": 112,
-        "content": "안녕",
+        "content": "지금은 제대로 된 대답을 할 수 있나?",
         "isFromUser": true,
         "id": 111,
-        "createdAt": "2025-06-30T22:36:05.475Z"
+        "createdAt": "2025-06-30T22:39:49.630Z"
       }
     ],
     [

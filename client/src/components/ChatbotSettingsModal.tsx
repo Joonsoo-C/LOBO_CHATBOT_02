@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { X, Save, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,10 @@ interface ChatbotSettingsModalProps {
 interface ChatbotSettings {
   llmModel: string;
   chatbotType: string;
+  visibility: string;
+  upperCategory?: string;
+  lowerCategory?: string;
+  detailCategory?: string;
 }
 
 const LLM_MODELS = [
@@ -46,13 +50,70 @@ const CHATBOT_TYPES = [
   }
 ];
 
+const VISIBILITY_OPTIONS = [
+  { 
+    value: "public", 
+    label: "조직 전체 - 소속 조직의 모든 구성원이 사용 가능" 
+  },
+  { 
+    value: "group", 
+    label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" 
+  },
+  { 
+    value: "organization", 
+    label: "사용자 지정 - 개별 사용자 선택" 
+  },
+  { 
+    value: "private", 
+    label: "프라이빗 - 관리자만 사용 가능" 
+  }
+];
+
 export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess, onCancel }: ChatbotSettingsModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Fetch organization categories
+  const { data: organizationCategories = [] } = useQuery({
+    queryKey: ["/api/organization-categories"],
+    enabled: isOpen,
+  });
+
+  // Get unique upper categories
+  const getUpperCategories = () => {
+    const upperCats = [...new Set(organizationCategories.map((org: any) => org.upperCategory))];
+    return upperCats.filter(Boolean);
+  };
+
+  // Get lower categories for selected upper category
+  const getLowerCategories = (upperCategory: string) => {
+    if (!upperCategory) return [];
+    const lowerCats = [...new Set(
+      organizationCategories
+        .filter((org: any) => org.upperCategory === upperCategory)
+        .map((org: any) => org.lowerCategory)
+    )];
+    return lowerCats.filter(Boolean);
+  };
+
+  // Get detail categories for selected upper and lower categories
+  const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
+    if (!upperCategory || !lowerCategory) return [];
+    const detailCats = [...new Set(
+      organizationCategories
+        .filter((org: any) => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
+        .map((org: any) => org.detailCategory)
+    )];
+    return detailCats.filter(Boolean);
+  };
+  
   const [settings, setSettings] = useState<ChatbotSettings>({
     llmModel: (agent as any).llmModel || "gpt-4o",
-    chatbotType: (agent as any).chatbotType || "general-llm"
+    chatbotType: (agent as any).chatbotType || "general-llm",
+    visibility: (agent as any).visibility || "public",
+    upperCategory: (agent as any).upperCategory || "",
+    lowerCategory: (agent as any).lowerCategory || "",
+    detailCategory: (agent as any).detailCategory || ""
   });
 
   const updateSettingsMutation = useMutation({
@@ -125,6 +186,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             <div className="text-sm text-gray-600 korean-text">
               <p>LLM 모델: {LLM_MODELS.find(m => m.value === settings.llmModel)?.label}</p>
               <p>챗봇 유형: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
+              <p>공유 범위: {VISIBILITY_OPTIONS.find(v => v.value === settings.visibility)?.label || "조직 전체"}</p>
             </div>
           </div>
 
