@@ -1011,7 +1011,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 width: 'fit-content',
                 overflowWrap: 'break-word',
                 wordBreak: 'keep-all',
-                maxWidth: '85%',
                 marginTop: isTablet ? '1rem' : '40px'
               }}
             >
@@ -1034,8 +1033,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <div 
                     className="relative flex items-start gap-1 w-fit"
                     style={{ 
-                      maxWidth: '85%', 
-                      marginRight: (!msg.isFromUser && !isSystem) ? '80px' : '0'
+                      maxWidth: '90%', 
+                      marginRight: (!msg.isFromUser && !isSystem) ? '60px' : '0'
                     }}
                     onMouseEnter={() => {
                       if (!msg.isFromUser && !isSystem) {

@@ -454,10 +454,18 @@ body {
 
   /* Apple Messages Style Bubbles */
   .message-bubble {
-    @apply px-4 py-3 max-w-xs break-words;
+    @apply px-4 py-3 break-words;
     border-radius: 18px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
+    max-width: 75%;
+    min-width: 120px;
+  }
+
+  @media (min-width: 768px) {
+    .message-bubble {
+      max-width: 80%;
+    }
   }
 
   .message-bubble.user {
