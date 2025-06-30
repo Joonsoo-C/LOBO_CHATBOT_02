@@ -619,8 +619,12 @@ export class MemoryStorage implements IStorage {
     const updatedAgent = { ...existingAgent, ...updates, updatedAt: new Date() };
     this.agents.set(id, updatedAgent);
     
-    // Invalidate cache
+    // Invalidate all caches that might contain agent data
     cache.delete('all_agents');
+    
+    // Critical: Invalidate conversation caches that contain embedded agent data
+    // Clear all conversation caches since they embed agent information
+    cache.clear(); // Clear all caches to ensure embedded agent data is refreshed
     
     // Save to persistent storage immediately
     this.savePersistedAgents();

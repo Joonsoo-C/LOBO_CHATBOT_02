@@ -186,10 +186,12 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         }
       });
       
-      // Force immediate refetch of critical data
-      queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-      queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
-      queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
+      // Force immediate refetch of critical data with slight delay for server processing
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ["/api/agents"] });
+        queryClient.refetchQueries({ queryKey: ["/api/agents/managed"] });
+        queryClient.refetchQueries({ queryKey: ["/api/conversations"] });
+      }, 100);
       
       toast({
         title: "아이콘 변경 완료",
