@@ -121,7 +121,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
-    <div className="px-6 py-2 space-y-3 responsive-agent-grid">
+    <div className="px-4 py-1 space-y-1 responsive-agent-grid">
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;

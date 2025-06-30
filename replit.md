@@ -694,6 +694,7 @@ Changelog:
   * Increased mobile main content margin-top from 140px to 160px to prevent chat list clipping
   * Set mobile header height to auto with min-height 140px to accommodate search bar and tab navigation
   * Chat list now displays properly without being cut off by fixed header on mobile devices
+  * Optimized chat list spacing for messenger-style layout: reduced top margin to 120px, card gaps to 0.25rem, padding to 12px, and margins to 4px for compact messenger-like appearance
 ```
 
 ## User Preferences
