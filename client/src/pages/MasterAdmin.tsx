@@ -211,16 +211,33 @@ interface TokenUsage {
   detailCategory?: string;
 }
 
+interface TokenUsage {
+  id: string;
+  timestamp: string;
+  agentName: string;
+  question: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  indexTokens: number;
+  preprocessingTokens: number;
+  totalTokens: number;
+  upperCategory?: string;
+  lowerCategory?: string;
+  detailCategory?: string;
+}
+
 function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   
   // 토큰 관리 상태
-  const [tokenPeriodFilter, setTokenPeriodFilter] = useState("today");
+  const [tokenPeriodFilter, setTokenPeriodFilter] = useState("month");
   const [tokenUpperCategoryFilter, setTokenUpperCategoryFilter] = useState("all");
   const [tokenLowerCategoryFilter, setTokenLowerCategoryFilter] = useState("all");
   const [tokenDetailCategoryFilter, setTokenDetailCategoryFilter] = useState("all");
   const [tokenKeywordFilter, setTokenKeywordFilter] = useState("");
-  const [tokenSortField, setTokenSortField] = useState<'inputTokens' | 'outputTokens' | 'indexTokens' | 'preprocessingTokens'>('inputTokens');
+  const [tokenModelFilter, setTokenModelFilter] = useState("all");
+  const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
   const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // API 쿼리들을 먼저 선언
@@ -803,9 +820,18 @@ function MasterAdmin() {
 
     // 정렬
     filtered.sort((a, b) => {
-      const aValue = a[tokenSortField];
-      const bValue = b[tokenSortField];
-      return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+      let aValue: any = a[tokenSortField];
+      let bValue: any = b[tokenSortField];
+      
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      // 문자열이나 다른 타입의 경우
+      if (tokenSortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      }
+      return aValue < bValue ? 1 : -1;
     });
 
     return filtered;
@@ -6904,7 +6930,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody>
                       {paginatedTokenData.map((token) => (
                         <tr key={token.id} className="border-b hover:bg-muted/50">
-                          <td className="p-3 text-sm">
+                          <td className="p-3 text-xs">
                             {new Date(token.timestamp).toLocaleString('ko-KR', {
                               month: 'short',
                               day: 'numeric',
@@ -6912,15 +6938,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               minute: '2-digit'
                             })}
                           </td>
-                          <td className="p-3 text-sm font-medium">{token.agentName}</td>
-                          <td className="p-3 text-sm max-w-xs truncate" title={token.question}>
+                          <td className="p-3 text-xs font-medium">{token.agentName}</td>
+                          <td className="p-3 text-xs max-w-xs truncate" title={token.question}>
                             {token.question}
                           </td>
-                          <td className="p-3 text-sm text-right">{token.inputTokens.toLocaleString()}</td>
-                          <td className="p-3 text-sm text-right">{token.outputTokens.toLocaleString()}</td>
-                          <td className="p-3 text-sm text-right">{token.indexTokens.toLocaleString()}</td>
-                          <td className="p-3 text-sm text-right">{token.preprocessingTokens.toLocaleString()}</td>
-                          <td className="p-3 text-sm text-right font-medium">{token.totalTokens.toLocaleString()}</td>
+                          <td className="p-3 text-xs text-right">{token.inputTokens.toLocaleString()}</td>
+                          <td className="p-3 text-xs text-right">{token.outputTokens.toLocaleString()}</td>
+                          <td className="p-3 text-xs text-right">{token.indexTokens.toLocaleString()}</td>
+                          <td className="p-3 text-xs text-right">{token.preprocessingTokens.toLocaleString()}</td>
+                          <td className="p-3 text-xs text-right font-medium">{token.totalTokens.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
