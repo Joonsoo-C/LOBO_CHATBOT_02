@@ -1000,14 +1000,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto chat-scroll chat-messages md:px-6`}
         style={{ 
           paddingTop: isTablet ? '1rem' : '0', 
-          paddingBottom: isTablet ? '1rem' : '120px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          minHeight: '100%'
+          paddingBottom: isTablet ? '1rem' : '20px',
         }}
       >
-        <div className="flex-1" />
         <div className="messages-container space-y-4">
           {allMessages.length === 0 ? (
             <div className="flex justify-start">

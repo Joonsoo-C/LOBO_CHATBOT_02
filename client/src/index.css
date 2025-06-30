@@ -1269,3 +1269,32 @@ body {
     animation: none;
   }
 }
+
+/* Chat messages container for proper bottom alignment like KakaoTalk */
+.chat-interface-messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: calc(100vh - 220px);
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 10px;
+  min-height: auto;
+  justify-content: flex-end;
+}
+
+/* Ensure last message sits at bottom on mobile */
+@media (max-width: 768px) {
+  .chat-interface-messages {
+    min-height: calc(100vh - 260px);
+    justify-content: flex-end;
+  }
+  
+  .messages-container {
+    padding-bottom: 5px;
+  }
+}
