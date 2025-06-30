@@ -121,7 +121,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
-    <div className="px-4 py-1 space-y-1 responsive-agent-grid">
+    <div className="px-2 py-1 responsive-agent-grid" style={{ gap: '1px' }}>
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
@@ -130,8 +130,8 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`}>
             <div className="apple-agent-card">
-              <div className="flex items-center space-x-3 md:space-x-4">
-                <div className={`w-12 h-12 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
+              <div className="flex items-center space-x-2 md:space-x-4">
+                <div className={`w-10 h-10 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                     <img 
                       src={agent.icon} 
@@ -145,19 +145,19 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       }}
                     />
                   ) : (
-                    <IconComponent className="text-white w-6 h-6" />
+                    <IconComponent className="text-white w-5 h-5" />
                   )}
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                    <IconComponent className="text-white w-6 h-6 hidden" />
+                    <IconComponent className="text-white w-5 h-5 hidden" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1 md:mb-2">
-                    <div className="flex items-center space-x-2 md:space-x-3">
-                      <h3 className="font-semibold text-foreground truncate korean-text md:text-lg">
+                  <div className="flex items-center justify-between mb-0.5 md:mb-2">
+                    <div className="flex items-center space-x-1.5 md:space-x-3">
+                      <h3 className="font-medium text-foreground truncate korean-text text-sm md:text-lg">
                         {agent.name}
                       </h3>
-                      <span className={`${getCategoryBadgeStyle(agent.category)} text-xs px-2 py-0.5 rounded-full`}>
+                      <span className={`${getCategoryBadgeStyle(agent.category)} text-xs px-1.5 py-0.5 rounded-full text-xs`}>
                         {agent.category}
                       </span>
                     </div>

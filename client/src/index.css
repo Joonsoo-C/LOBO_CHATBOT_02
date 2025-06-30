@@ -623,10 +623,10 @@ body {
   .apple-agent-card {
     background: #FFFFFF;
     border: 1px solid #E5E5EA;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     transition: all 0.2s ease;
   }
 

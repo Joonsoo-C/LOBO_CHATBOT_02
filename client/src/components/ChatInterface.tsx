@@ -336,7 +336,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       }
       
       // Scroll to bottom when new messages arrive
-      setTimeout(() => scrollToBottom(), 100);
+      setTimeout(() => scrollToBottom(), 50);
     }
   }, [messages?.length, conversation?.id, queryClient, markAsReadMutation, hasMarkedAsRead]);
 
