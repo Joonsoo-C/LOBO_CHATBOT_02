@@ -638,10 +638,16 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                     }}
                   />
                 ) : (
-                  <User className="text-white w-5 h-5" />
+                  (() => {
+                    const IconComponent = iconMap[agent.icon] || User;
+                    return <IconComponent className="text-white w-5 h-5" />;
+                  })()
                 )}
                 {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                  <User className="text-white w-5 h-5 hidden" />
+                  (() => {
+                    const IconComponent = iconMap[agent.icon] || User;
+                    return <IconComponent className="text-white w-5 h-5 hidden" />;
+                  })()
                 )}
               </div>
               <div>
@@ -838,10 +844,16 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
                       }}
                     />
                   ) : (
-                    <User className="text-white w-5 h-5" />
+                    (() => {
+                      const IconComponent = iconMap[agent.icon] || User;
+                      return <IconComponent className="text-white w-5 h-5" />;
+                    })()
                   )}
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) && (
-                    <User className="text-white w-5 h-5 hidden" />
+                    (() => {
+                      const IconComponent = iconMap[agent.icon] || User;
+                      return <IconComponent className="text-white w-5 h-5 hidden" />;
+                    })()
                   )}
                 </div>
                 <div>
