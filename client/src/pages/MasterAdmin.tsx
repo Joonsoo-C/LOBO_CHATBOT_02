@@ -810,6 +810,55 @@ function MasterAdmin() {
     }
   };
 
+
+  
+  // 조직 선택 상태
+  const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
+
+  // Q&A 로그 필터링 상태
+  const [qaFilterUpperCategory, setQaFilterUpperCategory] = useState('all');
+  const [qaFilterLowerCategory, setQaFilterLowerCategory] = useState('all');
+  const [qaFilterDetailCategory, setQaFilterDetailCategory] = useState('all');
+  const [qaFilterAgentCategory, setQaFilterAgentCategory] = useState('all');
+  const [qaFilterUserType, setQaFilterUserType] = useState('all');
+  const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
+  const [qaFilterKeyword, setQaFilterKeyword] = useState('');
+  
+  // Q&A 로그 페이지네이션 상태
+  const [qaCurrentPage, setQaCurrentPage] = useState(1);
+  const [qaLogsPerPage] = useState(20);
+  const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
+
+  // Q&A 로그 데이터 조회 (필터링 포함)
+  const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
+    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage, qaFilterUpperCategory, qaFilterLowerCategory, qaFilterDetailCategory, qaFilterAgentCategory, qaFilterUserType, qaFilterKeyword, qaFilterPeriod],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: qaCurrentPage.toString(),
+        limit: qaLogsPerPage.toString(),
+        upperCategory: qaFilterUpperCategory !== 'all' ? qaFilterUpperCategory : '',
+        lowerCategory: qaFilterLowerCategory !== 'all' ? qaFilterLowerCategory : '',
+        detailCategory: qaFilterDetailCategory !== 'all' ? qaFilterDetailCategory : '',
+        agentCategory: qaFilterAgentCategory !== 'all' ? qaFilterAgentCategory : '',
+        userType: qaFilterUserType !== 'all' ? qaFilterUserType : '',
+        keyword: qaFilterKeyword,
+        period: qaFilterPeriod
+      });
+      
+      // 빈 파라미터 제거
+      for (const [key, value] of Array.from(params.entries())) {
+        if (!value) {
+          params.delete(key);
+        }
+      }
+      
+      const response = await fetch(`/api/admin/qa-logs?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch QA logs');
+      return response.json();
+    }
+  });
+
   // 토큰 데이터 생성 및 필터링
   const tokenData = useMemo(() => {
     if (!qaLogsData?.logs) return [];
@@ -895,53 +944,6 @@ function MasterAdmin() {
     const models = tokenData.map(item => item.model);
     return Array.from(new Set(models));
   }, [tokenData]);
-  
-  // 조직 선택 상태
-  const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
-
-  // Q&A 로그 필터링 상태
-  const [qaFilterUpperCategory, setQaFilterUpperCategory] = useState('all');
-  const [qaFilterLowerCategory, setQaFilterLowerCategory] = useState('all');
-  const [qaFilterDetailCategory, setQaFilterDetailCategory] = useState('all');
-  const [qaFilterAgentCategory, setQaFilterAgentCategory] = useState('all');
-  const [qaFilterUserType, setQaFilterUserType] = useState('all');
-  const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
-  const [qaFilterKeyword, setQaFilterKeyword] = useState('');
-  
-  // Q&A 로그 페이지네이션 상태
-  const [qaCurrentPage, setQaCurrentPage] = useState(1);
-  const [qaLogsPerPage] = useState(20);
-  const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
-  const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
-
-  // Q&A 로그 데이터 조회 (필터링 포함)
-  const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
-    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage, qaFilterUpperCategory, qaFilterLowerCategory, qaFilterDetailCategory, qaFilterAgentCategory, qaFilterUserType, qaFilterKeyword, qaFilterPeriod],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: qaCurrentPage.toString(),
-        limit: qaLogsPerPage.toString(),
-        upperCategory: qaFilterUpperCategory !== 'all' ? qaFilterUpperCategory : '',
-        lowerCategory: qaFilterLowerCategory !== 'all' ? qaFilterLowerCategory : '',
-        detailCategory: qaFilterDetailCategory !== 'all' ? qaFilterDetailCategory : '',
-        agentCategory: qaFilterAgentCategory !== 'all' ? qaFilterAgentCategory : '',
-        userType: qaFilterUserType !== 'all' ? qaFilterUserType : '',
-        keyword: qaFilterKeyword,
-        period: qaFilterPeriod
-      });
-      
-      // 빈 파라미터 제거
-      for (const [key, value] of Array.from(params.entries())) {
-        if (!value) {
-          params.delete(key);
-        }
-      }
-      
-      const response = await fetch(`/api/admin/qa-logs?${params.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch QA logs');
-      return response.json();
-    }
-  });
   
   // 파일 업로드 상태
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
