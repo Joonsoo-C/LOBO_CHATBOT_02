@@ -6,6 +6,7 @@ import {
   documents,
   agentStats,
   messageReactions,
+  qaLogs,
   type User,
   type UpsertUser,
   type Agent,
@@ -21,6 +22,8 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
+  type QaLog,
+  type InsertQaLog,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, inArray } from "drizzle-orm";
@@ -86,6 +89,14 @@ export interface IStorage {
 
   // User status operations
   getUniqueUserStatuses(): string[];
+
+  // QA Logs operations
+  getQaLogs(): Promise<QaLog[]>;
+  getQaLogById(id: number): Promise<QaLog | undefined>;
+  createQaLog(data: InsertQaLog): Promise<QaLog>;
+  updateQaLog(id: number, data: Partial<InsertQaLog>): Promise<QaLog | undefined>;
+  deleteQaLog(id: number): Promise<boolean>;
+  clearAllQaLogs(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {

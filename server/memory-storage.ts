@@ -14,6 +14,8 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
+  type QaLog,
+  type InsertQaLog,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { cache } from "./cache";
@@ -28,6 +30,7 @@ export class MemoryStorage implements IStorage {
   private messages: Map<number, Message> = new Map();
   private documents: Map<number, Document> = new Map();
   private agentStats: Map<number, AgentStats> = new Map();
+  private qaLogs: Map<number, QaLog> = new Map();
   private messageReactions: Map<number, MessageReaction> = new Map();
   private organizationCategories: Map<number, any> = new Map();
   private organizationFiles: Map<string, any> = new Map();
@@ -1636,4 +1639,87 @@ export class MemoryStorage implements IStorage {
       cache.delete('organization_categories');
     }
   }
+
+  // QA Logs Methods
+  async getQaLogs(): Promise<QaLog[]> {
+    const logs = Array.from(this.qaLogs.values());
+    return logs.sort((a, b) => {
+      const aTime = a.timestamp?.getTime() || 0;
+      const bTime = b.timestamp?.getTime() || 0;
+      return bTime - aTime; // 최신순 정렬
+    });
+  }
+
+  async getQaLogById(id: number): Promise<QaLog | undefined> {
+    return this.qaLogs.get(id);
+  }
+
+  async createQaLog(data: InsertQaLog): Promise<QaLog> {
+    const id = this.nextQaLogId++;
+    const qaLog: QaLog = {
+      id,
+      timestamp: data.timestamp,
+      agentType: data.agentType,
+      agentName: data.agentName,
+      userType: data.userType,
+      questionContent: data.questionContent,
+      responseContent: data.responseContent,
+      responseType: data.responseType,
+      responseTime: data.responseTime,
+      agentId: data.agentId || null,
+      userId: data.userId || null,
+      improvementRequest: data.improvementRequest || null,
+      createdAt: new Date(),
+    };
+    
+    this.qaLogs.set(id, qaLog);
+    
+    // Clear cache
+    if (cache) {
+      cache.delete('qa_logs');
+    }
+    
+    return qaLog;
+  }
+
+  async updateQaLog(id: number, data: Partial<InsertQaLog>): Promise<QaLog | undefined> {
+    const existing = this.qaLogs.get(id);
+    if (!existing) return undefined;
+
+    const updated: QaLog = {
+      ...existing,
+      ...data,
+    };
+
+    this.qaLogs.set(id, updated);
+
+    // Clear cache
+    if (cache) {
+      cache.delete('qa_logs');
+    }
+
+    return updated;
+  }
+
+  async deleteQaLog(id: number): Promise<boolean> {
+    const deleted = this.qaLogs.delete(id);
+    
+    if (deleted && cache) {
+      cache.delete('qa_logs');
+    }
+    
+    return deleted;
+  }
+
+  async clearAllQaLogs(): Promise<void> {
+    this.qaLogs.clear();
+    console.log('All QA logs cleared from memory storage');
+    
+    // Clear cache
+    if (cache) {
+      cache.delete('qa_logs');
+    }
+  }
+
+  private nextQaLogId = 1;
 }
