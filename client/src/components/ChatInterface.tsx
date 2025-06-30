@@ -1181,36 +1181,32 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className={`apple-input-container ${isTablet ? "chat-input-area flex-shrink-0" : "fixed-chat-input"}`}>
-        <div className="flex items-end">
-          <div className="flex-1 relative">
-            <textarea
-              placeholder={t('chat.inputPlaceholder')}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="apple-chat-input w-full resize-none korean-text"
-              disabled={sendMessageMutation.isPending}
-              rows={1}
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-              }}
-              onInput={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = Math.min(target.scrollHeight, 120) + 'px';
-              }}
-            />
-          </div>
-          <button
-            className="apple-send-button"
-            onClick={handleSendMessage}
-            disabled={!message.trim() || sendMessageMutation.isPending}
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
+      <div className={`apple-input-container ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
+        <textarea
+          placeholder={t('chat.inputPlaceholder')}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="apple-chat-input resize-none korean-text"
+          disabled={sendMessageMutation.isPending}
+          rows={1}
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+          onInput={(e) => {
+            const target = e.target as HTMLTextAreaElement;
+            target.style.height = 'auto';
+            target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+          }}
+        />
+        <button
+          className="apple-send-button"
+          onClick={handleSendMessage}
+          disabled={!message.trim() || sendMessageMutation.isPending}
+        >
+          <Send className="w-4 h-4" />
+        </button>
       </div>
 
       {/* File Upload Modal */}
