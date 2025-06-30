@@ -404,13 +404,19 @@ Rules:
     };
   } catch (error) {
     console.error("Chat response generation failed:", error);
+    console.error("Error details:", {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      apiKey: process.env.OPENAI_API_KEY ? 'SET' : 'NOT_SET'
+    });
     
     const catchErrorMessages = {
       'ko': "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
       'en': "Sorry, I can't generate a response right now. Please try again in a moment.",
       'zh': "抱歉，目前无法生成回复。请稍后重试。",
       'vi': "Xin lỗi, hiện tại không thể tạo phản hồi. Vui lòng thử lại sau một lúc.",
-      'ja': "申し訳ありませんが、現在応答を生成できません。しばらくしてからもう一度お試しください。"
+      'ja': "申し訳ありませんが、現在応答을 생成できません。しばらくしてからもう一度お試しください。"
     };
     
     return {

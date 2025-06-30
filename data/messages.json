@@ -3,21 +3,21 @@
     [
       112,
       {
-        "conversationId": 114,
-        "content": "현대문학 강의 일정 준비 중",
+        "conversationId": 112,
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
         "isFromUser": false,
         "id": 112,
-        "createdAt": "2025-06-30T20:04:22.764Z"
+        "createdAt": "2025-06-30T22:36:05.645Z"
       }
     ],
     [
       113,
       {
-        "conversationId": 114,
-        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        "conversationId": 112,
+        "content": "왜 응답을 할 수 없는데?",
         "isFromUser": true,
         "id": 113,
-        "createdAt": "2025-06-30T07:21:58.973Z"
+        "createdAt": "2025-06-30T22:36:23.864Z"
       }
     ],
     [
@@ -73,21 +73,21 @@
     [
       111,
       {
-        "conversationId": 114,
-        "content": "현재 응답을 생성할 수 있습니까?",
+        "conversationId": 112,
+        "content": "안녕",
         "isFromUser": true,
         "id": 111,
-        "createdAt": "2025-06-30T07:21:41.709Z"
+        "createdAt": "2025-06-30T22:36:05.475Z"
       }
     ],
     [
       114,
       {
-        "conversationId": 114,
-        "content": "알겠습니다! 어떤 도움이 필요하신지 말씀해 주세요. 제가 도와드릴 수 있는 부분이 있다면 최선을 다해 답변해드리겠습니다.",
+        "conversationId": 112,
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
         "isFromUser": false,
         "id": 114,
-        "createdAt": "2025-06-30T07:22:00.030Z"
+        "createdAt": "2025-06-30T22:36:23.948Z"
       }
     ]
   ]
