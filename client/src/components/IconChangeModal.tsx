@@ -246,42 +246,46 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               >
                 기본 아이콘
               </Button>
-              <label className="flex-1">
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/gif,image/webp"
-                  onChange={(e) => {
-                    setIsUsingCustomImage(true);
-                    handleFileChange(e);
-                  }}
-                  className="hidden"
-                />
-                <Button
-                  variant={isUsingCustomImage ? "default" : "outline"}
-                  size="sm"
-                  className="w-full cursor-pointer"
-                  type="button"
-                >
-                  이미지 업로드
-                </Button>
-              </label>
+              <input
+                type="file"
+                id="image-upload-trigger"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={(e) => {
+                  setIsUsingCustomImage(true);
+                  handleFileChange(e);
+                }}
+                className="hidden"
+              />
+              <Button
+                variant={isUsingCustomImage ? "default" : "outline"}
+                size="sm"
+                className="flex-1"
+                type="button"
+                onClick={() => {
+                  document.getElementById('image-upload-trigger')?.click();
+                }}
+              >
+                이미지 업로드
+              </Button>
             </div>
           </div>
 
-          {/* Custom Image Upload */}
+          {/* Custom Image Upload Section */}
           {isUsingCustomImage && (
             <div className="space-y-3">
               <Label className="text-sm font-medium">이미지 파일 선택</Label>
+              
+              {/* File drop area */}
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
                   onChange={handleFileChange}
                   className="hidden"
-                  id="image-upload"
+                  id="image-upload-drop"
                 />
                 <label 
-                  htmlFor="image-upload" 
+                  htmlFor="image-upload-drop" 
                   className="cursor-pointer flex flex-col items-center space-y-2 hover:text-primary transition-colors"
                 >
                   <Camera className="w-8 h-8 text-muted-foreground" />
@@ -297,7 +301,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               {/* Additional upload button for better UX */}
               <Button
                 variant="outline"
-                onClick={() => document.getElementById('image-upload')?.click()}
+                onClick={() => document.getElementById('image-upload-drop')?.click()}
                 className="w-full"
               >
                 <Camera className="w-4 h-4 mr-2" />
