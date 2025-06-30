@@ -216,16 +216,6 @@ function MasterAdmin() {
     }
   });
 
-  // Q&A 로그 데이터 조회
-  const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
-    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage],
-    queryFn: async () => {
-      const response = await fetch(`/api/admin/qa-logs?page=${qaCurrentPage}&limit=${qaLogsPerPage}`);
-      if (!response.ok) throw new Error('Failed to fetch QA logs');
-      return response.json();
-    }
-  });
-
 
 
 
