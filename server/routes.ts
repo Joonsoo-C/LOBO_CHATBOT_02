@@ -76,7 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Note: Auth routes are now handled in setupAuth() function
 
   // Agent routes
-  app.get('/api/agents', isAuthenticated, async (req, res) => {
+  app.get('/api/agents', isAuthenticated, async (req: any, res) => {
     try {
       // Set cache headers for client-side caching
       res.set({
@@ -84,8 +84,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'ETag': `"agents-${Date.now()}"`
       });
       
-      const agents = await storage.getAllAgents();
-      res.json(agents);
+      const allAgents = await storage.getAllAgents();
+      const userId = req.user.id;
+      const userType = req.user.userType;
+      const userUpperCategory = req.user.upperCategory;
+      const userLowerCategory = req.user.lowerCategory;
+      const userDetailCategory = req.user.detailCategory;
+
+      // Master admin can see all agents
+      if (userType === 'admin' || userId === 'master_admin') {
+        res.json(allAgents);
+        return;
+      }
+
+      // Filter agents based on visibility and organization matching
+      const filteredAgents = allAgents.filter(agent => {
+        // Public agents are visible to everyone
+        if (agent.visibility === 'public') {
+          return true;
+        }
+
+        // Organization-specific agents
+        if (agent.visibility === 'organization') {
+          // Check if user belongs to the same organization hierarchy
+          const matchesUpperCategory = agent.upperCategory === userUpperCategory;
+          const matchesLowerCategory = agent.lowerCategory === userLowerCategory;
+          const matchesDetailCategory = agent.detailCategory === userDetailCategory;
+
+          // User can see agents from their exact organization level or higher levels
+          return matchesUpperCategory && 
+                 (matchesLowerCategory || !agent.lowerCategory) &&
+                 (matchesDetailCategory || !agent.detailCategory);
+        }
+
+        // Private agents are only visible to their managers
+        if (agent.visibility === 'private') {
+          return agent.managerId === userId;
+        }
+
+        return false;
+      });
+
+      res.json(filteredAgents);
     } catch (error) {
       console.error("Error fetching agents:", error);
       res.status(500).json({ message: "Failed to fetch agents" });
