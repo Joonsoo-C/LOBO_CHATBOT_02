@@ -311,10 +311,18 @@ export function setupAdminRoutes(app: Express) {
   // Managers (faculty users)
   app.get("/api/admin/managers", requireMasterAdmin, async (req, res) => {
     try {
-      const managers = [
-        { id: 'prof001', username: 'prof001', firstName: '박', lastName: '교수', email: 'prof@robo.ac.kr' },
-        { id: 'prof002', username: 'prof002', firstName: '최', lastName: '교수', email: 'prof2@robo.ac.kr' }
-      ];
+      const allUsers = await storage.getAllUsers();
+      
+      // Filter users with manager roles (master admin or agent admin)
+      const managers = allUsers.filter(user => 
+        user.role === 'master_admin' || 
+        user.role === 'agent_admin' ||
+        (user as any).position === '교수' ||
+        (user as any).position === '부교수' ||
+        (user as any).position === '정교수'
+      );
+      
+      console.log('Filtered managers:', managers.length, 'total users:', allUsers.length);
       res.json(managers);
     } catch (error) {
       console.error("Error fetching managers:", error);

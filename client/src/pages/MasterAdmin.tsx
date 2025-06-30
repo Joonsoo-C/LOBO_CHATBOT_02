@@ -134,7 +134,7 @@ const agentSchema = z.object({
   
   // 📌 권한 및 접근 설정
   visibility: z.string().optional(),
-  managerId: z.string().min(1, "관리자를 선택해주세요"),
+  managerId: z.string().optional(),
   agentEditorIds: z.array(z.string()).optional(),
   documentManagerIds: z.array(z.string()).optional(),
 });
@@ -1840,6 +1840,7 @@ function MasterAdmin() {
         creatorId: "admin", // 기본 생성자
         isActive: data.status === "active",
         // 관리자 정보 추가
+        managerId: selectedAgentManagers.length > 0 ? selectedAgentManagers[0].id : undefined,
         agentManagerIds: selectedAgentManagers.map(m => m.id),
         documentManagerIds: selectedDocumentManagers.map(m => m.id),
         qaManagerIds: selectedQaManagers.map(m => m.id),
@@ -1861,7 +1862,9 @@ function MasterAdmin() {
       setSelectedAgentManagers([]);
       setSelectedDocumentManagers([]);
       setSelectedQaManagers([]);
+      setSelectedFiles([]);
       setManagerSearchQuery('');
+      setAgentCreationTab('basic');
     },
     onError: (error: Error) => {
       toast({
@@ -3896,6 +3899,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         {/* 파일 업로드 탭 */}
                         <TabsContent value="upload" className="space-y-6">
                           <div className="space-y-4">
+                            {/* 숨겨진 파일 입력 */}
+                            <input
+                              ref={agentFileInputRef}
+                              type="file"
+                              accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
+                              multiple
+                              onChange={handleAgentFileInputChange}
+                              style={{ display: 'none' }}
+                            />
+                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <FormField
                                 control={agentForm.control}
@@ -3927,11 +3940,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
                             
                             {/* 드래그 앤 드롭 영역 */}
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors">
+                            <div 
+                              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                              onClick={handleAgentFileSelect}
+                            >
                               <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                               <div className="space-y-2">
                                 <p className="text-lg font-medium text-gray-700">파일을 여기로 드래그하거나 클릭해서 업로드하세요</p>
-                                <Button type="button" variant="outline" size="lg" className="bg-white">
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="lg" 
+                                  className="bg-white"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAgentFileSelect();
+                                  }}
+                                >
                                   <Upload className="w-4 h-4 mr-2" />
                                   파일 선택
                                 </Button>
@@ -3944,11 +3969,37 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             
                             {/* 업로드된 파일 목록 */}
                             <div className="space-y-2">
-                              <Label className="text-sm font-medium text-gray-700">업로드된 파일</Label>
+                              <Label className="text-sm font-medium text-gray-700">선택된 파일</Label>
                               <div className="border rounded-lg p-3 bg-white min-h-[100px]">
-                                <div className="text-center text-sm text-gray-500 py-4">
-                                  아직 업로드된 파일이 없습니다
-                                </div>
+                                {selectedFiles.length === 0 ? (
+                                  <div className="text-center text-sm text-gray-500 py-4">
+                                    아직 선택된 파일이 없습니다
+                                  </div>
+                                ) : (
+                                  <div className="space-y-2">
+                                    {selectedFiles.map((file, index) => (
+                                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <div className="flex items-center space-x-2">
+                                          <FileText className="w-4 h-4 text-blue-500" />
+                                          <span className="text-sm font-medium">{file.name}</span>
+                                          <span className="text-xs text-gray-500">
+                                            ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                                          </span>
+                                        </div>
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => {
+                                            setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+                                          }}
+                                        >
+                                          <X className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
