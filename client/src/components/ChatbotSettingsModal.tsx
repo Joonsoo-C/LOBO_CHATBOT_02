@@ -131,7 +131,21 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
       if (onSuccess) {
         const modelLabel = LLM_MODELS.find(m => m.value === settings.llmModel)?.label || settings.llmModel;
         const typeLabel = CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label || settings.chatbotType;
-        onSuccess(`챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}`);
+        const visibilityLabel = VISIBILITY_OPTIONS.find(v => v.value === settings.visibility)?.label || settings.visibility;
+        
+        let message = `챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}\n공유 범위: ${visibilityLabel}`;
+        
+        if (settings.visibility === 'organization' && settings.upperCategory) {
+          message += `\n조직: ${settings.upperCategory}`;
+          if (settings.lowerCategory) {
+            message += ` > ${settings.lowerCategory}`;
+          }
+          if (settings.detailCategory) {
+            message += ` > ${settings.detailCategory}`;
+          }
+        }
+        
+        onSuccess(message);
       }
       
       // Invalidate agent data to refresh
