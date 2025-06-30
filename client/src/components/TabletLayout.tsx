@@ -175,7 +175,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-start px-4 py-2 korean-text hover:bg-primary/10 transition-colors"
+                          className="w-full justify-start px-4 py-2 korean-text"
                           onClick={() => {
                             setShowPersonaModal(true);
                             setShowMenu(false);
@@ -451,7 +451,7 @@ export default function TabletLayout() {
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 bg-[#dcdfe0] border-none korean-text h-11"
+                className="pl-10 pr-3 bg-muted border-none korean-text h-11"
               />
             </div>
             
@@ -522,28 +522,28 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className="tab-navigation">
+          <div className="grid grid-cols-2 gap-0 bg-muted rounded-xl p-1">
             <Button
               variant={activeTab === "chat" ? "default" : "ghost"}
               size="lg"
-              className="korean-text w-full flex-1"
+              className="korean-text h-14"
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
               }}
             >
-              일반 대화
+              {t('agent.generalChat')}
             </Button>
             <Button
               variant={activeTab === "management" ? "default" : "ghost"}
               size="lg"
-              className="korean-text w-full flex-1 bg-[#ebebeb]"
+              className="korean-text h-14"
               onClick={() => {
                 setActiveTab("management");
                 navigate("/management");
               }}
             >
-              에이전트 관리
+              {t('agent.management')}
             </Button>
           </div>
         </div>

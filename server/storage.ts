@@ -6,7 +6,6 @@ import {
   documents,
   agentStats,
   messageReactions,
-  qaLogs,
   type User,
   type UpsertUser,
   type Agent,
@@ -22,8 +21,6 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
-  type QaLog,
-  type InsertQaLog,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, inArray } from "drizzle-orm";
@@ -56,7 +53,6 @@ export interface IStorage {
 
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
-  getAllMessages(): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   markConversationAsRead(conversationId: number): Promise<void>;
 
@@ -89,14 +85,6 @@ export interface IStorage {
 
   // User status operations
   getUniqueUserStatuses(): string[];
-
-  // QA Logs operations
-  getQaLogs(): Promise<QaLog[]>;
-  getQaLogById(id: number): Promise<QaLog | undefined>;
-  createQaLog(data: InsertQaLog): Promise<QaLog>;
-  updateQaLog(id: number, data: Partial<InsertQaLog>): Promise<QaLog | undefined>;
-  deleteQaLog(id: number): Promise<boolean>;
-  clearAllQaLogs(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -286,13 +274,6 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(messages)
       .where(eq(messages.conversationId, conversationId))
-      .orderBy(messages.createdAt);
-  }
-
-  async getAllMessages(): Promise<Message[]> {
-    return await db
-      .select()
-      .from(messages)
       .orderBy(messages.createdAt);
   }
 

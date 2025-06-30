@@ -571,53 +571,22 @@ body {
     flex-shrink: 0;
   }
 
-  /* Tab navigation to match sample image exactly */
+  /* Tab navigation full width and size */
   .tab-navigation {
     width: 100% !important;
-    background: hsl(var(--muted)) !important;
-    border-radius: 12px !important;
-    padding: 4px !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    min-height: 56px !important;
+  }
+
+  .tab-navigation .grid {
+    width: 100% !important;
     gap: 4px !important;
-  }
-
-  /* Custom tab navigation active state */
-  .tab-navigation .btn-default {
-    background: hsl(220 14% 96%) !important;
-    border-color: hsl(220 14% 96%) !important;
-  }
-
-  /* Dark mode support */
-  .dark .tab-navigation .btn-default {
-    background: hsl(220 14% 20%) !important;
-    border-color: hsl(220 14% 20%) !important;
   }
 
   .tab-navigation button {
     width: 100% !important;
-    height: 48px !important;
-    font-size: 15px !important;
+    min-height: 56px !important;
+    font-size: 16px !important;
     font-weight: 500 !important;
-    border-radius: 8px !important;
-  }
-
-  /* Make unselected tabs darker for better contrast */
-  .tab-navigation .btn-ghost {
-    background: hsl(220 14% 88%) !important;
-    border-color: hsl(220 14% 88%) !important;
-    color: hsl(220 14% 40%) !important;
-  }
-
-  .dark .tab-navigation .btn-ghost {
-    background: hsl(220 14% 12%) !important;
-    border-color: hsl(220 14% 12%) !important;
-    color: hsl(220 14% 70%) !important;
-  }
-
-  .tab-navigation button[data-state="active"] {
-    background: hsl(var(--background)) !important;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
   }
 
   @media (min-width: 768px) {

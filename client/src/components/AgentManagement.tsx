@@ -58,9 +58,18 @@ export default function AgentManagement() {
       <div className="text-center mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
+            <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
             <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
           </div>
-          
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="bg-green-600 hover:bg-green-700 text-white korean-text"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              파일 업로드
+            </Button>
+          </div>
         </div>
       </div>
 

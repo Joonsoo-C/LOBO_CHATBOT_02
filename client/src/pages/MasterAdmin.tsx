@@ -48,8 +48,6 @@ import {
   Target,
   Coffee,
   Music,
-  Eye,
-  MessageCircle,
   Heart,
   Upload,
   ChevronUp,
@@ -58,264 +56,12 @@ import {
   Menu,
   Download,
   ExternalLink,
-  Cpu,
+  Eye,
   X,
   ChevronsUpDown,
   RefreshCw,
-  Search,
 } from "lucide-react";
 import { Link } from "wouter";
-
-// QA Log Row Component with detailed popup view and improvement request functionality
-interface QALogRowProps {
-  log: any;
-}
-
-const QALogRow: React.FC<QALogRowProps> = ({ log }) => {
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [isImprovementOpen, setIsImprovementOpen] = useState(false);
-  const [improvementComment, setImprovementComment] = useState("");
-  const { toast } = useToast();
-
-  const handleImprovementSubmit = async () => {
-    if (!improvementComment.trim()) {
-      toast({
-        title: "개선 요청 실패",
-        description: "개선 사항을 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/admin/qa-logs/${log.id}/improvement`, {
-        method: 'PUT',
-        body: JSON.stringify({ improvementRequest: improvementComment }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!response.ok) {
-        throw new Error('개선 요청 실패');
-      }
-
-      toast({
-        title: "개선 요청 완료",
-        description: "개선 요청이 성공적으로 제출되었습니다.",
-      });
-      setImprovementComment("");
-      setIsDetailOpen(false);
-    } catch (error) {
-      toast({
-        title: "개선 요청 실패",
-        description: "개선 요청 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  return (
-    <>
-      <tr className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={() => setIsDetailOpen(true)}>
-        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-          {new Date(log.createdAt).toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-          <Badge variant="outline" className="text-xs">
-            {log.agentType || log.agentCategory || '기타'}
-          </Badge>
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-          {log.agentName}
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-          {log.userType || '일반 사용자'}
-        </td>
-        <td className="px-4 py-3 max-w-xs">
-          <div className="text-sm text-gray-900 dark:text-white truncate">
-            {log.questionContent || log.content}
-          </div>
-        </td>
-        <td className="px-4 py-3 max-w-xs">
-          <div className="text-sm text-gray-900 dark:text-white truncate">
-            {log.responseContent || log.aiResponse || "AI 응답 대기중..."}
-          </div>
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap">
-          <Badge variant="default" className={
-            log.responseType === 'AI 생성' ? "bg-blue-100 text-blue-800" : 
-            log.responseType === 'document' ? "bg-green-100 text-green-800" :
-            "bg-gray-100 text-gray-800"
-          }>
-            {log.responseType || '기타'}
-          </Badge>
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-          {log.responseTime ? `${log.responseTime}초` : `${(Math.random() * 3 + 1).toFixed(1)}초`}
-        </td>
-        <td className="px-4 py-3 whitespace-nowrap">
-          <div className="flex space-x-1">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDetailOpen(true);
-              }}
-              title="상세 보기"
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsImprovementOpen(true);
-              }}
-              title="개선 요청"
-            >
-              <MessageCircle className="w-4 h-4" />
-            </Button>
-          </div>
-        </td>
-      </tr>
-
-      {/* Detail Dialog */}
-      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Q&A 상세 정보</DialogTitle>
-            <DialogDescription>
-              대화 시각: {new Date(log.createdAt).toLocaleString('ko-KR')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium">에이전트 정보</Label>
-                <div className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                  <div className="text-sm font-medium">{log.agentName}</div>
-                  <div className="text-xs text-gray-500">{log.agentType || log.agentCategory}</div>
-                </div>
-              </div>
-              <div>
-                <Label className="text-sm font-medium">사용자 정보</Label>
-                <div className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                  <div className="text-sm font-medium">{log.userId}</div>
-                  <div className="text-xs text-gray-500">{log.userType}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-sm font-medium">질문 내용</Label>
-              <div className="mt-1 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
-                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
-                  {log.questionContent || log.content}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-sm font-medium">챗봇 응답내용</Label>
-              <div className="mt-1 p-3 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
-                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
-                  {log.responseContent || log.aiResponse || "AI 응답이 아직 생성되지 않았습니다."}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium">응답 유형</Label>
-                <div className="mt-1">
-                  <Badge variant="default" className={
-                    log.responseType === 'document' ? "bg-blue-100 text-blue-800" : 
-                    log.responseType === 'general' ? "bg-green-100 text-green-800" :
-                    "bg-gray-100 text-gray-800"
-                  }>
-                    {log.responseType === 'document' ? '문서 기반 응답' : 
-                     log.responseType === 'general' ? '일반 LLM 응답' : log.responseType || '기타 응답'}
-                  </Badge>
-                </div>
-              </div>
-              <div>
-                <Label className="text-sm font-medium">응답시간</Label>
-                <div className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                  {log.responseTime ? `${log.responseTime}초` : `${(Math.random() * 3 + 1).toFixed(1)}초`}
-                </div>
-              </div>
-            </div>
-
-            {/* 개선 요청 섹션 */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <Label className="text-sm font-medium mb-2 block">개선 요청 메시지</Label>
-              <Textarea
-                placeholder="이 응답에 대한 개선 사항이나 피드백을 입력해주세요..."
-                value={improvementComment}
-                onChange={(e) => setImprovementComment(e.target.value)}
-                className="min-h-[100px] resize-none"
-              />
-              <div className="flex justify-end mt-3">
-                <Button 
-                  onClick={handleImprovementSubmit}
-                  disabled={!improvementComment.trim()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  개선 요청 제출
-                </Button>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Improvement Request Dialog */}
-      <Dialog open={isImprovementOpen} onOpenChange={setIsImprovementOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>개선 요청</DialogTitle>
-            <DialogDescription>
-              {log.agentName} 에이전트의 응답에 대한 개선 사항을 입력해주세요.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="improvement-comment">개선 요청 내용</Label>
-              <Textarea
-                id="improvement-comment"
-                placeholder="응답 개선에 대한 구체적인 의견을 입력해주세요..."
-                value={improvementComment}
-                onChange={(e) => setImprovementComment(e.target.value)}
-                className="mt-2 min-h-[120px]"
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setIsImprovementOpen(false);
-                  setImprovementComment("");
-                }}
-              >
-                취소
-              </Button>
-              <Button onClick={handleImprovementSubmit}>
-                개선 요청 제출
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
 
 interface User {
   id: string;
@@ -749,209 +495,11 @@ function MasterAdmin() {
   const [userFilterUpperCategory, setUserFilterUpperCategory] = useState('');
   const [userFilterLowerCategory, setUserFilterLowerCategory] = useState('');
   const [userFilterDetailCategory, setUserFilterDetailCategory] = useState('');
-
-  // 토큰 관리 상태
-  const [tokenSearchQuery, setTokenSearchQuery] = useState('');
-  const [tokenStartDate, setTokenStartDate] = useState('');
-  const [tokenEndDate, setTokenEndDate] = useState('');
-  const [tokenAgentFilter, setTokenAgentFilter] = useState('all');
-  const [tokenModelFilter, setTokenModelFilter] = useState('all');
-  const [tokenSortField, setTokenSortField] = useState<'input' | 'output' | 'index' | 'preprocessing' | null>(null);
-  const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
-
-  // Q&A 로그 데이터를 토큰 사용량 데이터로 변환
-  const generateTokenData = (qaLogs: any[]) => {
-    return qaLogs.map((log, index) => {
-      const questionLength = log.questionContent?.length || 0;
-      const responseLength = log.responseContent?.length || 0;
-      
-      // 모델 결정 (질문 복잡도 기반)
-      const models = ['GPT-4', 'GPT-3.5', 'Claude-3', 'Embedding'];
-      const modelWeights = questionLength > 100 ? [0.4, 0.3, 0.2, 0.1] : [0.2, 0.5, 0.2, 0.1];
-      const randomValue = Math.random();
-      let cumulativeWeight = 0;
-      let selectedModel = models[0];
-      
-      for (let i = 0; i < models.length; i++) {
-        cumulativeWeight += modelWeights[i];
-        if (randomValue <= cumulativeWeight) {
-          selectedModel = models[i];
-          break;
-        }
-      }
-      
-      // 토큰 수 계산 (합리적인 범위)
-      const baseInputTokens = Math.ceil(questionLength / 4) + Math.floor(Math.random() * 100) + 50;
-      const baseOutputTokens = Math.ceil(responseLength / 4) + Math.floor(Math.random() * 200) + 100;
-      const indexTokens = selectedModel === 'Embedding' ? Math.floor(Math.random() * 5000) + 1000 : Math.floor(Math.random() * 500);
-      const preprocessingTokens = selectedModel === 'Embedding' ? Math.floor(Math.random() * 2000) + 500 : Math.floor(Math.random() * 100);
-      
-      return {
-        id: log.id,
-        date: log.timestamp ? new Date(log.timestamp).toLocaleDateString('ko-KR') : '2024.12.18',
-        agentName: log.agentName || '알 수 없음',
-        questionContent: log.questionContent || '',
-        model: selectedModel,
-        inputTokens: baseInputTokens,
-        outputTokens: baseOutputTokens,
-        indexTokens: indexTokens,
-        preprocessingTokens: preprocessingTokens,
-        totalTokens: baseInputTokens + baseOutputTokens + indexTokens + preprocessingTokens
-      };
-    });
-  };
-
-  // 토큰 정렬 핸들러
-  const handleTokenSort = (field: 'input' | 'output' | 'index' | 'preprocessing') => {
-    if (tokenSortField === field) {
-      setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setTokenSortField(field);
-      setTokenSortOrder('desc');
-    }
-  };
-
-
   
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
-
-  // Q&A 로그 필터링 상태
-  const [qaFilterUpperCategory, setQaFilterUpperCategory] = useState('all');
-  const [qaFilterLowerCategory, setQaFilterLowerCategory] = useState('all');
-  const [qaFilterDetailCategory, setQaFilterDetailCategory] = useState('all');
-  const [qaFilterAgentCategory, setQaFilterAgentCategory] = useState('all');
-  const [qaFilterUserType, setQaFilterUserType] = useState('all');
-  const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
-  const [qaFilterKeyword, setQaFilterKeyword] = useState('');
-  
-  // 조직 카테고리 관리 필터링 상태
-  const [orgFilterUpperCategory, setOrgFilterUpperCategory] = useState('all');
-  const [orgFilterLowerCategory, setOrgFilterLowerCategory] = useState('all');
-  const [orgFilterDetailCategory, setOrgFilterDetailCategory] = useState('all');
-  const [orgSearchQuery, setOrgSearchQuery] = useState('');
-  const [hasOrgSearched, setHasOrgSearched] = useState(true);
-  
-  // Q&A 로그 페이지네이션 상태
-  const [qaCurrentPage, setQaCurrentPage] = useState(1);
-  const [qaLogsPerPage] = useState(20);
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
   const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
-
-  // Q&A 로그 데이터 조회 (필터링 포함)
-  const { data: qaLogsData, isLoading: qaLogsLoading } = useQuery({
-    queryKey: ['/api/admin/qa-logs', qaCurrentPage, qaLogsPerPage, qaFilterUpperCategory, qaFilterLowerCategory, qaFilterDetailCategory, qaFilterAgentCategory, qaFilterUserType, qaFilterKeyword, qaFilterPeriod],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: qaCurrentPage.toString(),
-        limit: qaLogsPerPage.toString(),
-        upperCategory: qaFilterUpperCategory !== 'all' ? qaFilterUpperCategory : '',
-        lowerCategory: qaFilterLowerCategory !== 'all' ? qaFilterLowerCategory : '',
-        detailCategory: qaFilterDetailCategory !== 'all' ? qaFilterDetailCategory : '',
-        agentCategory: qaFilterAgentCategory !== 'all' ? qaFilterAgentCategory : '',
-        userType: qaFilterUserType !== 'all' ? qaFilterUserType : '',
-        keyword: qaFilterKeyword,
-        period: qaFilterPeriod
-      });
-      
-      // 빈 파라미터 제거
-      for (const [key, value] of Array.from(params.entries())) {
-        if (!value) {
-          params.delete(key);
-        }
-      }
-      
-      const response = await fetch(`/api/admin/qa-logs?${params.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch QA logs');
-      return response.json();
-    }
-  });
-
-  // 토큰 데이터 생성 및 필터링
-  const tokenData = useMemo(() => {
-    if (!qaLogsData?.logs) return [];
-    let data = generateTokenData(qaLogsData.logs);
-    
-    // 검색어 필터링
-    if (tokenSearchQuery) {
-      data = data.filter(item => 
-        item.agentName.toLowerCase().includes(tokenSearchQuery.toLowerCase()) ||
-        item.questionContent.toLowerCase().includes(tokenSearchQuery.toLowerCase())
-      );
-    }
-    
-    // 에이전트 필터링
-    if (tokenAgentFilter !== 'all') {
-      data = data.filter(item => item.agentName === tokenAgentFilter);
-    }
-    
-    // 모델 필터링
-    if (tokenModelFilter !== 'all') {
-      data = data.filter(item => item.model === tokenModelFilter);
-    }
-    
-    // 날짜 필터링
-    if (tokenStartDate || tokenEndDate) {
-      data = data.filter(item => {
-        const itemDate = new Date(item.date.replace(/\./g, '-'));
-        const start = tokenStartDate ? new Date(tokenStartDate) : null;  
-        const end = tokenEndDate ? new Date(tokenEndDate) : null;
-        
-        if (start && end) {
-          return itemDate >= start && itemDate <= end;
-        } else if (start) {
-          return itemDate >= start;
-        } else if (end) {
-          return itemDate <= end;
-        }
-        return true;
-      });
-    }
-    
-    // 정렬
-    if (tokenSortField) {
-      data.sort((a, b) => {
-        let aValue = 0;
-        let bValue = 0;
-        
-        switch (tokenSortField) {
-          case 'input':
-            aValue = a.inputTokens;
-            bValue = b.inputTokens;
-            break;
-          case 'output':
-            aValue = a.outputTokens;
-            bValue = b.outputTokens;
-            break;
-          case 'index':
-            aValue = a.indexTokens;
-            bValue = b.indexTokens;
-            break;
-          case 'preprocessing':
-            aValue = a.preprocessingTokens;
-            bValue = b.preprocessingTokens;
-            break;
-        }
-        
-        return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
-      });
-    }
-    
-    return data;
-  }, [qaLogsData, tokenSearchQuery, tokenAgentFilter, tokenModelFilter, tokenStartDate, tokenEndDate, tokenSortField, tokenSortOrder]);
-
-  // 고유 에이전트 목록
-  const uniqueAgents = useMemo(() => {
-    if (!qaLogsData?.logs) return [];
-    const agents = qaLogsData.logs.map((log: any) => log.agentName).filter(Boolean);
-    return Array.from(new Set(agents));
-  }, [qaLogsData]);
-
-  // 고유 모델 목록
-  const uniqueModels = useMemo(() => {
-    const models = tokenData.map(item => item.model);
-    return Array.from(new Set(models));
-  }, [tokenData]);
   
   // 파일 업로드 상태
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -1234,95 +782,6 @@ function MasterAdmin() {
     }
   };
 
-  // Q&A 로그 필터링을 위한 조직 카테고리 헬퍼 함수들
-  const getQaUpperCategories = () => {
-    if (!organizations) return [];
-    const uniqueCategories: string[] = [];
-    organizations.forEach(org => {
-      if (org.upperCategory && org.upperCategory.trim() !== '' && !uniqueCategories.includes(org.upperCategory)) {
-        uniqueCategories.push(org.upperCategory);
-      }
-    });
-    return uniqueCategories;
-  };
-
-  // 조직 카테고리 관리를 위한 헬퍼 함수들
-  const getOrgUpperCategories = () => {
-    if (!organizations) return [];
-    const uniqueCategories: string[] = [];
-    organizations.forEach(org => {
-      if (org.upperCategory && org.upperCategory.trim() !== '' && !uniqueCategories.includes(org.upperCategory)) {
-        uniqueCategories.push(org.upperCategory);
-      }
-    });
-    return uniqueCategories;
-  };
-
-  const getOrgLowerCategories = (upperCategory: string) => {
-    if (!organizations || upperCategory === 'all') return [];
-    const lowerCategories = organizations
-      .filter(org => org.upperCategory === upperCategory)
-      .map(org => org.lowerCategory)
-      .filter(cat => cat && cat.trim() !== '');
-    return Array.from(new Set(lowerCategories));
-  };
-
-  const getOrgDetailCategories = (upperCategory: string, lowerCategory: string) => {
-    if (!organizations || upperCategory === 'all' || lowerCategory === 'all') return [];
-    const detailCategories = organizations
-      .filter(org => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
-      .map(org => org.detailCategory)
-      .filter(cat => cat && cat.trim() !== '');
-    return Array.from(new Set(detailCategories));
-  };
-
-
-
-  const getQaLowerCategories = (upperCategory: string) => {
-    if (!organizations || !upperCategory || upperCategory === 'all') return [];
-    const uniqueCategories: string[] = [];
-    organizations
-      .filter(org => org.upperCategory === upperCategory)
-      .forEach(org => {
-        if (org.lowerCategory && org.lowerCategory.trim() !== '' && !uniqueCategories.includes(org.lowerCategory)) {
-          uniqueCategories.push(org.lowerCategory);
-        }
-      });
-    return uniqueCategories;
-  };
-
-  const getQaDetailCategories = (upperCategory: string, lowerCategory: string) => {
-    if (!organizations || !upperCategory || upperCategory === 'all' || !lowerCategory || lowerCategory === 'all') return [];
-    const uniqueCategories: string[] = [];
-    organizations
-      .filter(org => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
-      .forEach(org => {
-        if (org.detailCategory && org.detailCategory.trim() !== '' && !uniqueCategories.includes(org.detailCategory)) {
-          uniqueCategories.push(org.detailCategory);
-        }
-      });
-    return uniqueCategories;
-  };
-
-  // Q&A 로그의 에이전트 카테고리 (Excel 질의응답 샘플 데이터 기반)
-  const getQaAgentCategories = () => {
-    // Excel 질의응답샘플에서 사용된 에이전트 유형들
-    return ['학교', '기능형', '학과', '교수'];
-  };
-
-  // Q&A 로그 필터링 핸들러들
-  const handleQaUpperCategoryChange = (value: string) => {
-    setQaFilterUpperCategory(value);
-    setQaFilterLowerCategory('all');
-    setQaFilterDetailCategory('all');
-    setQaFilterAgentCategory('all'); // 상위 카테고리 변경 시 에이전트 카테고리 초기화
-  };
-
-  const handleQaLowerCategoryChange = (value: string) => {
-    setQaFilterLowerCategory(value);
-    setQaFilterDetailCategory('all');
-  };
-
   const iconMap = {
     User,
     GraduationCap,
@@ -1452,8 +911,8 @@ function MasterAdmin() {
     return hierarchy;
   }, [organizations]);
 
-  // User에서 사용하는 조직 카테고리 필터링 (별도 이름)
-  const filteredUserOrganizationCategories = useMemo(() => {
+  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
+  const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
     
     let filtered = [...organizations];
@@ -1492,37 +951,14 @@ function MasterAdmin() {
     return filtered;
   }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
 
-  // 조직 카테고리 페이지네이션 상태
+  // Organization categories pagination state
   const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
 
-  // 조직 카테고리 필터링 및 관리
-  const filteredOrganizationCategories = useMemo(() => {
-    if (!organizations) return [];
-    
-    return organizations.filter(org => {
-      const matchesSearch = !orgSearchQuery || 
-        (org.name && org.name.toLowerCase().includes(orgSearchQuery.toLowerCase())) ||
-        (org.detailCategory && org.detailCategory.toLowerCase().includes(orgSearchQuery.toLowerCase()));
-      
-      const matchesUpperCategory = orgFilterUpperCategory === 'all' || org.upperCategory === orgFilterUpperCategory;
-      const matchesLowerCategory = orgFilterLowerCategory === 'all' || org.lowerCategory === orgFilterLowerCategory;
-      const matchesDetailCategory = orgFilterDetailCategory === 'all' || org.detailCategory === orgFilterDetailCategory;
-      
-      return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
-    });
-  }, [organizations, orgSearchQuery, orgFilterUpperCategory, orgFilterLowerCategory, orgFilterDetailCategory]);
-
-  // 조직 카테고리 관리용 계산된 값
-  const totalOrgCategoriesPages = Math.ceil(filteredOrganizationCategories.length / organizationCategoriesPerPage);
+  // Organization categories pagination calculations
+  const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
   const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
   const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
-  const paginatedOrganizationCategories = filteredOrganizationCategories.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex);
-
-  // 조직 카테고리 편집 함수
-  const openOrgCategoryEditDialog = (org: any) => {
-    console.log('편집할 조직 카테고리:', org);
-    // 편집 다이얼로그 열기 로직 (향후 구현)
-  };
+  const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
 
   // 검색 실행 함수
   const executeSearch = () => {
@@ -1724,7 +1160,7 @@ function MasterAdmin() {
   });
 
   // 조직 카테고리 편집 열기
-  const openOrgCategoryEdit = (category: any) => {
+  const openOrgCategoryEditDialog = (category: any) => {
     setEditingOrgCategory(category);
     orgCategoryEditForm.reset({
       name: category.name || category.detailCategory || "",
@@ -3198,7 +2634,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="flex items-center space-x-4">
                 <Shield className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">LoBo 관리자 센터</h1>
+                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">LoBo AI 챗봇 통합 관리자 센터</h1>
                   <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
                     대학교 AI 챗봇 서비스 통합 관리
                   </p>
@@ -3223,7 +2659,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-8 md:pt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">
               <BarChart3 className="w-4 h-4 mr-2" />
               대시보드
@@ -3247,10 +2683,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <TabsTrigger value="conversations">
               <MessageSquare className="w-4 h-4 mr-2" />
               질문/응답 로그
-            </TabsTrigger>
-            <TabsTrigger value="tokens">
-              <Cpu className="w-4 h-4 mr-2" />
-              토큰 관리
             </TabsTrigger>
             <TabsTrigger value="system">
               <Settings className="w-4 h-4 mr-2" />
@@ -3373,260 +2805,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-
-          {/* 조직 카테고리 관리 */}
-          <TabsContent value="categories" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
-              <Button 
-                onClick={() => setIsOrgCategoryUploadDialogOpen(true)}
-                className="flex items-center space-x-2"
-              >
-                <Upload className="w-4 h-4" />
-                파일 업로드
-              </Button>
-            </div>
-
-            {/* 조직 카테고리 검색 및 필터링 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <CardTitle>조직 카테고리 검색</CardTitle>
-              
-              {/* 조직 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label>상위 조직</Label>
-                  <Select value={orgFilterUpperCategory} onValueChange={setOrgFilterUpperCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getOrgUpperCategories().map((category, index) => (
-                        <SelectItem key={`org-upper-${category}-${index}`} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>하위 조직</Label>
-                  <Select 
-                    value={orgFilterLowerCategory} 
-                    onValueChange={setOrgFilterLowerCategory}
-                    disabled={orgFilterUpperCategory === 'all'}
-                  >
-                    <SelectTrigger className={orgFilterUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getOrgLowerCategories(orgFilterUpperCategory).map((category, index) => (
-                        <SelectItem key={`org-lower-${category}-${index}`} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>세부 조직</Label>
-                  <Select 
-                    value={orgFilterDetailCategory} 
-                    onValueChange={setOrgFilterDetailCategory}
-                    disabled={orgFilterLowerCategory === 'all' || orgFilterUpperCategory === 'all'}
-                  >
-                    <SelectTrigger className={orgFilterLowerCategory === 'all' || orgFilterUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
-                      <SelectValue placeholder="선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getOrgDetailCategories(orgFilterUpperCategory, orgFilterLowerCategory).map((category, index) => (
-                        <SelectItem key={`org-detail-${category}-${index}`} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-end">
-                  <Button 
-                    onClick={() => {
-                      setOrgFilterUpperCategory('all');
-                      setOrgFilterLowerCategory('all');
-                      setOrgFilterDetailCategory('all');
-                      setOrgSearchQuery('');
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                  >
-                    필터 초기화
-                  </Button>
-                </div>
-              </div>
-
-              {/* 검색창 */}
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="조직명으로 검색..."
-                    value={orgSearchQuery}
-                    onChange={(e) => setOrgSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <Button onClick={() => setHasOrgSearched(true)}>
-                  검색
-                </Button>
-              </div>
-            </div>
-
-            {/* 조직 카테고리 목록 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden">
-              <div className="p-4 border-b">
-                <h3 className="text-lg font-semibold">조직 카테고리 목록 ({filteredOrganizationCategories?.length || 0}개)</h3>
-              </div>
-                
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          조직명
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          상위 조직
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          하위 조직
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          세부 조직
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          상태
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          관리자
-                        </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          작업
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      {paginatedOrganizationCategories?.map((org: any) => (
-                        <tr key={org.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {org.name || org.detailCategory}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {org.upperCategory || '-'}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {org.lowerCategory || '-'}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {org.detailCategory || '-'}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap">
-                            <Badge 
-                              variant={org.status === '활성' ? 'default' : 
-                                      org.status === '비활성' ? 'secondary' : 'outline'}
-                              className={
-                                org.status === '활성' ? 'bg-green-100 text-green-800' :
-                                org.status === '비활성' ? 'bg-red-100 text-red-800' :
-                                'bg-yellow-100 text-yellow-800'
-                              }
-                            >
-                              {org.status}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {org.manager || '-'}
-                          </td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => openOrgCategoryEdit(org)}
-                                className="hover:bg-blue-50 hover:text-blue-600"
-                              >
-                                <Edit className="w-4 h-4 mr-1" />
-                                수정
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* 페이지네이션 */}
-                {totalOrgCategoriesPages > 1 && (
-                  <div className="px-4 py-3 border-t flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      총 {filteredOrganizationCategories?.length || 0}개 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories?.length || 0)}개 표시
-                    </div>
-                    <div className="flex space-x-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setOrgCategoriesCurrentPage(1)}
-                        disabled={orgCategoriesCurrentPage === 1}
-                      >
-                        처음
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setOrgCategoriesCurrentPage(orgCategoriesCurrentPage - 1)}
-                        disabled={orgCategoriesCurrentPage === 1}
-                      >
-                        이전
-                      </Button>
-                      
-                      {Array.from({ length: Math.min(5, totalOrgCategoriesPages) }, (_, i) => {
-                        const pageNum = Math.max(1, orgCategoriesCurrentPage - 2) + i;
-                        if (pageNum > totalOrgCategoriesPages) return null;
-                        return (
-                          <Button
-                            key={pageNum}
-                            variant={pageNum === orgCategoriesCurrentPage ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setOrgCategoriesCurrentPage(pageNum)}
-                            className="pagination-button"
-                          >
-                            {pageNum}
-                          </Button>
-                        );
-                      })}
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setOrgCategoriesCurrentPage(orgCategoriesCurrentPage + 1)}
-                        disabled={orgCategoriesCurrentPage === totalOrgCategoriesPages}
-                      >
-                        다음
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setOrgCategoriesCurrentPage(totalOrgCategoriesPages)}
-                        disabled={orgCategoriesCurrentPage === totalOrgCategoriesPages}
-                      >
-                        마지막
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
           </TabsContent>
 
           {/* 사용자 관리 */}
@@ -5497,82 +4675,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">로그 필터링</h3>
               
-              {/* 첫 번째 행: 조직 카테고리 필터링 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label>상위 조직 카테고리</Label>
-                  <Select value={qaFilterUpperCategory} onValueChange={handleQaUpperCategoryChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="상위 조직 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getQaUpperCategories().map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>하위 조직 카테고리</Label>
-                  <Select 
-                    value={qaFilterLowerCategory} 
-                    onValueChange={handleQaLowerCategoryChange}
-                    disabled={qaFilterUpperCategory === 'all'}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="하위 조직 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getQaLowerCategories(qaFilterUpperCategory).map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>세부 조직 카테고리</Label>
-                  <Select 
-                    value={qaFilterDetailCategory} 
-                    onValueChange={setQaFilterDetailCategory}
-                    disabled={qaFilterUpperCategory === 'all' || qaFilterLowerCategory === 'all'}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="세부 조직 선택" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getQaDetailCategories(qaFilterUpperCategory, qaFilterLowerCategory).map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* 두 번째 행: 에이전트 카테고리 및 기타 필터링 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>에이전트 카테고리</Label>
-                  <Select 
-                    value={qaFilterAgentCategory} 
-                    onValueChange={setQaFilterAgentCategory}
-                  >
+                  <Label>에이전트</Label>
+                  <Select defaultValue="all">
                     <SelectTrigger>
-                      <SelectValue placeholder="에이전트 카테고리" />
+                      <SelectValue placeholder="에이전트 선택" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      {getQaAgentCategories().map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
+                      <SelectItem value="all">전체 에이전트</SelectItem>
+                      <SelectItem value="academic">학사 도우미</SelectItem>
+                      <SelectItem value="student">학생회 도우미</SelectItem>
+                      <SelectItem value="research">연구 지원 도우미</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>사용자 유형</Label>
-                  <Select value={qaFilterUserType} onValueChange={setQaFilterUserType}>
+                  <Select defaultValue="all">
                     <SelectTrigger>
                       <SelectValue placeholder="사용자 유형" />
                     </SelectTrigger>
@@ -5586,7 +4706,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label>기간</Label>
-                  <Select value={qaFilterPeriod} onValueChange={setQaFilterPeriod}>
+                  <Select defaultValue="today">
                     <SelectTrigger>
                       <SelectValue placeholder="기간 선택" />
                     </SelectTrigger>
@@ -5600,15 +4720,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label>키워드 검색</Label>
-                  <Input 
-                    placeholder="질문 내용 및 에이전트 이름 검색..." 
-                    value={qaFilterKeyword}
-                    onChange={(e) => setQaFilterKeyword(e.target.value)}
-                  />
+                  <Input placeholder="질문 내용 검색..." />
                 </div>
               </div>
 
-              
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  총 <strong>1,247</strong>개의 질문/응답 로그
+                </div>
+                <Button>
+                  필터 적용
+                </Button>
+              </div>
             </div>
 
             {/* 통계 카드 */}
@@ -5671,365 +4794,4105 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>최근 질문/응답 로그</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {qaLogsData?.pagination?.totalCount || 0}개 중 {qaLogsData?.logs?.length || 0}개 표시
+                  전체 1,247개 중 4개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
-                {qaLogsLoading ? (
-                  <div className="p-8 text-center">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <p className="mt-2 text-gray-500">로딩 중...</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gray-50 dark:bg-gray-800">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            대화 시각
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            에이전트 유형
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            에이전트 명
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            사용자 유형
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            질문 내용
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            챗봇 응답내용
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            응답 유형
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            응답시간
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            개선 요청
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                        {qaLogsData?.logs?.map((log: any, index: number) => (
-                          <QALogRow key={log.id || index} log={log} />
-                        ))}
-                        {qaLogsData?.logs?.length === 0 && (
-                          <tr>
-                            <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
-                              등록된 Q&A 로그가 없습니다.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          시간
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용자
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          에이전트
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          질문
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          응답 유형
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          응답 시간
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:23
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024001</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            수강신청 기간이 언제인가요?
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          1.8초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:20
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">F2024002</div>
+                              <div className="text-xs text-gray-500">교수</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">연구 지원 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            연구비 신청 절차에 대해 알려주세요
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="outline" className="bg-blue-100 text-blue-800">하이브리드</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          3.2초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:18
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024003</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학생회 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            동아리 행사 예산은 어떻게 신청하나요?
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="secondary" className="bg-gray-100 text-gray-800">AI 생성</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2.1초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2024.01.21 14:15
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024004</div>
+                              <div className="text-xs text-gray-500">학생</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                            졸업 요건을 확인하고 싶어요
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          1.5초
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-1">
+                            <Button variant="outline" size="sm" title="상세 보기">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" title="피드백">
+                              <MessageSquare className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </CardContent>
             </Card>
 
-            {/* 페이지네이션 */}
-            {qaLogsData?.pagination && qaLogsData.pagination.totalPages > 1 && (
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {qaLogsData.pagination.currentPage}/{qaLogsData.pagination.totalPages} 페이지
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={qaLogsData.pagination.currentPage <= 1}
-                    onClick={() => setQaCurrentPage(qaLogsData.pagination.currentPage - 1)}
-                  >
-                    이전
-                  </Button>
-                  
-                  {/* 페이지 번호 버튼들 */}
-                  {Array.from({ length: Math.min(5, qaLogsData.pagination.totalPages) }, (_, i) => {
-                    const startPage = Math.max(1, qaLogsData.pagination.currentPage - 2);
-                    const pageNumber = startPage + i;
-                    
-                    if (pageNumber > qaLogsData.pagination.totalPages) return null;
-                    
-                    return (
-                      <Button
-                        key={pageNumber}
-                        variant={qaLogsData.pagination.currentPage === pageNumber ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setQaCurrentPage(pageNumber)}
-                        className={qaLogsData.pagination.currentPage === pageNumber 
-                          ? "bg-blue-600 text-white border-blue-600" 
-                          : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                        }
-                      >
-                        {pageNumber}
-                      </Button>
-                    );
-                  })}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={qaLogsData.pagination.currentPage >= qaLogsData.pagination.totalPages}
-                    onClick={() => setQaCurrentPage(qaLogsData.pagination.currentPage + 1)}
-                  >
-                    다음
-                  </Button>
-                </div>
-              </div>
-            )}
+            {/* 인기 질문 분석 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>인기 질문 TOP 10</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">수강신청 관련 문의</span>
+                      <Badge variant="outline">89건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">졸업 요건 확인</span>
+                      <Badge variant="outline">67건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">장학금 신청</span>
+                      <Badge variant="outline">54건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">학과 사무실 위치</span>
+                      <Badge variant="outline">43건</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">연구실 배정</span>
+                      <Badge variant="outline">38건</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>응답 품질 분석</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">문서 기반 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-600 h-2 rounded-full" style={{width: '84%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">84%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">하이브리드 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{width: '12%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">12%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">AI 생성 응답</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="bg-gray-600 h-2 rounded-full" style={{width: '4%'}}></div>
+                        </div>
+                        <span className="text-sm font-medium">4%</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* 토큰 관리 */}
           <TabsContent value="tokens" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">토큰 관리</h2>
+              <Button>
+                새 토큰 생성
+              </Button>
+            </div>
+
+            {/* 월간 사용량 카드 */}
+            <Card className="w-full max-w-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center justify-between">
+                  <span className="text-lg">월간 사용량</span>
+                  <div className="w-6 h-6 text-gray-400">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm text-gray-600 mb-2">사용량</div>
+                  <div className="text-2xl font-bold">847K / 1M 토큰</div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 mt-3">
+                    <div className="bg-blue-500 h-3 rounded-full" style={{width: '73%'}}></div>
+                  </div>
+                  <div className="text-sm text-blue-600 font-medium mt-2">73% 사용</div>
+                </div>
+                <div className="text-xs text-gray-500 pt-2 border-t">
+                  다음 갱신: 2024년 1월 1일
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 토큰 사용 추이 그래프 */}
             <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Cpu className="w-5 h-5" />
-                      <span>토큰 사용량 관리</span>
-                    </CardTitle>
-                    <p className="text-sm text-gray-600 mt-1">
-                      AI 모델별 토큰 사용량 및 비용을 모니터링합니다.
-                    </p>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">토큰 사용 추이</CardTitle>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'daily' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('daily')}
+                    >
+                      일별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'weekly' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('weekly')}
+                    >
+                      주별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'monthly' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('monthly')}
+                    >
+                      월별
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={tokenPeriod === 'all' ? "text-blue-600 bg-blue-50" : "text-gray-500"}
+                      onClick={() => setTokenPeriod('all')}
+                    >
+                      분석 전체
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {/* 필터 및 검색 */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <Label htmlFor="token-search">검색</Label>
+              <CardContent>
+                {/* 토큰 유형 범례 */}
+                <div className="flex items-center justify-center space-x-6 mb-6 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                    <span className="text-sm font-medium">입력</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-green-500 rounded"></div>
+                    <span className="text-sm font-medium">출력</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                    <span className="text-sm font-medium">인덱스</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    <span className="text-sm font-medium">읽기</span>
+                  </div>
+                </div>
+                
+                <div className="h-64 relative">
+                  {/* Y축 레이블 */}
+                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 py-2">
+                    <span>600000</span>
+                    <span>450000</span>
+                    <span>300000</span>
+                    <span>150000</span>
+                    <span>0</span>
+                  </div>
+                  
+                  {/* 그래프 영역 */}
+                  <div className="ml-12 h-full relative">
+                    {/* 격자선 */}
+                    <div className="absolute inset-0">
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <div 
+                          key={i} 
+                          className="absolute w-full border-t border-gray-200" 
+                          style={{top: `${i * 25}%`}}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* 막대 그래프 */}
+                    <div className="relative h-full flex items-end justify-between px-1">
+                      {tokenPeriod === 'daily' && (
+                        <>
+                          {/* 60일치 데이터 - 주말 사용량 30% 미만 */}
+                          {Array.from({ length: 60 }, (_, i) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - (59 - i));
+                            const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                            const height = isWeekend ? Math.random() * 25 + 5 : Math.random() * 60 + 30; // 주말 5-30%, 평일 30-90%
+                            const dayStr = `${date.getMonth() + 1}/${date.getDate()}`;
+                            
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-1 flex-1 min-w-0">
+                                <div className="w-2 relative" style={{height: '200px'}}>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
+                                </div>
+                                {(i % 7 === 0 || i === 59) && (
+                                  <span className="text-xs text-gray-500 transform -rotate-45 whitespace-nowrap">{dayStr}</span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                      
+                      {tokenPeriod === 'weekly' && (
+                        <>
+                          {/* 12주치 데이터 */}
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const weekNumber = 12 - i;
+                            const height = Math.random() * 50 + 40; // 40-90%
+                            
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-8 relative" style={{height: '200px'}}>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{weekNumber}주</span>
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                      
+                      {tokenPeriod === 'monthly' && (
+                        <>
+                          {/* 12개월 데이터 - 방학 기간 30% 미만 */}
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+                            const month = months[i];
+                            const isVacation = i === 0 || i === 1 || i === 6 || i === 7 || i === 11; // 1월, 2월, 7월, 8월, 12월
+                            const height = isVacation ? Math.random() * 25 + 5 : Math.random() * 50 + 40; // 방학 5-30%, 학기 40-90%
+                            
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-8 relative" style={{height: '200px'}}>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{month}</span>
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                      
+                      {tokenPeriod === 'all' && (
+                        <>
+                          {/* 전체 분석 - 연도별 데이터 */}
+                          {Array.from({ length: 5 }, (_, i) => {
+                            const year = 2020 + i;
+                            const height = 20 + (i * 15) + Math.random() * 10; // 점진적 증가 패턴
+                            
+                            // 토큰 사용 유형별 비율 계산
+                            const inputTokens = Math.floor(height * (0.45 + Math.random() * 0.05)); // 입력: 40-50%
+                            const outputTokens = Math.floor(height * (0.15 + Math.random() * 0.09)); // 출력: 15-24%
+                            const indexTokens = Math.floor(height * (0.15 + Math.random() * 0.05)); // 인덱스: 15-20%
+                            const readTokens = height - inputTokens - outputTokens - indexTokens; // 읽기: 나머지
+                            
+                            return (
+                              <div key={i} className="flex flex-col items-center space-y-2 flex-1">
+                                <div className="w-12 relative" style={{height: '200px'}}>
+                                  {/* 입력 토큰 (맨 아래) */}
+                                  <div className="absolute bottom-0 w-full bg-blue-500" style={{height: `${inputTokens}%`}}></div>
+                                  {/* 출력 토큰 */}
+                                  <div className="absolute w-full bg-green-500" style={{bottom: `${inputTokens}%`, height: `${outputTokens}%`}}></div>
+                                  {/* 인덱스 토큰 */}
+                                  <div className="absolute w-full bg-yellow-500" style={{bottom: `${inputTokens + outputTokens}%`, height: `${indexTokens}%`}}></div>
+                                  {/* 읽기 토큰 (맨 위) */}
+                                  <div className="absolute w-full bg-red-500 rounded-t" style={{bottom: `${inputTokens + outputTokens + indexTokens}%`, height: `${readTokens}%`}}></div>
+                                </div>
+                                <span className="text-xs text-gray-500">{year}</span>
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 조직 카테고리 관리 */}
+          <TabsContent value="categories" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+              <Button 
+                className="whitespace-nowrap"
+                onClick={() => setIsNewCategoryDialogOpen(true)}
+              >
+                + 새 조직 카테고리 추가
+              </Button>
+            </div>
+
+            {/* 카테고리 관리 방법 안내 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsLmsDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-blue-600" />
+                    LMS 연동 (권장)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    대학 LMS 시스템과 연동하여 조직 구조를 자동으로 동기화합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsOrgCategoryUploadDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    파일 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 조직 카테고리 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
+              
+              {/* 3단계 카테고리 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>상위조직</Label>
+                  <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {uniqueUpperCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>하위조직</Label>
+                  <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
+                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {filteredLowerCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부조직</Label>
+                  <Select 
+                    value={selectedDepartment} 
+                    onValueChange={handleDetailCategoryChange}
+                    disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
+                  >
+                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {filteredDetailCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={resetFilters}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 카테고리 검색 */}
+              <div className="space-y-2">
+                <Label>조직명 검색</Label>
+                <div className="flex space-x-2">
+                  <div className="flex-1">
                     <Input
-                      id="token-search"
-                      placeholder="에이전트명, 질문 내용 검색..."
-                      value={tokenSearchQuery}
-                      onChange={(e) => setTokenSearchQuery(e.target.value)}
-                      className="focus:ring-2 focus:ring-blue-500"
+                      placeholder="조직명으로 검색..."
+                      value={userSearchQuery}
+                      onChange={(e) => {
+                        setUserSearchQuery(e.target.value);
+                      }}
+                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="token-agent">에이전트</Label>
-                    <Select value={tokenAgentFilter} onValueChange={setTokenAgentFilter}>
-                      <SelectTrigger id="token-agent" className="focus:ring-2 focus:ring-blue-500">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {uniqueAgents.map((agent, index) => (
-                          <SelectItem key={`agent-${agent}-${index}`} value={String(agent)}>
-                            {String(agent)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="token-model">모델</Label>
-                    <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
-                      <SelectTrigger id="token-model" className="focus:ring-2 focus:ring-blue-500">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {uniqueModels.map((model, index) => (
-                          <SelectItem key={`model-${model}-${index}`} value={model}>
-                            {model}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="token-date">기간 필터</Label>
-                    <div className="flex space-x-2">
-                      <Input
-                        type="date"
-                        value={tokenStartDate}
-                        onChange={(e) => setTokenStartDate(e.target.value)}
-                        className="text-sm focus:ring-2 focus:ring-blue-500"
+                  <Button onClick={executeSearch} variant="outline">
+                    검색
+                  </Button>
+                </div>
+              </div>
+              
+              
+            </div>
+
+            <Card className="rounded-lg border">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>조직 목록</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto rounded-lg">
+                  <table className="w-full rounded-lg overflow-hidden">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상위 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          하위 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          세부 조직
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          관리자
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          소속 인원
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          에이전트 수
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          선택
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {filteredOrganizationCategories.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                              <p className="text-sm">
+                                검색 조건에 맞는 조직이 없습니다. 다른 조건으로 검색해보세요.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        paginatedOrganizationCategories.map((category, index) => {
+                          // 소속 인원 수 (랜덤 생성)
+                          const getPersonnelCount = () => {
+                            if (!category.detailCategory) {
+                              return `${Math.floor(Math.random() * 5000) + 1000}명`;
+                            } else {
+                              return `${Math.floor(Math.random() * 300) + 50}명`;
+                            }
+                          };
+
+                          // 에이전트 수 (랜덤 생성)
+                          const getAgentCount = () => {
+                            return Math.floor(Math.random() * 10) + 1;
+                          };
+
+                          // 상태에 따른 배지 스타일
+                          const getStatusBadge = (status: string) => {
+                            switch (status) {
+                              case "활성":
+                                return <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">활성</Badge>;
+                              case "비활성":
+                                return <Badge variant="secondary" className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300">비활성</Badge>;
+                              case "등록 승인 대기중":
+                                return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">등록 승인 대기중</Badge>;
+                              default:
+                                return <Badge variant="secondary">알 수 없음</Badge>;
+                            }
+                          };
+
+                          return (
+                            <tr 
+                              key={`org-${category.id || index}-${category.upperCategory}-${category.lowerCategory}-${category.detailCategory}`}
+                              className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors duration-150"
+                              onClick={() => openOrgCategoryEditDialog(category)}
+                            >
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {category.upperCategory || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900 dark:text-white">
+                                  {category.lowerCategory || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900 dark:text-white">
+                                  {category.detailCategory || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900 dark:text-white">
+                                  {category.manager || "미지정"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {getPersonnelCount()}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {getAgentCount()}개
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {getStatusBadge((category as any).status || "활성")}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div className="flex space-x-1">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    title="조직 편집"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openOrgCategoryEditDialog(category);
+                                    }}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 페이지네이션 */}
+            {totalOrgCategoriesPages > 1 && (
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
+                  총 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
+                </div>
+                <PaginationComponent
+                  currentPage={orgCategoriesCurrentPage}
+                  totalPages={totalOrgCategoriesPages}
+                  onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
+                />
+              </div>
+            )}
+          </TabsContent>
+
+          {/* 조직 카테고리 편집 다이얼로그 */}
+          <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
+              <DialogHeader>
+                <DialogTitle className="font-semibold tracking-tight text-[20px]">조직 상세 정보 편집</DialogTitle>
+                <div id="org-edit-description" className="sr-only">조직의 상세 정보를 편집하고 관리할 수 있습니다.</div>
+              </DialogHeader>
+              <Form {...orgCategoryEditForm}>
+                <form onSubmit={orgCategoryEditForm.handleSubmit((data) => {
+                  if (editingOrgCategory) {
+                    updateOrgCategoryMutation.mutate({ ...data, id: editingOrgCategory.id });
+                  }
+                })} className="space-y-6">
+                  
+                  {/* 기본 정보 */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b pb-2">기본 정보</h3>
+                    
+                    {/* 조직명 - 텍스트로만 표시 */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">조직명</Label>
+                      <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border">
+                        <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {editingOrgCategory?.name || editingOrgCategory?.detailCategory || "조직명 없음"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 조직 카테고리 선택 - 드롭박스 */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="upperCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>상위 조직</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="상위 조직 선택" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="none">없음</SelectItem>
+                                {uniqueUpperCategories.map((category, index) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
+
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="lowerCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>하위 조직</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="하위 조직 선택" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="none">없음</SelectItem>
+                                {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category, index) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={orgCategoryEditForm.control}
+                        name="detailCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>세부 조직</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="세부 조직 선택" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="none">없음</SelectItem>
+                                {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category, index) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>상태</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="상태 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="활성">활성</SelectItem>
+                              <SelectItem value="비활성">비활성</SelectItem>
+                              <SelectItem value="등록 승인 대기중">등록 승인 대기중</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* 조직 운영 정보 */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b pb-2">조직 운영 정보</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* 연결된 에이전트 수 */}
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">연결된 에이전트</Label>
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // 에이전트 관리 탭으로 이동하고 해당 조직으로 필터링
+                              setActiveTab("agents");
+                              setSelectedUniversity(editingOrgCategory?.upperCategory || 'all');
+                              setSelectedCollege(editingOrgCategory?.lowerCategory || 'all');
+                              setSelectedDepartment(editingOrgCategory?.detailCategory || 'all');
+                              setHasSearched(true);
+                              setIsOrgCategoryEditDialogOpen(false);
+                            }}
+                            className="text-left w-full hover:bg-blue-100 dark:hover:bg-blue-800/30 p-2 rounded transition-colors"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">에이전트 수</span>
+                              <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div className="font-bold text-blue-600 dark:text-blue-400 text-[20px]">
+                              {Math.floor(Math.random() * 10) + 1}개
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              클릭하여 에이전트 관리에서 보기
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 소속 인원 수 */}
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">소속 인원</Label>
+                        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // 사용자 관리 탭으로 이동하고 해당 조직으로 필터링
+                              setActiveTab("users");
+                              setSelectedUniversity(editingOrgCategory?.upperCategory || 'all');
+                              setSelectedCollege(editingOrgCategory?.lowerCategory || 'all');
+                              setSelectedDepartment(editingOrgCategory?.detailCategory || 'all');
+                              setHasSearched(true);
+                              setIsOrgCategoryEditDialogOpen(false);
+                            }}
+                            className="text-left w-full hover:bg-green-100 dark:hover:bg-green-800/30 p-2 rounded transition-colors"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">소속 인원 수</span>
+                              <ExternalLink className="w-4 h-4 text-green-600 dark:text-green-400" />
+                            </div>
+                            <div className="font-bold text-green-600 dark:text-green-400 text-[20px]">
+                              {editingOrgCategory?.detailCategory ? 
+                                `${Math.floor(Math.random() * 300) + 50}명` : 
+                                `${Math.floor(Math.random() * 5000) + 1000}명`
+                              }
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              클릭하여 사용자 관리에서 보기
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 카테고리 관리자 설정 */}
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">카테고리 관리자</Label>
+                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                          <div className="space-y-3">
+                            {/* 현재 관리자 표시 */}
+                            <div>
+                              <span className="text-sm text-gray-600 dark:text-gray-400">현재 관리자</span>
+                              <div className="font-semibold text-purple-600 dark:text-purple-400 text-[20px]">
+                                {orgCategoryEditForm.watch('manager') || editingOrgCategory?.manager || "미지정"}
+                              </div>
+                            </div>
+                            
+                            {/* 관리자 변경 버튼 */}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setIsCategoryManagerDialogOpen(true)}
+                              className="w-full"
+                            >
+                              <Users className="w-4 h-4 mr-2" />
+                              관리자 변경
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 추가 정보 */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold border-b pb-2">추가 정보</h3>
+                    
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>조직 설명 / 메모</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="조직에 대한 설명이나 메모를 입력하세요."
+                              className="min-h-[100px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Hidden manager field for form handling */}
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="manager"
+                      render={({ field }) => (
+                        <FormItem className="hidden">
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex justify-end space-x-2 pt-4 border-t">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setIsOrgCategoryEditDialogOpen(false)}
+                    >
+                      취소
+                    </Button>
+                    <Button type="submit" disabled={updateOrgCategoryMutation.isPending}>
+                      {updateOrgCategoryMutation.isPending ? "저장 중..." : "저장"}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+
+          {/* 카테고리 관리자 선택 다이얼로그 */}
+          <Dialog open={isCategoryManagerDialogOpen} onOpenChange={setIsCategoryManagerDialogOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>카테고리 관리자 선택</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-6">
+                {/* 검색 및 필터 */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <Label>상위 조직</Label>
+                      <Select value={selectedManagerUniversity} onValueChange={(value) => {
+                        setSelectedManagerUniversity(value);
+                        setSelectedManagerCollege('all');
+                        setSelectedManagerDepartment('all');
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="상위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {uniqueUpperCategories.map((category, index) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>하위 조직</Label>
+                      <Select 
+                        value={selectedManagerCollege} 
+                        onValueChange={(value) => {
+                          setSelectedManagerCollege(value);
+                          setSelectedManagerDepartment('all');
+                        }}
+                        disabled={selectedManagerUniversity === 'all'}
+                      >
+                        <SelectTrigger className={selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                          <SelectValue placeholder="하위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {selectedManagerUniversity === 'all' ? 
+                            [] :
+                            Array.from(new Set(
+                              organizations
+                                ?.filter(org => org.upperCategory === selectedManagerUniversity)
+                                .map(org => org.lowerCategory)
+                                .filter(Boolean)
+                            )).sort().map((category, index) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>세부 조직</Label>
+                      <Select 
+                        value={selectedManagerDepartment} 
+                        onValueChange={setSelectedManagerDepartment}
+                        disabled={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all'}
+                      >
+                        <SelectTrigger className={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                          <SelectValue placeholder="세부 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {selectedManagerUniversity === 'all' || selectedManagerCollege === 'all' ? 
+                            [] :
+                            Array.from(new Set(
+                              organizations
+                                ?.filter(org => 
+                                  org.upperCategory === selectedManagerUniversity && 
+                                  org.lowerCategory === selectedManagerCollege
+                                )
+                                .map(org => org.detailCategory)
+                                .filter(Boolean)
+                            )).sort().map((category, index) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>사용자 검색</Label>
                       <Input
-                        type="date"
-                        value={tokenEndDate}
-                        onChange={(e) => setTokenEndDate(e.target.value)}
-                        className="text-sm focus:ring-2 focus:ring-blue-500"
+                        placeholder="이름 또는 ID로 검색"
+                        value={categoryManagerSearchQuery}
+                        onChange={(e) => setCategoryManagerSearchQuery(e.target.value)}
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* 토큰 사용량 테이블 */}
+                {/* 사용자 목록 */}
+                <div className="border rounded-lg">
+                  <div className="max-h-96 overflow-y-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            이름
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            사용자 ID
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            소속 조직
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            직책
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            선택
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                        {sortedUsers?.filter((user: any) => {
+                          const matchesSearch = !categoryManagerSearchQuery || 
+                            user.fullName?.toLowerCase().includes(categoryManagerSearchQuery.toLowerCase()) ||
+                            user.username?.toLowerCase().includes(categoryManagerSearchQuery.toLowerCase());
+                          
+                          const matchesUniversity = selectedManagerUniversity === 'all' || 
+                            user.upperCategory === selectedManagerUniversity;
+                          
+                          const matchesCollege = selectedManagerCollege === 'all' || 
+                            user.lowerCategory === selectedManagerCollege;
+                          
+                          const matchesDepartment = selectedManagerDepartment === 'all' || 
+                            user.detailCategory === selectedManagerDepartment;
+                          
+                          return matchesSearch && matchesUniversity && matchesCollege && matchesDepartment;
+                        }).slice(0, 50).map((user: any) => (
+                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <td className="px-4 py-3">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {user.fullName || user.username}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {user.username}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {[user.upperCategory, user.lowerCategory, user.detailCategory]
+                                  .filter(Boolean).join(' > ') || '-'}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="text-sm text-gray-500">
+                                {user.position || user.role || '-'}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => {
+                                  const managerName = user.fullName || user.username;
+                                  
+                                  // Update form field first
+                                  orgCategoryEditForm.setValue('manager', managerName);
+                                  
+                                  // Update the editing organization category state
+                                  if (editingOrgCategory) {
+                                    const updatedCategory = {
+                                      ...editingOrgCategory,
+                                      manager: managerName
+                                    };
+                                    setEditingOrgCategory(updatedCategory);
+                                  }
+                                  
+                                  setIsCategoryManagerDialogOpen(false);
+                                  
+                                  toast({
+                                    title: "관리자 선택됨",
+                                    description: `${managerName}이(가) 카테고리 관리자로 선택되었습니다.`,
+                                  });
+                                }}
+                              >
+                                선택
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-4 border-t">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsCategoryManagerDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* 문서 관리 */}
+          <TabsContent value="documents" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">문서 관리</h2>
+            </div>
+
+            {/* 문서 업로드 방법 안내 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsLmsDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-blue-600" />
+                    LMS 문서 연동
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    LMS 시스템에서 강의 자료 및 문서를 자동으로 가져옵니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsDocumentUploadDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    직접 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">문서 통계</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm">전체 문서</span>
+                    <span className="font-medium">{documentList?.length || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">활성 문서</span>
+                    <span className="font-medium">{documentList?.length || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">비활성 문서</span>
+                    <span className="font-medium">0</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">총 용량</span>
+                    <span className="font-medium">{documentList?.reduce((total, doc) => {
+                      const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
+                      return total + sizeInMB;
+                    }, 0).toFixed(1) || '0'} MB</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">문서 종류별 분포</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm">PDF</span>
+                    <span className="font-medium">856 (69%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Word</span>
+                    <span className="font-medium">245 (20%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Excel</span>
+                    <span className="font-medium">98 (8%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">기타</span>
+                    <span className="font-medium">35 (3%)</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">최근 업로드</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {documentList && documentList.length > 0 ? (
+                    documentList.slice(0, 3).map((doc, index) => (
+                      <div key={index} className="text-sm">
+                        <div className="font-medium">{doc.name}</div>
+                        <div className="text-gray-500">{doc.date}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-500">
+                      업로드된 문서가 없습니다.
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 문서 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
+              
+              {/* 카테고리 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>문서 종류</Label>
+                  <Select value={selectedDocumentCategory} onValueChange={(value) => {
+                    setSelectedDocumentCategory(value);
+                    handleDocumentFilterChange();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="lecture">강의 자료</SelectItem>
+                      <SelectItem value="policy">정책 문서</SelectItem>
+                      <SelectItem value="manual">매뉴얼</SelectItem>
+                      <SelectItem value="form">양식</SelectItem>
+                      <SelectItem value="notice">공지사항</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>파일 형식</Label>
+                  <Select value={selectedDocumentType} onValueChange={(value) => {
+                    setSelectedDocumentType(value);
+                    handleDocumentFilterChange();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="pdf">PDF</SelectItem>
+                      <SelectItem value="word">Word</SelectItem>
+                      <SelectItem value="excel">Excel</SelectItem>
+                      <SelectItem value="ppt">PowerPoint</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>업로드 기간</Label>
+                  <Select value={selectedDocumentPeriod} onValueChange={(value) => {
+                    setSelectedDocumentPeriod(value);
+                    handleDocumentFilterChange();
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">1주일</SelectItem>
+                      <SelectItem value="month">1개월</SelectItem>
+                      <SelectItem value="year">1년</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button variant="outline" onClick={resetDocumentFilters}>
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 문서 검색 */}
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="문서명, 내용으로 검색..."
+                      value={documentSearchQuery}
+                      onChange={(e) => setDocumentSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
+                    />
+                  </div>
+                  <Button onClick={() => setHasDocumentSearched(true)}>
+                    검색
+                  </Button>
+                </div>
+              </div>
+              
+              {/* 검색 결과 표시 */}
+              {hasDocumentSearched && (
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  검색 결과: 2개 문서
+                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
+                </div>
+              )}
+            </div>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>문서 목록</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {documentList?.length || 0}개 문서 표시
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          날짜
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          에이전트
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          질문 내용
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          모델
-                        </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleTokenSort('input')}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('name')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>입력 토큰</span>
-                            {tokenSortField === 'input' && (
-                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            <span>문서명</span>
+                            {documentSortField === 'name' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
                             )}
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleTokenSort('output')}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('type')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>출력 토큰</span>
-                            {tokenSortField === 'output' && (
-                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            <span>종류</span>
+                            {documentSortField === 'type' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
                             )}
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleTokenSort('index')}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('size')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>색인 토큰</span>
-                            {tokenSortField === 'index' && (
-                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            <span>크기</span>
+                            {documentSortField === 'size' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
                             )}
                           </div>
                         </th>
                         <th 
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => handleTokenSort('preprocessing')}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('date')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>문서 전처리</span>
-                            {tokenSortField === 'preprocessing' && (
-                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            <span>업로드 날짜</span>
+                            {documentSortField === 'date' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('agents')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>사용 중인 에이전트</span>
+                            {documentSortField === 'agents' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('status')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>상태</span>
+                            {documentSortField === 'status' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
                             )}
                           </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          총 토큰
+                          설정
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {tokenData.length > 0 ? (
-                        tokenData.slice(0, 20).map((item, index) => (
-                          <tr key={item.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                              {item.date}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                              {item.agentName}
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 max-w-xs">
-                              <div className="truncate" title={item.questionContent}>
-                                {item.questionContent.length > 50 
-                                  ? `${item.questionContent.substring(0, 50)}...` 
-                                  : item.questionContent
-                                }
+                      {/* 실제 업로드된 문서 */}
+                      {documentList && documentList.length > 0 ? (
+                        documentList.map((doc, index) => (
+                          <tr 
+                            key={index}
+                            className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                            onClick={() => {
+                              setDocumentDetailData(doc);
+                              setSelectedDocumentAgents([]);
+                              setIsDocumentDetailOpen(true);
+                            }}
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <FileText className="w-5 h-5 mr-3 text-blue-500" />
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {doc.name}
+                                </div>
                               </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                              <Badge variant="outline" className={
-                                item.model === 'GPT-4' ? 'border-blue-500 text-blue-700' :
-                                item.model === 'GPT-3.5' ? 'border-green-500 text-green-700' :
-                                item.model === 'Claude-3' ? 'border-purple-500 text-purple-700' :
-                                'border-gray-500 text-gray-700'
-                              }>
-                                {item.model}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
-                              {item.inputTokens.toLocaleString()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
-                              {item.outputTokens.toLocaleString()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
-                              {item.indexTokens.toLocaleString()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
-                              {item.preprocessingTokens.toLocaleString()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 font-mono">
-                              {item.totalTokens.toLocaleString()}
-                            </td>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.type}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.size}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {doc.date}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex flex-wrap gap-1">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                에이전트 {doc.agentId}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                              활성
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDocumentDetailData(doc);
+                                setSelectedDocumentAgents([]);
+                                setIsDocumentDetailOpen(true);
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
-                            토큰 사용량 데이터가 없습니다.
+                          <td colSpan={7} className="px-6 py-12 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">업로드된 문서가 없습니다</p>
+                              <p className="text-sm">
+                                문서 업로드 기능을 사용하여 파일을 업로드해보세요.
+                              </p>
+                            </div>
                           </td>
                         </tr>
                       )}
                     </tbody>
                   </table>
                 </div>
-
-                {/* 통계 요약 */}
-                {tokenData.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-                      토큰 사용량 요약 ({tokenData.length}건)
-                    </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600">
-                          {tokenData.reduce((sum, item) => sum + item.inputTokens, 0).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">총 입력 토큰</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                          {tokenData.reduce((sum, item) => sum + item.outputTokens, 0).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">총 출력 토큰</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-yellow-600">
-                          {tokenData.reduce((sum, item) => sum + item.indexTokens, 0).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">총 색인 토큰</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-purple-600">
-                          {tokenData.reduce((sum, item) => sum + item.preprocessingTokens, 0).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">총 전처리 토큰</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                          {tokenData.reduce((sum, item) => sum + item.totalTokens, 0).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">전체 합계</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* 시스템 설정 */}
+          <TabsContent value="system" className="space-y-6">
+            <h2 className="text-2xl font-bold">시스템 설정</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>OpenAI 설정</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>API 키</Label>
+                    <Input type="password" placeholder="sk-..." />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>기본 모델</Label>
+                    <Select defaultValue="gpt-4o">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button>설정 저장</Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>데이터베이스 관리</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Database className="w-4 h-4 mr-2" />
+                      데이터베이스 백업
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <FileText className="w-4 h-4 mr-2" />
+                      로그 다운로드
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      사용량 분석
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
+
+        {/* 에이전트 편집 다이얼로그 */}
+        <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 설정</DialogTitle>
+            </DialogHeader>
+            <Form {...editAgentForm}>
+              <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>에이전트 이름</FormLabel>
+                        <FormControl>
+                          <Input placeholder="예: 학사 도우미" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>카테고리</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="카테고리 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={editAgentForm.control}
+                    name="llmModel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LLM 모델 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o-mini"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="GPT-4o Mini (빠름)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
+                            <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editAgentForm.control}
+                    name="chatbotType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>챗봇 유형 선택</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="문서 우선 + LLM..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
+                            <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
+                            <SelectItem value="general-llm">자유 대화형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={editAgentForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>설명</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 역할과 기능을 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 소속 조직 선택 - 3단계 드롭다운 */}
+                <div className="space-y-4">
+                  <FormLabel className="text-base font-medium">소속 조직</FormLabel>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="대학교">대학교</SelectItem>
+                          <SelectItem value="대학원">대학원</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Select defaultValue="전체">
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
+                          <SelectItem value="전자공학과">전자공학과</SelectItem>
+                          <SelectItem value="기계공학과">기계공학과</SelectItem>
+                          <SelectItem value="경영학과">경영학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button variant="default" className="h-11 px-6 bg-blue-600 hover:bg-blue-700">
+                        적용
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 관리자 */}
+                <FormField
+                  control={editAgentForm.control}
+                  name="managerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>에이전트 관리자</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="관리자 선택" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {managers?.map((manager) => (
+                            <SelectItem key={manager.id} value={manager.id}>
+                              {manager.firstName} {manager.lastName} ({manager.username})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+
+
+                <FormField
+                  control={editAgentForm.control}
+                  name="personality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>성격/말투 (선택사항)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="에이전트의 성격이나 말투를 설명해주세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-between">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => openIconChangeDialog(editingAgent!)}
+                  >
+                    아이콘 편집
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button type="button" variant="outline" onClick={() => setIsEditAgentDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button type="submit" disabled={updateAgentMutation.isPending}>
+                      {updateAgentMutation.isPending ? "수정 중..." : "저장"}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* LMS 연동 다이얼로그 */}
+        <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>LMS 연동 설정</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="lms-type">LMS 유형</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="LMS 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="blackboard">Blackboard</SelectItem>
+                      <SelectItem value="moodle">Moodle</SelectItem>
+                      <SelectItem value="canvas">Canvas</SelectItem>
+                      <SelectItem value="sakai">Sakai</SelectItem>
+                      <SelectItem value="d2l">D2L Brightspace</SelectItem>
+                      <SelectItem value="custom">사용자 정의</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="lms-url">LMS 서버 URL</Label>
+                  <Input 
+                    id="lms-url" 
+                    placeholder="https://lms.university.edu" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="api-key">API 키</Label>
+                  <Input 
+                    id="api-key" 
+                    type="password"
+                    placeholder="LMS API 키 입력" 
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sync-interval">동기화 주기</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="동기화 주기 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1h">1시간마다</SelectItem>
+                      <SelectItem value="6h">6시간마다</SelectItem>
+                      <SelectItem value="daily">매일</SelectItem>
+                      <SelectItem value="weekly">매주</SelectItem>
+                      <SelectItem value="manual">수동</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 종류</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="카테고리 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">세부 카테고리"</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button className="w-full">
+                      적용
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연동 상태</h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  현재 LMS와 연동되지 않음. 위 설정을 완료한 후 연결 테스트를 진행하세요.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsLmsDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline">
+                  연결 테스트
+                </Button>
+                <Button>
+                  연동 시작
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 상세 보기 다이얼로그 */}
+        <Dialog open={isDocumentDetailDialogOpen} onOpenChange={setIsDocumentDetailDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>에이전트 연결 설정</DialogTitle>
+            </DialogHeader>
+            {selectedDocument && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">{selectedDocument.name}</h3>
+                      <p className="text-sm text-gray-500">{selectedDocument.size} • {selectedDocument.uploadDate}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 검색 */}
+                <div>
+                  <h4 className="text-base font-medium mb-4">에이전트 검색</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Select defaultValue="인문대학">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="인문대학">인문대학</SelectItem>
+                          <SelectItem value="공과대학">공과대학</SelectItem>
+                          <SelectItem value="경영대학">경영대학</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Select defaultValue="국문학과">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="국문학과">국문학과</SelectItem>
+                          <SelectItem value="영문학과">영문학과</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Select defaultValue="4학년">
+                        <SelectTrigger>
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value="1학년">1학년</SelectItem>
+                          <SelectItem value="2학년">2학년</SelectItem>
+                          <SelectItem value="3학년">3학년</SelectItem>
+                          <SelectItem value="4학년">4학년</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에이전트 목록 */}
+                <div className="border rounded-lg">
+                  <div className="p-4 border-b bg-gray-50 dark:bg-gray-800">
+                    <h4 className="font-medium">국문학과</h4>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent1" className="rounded" />
+                      <label htmlFor="agent1" className="flex-1 cursor-pointer">
+                        <div className="font-medium">한국어문학과 도우미</div>
+                        <div className="text-sm text-gray-500">한국어문학과 관련 질문을 도와드립니다</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent2" className="rounded" defaultChecked />
+                      <label htmlFor="agent2" className="flex-1 cursor-pointer">
+                        <div className="font-medium">고전문학 해설 봇</div>
+                        <div className="text-sm text-gray-500">고전 문학 작품 해설 및 감상</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent3" className="rounded" />
+                      <label htmlFor="agent3" className="flex-1 cursor-pointer">
+                        <div className="font-medium">현대문학 분석 도우미</div>
+                        <div className="text-sm text-gray-500">현대 문학 작품 분석 및 비평</div>
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <input type="checkbox" id="agent4" className="rounded" />
+                      <label htmlFor="agent4" className="flex-1 cursor-pointer">
+                        <div className="font-medium">창작 지도 멘토</div>
+                        <div className="text-sm text-gray-500">소설, 시 창작 지도 및 피드백</div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 연결 요약 */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연결 요약</h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    현재 3개의 에이전트에 연결되어 있습니다.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Badge variant="secondary">영문학과 도우미</Badge>
+                    <Badge variant="secondary">고전문학 해설 봇</Badge>
+                    <Badge variant="secondary">기술생활 가이드</Badge>
+                  </div>
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-between">
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      // 문서 삭제 로직
+                      toast({
+                        title: "문서 삭제",
+                        description: `${selectedDocument.name}이(가) 삭제되었습니다.`,
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" onClick={() => setIsDocumentDetailDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => {
+                      toast({
+                        title: "에이전트 연결 완료",
+                        description: "선택한 에이전트들에 문서가 연결되었습니다.",
+                      });
+                      setIsDocumentDetailDialogOpen(false);
+                    }}>
+                      에이전트 연결 저장
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 업로드 다이얼로그 */}
+        <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>문서 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                multiple
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleDocumentFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDocumentFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedDocumentFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedDocumentFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleClearAllFiles}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedDocumentFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveFile(index)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label>문서 종류</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="문서 종류" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lecture">강의 자료</SelectItem>
+                    <SelectItem value="policy">정책 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼</SelectItem>
+                    <SelectItem value="form">양식</SelectItem>
+                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="curriculum">교육과정</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>적용 범위</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="graduate">대학원</SelectItem>
+                        <SelectItem value="undergraduate">대학교</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="engineering">공과대학</SelectItem>
+                        <SelectItem value="business">경영대학</SelectItem>
+                        <SelectItem value="humanities">인문대학</SelectItem>
+                        <SelectItem value="science">자연과학대학</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
+                        <SelectItem value="electrical">전자공학과</SelectItem>
+                        <SelectItem value="mechanical">기계공학과</SelectItem>
+                        <SelectItem value="business_admin">경영학과</SelectItem>
+                        <SelectItem value="economics">경제학과</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button className="w-full">
+                      적용
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Label>문서 설명</Label>
+                <Textarea 
+                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">업로드 옵션</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="auto-categorize" className="rounded" />
+                    <Label htmlFor="auto-categorize">AI 자동 분류 활성화</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="extract-keywords" className="rounded" />
+                    <Label htmlFor="extract-keywords">키워드 자동 추출</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="notify-users" className="rounded" />
+                    <Label htmlFor="notify-users">해당 범위 사용자에게 알림 발송</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsDocumentUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button 
+                  onClick={handleDocumentUpload}
+                  disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
+                >
+                  {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작 (${selectedDocumentFiles.length}개 파일)`}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 새 조직 카테고리 생성 다이얼로그 */}
+        <Dialog open={isNewCategoryDialogOpen} onOpenChange={setIsNewCategoryDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="flex items-center justify-between">
+                <DialogTitle>새 카테고리 생성</DialogTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsNewCategoryDialogOpen(false)}
+                  className="h-6 w-6 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            
+            <div className="space-y-4 pt-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                생성하려는 카테고리 레벨을 선택하세요.
+              </p>
+              
+              {/* 카테고리 레벨 */}
+              <div className="space-y-2">
+                <Label>카테고리 레벨</Label>
+                <Select defaultValue="상위 카테고리 (예: 인문대학)">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="상위 카테고리 (예: 인문대학)">상위 카테고리 (예: 인문대학)</SelectItem>
+                    <SelectItem value="하위 카테고리 (예: 국어국문학과)">하위 카테고리 (예: 국어국문학과)</SelectItem>
+                    <SelectItem value="세부 카테고리 (예: 현대문학전공)">세부 카테고리 (예: 현대문학전공)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 상위 카테고리 이름 */}
+              <div className="space-y-2">
+                <Label>상위 카테고리 이름 *</Label>
+                <Input 
+                  placeholder="예: 인문대학, 공과대학"
+                  className="w-full"
+                />
+              </div>
+
+              {/* 설명 */}
+              <div className="space-y-2">
+                <Label>설명</Label>
+                <Textarea 
+                  placeholder="카테고리에 대한 설명을 입력하세요"
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+
+              {/* 버튼 그룹 */}
+              <div className="flex justify-between pt-4">
+                <Button 
+                  variant="destructive"
+                  className="flex items-center space-x-1"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>삭제</span>
+                </Button>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsNewCategoryDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => {
+                      setIsNewCategoryDialogOpen(false);
+                      toast({
+                        title: "카테고리 생성",
+                        description: "새 카테고리가 성공적으로 생성되었습니다.",
+                      });
+                    }}
+                  >
+                    생성
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 조직 카테고리 파일 업로드 다이얼로그 */}
+        <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>조직 카테고리 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={orgCategoryFileInputRef}
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                multiple
+                onChange={handleOrgCategoryFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onClick={handleOrgCategoryFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 50MB)
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOrgCategoryFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedOrgCategoryFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedOrgCategoryFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedOrgCategoryFiles([])}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedOrgCategoryFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedOrgCategoryFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 업로드된 파일 목록 */}
+              {uploadedOrgFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">업로드된 파일 ({uploadedOrgFiles.length}개)</Label>
+                    <span className="text-xs text-gray-500">조직 데이터 관련 파일들</span>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {uploadedOrgFiles.map((file: any, index: number) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className={`w-4 h-4 flex-shrink-0 ${
+                              file.type === 'organization' ? 'text-green-500' : 
+                              file.originalName?.endsWith('.xlsx') || file.originalName?.endsWith('.xls') || file.originalName?.endsWith('.csv') ? 'text-blue-500' : 
+                              'text-gray-500'
+                            }`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2">
+                                <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
+                                <div className="flex items-center space-x-1">
+                                  {file.type === 'organization' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                      조직 파일
+                                    </span>
+                                  )}
+                                  {file.status === 'applied' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                      최종 반영됨
+                                    </span>
+                                  )}
+                                  {file.status === 'validated' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                      검증됨
+                                    </span>
+                                  )}
+                                  {file.status === 'pending' && (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                                      미반영
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <p className="text-xs text-gray-500">
+                                  {new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })} • {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                                {file.organizationsCount && (
+                                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                                    {file.organizationsCount}개 조직 반영
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteOrgFileMutation.mutate(file.originalName || file.fileName)}
+                            disabled={deleteOrgFileMutation.isPending}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            {deleteOrgFileMutation.isPending ? '...' : '삭제'}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (조직명, 상위조직, 하위조직, 세부조직)</p>
+                  <p>• 조직명: 조직의 정식 명칭 (필수)</p>
+                  <p>• 상위조직: 대학/본부 등 최상위 조직</p>
+                  <p>• 하위조직: 단과대학/처/부 등</p>
+                  <p>• 세부조직: 학과/팀/과 등</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>업로드 옵션</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="org-overwrite-existing" 
+                      className="rounded" 
+                      checked={orgOverwriteExisting}
+                      onChange={(e) => setOrgOverwriteExisting(e.target.checked)}
+                    />
+                    <Label htmlFor="org-overwrite-existing">기존 조직 정보 덮어쓰기</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="org-validate-only" 
+                      className="rounded"
+                      checked={orgValidateOnly}
+                      onChange={(e) => setOrgValidateOnly(e.target.checked)}
+                    />
+                    <Label htmlFor="org-validate-only">검증만 수행 (실제 업로드 안함)</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <Button 
+                  variant="destructive" 
+                  onClick={() => {
+                    if (confirm("로보대학교 관련 조직 카테고리를 모두 삭제하시겠습니까?")) {
+                      deleteRoboUniversityMutation.mutate();
+                    }
+                  }}
+                  disabled={deleteRoboUniversityMutation.isPending}
+                >
+                  {deleteRoboUniversityMutation.isPending ? "삭제 중..." : "로보대학교 조직 삭제"}
+                </Button>
+                <div className="flex space-x-2">
+                  <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
+                    취소
+                  </Button>
+                  <Button 
+                    onClick={handleOrgCategoryUpload}
+                    disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
+                  >
+                    {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작 (${selectedOrgCategoryFiles.length}개 파일)`}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 파일 업로드 다이얼로그 */}
+        <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>사용자 파일 업로드</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 숨겨진 파일 입력 */}
+              <input
+                ref={userFileInputRef}
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                multiple
+                onChange={handleUserFileInputChange}
+                style={{ display: 'none' }}
+              />
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleUserFileDrop}
+                onClick={handleUserFileSelect}
+              >
+                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  CSV, Excel 파일 지원 (최대 50MB)
+                </p>
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUserFileSelect();
+                  }}
+                >
+                  파일 선택
+                </Button>
+              </div>
+
+              {/* 선택된 파일 목록 */}
+              {selectedUserFiles.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">선택된 파일 ({selectedUserFiles.length}개)</Label>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedUserFiles([])}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      모두 제거
+                    </Button>
+                  </div>
+                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                    <div className="space-y-2">
+                      {selectedUserFiles.map((file, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedUserFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (username, firstName, lastName, email, userType)</p>
+                  <p>• username: 학번/교번 (필수)</p>
+                  <p>• userType: "student" 또는 "faculty" (필수)</p>
+                  <p>• email: 이메일 주소 (선택)</p>
+                  <p>• upperCategory, lowerCategory, detailCategory, position (선택)</p>
+                  <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다</p>
+                </div>
+              </div>
+
+              <div>
+                <Label>업로드 옵션</Label>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="overwrite-existing" 
+                      className="rounded" 
+                      checked={overwriteExisting}
+                      onChange={(e) => setOverwriteExisting(e.target.checked)}
+                    />
+                    <Label htmlFor="overwrite-existing">기존 사용자 정보 덮어쓰기</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="send-welcome" 
+                      className="rounded"
+                      checked={sendWelcome}
+                      onChange={(e) => setSendWelcome(e.target.checked)}
+                    />
+                    <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="validate-only" 
+                      className="rounded"
+                      checked={validateOnly}
+                      onChange={(e) => setValidateOnly(e.target.checked)}
+                    />
+                    <Label htmlFor="validate-only">검증만 수행 (실제 업로드 안함)</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button variant="outline" onClick={handleDownloadSampleFile}>
+                  샘플 파일 다운로드
+                </Button>
+                <Button 
+                  onClick={handleUserFileUpload}
+                  disabled={selectedUserFiles.length === 0 || isUserFileUploading}
+                >
+                  {isUserFileUploading ? `업로드 중... (${Math.round(userFileUploadProgress)}%)` : `업로드 시작 (${selectedUserFiles.length}개 파일)`}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 아이콘 변경 다이얼로그 */}
+        <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>아이콘 변경</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* 아이콘 미리보기 */}
+              <div className="flex justify-center">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500`}>
+                  {(() => {
+                    const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
+                    return <IconComponent className="w-6 h-6 text-white" />;
+                  })()}
+                </div>
+              </div>
+
+              {/* 아이콘 유형 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant={selectedIcon !== "custom" ? "default" : "outline"} 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setSelectedIcon("User")}
+                  >
+                    기본 아이콘
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    disabled
+                  >
+                    이미지 업로드
+                  </Button>
+                </div>
+              </div>
+
+              {/* 아이콘 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { icon: "User" },
+                    { icon: "GraduationCap" },
+                    { icon: "BookOpen" },
+                    { icon: "Shield" },
+                    { icon: "Brain" },
+                    { icon: "Zap" },
+                    { icon: "Target" },
+                    { icon: "Coffee" },
+                    { icon: "Music" },
+                    { icon: "Heart" }
+                  ].map(({ icon }) => {
+                    const IconComponent = iconMap[icon as keyof typeof iconMap];
+                    return (
+                      <Button
+                        key={icon}
+                        variant={selectedIcon === icon ? "default" : "outline"}
+                        size="sm"
+                        className="h-12 w-12 p-0"
+                        onClick={() => setSelectedIcon(icon)}
+                      >
+                        <IconComponent className="w-5 h-5" />
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 배경색 선택 */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { color: "blue", class: "bg-blue-500" },
+                    { color: "green", class: "bg-green-500" },
+                    { color: "purple", class: "bg-purple-500" },
+                    { color: "red", class: "bg-red-500" },
+                    { color: "orange", class: "bg-orange-500" },
+                    { color: "pink", class: "bg-pink-500" },
+                    { color: "yellow", class: "bg-yellow-500" },
+                    { color: "cyan", class: "bg-cyan-500" },
+                    { color: "gray", class: "bg-gray-500" },
+                    { color: "indigo", class: "bg-indigo-500" }
+                  ].map(({ color, class: bgClass }) => (
+                    <Button
+                      key={color}
+                      variant="outline"
+                      size="sm"
+                      className={`h-12 w-12 p-0 border-2 ${selectedBgColor === color ? 'border-black' : 'border-gray-200'}`}
+                      onClick={() => setSelectedBgColor(color)}
+                    >
+                      <div className={`w-8 h-8 rounded ${bgClass}`}></div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 버튼 */}
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setIsIconChangeDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button onClick={handleIconChange} disabled={changeIconMutation.isPending}>
+                  {changeIconMutation.isPending ? "변경 중..." : "변경하기"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
+        <Dialog open={isDocumentDetailOpen} onOpenChange={setIsDocumentDetailOpen}>
+          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>문서 상세 정보 및 에이전트 연결</DialogTitle>
+            </DialogHeader>
+            
+            {documentDetailData && (
+              <div className="space-y-6">
+                {/* 문서 정보 */}
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">문서 정보</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일명</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로드 시간</Label>
+                      <p className="text-sm mt-1">{documentDetailData.date} 14:30:15</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로더 ID</Label>
+                      <p className="text-sm mt-1">{documentDetailData.uploader}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
+                      <p className="text-sm mt-1">{documentDetailData.name.split('.').pop()?.toUpperCase()}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 크기</Label>
+                      <p className="text-sm mt-1">{documentDetailData.size}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 상태 영역 */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">상태</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">문서 상태</Label>
+                      <Select defaultValue="active">
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">사용 중</SelectItem>
+                          <SelectItem value="inactive">미사용</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 현재 연결된 에이전트 */}
+                <div>
+                  <h3 className="text-lg font-medium mb-3">현재 연결된 에이전트</h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedDocumentAgents.map((agent, index) => (
+                      <span 
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                      >
+                        {agent}
+                        <button
+                          onClick={() => setSelectedDocumentAgents(prev => prev.filter((_, i) => i !== index))}
+                          className="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 에이전트 연결 영역 */}
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-4">에이전트 연결</h3>
+                  
+                  {/* 에이전트 검색 및 필터 */}
+                  <div className="space-y-4 mb-4">
+                    {/* 조직 카테고리 필터 */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">상위 카테고리</Label>
+                        <Select value={selectedDocumentUpperCategory} onValueChange={setSelectedDocumentUpperCategory}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category, index) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium">하위 카테고리</Label>
+                        <Select value={selectedDocumentLowerCategory} onValueChange={setSelectedDocumentLowerCategory}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            {Array.from(new Set(
+                              organizations
+                                .filter(org => selectedDocumentUpperCategory === 'all' || org.upperCategory === selectedDocumentUpperCategory)
+                                .map(org => org.lowerCategory)
+                                .filter(Boolean)
+                            )).sort().map((category, index) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium">세부 카테고리</Label>
+                        <Select value={selectedDocumentDetailCategory} onValueChange={setSelectedDocumentDetailCategory}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            {Array.from(new Set(
+                              organizations
+                                .filter(org => 
+                                  (selectedDocumentUpperCategory === 'all' || org.upperCategory === selectedDocumentUpperCategory) &&
+                                  (selectedDocumentLowerCategory === 'all' || org.lowerCategory === selectedDocumentLowerCategory)
+                                )
+                                .map(org => org.detailCategory)
+                                .filter(Boolean)
+                            )).sort().map((category, index) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* 에이전트 유형 필터와 검색 */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">에이전트 유형</Label>
+                        <Select value={selectedDocumentAgentType} onValueChange={setSelectedDocumentAgentType}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="전체" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">전체</SelectItem>
+                            <SelectItem value="학교">학교</SelectItem>
+                            <SelectItem value="교수">교수</SelectItem>
+                            <SelectItem value="학생">학생</SelectItem>
+                            <SelectItem value="그룹">그룹</SelectItem>
+                            <SelectItem value="기능형">기능형</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label className="text-sm font-medium">에이전트 검색</Label>
+                        <Input
+                          placeholder="에이전트 이름 또는 설명에 포함된 키워드로 검색..."
+                          value={documentAgentSearchQuery}
+                          onChange={(e) => setDocumentAgentSearchQuery(e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            setDocumentAgentSearchQuery("");
+                            setSelectedDocumentUpperCategory("all");
+                            setSelectedDocumentLowerCategory("all");
+                            setSelectedDocumentDetailCategory("all");
+                            setSelectedDocumentAgentType("all");
+                          }}
+                          className="mt-6"
+                        >
+                          필터 초기화
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 에이전트 테이블 */}
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3">
+                      <h4 className="font-medium">사용 가능한 에이전트</h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-gray-800">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              에이전트명
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              유형
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              소속
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              문서
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              사용자
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              선택
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                          {agents?.filter(agent => {
+                            // 검색어 필터
+                            const searchMatch = !documentAgentSearchQuery.trim() || 
+                              agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
+                              (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
+                            
+                            // 유형 필터
+                            const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
+                            
+                            return searchMatch && typeMatch;
+                          }).map((agent) => (
+                            <tr key={agent.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                              <td className="px-4 py-4">
+                                <div className="flex items-center">
+                                  <div className={`w-8 h-8 rounded-full ${agent.backgroundColor} flex items-center justify-center text-white text-sm font-medium mr-3`}>
+                                    {agent.icon}
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                      {agent.name}
+                                    </div>
+                                    {agent.description && (
+                                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        {agent.description.length > 50 ? `${agent.description.substring(0, 50)}...` : agent.description}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                  {agent.category}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <div className="text-sm text-gray-900 dark:text-gray-100">
+                                  예술대학
+                                </div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                  음악학과
+                                </div>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="text-sm text-gray-900 dark:text-gray-100">3개</span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <span className="text-sm text-gray-900 dark:text-gray-100">13명</span>
+                              </td>
+                              <td className="px-4 py-4">
+                                <input
+                                  type="checkbox"
+                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                  checked={selectedDocumentAgents.includes(agent.name)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedDocumentAgents(prev => [...prev, agent.name]);
+                                    } else {
+                                      setSelectedDocumentAgents(prev => prev.filter(name => name !== agent.name));
+                                    }
+                                  }}
+                                />
+                              </td>
+                            </tr>
+                          )) || []}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 사용자 상세 정보 편집 다이얼로그 */}
+        <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>사용자 정보 편집</DialogTitle>
+              <DialogDescription>사용자 정보를 수정합니다.</DialogDescription>
+            </DialogHeader>
+            
+            <Form {...userEditForm}>
+              <form onSubmit={userEditForm.handleSubmit((data) => {
+                if (selectedUser) {
+                  updateUserMutation.mutate({ ...data, id: selectedUser.id });
+                }
+              })} className="space-y-6">
+                
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={userEditForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>사용자명</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="서지원200" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={userEditForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>이메일</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="서.지원200@university.edu" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 소속 정보 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">소속 정보</Label>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={selectedUser?.role?.includes('admin') ? 'default' : 'secondary'}>
+                        {selectedUser?.role?.includes('admin') ? '카테고리 관리자' : '일반 사용자'}
+                      </Badge>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs"
+                        onClick={() => {
+                          // 소속 카테고리 추가 기능 구현
+                          toast({
+                            title: "기능 준비 중",
+                            description: "소속 카테고리 추가 기능을 준비 중입니다.",
+                          });
+                        }}
+                      >
+                        + 소속된 카테고리 추가
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="upperCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="lowerCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => !userEditForm.watch('upperCategory') || userEditForm.watch('upperCategory') === 'none' || org.upperCategory === userEditForm.watch('upperCategory'))
+                                  .map(org => org.lowerCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="detailCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">세부 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => 
+                                    (!userEditForm.watch('upperCategory') || userEditForm.watch('upperCategory') === 'none' || org.upperCategory === userEditForm.watch('upperCategory')) &&
+                                    (!userEditForm.watch('lowerCategory') || userEditForm.watch('lowerCategory') === 'none' || org.lowerCategory === userEditForm.watch('lowerCategory'))
+                                  )
+                                  .map(org => org.detailCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={userEditForm.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">직책/역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={userEditForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">시스템 역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="일반 사용자" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">일반 사용자</SelectItem>
+                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* 계정 상태 */}
+                <FormField
+                  control={userEditForm.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>계정 상태</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="active">활성</SelectItem>
+                          <SelectItem value="inactive">비활성</SelectItem>
+                          <SelectItem value="locked">잠금</SelectItem>
+                          <SelectItem value="pending">대기</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 사용 중인 에이전트 목록 */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">사용 중인 에이전트</Label>
+                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                    {selectedUser?.id ? (
+                      <div className="max-h-48 overflow-y-auto space-y-3">
+                        {/* 실제 사용자의 에이전트 목록을 표시 */}
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">학사 정보 안내</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              학사 일정, 수강신청, 성적 조회 등 학사 관련 업무를 지원합니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline" className="text-xs">일반 사용자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.27</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">생활관 도우미</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              기숙사 및 생활관 관련 업무를 도와드립니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="secondary" className="text-xs">문서 관리자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.26</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                          <div className="w-2 h-2 rounded-full bg-orange-500 mt-2"></div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">취업 상담소</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              취업 정보, 인턴십, 진로 상담을 제공합니다
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="default" className="text-xs">에이전트 관리자</Badge>
+                              <span className="text-xs text-gray-500">최근 사용: 2025.06.25</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <div className="text-sm font-medium mb-2">사용 중인 에이전트가 없습니다</div>
+                        <div className="text-xs">
+                          이 사용자는 아직 어떤 에이전트도 사용하지 않았습니다.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 계정 정보 */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">계정 정보</Label>
+                  <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
+                    <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
+                  </div>
+                </div>
+
+                {/* 사용자 설명/메모 */}
+                <FormField
+                  control={userEditForm.control}
+                  name="detailCategory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>사용자 설명/메모</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          placeholder="사용자에 대한 추가 정보나 메모를 입력하세요..."
+                          className="min-h-20"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 버튼 */}
+                <div className="flex justify-between pt-4">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsUserDetailDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" disabled={updateUserMutation.isPending}>
+                    {updateUserMutation.isPending ? '저장 중...' : '저장'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* 새 사용자 생성 다이얼로그 */}
+        <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold">새 사용자 추가</DialogTitle>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                새로운 사용자를 시스템에 추가합니다. 필수 정보를 모두 입력해주세요.
+              </div>
+            </DialogHeader>
+            
+            <Form {...newUserForm}>
+              <form onSubmit={newUserForm.handleSubmit((data) => {
+                createUserMutation.mutate(data);
+              })} className="space-y-6">
+                
+                {/* 사용자 기본 정보 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <Label className="text-sm font-medium">사용자 기본 정보</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">이름 *</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="홍길동" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">이메일 *</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="hong@university.edu" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="userId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">사용자 ID *</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="user123" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="userType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">사용자 타입 *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="타입 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="student">학생</SelectItem>
+                              <SelectItem value="faculty">교직원</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+
+                  </div>
+                </div>
+
+                {/* 소속 정보 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <Label className="text-sm font-medium">소속 정보</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="upperCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="lowerCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => !newUserForm.watch('upperCategory') || newUserForm.watch('upperCategory') === 'none' || org.upperCategory === newUserForm.watch('upperCategory'))
+                                  .map(org => org.lowerCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="detailCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">세부 카테고리</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || "none"}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="none">선택</SelectItem>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => 
+                                    (!newUserForm.watch('upperCategory') || newUserForm.watch('upperCategory') === 'none' || org.upperCategory === newUserForm.watch('upperCategory')) &&
+                                    (!newUserForm.watch('lowerCategory') || newUserForm.watch('lowerCategory') === 'none' || org.lowerCategory === newUserForm.watch('lowerCategory'))
+                                  )
+                                  .map(org => org.detailCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">직책/역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={newUserForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">시스템 역할</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="일반 사용자" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="user">일반 사용자</SelectItem>
+                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <FormLabel className="text-sm">에이전트 관리자</FormLabel>
+                      <Select 
+                        onValueChange={(value) => {
+                          // Store the selected manager in form state or separate state
+                          console.log('Selected agent manager:', value);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="에이전트 관리자 선택 (선택사항)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">없음</SelectItem>
+                          {managers.map((manager) => (
+                            <SelectItem key={manager.id} value={manager.id}>
+                              {(manager as any).name || manager.id} ({manager.id})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 계정 설정 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                  <Label className="text-sm font-medium">계정 설정</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={newUserForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">계정 상태</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="상태 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="active">활성</SelectItem>
+                              <SelectItem value="inactive">비활성</SelectItem>
+                              <SelectItem value="locked">잠금</SelectItem>
+                              <SelectItem value="pending">대기</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex flex-col justify-center">
+                      <Label className="text-sm mb-2">초기 비밀번호</Label>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 p-3 bg-blue-50 dark:bg-blue-950 rounded border">
+                        시스템에서 자동으로 임시 비밀번호를 생성합니다. <br />
+                        사용자의 첫 로그인 시 비밀번호 변경이 요구됩니다.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-between pt-6 border-t">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsNewUserDialogOpen(false)}
+                    className="min-w-[120px]"
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={createUserMutation.isPending}
+                    className="min-w-[120px]"
+                  >
+                    {createUserMutation.isPending ? '생성 중...' : '사용자 생성'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* 에이전트 파일 업로드 모달 */}
+        <AgentFileUploadModal
+          isOpen={isAgentFileUploadModalOpen}
+          onClose={() => setIsAgentFileUploadModalOpen(false)}
+        />
       </main>
     </div>
   );

@@ -14,8 +14,6 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
-  type QaLog,
-  type InsertQaLog,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { cache } from "./cache";
@@ -30,7 +28,6 @@ export class MemoryStorage implements IStorage {
   private messages: Map<number, Message> = new Map();
   private documents: Map<number, Document> = new Map();
   private agentStats: Map<number, AgentStats> = new Map();
-  private qaLogs: Map<number, QaLog> = new Map();
   private messageReactions: Map<number, MessageReaction> = new Map();
   private organizationCategories: Map<number, any> = new Map();
   private organizationFiles: Map<string, any> = new Map();
@@ -70,7 +67,6 @@ export class MemoryStorage implements IStorage {
     this.loadPersistedDocuments();
     this.loadPersistedConversations();
     this.loadPersistedMessages();
-    this.loadPersistedQALogs();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
 
@@ -761,11 +757,6 @@ export class MemoryStorage implements IStorage {
     return messages;
   }
 
-  async getAllMessages(): Promise<Message[]> {
-    return Array.from(this.messages.values())
-      .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
-  }
-
   async createMessage(message: InsertMessage): Promise<Message> {
     const id = this.nextId++;
     const newMessage: Message = {
@@ -1333,19 +1324,14 @@ export class MemoryStorage implements IStorage {
     try {
       if (fs.existsSync(this.usersFile)) {
         const data = fs.readFileSync(this.usersFile, 'utf8');
-        const parsedData = JSON.parse(data);
-        
-        // 새로운 구조: {users: [...], qaLogs: [...], ...}
-        const usersArray = parsedData.users || parsedData;
-        
-        if (Array.isArray(usersArray)) {
-          for (const user of usersArray) {
-            this.users.set(user.id, {
-              ...user,
-              createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
-              updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
-            });
-          }
+        const usersArray = JSON.parse(data);
+
+        for (const user of usersArray) {
+          this.users.set(user.id, {
+            ...user,
+            createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
+            updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
+          });
         }
 
         console.log(`Loaded ${this.users.size} users from admin center (memory-storage.json)`);
@@ -1477,32 +1463,6 @@ export class MemoryStorage implements IStorage {
     } catch (error) {
       console.error('Failed to load persisted messages:', error);
       this.messages = new Map();
-    }
-  }
-
-  private loadPersistedQALogs(): void {
-    try {
-      // Q&A 로그는 메인 memory-storage.json 파일에서 로드
-      if (fs.existsSync(this.usersFile)) {
-        const data = JSON.parse(fs.readFileSync(this.usersFile, 'utf8'));
-        if (data.qaLogs && Array.isArray(data.qaLogs)) {
-          // QA 로그 데이터를 Map으로 변환하고 Date 객체 복원
-          const qaLogsWithDates = data.qaLogs.map((log: any) => [
-            log.id,
-            {
-              ...log,
-              timestamp: new Date(log.timestamp),
-              createdAt: log.createdAt ? new Date(log.createdAt) : new Date(),
-              updatedAt: log.updatedAt ? new Date(log.updatedAt) : new Date()
-            }
-          ]);
-          this.qaLogs = new Map(qaLogsWithDates);
-          console.log(`Loaded ${this.qaLogs.size} Q&A logs from persistence`);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load persisted Q&A logs:', error);
-      this.qaLogs = new Map();
     }
   }
 
@@ -1671,100 +1631,4 @@ export class MemoryStorage implements IStorage {
       cache.delete('organization_categories');
     }
   }
-
-  // QA Logs Methods
-  async getQaLogs(): Promise<QaLog[]> {
-    const logs = Array.from(this.qaLogs.values());
-    return logs.sort((a, b) => {
-      const aTime = a.timestamp?.getTime() || 0;
-      const bTime = b.timestamp?.getTime() || 0;
-      return bTime - aTime; // 최신순 정렬
-    });
-  }
-
-  async getQaLogById(id: number): Promise<QaLog | undefined> {
-    return this.qaLogs.get(id);
-  }
-
-  async createQaLog(data: InsertQaLog): Promise<QaLog> {
-    const id = this.nextQaLogId++;
-    const qaLog: QaLog = {
-      id,
-      timestamp: data.timestamp,
-      agentType: data.agentType,
-      agentName: data.agentName,
-      userType: data.userType,
-      questionContent: data.questionContent,
-      responseContent: data.responseContent,
-      responseType: data.responseType,
-      responseTime: data.responseTime,
-      agentId: data.agentId || null,
-      userId: data.userId || null,
-      improvementRequest: data.improvementRequest || null,
-      createdAt: new Date(),
-    };
-    
-    this.qaLogs.set(id, qaLog);
-    
-    // Clear cache
-    if (cache) {
-      cache.delete('qa_logs');
-    }
-    
-    return qaLog;
-  }
-
-  async updateQaLog(id: number, data: Partial<InsertQaLog>): Promise<QaLog | undefined> {
-    const existing = this.qaLogs.get(id);
-    if (!existing) return undefined;
-
-    const updated: QaLog = {
-      ...existing,
-      ...data,
-    };
-
-    this.qaLogs.set(id, updated);
-
-    // Clear cache
-    if (cache) {
-      cache.delete('qa_logs');
-    }
-
-    // Save to persistence
-    this.saveToPersistence();
-
-    return updated;
-  }
-
-  async deleteQaLog(id: number): Promise<boolean> {
-    const deleted = this.qaLogs.delete(id);
-    
-    if (deleted && cache) {
-      cache.delete('qa_logs');
-    }
-    
-    return deleted;
-  }
-
-  async clearAllQALogs(): Promise<void> {
-    this.qaLogs.clear();
-    console.log('All QA logs cleared from memory storage');
-    
-    // Clear cache
-    if (cache) {
-      cache.delete('qa_logs');
-    }
-  }
-
-  async clearAllQaLogs(): Promise<void> {
-    this.qaLogs.clear();
-    console.log('All QA logs cleared from memory storage');
-    
-    // Clear cache
-    if (cache) {
-      cache.delete('qa_logs');
-    }
-  }
-
-  private nextQaLogId = 1;
 }
