@@ -809,6 +809,92 @@ function MasterAdmin() {
       setTokenSortOrder('desc');
     }
   };
+
+  // 토큰 데이터 생성 및 필터링
+  const tokenData = useMemo(() => {
+    if (!qaLogsData?.logs) return [];
+    let data = generateTokenData(qaLogsData.logs);
+    
+    // 검색어 필터링
+    if (tokenSearchQuery) {
+      data = data.filter(item => 
+        item.agentName.toLowerCase().includes(tokenSearchQuery.toLowerCase()) ||
+        item.questionContent.toLowerCase().includes(tokenSearchQuery.toLowerCase())
+      );
+    }
+    
+    // 에이전트 필터링
+    if (tokenAgentFilter !== 'all') {
+      data = data.filter(item => item.agentName === tokenAgentFilter);
+    }
+    
+    // 모델 필터링
+    if (tokenModelFilter !== 'all') {
+      data = data.filter(item => item.model === tokenModelFilter);
+    }
+    
+    // 날짜 필터링
+    if (tokenStartDate || tokenEndDate) {
+      data = data.filter(item => {
+        const itemDate = new Date(item.date.replace(/\./g, '-'));
+        const start = tokenStartDate ? new Date(tokenStartDate) : null;  
+        const end = tokenEndDate ? new Date(tokenEndDate) : null;
+        
+        if (start && end) {
+          return itemDate >= start && itemDate <= end;
+        } else if (start) {
+          return itemDate >= start;
+        } else if (end) {
+          return itemDate <= end;
+        }
+        return true;
+      });
+    }
+    
+    // 정렬
+    if (tokenSortField) {
+      data.sort((a, b) => {
+        let aValue = 0;
+        let bValue = 0;
+        
+        switch (tokenSortField) {
+          case 'input':
+            aValue = a.inputTokens;
+            bValue = b.inputTokens;
+            break;
+          case 'output':
+            aValue = a.outputTokens;
+            bValue = b.outputTokens;
+            break;
+          case 'index':
+            aValue = a.indexTokens;
+            bValue = b.indexTokens;
+            break;
+          case 'preprocessing':
+            aValue = a.preprocessingTokens;
+            bValue = b.preprocessingTokens;
+            break;
+        }
+        
+        return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+      });
+    }
+    
+    return data;
+  }, [qaLogsData, tokenSearchQuery, tokenAgentFilter, tokenModelFilter, tokenStartDate, tokenEndDate, tokenSortField, tokenSortOrder]);
+
+  // 고유 에이전트 목록
+  const uniqueAgents = useMemo(() => {
+    if (!qaLogsData?.logs) return [];
+    const agents = qaLogsData.logs.map((log: any) => log.agentName).filter(Boolean);
+    return Array.from(new Set(agents));
+  }, [qaLogsData]);
+
+  // 고유 모델 목록
+  const uniqueModels = useMemo(() => {
+    const models = tokenData.map(item => item.model);
+    return Array.from(new Set(models));
+  }, [tokenData]);
   
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
@@ -5377,6 +5463,252 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
             )}
+          </TabsContent>
+
+          {/* 토큰 관리 */}
+          <TabsContent value="tokens" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Cpu className="w-5 h-5" />
+                      <span>토큰 사용량 관리</span>
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 mt-1">
+                      AI 모델별 토큰 사용량 및 비용을 모니터링합니다.
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* 필터 및 검색 */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label htmlFor="token-search">검색</Label>
+                    <Input
+                      id="token-search"
+                      placeholder="에이전트명, 질문 내용 검색..."
+                      value={tokenSearchQuery}
+                      onChange={(e) => setTokenSearchQuery(e.target.value)}
+                      className="focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="token-agent">에이전트</Label>
+                    <Select value={tokenAgentFilter} onValueChange={setTokenAgentFilter}>
+                      <SelectTrigger id="token-agent" className="focus:ring-2 focus:ring-blue-500">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {uniqueAgents.map((agent, index) => (
+                          <SelectItem key={`agent-${agent}-${index}`} value={agent}>
+                            {agent}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="token-model">모델</Label>
+                    <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
+                      <SelectTrigger id="token-model" className="focus:ring-2 focus:ring-blue-500">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {uniqueModels.map((model, index) => (
+                          <SelectItem key={`model-${model}-${index}`} value={model}>
+                            {model}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="token-date">기간 필터</Label>
+                    <div className="flex space-x-2">
+                      <Input
+                        type="date"
+                        value={tokenStartDate}
+                        onChange={(e) => setTokenStartDate(e.target.value)}
+                        className="text-sm focus:ring-2 focus:ring-blue-500"
+                      />
+                      <Input
+                        type="date"
+                        value={tokenEndDate}
+                        onChange={(e) => setTokenEndDate(e.target.value)}
+                        className="text-sm focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 토큰 사용량 테이블 */}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          날짜
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          에이전트
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          질문 내용
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          모델
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleTokenSort('input')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>입력 토큰</span>
+                            {tokenSortField === 'input' && (
+                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleTokenSort('output')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>출력 토큰</span>
+                            {tokenSortField === 'output' && (
+                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleTokenSort('index')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>색인 토큰</span>
+                            {tokenSortField === 'index' && (
+                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleTokenSort('preprocessing')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>문서 전처리</span>
+                            {tokenSortField === 'preprocessing' && (
+                              tokenSortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          총 토큰
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                      {tokenData.length > 0 ? (
+                        tokenData.slice(0, 20).map((item, index) => (
+                          <tr key={item.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                              {item.date}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                              {item.agentName}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 max-w-xs">
+                              <div className="truncate" title={item.questionContent}>
+                                {item.questionContent.length > 50 
+                                  ? `${item.questionContent.substring(0, 50)}...` 
+                                  : item.questionContent
+                                }
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                              <Badge variant="outline" className={
+                                item.model === 'GPT-4' ? 'border-blue-500 text-blue-700' :
+                                item.model === 'GPT-3.5' ? 'border-green-500 text-green-700' :
+                                item.model === 'Claude-3' ? 'border-purple-500 text-purple-700' :
+                                'border-gray-500 text-gray-700'
+                              }>
+                                {item.model}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
+                              {item.inputTokens.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
+                              {item.outputTokens.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
+                              {item.indexTokens.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-mono">
+                              {item.preprocessingTokens.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 font-mono">
+                              {item.totalTokens.toLocaleString()}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
+                            토큰 사용량 데이터가 없습니다.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 통계 요약 */}
+                {tokenData.length > 0 && (
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
+                      토큰 사용량 요약 ({tokenData.length}건)
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {tokenData.reduce((sum, item) => sum + item.inputTokens, 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">총 입력 토큰</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {tokenData.reduce((sum, item) => sum + item.outputTokens, 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">총 출력 토큰</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-yellow-600">
+                          {tokenData.reduce((sum, item) => sum + item.indexTokens, 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">총 색인 토큰</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          {tokenData.reduce((sum, item) => sum + item.preprocessingTokens, 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">총 전처리 토큰</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                          {tokenData.reduce((sum, item) => sum + item.totalTokens, 0).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">전체 합계</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
