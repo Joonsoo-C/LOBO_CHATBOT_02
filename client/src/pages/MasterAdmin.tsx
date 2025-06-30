@@ -824,6 +824,13 @@ function MasterAdmin() {
   const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
   const [qaFilterKeyword, setQaFilterKeyword] = useState('');
   
+  // 조직 카테고리 관리 필터링 상태
+  const [orgFilterUpperCategory, setOrgFilterUpperCategory] = useState('all');
+  const [orgFilterLowerCategory, setOrgFilterLowerCategory] = useState('all');
+  const [orgFilterDetailCategory, setOrgFilterDetailCategory] = useState('all');
+  const [orgSearchQuery, setOrgSearchQuery] = useState('');
+  const [hasOrgSearched, setHasOrgSearched] = useState(false);
+  
   // Q&A 로그 페이지네이션 상태
   const [qaCurrentPage, setQaCurrentPage] = useState(1);
   const [qaLogsPerPage] = useState(20);
@@ -1236,6 +1243,34 @@ function MasterAdmin() {
       }
     });
     return uniqueCategories;
+  };
+
+  // 조직 카테고리 관리를 위한 헬퍼 함수들
+  const getOrgUpperCategories = () => {
+    if (!organizations) return [];
+    const uniqueCategories: string[] = [];
+    organizations.forEach(org => {
+      if (org.upperCategory && org.upperCategory.trim() !== '' && !uniqueCategories.includes(org.upperCategory)) {
+        uniqueCategories.push(org.upperCategory);
+      }
+    });
+    return uniqueCategories;
+  };
+
+  const getOrgLowerCategories = (upperCategory: string) => {
+    if (!organizations || upperCategory === 'all') return [];
+    return [...new Set(organizations
+      .filter(org => org.upperCategory === upperCategory)
+      .map(org => org.lowerCategory)
+      .filter(cat => cat && cat.trim() !== ''))];
+  };
+
+  const getOrgDetailCategories = (upperCategory: string, lowerCategory: string) => {
+    if (!organizations || upperCategory === 'all' || lowerCategory === 'all') return [];
+    return [...new Set(organizations
+      .filter(org => org.upperCategory === upperCategory && org.lowerCategory === lowerCategory)
+      .map(org => org.detailCategory)
+      .filter(cat => cat && cat.trim() !== ''))];
   };
 
   const getQaLowerCategories = (upperCategory: string) => {
@@ -3310,6 +3345,262 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* 조직 카테고리 관리 */}
+          <TabsContent value="categories" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+              <Button 
+                onClick={() => setIsOrgCategoryUploadDialogOpen(true)}
+                className="flex items-center space-x-2"
+              >
+                <Upload className="w-4 h-4" />
+                파일 업로드
+              </Button>
+            </div>
+
+            {/* 조직 카테고리 검색 및 필터링 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <CardTitle>조직 카테고리 검색</CardTitle>
+              
+              {/* 조직 필터 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label>상위 조직</Label>
+                  <Select value={orgFilterUpperCategory} onValueChange={setOrgFilterUpperCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getOrgUpperCategories().map((category, index) => (
+                        <SelectItem key={`org-upper-${category}-${index}`} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>하위 조직</Label>
+                  <Select 
+                    value={orgFilterLowerCategory} 
+                    onValueChange={setOrgFilterLowerCategory}
+                    disabled={orgFilterUpperCategory === 'all'}
+                  >
+                    <SelectTrigger className={orgFilterUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getOrgLowerCategories(orgFilterUpperCategory).map((category, index) => (
+                        <SelectItem key={`org-lower-${category}-${index}`} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부 조직</Label>
+                  <Select 
+                    value={orgFilterDetailCategory} 
+                    onValueChange={setOrgFilterDetailCategory}
+                    disabled={orgFilterLowerCategory === 'all' || orgFilterUpperCategory === 'all'}
+                  >
+                    <SelectTrigger className={orgFilterLowerCategory === 'all' || orgFilterUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {getOrgDetailCategories(orgFilterUpperCategory, orgFilterLowerCategory).map((category, index) => (
+                        <SelectItem key={`org-detail-${category}-${index}`} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-end">
+                  <Button 
+                    onClick={() => {
+                      setOrgFilterUpperCategory('all');
+                      setOrgFilterLowerCategory('all');
+                      setOrgFilterDetailCategory('all');
+                      setOrgSearchQuery('');
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    필터 초기화
+                  </Button>
+                </div>
+              </div>
+
+              {/* 검색창 */}
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="조직명으로 검색..."
+                    value={orgSearchQuery}
+                    onChange={(e) => setOrgSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Button onClick={() => setHasOrgSearched(true)}>
+                  검색
+                </Button>
+              </div>
+            </div>
+
+            {/* 조직 카테고리 목록 */}
+            {hasOrgSearched && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden">
+                <div className="p-4 border-b">
+                  <h3 className="text-lg font-semibold">조직 카테고리 목록 ({filteredOrganizationCategories?.length || 0}개)</h3>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          조직명
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          상위 조직
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          하위 조직
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          세부 조직
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          상태
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          관리자
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          작업
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      {paginatedOrganizationCategories?.map((org: any) => (
+                        <tr key={org.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                            {org.name || org.detailCategory}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {org.upperCategory || '-'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {org.lowerCategory || '-'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {org.detailCategory || '-'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <Badge 
+                              variant={org.status === '활성' ? 'default' : 
+                                      org.status === '비활성' ? 'secondary' : 'outline'}
+                              className={
+                                org.status === '활성' ? 'bg-green-100 text-green-800' :
+                                org.status === '비활성' ? 'bg-red-100 text-red-800' :
+                                'bg-yellow-100 text-yellow-800'
+                              }
+                            >
+                              {org.status}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {org.manager || '-'}
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openOrgCategoryEditDialog(org)}
+                                className="hover:bg-blue-50 hover:text-blue-600"
+                              >
+                                <Edit className="w-4 h-4 mr-1" />
+                                수정
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 페이지네이션 */}
+                {totalOrgCategoriesPages > 1 && (
+                  <div className="px-4 py-3 border-t flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      총 {filteredOrganizationCategories?.length || 0}개 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories?.length || 0)}개 표시
+                    </div>
+                    <div className="flex space-x-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrgCategoriesCurrentPage(1)}
+                        disabled={orgCategoriesCurrentPage === 1}
+                      >
+                        처음
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrgCategoriesCurrentPage(orgCategoriesCurrentPage - 1)}
+                        disabled={orgCategoriesCurrentPage === 1}
+                      >
+                        이전
+                      </Button>
+                      
+                      {Array.from({ length: Math.min(5, totalOrgCategoriesPages) }, (_, i) => {
+                        const pageNum = Math.max(1, orgCategoriesCurrentPage - 2) + i;
+                        if (pageNum > totalOrgCategoriesPages) return null;
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={pageNum === orgCategoriesCurrentPage ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setOrgCategoriesCurrentPage(pageNum)}
+                            className="pagination-button"
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      })}
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrgCategoriesCurrentPage(orgCategoriesCurrentPage + 1)}
+                        disabled={orgCategoriesCurrentPage === totalOrgCategoriesPages}
+                      >
+                        다음
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOrgCategoriesCurrentPage(totalOrgCategoriesPages)}
+                        disabled={orgCategoriesCurrentPage === totalOrgCategoriesPages}
+                      >
+                        마지막
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
 
           {/* 사용자 관리 */}
