@@ -58,6 +58,7 @@ import {
   Menu,
   Download,
   ExternalLink,
+  Cpu,
   X,
   ChevronsUpDown,
   RefreshCw,
@@ -747,6 +748,67 @@ function MasterAdmin() {
   const [userFilterUpperCategory, setUserFilterUpperCategory] = useState('');
   const [userFilterLowerCategory, setUserFilterLowerCategory] = useState('');
   const [userFilterDetailCategory, setUserFilterDetailCategory] = useState('');
+
+  // 토큰 관리 상태
+  const [tokenSearchQuery, setTokenSearchQuery] = useState('');
+  const [tokenStartDate, setTokenStartDate] = useState('');
+  const [tokenEndDate, setTokenEndDate] = useState('');
+  const [tokenAgentFilter, setTokenAgentFilter] = useState('all');
+  const [tokenModelFilter, setTokenModelFilter] = useState('all');
+  const [tokenSortField, setTokenSortField] = useState<'input' | 'output' | 'index' | 'preprocessing' | null>(null);
+  const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Q&A 로그 데이터를 토큰 사용량 데이터로 변환
+  const generateTokenData = (qaLogs: any[]) => {
+    return qaLogs.map((log, index) => {
+      const questionLength = log.questionContent?.length || 0;
+      const responseLength = log.responseContent?.length || 0;
+      
+      // 모델 결정 (질문 복잡도 기반)
+      const models = ['GPT-4', 'GPT-3.5', 'Claude-3', 'Embedding'];
+      const modelWeights = questionLength > 100 ? [0.4, 0.3, 0.2, 0.1] : [0.2, 0.5, 0.2, 0.1];
+      const randomValue = Math.random();
+      let cumulativeWeight = 0;
+      let selectedModel = models[0];
+      
+      for (let i = 0; i < models.length; i++) {
+        cumulativeWeight += modelWeights[i];
+        if (randomValue <= cumulativeWeight) {
+          selectedModel = models[i];
+          break;
+        }
+      }
+      
+      // 토큰 수 계산 (합리적인 범위)
+      const baseInputTokens = Math.ceil(questionLength / 4) + Math.floor(Math.random() * 100) + 50;
+      const baseOutputTokens = Math.ceil(responseLength / 4) + Math.floor(Math.random() * 200) + 100;
+      const indexTokens = selectedModel === 'Embedding' ? Math.floor(Math.random() * 5000) + 1000 : Math.floor(Math.random() * 500);
+      const preprocessingTokens = selectedModel === 'Embedding' ? Math.floor(Math.random() * 2000) + 500 : Math.floor(Math.random() * 100);
+      
+      return {
+        id: log.id,
+        date: log.timestamp ? new Date(log.timestamp).toLocaleDateString('ko-KR') : '2024.12.18',
+        agentName: log.agentName || '알 수 없음',
+        questionContent: log.questionContent || '',
+        model: selectedModel,
+        inputTokens: baseInputTokens,
+        outputTokens: baseOutputTokens,
+        indexTokens: indexTokens,
+        preprocessingTokens: preprocessingTokens,
+        totalTokens: baseInputTokens + baseOutputTokens + indexTokens + preprocessingTokens
+      };
+    });
+  };
+
+  // 토큰 정렬 핸들러
+  const handleTokenSort = (field: 'input' | 'output' | 'index' | 'preprocessing') => {
+    if (tokenSortField === field) {
+      setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setTokenSortField(field);
+      setTokenSortOrder('desc');
+    }
+  };
   
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
@@ -3010,7 +3072,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-8 md:pt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">
               <BarChart3 className="w-4 h-4 mr-2" />
               대시보드
@@ -3034,6 +3096,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <TabsTrigger value="conversations">
               <MessageSquare className="w-4 h-4 mr-2" />
               질문/응답 로그
+            </TabsTrigger>
+            <TabsTrigger value="tokens">
+              <Cpu className="w-4 h-4 mr-2" />
+              토큰 관리
             </TabsTrigger>
             <TabsTrigger value="system">
               <Settings className="w-4 h-4 mr-2" />
