@@ -507,6 +507,10 @@ function MasterAdmin() {
   const [qaFilterUserType, setQaFilterUserType] = useState('all');
   const [qaFilterPeriod, setQaFilterPeriod] = useState('today');
   const [qaFilterKeyword, setQaFilterKeyword] = useState('');
+  
+  // Q&A 로그 페이지네이션 상태
+  const [qaCurrentPage, setQaCurrentPage] = useState(1);
+  const [qaLogsPerPage] = useState(20);
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
   const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
   
