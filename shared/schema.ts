@@ -215,6 +215,23 @@ export const organizationCategories = pgTable("organization_categories", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// QA Logs table for question/answer tracking
+export const qaLogs = pgTable("qa_logs", {
+  id: serial("id").primaryKey(),
+  timestamp: timestamp("timestamp").notNull(), // 대화 시각
+  agentType: text("agent_type").notNull(), // 에이전트 유형 (학교, 기능형, 교수, 학생, 그룹)
+  agentName: text("agent_name").notNull(), // 에이전트 명
+  userType: text("user_type").notNull(), // 사용자 유형 (학생, 교수, 직원)
+  questionContent: text("question_content").notNull(), // 질문 내용
+  responseContent: text("response_content").notNull(), // 챗봇 응답내용
+  responseType: text("response_type").notNull(), // 응답 유형 (AI 생성, 문서 기반, 하이브리드)
+  responseTime: text("response_time").notNull(), // 응답시간 (0.5초, 1.2초 등)
+  agentId: integer("agent_id"), // 에이전트 ID (선택사항)
+  userId: text("user_id"), // 사용자 ID (선택사항)
+  improvementRequest: text("improvement_request"), // 개선 요청
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
@@ -448,6 +465,15 @@ export type MessageReaction = typeof messageReactions.$inferSelect;
 export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
 export type OrganizationCategory = typeof organizationCategories.$inferSelect;
 export type InsertOrganizationCategory = z.infer<typeof insertOrganizationCategorySchema>;
+
+// QA Logs schema and types
+export const insertQaLogSchema = createInsertSchema(qaLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type QaLog = typeof qaLogs.$inferSelect;
+export type InsertQaLog = z.infer<typeof insertQaLogSchema>;
 
 // User edit schema for admin interface
 export const userEditSchema = z.object({
