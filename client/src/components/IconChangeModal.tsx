@@ -8,10 +8,9 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Agent } from "@/types/agent";
 import { 
-  User, School, GraduationCap, Users, Wrench, 
-  BookOpen, Calculator, FlaskConical, Computer, 
-  Music, Palette, Globe, Heart, Camera, 
-  Coffee, Star, Zap, Shield, Trophy 
+  User, GraduationCap, Code, Bot, FlaskRound, 
+  Map, Languages, Dumbbell, Database, Lightbulb, 
+  Heart, Calendar, Pen, FileText, Camera 
 } from "lucide-react";
 
 interface IconChangeModalProps {
@@ -22,25 +21,20 @@ interface IconChangeModalProps {
 }
 
 const availableIcons = [
-  { name: "User", icon: User, value: "User" },
-  { name: "School", icon: School, value: "School" },
-  { name: "GraduationCap", icon: GraduationCap, value: "GraduationCap" },
-  { name: "Users", icon: Users, value: "Users" },
-  { name: "Wrench", icon: Wrench, value: "Wrench" },
-  { name: "BookOpen", icon: BookOpen, value: "BookOpen" },
-  { name: "Calculator", icon: Calculator, value: "Calculator" },
-  { name: "FlaskConical", icon: FlaskConical, value: "FlaskConical" },
-  { name: "Computer", icon: Computer, value: "Computer" },
-  { name: "Music", icon: Music, value: "Music" },
-  { name: "Palette", icon: Palette, value: "Palette" },
-  { name: "Globe", icon: Globe, value: "Globe" },
-  { name: "Heart", icon: Heart, value: "Heart" },
-  { name: "Camera", icon: Camera, value: "Camera" },
-  { name: "Coffee", icon: Coffee, value: "Coffee" },
-  { name: "Star", icon: Star, value: "Star" },
-  { name: "Zap", icon: Zap, value: "Zap" },
-  { name: "Shield", icon: Shield, value: "Shield" },
-  { name: "Trophy", icon: Trophy, value: "Trophy" }
+  { name: "졸업모자", icon: GraduationCap, value: "fas fa-graduation-cap" },
+  { name: "코드", icon: Code, value: "fas fa-code" },
+  { name: "로봇", icon: Bot, value: "fas fa-robot" },
+  { name: "사용자", icon: User, value: "fas fa-user" },
+  { name: "플라스크", icon: FlaskRound, value: "fas fa-flask" },
+  { name: "지도", icon: Map, value: "fas fa-map" },
+  { name: "언어", icon: Languages, value: "fas fa-language" },
+  { name: "덤벨", icon: Dumbbell, value: "fas fa-dumbbell" },
+  { name: "데이터베이스", icon: Database, value: "fas fa-database" },
+  { name: "전구", icon: Lightbulb, value: "fas fa-lightbulb" },
+  { name: "하트", icon: Heart, value: "fas fa-heart" },
+  { name: "캘린더", icon: Calendar, value: "fas fa-calendar" },
+  { name: "펜", icon: Pen, value: "fas fa-pen" },
+  { name: "문서", icon: FileText, value: "fas fa-file-alt" }
 ];
 
 const colorOptions = [

@@ -145,7 +145,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
     const systemMessage: Message = {
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       conversationId: conversation?.id || 0,
       content: `🔧 ${content}`, // Add system indicator prefix
       isFromUser: false,
@@ -391,7 +391,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
       // Create optimistic user message
       const optimisticUserMessage: Message = {
-        id: Date.now(), // temporary ID
+        id: Date.now() + Math.random(), // temporary ID
         conversationId: conversation?.id || 0,
         content,
         isFromUser: true,
