@@ -1056,20 +1056,21 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                     }}
                   >
                     <div
-                      className={`relative px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed md:px-5 md:py-4 ${
+                      className={`message-bubble relative ${
                         msg.isFromUser
-                          ? "bg-primary text-primary-foreground"
+                          ? "user"
                           : isSystem
                             ? "system-message"
-                            : "bg-muted text-muted-foreground"
-                      }`}
+                            : "assistant"
+                      } text-sm md:text-base leading-relaxed`}
                       style={{
                         textAlign: 'left',
                         minWidth: msg.isFromUser ? '60px' : '40px',
                         width: 'fit-content',
                         overflowWrap: 'break-word',
                         wordBreak: 'keep-all',
-                        whiteSpace: msg.content.length <= 8 ? 'nowrap' : 'normal'
+                        whiteSpace: msg.content.length <= 8 ? 'nowrap' : 'normal',
+                        position: 'relative'
                       }}
                       onClick={() => {
                         if (!msg.isFromUser && !isSystem) {

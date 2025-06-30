@@ -452,17 +452,237 @@ body {
     display: none;
   }
 
-  /* Message bubbles */
+  /* Apple Messages Style Bubbles */
   .message-bubble {
-    @apply rounded-2xl px-4 py-3 max-w-xs break-words;
+    @apply px-4 py-3 max-w-xs break-words;
+    border-radius: 18px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
   }
 
   .message-bubble.user {
-    @apply bg-primary text-primary-foreground rounded-tr-md;
+    background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+    color: white;
+    border-bottom-right-radius: 6px;
+    margin-left: auto;
+    margin-right: 0;
   }
 
   .message-bubble.assistant {
-    @apply bg-muted text-foreground rounded-tl-md;
+    background: #F2F2F7;
+    color: #000000;
+    border-bottom-left-radius: 6px;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .dark .message-bubble.assistant {
+    background: #2C2C2E;
+    color: #FFFFFF;
+  }
+
+  /* Apple Messages Bubble Tails */
+  .message-bubble.user::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -6px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-top: 6px solid #007AFF;
+    border-radius: 0 0 6px 0;
+  }
+
+  .message-bubble.assistant::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #F2F2F7;
+    border-radius: 0 0 0 6px;
+  }
+
+  .dark .message-bubble.assistant::after {
+    border-top-color: #2C2C2E;
+  }
+
+  /* Apple Messages Chat Input Styling */
+  .apple-chat-input {
+    background: #F2F2F7;
+    border: 1px solid #D1D1D6;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 16px;
+    line-height: 1.4;
+    resize: none;
+    outline: none;
+    transition: all 0.2s ease;
+    min-height: 40px;
+    max-height: 120px;
+  }
+
+  .apple-chat-input:focus {
+    border-color: #007AFF;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+  }
+
+  .dark .apple-chat-input {
+    background: #2C2C2E;
+    border-color: #48484A;
+    color: #FFFFFF;
+  }
+
+  .dark .apple-chat-input:focus {
+    border-color: #007AFF;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+  }
+
+  /* Apple Messages Send Button */
+  .apple-send-button {
+    background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  }
+
+  .apple-send-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+  }
+
+  .apple-send-button:active {
+    transform: scale(0.95);
+  }
+
+  .apple-send-button:disabled {
+    background: #C7C7CC;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .dark .apple-send-button:disabled {
+    background: #48484A;
+  }
+
+  /* Apple Messages Chat Container */
+  .apple-chat-container {
+    background: linear-gradient(to bottom, #FFFFFF 0%, #F7F7F7 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .dark .apple-chat-container {
+    background: linear-gradient(to bottom, #000000 0%, #1C1C1E 100%);
+  }
+
+  /* Apple Messages Header */
+  .apple-chat-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .dark .apple-chat-header {
+    background: rgba(28, 28, 30, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Apple Messages Agent List Cards */
+  .apple-agent-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .apple-agent-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #007AFF;
+  }
+
+  .dark .apple-agent-card {
+    background: #2C2C2E;
+    border-color: #48484A;
+  }
+
+  .dark .apple-agent-card:hover {
+    border-color: #007AFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Apple Messages Navigation Tabs */
+  .apple-nav-tabs {
+    background: #F2F2F7;
+    border-radius: 12px;
+    padding: 4px;
+    display: flex;
+    margin-bottom: 16px;
+  }
+
+  .dark .apple-nav-tabs {
+    background: #2C2C2E;
+  }
+
+  .apple-nav-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: #8E8E93;
+  }
+
+  .apple-nav-tab.active {
+    background: #FFFFFF;
+    color: #007AFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .apple-nav-tab.active {
+    background: #48484A;
+    color: #007AFF;
+  }
+
+  /* Apple Messages Input Container */
+  .apple-input-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .dark .apple-input-container {
+    background: rgba(28, 28, 30, 0.95);
+    border-top-color: rgba(255, 255, 255, 0.1);
   }
 
   /* Agent category badges */
