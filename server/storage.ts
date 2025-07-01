@@ -350,6 +350,20 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async updateDocumentContent(id: number, content: string): Promise<Document | null> {
+    try {
+      const result = await db
+        .update(documents)
+        .set({ content })
+        .where(eq(documents.id, id))
+        .returning();
+      return result[0] || null;
+    } catch (error) {
+      console.error("Error updating document content:", error);
+      throw error;
+    }
+  }
+
   // Stats operations
   async getAgentStats(agentId: number): Promise<AgentStats | undefined> {
     const [stats] = await db.select().from(agentStats).where(eq(agentStats.agentId, agentId));

@@ -720,6 +720,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reprocess document content
+  app.post('/api/documents/:id/reprocess', isAuthenticated, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(documentId);
+
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Check if original file exists
+      const filePath = path.join('uploads', document.filename);
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "Original file not found" });
+      }
+
+      console.log('Reprocessing document:', document.originalName);
+      
+      // Extract text content using the improved extraction function
+      const extractedText = await extractTextFromContent(filePath, document.mimeType);
+      
+      // Update document content
+      const updatedDocument = await storage.updateDocumentContent(documentId, extractedText);
+
+      res.json({
+        message: "Document reprocessed successfully",
+        document: updatedDocument,
+        extractedLength: extractedText ? extractedText.length : 0
+      });
+    } catch (error) {
+      console.error("Error reprocessing document:", error);
+      res.status(500).json({ message: "Failed to reprocess document" });
+    }
+  });
+
   app.delete('/api/documents/:id', isAuthenticated, async (req, res) => {
     try {
       const documentId = parseInt(req.params.id);

@@ -843,14 +843,7 @@ export class MemoryStorage implements IStorage {
     }
   }
 
-  async updateDocumentContent(id: number, content: string): Promise<void> {
-    const document = this.documents.get(id);
-    if (document) {
-      document.content = content;
-      this.savePersistedDocuments(); // Persist immediately
-      console.log(`Document ${id} content updated and persisted: ${document.originalName}`);
-    }
-  }
+
 
   async getAllDocuments(): Promise<Document[]> {
     return Array.from(this.documents.values());
@@ -863,6 +856,17 @@ export class MemoryStorage implements IStorage {
       this.savePersistedDocuments(); // Persist immediately
       console.log(`Document ${id} updated and persisted: ${document.originalName}`);
     }
+  }
+
+  async updateDocumentContent(id: number, content: string): Promise<Document | null> {
+    const document = this.documents.get(id);
+    if (document) {
+      document.content = content;
+      this.savePersistedDocuments(); // Persist immediately
+      console.log(`Document ${id} content updated and persisted: ${document.originalName}`);
+      return document;
+    }
+    return null;
   }
 
   // Stats operations

@@ -498,6 +498,15 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
         const dataBuffer = fs.readFileSync(filePath);
         console.log('PDF buffer read successfully, size:', dataBuffer.length);
         
+        // Check if buffer starts with PDF header
+        const pdfHeader = dataBuffer.subarray(0, 4).toString();
+        console.log('PDF header check:', pdfHeader);
+        
+        if (!pdfHeader.includes('%PDF')) {
+          console.error('File does not appear to be a valid PDF');
+          return 'PDF 파일 형식이 올바르지 않습니다. 파일이 손상되었거나 PDF가 아닐 수 있습니다.';
+        }
+        
         // Use dynamic import for ES modules compatibility
         const pdfParse = (await import('pdf-parse')).default;
         
@@ -507,7 +516,8 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
             // Disable worker to avoid path issues
             max: 0,
             normalizeWhitespace: true,
-            disableCombineTextItems: false
+            disableCombineTextItems: false,
+            version: 'v1.10.100'
           }),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('PDF parsing timeout')), 30000)
