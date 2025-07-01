@@ -122,7 +122,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
-    <div className="space-y-3 px-4">
+    <div className="space-y-1 px-4">
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
@@ -132,17 +132,13 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`} className="block w-full">
-            <div className={`neu-card-small transition-all duration-300 cursor-pointer ${
-              isActive ? 'transform scale-[0.98]' : 'hover:transform hover:translateY-[-2px]'
-            }`}
-            style={{
-              background: isActive 
-                ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))' 
-                : 'var(--neu-surface)',
-              color: isActive ? 'white' : 'var(--neu-text)'
-            }}>
-              <div className="flex items-center space-x-2 md:space-x-4">
-                <div className={`w-10 h-10 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
+            <div className={`p-3 rounded-lg transition-colors duration-200 cursor-pointer border-b border-gray-100 dark:border-gray-800 last:border-b-0 ${
+              isActive 
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' 
+                : 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            }`}>
+              <div className="flex items-center space-x-3">
+                <div className={`w-10 h-10 ${bgColor} rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden md:w-12 md:h-12`}>
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                     <img 
                       src={agent.icon} 
@@ -163,27 +159,33 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5 md:mb-2">
-                    <div className="flex items-center space-x-1.5 md:space-x-3">
-                      <h3 className="font-medium text-foreground truncate korean-text text-sm md:text-lg">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center space-x-2">
+                      <h3 className={`font-medium truncate korean-text text-sm md:text-base ${
+                        isActive ? 'text-blue-900 dark:text-blue-100' : 'text-gray-900 dark:text-gray-100'
+                      }`}>
                         {agent.name}
                       </h3>
-                      <span className={`${getCategoryBadgeStyle(agent.category)} text-xs px-1.5 py-0.5 rounded-full text-xs`}>
+                      <span className={`${getCategoryBadgeStyle(agent.category)} text-xs px-2 py-0.5 rounded-md`}>
                         {agent.category}
                       </span>
                     </div>
                     {conversation?.lastMessageAt && (
-                      <span className="text-xs text-muted-foreground korean-text md:text-sm">
+                      <span className={`text-xs korean-text flex-shrink-0 ${
+                        isActive ? 'text-blue-700 dark:text-blue-300' : 'text-gray-500 dark:text-gray-400'
+                      }`}>
                         {getTimeAgo(conversation.lastMessageAt)}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center justify-between space-x-1">
-                    <p className="text-sm text-muted-foreground truncate korean-text flex-1 md:text-base">
+                  <div className="flex items-center justify-between">
+                    <p className={`text-sm truncate korean-text flex-1 ${
+                      isActive ? 'text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400'
+                    }`}>
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                     {conversation && conversation.unreadCount > 0 && (
-                      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] flex items-center justify-center ml-2 flex-shrink-0">
+                      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[18px] h-[18px] flex items-center justify-center ml-2 flex-shrink-0">
                         {conversation.unreadCount}
                       </span>
                     )}
