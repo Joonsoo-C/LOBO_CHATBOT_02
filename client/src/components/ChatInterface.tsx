@@ -91,6 +91,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
+  const [showDocumentPreview, setShowDocumentPreview] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -1372,11 +1374,43 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         <Button
                           variant="ghost"
                           size="sm"
+                          className="p-2 hover:bg-green-100 dark:hover:bg-green-900/20"
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(`/api/documents/${doc.id}/content`, {
+                                credentials: 'include'
+                              });
+                              if (response.ok) {
+                                const docContent = await response.json();
+                                setSelectedDocument(docContent);
+                                setShowDocumentPreview(true);
+                              } else {
+                                toast({
+                                  title: "미리보기 실패",
+                                  description: "문서 내용을 불러올 수 없습니다.",
+                                  variant: "destructive",
+                                });
+                              }
+                            } catch (error) {
+                              toast({
+                                title: "오류 발생",
+                                description: "문서 내용 조회 중 오류가 발생했습니다.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                          title="문서 내용 미리보기"
+                        >
+                          <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/20"
                           onClick={() => {
                             // Download file
                             const link = document.createElement('a');
-                            link.href = `/uploads/${doc.filename}`;
+                            link.href = `/api/documents/${doc.id}/download`;
                             link.download = doc.originalName || doc.filename;
                             document.body.appendChild(link);
                             link.click();
@@ -1440,6 +1474,96 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 <p className="text-muted-foreground korean-text">업로드된 파일이 없습니다</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Document Content Preview Modal */}
+      {showDocumentPreview && selectedDocument && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]">
+          <div className="bg-background rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-semibold korean-text break-words">
+                  {selectedDocument.originalName}
+                </h2>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                  <span>크기: {selectedDocument.size ? (selectedDocument.size / (1024 * 1024)).toFixed(2) + ' MB' : '알 수 없음'}</span>
+                  <span>•</span>
+                  <span>업로드: {new Date(selectedDocument.createdAt).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}</span>
+                  <span>•</span>
+                  <span>업로드자: {selectedDocument.uploadedBy}</span>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2 ml-4"
+                onClick={() => {
+                  setShowDocumentPreview(false);
+                  setSelectedDocument(null);
+                }}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-hidden p-6">
+              <div className="h-full overflow-y-auto">
+                {selectedDocument.content ? (
+                  <div className="prose prose-sm max-w-none dark:prose-invert">
+                    <pre className="whitespace-pre-wrap korean-text text-sm leading-relaxed bg-muted/30 p-4 rounded-lg border">
+                      {selectedDocument.content}
+                    </pre>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground korean-text text-lg mb-2">내용을 표시할 수 없습니다</p>
+                    <p className="text-muted-foreground korean-text text-sm">
+                      이 문서에서 텍스트를 추출할 수 없거나 지원되지 않는 형식입니다.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = `/api/documents/${selectedDocument.id}/download`;
+                  link.download = selectedDocument.originalName;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="korean-text"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                파일 다운로드
+              </Button>
+              <Button
+                variant="default"
+                onClick={() => {
+                  setShowDocumentPreview(false);
+                  setSelectedDocument(null);
+                }}
+                className="korean-text"
+              >
+                닫기
+              </Button>
+            </div>
           </div>
         </div>
       )}

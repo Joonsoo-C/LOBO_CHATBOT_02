@@ -660,6 +660,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get document content for preview
+  app.get('/api/documents/:id/content', isAuthenticated, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const document = await storage.getDocument(documentId);
+
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      res.json({
+        id: document.id,
+        originalName: document.originalName,
+        mimeType: document.mimeType,
+        size: document.size,
+        createdAt: document.createdAt,
+        content: document.content,
+        uploadedBy: document.uploadedBy
+      });
+    } catch (error) {
+      console.error("Error fetching document content:", error);
+      res.status(500).json({ message: "Failed to fetch document content" });
+    }
+  });
+
   app.get('/api/documents/:id/download', isAuthenticated, async (req, res) => {
     try {
       const documentId = parseInt(req.params.id);
@@ -669,15 +694,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Document not found" });
       }
 
-      // Properly encode filename for Korean characters
-      const safeFilename = document.originalName.replace(/[^\w\s.-]/g, '_');
-      const encodedFilename = encodeURIComponent(document.originalName);
+      // Check if original file exists
+      const filePath = path.join('uploads', document.filename);
+      
+      if (fs.existsSync(filePath)) {
+        // Serve the original file
+        const safeFilename = document.originalName.replace(/[^\w\s.-]/g, '_');
+        const encodedFilename = encodeURIComponent(document.originalName);
+        
+        res.setHeader('Content-Type', document.mimeType);
+        res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodedFilename}`);
+        res.sendFile(path.resolve(filePath));
+      } else {
+        // Fallback to extracted content
+        const safeFilename = document.originalName.replace(/[^\w\s.-]/g, '_');
+        const encodedFilename = encodeURIComponent(document.originalName);
 
-      // In a real implementation, you'd serve the actual file
-      // For now, we'll serve the extracted content
-      res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodedFilename}`);
-      res.send(document.content || "No content available");
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.txt"; filename*=UTF-8''${encodedFilename}.txt`);
+        res.send(document.content || "No content available");
+      }
     } catch (error) {
       console.error("Error downloading document:", error);
       res.status(500).json({ message: "Failed to download document" });

@@ -241,6 +241,17 @@
       "uploadedBy": "user1081",
       "id": 129,
       "createdAt": "2025-07-01T06:48:04.036Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "655530b7f5b54f786081f18e1a31db9e",
+      "originalName": "컬러빌과 시간의 섬 (1).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 파일 경로에 문제가 있습니다. 파일이 올바르게 업로드되었는지 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 130,
+      "createdAt": "2025-07-01T06:55:05.568Z"
     }
   ],
   "organizationCategories": [
@@ -1857,6 +1868,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 130,
+  "nextId": 131,
   "nextOrganizationId": 125
 }
