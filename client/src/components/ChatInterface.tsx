@@ -1011,14 +1011,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               {/* Typing Indicator */}
               {isTyping && (
                 <div className="message-row">
-                  <div className="relative w-full flex items-end gap-2 justify-start">
-                    <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
-                      {new Date().toLocaleTimeString('ko-KR', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                      })}
-                    </div>
+                  <div className="relative w-full flex flex-col items-start">
                     <div className="minimal-message assistant max-w-[120px]">
                       <div className="flex items-center justify-center py-1">
                         <div className="flex space-x-1">
@@ -1027,6 +1020,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1 text-left">
+                      {new Date().toLocaleTimeString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                      })}
                     </div>
                   </div>
                 </div>
