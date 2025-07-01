@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { format, isToday, isYesterday } from "date-fns";
+import { ko } from "date-fns/locale";
 import PDFViewer from "./PDFViewer";
 import { 
   ChevronLeft, 
@@ -559,6 +561,19 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     setTimeout(() => scrollToBottom(), 100);
   };
 
+  // Format message time like messenger apps
+  const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    
+    if (isToday(date)) {
+      return format(date, 'a h:mm', { locale: ko }); // 오후 3:45
+    } else if (isYesterday(date)) {
+      return '어제';
+    } else {
+      return format(date, 'M월 d일', { locale: ko }); // 12월 30일
+    }
+  };
+
   // Combine real messages with optimistic messages
   const allMessages = [...(messages || []), ...optimisticMessages];
   
@@ -906,27 +921,36 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                        <div
-                          className={`${
-                            msg.isFromUser
-                              ? "minimal-message user"
-                              : isSystem
-                                ? "minimal-message system-message"
-                                : "minimal-message assistant"
-                          } text-sm md:text-base leading-relaxed korean-text`}
-                          onClick={() => {
-                            if (!msg.isFromUser && !isSystem) {
-                              handleReactionToggle(msg.id);
-                            }
-                          }}
-                        >
-                          {msg.content}
+                        <div className="flex items-end gap-2">
+                          <div
+                            className={`${
+                              msg.isFromUser
+                                ? "minimal-message user"
+                                : isSystem
+                                  ? "minimal-message system-message"
+                                  : "minimal-message assistant"
+                            } text-sm md:text-base leading-relaxed korean-text`}
+                            onClick={() => {
+                              if (!msg.isFromUser && !isSystem) {
+                                handleReactionToggle(msg.id);
+                              }
+                            }}
+                          >
+                            {msg.content}
+                          </div>
+                          
+                          {/* Time display for AI messages only */}
+                          {!msg.isFromUser && !isSystem && msg.createdAt && (
+                            <span className="text-xs text-muted-foreground flex-shrink-0 pb-1">
+                              {formatMessageTime(msg.createdAt)}
+                            </span>
+                          )}
                         </div>
                         
                         {/* Reaction Options - positioned to the right of AI messages */}
                         {!msg.isFromUser && !isSystem && showReactionOptions && (
                           <div 
-                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
+                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-16"
                             onClick={(e) => e.stopPropagation()}
                             onMouseEnter={() => {
                               if (hoverTimeoutRef.current) {
