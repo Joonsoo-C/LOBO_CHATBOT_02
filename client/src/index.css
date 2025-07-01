@@ -627,13 +627,14 @@ body {
     background: #FFFFFF;
     border: none;
     border-radius: 0;
-    padding: 16px 20px;
+    padding: 20px 24px;
     margin-bottom: 0;
     box-shadow: none;
     transition: all 0.2s ease;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     width: 100%;
     display: block;
+    min-height: 80px;
   }
 
   .apple-agent-card:hover {
