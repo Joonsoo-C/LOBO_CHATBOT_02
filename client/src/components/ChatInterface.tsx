@@ -900,7 +900,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
                 
                 return (
-                  <div key={uniqueKey} className="message-row">
+                  <div key={uniqueKey} className={`message-row ${msg.isFromUser ? 'user-message' : (isSystem ? 'system-message' : 'ai-message')}`}>
                     <div 
                       className="relative w-full"
                       onMouseEnter={() => {
@@ -921,7 +921,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                        <div className="flex items-end" style={{ gap: '1pt' }}>
+                        <div className="flex items-end w-fit" style={{ gap: '1pt' }}>
                           <div
                             className={`${
                               msg.isFromUser
@@ -1024,7 +1024,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               {/* Typing Indicator */}
               {isTyping && (
-                <div className="message-row">
+                <div className="message-row ai-message">
                   <div className="minimal-message assistant max-w-[120px]" style={{ float: 'left', clear: 'both' }}>
                     <div className="flex items-center justify-center py-1">
                       <div className="flex space-x-1">

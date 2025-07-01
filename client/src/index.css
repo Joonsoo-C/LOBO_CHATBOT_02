@@ -505,9 +505,18 @@
 /* 메시지 행 스타일링 */
 .message-row {
   width: 100%;
-  display: block;
+  display: flex;
   overflow: hidden;
   margin-bottom: 4px;
+}
+
+.message-row.user-message {
+  justify-content: flex-end;
+}
+
+.message-row.ai-message,
+.message-row.system-message {
+  justify-content: flex-start;
 }
 
 /* 모바일 반응형 */
