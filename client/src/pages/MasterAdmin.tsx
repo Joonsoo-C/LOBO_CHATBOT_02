@@ -1795,40 +1795,7 @@ function MasterAdmin() {
     },
   });
 
-  // 에이전트 편집 폼
-  const editAgentForm = useForm<AgentFormData>({
-    resolver: zodResolver(agentSchema),
-    defaultValues: {
-      // 📌 기본 정보
-      name: "",
-      description: "",
-      category: "",
-      
-      // 📌 소속 및 상태
-      upperCategory: "",
-      lowerCategory: "",
-      detailCategory: "",
-      status: "active",
-      
-      // 📌 모델 및 응답 설정
-      llmModel: "gpt-4o",
-      chatbotType: "doc-fallback-llm",
-      maxInputLength: 2048,
-      maxOutputLength: 1024,
-      
-      // 📌 역할 및 페르소나 설정
-      personaNickname: "",
-      speechStyle: "",
-      personality: "",
-      forbiddenResponseStyle: "",
-      
-      // 📌 권한 및 접근 설정
-      visibility: "organization",
-      managerId: "",
-      agentEditorIds: [],
-      documentManagerIds: [],
-    },
-  });
+
 
   // 에이전트 생성 뮤테이션
   const createAgentMutation = useMutation({
@@ -2616,35 +2583,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
 
 
-  // 에이전트 편집 뮤테이션
-  const updateAgentMutation = useMutation({
-    mutationFn: async (data: AgentFormData & { id: number }) => {
-      const payload = {
-        ...data,
-        isActive: data.status === "active",
-      };
-      const response = await apiRequest("PUT", `/api/admin/agents/${data.id}`, payload);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
-      toast({
-        title: "성공",
-        description: "에이전트 정보가 수정되었습니다.",
-      });
-      setIsEditAgentDialogOpen(false);
-      setEditingAgent(null);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "오류",
-        description: "에이전트 수정에 실패했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
+
 
   const openNewAgentDialog = () => {
     // 새 에이전트 생성 폼 초기화
