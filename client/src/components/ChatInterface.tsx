@@ -1058,7 +1058,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
       {/* Chat Messages */}
       <div 
-        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto chat-scroll chat-messages md:px-6`}
+        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
           paddingTop: isTablet ? '1rem' : '0', 
           paddingBottom: isTablet ? '1rem' : '40px',
