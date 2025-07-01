@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import mammoth from 'mammoth';
-import pdfParse from 'pdf-parse';
 import { storage } from './storage';
 
 async function extractTextFromFile(filePath: string, mimeType: string): Promise<string | null> {
@@ -21,16 +20,15 @@ async function extractTextFromFile(filePath: string, mimeType: string): Promise<
       return cleanText.length > 20 ? cleanText : null;
     }
     
-    if (mimeType.includes('application/pdf')) {
-      // PDF 파일 처리
-      const dataBuffer = fs.readFileSync(filePath);
-      const data = await pdfParse(dataBuffer);
-      const cleanText = data.text
+    if (mimeType.includes('text/plain')) {
+      // TXT 파일 처리
+      const textContent = fs.readFileSync(filePath, 'utf-8');
+      const cleanText = textContent
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
         .replace(/\uFFFD/g, '')
         .trim();
         
-      console.log(`PDF 추출 완료: ${cleanText.length} characters`);
+      console.log(`TXT 추출 완료: ${cleanText.length} characters`);
       return cleanText.length > 20 ? cleanText : null;
     }
     
@@ -46,7 +44,7 @@ async function fixAllDocuments() {
     console.log('문서 텍스트 추출 수정 시작...');
     
     // 모든 문서 가져오기
-    const documents = await storage.getDocuments();
+    const documents = await storage.getAllDocuments();
     console.log(`총 ${documents.length}개 문서를 검사합니다.`);
     
     let fixedCount = 0;

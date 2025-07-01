@@ -64,7 +64,6 @@ import {
   Eye,
   X,
   ChevronsUpDown,
-  RefreshCw,
 } from "lucide-react";
 import { Link } from "wouter";
 

@@ -828,10 +828,7 @@ export class MemoryStorage implements IStorage {
       .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
-  async getAllDocuments(): Promise<Document[]> {
-    return Array.from(this.documents.values())
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
-  }
+
 
   async getDocument(id: number): Promise<Document | undefined> {
     return this.documents.get(id);
@@ -852,6 +849,19 @@ export class MemoryStorage implements IStorage {
       document.content = content;
       this.savePersistedDocuments(); // Persist immediately
       console.log(`Document ${id} content updated and persisted: ${document.originalName}`);
+    }
+  }
+
+  async getAllDocuments(): Promise<Document[]> {
+    return Array.from(this.documents.values());
+  }
+
+  async updateDocument(id: number, updates: Partial<Document>): Promise<void> {
+    const document = this.documents.get(id);
+    if (document) {
+      Object.assign(document, updates);
+      this.savePersistedDocuments(); // Persist immediately
+      console.log(`Document ${id} updated and persisted: ${document.originalName}`);
     }
   }
 
