@@ -585,11 +585,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // Read file content
-      const fileContent = fs.readFileSync(file.path, 'utf-8');
+      // Create permanent file path
+      const permanentPath = path.join('uploads', file.filename);
+      
+      // Copy file to permanent location
+      fs.copyFileSync(file.path, permanentPath);
 
-      // Extract text content based on file type
-      const extractedText = await extractTextFromContent(fileContent, file.mimetype);
+      // Extract text content based on file type using permanent path
+      const extractedText = await extractTextFromContent(permanentPath, file.mimetype);
 
       // Analyze document
       const analysis = await analyzeDocument(extractedText, file.originalname);
