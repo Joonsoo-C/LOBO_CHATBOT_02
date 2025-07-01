@@ -54,25 +54,44 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       formData.append("documentType", documentType);
       formData.append("description", documentDescription);
 
-      const response = await fetch(`/api/agents/${agent.id}/documents`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
+      
+      try {
+        const response = await fetch(`/api/agents/${agent.id}/documents`, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`${response.status}: ${errorText}`);
+        }
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`${response.status}: ${errorText}`);
+        return response.json();
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('업로드 시간 초과: 파일이 너무 크거나 네트워크가 느립니다.');
+        }
+        throw error;
       }
-
-      return response.json();
     },
     onSuccess: (data: any) => {
+      console.log('Document upload successful:', data);
+      
+      // Get filename before resetting state
+      const filename = data.originalName || selectedFile?.name || '파일';
+      
       queryClient.invalidateQueries({
         queryKey: [`/api/agents/${agent.id}/documents`]
       });
       
-      // Reset form
+      // Reset form immediately
       setSelectedFile(null);
       setDocumentType("");
       setDocumentDescription("");
@@ -84,15 +103,16 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
       // Send completion message to chat
       if (onSuccess) {
-        onSuccess(`${data.originalName || selectedFile?.name} 문서 업로드가 저장되었습니다.`);
+        onSuccess(`${filename} 문서 업로드가 저장되었습니다.`);
       }
 
       // Broadcast document upload notification
       broadcastMutation.mutate({
         agentId: agent.id,
-        message: `📄 새로운 문서가 업로드되었습니다: ${data.originalName || selectedFile?.name}`
+        message: `📄 새로운 문서가 업로드되었습니다: ${filename}`
       });
 
+      // Close modal immediately
       onClose();
     },
     onError: (error: Error) => {
