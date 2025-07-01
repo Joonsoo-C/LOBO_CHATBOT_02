@@ -166,7 +166,7 @@ function Home() {
     <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">
       {/* Header */}
       <header className="fixed-header-stable md:static md:bg-transparent md:shadow-none md:mb-0">
-        <div className="px-6 py-3 md:px-0 md:py-0">
+        <div className="px-4 py-3 md:px-6 md:py-4">
           {/* Header with search and settings */}
           <div className="flex items-center gap-2 mb-4 md:mb-6">
             {/* Search Bar */}

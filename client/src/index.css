@@ -365,7 +365,7 @@ body {
 
   /* Mobile-first responsive design */
   .mobile-container {
-    @apply max-w-md mx-auto min-h-screen bg-background;
+    @apply w-full mx-0 min-h-screen bg-background;
     /* Use visual viewport height instead of 100vh to handle mobile keyboards */
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for modern browsers */
@@ -627,14 +627,14 @@ body {
     background: #FFFFFF;
     border: none;
     border-radius: 0;
-    padding: 24px 28px;
+    padding: 20px 24px;
     margin-bottom: 0;
     box-shadow: none;
     transition: all 0.2s ease;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     width: 100%;
     display: block;
-    min-height: 88px;
+    min-height: 80px;
   }
 
   .apple-agent-card:hover {
