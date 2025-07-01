@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { format, isToday, isYesterday } from "date-fns";
-import { ko } from "date-fns/locale";
 import PDFViewer from "./PDFViewer";
 import { 
   ChevronLeft, 
@@ -561,19 +559,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     setTimeout(() => scrollToBottom(), 100);
   };
 
-  // Format message time like KakaoTalk
-  const formatMessageTime = (dateString: string) => {
-    const date = new Date(dateString);
-    
-    if (isToday(date)) {
-      return format(date, 'a h:mm', { locale: ko }); // 오후 3:45
-    } else if (isYesterday(date)) {
-      return '어제 ' + format(date, 'a h:mm', { locale: ko }); // 어제 오후 3:45
-    } else {
-      return format(date, 'M월 d일 a h:mm', { locale: ko }); // 12월 30일 오후 3:45
-    }
-  };
-
   // Combine real messages with optimistic messages
   const allMessages = [...(messages || []), ...optimisticMessages];
   
@@ -900,7 +885,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
                 
                 return (
-                  <div key={uniqueKey} className={`message-row ${msg.isFromUser ? 'user-message' : (isSystem ? 'system-message' : 'ai-message')}`}>
+                  <div key={uniqueKey} className="message-row">
                     <div 
                       className="relative w-full"
                       onMouseEnter={() => {
@@ -921,36 +906,27 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                        <div className="flex items-end w-fit" style={{ gap: '1pt' }}>
-                          <div
-                            className={`${
-                              msg.isFromUser
-                                ? "minimal-message user"
-                                : isSystem
-                                  ? "minimal-message system-message"
-                                  : "minimal-message assistant"
-                            } text-sm md:text-base leading-relaxed korean-text`}
-                            onClick={() => {
-                              if (!msg.isFromUser && !isSystem) {
-                                handleReactionToggle(msg.id);
-                              }
-                            }}
-                          >
-                            {msg.content}
-                          </div>
-                          
-                          {/* Time display for AI messages only - KakaoTalk style */}
-                          {!msg.isFromUser && !isSystem && msg.createdAt && (
-                            <span className="text-xs text-gray-500 flex-shrink-0 self-end mb-0.5" style={{ fontSize: '10px', lineHeight: '12px' }}>
-                              {formatMessageTime(msg.createdAt)}
-                            </span>
-                          )}
+                        <div
+                          className={`${
+                            msg.isFromUser
+                              ? "minimal-message user"
+                              : isSystem
+                                ? "minimal-message system-message"
+                                : "minimal-message assistant"
+                          } text-sm md:text-base leading-relaxed korean-text`}
+                          onClick={() => {
+                            if (!msg.isFromUser && !isSystem) {
+                              handleReactionToggle(msg.id);
+                            }
+                          }}
+                        >
+                          {msg.content}
                         </div>
                         
                         {/* Reaction Options - positioned to the right of AI messages */}
                         {!msg.isFromUser && !isSystem && showReactionOptions && (
                           <div 
-                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-20"
+                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
                             onClick={(e) => e.stopPropagation()}
                             onMouseEnter={() => {
                               if (hoverTimeoutRef.current) {
@@ -1024,7 +1000,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               
               {/* Typing Indicator */}
               {isTyping && (
-                <div className="message-row ai-message">
+                <div className="message-row">
                   <div className="minimal-message assistant max-w-[120px]" style={{ float: 'left', clear: 'both' }}>
                     <div className="flex items-center justify-center py-1">
                       <div className="flex space-x-1">
