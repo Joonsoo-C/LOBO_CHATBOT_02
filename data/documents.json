@@ -186,6 +186,17 @@
       "uploadedBy": "user1081",
       "id": 116,
       "createdAt": "2025-07-01T06:30:53.882Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "f8de6bb956b11bf4f42267e3e0dc500f",
+      "originalName": "컬러빌과 시간의 섬 (2).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다: require is not defined",
+      "uploadedBy": "user1081",
+      "id": 117,
+      "createdAt": "2025-07-01T06:35:49.990Z"
     }
   ],
   "organizationCategories": [
@@ -1802,6 +1813,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 117,
+  "nextId": 118,
   "nextOrganizationId": 125
 }
