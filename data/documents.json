@@ -208,6 +208,39 @@
       "uploadedBy": "user1081",
       "id": 118,
       "createdAt": "2025-07-01T06:40:28.168Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "8e16d52ed04de4211a00dc163874983d",
+      "originalName": "컬러빌과 시간의 섬 (1).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다: ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'",
+      "uploadedBy": "user1081",
+      "id": 119,
+      "createdAt": "2025-07-01T06:46:26.828Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "60790c666b2d14f779e5a968d0608e8c",
+      "originalName": "컬러빌과 시간의 섬 (1).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다: ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'",
+      "uploadedBy": "user1081",
+      "id": 122,
+      "createdAt": "2025-07-01T06:46:47.108Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "15019da75dcfe096262158652ea57005",
+      "originalName": "컬러빌과 시간의 섬 (2).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다: ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'",
+      "uploadedBy": "user1081",
+      "id": 129,
+      "createdAt": "2025-07-01T06:48:04.036Z"
     }
   ],
   "organizationCategories": [
@@ -1824,6 +1857,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 119,
+  "nextId": 130,
   "nextOrganizationId": 125
 }

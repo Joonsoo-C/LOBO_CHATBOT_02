@@ -593,8 +593,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create permanent file path
       const permanentPath = path.join('uploads', file.filename);
       
+      console.log('File upload details:', {
+        originalname: file.originalname,
+        filename: file.filename,
+        mimetype: file.mimetype,
+        size: file.size,
+        tempPath: file.path,
+        permanentPath: permanentPath
+      });
+      
+      // Ensure uploads directory exists
+      if (!fs.existsSync('uploads')) {
+        fs.mkdirSync('uploads', { recursive: true });
+      }
+      
       // Copy file to permanent location
       fs.copyFileSync(file.path, permanentPath);
+      
+      // Verify file was copied successfully
+      if (!fs.existsSync(permanentPath)) {
+        throw new Error(`Failed to copy file to permanent location: ${permanentPath}`);
+      }
+      
+      console.log('File successfully copied to:', permanentPath);
+      console.log('File size after copy:', fs.statSync(permanentPath).size);
 
       // Extract text content based on file type using permanent path
       const extractedText = await extractTextFromContent(permanentPath, file.mimetype);

@@ -469,26 +469,46 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
       // Extract text from PDF files using pdf-parse
       console.log('PDF file detected, extracting text:', filePath);
       try {
-        // Use dynamic import for ES modules compatibility
-        const pdfParse = (await import('pdf-parse')).default;
-        
-        // Check if file exists and is readable
+        // Check if file exists and is readable first
         console.log('Checking PDF file path:', filePath);
         console.log('File exists check:', fs.existsSync(filePath));
+        console.log('Current working directory:', process.cwd());
         
         if (!fs.existsSync(filePath)) {
           console.error('PDF file does not exist:', filePath);
           const path = require('path');
-          console.log('Directory contents:', fs.readdirSync(path.dirname(filePath)).filter(f => f.includes('.pdf')));
+          const dir = path.dirname(filePath);
+          if (fs.existsSync(dir)) {
+            console.log('Directory contents:', fs.readdirSync(dir));
+          } else {
+            console.log('Directory does not exist:', dir);
+          }
           return 'PDF 파일을 찾을 수 없습니다. 파일 경로를 확인해주세요.';
         }
         
+        const fileStats = fs.statSync(filePath);
+        console.log('PDF file size:', fileStats.size);
+        
+        if (fileStats.size === 0) {
+          console.error('PDF file is empty');
+          return 'PDF 파일이 비어있습니다.';
+        }
+        
+        // Read file as buffer
         const dataBuffer = fs.readFileSync(filePath);
-        console.log('PDF buffer size:', dataBuffer.length);
+        console.log('PDF buffer read successfully, size:', dataBuffer.length);
+        
+        // Use dynamic import for ES modules compatibility
+        const pdfParse = (await import('pdf-parse')).default;
         
         // Add timeout to prevent hanging
         const data = await Promise.race([
-          pdfParse(dataBuffer),
+          pdfParse(dataBuffer, {
+            // Disable worker to avoid path issues
+            max: 0,
+            normalizeWhitespace: true,
+            disableCombineTextItems: false
+          }),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('PDF parsing timeout')), 30000)
           )
@@ -516,8 +536,12 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
         return cleanText;
       } catch (pdfError) {
         console.error('PDF extraction failed:', pdfError);
+        console.error('Error stack:', pdfError.stack);
         if (pdfError.message?.includes('timeout')) {
           return 'PDF 문서가 너무 큽니다. 텍스트 추출에 시간이 오래 걸려 중단되었습니다.';
+        }
+        if (pdfError.message?.includes('ENOENT')) {
+          return 'PDF 파일 경로에 문제가 있습니다. 파일이 올바르게 업로드되었는지 확인해주세요.';
         }
         return `PDF 문서 텍스트 추출 중 오류가 발생했습니다: ${pdfError.message || '알 수 없는 오류'}`;
       }
