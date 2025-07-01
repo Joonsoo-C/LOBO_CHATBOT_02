@@ -921,7 +921,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                        <div className="flex items-end gap-0.5">
+                        <div className="flex items-end" style={{ gap: '1pt' }}>
                           <div
                             className={`${
                               msg.isFromUser
