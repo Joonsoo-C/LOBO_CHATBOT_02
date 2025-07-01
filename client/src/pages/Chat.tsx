@@ -181,8 +181,12 @@ export default function Chat() {
                         alt={agent.name}
                         className="w-full h-full rounded-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.nextElementSibling!.style.display = 'block';
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const nextElement = target.nextElementSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'block';
+                          }
                         }}
                       />
                     ) : (
@@ -239,7 +243,6 @@ export default function Chat() {
       <AccountSettingsModal 
         isOpen={showAccountModal} 
         onClose={() => setShowAccountModal(false)} 
-        user={user} 
       />
     </div>
   );
