@@ -2988,7 +2988,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 사용자</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 사용자</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -3001,7 +3001,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 에이전트</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 에이전트</CardTitle>
                   <Bot className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -3014,7 +3014,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 대화</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 대화</CardTitle>
                   <MessageSquare className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -3027,7 +3027,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">오늘 활동</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">오늘 활동</CardTitle>
                   <Activity className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -3043,7 +3043,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>시스템 상태</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">시스템 상태</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -3075,7 +3075,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle>최근 활동</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 활동</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -3298,7 +3298,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 사용자 목록 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>사용자 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">사용자 목록</CardTitle>
                 {hasSearched && (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     전체 {filteredUsers.length}명 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}개 표시
@@ -4851,7 +4851,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {hasAgentSearched ? (
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>에이전트 목록</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">에이전트 목록</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     전체 {sortedAgents?.length || 0}개 에이전트 표시
                   </div>
@@ -4995,7 +4995,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             ) : (
               <Card>
                 <CardHeader>
-                  <CardTitle>에이전트 검색</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">에이전트 검색</CardTitle>
                 </CardHeader>
                 <CardContent className="py-12">
                   <div className="text-center text-gray-500 dark:text-gray-400">
@@ -5147,7 +5147,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>최근 질문/응답 로그</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">최근 질문/응답 로그</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   전체 1,247개 중 4개 표시
                 </div>
@@ -5339,7 +5339,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>인기 질문 TOP 10</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">인기 질문 TOP 10</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -5369,7 +5369,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle>응답 품질 분석</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">응답 품질 분석</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -5549,7 +5549,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             <Card className="rounded-lg border">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>조직 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">조직 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   전체 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
                 </div>
@@ -6274,7 +6274,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">문서 통계</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -6301,7 +6301,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">문서 종류별 분포</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 종류별 분포</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -6325,7 +6325,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">최근 업로드</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 업로드</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {documentList && documentList.length > 0 ? (
@@ -6440,7 +6440,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>문서 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">문서 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   전체 {documentList?.length || 0}개 문서 표시
                 </div>
@@ -6658,7 +6658,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 로그 필터링 */}
             <Card>
               <CardHeader>
-                <CardTitle>로그 필터링</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[24px]">로그 필터링</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
@@ -6765,7 +6765,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 토큰 사용량 테이블 */}
             <Card>
               <CardHeader>
-                <CardTitle>토큰 사용량 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 목록</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -6877,7 +6877,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>OpenAI 설정</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">OpenAI 설정</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -6903,7 +6903,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle>데이터베이스 관리</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">데이터베이스 관리</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
