@@ -10,7 +10,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import mammoth from 'mammoth';
-import pdfParse from 'pdf-parse';
+
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";

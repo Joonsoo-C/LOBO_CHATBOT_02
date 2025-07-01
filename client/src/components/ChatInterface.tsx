@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
+import PDFViewer from "./PDFViewer";
 import { 
   ChevronLeft, 
   Paperclip, 
@@ -94,6 +95,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
   const [showDocumentPreview, setShowDocumentPreview] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [showPDFViewer, setShowPDFViewer] = useState(false);
+  const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -1377,27 +1380,34 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           size="sm"
                           className="p-2 hover:bg-green-100 dark:hover:bg-green-900/20"
                           onClick={async () => {
-                            try {
-                              const response = await fetch(`/api/documents/${doc.id}/content`, {
-                                credentials: 'include'
-                              });
-                              if (response.ok) {
-                                const docContent = await response.json();
-                                setSelectedDocument(docContent);
-                                setShowDocumentPreview(true);
-                              } else {
+                            // Check if it's a PDF file
+                            if (doc.mimeType === 'application/pdf') {
+                              setSelectedPDFDocument(doc);
+                              setShowPDFViewer(true);
+                            } else {
+                              // For non-PDF files, use the original preview
+                              try {
+                                const response = await fetch(`/api/documents/${doc.id}/content`, {
+                                  credentials: 'include'
+                                });
+                                if (response.ok) {
+                                  const docContent = await response.json();
+                                  setSelectedDocument(docContent);
+                                  setShowDocumentPreview(true);
+                                } else {
+                                  toast({
+                                    title: "미리보기 실패",
+                                    description: "문서 내용을 불러올 수 없습니다.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              } catch (error) {
                                 toast({
-                                  title: "미리보기 실패",
-                                  description: "문서 내용을 불러올 수 없습니다.",
+                                  title: "오류 발생",
+                                  description: "문서 내용 조회 중 오류가 발생했습니다.",
                                   variant: "destructive",
                                 });
                               }
-                            } catch (error) {
-                              toast({
-                                title: "오류 발생",
-                                description: "문서 내용 조회 중 오류가 발생했습니다.",
-                                variant: "destructive",
-                              });
                             }
                           }}
                           title="문서 내용 미리보기"
@@ -1606,6 +1616,22 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             </div>
           </div>
         </div>
+      )}
+
+      {/* PDF Viewer Modal */}
+      {showPDFViewer && selectedPDFDocument && (
+        <PDFViewer
+          documentId={selectedPDFDocument.id}
+          documentName={selectedPDFDocument.originalName || selectedPDFDocument.filename}
+          onClose={() => {
+            setShowPDFViewer(false);
+            setSelectedPDFDocument(null);
+          }}
+          onContentExtracted={(content) => {
+            // Handle extracted content if needed
+            console.log('Extracted content:', content);
+          }}
+        />
       )}
     </div>
   );
