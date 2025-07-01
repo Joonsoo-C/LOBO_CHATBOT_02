@@ -1312,8 +1312,21 @@ export async function setupDocumentFix(app: Express) {
         role: user?.role
       });
       
-      if (!user || (user.username !== "master_admin" && user.userType !== "admin" && user.role !== "agent_admin" && user.role !== "master_admin" && user.role !== "에이전트 관리자" && user.role !== "마스터 관리자")) {
-        console.log('Access denied for QA logs');
+      if (!user) {
+        console.log('No user found for QA logs access');
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      // Allow master admin or users with any admin role
+      const isAuthorized = user.username === "master_admin" || 
+                          user.userType === "admin" || 
+                          user.role === "agent_admin" || 
+                          user.role === "master_admin" ||
+                          user.role === "에이전트 관리자" || 
+                          user.role === "마스터 관리자";
+      
+      if (!isAuthorized) {
+        console.log('Access denied for QA logs - insufficient permissions');
         return res.status(403).json({ message: "Access denied" });
       }
 
