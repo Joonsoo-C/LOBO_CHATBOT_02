@@ -1522,7 +1522,7 @@ function MasterAdmin() {
   const [agentFilterDetailCategory, setAgentFilterDetailCategory] = useState('all');
   const [agentFilterType, setAgentFilterType] = useState('all');
   const [agentFilterStatus, setAgentFilterStatus] = useState('all');
-  const [hasAgentSearched, setHasAgentSearched] = useState(false);
+  const [hasAgentSearched, setHasAgentSearched] = useState(true);
 
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
