@@ -120,6 +120,17 @@
       "uploadedBy": "user1081",
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "9af441fcfead6d1f2269efbac349e6ae",
+      "originalName": "세계관.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 39320,
+      "content": "워드 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 111,
+      "createdAt": "2025-07-01T05:38:00.262Z"
     }
   ],
   "organizationCategories": [
@@ -1736,6 +1747,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 111,
+  "nextId": 112,
   "nextOrganizationId": 125
 }
