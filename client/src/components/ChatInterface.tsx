@@ -905,6 +905,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <div key={uniqueKey} className="message-row">
                     <div 
                       className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'}`}
+                      onClick={() => {
+                        if (!msg.isFromUser && !isSystem) {
+                          console.log('🚀 CONTAINER CLICKED! Message ID:', msg.id);
+                          handleReactionToggle(msg.id);
+                        }
+                      }}
+                      style={{ 
+                        backgroundColor: !msg.isFromUser && !isSystem ? 'rgba(255,0,0,0.1)' : 'transparent',
+                        cursor: !msg.isFromUser && !isSystem ? 'pointer' : 'default'
+                      }}
                     >
                         <div
                           className={`${
@@ -914,11 +924,18 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 ? "minimal-message system-message"
                                 : "minimal-message assistant cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
-                          onClick={() => {
+                          onClick={(e) => {
+                            console.log('🔥 CLICK EVENT FIRED! Message:', msg.id, 'isFromUser:', msg.isFromUser, 'isSystem:', isSystem);
                             if (!msg.isFromUser && !isSystem) {
-                              console.log('AI message clicked! Message ID:', msg.id);
+                              console.log('🔥 AI message clicked! Message ID:', msg.id);
                               handleReactionToggle(msg.id);
+                            } else {
+                              console.log('🔥 Not an AI message - skipped');
                             }
+                          }}
+                          style={{ 
+                            border: !msg.isFromUser && !isSystem ? '2px solid red' : 'none',
+                            minHeight: '20px' 
                           }}
                         >
                           {msg.content}
