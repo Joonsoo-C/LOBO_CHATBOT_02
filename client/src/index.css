@@ -167,12 +167,12 @@
 
 .apple-nav-tab:not(.active) {
   @apply bg-gray-200 dark:bg-gray-700;
-  color: #374151 !important; /* gray-700 */
-  font-weight: 500;
+  color: #9ca3af !important; /* gray-400 - 더 밝은 회색 */
+  font-weight: 300; /* 더 얇은 폰트 */
 }
 
 .dark .apple-nav-tab:not(.active) {
-  color: #d1d5db !important; /* gray-300 */
+  color: #6b7280 !important; /* gray-500 - 다크모드에서 더 밝은 회색 */
 }
 
 /* 반응형 에이전트 그리드 */
