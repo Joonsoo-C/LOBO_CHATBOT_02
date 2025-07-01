@@ -487,9 +487,9 @@ export default function TabletLayout() {
         {/* Header */}
         <div className="p-4 border-b border-border">
           {/* Search and Settings */}
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center mb-4">
             {/* Search Bar */}
-            <div className="relative flex-1 mr-2">
+            <div className="relative" style={{ width: 'calc(100% - 140px)' }}>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
@@ -506,7 +506,7 @@ export default function TabletLayout() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-11 px-4 text-sm korean-text flex-shrink-0"
+                  className="h-11 px-4 text-sm korean-text flex-shrink-0 ml-2"
                 >
                   {selectedCategory === "전체" ? t('home.categories.all') :
                    selectedCategory === "학교" ? t('home.categories.school') :
@@ -532,7 +532,7 @@ export default function TabletLayout() {
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="korean-text h-11 px-4 flex-shrink-0">
+                <Button variant="outline" size="sm" className="korean-text h-11 px-4 flex-shrink-0 ml-2">
                   <Settings className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>

@@ -168,9 +168,9 @@ function Home() {
       <header className="fixed-header-stable md:static md:bg-transparent md:shadow-none md:mb-0">
         <div className="px-4 py-3 md:px-6 md:py-4">
           {/* Header with search and settings */}
-          <div className="flex items-center gap-2 mb-4 md:mb-6">
+          <div className="flex items-center mb-4 md:mb-6">
             {/* Search Bar */}
-            <div className="relative flex-1 mr-2">
+            <div className="relative" style={{ width: 'calc(100% - 120px)' }}>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
@@ -187,7 +187,7 @@ function Home() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 px-3 text-xs korean-text md:h-11 md:px-4 md:text-sm flex-shrink-0"
+                  className="h-9 px-3 text-xs korean-text md:h-11 md:px-4 md:text-sm flex-shrink-0 ml-2"
                 >
                   {selectedCategory === "전체" ? t('home.categories.all') :
                    selectedCategory === "학교" ? t('home.categories.school') :
@@ -217,7 +217,7 @@ function Home() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="korean-text md:h-11 md:px-4 flex-shrink-0"
+                  className="korean-text md:h-11 md:px-4 flex-shrink-0 ml-2"
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
