@@ -131,7 +131,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         const isActive = location === `/chat/${agent.id}`;
         
         return (
-          <Link key={agent.id} href={`/chat/${agent.id}`}>
+          <Link key={agent.id} href={`/chat/${agent.id}`} className="block w-full">
             <div className={`apple-agent-card ${isActive ? 'active' : ''}`}>
               <div className="flex items-center space-x-2 md:space-x-4">
                 <div className={`w-10 h-10 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
