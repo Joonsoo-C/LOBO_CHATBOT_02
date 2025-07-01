@@ -922,8 +922,8 @@ export class MemoryStorage implements IStorage {
           id,
           {
             ...doc,
-            createdAt: doc.createdAt.toISOString(),
-            updatedAt: doc.updatedAt.toISOString()
+            createdAt: doc.createdAt?.toISOString?.() || doc.createdAt,
+            updatedAt: doc.updatedAt?.toISOString?.() || doc.updatedAt
           }
         ]),
         agentStats: Array.from(this.agentStats.entries()),
