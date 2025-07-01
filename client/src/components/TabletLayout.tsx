@@ -594,7 +594,7 @@ export default function TabletLayout() {
         {/* Agent List */}
         <div className="flex-1 overflow-y-auto">
           {activeTab === "chat" && (
-            <div className="p-4 space-y-4">
+            <div className="p-3 space-y-3">
               {filteredAgents.map((agent) => {
                 const conversation = conversations.find(conv => conv.agentId === agent.id);
                 const isSelected = selectedAgentId === agent.id;
@@ -603,12 +603,12 @@ export default function TabletLayout() {
                   <div
                     key={agent.id}
                     onClick={() => handleAgentSelect(agent.id)}
-                    className={`relative bg-card rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer border-2 min-h-[88px] ${
+                    className={`relative bg-card rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border-2 min-h-[80px] ${
                       isSelected ? 'border-primary bg-primary/5' : 'border-transparent'
                     }`}
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-12 h-12 ${backgroundColorMap[agent.backgroundColor] || "bg-gray-600"} rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden`}>
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-11 h-11 ${backgroundColorMap[agent.backgroundColor] || "bg-gray-600"} rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden`}>
                         {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
                           <img 
                             src={agent.icon} 
