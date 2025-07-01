@@ -162,17 +162,17 @@
 .apple-nav-tab.active {
   @apply bg-white dark:bg-white shadow-lg;
   color: black !important;
-  font-weight: 600;
+  font-weight: 500; /* 600에서 500으로 약간 얇게 */
 }
 
 .apple-nav-tab:not(.active) {
   @apply bg-gray-200 dark:bg-gray-700;
-  color: #9ca3af !important; /* gray-400 - 더 밝은 회색 */
-  font-weight: 300; /* 더 얇은 폰트 */
+  color: #6b7280 !important; /* gray-500 - 조금 더 어둡게 */
+  font-weight: 300;
 }
 
 .dark .apple-nav-tab:not(.active) {
-  color: #6b7280 !important; /* gray-500 - 다크모드에서 더 밝은 회색 */
+  color: #9ca3af !important; /* gray-400 - 다크모드에서 조금 더 밝게 */
 }
 
 /* 반응형 에이전트 그리드 */
