@@ -890,10 +890,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
                 const messageReaction = messageReactions[msg.id];
                 
-                // Debug logging
-                if (index === 0) {
-                  console.log('Current activeReactionMessageId:', activeReactionMessageId);
-                  console.log('Checking message ID:', msg.id, 'isFromUser:', msg.isFromUser, 'isSystem:', isSystem);
+                // Debug logging for AI messages only
+                if (!msg.isFromUser && !isSystem) {
+                  console.log('AI Message found - ID:', msg.id, 'activeReactionMessageId:', activeReactionMessageId);
+                  console.log('Should show reactions:', activeReactionMessageId === msg.id);
                 }
                 
                 // Generate unique key to prevent React key conflicts
@@ -910,10 +910,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               ? "minimal-message user"
                               : isSystem
                                 ? "minimal-message system-message"
-                                : "minimal-message assistant cursor-pointer"
+                                : "minimal-message assistant cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
                           onClick={() => {
                             if (!msg.isFromUser && !isSystem) {
+                              console.log('AI message clicked! Message ID:', msg.id);
                               handleReactionToggle(msg.id);
                             }
                           }}
@@ -942,7 +943,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         )}
                           {/* Reaction Options - positioned below message for AI messages */}
                           {!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id && (
-                            <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 mt-1">
+                            <div className="flex gap-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-[1000] mt-2">
                               {reactionOptions.map((option) => (
                                 <button
                                   key={option.emoji}
