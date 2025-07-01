@@ -49,6 +49,7 @@ export interface IStorage {
   getUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
   getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]>;
   getAllConversations(): Promise<Conversation[]>;
+  getConversation(id: number): Promise<Conversation | undefined>;
   updateConversation(conversationId: number, updates: Partial<Conversation>): Promise<void>;
 
   // Message operations

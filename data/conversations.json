@@ -44,7 +44,7 @@
         "agentId": 146,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-01T07:14:08.289Z",
+        "lastMessageAt": "2025-07-01T16:28:13.620Z",
         "createdAt": "2025-06-30T22:15:14.708Z",
         "lastReadAt": "2025-07-01T14:07:10.341Z"
       }
@@ -127,11 +127,11 @@
       {
         "id": 140,
         "userId": "user1082",
-        "agentId": 123,
+        "agentId": 120,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-01T14:07:03.767Z",
-        "createdAt": "2025-07-01T14:07:03.767Z"
+        "lastMessageAt": "2025-07-01T16:27:40.137Z",
+        "createdAt": "2025-07-01T16:27:09.333Z"
       }
     ],
     [

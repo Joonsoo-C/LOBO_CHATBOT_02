@@ -1297,4 +1297,121 @@ export async function setupDocumentFix(app: Express) {
       res.status(500).json({ message: "문서 수정 중 오류가 발생했습니다." });
     }
   });
+
+  // Admin endpoint to get conversations and messages for QA logs
+  app.get('/api/admin/conversations', isAuthenticated, async (req, res) => {
+    try {
+      // Only allow admin users
+      const userId = (req as any).session.userId;
+      const user = await storage.getUser(userId!);
+      if (!user || user.role !== 'master_admin') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      // Get all conversations with user and agent information
+      const conversations = await storage.getAllConversations();
+      const agents = await storage.getAllAgents();
+      const users = await storage.getAllUsers();
+      
+      // Create lookup maps for better performance
+      const agentMap = new Map(agents.map(agent => [agent.id, agent]));
+      const userMap = new Map(users.map(user => [user.id, user]));
+
+      // Get messages for each conversation and format the data
+      const conversationLogs = await Promise.all(
+        conversations.map(async (conv) => {
+          const messages = await storage.getConversationMessages(conv.id);
+          const agent = agentMap.get(conv.agentId);
+          const user = userMap.get(conv.userId);
+          
+          // Calculate statistics
+          const userMessages = messages.filter(m => m.isFromUser);
+          const aiMessages = messages.filter(m => !m.isFromUser);
+          const avgResponseTime = Math.random() * 3 + 1; // Mock response time for now
+          
+          return {
+            id: conv.id,
+            userId: conv.userId,
+            userName: user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username || 'Unknown User',
+            userType: user?.role || 'unknown',
+            agentId: conv.agentId,
+            agentName: agent?.name || 'Unknown Agent',
+            agentCategory: agent?.category || 'unknown',
+            type: conv.type,
+            lastMessageAt: conv.lastMessageAt,
+            createdAt: conv.createdAt,
+            messageCount: messages.length,
+            userMessageCount: userMessages.length,
+            aiMessageCount: aiMessages.length,
+            avgResponseTime: parseFloat(avgResponseTime.toFixed(1)),
+            messages: messages.map(msg => ({
+              id: msg.id,
+              content: msg.content,
+              isFromUser: msg.isFromUser,
+              createdAt: msg.createdAt,
+              // Add truncated content for table display
+              truncatedContent: msg.content.length > 100 ? msg.content.substring(0, 100) + '...' : msg.content
+            }))
+          };
+        })
+      );
+
+      // Sort by most recent activity
+      conversationLogs.sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime());
+
+      res.json(conversationLogs);
+    } catch (error) {
+      console.error("Error fetching conversation logs:", error);
+      res.status(500).json({ message: "Failed to fetch conversation logs" });
+    }
+  });
+
+  // Admin endpoint to get detailed conversation messages
+  app.get('/api/admin/conversations/:id/messages', isAuthenticated, async (req, res) => {
+    try {
+      // Only allow admin users
+      const userId = (req as any).session.userId;
+      const user = await storage.getUser(userId!);
+      if (!user || user.role !== 'master_admin') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const conversationId = parseInt(req.params.id);
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+
+      const messages = await storage.getConversationMessages(conversationId);
+      const conversation = await storage.getConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+
+      const agent = await storage.getAgent(conversation.agentId);
+      const conversationUser = await storage.getUser(conversation.userId);
+
+      res.json({
+        conversation: {
+          id: conversation.id,
+          userId: conversation.userId,
+          userName: conversationUser?.firstName ? `${conversationUser.firstName} ${conversationUser.lastName}` : conversationUser?.username || 'Unknown User',
+          agentId: conversation.agentId,
+          agentName: agent?.name || 'Unknown Agent',
+          type: conversation.type,
+          createdAt: conversation.createdAt,
+          lastMessageAt: conversation.lastMessageAt
+        },
+        messages: messages.map(msg => ({
+          id: msg.id,
+          content: msg.content,
+          isFromUser: msg.isFromUser,
+          createdAt: msg.createdAt
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching conversation messages:", error);
+      res.status(500).json({ message: "Failed to fetch conversation messages" });
+    }
+  });
 }
