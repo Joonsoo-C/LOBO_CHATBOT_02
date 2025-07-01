@@ -92,6 +92,9 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [pendingNotification, setPendingNotification] = useState("");
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
+  
+  // Prevent state reset during re-renders
+  const [reactionUIVisible, setReactionUIVisible] = useState<Record<number, boolean>>({});
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
   const [showDocumentPreview, setShowDocumentPreview] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
@@ -220,11 +223,15 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   // Reaction handlers
   const handleReactionToggle = (messageId: number) => {
     console.log('🎯 Reaction toggle clicked for message:', messageId);
-    console.log('🎯 Current activeReactionMessageId:', activeReactionMessageId);
-    setActiveReactionMessageId(prev => {
-      const newId = prev === messageId ? null : messageId;
-      console.log('🎯 Setting activeReactionMessageId to:', newId);
-      return newId;
+    console.log('🎯 Current reactionUIVisible:', reactionUIVisible);
+    
+    setReactionUIVisible(prev => {
+      const newState = {
+        ...prev,
+        [messageId]: !prev[messageId]
+      };
+      console.log('🎯 Setting reactionUIVisible:', newState);
+      return newState;
     });
   };
 
@@ -893,9 +900,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 
                 // Debug logging for AI messages only
                 if (!msg.isFromUser && !isSystem) {
-                  console.log('🤖 AI Message found - ID:', msg.id, 'activeReactionMessageId:', activeReactionMessageId);
-                  console.log('🤖 Should show reactions:', activeReactionMessageId === msg.id);
-                  console.log('🤖 Message content preview:', msg.content.substring(0, 50) + '...');
+                  console.log('🤖 AI Message ID:', msg.id, 'reactionUIVisible:', reactionUIVisible[msg.id] || false);
                 }
                 
                 // Generate unique key to prevent React key conflicts
@@ -961,7 +966,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           </div>
                         )}
                           {/* Reaction Options - TEST VERSION */}
-                          {!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id && (
+                          {!msg.isFromUser && !isSystem && reactionUIVisible[msg.id] && (
                             <div className="bg-red-500 text-white p-2 mt-2 rounded">
                               ✅ REACTION UI TEST - Message ID: {msg.id}
                               <div className="flex gap-2 mt-1">
