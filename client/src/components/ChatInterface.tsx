@@ -1088,13 +1088,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             </div>
           ) : (
             <>
-              {allMessages.map((msg) => {
+              {allMessages.map((msg, index) => {
               const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
               const showReactionOptions = activeReactionMessageId === msg.id;
               const messageReaction = messageReactions[msg.id];
               
+              // Generate unique key to prevent React key conflicts
+              const uniqueKey = msg.id ? `msg-${msg.id}` : `optimistic-${index}-${Date.now()}`;
+              
               return (
-                <div key={msg.id} className={`flex group`} style={{ 
+                <div key={uniqueKey} className={`flex group`} style={{ 
                   justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start'
                 }}>
                   <div 

@@ -76,6 +76,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Skip sample agents initialization - using admin center managed data only
   console.log('Skipping sample agents initialization - using admin center managed data');
 
+  // Setup document fix endpoint
+  setupDocumentFix(app);
+
   // Note: Auth routes are now handled in setupAuth() function
 
   // Agent routes
@@ -1104,4 +1107,68 @@ async function initializeDefaultAgents() {
   } catch (error) {
     console.error("Error initializing default agents:", error);
   }
+}
+
+// Add API endpoint to fix document text extraction
+export async function setupDocumentFix(app: Express) {
+  app.post("/api/admin/fix-documents", isAuthenticated, async (req, res) => {
+    try {
+      // Only allow admin users
+      const userId = (req as any).session.userId;
+      const user = await storage.getUser(userId!);
+      if (!user || user.role !== 'master_admin') {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      console.log('Starting document text re-extraction...');
+      
+      // Get all documents from storage  
+      const allDocuments = await storage.getAllDocuments();
+      console.log(`Found ${allDocuments.length} documents to check`);
+      
+      let fixedCount = 0;
+      
+      for (const doc of allDocuments) {
+        // Only fix documents with error messages
+        if (doc.content && doc.content.includes('추출 중 오류가 발생했습니다')) {
+          console.log(`Re-extracting: ${doc.originalName} (ID: ${doc.id})`);
+          
+          // Construct file path
+          const filePath = path.join('uploads', 'admin', doc.filename);
+          
+          if (fs.existsSync(filePath)) {
+            try {
+              const extractedText = await extractTextFromContent(filePath, doc.mimeType);
+              
+              if (extractedText && extractedText.length > 50 && !extractedText.includes('추출')) {
+                // Update document with extracted text
+                await storage.updateDocumentContent(doc.id, extractedText);
+                fixedCount++;
+                console.log(`✓ Fixed: ${doc.originalName} (${extractedText.length} chars)`);
+              } else {
+                console.log(`✗ Extraction failed: ${doc.originalName}`);
+              }
+            } catch (error) {
+              console.error(`Error processing ${doc.originalName}:`, error);
+            }
+          } else {
+            console.log(`✗ File not found: ${filePath}`);
+          }
+        }
+      }
+      
+      console.log(`Document fix completed: ${fixedCount} documents updated`);
+      
+      res.json({ 
+        success: true, 
+        message: `${fixedCount}개 문서의 텍스트 추출이 완료되었습니다.`,
+        fixedCount,
+        totalChecked: allDocuments.length
+      });
+      
+    } catch (error) {
+      console.error("Error fixing documents:", error);
+      res.status(500).json({ message: "문서 수정 중 오류가 발생했습니다." });
+    }
+  });
 }
