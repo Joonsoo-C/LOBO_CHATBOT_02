@@ -1094,7 +1094,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const messageReaction = messageReactions[msg.id];
               
               // Generate unique key to prevent React key conflicts
-              const uniqueKey = msg.id ? `msg-${msg.id}` : `optimistic-${index}-${Date.now()}`;
+              const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
               
               return (
                 <div key={uniqueKey} className={`flex group`} style={{ 

@@ -467,15 +467,37 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
     
     if (mimeType.includes('application/pdf')) {
       // Extract text from PDF files using pdf-parse
-      console.log('PDF file detected, extracting text');
+      console.log('PDF file detected, extracting text:', filePath);
       try {
-        const pdfParse = (await import('pdf-parse')).default;
+        // Dynamic import for better error handling
+        const pdfParse = require('pdf-parse');
+        
+        // Check if file exists and is readable
+        if (!fs.existsSync(filePath)) {
+          console.error('PDF file does not exist:', filePath);
+          return 'PDF 파일을 찾을 수 없습니다.';
+        }
+        
         const dataBuffer = fs.readFileSync(filePath);
-        const data = await pdfParse(dataBuffer);
+        console.log('PDF buffer size:', dataBuffer.length);
+        
+        // Add timeout to prevent hanging
+        const data = await Promise.race([
+          pdfParse(dataBuffer),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('PDF parsing timeout')), 30000)
+          )
+        ]);
+        
+        if (!data || !data.text) {
+          console.warn('No text extracted from PDF');
+          return 'PDF 문서에서 텍스트를 추출할 수 없습니다. 이미지 기반 PDF이거나 보호된 문서일 수 있습니다.';
+        }
         
         const cleanText = data.text
           .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // Remove control characters
           .replace(/\uFFFD/g, '') // Remove replacement characters
+          .replace(/\s+/g, ' ') // Normalize whitespace
           .trim();
         
         console.log('Extracted PDF text length:', cleanText.length);
@@ -483,13 +505,16 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
         
         if (cleanText.length < 10) {
           console.warn('PDF text extraction yielded very short result');
-          return 'PDF 문서 텍스트 추출에 실패했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+          return 'PDF 문서에서 의미있는 텍스트를 추출할 수 없습니다. 스캔된 이미지 PDF이거나 텍스트가 없는 문서일 수 있습니다.';
         }
         
         return cleanText;
       } catch (pdfError) {
         console.error('PDF extraction failed:', pdfError);
-        return 'PDF 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+        if (pdfError.message?.includes('timeout')) {
+          return 'PDF 문서가 너무 큽니다. 텍스트 추출에 시간이 오래 걸려 중단되었습니다.';
+        }
+        return `PDF 문서 텍스트 추출 중 오류가 발생했습니다: ${pdfError.message || '알 수 없는 오류'}`;
       }
     }
     
