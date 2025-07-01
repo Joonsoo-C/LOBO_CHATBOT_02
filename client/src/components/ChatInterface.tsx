@@ -219,10 +219,11 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Reaction handlers
   const handleReactionToggle = (messageId: number) => {
-    console.log('Reaction toggle clicked for message:', messageId);
+    console.log('🎯 Reaction toggle clicked for message:', messageId);
+    console.log('🎯 Current activeReactionMessageId:', activeReactionMessageId);
     setActiveReactionMessageId(prev => {
       const newId = prev === messageId ? null : messageId;
-      console.log('Setting activeReactionMessageId to:', newId);
+      console.log('🎯 Setting activeReactionMessageId to:', newId);
       return newId;
     });
   };
@@ -892,8 +893,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 
                 // Debug logging for AI messages only
                 if (!msg.isFromUser && !isSystem) {
-                  console.log('AI Message found - ID:', msg.id, 'activeReactionMessageId:', activeReactionMessageId);
-                  console.log('Should show reactions:', activeReactionMessageId === msg.id);
+                  console.log('🤖 AI Message found - ID:', msg.id, 'activeReactionMessageId:', activeReactionMessageId);
+                  console.log('🤖 Should show reactions:', activeReactionMessageId === msg.id);
+                  console.log('🤖 Message content preview:', msg.content.substring(0, 50) + '...');
                 }
                 
                 // Generate unique key to prevent React key conflicts
@@ -941,26 +943,24 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             )}
                           </div>
                         )}
-                          {/* Reaction Options - positioned below message for AI messages */}
+                          {/* Reaction Options - TEST VERSION */}
                           {!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id && (
-                            <div className="flex gap-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-lg px-2 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-[1000] mt-2">
-                              {reactionOptions.map((option) => (
-                                <button
-                                  key={option.emoji}
-                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleReactionSelect(msg.id, option.emoji);
-                                  }}
-                                  title={option.label}
+                            <div className="bg-red-500 text-white p-2 mt-2 rounded">
+                              ✅ REACTION UI TEST - Message ID: {msg.id}
+                              <div className="flex gap-2 mt-1">
+                                <button 
+                                  className="bg-blue-500 text-white px-3 py-1 rounded"
+                                  onClick={() => console.log('👍 clicked')}
                                 >
-                                  {option.emoji === '👍' ? (
-                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                  ) : (
-                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                  )}
+                                  👍 Like
                                 </button>
-                              ))}
+                                <button 
+                                  className="bg-gray-500 text-white px-3 py-1 rounded"
+                                  onClick={() => console.log('👎 clicked')}
+                                >
+                                  👎 Dislike
+                                </button>
+                              </div>
                             </div>
                           )}
                     </div>
