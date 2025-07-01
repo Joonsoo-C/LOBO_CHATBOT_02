@@ -483,7 +483,7 @@ export default function TabletLayout() {
   return (
     <div className="flex h-screen bg-background">
       {/* Left Panel - Agent List */}
-      <div className="w-96 border-r border-border bg-muted/50 flex flex-col">
+      <div className="w-[480px] border-r border-border bg-muted/50 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-border">
           {/* Search and Settings */}
