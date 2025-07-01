@@ -1171,6 +1171,42 @@ function MasterAdmin() {
     return categories.sort();
   }, [tokenUpperCategoryFilter, tokenLowerCategoryFilter, organizations]);
 
+  // Q&A 로그 섹션 전용 조직 카테고리 필터링 로직
+  const qaUniqueUpperCategories = useMemo(() => {
+    const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
+    return categories.sort();
+  }, [organizations]);
+
+  const qaFilteredLowerCategories = useMemo(() => {
+    if (qaSelectedUpperCategory === 'all') {
+      const categories = Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+      return categories.sort();
+    }
+    const categories = Array.from(new Set((organizations || [])
+      .filter(org => org.upperCategory === qaSelectedUpperCategory)
+      .map(org => org.lowerCategory).filter(Boolean)));
+    return categories.sort();
+  }, [qaSelectedUpperCategory, organizations]);
+
+  const qaFilteredDetailCategories = useMemo(() => {
+    if (qaSelectedUpperCategory === 'all' || qaSelectedLowerCategory === 'all') {
+      if (qaSelectedUpperCategory === 'all' && qaSelectedLowerCategory === 'all') {
+        const categories = Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+        return categories.sort();
+      }
+      return [];
+    }
+    let filtered = organizations || [];
+    if (qaSelectedUpperCategory !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === qaSelectedUpperCategory);
+    }
+    if (qaSelectedLowerCategory !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === qaSelectedLowerCategory);
+    }
+    const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+    return categories.sort();
+  }, [qaSelectedUpperCategory, qaSelectedLowerCategory, organizations]);
+
   // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
@@ -1529,6 +1565,22 @@ function MasterAdmin() {
     setSelectedDepartment(value);
     setHasSearched(true); // 실시간 적용
     setUserCurrentPage(1); // 사용자 페이지 리셋
+  };
+
+  // Q&A 로그 조직 카테고리 핸들러 함수들
+  const handleQAUpperCategoryChange = (value: string) => {
+    setQASelectedUpperCategory(value);
+    setQASelectedLowerCategory('all');
+    setQASelectedDetailCategory('all');
+  };
+
+  const handleQALowerCategoryChange = (value: string) => {
+    setQASelectedLowerCategory(value);
+    setQASelectedDetailCategory('all');
+  };
+
+  const handleQADetailCategoryChange = (value: string) => {
+    setQASelectedDetailCategory(value);
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
