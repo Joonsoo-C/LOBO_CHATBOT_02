@@ -53,7 +53,7 @@ export default function Management() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
         {/* Global Navigation Header */}
-        <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -94,7 +94,7 @@ export default function Management() {
           </div>
         </header>
 
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex items-center justify-center min-h-[50vh] pt-20 md:pt-0">
           <div className="text-center korean-text">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-muted-foreground">로딩 중...</p>
@@ -108,7 +108,7 @@ export default function Management() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
         {/* Global Navigation Header */}
-        <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -149,7 +149,7 @@ export default function Management() {
           </div>
         </header>
 
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex items-center justify-center min-h-[50vh] pt-20 md:pt-0">
           <div className="text-center korean-text">
             <p className="text-muted-foreground">에이전트를 찾을 수 없습니다.</p>
           </div>
@@ -162,7 +162,7 @@ export default function Management() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
         {/* Global Navigation Header */}
-        <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -203,7 +203,7 @@ export default function Management() {
           </div>
         </header>
 
-        <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex items-center justify-center min-h-[50vh] pt-20 md:pt-0">
           <div className="text-center korean-text">
             <p className="text-muted-foreground">이 에이전트를 관리할 권한이 없습니다.</p>
           </div>
