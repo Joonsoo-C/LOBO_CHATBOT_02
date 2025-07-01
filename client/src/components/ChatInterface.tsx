@@ -219,7 +219,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Reaction handlers
   const handleReactionToggle = (messageId: number) => {
-    setActiveReactionMessageId(prev => prev === messageId ? null : messageId);
+    console.log('Reaction toggle clicked for message:', messageId);
+    setActiveReactionMessageId(prev => {
+      const newId = prev === messageId ? null : messageId;
+      console.log('Setting activeReactionMessageId to:', newId);
+      return newId;
+    });
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
@@ -883,8 +888,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             <>
               {allMessages.map((msg, index) => {
                 const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
-                const showReactionOptions = activeReactionMessageId === msg.id;
                 const messageReaction = messageReactions[msg.id];
+                
+                // Debug logging
+                if (index === 0) {
+                  console.log('Current activeReactionMessageId:', activeReactionMessageId);
+                  console.log('Checking message ID:', msg.id, 'isFromUser:', msg.isFromUser, 'isSystem:', isSystem);
+                }
                 
                 // Generate unique key to prevent React key conflicts
                 const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
@@ -900,7 +910,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               ? "minimal-message user"
                               : isSystem
                                 ? "minimal-message system-message"
-                                : "minimal-message assistant"
+                                : "minimal-message assistant cursor-pointer"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
                           onClick={() => {
                             if (!msg.isFromUser && !isSystem) {
@@ -931,7 +941,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           </div>
                         )}
                           {/* Reaction Options - positioned below message for AI messages */}
-                          {!msg.isFromUser && !isSystem && showReactionOptions && (
+                          {!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id && (
                             <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 mt-1">
                               {reactionOptions.map((option) => (
                                 <button
