@@ -58,6 +58,7 @@ import {
   ChevronUp,
   ChevronDown,
   Palette,
+  XCircle,
   Menu,
   Download,
   ExternalLink,
@@ -5061,6 +5062,61 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
             </div>
 
+            {/* 통계 카드 - 상단으로 이동 및 높이 최소화 */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">오늘 질문 수</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">247</div>
+                    <p className="text-xs text-muted-foreground">+12%</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Activity className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">평균 응답 시간</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">2.3초</div>
+                    <p className="text-xs text-muted-foreground">-0.3초</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <XCircle className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">응답 실패율</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">3.2%</div>
+                    <p className="text-xs text-muted-foreground">전일 대비</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">사용자 만족도</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">4.6/5</div>
+                    <p className="text-xs text-muted-foreground">평균 점수</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">로그 검색</h3>
@@ -5124,61 +5180,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
             </div>
 
-            {/* 통계 카드 */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">오늘 질문 수</CardTitle>
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">247</div>
-                  <p className="text-xs text-muted-foreground">
-                    전일 대비 +12%
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">평균 응답 시간</CardTitle>
-                  <Activity className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">2.3초</div>
-                  <p className="text-xs text-muted-foreground">
-                    전일 대비 -0.3초
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">문서 활용률</CardTitle>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">84%</div>
-                  <p className="text-xs text-muted-foreground">
-                    문서 기반 응답 비율
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">사용자 만족도</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">4.6/5</div>
-                  <p className="text-xs text-muted-foreground">
-                    평균 평가 점수
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
             {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -5196,9 +5197,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           시간
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           에이전트
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -5206,6 +5204,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 유형
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          응답 실패율
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 시간
@@ -5221,14 +5222,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           2024.01.21 14:23
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024001</div>
-                              <div className="text-xs text-gray-500">학생</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
                         </td>
                         <td className="px-6 py-4">
@@ -5238,6 +5231,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          0%
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           1.8초
@@ -5258,14 +5254,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           2024.01.21 14:20
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">F2024002</div>
-                              <div className="text-xs text-gray-500">교수</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">연구 지원 도우미</div>
                         </td>
                         <td className="px-6 py-4">
@@ -5275,6 +5263,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="outline" className="bg-blue-100 text-blue-800">하이브리드</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          2.5%
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           3.2초
@@ -5295,14 +5286,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           2024.01.21 14:18
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024003</div>
-                              <div className="text-xs text-gray-500">학생</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">학생회 도우미</div>
                         </td>
                         <td className="px-6 py-4">
@@ -5312,6 +5295,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="secondary" className="bg-gray-100 text-gray-800">AI 생성</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          5.1%
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           2.1초
@@ -5332,14 +5318,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           2024.01.21 14:15
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">S2024004</div>
-                              <div className="text-xs text-gray-500">학생</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
                         </td>
                         <td className="px-6 py-4">
@@ -5349,6 +5327,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          0%
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           1.5초
