@@ -473,9 +473,13 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
         const pdfParse = require('pdf-parse');
         
         // Check if file exists and is readable
+        console.log('Checking PDF file path:', filePath);
+        console.log('File exists check:', fs.existsSync(filePath));
+        
         if (!fs.existsSync(filePath)) {
           console.error('PDF file does not exist:', filePath);
-          return 'PDF 파일을 찾을 수 없습니다.';
+          console.log('Directory contents:', fs.readdirSync(require('path').dirname(filePath)).filter(f => f.includes('.pdf')));
+          return 'PDF 파일을 찾을 수 없습니다. 파일 경로를 확인해주세요.';
         }
         
         const dataBuffer = fs.readFileSync(filePath);
