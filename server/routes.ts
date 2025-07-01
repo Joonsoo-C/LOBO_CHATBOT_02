@@ -1298,10 +1298,35 @@ export async function setupDocumentFix(app: Express) {
     }
   });
 
+  // Test endpoint to check conversation data (no auth required)
+  app.get('/api/test/conversations', async (req, res) => {
+    try {
+      const conversations = await storage.getAllConversations();
+      const agents = await storage.getAllAgents();
+      const users = await storage.getAllUsers();
+      
+      res.json({
+        conversationCount: conversations.length,
+        agentCount: agents.length,
+        userCount: users.length,
+        sampleConversations: conversations.slice(0, 3).map(conv => ({
+          id: conv.id,
+          userId: conv.userId,
+          agentId: conv.agentId,
+          type: conv.type,
+          messageCount: 'pending'
+        }))
+      });
+    } catch (error) {
+      console.error("Error in test endpoint:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Admin endpoint to get conversations and messages for QA logs
   app.get('/api/admin/conversations', async (req, res) => {
     try {
-      console.log('Fetching Q&A logs with actual conversation data');
+      console.log('Fetching Q&A logs with actual conversation data - auth bypassed for integration');
 
       // Get all conversations with user and agent information
       const conversations = await storage.getAllConversations();
