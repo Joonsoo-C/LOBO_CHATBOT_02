@@ -265,7 +265,7 @@
   border-left: 3px solid #2563eb;
 }
 
-/* 메시지 스타일링 - Minimal Flat UI */
+/* 메시지 스타일링 - Minimal Flat UI with Bubble Shapes */
 .minimal-message {
   @apply px-4 py-3;
   max-width: 80%;
@@ -273,11 +273,12 @@
   overflow-wrap: anywhere;
   position: relative;
   display: inline-block;
-  border-radius: 0;
+  border-radius: 20px;
   box-shadow: none;
+  margin: 4px 0;
 }
 
-/* 사용자 메시지 - 미니멀 플랫 스타일 */
+/* 사용자 메시지 - 미니멀 플랫 스타일 with 말풍선 tail */
 .minimal-message.user {
   background: #2563eb;
   color: white;
@@ -285,37 +286,70 @@
   margin-right: 8px;
   float: right;
   clear: both;
-  border-left: 4px solid #1d4ed8;
+  border-radius: 20px 20px 4px 20px;
 }
 
-/* AI 메시지 - 미니멀 플랫 스타일 */
+/* 사용자 메시지 말풍선 tail - 오른쪽 하단 */
+.minimal-message.user::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-left-color: #2563eb;
+  border-bottom: none;
+  transform: rotate(45deg);
+}
+
+/* AI 메시지 - 미니멀 플랫 스타일 with 말풍선 tail */
 .minimal-message.assistant {
   background: #f1f5f9;
   color: #1e293b;
-  border-left: 4px solid #cbd5e1;
   margin-right: auto;
   margin-left: 0;
   float: left;
   clear: both;
+  border-radius: 20px 20px 20px 4px;
+}
+
+/* AI 메시지 말풍선 tail - 왼쪽 하단 */
+.minimal-message.assistant::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-right-color: #f1f5f9;
+  border-bottom: none;
+  transform: rotate(-45deg);
 }
 
 /* 다크모드에서 AI 메시지 */
 .dark .minimal-message.assistant {
   background: #334155;
   color: #f1f5f9;
-  border-left: 4px solid #64748b;
 }
 
-/* 시스템 메시지 */
+/* 다크모드 AI 메시지 tail 색상 */
+.dark .minimal-message.assistant::after {
+  border-right-color: #334155;
+}
+
+/* 시스템 메시지 - 말풍선 형태 없이 심플한 스타일 */
 .minimal-message.system-message {
   background: #fef3c7;
   color: #92400e;
-  border-left: 4px solid #f59e0b;
   margin: 8px auto;
   text-align: left;
   font-size: 0.875rem;
   max-width: 70%;
   float: none;
+  border-radius: 12px;
+  border-left: 4px solid #f59e0b;
 }
 
 .dark .minimal-message.system-message {
