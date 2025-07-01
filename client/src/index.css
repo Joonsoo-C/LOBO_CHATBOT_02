@@ -160,8 +160,8 @@
 }
 
 .apple-nav-tab.active {
-  @apply bg-gray-800 dark:bg-gray-900 shadow-lg;
-  color: white;
+  @apply bg-white dark:bg-white shadow-lg;
+  color: black !important;
   font-weight: 600;
 }
 
