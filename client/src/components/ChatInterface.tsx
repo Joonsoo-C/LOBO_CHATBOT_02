@@ -561,16 +561,16 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     setTimeout(() => scrollToBottom(), 100);
   };
 
-  // Format message time like messenger apps
+  // Format message time like KakaoTalk
   const formatMessageTime = (dateString: string) => {
     const date = new Date(dateString);
     
     if (isToday(date)) {
       return format(date, 'a h:mm', { locale: ko }); // 오후 3:45
     } else if (isYesterday(date)) {
-      return '어제';
+      return '어제 ' + format(date, 'a h:mm', { locale: ko }); // 어제 오후 3:45
     } else {
-      return format(date, 'M월 d일', { locale: ko }); // 12월 30일
+      return format(date, 'M월 d일 a h:mm', { locale: ko }); // 12월 30일 오후 3:45
     }
   };
 
@@ -939,9 +939,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             {msg.content}
                           </div>
                           
-                          {/* Time display for AI messages only */}
+                          {/* Time display for AI messages only - KakaoTalk style */}
                           {!msg.isFromUser && !isSystem && msg.createdAt && (
-                            <span className="text-xs text-muted-foreground flex-shrink-0 pb-1">
+                            <span className="text-xs text-gray-500 flex-shrink-0 self-end mb-0.5" style={{ fontSize: '10px', lineHeight: '12px' }}>
                               {formatMessageTime(msg.createdAt)}
                             </span>
                           )}
@@ -950,7 +950,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         {/* Reaction Options - positioned to the right of AI messages */}
                         {!msg.isFromUser && !isSystem && showReactionOptions && (
                           <div 
-                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-16"
+                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-20"
                             onClick={(e) => e.stopPropagation()}
                             onMouseEnter={() => {
                               if (hoverTimeoutRef.current) {
