@@ -29,7 +29,6 @@ const upload = multer({
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'application/msword',
       'application/vnd.ms-powerpoint',
-      'application/pdf',
       'application/vnd.ms-excel',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
@@ -37,7 +36,7 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, DOCX, PPT, PPTX, PDF, XLS, XLSX 파일만 업로드 가능합니다.'));
+      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, DOCX, PPT, PPTX, XLS, XLSX 파일만 업로드 가능합니다.'));
     }
   },
 });
@@ -1142,11 +1141,10 @@ export async function setupDocumentFix(app: Express) {
             try {
               let extractedText = null;
               
-              // PDF 파일 처리
-              if (doc.mimeType.includes('application/pdf')) {
-                const dataBuffer = fs.readFileSync(filePath);
-                const data = await pdfParse(dataBuffer);
-                extractedText = data.text
+              // TXT 파일 처리
+              if (doc.mimeType.includes('text/plain')) {
+                const textContent = fs.readFileSync(filePath, 'utf-8');
+                extractedText = textContent
                   .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
                   .replace(/\uFFFD/g, '')
                   .trim();
