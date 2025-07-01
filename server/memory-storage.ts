@@ -1329,14 +1329,33 @@ export class MemoryStorage implements IStorage {
     try {
       if (fs.existsSync(this.usersFile)) {
         const data = fs.readFileSync(this.usersFile, 'utf8');
-        const usersArray = JSON.parse(data);
+        const parsedData = JSON.parse(data);
 
-        for (const user of usersArray) {
-          this.users.set(user.id, {
-            ...user,
-            createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
-            updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
-          });
+        // Check if data has 'users' property (new format) or is directly an array (old format)
+        let usersData = parsedData;
+        if (parsedData.users) {
+          usersData = parsedData.users;
+        }
+
+        // Handle Map entries format [key, value] pairs
+        if (Array.isArray(usersData) && usersData.length > 0 && Array.isArray(usersData[0])) {
+          // Map entries format: [[id, userData], [id, userData], ...]
+          for (const [userId, userData] of usersData) {
+            this.users.set(userId, {
+              ...userData,
+              createdAt: userData.createdAt ? new Date(userData.createdAt) : new Date(),
+              updatedAt: userData.updatedAt ? new Date(userData.updatedAt) : new Date()
+            });
+          }
+        } else if (Array.isArray(usersData)) {
+          // Regular array format: [{user1}, {user2}, ...]
+          for (const user of usersData) {
+            this.users.set(user.id, {
+              ...user,
+              createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
+              updatedAt: user.updatedAt ? new Date(user.updatedAt) : new Date()
+            });
+          }
         }
 
         console.log(`Loaded ${this.users.size} users from admin center (memory-storage.json)`);
