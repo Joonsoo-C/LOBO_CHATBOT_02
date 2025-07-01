@@ -575,7 +575,7 @@ export default function TabletLayout() {
                 navigate("/");
               }}
             >
-              {t('agent.generalChat')}
+              {t('common.chat')}
             </div>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
               <div 
