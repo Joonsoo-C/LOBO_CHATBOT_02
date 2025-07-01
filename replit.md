@@ -726,6 +726,12 @@ Changelog:
   * Fixed user role data consistency by converting Korean role values to English keys
   * Updated 정수빈 user role from "에이전트 관리자" to "agent_admin" for proper dropdown mapping
   * Demo accounts now see appropriate agents based on their organizational affiliation
+- July 1, 2025. Enhanced tablet layout and tab navigation design:
+  * Updated tablet layout to 50:50 screen split ratio using w-1/2 for left panel and flex-1 for right panel
+  * Implemented negative-style tab design with dark selected tabs (gray-800 background, white text)
+  * Enhanced inactive tab contrast with gray-300 background and gray-700 text for better readability
+  * Improved visual hierarchy with proper background color gradation from container to tabs
+  * Applied consistent tab styling across both Home and TabletLayout components
 ```
 
 ## User Preferences
