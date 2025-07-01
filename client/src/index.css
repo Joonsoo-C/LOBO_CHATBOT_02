@@ -229,96 +229,70 @@
       inset 0 1px 0 rgba(255,255,255,0.2);
   }
   
-  /* Message Bubbles */
+  /* Message Bubbles - Updated to Minimal Flat */
   .neu-message-user {
-    background: linear-gradient(135deg, var(--neu-primary), var(--neu-secondary));
-    color: white;
-    border-radius: 18px 18px 4px 18px;
-    padding: 12px 16px;
-    box-shadow: 
-      4px 4px 8px var(--neu-shadow-dark),
-      -2px -2px 4px var(--neu-shadow-light);
-    max-width: 85%;
-    margin-left: auto;
-    word-break: break-word;
+    @apply minimal-message user;
   }
   
   .neu-message-ai {
-    @apply neu-card-small;
-    border-radius: 18px 18px 18px 4px;
-    color: var(--neu-text);
-    max-width: 85%;
-    margin-right: auto;
-    word-break: break-word;
-    margin: 8px 0;
+    @apply minimal-message assistant;
   }
   
-  /* Chat Input */
+  /* Chat Input - Updated to Minimal Flat */
   .neu-chat-input {
-    @apply neu-input;
-    border-radius: 24px;
-    resize: none;
-    min-height: 48px;
-    padding: 12px 20px;
+    @apply minimal-input;
   }
   
-  /* Send Button */
+  /* Send Button - Updated to Minimal Flat */
   .neu-send-button {
-    @apply neu-button-primary;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    margin-left: 12px;
+    @apply minimal-send-button;
   }
 }
 
-/* Apple Messages UI 디자인 */
-.apple-agent-card {
-  @apply p-4 rounded-2xl bg-white dark:bg-gray-800 border-0 border-b border-gray-100 dark:border-gray-700;
-  transition: all 0.2s ease;
-  margin: 2px 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+/* Minimal Flat UI 디자인 */
+.minimal-agent-card {
+  @apply p-4 bg-white dark:bg-gray-800 border-0 border-b border-gray-200 dark:border-gray-700;
+  transition: background-color 0.15s ease;
+  margin: 0;
 }
 
-.apple-agent-card:hover {
+.minimal-agent-card:hover {
   @apply bg-gray-50 dark:bg-gray-700;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.apple-agent-card.active {
-  @apply bg-blue-50 dark:bg-blue-900/20;
-  border-color: rgba(0, 122, 255, 0.2);
-  box-shadow: 0 3px 12px rgba(0, 122, 255, 0.15);
+.minimal-agent-card.active {
+  @apply bg-blue-50 dark:bg-blue-900/30;
+  border-left: 3px solid #2563eb;
 }
 
-/* 메시지 버블 스타일링 - 일반 메신저 스타일 */
-.message-bubble {
-  @apply rounded-2xl px-4 py-3;
-  max-width: 75%;
+/* 메시지 스타일링 - Minimal Flat UI */
+.minimal-message {
+  @apply px-4 py-3;
+  max-width: 80%;
   word-wrap: break-word;
   overflow-wrap: anywhere;
   position: relative;
   display: inline-block;
-  min-width: 60px;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-/* 사용자 메시지 - 오른쪽 정렬, 파란색 */
-.message-bubble.user {
-  background: #007AFF;
+/* 사용자 메시지 - 미니멀 플랫 스타일 */
+.minimal-message.user {
+  background: #2563eb;
   color: white;
-  border-bottom-right-radius: 6px;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: 8px;
   float: right;
   clear: both;
+  border-left: 4px solid #1d4ed8;
 }
 
-/* AI 메시지 - 왼쪽 정렬, 회색 */
-.message-bubble.assistant {
-  background: #E9E9EB;
-  color: #000000;
-  border-bottom-left-radius: 6px;
+/* AI 메시지 - 미니멀 플랫 스타일 */
+.minimal-message.assistant {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-left: 4px solid #cbd5e1;
   margin-right: auto;
   margin-left: 0;
   float: left;
@@ -326,93 +300,128 @@
 }
 
 /* 다크모드에서 AI 메시지 */
-.dark .message-bubble.assistant {
-  background: #3C3C43;
-  color: #FFFFFF;
+.dark .minimal-message.assistant {
+  background: #334155;
+  color: #f1f5f9;
+  border-left: 4px solid #64748b;
 }
 
 /* 시스템 메시지 */
-.message-bubble.system-message {
-  background: #F2F2F7;
-  color: #8E8E93;
-  margin: 0 auto;
-  text-align: center;
+.minimal-message.system-message {
+  background: #fef3c7;
+  color: #92400e;
+  border-left: 4px solid #f59e0b;
+  margin: 8px auto;
+  text-align: left;
   font-size: 0.875rem;
-  max-width: 60%;
-  border-radius: 16px;
+  max-width: 70%;
+  float: none;
 }
 
-.dark .message-bubble.system-message {
-  background: #2C2C2E;
-  color: #8E8E93;
+.dark .minimal-message.system-message {
+  background: #451a03;
+  color: #fbbf24;
+  border-left: 4px solid #d97706;
 }
 
-/* 입력 영역 스타일링 */
-.apple-input-container {
-  @apply flex items-end gap-3 p-4 bg-white dark:bg-gray-900;
-  border-top: 1px solid #e5e7eb;
+/* 입력 영역 - 미니멀 플랫 스타일 */
+.minimal-input-container {
+  @apply flex items-end gap-3 p-4 bg-gray-50 dark:bg-gray-800;
+  border-top: 2px solid #e2e8f0;
   width: 100%;
 }
 
-.apple-input {
-  @apply flex-1 resize-none rounded-3xl border border-gray-300 dark:border-gray-600 px-4 py-3;
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
-  min-height: 44px;
-  max-height: 120px;
+.dark .minimal-input-container {
+  border-top: 2px solid #475569;
 }
 
-/* 채팅 입력창 - 메신저 스타일로 넓게 */
-.apple-chat-input {
-  @apply flex-1 resize-none rounded-3xl border border-gray-300 dark:border-gray-600 px-4 py-3;
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+.minimal-input {
+  @apply flex-1 resize-none border-0 px-4 py-3;
+  @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white;
   min-height: 44px;
   max-height: 120px;
   width: 100%;
   font-size: 16px;
   line-height: 1.4;
+  border-left: 4px solid #cbd5e1;
+  outline: none;
+  box-shadow: none;
 }
 
-.apple-send-button {
-  @apply w-10 h-10 rounded-full flex items-center justify-center text-white;
-  background: #4A90E2;
-  transition: all 0.2s ease;
+.minimal-input:focus {
+  border-left: 4px solid #2563eb;
 }
 
-.apple-send-button:hover {
-  background: #357ABD;
-  transform: scale(1.05);
+.dark .minimal-input {
+  border-left: 4px solid #64748b;
 }
 
-/* 탭 네비게이션 스타일링 */
-.apple-nav-tabs {
-  @apply bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 mb-4;
+.dark .minimal-input:focus {
+  border-left: 4px solid #3b82f6;
+}
+
+.minimal-send-button {
+  @apply w-12 h-12 flex items-center justify-center text-white;
+  background: #2563eb;
+  transition: background-color 0.15s ease;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.minimal-send-button:hover {
+  background: #1d4ed8;
+}
+
+.minimal-send-button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* 탭 네비게이션 - 미니멀 플랫 스타일 */
+.minimal-nav-tabs {
+  @apply bg-gray-100 dark:bg-gray-800 mb-4;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.apple-nav-tab {
-  @apply rounded-xl px-6 py-3 text-center font-medium transition-all;
+.dark .minimal-nav-tabs {
+  border-bottom: 2px solid #475569;
+}
+
+.minimal-nav-tab {
+  @apply px-6 py-3 text-center font-medium transition-all;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
-.apple-nav-tab.active {
-  @apply bg-white dark:bg-white shadow-lg;
-  color: black !important;
-  font-weight: 500; /* 600에서 500으로 약간 얇게 */
+.minimal-nav-tab.active {
+  @apply bg-white dark:bg-gray-700;
+  color: #2563eb !important;
+  font-weight: 600;
+  border-bottom: 3px solid #2563eb;
 }
 
-.apple-nav-tab:not(.active) {
-  @apply bg-gray-200 dark:bg-gray-700;
-  color: #6b7280 !important; /* gray-500 - 조금 더 어둡게 */
-  font-weight: 300;
+.minimal-nav-tab:not(.active) {
+  @apply bg-transparent;
+  color: #64748b !important;
+  font-weight: 400;
+  border-bottom: 3px solid transparent;
 }
 
-.dark .apple-nav-tab:not(.active) {
-  color: #9ca3af !important; /* gray-400 - 다크모드에서 조금 더 밝게 */
+.minimal-nav-tab:not(.active):hover {
+  @apply bg-gray-50 dark:bg-gray-700/50;
+}
+
+.dark .minimal-nav-tab:not(.active) {
+  color: #94a3b8 !important;
 }
 
 /* 반응형 에이전트 그리드 */

@@ -1078,7 +1078,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           ) : allMessages.length === 0 ? (
             <div className="mb-2">
               <div className="flex justify-start">
-                <div className="neu-message-ai text-sm md:text-base leading-relaxed korean-text">
+                <div className="minimal-message assistant text-sm md:text-base leading-relaxed korean-text">
                   안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
                 </div>
               </div>
@@ -1118,17 +1118,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         <div
                           className={`${
                             msg.isFromUser
-                              ? "neu-message-user"
+                              ? "minimal-message user"
                               : isSystem
-                                ? "neu-message-ai bg-amber-100 dark:bg-amber-900/20 border-l-4 border-amber-500"
-                                : "neu-message-ai"
+                                ? "minimal-message system-message"
+                                : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text`}
-                          style={isSystem ? { 
-                            margin: '0 auto', 
-                            float: 'none', 
-                            clear: 'both',
-                            maxWidth: '60%'
-                          } : {}}
                           onClick={() => {
                             if (!msg.isFromUser && !isSystem) {
                               handleReactionToggle(msg.id);
@@ -1216,7 +1210,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               {/* Typing Indicator */}
               {isTyping && (
                 <div className="message-row">
-                  <div className="message-bubble assistant max-w-[80px]" style={{ float: 'left', clear: 'both' }}>
+                  <div className="minimal-message assistant max-w-[120px]" style={{ float: 'left', clear: 'both' }}>
                     <div className="flex items-center justify-center py-1">
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -1238,13 +1232,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className={`flex items-end gap-3 p-4 ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
+      <div className={`minimal-input-container ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
         <textarea
           placeholder={t('chat.inputPlaceholder')}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="neu-chat-input flex-1 resize-none korean-text"
+          className="minimal-input korean-text"
           disabled={sendMessageMutation.isPending}
           rows={1}
           style={{
@@ -1258,7 +1252,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           }}
         />
         <button
-          className="neu-send-button"
+          className="minimal-send-button"
           onClick={handleSendMessage}
           disabled={!message.trim() || sendMessageMutation.isPending}
         >
