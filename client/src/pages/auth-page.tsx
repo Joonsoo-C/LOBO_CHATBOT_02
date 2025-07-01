@@ -163,7 +163,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--neu-bg)' }}>
       {/* Settings dropdown in top right */}
       <div className="fixed top-4 right-4 z-50">
         <DropdownMenu>
@@ -183,69 +183,85 @@ export default function AuthPage() {
       
       <div className="w-full max-w-md mx-auto space-y-6">
         {/* Logo Section */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            {t('auth.title')}
-          </h1>
-          <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+        <div className="text-center space-y-4 mb-8">
+          <div className="neu-card w-32 h-32 mx-auto flex items-center justify-center">
+            <h1 className="text-4xl font-bold" style={{ color: 'var(--neu-text)' }}>
+              LoBo
+            </h1>
+          </div>
+          <h2 className="text-xl font-semibold" style={{ color: 'var(--neu-text-light)' }}>
             {t('auth.subtitle')}
           </h2>
         </div>
 
         {/* Auth Form */}
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>{t('auth.login')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="neu-card w-full">
+          <div className="mb-6">
+            <h3 className="text-2xl font-semibold text-center" style={{ color: 'var(--neu-text)' }}>
+              {t('auth.login')}
+            </h3>
+          </div>
+          <div className="space-y-6">
             <form onSubmit={(e) => {
               console.log("폼 제출 이벤트");
               loginForm.handleSubmit(onLogin)(e);
             }} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="login-username">{t('auth.username')}</Label>
-                <Input
+              <div className="space-y-3">
+                <label style={{ color: 'var(--neu-text)', fontWeight: '600' }}>
+                  {t('auth.username')}
+                </label>
+                <input
                   id="login-username"
                   type="text"
                   placeholder={t('auth.usernamePlaceholder')}
+                  className="neu-input w-full"
                   {...loginForm.register("username")}
                 />
                 {loginForm.formState.errors.username && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm" style={{ color: 'var(--neu-error)' }}>
                     {loginForm.formState.errors.username.message}
                   </p>
                 )}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="login-password">{t('auth.password')}</Label>
+              <div className="space-y-3">
+                <label style={{ color: 'var(--neu-text)', fontWeight: '600' }}>
+                  {t('auth.password')}
+                </label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
+                    className="neu-input w-full pr-12"
                     {...loginForm.register("password")}
-                    className="pr-10"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
+                    style={{ 
+                      background: 'transparent',
+                      boxShadow: 'none',
+                      color: 'var(--neu-text-light)',
+                      border: 'none'
+                    }}
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                      <Eye className="h-4 w-4" />
                     )}
                   </button>
                 </div>
                 {loginForm.formState.errors.password && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm" style={{ color: 'var(--neu-error)' }}>
                     {loginForm.formState.errors.password.message}
                   </p>
                 )}
                 <div className="text-right">
                   <button
                     type="button"
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    className="text-sm hover:underline"
+                    style={{ color: 'var(--neu-primary)' }}
                     onClick={() => {
                       toast({
                         title: t('auth.forgotPassword'),
@@ -257,9 +273,9 @@ export default function AuthPage() {
                   </button>
                 </div>
               </div>
-              <Button
+              <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-base"
+                className="neu-button-primary w-full text-lg font-semibold"
                 disabled={loginMutation.isPending}
                 onClick={(e) => {
                   console.log("로그인 버튼 클릭됨");
@@ -268,45 +284,44 @@ export default function AuthPage() {
                 }}
               >
                 {loginMutation.isPending ? t('auth.loggingIn') : t('auth.loginButton')}
-              </Button>
+              </button>
             </form>
 
             {/* 데모 계정 섹션 */}
-            <div className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
-              <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">{t('auth.demoAccounts')}</p>
-              <div className="space-y-3">
-                <Button
+            <div className="neu-card">
+              <p className="text-sm font-semibold mb-4" style={{ color: 'var(--neu-text)' }}>
+                {t('auth.demoAccounts')}
+              </p>
+              <div className="space-y-4">
+                <button
                   type="button"
-                  size="sm"
-                  className="w-full text-xs bg-green-500 hover:bg-green-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
+                  className="neu-button-success w-full py-4"
                   onClick={() => {
                     loginForm.setValue("username", "user1082");
                     loginForm.setValue("password", "student123");
                   }}
                 >
                   <div className="text-center">
-                    <div className="font-medium">학생계정 (장지훈)</div>
-                    <div className="text-xs text-green-100 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
+                    <div className="font-medium text-base">학생계정 (장지훈)</div>
+                    <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
                   </div>
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  size="sm"
-                  className="w-full text-xs bg-purple-500 hover:bg-purple-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
+                  className="neu-button-warning w-full py-4"
                   onClick={() => {
                     loginForm.setValue("username", "user1081");
                     loginForm.setValue("password", "faculty123");
                   }}
                 >
                   <div className="text-center">
-                    <div className="font-medium">교직원계정 (정수빈)</div>
-                    <div className="text-xs text-purple-100 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
+                    <div className="font-medium text-base">교직원계정 (정수빈)</div>
+                    <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
                   </div>
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  size="sm"
-                  className="w-full text-xs bg-red-500 hover:bg-red-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
+                  className="neu-button-error w-full py-4"
                   onClick={() => {
                     console.log("마스터 계정 버튼 클릭됨");
                     loginForm.setValue("username", "master_admin");
@@ -319,17 +334,17 @@ export default function AuthPage() {
                   }}
                 >
                   <div className="text-center">
-                    <div className="font-medium">마스터계정 (Master Admin)</div>
-                    <div className="text-xs text-red-100 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
+                    <div className="font-medium text-base">마스터계정 (Master Admin)</div>
+                    <div className="text-xs opacity-90 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
                   </div>
-                </Button>
+                </button>
               </div>
-              <p className="text-xs text-blue-700">
+              <p className="text-xs" style={{ color: 'var(--neu-text-light)' }}>
                 {t('auth.autoCreate')}
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* 언어 선택 섹션 - 하단 */}
         <div className="flex justify-center">
