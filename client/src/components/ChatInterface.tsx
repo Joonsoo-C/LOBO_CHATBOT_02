@@ -1404,8 +1404,12 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                       title: "문서 삭제 완료",
                                       description: "문서가 성공적으로 삭제되었습니다.",
                                     });
-                                    // Refresh the documents list
-                                    queryClient.invalidateQueries({
+                                    // Force refresh the documents list
+                                    await queryClient.invalidateQueries({
+                                      queryKey: [`/api/agents/${agent.id}/documents`]
+                                    });
+                                    // Also force refetch immediately
+                                    await queryClient.refetchQueries({
                                       queryKey: [`/api/agents/${agent.id}/documents`]
                                     });
                                   } else {
