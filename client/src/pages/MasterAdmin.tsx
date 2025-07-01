@@ -5182,7 +5182,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">최근 질문/응답 로그</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]"> 질문 응답 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   전체 1,247개 중 4개 표시
                 </div>
