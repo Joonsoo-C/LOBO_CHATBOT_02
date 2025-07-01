@@ -273,41 +273,41 @@
     [
       140,
       {
-        "conversationId": 121,
-        "content": "안녕하세요! 어떻게 도와드릴까요?",
-        "isFromUser": false,
+        "conversationId": 117,
+        "content": "컬러빌과 시간의 섬 요약",
+        "isFromUser": true,
         "id": 140,
-        "createdAt": "2025-07-01T07:51:52.815Z"
+        "createdAt": "2025-07-01T16:29:42.825Z"
       }
     ],
     [
       141,
       {
-        "conversationId": 140,
-        "content": "올 가을 학기 심리학과에서 개설된 강의 목록을 주세요.",
-        "isFromUser": true,
+        "conversationId": 117,
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        "isFromUser": false,
         "id": 141,
-        "createdAt": "2025-07-01T16:27:26.701Z"
+        "createdAt": "2025-07-01T16:29:42.984Z"
       }
     ],
     [
       142,
       {
-        "conversationId": 140,
-        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
-        "isFromUser": false,
+        "conversationId": 117,
+        "content": "세계관 요약",
+        "isFromUser": true,
         "id": 142,
-        "createdAt": "2025-07-01T16:27:26.833Z"
+        "createdAt": "2025-07-01T16:30:05.236Z"
       }
     ],
     [
       143,
       {
-        "conversationId": 140,
-        "content": "왜 응답을 생성하지 못해?",
-        "isFromUser": true,
+        "conversationId": 117,
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        "isFromUser": false,
         "id": 143,
-        "createdAt": "2025-07-01T16:27:40.061Z"
+        "createdAt": "2025-07-01T16:30:05.334Z"
       }
     ],
     [

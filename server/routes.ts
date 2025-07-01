@@ -1357,7 +1357,11 @@ export async function setupDocumentFix(app: Express) {
       );
 
       // Sort by most recent activity
-      conversationLogs.sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime());
+      conversationLogs.sort((a, b) => {
+        const aTime = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+        const bTime = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+        return bTime - aTime;
+      });
 
       res.json(conversationLogs);
     } catch (error) {

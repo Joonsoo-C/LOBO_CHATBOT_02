@@ -265,6 +265,16 @@ function MasterAdmin() {
     }
   });
 
+  // 실제 conversation 로그 데이터 조회
+  const { data: conversationLogs } = useQuery({
+    queryKey: ['/api/admin/conversations'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/conversations');
+      if (!response.ok) throw new Error('Failed to fetch conversation logs');
+      return response.json();
+    }
+  });
+
 
 
 

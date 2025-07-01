@@ -727,6 +727,10 @@ export class MemoryStorage implements IStorage {
       });
   }
 
+  async getConversation(id: number): Promise<Conversation | undefined> {
+    return this.conversations.get(id);
+  }
+
   async updateConversation(conversationId: number, updates: Partial<Conversation>): Promise<void> {
     const conversation = this.conversations.get(conversationId);
     if (!conversation) {
