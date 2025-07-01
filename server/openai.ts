@@ -469,8 +469,8 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
       // Extract text from PDF files using pdf-parse
       console.log('PDF file detected, extracting text:', filePath);
       try {
-        // Dynamic import for better error handling
-        const pdfParse = require('pdf-parse');
+        // Use dynamic import for ES modules compatibility
+        const pdfParse = (await import('pdf-parse')).default;
         
         // Check if file exists and is readable
         console.log('Checking PDF file path:', filePath);
@@ -478,7 +478,8 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
         
         if (!fs.existsSync(filePath)) {
           console.error('PDF file does not exist:', filePath);
-          console.log('Directory contents:', fs.readdirSync(require('path').dirname(filePath)).filter(f => f.includes('.pdf')));
+          const path = require('path');
+          console.log('Directory contents:', fs.readdirSync(path.dirname(filePath)).filter(f => f.includes('.pdf')));
           return 'PDF 파일을 찾을 수 없습니다. 파일 경로를 확인해주세요.';
         }
         
