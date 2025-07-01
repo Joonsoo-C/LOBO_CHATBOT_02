@@ -252,6 +252,28 @@
       "uploadedBy": "user1081",
       "id": 130,
       "createdAt": "2025-07-01T06:55:05.568Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "43a2b9789bf7ce566508fb319d68591f",
+      "originalName": "컬러빌과 시간의 섬 (2).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 파일 경로에 문제가 있습니다. 파일이 올바르게 업로드되었는지 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 131,
+      "createdAt": "2025-07-01T07:03:31.144Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "161ce9e62798dac46735b884283baa2e",
+      "originalName": "컬러빌과 시간의 섬 (2).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 파일 경로에 문제가 있습니다. 파일이 올바르게 업로드되었는지 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 136,
+      "createdAt": "2025-07-01T07:04:35.351Z"
     }
   ],
   "organizationCategories": [
@@ -1868,6 +1890,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 131,
+  "nextId": 137,
   "nextOrganizationId": 125
 }
