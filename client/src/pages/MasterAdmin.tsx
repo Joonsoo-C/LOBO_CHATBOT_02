@@ -5341,7 +5341,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader>
                   <CardTitle>인기 질문 TOP 10</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 pt-0 mt-[30px] mb-[30px]">
+                <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm">수강신청 관련 문의</span>
@@ -6657,6 +6657,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 로그 필터링 */}
             <Card>
+              <CardHeader>
+                <CardTitle>로그 필터링</CardTitle>
+              </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
