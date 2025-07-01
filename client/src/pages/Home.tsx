@@ -164,39 +164,36 @@ function Home() {
 
   return (
     <div className="min-h-screen md:w-full" style={{ background: 'var(--neu-bg)' }}>
-      {/* Header */}
-      <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+      {/* Minimal Flat UI Header */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:border-none">
         <div className="px-4 py-3 md:px-6 md:py-4">
           {/* Header with search and settings */}
-          <div className="flex items-center mb-4 md:mb-6">
+          <div className="flex items-center mb-4 md:mb-6 gap-2">
             {/* Search Bar */}
-            <div className="relative" style={{ width: 'calc(100% - 84px)' }}>
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--neu-text-light)' }} />
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="neu-input w-full pl-10 pr-3 korean-text"
+                className="w-full h-10 pl-10 pr-3 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent korean-text"
               />
             </div>
             
             {/* Category Filter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-9 px-3 text-xs korean-text md:h-11 md:px-4 md:text-sm flex-shrink-0 ml-2"
-                >
+                <button className="h-10 px-3 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-1 korean-text flex-shrink-0">
                   {selectedCategory === "전체" ? t('home.categories.all') :
                    selectedCategory === "학교" ? t('home.categories.school') :
                    selectedCategory === "교수" ? t('home.categories.professor') :
                    selectedCategory === "학생" ? t('home.categories.student') :
                    selectedCategory === "그룹" ? t('home.categories.group') :
                    selectedCategory === "기능형" ? t('home.categories.function') :
-                   selectedCategory} <ChevronDown className="ml-1 w-3 h-3" />
-                </Button>
+                   selectedCategory} 
+                  <ChevronDown className="w-3 h-3" />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-32 z-[99999]" sideOffset={5}>
                 {categories.map((category) => (
@@ -214,13 +211,9 @@ function Home() {
             {/* Settings Dropdown */}
             <DropdownMenu open={settingsDropdownOpen} onOpenChange={setSettingsDropdownOpen}>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="korean-text md:h-11 md:px-4 flex-shrink-0 ml-2"
-                >
-                  <Settings className="w-4 h-4" />
-                </Button>
+                <button className="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0">
+                  <Settings className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
@@ -234,7 +227,7 @@ function Home() {
                   className="korean-text cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
-                    setSettingsDropdownOpen(false); // Close dropdown
+                    setSettingsDropdownOpen(false);
                     setShowAccountModal(true);
                   }}
                 >
@@ -267,37 +260,25 @@ function Home() {
             </DropdownMenu>
           </div>
 
-          {/* Neumorphism Tab Navigation */}
-          <div className="flex rounded-2xl p-1" style={{ background: 'var(--neu-surface)' }}>
+          {/* Minimal Flat Tab Navigation */}
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
             <button 
-              className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+              className={`flex-1 py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 korean-text ${
                 activeTab === "chat" 
-                  ? "neu-pressed text-white" 
-                  : "neu-button"
+                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm" 
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
               }`}
-              style={{
-                background: activeTab === "chat" 
-                  ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))'
-                  : 'transparent',
-                color: activeTab === "chat" ? 'white' : 'var(--neu-text)'
-              }}
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
             </button>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
               <button 
-                className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex-1 py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 korean-text ${
                   activeTab === "management" 
-                    ? "neu-pressed text-white" 
-                    : "neu-button"
+                    ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 }`}
-                style={{
-                  background: activeTab === "management" 
-                    ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))'
-                    : 'transparent',
-                  color: activeTab === "management" ? 'white' : 'var(--neu-text)'
-                }}
                 onClick={() => setActiveTab("management")}
               >
                 {t('common.management')}
