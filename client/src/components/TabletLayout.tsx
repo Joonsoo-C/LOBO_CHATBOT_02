@@ -571,7 +571,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "chat" ? "default" : "outline"}
               size="lg"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground rounded-md px-8 korean-text h-14 hover:bg-primary/10 text-[#7a7a7a] bg-[#e6e6e6]"
+              className={`korean-text h-14 ${activeTab === "chat" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -583,7 +583,7 @@ export default function TabletLayout() {
               <Button
                 variant={activeTab === "management" ? "default" : "outline"}
                 size="lg"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground rounded-md px-8 korean-text h-14 hover:bg-primary/10 bg-[#e6e6e6] text-[#7a7a7a]"
+                className={`korean-text h-14 ${activeTab === "management" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
                 onClick={() => {
                   setActiveTab("management");
                   navigate("/management");
@@ -677,6 +677,7 @@ export default function TabletLayout() {
           )}
         </div>
       </div>
+
       {/* Right Panel - Chat Interface */}
       <div className="flex-1 flex flex-col bg-muted/30">
         <div className="w-full h-full flex flex-col">

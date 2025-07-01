@@ -145,7 +145,7 @@
 
 /* 탭 네비게이션 스타일링 */
 .apple-nav-tabs {
-  @apply bg-gray-50 dark:bg-gray-800 rounded-2xl p-1 mb-4;
+  @apply bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 mb-4;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -166,9 +166,8 @@
 }
 
 .apple-nav-tab:not(.active) {
-  @apply bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400;
+  @apply bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400;
   font-weight: 500;
-  /* Force update for cache refresh */
 }
 
 /* 반응형 에이전트 그리드 */
