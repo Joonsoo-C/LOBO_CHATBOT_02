@@ -215,7 +215,7 @@ export default function Management() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
       {/* Global Navigation Header */}
-      <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+      <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
         <div className="px-4 py-3 md:px-6 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -291,7 +291,9 @@ export default function Management() {
       </header>
 
       {/* Chat Interface without header */}
-      <ChatInterface agent={agent} isManagementMode={true} />
+      <div className="pt-20 md:pt-0">
+        <ChatInterface agent={agent} isManagementMode={true} />
+      </div>
 
       {/* Account Settings Modal */}
       <AccountSettingsModal 
