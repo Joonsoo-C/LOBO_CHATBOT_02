@@ -887,7 +887,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 return (
                   <div key={uniqueKey} className="message-row">
                     <div 
-                      className="relative w-full"
+                      className={`relative w-full flex items-end gap-2 ${msg.isFromUser ? 'justify-end' : 'justify-start'}`}
                       onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
                           if (hoverTimeoutRef.current) {
@@ -906,6 +906,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
+                        {/* Time info for AI messages (left side) */}
+                        {!msg.isFromUser && !isSystem && (
+                          <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
+                            {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false
+                            })}
+                          </div>
+                        )}
+
                         <div
                           className={`${
                             msg.isFromUser
@@ -913,7 +924,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               : isSystem
                                 ? "minimal-message system-message"
                                 : "minimal-message assistant"
-                          } text-sm md:text-base leading-relaxed korean-text`}
+                          } text-sm md:text-base leading-relaxed korean-text relative`}
                           onClick={() => {
                             if (!msg.isFromUser && !isSystem) {
                               handleReactionToggle(msg.id);
@@ -922,77 +933,87 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         >
                           {msg.content}
                         </div>
-                        
-                        {/* Reaction Options - positioned to the right of AI messages */}
-                        {!msg.isFromUser && !isSystem && showReactionOptions && (
-                          <div 
-                            className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
-                            onClick={(e) => e.stopPropagation()}
-                            onMouseEnter={() => {
-                              if (hoverTimeoutRef.current) {
-                                clearTimeout(hoverTimeoutRef.current);
-                                hoverTimeoutRef.current = null;
-                              }
-                              setActiveReactionMessageId(msg.id);
-                            }}
-                            onMouseLeave={() => {
-                              hoverTimeoutRef.current = setTimeout(() => {
-                                setActiveReactionMessageId(null);
-                                hoverTimeoutRef.current = null;
-                              }, 800);
-                            }}
-                          >
-                            {reactionOptions.map((option) => (
-                              <button
-                                key={option.emoji}
-                                className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleReactionSelect(msg.id, option.emoji);
-                                }}
-                                title={option.label}
-                              >
-                                {option.emoji === '👍' ? (
-                                  <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                ) : (
-                                  <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                )}
-                              </button>
-                            ))}
-                          </div>
-                        )}
 
-                        {/* Message Reaction Display */}
-                        {!msg.isFromUser && !isSystem && messageReaction && (
-                          <div className="absolute -bottom-2 left-0 transform translate-y-full">
-                            <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
-                              {messageReaction}
-                            </span>
+                        {/* Time info for user messages (right side) */}
+                        {msg.isFromUser && (
+                          <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
+                            {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false
+                            })}
                           </div>
                         )}
+                          {/* Reaction Options - positioned to the right of AI messages */}
+                          {!msg.isFromUser && !isSystem && showReactionOptions && (
+                            <div 
+                              className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
+                              onClick={(e) => e.stopPropagation()}
+                              onMouseEnter={() => {
+                                if (hoverTimeoutRef.current) {
+                                  clearTimeout(hoverTimeoutRef.current);
+                                  hoverTimeoutRef.current = null;
+                                }
+                                setActiveReactionMessageId(msg.id);
+                              }}
+                              onMouseLeave={() => {
+                                hoverTimeoutRef.current = setTimeout(() => {
+                                  setActiveReactionMessageId(null);
+                                  hoverTimeoutRef.current = null;
+                                }, 800);
+                              }}
+                            >
+                              {reactionOptions.map((option) => (
+                                <button
+                                  key={option.emoji}
+                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReactionSelect(msg.id, option.emoji);
+                                  }}
+                                  title={option.label}
+                                >
+                                  {option.emoji === '👍' ? (
+                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                                  ) : (
+                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          )}
 
-                        {/* Mobile: Reaction Options below message */}
-                        {!msg.isFromUser && !isSystem && showReactionOptions && (
-                          <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
-                            {reactionOptions.map((option) => (
-                              <button
-                                key={option.emoji}
-                                className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleReactionSelect(msg.id, option.emoji);
-                                }}
-                                title={option.label}
-                              >
-                                {option.emoji === '👍' ? (
-                                  <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                ) : (
-                                  <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                )}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                          {/* Message Reaction Display */}
+                          {!msg.isFromUser && !isSystem && messageReaction && (
+                            <div className="absolute -bottom-2 left-0 transform translate-y-full">
+                              <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
+                                {messageReaction}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Mobile: Reaction Options below message */}
+                          {!msg.isFromUser && !isSystem && showReactionOptions && (
+                            <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                              {reactionOptions.map((option) => (
+                                <button
+                                  key={option.emoji}
+                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReactionSelect(msg.id, option.emoji);
+                                  }}
+                                  title={option.label}
+                                >
+                                  {option.emoji === '👍' ? (
+                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                                  ) : (
+                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                     </div>
                   </div>
                 );
@@ -1001,12 +1022,21 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               {/* Typing Indicator */}
               {isTyping && (
                 <div className="message-row">
-                  <div className="minimal-message assistant max-w-[120px]" style={{ float: 'left', clear: 'both' }}>
-                    <div className="flex items-center justify-center py-1">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="relative w-full flex items-end gap-2 justify-start">
+                    <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
+                      {new Date().toLocaleTimeString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                      })}
+                    </div>
+                    <div className="minimal-message assistant max-w-[120px]">
+                      <div className="flex items-center justify-center py-1">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        </div>
                       </div>
                     </div>
                   </div>
