@@ -107,17 +107,17 @@ export default function Management() {
   if (!agent) {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
-        {/* Global Navigation Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        {/* Minimal Flat UI Global Navigation Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:static md:border-none">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Link href="/management">
-                  <Button variant="ghost" size="sm" className="p-2">
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
+                  <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  </button>
                 </Link>
-                <h1 className="text-lg font-semibold korean-text">에이전트를 찾을 수 없음</h1>
+                <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text">에이전트를 찾을 수 없음</h1>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -161,17 +161,17 @@ export default function Management() {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
-        {/* Global Navigation Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        {/* Minimal Flat UI Global Navigation Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:static md:border-none">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Link href="/management">
-                  <Button variant="ghost" size="sm" className="p-2">
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
+                  <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  </button>
                 </Link>
-                <h1 className="text-lg font-semibold korean-text">권한 없음</h1>
+                <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text">권한 없음</h1>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -214,26 +214,26 @@ export default function Management() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
-      {/* Global Navigation Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+      {/* Minimal Flat UI Global Navigation Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:static md:border-none">
         <div className="px-4 py-3 md:px-6 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link href="/management">
-                <Button variant="ghost" size="sm" className="p-2">
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
+                <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                  <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </button>
               </Link>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 {/* Agent Icon */}
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium text-white"
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium text-white"
                      style={{ backgroundColor: agent.backgroundColor || '#6366f1' }}>
                   {agent.icon ? (
                     agent.isCustomIcon ? (
                       <img 
                         src={`/api/agents/${agent.id}/icon`} 
                         alt={agent.name}
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full h-full rounded-lg object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -255,21 +255,21 @@ export default function Management() {
                     </span>
                   )}
                 </div>
-                <h1 className="text-lg font-semibold korean-text truncate max-w-[200px]">
+                <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text truncate max-w-[200px]">
                   {agent.name} (관리)
                 </h1>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1">
               <ThemeSelector />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-2">
-                    <Settings className="w-5 h-5" />
-                  </Button>
+                  <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
                     <User className="w-4 h-4 mr-2" />
                     계정 설정
