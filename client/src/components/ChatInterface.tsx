@@ -97,6 +97,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -249,6 +250,44 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     { emoji: '👎', icon: ThumbsDown, label: 'Dislike' }
   ];
 
+  // Long press handlers for mobile
+  const handleTouchStart = (messageId: number) => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+    }
+    
+    const timer = setTimeout(() => {
+      setActiveReactionMessageId(messageId);
+      // Add haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, 500); // 500ms for long press
+    
+    setLongPressTimer(timer);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleMessageClick = (messageId: number, isFromUser: boolean, isSystem: boolean) => {
+    // Only handle click for desktop or if no long press timer is active
+    if (!longPressTimer && !isFromUser && !isSystem) {
+      handleReactionToggle(messageId);
+    }
+  };
+
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -333,6 +372,15 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       }
     }
   }, [conversationData?.id, isManagementMode, hasMarkedAsRead]);
+
+  // Cleanup long press timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
+    };
+  }, [longPressTimer]);
 
   // Show welcome message for management mode when conversation is empty
   useEffect(() => {
@@ -914,11 +962,14 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 ? "minimal-message system-message"
                                 : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
-                          onClick={() => {
+                          onClick={() => handleMessageClick(msg.id, msg.isFromUser, isSystem)}
+                          onTouchStart={() => {
                             if (!msg.isFromUser && !isSystem) {
-                              handleReactionToggle(msg.id);
+                              handleTouchStart(msg.id);
                             }
                           }}
+                          onTouchEnd={handleTouchEnd}
+                          onTouchMove={handleTouchMove}
                         >
                           {msg.content}
                         </div>
