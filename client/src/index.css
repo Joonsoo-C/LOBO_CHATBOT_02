@@ -168,6 +168,7 @@
 .apple-nav-tab:not(.active) {
   @apply bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400;
   font-weight: 500;
+  /* Force update for cache refresh */
 }
 
 /* 반응형 에이전트 그리드 */
