@@ -259,7 +259,7 @@ export default function AuthPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-base"
                 disabled={loginMutation.isPending}
                 onClick={(e) => {
                   console.log("로그인 버튼 클릭됨");
@@ -272,42 +272,41 @@ export default function AuthPage() {
             </form>
 
             {/* 데모 계정 섹션 */}
-            <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm font-medium text-blue-900">{t('auth.demoAccounts')}</p>
-              <div className="space-y-2">
+            <div className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+              <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">{t('auth.demoAccounts')}</p>
+              <div className="space-y-3">
                 <Button
                   type="button"
-                  variant="outline"
                   size="sm"
-                  className="w-full text-xs"
+                  className="w-full text-xs bg-green-500 hover:bg-green-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
                   onClick={() => {
                     loginForm.setValue("username", "user1082");
                     loginForm.setValue("password", "student123");
                   }}
                 >
-                  학생계정 (장지훈)
-                  <br />
-                  <span className="text-xs text-muted-foreground">인문대학 / 국어국문학과 / 현대문학전공</span>
+                  <div className="text-center">
+                    <div className="font-medium">학생계정 (장지훈)</div>
+                    <div className="text-xs text-green-100 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
+                  </div>
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
                   size="sm"
-                  className="w-full text-xs"
+                  className="w-full text-xs bg-purple-500 hover:bg-purple-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
                   onClick={() => {
                     loginForm.setValue("username", "user1081");
                     loginForm.setValue("password", "faculty123");
                   }}
                 >
-                  교직원계정 (정수빈)
-                  <br />
-                  <span className="text-xs text-muted-foreground">인문대학 / 국어국문학과 / 현대문학전공, 교수</span>
+                  <div className="text-center">
+                    <div className="font-medium">교직원계정 (정수빈)</div>
+                    <div className="text-xs text-purple-100 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
+                  </div>
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
                   size="sm"
-                  className="w-full text-xs"
+                  className="w-full text-xs bg-red-500 hover:bg-red-600 text-white border-0 py-3 shadow-md hover:shadow-lg transition-all duration-200"
                   onClick={() => {
                     console.log("마스터 계정 버튼 클릭됨");
                     loginForm.setValue("username", "master_admin");
@@ -319,9 +318,10 @@ export default function AuthPage() {
                     }, 100);
                   }}
                 >
-                  마스터계정 (Master Admin)
-                  <br />
-                  <span className="text-xs text-muted-foreground">LoBo AI 챗봇 통합 관리자 센터</span>
+                  <div className="text-center">
+                    <div className="font-medium">마스터계정 (Master Admin)</div>
+                    <div className="text-xs text-red-100 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
+                  </div>
                 </Button>
               </div>
               <p className="text-xs text-blue-700">
