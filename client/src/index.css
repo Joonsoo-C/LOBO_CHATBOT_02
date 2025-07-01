@@ -86,34 +86,32 @@
   box-shadow: 0 3px 12px rgba(0, 122, 255, 0.15);
 }
 
-/* 메시지 버블 스타일링 - Apple Messages Style */
+/* 메시지 버블 스타일링 - 일반 메신저 스타일 */
 .message-bubble {
-  @apply rounded-3xl px-4 py-3;
-  max-width: 85%;
+  @apply rounded-2xl px-3 py-2;
+  max-width: 70%;
   word-wrap: break-word;
   overflow-wrap: anywhere;
+  position: relative;
+  display: inline-block;
 }
 
-/* 사용자 메시지 - 애플 메신저 파란색 */
+/* 사용자 메시지 - 오른쪽 정렬, 파란색 */
 .message-bubble.user {
   background: #007AFF;
   color: white;
+  border-bottom-right-radius: 6px;
   margin-left: auto;
-  margin-right: 8px;
-  text-align: left;
-  min-width: 100px;
+  margin-right: 12px;
 }
 
-.message-bubble.user.short-message {
-  width: 120px;
-}
-
-/* AI 메시지 - 애플 메신저 회색 */
+/* AI 메시지 - 왼쪽 정렬, 회색 */
 .message-bubble.assistant {
   background: #E9E9EB;
   color: #000000;
+  border-bottom-left-radius: 6px;
   margin-right: auto;
-  margin-left: 8px;
+  margin-left: 12px;
 }
 
 /* 다크모드에서 AI 메시지 */
@@ -129,7 +127,8 @@
   margin: 0 auto;
   text-align: center;
   font-size: 0.875rem;
-  max-width: 70%;
+  max-width: 60%;
+  border-radius: 16px;
 }
 
 .dark .message-bubble.system-message {

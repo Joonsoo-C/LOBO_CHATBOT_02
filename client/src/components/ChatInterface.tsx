@@ -1076,20 +1076,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : allMessages.length === 0 ? (
-            <div className="flex justify-start">
-              <div 
-                className="message-bubble assistant text-sm md:text-base leading-relaxed"
-                style={{
-                  textAlign: 'left',
-                  minWidth: '40px',
-                  width: 'fit-content',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-all'
-                }}
-              >
-                <span className="korean-text">
+            <div className="mb-2">
+              <div className="flex justify-start">
+                <div className="message-bubble assistant text-sm md:text-base leading-relaxed korean-text">
                   안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
-                </span>
+                </div>
               </div>
             </div>
           ) : (
@@ -1103,59 +1094,47 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
               
               return (
-                <div key={uniqueKey} className={`flex group`} style={{ 
-                  justifyContent: msg.isFromUser ? 'flex-end' : 'flex-start'
-                }}>
-                  <div 
-                    className="relative flex items-start gap-1 w-fit"
-                    style={{ 
-                      maxWidth: msg.isFromUser ? '95%' : '90%', 
-                      marginRight: (!msg.isFromUser && !isSystem) ? '60px' : (msg.isFromUser ? '8px' : '0')
-                    }}
-                    onMouseEnter={() => {
-                      if (!msg.isFromUser && !isSystem) {
-                        if (hoverTimeoutRef.current) {
-                          clearTimeout(hoverTimeoutRef.current);
-                          hoverTimeoutRef.current = null;
-                        }
-                        setActiveReactionMessageId(msg.id);
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      if (!msg.isFromUser && !isSystem) {
-                        hoverTimeoutRef.current = setTimeout(() => {
-                          setActiveReactionMessageId(null);
-                          hoverTimeoutRef.current = null;
-                        }, 800);
-                      }
-                    }}
-                  >
-                    <div
-                      className={`message-bubble relative ${
-                        msg.isFromUser
-                          ? "user"
-                          : isSystem
-                            ? "system-message"
-                            : "assistant"
-                      } text-sm md:text-base leading-relaxed`}
-                      style={{
-                        textAlign: 'left',
-                        minWidth: msg.isFromUser ? '60px' : '40px',
-                        width: 'fit-content',
-                        overflowWrap: 'break-word',
-                        wordBreak: 'break-all',
-                        whiteSpace: msg.isFromUser && msg.content.length <= 15 ? 'nowrap' : 'pre-wrap',
-                        position: 'relative'
-                      }}
-                      onClick={() => {
+                <div key={uniqueKey} className="mb-2">
+                  <div className={`flex ${msg.isFromUser ? 'justify-end' : isSystem ? 'justify-center' : 'justify-start'}`}>
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
-                          handleReactionToggle(msg.id);
+                          if (hoverTimeoutRef.current) {
+                            clearTimeout(hoverTimeoutRef.current);
+                            hoverTimeoutRef.current = null;
+                          }
+                          setActiveReactionMessageId(msg.id);
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        if (!msg.isFromUser && !isSystem) {
+                          hoverTimeoutRef.current = setTimeout(() => {
+                            setActiveReactionMessageId(null);
+                            hoverTimeoutRef.current = null;
+                          }, 800);
                         }
                       }}
                     >
-                      {msg.content}
+                      <div
+                        className={`message-bubble ${
+                          msg.isFromUser
+                            ? "user"
+                            : isSystem
+                              ? "system-message"
+                              : "assistant"
+                        } text-sm md:text-base leading-relaxed korean-text`}
+                        onClick={() => {
+                          if (!msg.isFromUser && !isSystem) {
+                            handleReactionToggle(msg.id);
+                          }
+                        }}
+                      >
+                        {msg.content}
                       
-                      {/* Reaction Options - absolute positioning to prevent layout shifts */}
+                      </div>
+                      
+                      {/* Reaction Options - positioned to the right of AI messages */}
                       {!msg.isFromUser && !isSystem && showReactionOptions && (
                         <div 
                           className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
@@ -1194,7 +1173,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         </div>
                       )}
 
-                      {/* Message Reaction Display - absolute positioning */}
+                      {/* Message Reaction Display */}
                       {!msg.isFromUser && !isSystem && messageReaction && (
                         <div className="absolute -bottom-2 left-0 transform translate-y-full">
                           <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
@@ -1202,46 +1181,46 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           </span>
                         </div>
                       )}
+
+                      {/* Mobile: Reaction Options below message */}
+                      {!msg.isFromUser && !isSystem && showReactionOptions && (
+                        <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                          {reactionOptions.map((option) => (
+                            <button
+                              key={option.emoji}
+                              className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReactionSelect(msg.id, option.emoji);
+                              }}
+                              title={option.label}
+                            >
+                              {option.emoji === '👍' ? (
+                                <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                              ) : (
+                                <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-
-
-
-                    {/* Mobile: Reaction Options below message on left */}
-                    {!msg.isFromUser && !isSystem && showReactionOptions && (
-                      <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
-                        {reactionOptions.map((option) => (
-                          <button
-                            key={option.emoji}
-                            className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleReactionSelect(msg.id, option.emoji);
-                            }}
-                            title={option.label}
-                          >
-                            {option.emoji === '👍' ? (
-                              <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                            ) : (
-                              <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
               );
             })}
             
-            {/* Apple Messages Typing Indicator */}
+            {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex justify-start">
-                <div className="message-bubble assistant max-w-[120px]">
-                  <div className="flex items-center justify-center py-1">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="mb-2">
+                <div className="flex justify-start">
+                  <div className="message-bubble assistant max-w-[80px]">
+                    <div className="flex items-center justify-center py-1">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
