@@ -1124,6 +1124,37 @@ function MasterAdmin() {
     return hierarchy;
   }, [organizations]);
 
+  // 토큰 관리 섹션 전용 필터링 로직
+  const filteredTokenLowerCategories = useMemo(() => {
+    if (tokenUpperCategoryFilter === 'all') {
+      const categories = Array.from(new Set((organizations || []).map(org => org.lowerCategory).filter(Boolean)));
+      return categories.sort();
+    }
+    const categories = Array.from(new Set((organizations || [])
+      .filter(org => org.upperCategory === tokenUpperCategoryFilter)
+      .map(org => org.lowerCategory).filter(Boolean)));
+    return categories.sort();
+  }, [tokenUpperCategoryFilter, organizations]);
+
+  const filteredTokenDetailCategories = useMemo(() => {
+    if (tokenUpperCategoryFilter === 'all' || tokenLowerCategoryFilter === 'all') {
+      if (tokenUpperCategoryFilter === 'all' && tokenLowerCategoryFilter === 'all') {
+        const categories = Array.from(new Set((organizations || []).map(org => org.detailCategory).filter(Boolean)));
+        return categories.sort();
+      }
+      return [];
+    }
+    let filtered = organizations || [];
+    if (tokenUpperCategoryFilter !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === tokenUpperCategoryFilter);
+    }
+    if (tokenLowerCategoryFilter !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === tokenLowerCategoryFilter);
+    }
+    const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
+    return categories.sort();
+  }, [tokenUpperCategoryFilter, tokenLowerCategoryFilter, organizations]);
+
   // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
@@ -6665,7 +6696,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div className="space-y-2">
                     <Label>상위 조직</Label>
-                    <Select value={tokenUpperCategoryFilter} onValueChange={setTokenUpperCategoryFilter}>
+                    <Select 
+                      value={tokenUpperCategoryFilter} 
+                      onValueChange={(value) => {
+                        setTokenUpperCategoryFilter(value);
+                        // 상위 조직 변경 시 하위 및 세부 조직 초기화
+                        setTokenLowerCategoryFilter("all");
+                        setTokenDetailCategoryFilter("all");
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -6682,7 +6721,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label>하위 조직</Label>
                     <Select 
                       value={tokenLowerCategoryFilter} 
-                      onValueChange={setTokenLowerCategoryFilter}
+                      onValueChange={(value) => {
+                        setTokenLowerCategoryFilter(value);
+                        // 하위 조직 변경 시 세부 조직 초기화
+                        setTokenDetailCategoryFilter("all");
+                      }}
                       disabled={tokenUpperCategoryFilter === 'all'}
                     >
                       <SelectTrigger>
@@ -6690,7 +6733,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {filteredLowerCategories.map(category => (
+                        {filteredTokenLowerCategories.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}
                       </SelectContent>
@@ -6709,7 +6752,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
-                        {filteredDetailCategories.map(category => (
+                        {filteredTokenDetailCategories.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}
                       </SelectContent>
