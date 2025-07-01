@@ -887,7 +887,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 return (
                   <div key={uniqueKey} className="message-row">
                     <div 
-                      className={`relative w-full flex items-end gap-2 ${msg.isFromUser ? 'justify-end' : 'justify-start'}`}
+                      className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'}`}
                       onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
                           if (hoverTimeoutRef.current) {
@@ -906,17 +906,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         }
                       }}
                     >
-                        {/* Time info for AI messages (left side) */}
-                        {!msg.isFromUser && !isSystem && (
-                          <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
-                            {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: false
-                            })}
-                          </div>
-                        )}
-
                         <div
                           className={`${
                             msg.isFromUser
@@ -934,9 +923,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           {msg.content}
                         </div>
 
-                        {/* Time info for user messages (right side) */}
-                        {msg.isFromUser && (
-                          <div className="text-xs text-muted-foreground pb-1 flex-shrink-0 min-w-0">
+                        {/* Time info below message bubble */}
+                        {!isSystem && (
+                          <div className={`text-xs text-muted-foreground mt-1 ${msg.isFromUser ? 'text-right' : 'text-left'}`}>
                             {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
                               hour: '2-digit',
                               minute: '2-digit',
