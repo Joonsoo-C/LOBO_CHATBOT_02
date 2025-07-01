@@ -2,8 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 기본 테마 색상 정의 */
+/* Neumorphism 테마 색상 정의 */
 :root {
+  /* Neumorphism Color Palette */
+  --neu-bg: #e0e5ec;
+  --neu-shadow-dark: #a3b1c6;
+  --neu-shadow-light: #ffffff;
+  --neu-surface: #e0e5ec;
+  --neu-primary: #667eea;
+  --neu-secondary: #764ba2;
+  --neu-accent: #f093fb;
+  --neu-text: #4a5568;
+  --neu-text-light: #718096;
+  --neu-success: #48bb78;
+  --neu-warning: #ed8936;
+  --neu-error: #f56565;
+  
+  /* Original Variables for Compatibility */
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(240, 10%, 3.9%);
   --card: hsl(0, 0%, 100%);
@@ -28,10 +43,24 @@
   --chart-3: hsl(197, 37%, 24%);
   --chart-4: hsl(43, 74%, 66%);
   --chart-5: hsl(27, 87%, 67%);
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 .dark {
+  /* Dark Neumorphism Colors */
+  --neu-bg: #2d3748;
+  --neu-shadow-dark: #1a202c;
+  --neu-shadow-light: #4a5568;
+  --neu-surface: #2d3748;
+  --neu-primary: #667eea;
+  --neu-secondary: #764ba2;
+  --neu-accent: #f093fb;
+  --neu-text: #e2e8f0;
+  --neu-text-light: #a0aec0;
+  --neu-success: #48bb78;
+  --neu-warning: #ed8936;
+  --neu-error: #f56565;
+  
   --background: hsl(240, 10%, 3.9%);
   --foreground: hsl(0, 0%, 98%);
   --card: hsl(240, 10%, 3.9%);
@@ -55,9 +84,11 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased;
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overscroll-behavior: none;
+    background: var(--neu-bg);
+    color: var(--neu-text);
   }
 
   .korean-text {
