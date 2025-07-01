@@ -267,21 +267,41 @@ function Home() {
             </DropdownMenu>
           </div>
 
-          {/* Apple Messages Tab Navigation */}
-          <div className="apple-nav-tabs">
-            <div 
-              className={`apple-nav-tab ${activeTab === "chat" ? "active" : ""}`}
+          {/* Neumorphism Tab Navigation */}
+          <div className="flex rounded-2xl p-1" style={{ background: 'var(--neu-surface)' }}>
+            <button 
+              className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                activeTab === "chat" 
+                  ? "neu-pressed text-white" 
+                  : "neu-button"
+              }`}
+              style={{
+                background: activeTab === "chat" 
+                  ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))'
+                  : 'transparent',
+                color: activeTab === "chat" ? 'white' : 'var(--neu-text)'
+              }}
               onClick={() => setActiveTab("chat")}
             >
               {t('common.chat')}
-            </div>
+            </button>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
-              <div 
-                className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
+              <button 
+                className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                  activeTab === "management" 
+                    ? "neu-pressed text-white" 
+                    : "neu-button"
+                }`}
+                style={{
+                  background: activeTab === "management" 
+                    ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))'
+                    : 'transparent',
+                  color: activeTab === "management" ? 'white' : 'var(--neu-text)'
+                }}
                 onClick={() => setActiveTab("management")}
               >
                 {t('common.management')}
-              </div>
+              </button>
             )}
           </div>
         </div>

@@ -122,7 +122,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   }, [agents, conversations, getConversationForAgent, getCategoryPriority]);
 
   return (
-    <div className="responsive-agent-grid">
+    <div className="space-y-3 px-4">
       {sortedAgents.map((agent) => {
         const conversation = getConversationForAgent(agent.id);
         const IconComponent = iconMap[agent.icon] || User;
@@ -132,7 +132,15 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
         
         return (
           <Link key={agent.id} href={`/chat/${agent.id}`} className="block w-full">
-            <div className={`apple-agent-card ${isActive ? 'active' : ''}`}>
+            <div className={`neu-card-small transition-all duration-300 cursor-pointer ${
+              isActive ? 'transform scale-[0.98]' : 'hover:transform hover:translateY-[-2px]'
+            }`}
+            style={{
+              background: isActive 
+                ? 'linear-gradient(135deg, var(--neu-primary), var(--neu-secondary))' 
+                : 'var(--neu-surface)',
+              color: isActive ? 'white' : 'var(--neu-text)'
+            }}>
               <div className="flex items-center space-x-2 md:space-x-4">
                 <div className={`w-10 h-10 ${bgColor} rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden md:w-14 md:h-14 shadow-sm`}>
                   {(agent.isCustomIcon && agent.icon?.startsWith('/uploads/')) ? (
