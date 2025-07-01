@@ -99,7 +99,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -282,10 +281,8 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   };
 
   const handleMessageClick = (messageId: number, isFromUser: boolean, isSystem: boolean) => {
-    // Only handle click for desktop or if no long press timer is active
-    if (!longPressTimer && !isFromUser && !isSystem) {
-      handleReactionToggle(messageId);
-    }
+    // Disable click-based reaction toggle - only use long press
+    return;
   };
 
 
