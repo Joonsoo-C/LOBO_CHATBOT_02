@@ -1370,7 +1370,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2 flex-shrink-0 ml-3">
+                      <div className="flex items-center space-x-1 flex-shrink-0 ml-3">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -1403,6 +1403,45 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         >
                           <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
                         </Button>
+                        {(!doc.content || doc.content.length < 50) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-2 hover:bg-orange-100 dark:hover:bg-orange-900/20"
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(`/api/documents/${doc.id}/reprocess`, {
+                                  method: 'POST',
+                                  credentials: 'include'
+                                });
+                                if (response.ok) {
+                                  const result = await response.json();
+                                  toast({
+                                    title: "재처리 완료",
+                                    description: `문서 내용을 성공적으로 추출했습니다. (${result.extractedLength}자)`,
+                                  });
+                                  // Refresh documents list
+                                  window.location.reload();
+                                } else {
+                                  toast({
+                                    title: "재처리 실패",
+                                    description: "문서 재처리 중 오류가 발생했습니다.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              } catch (error) {
+                                toast({
+                                  title: "오류 발생",
+                                  description: "문서 재처리 요청 중 오류가 발생했습니다.",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                            title="문서 내용 재처리"
+                          >
+                            <RefreshCw className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"

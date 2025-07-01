@@ -63,7 +63,7 @@ export interface IStorage {
   getDocument(id: number): Promise<Document | undefined>;
   //delete document operations
   deleteDocument(id: number): Promise<void>;
-  updateDocumentContent(id: number, content: string): Promise<void>;
+  updateDocumentContent(id: number, content: string): Promise<Document | null>;
 
   // Stats operations
   getAgentStats(agentId: number): Promise<AgentStats | undefined>;
