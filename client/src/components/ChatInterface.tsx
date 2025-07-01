@@ -974,67 +974,28 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           {msg.content}
                         </div>
 
-                        {/* Time info below message bubble */}
+                        {/* Time info and reactions below message bubble */}
                         {!isSystem && (
-                          <div className={`text-xs text-muted-foreground mt-1 ${msg.isFromUser ? 'text-right' : 'text-left'}`}>
-                            {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: false
-                            })}
+                          <div className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'}`}>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                              })}
+                            </div>
+                            
+                            {/* Reaction display for AI messages */}
+                            {!msg.isFromUser && messageReactions[msg.id] && (
+                              <div className="text-sm">
+                                {messageReactions[msg.id]}
+                              </div>
+                            )}
                           </div>
                         )}
-                          {/* Reaction Options - positioned to the right of AI messages */}
+                          {/* Reaction Options - positioned below message for AI messages */}
                           {!msg.isFromUser && !isSystem && showReactionOptions && (
-                            <div 
-                              className="hidden md:flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 absolute left-full top-0 ml-2"
-                              onClick={(e) => e.stopPropagation()}
-                              onMouseEnter={() => {
-                                if (hoverTimeoutRef.current) {
-                                  clearTimeout(hoverTimeoutRef.current);
-                                  hoverTimeoutRef.current = null;
-                                }
-                                setActiveReactionMessageId(msg.id);
-                              }}
-                              onMouseLeave={() => {
-                                hoverTimeoutRef.current = setTimeout(() => {
-                                  setActiveReactionMessageId(null);
-                                  hoverTimeoutRef.current = null;
-                                }, 800);
-                              }}
-                            >
-                              {reactionOptions.map((option) => (
-                                <button
-                                  key={option.emoji}
-                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleReactionSelect(msg.id, option.emoji);
-                                  }}
-                                  title={option.label}
-                                >
-                                  {option.emoji === '👍' ? (
-                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                  ) : (
-                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                  )}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Message Reaction Display */}
-                          {!msg.isFromUser && !isSystem && messageReaction && (
-                            <div className="absolute -bottom-2 left-0 transform translate-y-full">
-                              <span className="text-lg bg-background/80 rounded-full px-2 py-1 border border-border">
-                                {messageReaction}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Mobile: Reaction Options below message */}
-                          {!msg.isFromUser && !isSystem && showReactionOptions && (
-                            <div className="md:hidden absolute top-full left-0 mt-2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                            <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 mt-1">
                               {reactionOptions.map((option) => (
                                 <button
                                   key={option.emoji}
