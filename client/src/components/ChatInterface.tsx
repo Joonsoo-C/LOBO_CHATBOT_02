@@ -933,23 +933,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <div key={uniqueKey} className="message-row">
                     <div 
                       className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'}`}
-                      onMouseEnter={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          if (hoverTimeoutRef.current) {
-                            clearTimeout(hoverTimeoutRef.current);
-                            hoverTimeoutRef.current = null;
-                          }
-                          setActiveReactionMessageId(msg.id);
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          hoverTimeoutRef.current = setTimeout(() => {
-                            setActiveReactionMessageId(null);
-                            hoverTimeoutRef.current = null;
-                          }, 800);
-                        }
-                      }}
+
                     >
                         <div
                           className={`${

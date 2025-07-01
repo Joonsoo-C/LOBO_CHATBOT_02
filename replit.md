@@ -732,6 +732,12 @@ Changelog:
   * Enhanced inactive tab contrast with gray-300 background and gray-700 text for better readability
   * Improved visual hierarchy with proper background color gradation from container to tabs
   * Applied consistent tab styling across both Home and TabletLayout components
+- July 1, 2025. Repositioned reaction UI to appear next to timestamp information:
+  * Moved reaction options (👍👎) from below message bubbles to right of timestamp information
+  * Disabled mouse hover functionality, made reaction UI exclusively triggered by long-press (500ms)
+  * Added haptic feedback (vibration) when long-press successfully triggers reaction options
+  * Simplified reaction display to appear in same row as timestamp for cleaner interface
+  * Removed unnecessary hover timeout references and cleaned up state management for mobile-optimized UX
 ```
 
 ## User Preferences
