@@ -571,7 +571,7 @@ export default function TabletLayout() {
             <Button
               variant={activeTab === "chat" ? "default" : "outline"}
               size="lg"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground rounded-md px-8 korean-text h-14 hover:bg-primary/10 text-[#7a7a7a] bg-[#e6e6e6]"
+              className={`korean-text h-14 ${activeTab === "chat" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
