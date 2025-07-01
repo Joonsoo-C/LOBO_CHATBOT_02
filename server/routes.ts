@@ -1301,10 +1301,10 @@ export async function setupDocumentFix(app: Express) {
   // Admin endpoint to get conversations and messages for QA logs
   app.get('/api/admin/conversations', isAuthenticated, async (req, res) => {
     try {
-      // Only allow admin users
+      // Allow master admin or users with admin privileges
       const userId = (req as any).session.userId;
       const user = await storage.getUser(userId!);
-      if (!user || user.role !== 'master_admin') {
+      if (!user || (user.username !== "master_admin" && user.userType !== "admin" && user.role !== "agent_admin" && user.role !== "master_admin")) {
         return res.status(403).json({ message: "Access denied" });
       }
 
@@ -1329,6 +1329,11 @@ export async function setupDocumentFix(app: Express) {
           const aiMessages = messages.filter(m => !m.isFromUser);
           const avgResponseTime = Math.random() * 3 + 1; // Mock response time for now
           
+          // Get the last user message for display
+          const lastUserMessage = userMessages.length > 0 
+            ? userMessages[userMessages.length - 1].content 
+            : null;
+          
           return {
             id: conv.id,
             userId: conv.userId,
@@ -1344,6 +1349,7 @@ export async function setupDocumentFix(app: Express) {
             userMessageCount: userMessages.length,
             aiMessageCount: aiMessages.length,
             avgResponseTime: parseFloat(avgResponseTime.toFixed(1)),
+            lastUserMessage: lastUserMessage,
             messages: messages.map(msg => ({
               id: msg.id,
               content: msg.content,
