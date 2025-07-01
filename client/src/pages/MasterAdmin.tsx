@@ -271,13 +271,26 @@ function MasterAdmin() {
   });
 
   // 실제 conversation 로그 데이터 조회
-  const { data: conversationLogs } = useQuery({
+  const { data: conversationLogs, error: conversationLogsError, isLoading: conversationLogsLoading } = useQuery({
     queryKey: ['/api/admin/conversations'],
     queryFn: async () => {
-      const response = await fetch('/api/admin/conversations');
-      if (!response.ok) throw new Error('Failed to fetch conversation logs');
-      return response.json();
-    }
+      const response = await fetch('/api/admin/conversations', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) {
+        console.error('Conversation logs fetch failed:', response.status, response.statusText);
+        throw new Error(`Failed to fetch conversation logs: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Conversation logs loaded:', data?.length || 0, 'conversations');
+      return data;
+    },
+    retry: 3,
+    retryDelay: 1000,
   });
 
 
@@ -5346,7 +5359,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {filteredConversationLogs && filteredConversationLogs.length > 0 ? (
+                      {conversationLogsLoading ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-8 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <RefreshCw className="w-6 h-6 mx-auto mb-2 animate-spin" />
+                              <p>대화 기록을 불러오는 중...</p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : conversationLogsError ? (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-8 text-center">
+                            <div className="text-red-500">
+                              <XCircle className="w-6 h-6 mx-auto mb-2" />
+                              <p>대화 기록을 불러오는데 실패했습니다</p>
+                              <p className="text-sm text-gray-500 mt-1">{conversationLogsError.message}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
                         filteredConversationLogs.slice(0, 10).map((log: any) => (
                           <tr key={log.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
