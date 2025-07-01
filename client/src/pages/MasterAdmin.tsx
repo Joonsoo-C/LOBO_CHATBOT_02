@@ -269,6 +269,7 @@ function MasterAdmin() {
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
+  const [isAgentDetailDialogOpen, setIsAgentDetailDialogOpen] = useState(false);
 
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
@@ -2585,6 +2586,58 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
 
 
+  // 에이전트 수정 뮤테이션
+  const updateAgentMutation = useMutation({
+    mutationFn: async (data: { id: number; [key: string]: any }) => {
+      const payload = {
+        ...data,
+        isActive: data.status === "active",
+      };
+      const response = await apiRequest("PUT", `/api/admin/agents/${data.id}`, payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
+      toast({
+        title: "성공",
+        description: "에이전트 정보가 수정되었습니다.",
+      });
+      setIsAgentDetailDialogOpen(false);
+      setSelectedAgent(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "에이전트 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 아이콘 컴포넌트 가져오기 함수
+  const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+      case 'User': return '👤';
+      case 'Bot': return '🤖';
+      case 'GraduationCap': return '🎓';
+      case 'Book': return '📚';
+      case 'School': return '🏫';
+      case 'Users': return '👥';
+      case 'Briefcase': return '💼';
+      case 'Settings': return '⚙️';
+      case 'Heart': return '❤️';
+      case 'Star': return '⭐';
+      default: return '👤';
+    }
+  };
+
+  const openAgentDetailDialog = (agent: Agent) => {
+    setSelectedAgent(agent);
+    setIsAgentDetailDialogOpen(true);
+  };
+
   const openNewAgentDialog = () => {
     // 새 에이전트 생성 폼 초기화
     agentForm.reset();
@@ -4795,7 +4848,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
                                 !agent.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
                               }`}
-                              onClick={() => openNewAgentDialog()}
+                              onClick={() => openAgentDetailDialog(agent)}
                             >
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
@@ -4866,7 +4919,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     title="에이전트 편집"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      openNewAgentDialog();
+                                      openAgentDetailDialog(agent);
                                     }}
                                     className="hover:bg-blue-50 hover:text-blue-600"
                                   >
@@ -9161,6 +9214,279 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </form>
             </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* 에이전트 상세 정보 대화상자 */}
+        <Dialog open={isAgentDetailDialogOpen} onOpenChange={setIsAgentDetailDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>에이전트 상세 정보</DialogTitle>
+            </DialogHeader>
+            {selectedAgent && (
+              <div className="space-y-6">
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">에이전트 이름</Label>
+                    <Input 
+                      defaultValue={selectedAgent.name}
+                      id="edit-name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">에이전트 유형</Label>
+                    <Select defaultValue={selectedAgent.category}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="학교">학교</SelectItem>
+                        <SelectItem value="교수">교수</SelectItem>
+                        <SelectItem value="학생">학생</SelectItem>
+                        <SelectItem value="그룹">그룹</SelectItem>
+                        <SelectItem value="기능형">기능형</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* 설명 */}
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">설명</Label>
+                  <Textarea 
+                    defaultValue={selectedAgent.description}
+                    id="edit-description"
+                    className="mt-1 min-h-[80px]"
+                  />
+                </div>
+
+                {/* 소속 조직 */}
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium text-gray-700">소속 조직</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-xs text-gray-600">상위 조직</Label>
+                      <Select defaultValue={(selectedAgent as any).upperCategory || ""}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="상위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getUpperCategories().map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">하위 조직</Label>
+                      <Select defaultValue={(selectedAgent as any).lowerCategory || ""}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="하위 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getLowerCategories((selectedAgent as any).upperCategory || '').map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">세부 조직</Label>
+                      <Select defaultValue={(selectedAgent as any).detailCategory || ""}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="세부 조직 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getDetailCategories((selectedAgent as any).upperCategory || '', (selectedAgent as any).lowerCategory || '').map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 모델 설정 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">LLM 모델</Label>
+                    <Select defaultValue={(selectedAgent as any).llmModel || "gpt-4o"}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
+                        <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">챗봇 유형</Label>
+                    <Select defaultValue={(selectedAgent as any).chatbotType || "doc-fallback-llm"}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
+                        <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
+                        <SelectItem value="general-llm">자유 대화형</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* 상태 */}
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">상태</Label>
+                  <Select defaultValue={selectedAgent.isActive ? "active" : "inactive"}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* 페르소나 정보 */}
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium text-gray-700">페르소나 설정</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-xs text-gray-600">닉네임</Label>
+                      <Input 
+                        defaultValue={(selectedAgent as any).personaNickname || ""}
+                        id="edit-nickname"
+                        className="mt-1"
+                        placeholder="예: 민지, 교수님 어시스턴트"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">말투 스타일</Label>
+                      <Input 
+                        defaultValue={(selectedAgent as any).speechStyle || ""}
+                        id="edit-speech-style"
+                        className="mt-1"
+                        placeholder="예: 친근하고 정중한 말투"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">성격/개성</Label>
+                    <Textarea 
+                      defaultValue={(selectedAgent as any).personality || ""}
+                      id="edit-personality"
+                      className="mt-1 min-h-[60px]"
+                      placeholder="에이전트의 성격이나 개성을 설명해주세요"
+                    />
+                  </div>
+                </div>
+
+                {/* 아이콘 및 관리자 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+                      {(selectedAgent as any).isCustomIcon && (selectedAgent as any).icon?.startsWith('/uploads/') ? (
+                        <img 
+                          src={(selectedAgent as any).icon} 
+                          alt="Agent Icon" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className={`w-full h-full flex items-center justify-center bg-${selectedAgent.backgroundColor}-100`}>
+                          <span className="text-2xl">{getIconComponent(selectedAgent.icon)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">아이콘</Label>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openIconChangeDialog(selectedAgent)}
+                        className="mt-1"
+                      >
+                        아이콘 변경
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">관리자</Label>
+                    <Select defaultValue={(selectedAgent as any).managerId || ""}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="관리자 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {managers?.map((manager) => (
+                          <SelectItem key={manager.id} value={manager.id}>
+                            {manager.firstName} {manager.lastName} ({manager.username})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* 버튼들 */}
+                <div className="flex justify-between pt-4">
+                  <Button 
+                    type="button" 
+                    variant="destructive"
+                    onClick={() => {
+                      if (confirm('정말로 이 에이전트를 삭제하시겠습니까?')) {
+                        deleteAgentMutation.mutate(selectedAgent.id);
+                      }
+                    }}
+                    disabled={deleteAgentMutation.isPending}
+                  >
+                    {deleteAgentMutation.isPending ? "삭제 중..." : "삭제"}
+                  </Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsAgentDetailDialogOpen(false);
+                        setSelectedAgent(null);
+                      }}
+                    >
+                      취소
+                    </Button>
+                    <Button 
+                      type="button"
+                      onClick={() => {
+                        const formData = {
+                          id: selectedAgent.id,
+                          name: (document.getElementById('edit-name') as HTMLInputElement)?.value || selectedAgent.name,
+                          description: (document.getElementById('edit-description') as HTMLTextAreaElement)?.value || selectedAgent.description,
+                          category: selectedAgent.category, // Select 값들은 실제 구현에서 상태로 관리 필요
+                          status: selectedAgent.isActive ? "active" : "inactive",
+                          personaNickname: (document.getElementById('edit-nickname') as HTMLInputElement)?.value || "",
+                          speechStyle: (document.getElementById('edit-speech-style') as HTMLInputElement)?.value || "",
+                          personality: (document.getElementById('edit-personality') as HTMLTextAreaElement)?.value || "",
+                        };
+                        updateAgentMutation.mutate(formData);
+                      }}
+                      disabled={updateAgentMutation.isPending}
+                    >
+                      {updateAgentMutation.isPending ? "저장 중..." : "수정"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
