@@ -3,10 +3,10 @@
     "id": "master_admin",
     "username": "master_admin",
     "password": "$2b$10$u/6Ei6oCPck7/IDAn.x7le40e8QM4zVWt7EVZPaepqfST98kTi8nO",
-    "role": "마스터 관리자",
+    "role": "master_admin",
     "firstName": "Master",
     "lastName": "Admin",
-    "name": "Master Admin",
+    "name": "마스터 관리자",
     "email": "admin@lobo.edu",
     "userType": "admin",
     "createdAt": "2025-06-29T03:38:07.033Z",
@@ -20,7 +20,7 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "LoBo AI 챗봇 통합 관리자 센터 마스터 계정",
-    "updatedAt": "2025-06-30T19:59:41.234Z"
+    "updatedAt": "2025-07-01T14:44:02.388Z"
   },
   {
     "id": "user1081",
@@ -43,13 +43,13 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "인문대학 국어국문학과 현대문학전공 교수",
-    "updatedAt": "2025-06-30T20:02:30.966Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   },
   {
     "id": "user1082",
     "username": "user1082",
     "password": "$2b$10$aXsDNokW66v1jl0NGmhsE.W9UA/zD6nmvoQ0ffntsA0eM4MPpEGuq",
-    "role": "일반 사용자",
+    "role": "user",
     "firstName": "장",
     "lastName": "지훈",
     "name": "장지훈",
@@ -66,7 +66,7 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "인문대학 국어국문학과 현대문학전공 학생",
-    "updatedAt": "2025-06-30T19:59:41.234Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   },
   {
     "id": "agent_admin_001",
@@ -88,6 +88,6 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "에이전트 관리 전담 사용자",
-    "updatedAt": "2025-06-30T19:59:41.234Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   }
 ]
