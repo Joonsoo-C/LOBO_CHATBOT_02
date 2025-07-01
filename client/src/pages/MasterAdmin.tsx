@@ -6658,7 +6658,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 로그 필터링 */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">로그 필터링</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">로그 검색</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
