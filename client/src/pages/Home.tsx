@@ -177,7 +177,7 @@ function Home() {
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-muted border-none korean-text md:h-11 w-full pl-10 pr-3 md:pl-[60px] md:pr-[60px] ipad-portrait:pl-12 ipad-portrait:pr-12"
+                className="bg-muted border-none korean-text md:h-11 w-full pl-10 pr-3 md:pl-[60px] md:pr-[60px]"
               />
             </div>
             
