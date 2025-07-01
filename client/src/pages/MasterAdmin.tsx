@@ -269,7 +269,7 @@ function MasterAdmin() {
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
-  const [isEditAgentDialogOpen, setIsEditAgentDialogOpen] = useState(false);
+
   const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
   const [isUserDetailDialogOpen, setIsUserDetailDialogOpen] = useState(false);
@@ -290,7 +290,7 @@ function MasterAdmin() {
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
@@ -2646,31 +2646,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
-  const openEditAgentDialog = (agent: Agent) => {
-    setEditingAgent(agent);
-    editAgentForm.reset({
-      name: agent.name,
-      description: agent.description,
-      category: agent.category,
-      upperCategory: (agent as any).upperCategory || "",
-      lowerCategory: (agent as any).lowerCategory || "",
-      detailCategory: (agent as any).detailCategory || "",
-      status: (agent as any).status || "active",
-      llmModel: (agent as any).llmModel || "gpt-4o",
-      chatbotType: (agent as any).chatbotType || "doc-fallback-llm",
-      maxInputLength: (agent as any).maxInputLength || 2048,
-      maxOutputLength: (agent as any).maxOutputLength || 1024,
-
-      personaNickname: (agent as any).personaNickname || "",
-      speechStyle: (agent as any).speechStyle || "",
-      personality: (agent as any).personality || "",
-      forbiddenResponseStyle: (agent as any).forbiddenResponseStyle || "",
-      visibility: (agent as any).visibility || "organization",
-      managerId: (agent as any).managerId || "",
-      agentEditorIds: (agent as any).agentEditorIds || [],
-      documentManagerIds: (agent as any).documentManagerIds || [],
-    });
-    setIsEditAgentDialogOpen(true);
+  const openNewAgentDialog = () => {
+    // 새 에이전트 생성 폼 초기화
+    agentForm.reset();
+    setSelectedAgentManagers([]);
+    setSelectedDocumentManagers([]);
+    setSelectedQaManagers([]);
+    setSelectedFiles([]);
+    setManagerSearchQuery('');
+    setAgentCreationTab('basic');
+    setIsAgentDialogOpen(true);
   };
 
   const openIconChangeDialog = (agent: Agent) => {
@@ -4871,7 +4856,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
                                 !agent.isActive ? 'bg-gray-50 dark:bg-gray-800/50 opacity-75' : ''
                               }`}
-                              onClick={() => openEditAgentDialog(agent)}
+                              onClick={() => openNewAgentDialog()}
                             >
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
@@ -4942,7 +4927,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     title="에이전트 편집"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      openEditAgentDialog(agent);
+                                      openNewAgentDialog();
                                     }}
                                     className="hover:bg-blue-50 hover:text-blue-600"
                                   >
@@ -7134,234 +7119,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </TabsContent>
         </Tabs>
 
-        {/* 에이전트 편집 다이얼로그 */}
-        <Dialog open={isEditAgentDialogOpen} onOpenChange={setIsEditAgentDialogOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>에이전트 설정</DialogTitle>
-            </DialogHeader>
-            <Form {...editAgentForm}>
-              <form onSubmit={editAgentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: editingAgent!.id }))} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={editAgentForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>에이전트 이름</FormLabel>
-                        <FormControl>
-                          <Input placeholder="예: 학사 도우미" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editAgentForm.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>카테고리</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="카테고리 선택" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="학교">학교</SelectItem>
-                            <SelectItem value="교수">교수</SelectItem>
-                            <SelectItem value="학생">학생</SelectItem>
-                            <SelectItem value="그룹">그룹</SelectItem>
-                            <SelectItem value="기능형">기능형</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={editAgentForm.control}
-                    name="llmModel"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>LLM 모델 선택</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o-mini"}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="GPT-4o Mini (빠름)" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
-                            <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
-                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
-                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editAgentForm.control}
-                    name="chatbotType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>챗봇 유형 선택</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="문서 우선 + LLM..." />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
-                            <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
-                            <SelectItem value="general-llm">자유 대화형</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                <FormField
-                  control={editAgentForm.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>설명</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="에이전트의 역할과 기능을 설명해주세요" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* 소속 조직 선택 - 3단계 드롭다운 */}
-                <div className="space-y-4">
-                  <FormLabel className="text-base font-medium">소속 조직</FormLabel>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div>
-                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
-                      <Select defaultValue="전체">
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="전체" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
-                          <SelectItem value="대학교">대학교</SelectItem>
-                          <SelectItem value="대학원">대학원</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
-                      <Select defaultValue="전체">
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="전체" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
-                          <SelectItem value="공과대학">공과대학</SelectItem>
-                          <SelectItem value="경영대학">경영대학</SelectItem>
-                          <SelectItem value="인문대학">인문대학</SelectItem>
-                          <SelectItem value="자연과학대학">자연과학대학</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
-                      <Select defaultValue="전체">
-                        <SelectTrigger className="h-11">
-                          <SelectValue placeholder="전체" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
-                          <SelectItem value="컴퓨터공학과">컴퓨터공학과</SelectItem>
-                          <SelectItem value="전자공학과">전자공학과</SelectItem>
-                          <SelectItem value="기계공학과">기계공학과</SelectItem>
-                          <SelectItem value="경영학과">경영학과</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex items-end">
-                      <Button variant="default" className="h-11 px-6 bg-blue-600 hover:bg-blue-700">
-                        적용
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 에이전트 관리자 */}
-                <FormField
-                  control={editAgentForm.control}
-                  name="managerId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>에이전트 관리자</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="관리자 선택" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {managers?.map((manager) => (
-                            <SelectItem key={manager.id} value={manager.id}>
-                              {manager.firstName} {manager.lastName} ({manager.username})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-
-
-                <FormField
-                  control={editAgentForm.control}
-                  name="personality"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>성격/말투 (선택사항)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="에이전트의 성격이나 말투를 설명해주세요" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="flex justify-between">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => openIconChangeDialog(editingAgent!)}
-                  >
-                    아이콘 편집
-                  </Button>
-                  <div className="flex space-x-2">
-                    <Button type="button" variant="outline" onClick={() => setIsEditAgentDialogOpen(false)}>
-                      취소
-                    </Button>
-                    <Button type="submit" disabled={updateAgentMutation.isPending}>
-                      {updateAgentMutation.isPending ? "수정 중..." : "저장"}
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
 
         {/* LMS 연동 다이얼로그 */}
         <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
