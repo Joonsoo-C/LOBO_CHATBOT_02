@@ -48,6 +48,7 @@ import {
   GraduationCap,
   BookOpen,
   Brain,
+  RefreshCw,
   Zap,
   Target,
   Coffee,
@@ -1496,6 +1497,33 @@ function MasterAdmin() {
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
     setHasAgentSearched(true);
+  };
+
+  // 문서 텍스트 추출 수정 함수
+  const fixDocumentsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/fix-documents");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      toast({
+        title: "성공",
+        description: `문서 텍스트 추출이 완료되었습니다. 처리된 문서: ${data.fixedCount}개`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "문서 텍스트 추출 수정에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 문서 텍스트 추출 수정 핸들러
+  const handleFixDocuments = () => {
+    fixDocumentsMutation.mutate();
   };
 
   // 에이전트 필터 초기화 함수
@@ -6480,6 +6508,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 문서 관리 도구 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <Card 
+                className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => handleFixDocuments()}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <RefreshCw className="w-5 h-5 mr-2 text-orange-600" />
+                    문서 텍스트 추출 수정
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    업로드된 문서의 텍스트 추출 오류를 수정합니다.
                   </p>
                 </CardContent>
               </Card>

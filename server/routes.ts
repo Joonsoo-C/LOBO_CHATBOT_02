@@ -9,6 +9,8 @@ import { cache } from "./cache";
 import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
+import mammoth from 'mammoth';
+import pdfParse from 'pdf-parse';
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -1138,7 +1140,33 @@ export async function setupDocumentFix(app: Express) {
           
           if (fs.existsSync(filePath)) {
             try {
-              const extractedText = await extractTextFromContent(filePath, doc.mimeType);
+              let extractedText = null;
+              
+              // PDF 파일 처리
+              if (doc.mimeType.includes('application/pdf')) {
+                const dataBuffer = fs.readFileSync(filePath);
+                const data = await pdfParse(dataBuffer);
+                extractedText = data.text
+                  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+                  .replace(/\uFFFD/g, '')
+                  .trim();
+              }
+              // DOCX 파일 처리
+              else if (doc.mimeType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document') || 
+                       doc.mimeType.includes('application/msword')) {
+                const result = await mammoth.extractRawText({ path: filePath });
+                extractedText = result.value
+                  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+                  .replace(/\uFFFD/g, '')
+                  .trim();
+              }
+              // TXT 파일 처리
+              else if (doc.mimeType.includes('text/plain')) {
+                extractedText = fs.readFileSync(filePath, 'utf-8')
+                  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+                  .replace(/\uFFFD/g, '')
+                  .trim();
+              }
               
               if (extractedText && extractedText.length > 50 && !extractedText.includes('추출')) {
                 // Update document with extracted text
@@ -1146,7 +1174,7 @@ export async function setupDocumentFix(app: Express) {
                 fixedCount++;
                 console.log(`✓ Fixed: ${doc.originalName} (${extractedText.length} chars)`);
               } else {
-                console.log(`✗ Extraction failed: ${doc.originalName}`);
+                console.log(`✗ Extraction failed: ${doc.originalName} - extracted: ${extractedText?.length || 0} chars`);
               }
             } catch (error) {
               console.error(`Error processing ${doc.originalName}:`, error);
