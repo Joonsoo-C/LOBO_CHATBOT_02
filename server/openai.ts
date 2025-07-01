@@ -469,7 +469,7 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
       // Extract text from PDF files using pdf-parse
       console.log('PDF file detected, extracting text');
       try {
-        const pdfParse = require('pdf-parse');
+        const pdfParse = (await import('pdf-parse')).default;
         const dataBuffer = fs.readFileSync(filePath);
         const data = await pdfParse(dataBuffer);
         

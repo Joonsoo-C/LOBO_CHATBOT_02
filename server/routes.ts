@@ -10,7 +10,7 @@ import { setupAuth, isAuthenticated } from "./auth";
 import { setupAdminRoutes } from "./admin";
 import { generateChatResponse, generateManagementResponse, analyzeDocument, extractTextFromContent } from "./openai";
 import mammoth from 'mammoth';
-// import pdfParse from 'pdf-parse'; // Disabled due to module issues
+import pdfParse from 'pdf-parse';
 import { insertMessageSchema, insertDocumentSchema, conversations, agents } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
@@ -25,6 +25,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       'text/plain',
+      'application/pdf',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'application/msword',
@@ -36,7 +37,7 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, DOCX, PPT, PPTX, XLS, XLSX 파일만 업로드 가능합니다.'));
+      cb(new Error('지원하지 않는 파일 형식입니다. PDF, TXT, DOC, DOCX, PPT, PPTX, XLS, XLSX 파일만 업로드 가능합니다.'));
     }
   },
 });
