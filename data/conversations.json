@@ -43,9 +43,10 @@
         "userId": "user1082",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 17,
+        "unreadCount": 0,
         "lastMessageAt": "2025-07-01T07:14:08.289Z",
-        "createdAt": "2025-06-30T22:15:14.708Z"
+        "createdAt": "2025-06-30T22:15:14.708Z",
+        "lastReadAt": "2025-07-01T14:07:10.341Z"
       }
     ],
     [
@@ -113,12 +114,84 @@
       139,
       {
         "id": 139,
-        "userId": "user1081",
-        "agentId": 118,
+        "userId": "user1082",
+        "agentId": 116,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-01T09:38:18.067Z",
-        "createdAt": "2025-07-01T09:38:18.067Z"
+        "lastMessageAt": "2025-07-01T14:07:01.198Z",
+        "createdAt": "2025-07-01T14:07:01.198Z"
+      }
+    ],
+    [
+      140,
+      {
+        "id": 140,
+        "userId": "user1082",
+        "agentId": 123,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:03.767Z",
+        "createdAt": "2025-07-01T14:07:03.767Z"
+      }
+    ],
+    [
+      141,
+      {
+        "id": 141,
+        "userId": "user1082",
+        "agentId": 127,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:04.813Z",
+        "createdAt": "2025-07-01T14:07:04.813Z"
+      }
+    ],
+    [
+      142,
+      {
+        "id": 142,
+        "userId": "user1082",
+        "agentId": 129,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:05.895Z",
+        "createdAt": "2025-07-01T14:07:05.895Z"
+      }
+    ],
+    [
+      143,
+      {
+        "id": 143,
+        "userId": "user1082",
+        "agentId": 138,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:07.278Z",
+        "createdAt": "2025-07-01T14:07:07.278Z"
+      }
+    ],
+    [
+      144,
+      {
+        "id": 144,
+        "userId": "user1082",
+        "agentId": 143,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:11.863Z",
+        "createdAt": "2025-07-01T14:07:11.863Z"
+      }
+    ],
+    [
+      145,
+      {
+        "id": 145,
+        "userId": "user1082",
+        "agentId": 147,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-01T14:07:12.580Z",
+        "createdAt": "2025-07-01T14:07:12.580Z"
       }
     ]
   ]
