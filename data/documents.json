@@ -131,6 +131,17 @@
       "uploadedBy": "user1081",
       "id": 111,
       "createdAt": "2025-07-01T05:38:00.262Z"
+    },
+    {
+      "agentId": 146,
+      "filename": "f7dc11fba77e82dc69d7d1ddc1344ea8",
+      "originalName": "컬러빌과 시간의 섬 (1).pdf",
+      "mimeType": "application/pdf",
+      "size": 1017000,
+      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.",
+      "uploadedBy": "user1081",
+      "id": 112,
+      "createdAt": "2025-07-01T05:55:59.607Z"
     }
   ],
   "organizationCategories": [
@@ -1747,6 +1758,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 112,
+  "nextId": 113,
   "nextOrganizationId": 125
 }
