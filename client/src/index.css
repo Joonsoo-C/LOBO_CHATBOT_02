@@ -88,12 +88,13 @@
 
 /* 메시지 버블 스타일링 - 일반 메신저 스타일 */
 .message-bubble {
-  @apply rounded-2xl px-3 py-2;
-  max-width: 70%;
+  @apply rounded-2xl px-4 py-3;
+  max-width: 75%;
   word-wrap: break-word;
   overflow-wrap: anywhere;
   position: relative;
   display: inline-block;
+  min-width: 60px;
 }
 
 /* 사용자 메시지 - 오른쪽 정렬, 파란색 */
@@ -102,7 +103,9 @@
   color: white;
   border-bottom-right-radius: 6px;
   margin-left: auto;
-  margin-right: 12px;
+  margin-right: 0;
+  float: right;
+  clear: both;
 }
 
 /* AI 메시지 - 왼쪽 정렬, 회색 */
@@ -111,7 +114,9 @@
   color: #000000;
   border-bottom-left-radius: 6px;
   margin-right: auto;
-  margin-left: 12px;
+  margin-left: 0;
+  float: left;
+  clear: both;
 }
 
 /* 다크모드에서 AI 메시지 */
@@ -230,10 +235,18 @@
 .messages-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   padding-bottom: 40px;
   min-height: auto;
   justify-content: flex-end;
+}
+
+/* 메시지 행 스타일링 */
+.message-row {
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  margin-bottom: 4px;
 }
 
 /* 모바일 반응형 */
@@ -249,6 +262,10 @@
   
   .messages-container {
     padding-bottom: 50px;
+  }
+
+  .message-bubble {
+    max-width: 85%;
   }
 
   .apple-nav-tab {

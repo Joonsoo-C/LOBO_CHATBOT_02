@@ -1094,28 +1094,27 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
               
               return (
-                <div key={uniqueKey} className="mb-2">
-                  <div className={`flex ${msg.isFromUser ? 'justify-end' : isSystem ? 'justify-center' : 'justify-start'}`}>
-                    <div 
-                      className="relative"
-                      onMouseEnter={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          if (hoverTimeoutRef.current) {
-                            clearTimeout(hoverTimeoutRef.current);
-                            hoverTimeoutRef.current = null;
-                          }
-                          setActiveReactionMessageId(msg.id);
+                <div key={uniqueKey} className="message-row">
+                  <div 
+                    className="relative w-full"
+                    onMouseEnter={() => {
+                      if (!msg.isFromUser && !isSystem) {
+                        if (hoverTimeoutRef.current) {
+                          clearTimeout(hoverTimeoutRef.current);
+                          hoverTimeoutRef.current = null;
                         }
-                      }}
-                      onMouseLeave={() => {
-                        if (!msg.isFromUser && !isSystem) {
-                          hoverTimeoutRef.current = setTimeout(() => {
-                            setActiveReactionMessageId(null);
-                            hoverTimeoutRef.current = null;
-                          }, 800);
-                        }
-                      }}
-                    >
+                        setActiveReactionMessageId(msg.id);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!msg.isFromUser && !isSystem) {
+                        hoverTimeoutRef.current = setTimeout(() => {
+                          setActiveReactionMessageId(null);
+                          hoverTimeoutRef.current = null;
+                        }, 800);
+                      }
+                    }}
+                  >
                       <div
                         className={`message-bubble ${
                           msg.isFromUser
@@ -1124,6 +1123,12 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               ? "system-message"
                               : "assistant"
                         } text-sm md:text-base leading-relaxed korean-text`}
+                        style={isSystem ? { 
+                          margin: '0 auto', 
+                          float: 'none', 
+                          clear: 'both',
+                          maxWidth: '60%'
+                        } : {}}
                         onClick={() => {
                           if (!msg.isFromUser && !isSystem) {
                             handleReactionToggle(msg.id);
@@ -1212,15 +1217,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="mb-2">
-                <div className="flex justify-start">
-                  <div className="message-bubble assistant max-w-[80px]">
-                    <div className="flex items-center justify-center py-1">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      </div>
+              <div className="message-row">
+                <div className="message-bubble assistant max-w-[80px]" style={{ float: 'left', clear: 'both' }}>
+                  <div className="flex items-center justify-center py-1">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 </div>
