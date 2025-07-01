@@ -1569,7 +1569,10 @@ function MasterAdmin() {
 
   // 에이전트 필터링 로직
   const filteredAgents = useMemo(() => {
-    if (!agents || !hasAgentSearched) return [];
+    if (!agents) return [];
+    
+    // 검색을 하지 않은 경우 모든 에이전트 표시 (초기 화면)
+    if (!hasAgentSearched) return [...agents];
     
     let filtered = [...agents];
     
