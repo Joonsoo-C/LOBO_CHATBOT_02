@@ -567,11 +567,11 @@ export default function TabletLayout() {
           </div>
           
           {/* Tab Navigation */}
-          <div className={`grid gap-0 bg-muted rounded-xl p-1 ${(user?.role === 'agent_admin' || user?.role === 'master_admin') ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          <div className={`grid gap-0 bg-white border border-border rounded-xl p-1 ${(user?.role === 'agent_admin' || user?.role === 'master_admin') ? 'grid-cols-2' : 'grid-cols-1'}`}>
             <Button
-              variant={activeTab === "chat" ? "default" : "ghost"}
+              variant={activeTab === "chat" ? "default" : "outline"}
               size="lg"
-              className="korean-text h-14"
+              className={`korean-text h-14 ${activeTab === "chat" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
@@ -581,9 +581,9 @@ export default function TabletLayout() {
             </Button>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
               <Button
-                variant={activeTab === "management" ? "default" : "ghost"}
+                variant={activeTab === "management" ? "default" : "outline"}
                 size="lg"
-                className="korean-text h-14"
+                className={`korean-text h-14 ${activeTab === "management" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
                 onClick={() => {
                   setActiveTab("management");
                   navigate("/management");

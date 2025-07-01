@@ -671,15 +671,17 @@ body {
 
   /* Apple Messages Navigation Tabs */
   .apple-nav-tabs {
-    background: #F2F2F7;
+    background: #FFFFFF;
     border-radius: 12px;
     padding: 4px;
     display: flex;
     margin-bottom: 16px;
+    border: 1px solid #E5E5E7;
   }
 
   .dark .apple-nav-tabs {
-    background: #2C2C2E;
+    background: #1C1C1E;
+    border-color: #48484A;
   }
 
   .apple-nav-tab {
@@ -690,18 +692,24 @@ body {
     font-weight: 500;
     transition: all 0.2s ease;
     cursor: pointer;
-    color: #8E8E93;
+    color: #007AFF;
+    background: transparent;
   }
 
   .apple-nav-tab.active {
-    background: #FFFFFF;
+    background: #007AFF;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  }
+
+  .dark .apple-nav-tab {
     color: #007AFF;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .dark .apple-nav-tab.active {
-    background: #48484A;
-    color: #007AFF;
+    background: #007AFF;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4);
   }
 
   /* Apple Messages Input Container */
