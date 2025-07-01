@@ -244,6 +244,11 @@ function MasterAdmin() {
   const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
   const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  // Q&A 로그 조직 카테고리 상태
+  const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
+  const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
+  const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
+
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
   const { data: allManagers } = useQuery<User[]>({
@@ -5131,21 +5136,62 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="text-lg font-semibold mb-4">로그 검색</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <Label>에이전트</Label>
-                  <Select defaultValue="all">
+                  <Label>상위조직</Label>
+                  <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="에이전트 선택" />
+                      <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체 에이전트</SelectItem>
-                      <SelectItem value="academic">학사 도우미</SelectItem>
-                      <SelectItem value="student">학생회 도우미</SelectItem>
-                      <SelectItem value="research">연구 지원 도우미</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
+                      {qaUniqueUpperCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Label>하위조직</Label>
+                  <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
+                    <SelectTrigger className={qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {qaFilteredLowerCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>세부조직</Label>
+                  <Select 
+                    value={qaSelectedDetailCategory} 
+                    onValueChange={handleQADetailCategoryChange}
+                    disabled={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all'}
+                  >
+                    <SelectTrigger className={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                      <SelectValue placeholder="선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {qaFilteredDetailCategories.map((category, index) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>사용자 유형</Label>
                   <Select defaultValue="all">
@@ -5180,10 +5226,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  총 <strong>1,247</strong>개의 질문/응답 로그
-                </div>
+              <div className="flex justify-end">
                 <Button>
                   필터 적용
                 </Button>
