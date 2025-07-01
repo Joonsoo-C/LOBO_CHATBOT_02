@@ -5227,134 +5227,64 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.21 14:23
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                            수강신청 기간이 언제인가요?
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          0%
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          1.8초
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" title="상세 보기">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" title="피드백">
-                              <MessageSquare className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.21 14:20
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">연구 지원 도우미</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                            연구비 신청 절차에 대해 알려주세요
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="outline" className="bg-blue-100 text-blue-800">하이브리드</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2.5%
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          3.2초
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" title="상세 보기">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" title="피드백">
-                              <MessageSquare className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.21 14:18
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">학생회 도우미</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                            동아리 행사 예산은 어떻게 신청하나요?
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="secondary" className="bg-gray-100 text-gray-800">AI 생성</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          5.1%
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2.1초
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" title="상세 보기">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" title="피드백">
-                              <MessageSquare className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          2024.01.21 14:15
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">학사 도우미</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                            졸업 요건을 확인하고 싶어요
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="default" className="bg-green-100 text-green-800">문서 기반</Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          0%
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          1.5초
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm" title="상세 보기">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" title="피드백">
-                              <MessageSquare className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
+                      {conversationLogs && conversationLogs.length > 0 ? (
+                        conversationLogs.slice(0, 10).map((log: any) => (
+                          <tr key={log.id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit', 
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                {log.agentName || '알 수 없는 에이전트'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                                {log.lastUserMessage || '메시지 없음'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                실제 대화
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              0%
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              즉시
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-1">
+                                <Button variant="outline" size="sm" title="상세 보기">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" title="피드백">
+                                  <MessageSquare className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-8 text-center">
+                            <div className="text-gray-500 dark:text-gray-400">
+                              <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                              <p className="text-lg font-medium mb-2">대화 기록이 없습니다</p>
+                              <p className="text-sm">
+                                사용자가 에이전트와 대화를 시작하면 여기에 기록이 표시됩니다.
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
