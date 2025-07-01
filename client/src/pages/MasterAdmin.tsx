@@ -1753,6 +1753,7 @@ function MasterAdmin() {
 
   // 정렬된 에이전트 목록
   const sortedAgents = useMemo(() => {
+    // 검색을 하지 않은 경우 모든 에이전트 표시, 검색한 경우 필터링된 에이전트 표시
     const agentsToSort = hasAgentSearched ? filteredAgents : agents || [];
     
     return [...agentsToSort].sort((a, b) => {
@@ -4919,7 +4920,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                        {sortedAgents?.length === 0 ? (
+                        {(!sortedAgents || sortedAgents.length === 0) ? (
                           <tr>
                             <td colSpan={7} className="px-6 py-12 text-center">
                               <div className="text-gray-500 dark:text-gray-400">
@@ -4932,7 +4933,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                           </tr>
                         ) : (
-                          sortedAgents?.map((agent) => (
+                          sortedAgents.map((agent) => (
                             <tr 
                               key={agent.id} 
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
