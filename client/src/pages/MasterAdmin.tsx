@@ -9642,10 +9642,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           setSelectedAgentManagers([...selectedAgentManagers, {
                                             id: manager.id,
                                             name: `${manager.firstName} ${manager.lastName}`,
-                                            username: manager.username,
-                                            upperCategory: manager.upperCategory || '',
-                                            lowerCategory: manager.lowerCategory || ''
-                                          }]);
+                                            email: manager.email || '',
+                                            upperCategory: '',
+                                            lowerCategory: ''
+                                          } as ManagerInfo]);
                                         }
                                       } else {
                                         setSelectedAgentManagers(selectedAgentManagers.filter(m => m.id !== manager.id));
