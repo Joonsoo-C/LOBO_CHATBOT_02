@@ -1207,6 +1207,30 @@ function MasterAdmin() {
     return categories.sort();
   }, [qaSelectedUpperCategory, qaSelectedLowerCategory, organizations]);
 
+  // Q&A 로그 조직 카테고리별 필터링 로직
+  const filteredConversationLogs = useMemo(() => {
+    if (!conversationLogs) return [];
+    
+    let filtered = [...conversationLogs];
+    
+    // 상위 조직 카테고리 필터링
+    if (qaSelectedUpperCategory !== 'all') {
+      filtered = filtered.filter(log => log.upperCategory === qaSelectedUpperCategory);
+    }
+    
+    // 하위 조직 카테고리 필터링
+    if (qaSelectedLowerCategory !== 'all') {
+      filtered = filtered.filter(log => log.lowerCategory === qaSelectedLowerCategory);
+    }
+    
+    // 세부 조직 카테고리 필터링
+    if (qaSelectedDetailCategory !== 'all') {
+      filtered = filtered.filter(log => log.detailCategory === qaSelectedDetailCategory);
+    }
+    
+    return filtered;
+  }, [conversationLogs, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory]);
+
   // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
@@ -5290,7 +5314,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]"> 질문 응답 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 1,247개 중 4개 표시
+                  전체 {conversationLogs?.length || 0}개 중 {filteredConversationLogs?.length || 0}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -5322,8 +5346,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {conversationLogs && conversationLogs.length > 0 ? (
-                        conversationLogs.slice(0, 10).map((log: any) => (
+                      {filteredConversationLogs && filteredConversationLogs.length > 0 ? (
+                        filteredConversationLogs.slice(0, 10).map((log: any) => (
                           <tr key={log.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {

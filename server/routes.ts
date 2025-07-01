@@ -1301,10 +1301,19 @@ export async function setupDocumentFix(app: Express) {
   // Admin endpoint to get conversations and messages for QA logs
   app.get('/api/admin/conversations', isAuthenticated, async (req, res) => {
     try {
-      // Allow master admin or users with admin privileges
+      // Allow master admin or users with admin privileges (including Korean role values)
       const userId = (req as any).session.userId;
       const user = await storage.getUser(userId!);
-      if (!user || (user.username !== "master_admin" && user.userType !== "admin" && user.role !== "agent_admin" && user.role !== "master_admin")) {
+      
+      console.log('QA Log access check:', {
+        userId,
+        username: user?.username,
+        userType: user?.userType,
+        role: user?.role
+      });
+      
+      if (!user || (user.username !== "master_admin" && user.userType !== "admin" && user.role !== "agent_admin" && user.role !== "master_admin" && user.role !== "에이전트 관리자" && user.role !== "마스터 관리자")) {
+        console.log('Access denied for QA logs');
         return res.status(403).json({ message: "Access denied" });
       }
 
@@ -1339,6 +1348,10 @@ export async function setupDocumentFix(app: Express) {
             userId: conv.userId,
             userName: user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username || 'Unknown User',
             userType: user?.role || 'unknown',
+            // Add user organization information for filtering
+            upperCategory: user?.upperCategory || null,
+            lowerCategory: user?.lowerCategory || null,
+            detailCategory: user?.detailCategory || null,
             agentId: conv.agentId,
             agentName: agent?.name || 'Unknown Agent',
             agentCategory: agent?.category || 'unknown',
