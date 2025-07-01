@@ -5048,7 +5048,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 질문/응답 로그 */}
           <TabsContent value="conversations" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">질문/응답 로그</h2>
+              <h2 className="text-2xl font-bold">질문 응답 로그</h2>
               <div className="flex space-x-2">
                 <Button variant="outline">
                   <FileText className="w-4 h-4 mr-2" />
