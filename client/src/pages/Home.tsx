@@ -163,21 +163,21 @@ function Home() {
   }, []);
 
   return (
-    <div className="mobile-container no-scroll-bounce scroll-container md:min-h-screen md:w-full">
+    <div className="min-h-screen md:w-full" style={{ background: 'var(--neu-bg)' }}>
       {/* Header */}
-      <header className="fixed-header-stable md:static md:bg-transparent md:shadow-none md:mb-0">
+      <header className="neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
         <div className="px-4 py-3 md:px-6 md:py-4">
           {/* Header with search and settings */}
           <div className="flex items-center mb-4 md:mb-6">
             {/* Search Bar */}
             <div className="relative" style={{ width: 'calc(100% - 84px)' }}>
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--neu-text-light)' }} />
+              <input
                 type="text"
                 placeholder={t('home.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-muted border-none korean-text md:h-11 w-full pl-10 pr-3 md:pl-[60px] md:pr-[60px]"
+                className="neu-input w-full pl-10 pr-3 korean-text"
               />
             </div>
             

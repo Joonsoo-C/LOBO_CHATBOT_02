@@ -1078,7 +1078,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           ) : allMessages.length === 0 ? (
             <div className="mb-2">
               <div className="flex justify-start">
-                <div className="message-bubble assistant text-sm md:text-base leading-relaxed korean-text">
+                <div className="neu-message-ai text-sm md:text-base leading-relaxed korean-text">
                   안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
                 </div>
               </div>
@@ -1116,12 +1116,12 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       }}
                     >
                         <div
-                          className={`message-bubble ${
+                          className={`${
                             msg.isFromUser
-                              ? "user"
+                              ? "neu-message-user"
                               : isSystem
-                                ? "system-message"
-                                : "assistant"
+                                ? "neu-message-ai bg-amber-100 dark:bg-amber-900/20 border-l-4 border-amber-500"
+                                : "neu-message-ai"
                           } text-sm md:text-base leading-relaxed korean-text`}
                           style={isSystem ? { 
                             margin: '0 auto', 
@@ -1238,13 +1238,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
 
       {/* Message Input */}
-      <div className={`apple-input-container ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
+      <div className={`flex items-end gap-3 p-4 ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
         <textarea
           placeholder={t('chat.inputPlaceholder')}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="apple-chat-input resize-none korean-text"
+          className="neu-chat-input flex-1 resize-none korean-text"
           disabled={sendMessageMutation.isPending}
           rows={1}
           style={{
@@ -1258,7 +1258,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
           }}
         />
         <button
-          className="apple-send-button"
+          className="neu-send-button"
           onClick={handleSendMessage}
           disabled={!message.trim() || sendMessageMutation.isPending}
         >
