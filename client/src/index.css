@@ -383,9 +383,21 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: 0;
+    padding: 0 8px;
     margin: 0;
     width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .responsive-agent-grid {
+      padding: 0 16px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-agent-grid {
+      padding: 0 24px;
+    }
   }
 
   @media (min-width: 768px) {
@@ -629,14 +641,26 @@ body {
     background: #FFFFFF;
     border: none;
     border-radius: 0;
-    padding: 20px 24px;
-    margin-bottom: 0;
+    padding: 20px 16px;
+    margin: 0;
     box-shadow: none;
     transition: all 0.2s ease;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     width: 100%;
     display: block;
     min-height: 80px;
+  }
+
+  @media (min-width: 768px) {
+    .apple-agent-card {
+      padding: 20px 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .apple-agent-card {
+      padding: 20px 32px;
+    }
   }
 
   .apple-agent-card:hover {
