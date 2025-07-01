@@ -92,15 +92,12 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [pendingNotification, setPendingNotification] = useState("");
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const [activeReactionMessageId, setActiveReactionMessageId] = useState<number | null>(null);
-  
-  // Prevent state reset during re-renders
-  const [reactionUIVisible, setReactionUIVisible] = useState<Record<number, boolean>>({});
   const [messageReactions, setMessageReactions] = useState<Record<number, string>>({});
   const [showDocumentPreview, setShowDocumentPreview] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
-
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -222,17 +219,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
 
   // Reaction handlers
   const handleReactionToggle = (messageId: number) => {
-    console.log('🎯 Reaction toggle clicked for message:', messageId);
-    console.log('🎯 Current reactionUIVisible:', reactionUIVisible);
-    
-    setReactionUIVisible(prev => {
-      const newState = {
-        ...prev,
-        [messageId]: !prev[messageId]
-      };
-      console.log('🎯 Setting reactionUIVisible:', newState);
-      return newState;
-    });
+    setActiveReactionMessageId(prev => prev === messageId ? null : messageId);
   };
 
   const handleReactionSelect = (messageId: number, reaction: string) => {
@@ -263,7 +250,43 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     { emoji: '👎', icon: ThumbsDown, label: 'Dislike' }
   ];
 
+  // Long press handlers for mobile
+  const handleTouchStart = (messageId: number) => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+    }
+    
+    const timer = setTimeout(() => {
+      setActiveReactionMessageId(messageId);
+      // Add haptic feedback if available
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }, 500); // 500ms for long press
+    
+    setLongPressTimer(timer);
+  };
 
+  const handleTouchEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const handleMessageClick = (messageId: number, isFromUser: boolean, isSystem: boolean) => {
+    // Only handle click for desktop or if no long press timer is active
+    if (!longPressTimer && !isFromUser && !isSystem) {
+      handleReactionToggle(messageId);
+    }
+  };
 
 
   const queryClient = useQueryClient();
@@ -350,7 +373,14 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [conversationData?.id, isManagementMode, hasMarkedAsRead]);
 
-
+  // Cleanup long press timer on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+      }
+    };
+  }, [longPressTimer]);
 
   // Show welcome message for management mode when conversation is empty
   useEffect(() => {
@@ -896,12 +926,8 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             <>
               {allMessages.map((msg, index) => {
                 const isSystem = !msg.isFromUser && isSystemMessage(msg.content);
+                const showReactionOptions = activeReactionMessageId === msg.id;
                 const messageReaction = messageReactions[msg.id];
-                
-                // Debug logging for AI messages only
-                if (!msg.isFromUser && !isSystem) {
-                  console.log('🤖 AI Message ID:', msg.id, 'reactionUIVisible:', reactionUIVisible[msg.id] || false);
-                }
                 
                 // Generate unique key to prevent React key conflicts
                 const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
@@ -910,15 +936,22 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                   <div key={uniqueKey} className="message-row">
                     <div 
                       className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'}`}
-                      onClick={() => {
+                      onMouseEnter={() => {
                         if (!msg.isFromUser && !isSystem) {
-                          console.log('🚀 CONTAINER CLICKED! Message ID:', msg.id);
-                          handleReactionToggle(msg.id);
+                          if (hoverTimeoutRef.current) {
+                            clearTimeout(hoverTimeoutRef.current);
+                            hoverTimeoutRef.current = null;
+                          }
+                          setActiveReactionMessageId(msg.id);
                         }
                       }}
-                      style={{ 
-                        backgroundColor: !msg.isFromUser && !isSystem ? 'rgba(255,0,0,0.1)' : 'transparent',
-                        cursor: !msg.isFromUser && !isSystem ? 'pointer' : 'default'
+                      onMouseLeave={() => {
+                        if (!msg.isFromUser && !isSystem) {
+                          hoverTimeoutRef.current = setTimeout(() => {
+                            setActiveReactionMessageId(null);
+                            hoverTimeoutRef.current = null;
+                          }, 800);
+                        }
                       }}
                     >
                         <div
@@ -927,21 +960,16 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               ? "minimal-message user"
                               : isSystem
                                 ? "minimal-message system-message"
-                                : "minimal-message assistant cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
-                          onClick={(e) => {
-                            console.log('🔥 CLICK EVENT FIRED! Message:', msg.id, 'isFromUser:', msg.isFromUser, 'isSystem:', isSystem);
+                          onClick={() => handleMessageClick(msg.id, msg.isFromUser, isSystem)}
+                          onTouchStart={() => {
                             if (!msg.isFromUser && !isSystem) {
-                              console.log('🔥 AI message clicked! Message ID:', msg.id);
-                              handleReactionToggle(msg.id);
-                            } else {
-                              console.log('🔥 Not an AI message - skipped');
+                              handleTouchStart(msg.id);
                             }
                           }}
-                          style={{ 
-                            border: !msg.isFromUser && !isSystem ? '2px solid red' : 'none',
-                            minHeight: '20px' 
-                          }}
+                          onTouchEnd={handleTouchEnd}
+                          onTouchMove={handleTouchMove}
                         >
                           {msg.content}
                         </div>
@@ -965,24 +993,26 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             )}
                           </div>
                         )}
-                          {/* Reaction Options - TEST VERSION */}
-                          {!msg.isFromUser && !isSystem && reactionUIVisible[msg.id] && (
-                            <div className="bg-red-500 text-white p-2 mt-2 rounded">
-                              ✅ REACTION UI TEST - Message ID: {msg.id}
-                              <div className="flex gap-2 mt-1">
-                                <button 
-                                  className="bg-blue-500 text-white px-3 py-1 rounded"
-                                  onClick={() => console.log('👍 clicked')}
+                          {/* Reaction Options - positioned below message for AI messages */}
+                          {!msg.isFromUser && !isSystem && showReactionOptions && (
+                            <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 mt-1">
+                              {reactionOptions.map((option) => (
+                                <button
+                                  key={option.emoji}
+                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReactionSelect(msg.id, option.emoji);
+                                  }}
+                                  title={option.label}
                                 >
-                                  👍 Like
+                                  {option.emoji === '👍' ? (
+                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                                  ) : (
+                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                                  )}
                                 </button>
-                                <button 
-                                  className="bg-gray-500 text-white px-3 py-1 rounded"
-                                  onClick={() => console.log('👎 clicked')}
-                                >
-                                  👎 Dislike
-                                </button>
-                              </div>
+                              ))}
                             </div>
                           )}
                     </div>
