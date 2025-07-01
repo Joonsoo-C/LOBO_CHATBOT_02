@@ -976,7 +976,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
                         {/* Time info and reactions below message bubble */}
                         {!isSystem && (
-                          <div className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative`}>
                             <div className="text-xs text-muted-foreground">
                               {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
                                 hour: '2-digit',
@@ -991,30 +991,31 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 {messageReactions[msg.id]}
                               </div>
                             )}
+
+                            {/* Reaction Options - positioned to the right of time info for AI messages */}
+                            {!msg.isFromUser && activeReactionMessageId === msg.id && (
+                              <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                                {reactionOptions.map((option) => (
+                                  <button
+                                    key={option.emoji}
+                                    className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleReactionSelect(msg.id, option.emoji);
+                                    }}
+                                    title={option.label}
+                                  >
+                                    {option.emoji === '👍' ? (
+                                      <ThumbsUp className="w-3 h-3 text-muted-foreground" />
+                                    ) : (
+                                      <ThumbsDown className="w-3 h-3 text-muted-foreground" />
+                                    )}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
-                          {/* Reaction Options - positioned below message for AI messages */}
-                          {!msg.isFromUser && !isSystem && showReactionOptions && (
-                            <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50 mt-1">
-                              {reactionOptions.map((option) => (
-                                <button
-                                  key={option.emoji}
-                                  className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleReactionSelect(msg.id, option.emoji);
-                                  }}
-                                  title={option.label}
-                                >
-                                  {option.emoji === '👍' ? (
-                                    <ThumbsUp className="w-3 h-3 text-muted-foreground" />
-                                  ) : (
-                                    <ThumbsDown className="w-3 h-3 text-muted-foreground" />
-                                  )}
-                                </button>
-                              ))}
-                            </div>
-                          )}
                     </div>
                   </div>
                 );
