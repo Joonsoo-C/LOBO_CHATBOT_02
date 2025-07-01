@@ -566,31 +566,27 @@ export default function TabletLayout() {
             </DropdownMenu>
           </div>
           
-          {/* Tab Navigation */}
-          <div className={`grid gap-0 bg-white border border-border rounded-xl p-1 ${(user?.role === 'agent_admin' || user?.role === 'master_admin') ? 'grid-cols-2' : 'grid-cols-1'}`}>
-            <Button
-              variant={activeTab === "chat" ? "default" : "outline"}
-              size="lg"
-              className={`korean-text h-14 ${activeTab === "chat" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
+          {/* Apple Messages Tab Navigation */}
+          <div className="apple-nav-tabs">
+            <div 
+              className={`apple-nav-tab ${activeTab === "chat" ? "active" : ""}`}
               onClick={() => {
                 setActiveTab("chat");
                 navigate("/");
               }}
             >
               {t('agent.generalChat')}
-            </Button>
+            </div>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
-              <Button
-                variant={activeTab === "management" ? "default" : "outline"}
-                size="lg"
-                className={`korean-text h-14 ${activeTab === "management" ? "bg-primary text-primary-foreground shadow-lg" : "text-primary bg-transparent hover:bg-primary/10"}`}
+              <div 
+                className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
                 onClick={() => {
                   setActiveTab("management");
                   navigate("/management");
                 }}
               >
                 {t('agent.management')}
-              </Button>
+              </div>
             )}
           </div>
         </div>
