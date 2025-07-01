@@ -466,9 +466,31 @@ export async function extractTextFromContent(filePath: string, mimeType: string)
     }
     
     if (mimeType.includes('application/pdf')) {
-      // For PDF files, return placeholder - would need pdf-parse library
-      console.log('PDF file detected, returning placeholder text');
-      return 'PDF 문서 - 텍스트 추출 기능 준비 중입니다. 정확한 내용을 확인하려면 원본 파일을 다운로드해주세요.';
+      // Extract text from PDF files using pdf-parse
+      console.log('PDF file detected, extracting text');
+      try {
+        const pdfParse = require('pdf-parse');
+        const dataBuffer = fs.readFileSync(filePath);
+        const data = await pdfParse(dataBuffer);
+        
+        const cleanText = data.text
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // Remove control characters
+          .replace(/\uFFFD/g, '') // Remove replacement characters
+          .trim();
+        
+        console.log('Extracted PDF text length:', cleanText.length);
+        console.log('First 200 characters:', cleanText.substring(0, 200));
+        
+        if (cleanText.length < 10) {
+          console.warn('PDF text extraction yielded very short result');
+          return 'PDF 문서 텍스트 추출에 실패했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+        }
+        
+        return cleanText;
+      } catch (pdfError) {
+        console.error('PDF extraction failed:', pdfError);
+        return 'PDF 문서 텍스트 추출 중 오류가 발생했습니다. 원본 파일을 다운로드하여 확인해주세요.';
+      }
     }
     
     // For other file types, try to read as UTF-8 text

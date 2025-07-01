@@ -27,12 +27,15 @@ const upload = multer({
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'application/msword',
       'application/vnd.ms-powerpoint',
+      'application/pdf',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
 
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, PPT 파일만 업로드 가능합니다.'));
+      cb(new Error('지원하지 않는 파일 형식입니다. TXT, DOC, DOCX, PPT, PPTX, PDF, XLS, XLSX 파일만 업로드 가능합니다.'));
     }
   },
 });
