@@ -135,7 +135,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
             <div className={`p-3 rounded-lg transition-colors duration-200 cursor-pointer border-b border-gray-100 dark:border-gray-800 last:border-b-0 ${
               isActive 
                 ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' 
-                : 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                : 'bg-white dark:bg-gray-900 hover:bg-gray-50/50 dark:hover:bg-gray-800/20'
             }`}>
               <div className="flex items-center space-x-3">
                 <div className={`w-10 h-10 ${bgColor} rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden md:w-12 md:h-12`}>
