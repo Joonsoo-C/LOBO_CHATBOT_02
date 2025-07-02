@@ -327,13 +327,7 @@ export default function AuthPage() {
                 {loginMutation.isPending ? 'Signing In...' : 'Sign Up'}
               </button>
 
-              {/* Terms */}
-              <p className="text-xs text-gray-400 text-center leading-relaxed">
-                By Sign up you agree to our 
-                <button className="text-blue-600 hover:underline mx-1">Privacy Policy</button> 
-                and 
-                <button className="text-blue-600 hover:underline ml-1">Terms and Condition</button>
-              </p>
+              
             </form>
           </div>
         </div>
