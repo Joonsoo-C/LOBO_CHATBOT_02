@@ -364,31 +364,28 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               >
                 기본 아이콘
               </Button>
+              <label htmlFor="image-upload-direct" className="flex-1">
+                <Button
+                  variant={isUsingCustomImage ? "default" : "outline"}
+                  size="sm"
+                  className="w-full"
+                  type="button"
+                  asChild
+                >
+                  <span>이미지 업로드</span>
+                </Button>
+              </label>
               <input
                 type="file"
-                id="image-upload-trigger"
+                id="image-upload-direct"
                 accept="image/jpeg,image/png,image/gif,image/webp"
                 onChange={(e) => {
+                  console.log("Direct file input changed!");
                   setIsUsingCustomImage(true);
                   handleFileChange(e);
                 }}
                 className="hidden"
               />
-              <Button
-                variant={isUsingCustomImage ? "default" : "outline"}
-                size="sm"
-                className="flex-1"
-                type="button"
-                onClick={() => {
-                  console.log("이미지 업로드 button clicked, current state:", { isUsingCustomImage });
-                  setIsUsingCustomImage(true);
-                  setTimeout(() => {
-                    document.getElementById('image-upload-trigger')?.click();
-                  }, 100);
-                }}
-              >
-                이미지 업로드
-              </Button>
             </div>
           </div>
 
@@ -426,14 +423,19 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               </div>
               
               {/* Additional upload button for better UX */}
-              <Button
-                variant="outline"
-                onClick={() => document.getElementById('image-upload-drop')?.click()}
-                className="w-full"
-              >
-                <Camera className="w-4 h-4 mr-2" />
-                이미지 파일 선택
-              </Button>
+              <label htmlFor="image-upload-drop" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  type="button"
+                  asChild
+                >
+                  <span>
+                    <Camera className="w-4 h-4 mr-2" />
+                    이미지 파일 선택
+                  </span>
+                </Button>
+              </label>
             </div>
           )}
 
