@@ -695,6 +695,11 @@ export class MemoryStorage implements IStorage {
     return result;
   }
 
+  // Admin API alias for getUserConversations 
+  async getConversationsByUserId(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
+    return this.getUserConversations(userId);
+  }
+
   async getAllUserConversations(userId: string): Promise<(Conversation & { agent: Agent; lastMessage?: Message })[]> {
     const userConversations = Array.from(this.conversations.values())
       .filter(conv => conv.userId === userId)

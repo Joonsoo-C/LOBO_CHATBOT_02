@@ -2949,6 +2949,22 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Get user conversations endpoint for admin
+  app.get("/api/admin/users/:userId/conversations", requireMasterAdmin, async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      console.log(`Getting conversations for user: ${userId}`);
+
+      const conversations = await storage.getConversationsByUserId(userId);
+      
+      console.log(`Found ${conversations.length} conversations for user ${userId}`);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error getting user conversations:", error);
+      res.status(500).json({ message: "사용자 대화 조회에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';
