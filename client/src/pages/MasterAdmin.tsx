@@ -33,9 +33,11 @@ interface AgentDocumentListProps {
 }
 
 const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
-  const { data: documents } = useQuery({
-    queryKey: [`/api/admin/documents`],
+  const { data: documents, refetch } = useQuery({
+    queryKey: [`/api/admin/documents`, agentId],
     enabled: !!agentId,
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000, // 5초마다 자동 새로고침
   });
 
   const { toast } = useToast();
@@ -160,6 +162,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
       
       // 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents', agentId] });
       
       toast({
         title: "삭제 완료",
@@ -3568,8 +3571,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         });
         
         // 실시간 캐시 무효화 - 문서 목록과 에이전트 문서 목록 모두 새로고침
-        queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+        await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+        await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
+        await queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+        
+        // 추가적인 강제 새로고침
+        queryClient.refetchQueries({ queryKey: ['/api/admin/documents'] });
+        queryClient.refetchQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
         
         // 선택된 파일과 입력값 초기화
         setSelectedFiles([]);
