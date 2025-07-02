@@ -20,10 +20,8 @@ function Router() {
   const { isAuthenticated, isLoading } = useAuth();
   const isTablet = useIsTablet();
   
-  // Setup SSE for real-time updates when authenticated
-  if (isAuthenticated) {
-    useSSE();
-  }
+  // Setup SSE for real-time updates - always call hook but only connect when authenticated
+  useSSE(isAuthenticated);
 
   if (isLoading) {
     return (

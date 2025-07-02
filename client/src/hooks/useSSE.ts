@@ -1,11 +1,20 @@
 import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-export function useSSE() {
+export function useSSE(isAuthenticated: boolean) {
   const queryClient = useQueryClient();
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
+    // Only connect if authenticated
+    if (!isAuthenticated) {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+      return;
+    }
+
     // Prevent multiple connections
     if (eventSourceRef.current) {
       return;
@@ -45,5 +54,5 @@ export function useSSE() {
         console.log('SSE 연결 종료됨');
       }
     };
-  }, [queryClient]);
+  }, [isAuthenticated, queryClient]);
 }
