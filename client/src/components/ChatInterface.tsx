@@ -1346,7 +1346,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             onClick={async () => {
                               if (confirm('이 문서를 삭제하시겠습니까?')) {
                                 try {
-                                  const response = await fetch(`/api/agents/${agent.id}/documents/${doc.id}`, {
+                                  const response = await fetch(`/api/documents/${doc.id}`, {
                                     method: 'DELETE',
                                     credentials: 'include'
                                   });
