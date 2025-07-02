@@ -197,9 +197,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   return (
     <>
       {/* Main Upload Modal */}
-      <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={onClose}>
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg">
+          <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b">
               <h3 className="text-lg font-medium text-foreground korean-text">
