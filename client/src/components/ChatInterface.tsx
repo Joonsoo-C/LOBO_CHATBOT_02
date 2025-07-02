@@ -1010,10 +1010,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               </div>
                             )}
 
-                            {/* Reaction Options - positioned to the right of time info for AI messages */}
+                            {/* Reaction Options - positioned absolutely to prevent layout shift */}
                             {!msg.isFromUser && activeReactionMessageId === msg.id && (
                               <div 
-                                className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                                className="absolute left-full top-0 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                                style={{ marginLeft: '8px' }}
                                 onClick={(e) => e.stopPropagation()}>
                                 {reactionOptions.map((option) => (
                                   <button
