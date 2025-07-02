@@ -215,13 +215,15 @@ export default function AuthPage() {
 
               {/* Password Field */}
               <div>
-                <label className="block text-gray-500 text-sm mb-2">비밀번호</label>
+                <label className="block text-gray-500 text-sm mb-2">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
+                    placeholder=""
+                    className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12 pt-[0px] pb-[0px]"
                     {...loginForm.register("password")}
                   />
                   <button
