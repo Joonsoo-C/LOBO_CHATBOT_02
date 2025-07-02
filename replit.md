@@ -764,6 +764,13 @@ Changelog:
   * Master account button triggers automatic login for immediate admin center access
   * Maintained transparent demo account buttons below main form with backdrop blur effects
   * Complete flat UI transformation following minimal design principles
+- July 2, 2025. Redesigned agent management interface layout:
+  * Restructured agent management section to match organization category management UI design
+  * Separated action buttons (에이전트 수동 추가, 파일 업로드) from filtering area
+  * Action buttons now display as cards with consistent styling (blue/green backgrounds, icons, descriptions)
+  * Moved filtering area to independent box below action buttons for better visual hierarchy
+  * Applied consistent fonts, spacing, and styling matching organization management interface
+  * Enhanced user experience with unified UI patterns across master admin sections
 - July 2, 2025. Fixed master admin icon change functionality:
   * Resolved disabled "이미지 업로드" button in master admin page icon change dialog
   * Added custom image upload state management (isUsingCustomImage, customImageFile, customImagePreview)

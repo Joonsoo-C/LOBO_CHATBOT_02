@@ -5042,7 +5042,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 에이전트 검색 및 관리 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold">에이전트 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold">에이전트 검색</h3>
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
@@ -5192,9 +5192,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     {agentSearchQuery && ` (검색어: "${agentSearchQuery}")`}
                   </div>
                 )}
-
-              </CardContent>
-            </Card>
+            </div>
 
             
 
