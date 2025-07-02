@@ -5003,37 +5003,46 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Dialog>
             </div>
 
-            {/* 에이전트 관리 섹션 */}
-            <Card>
-              <CardHeader>
-                
-                {/* 상단 버튼 섹션 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <Button
-                    onClick={() => setIsAgentDialogOpen(true)}
-                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 h-16 flex items-center justify-center rounded-xl"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
+            {/* 에이전트 관리 액션 버튼들 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card 
+                className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsAgentDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Plus className="w-5 h-5 mr-2 text-blue-600" />
                     에이전트 수동 추가
-                  </Button>
-                  
-                  <Button
-                    onClick={() => setIsAgentFileUploadModalOpen(true)}
-                    className="bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 h-16 flex items-center justify-center rounded-xl"
-                  >
-                    <FileText className="w-5 h-5 mr-2" />
-                    <div className="text-left">
-                      <div className="font-medium">파일 업로드</div>
-                      <div className="text-xs opacity-75">CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.</div>
-                    </div>
-                  </Button>
-                </div>
-                
-                <div className="mt-6 pt-[-19px] pb-[-19px]">
-                  <h3 className="text-lg font-medium mb-4">에이전트 검색 및 관리</h3>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    새로운 에이전트를 직접 생성하고 설정합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsAgentFileUploadModalOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-green-600" />
+                    파일 업로드
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    CSV/Excel 파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 에이전트 검색 및 관리 */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+              <h3 className="text-lg font-semibold">에이전트 검색 및 관리</h3>
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
