@@ -27,6 +27,263 @@ import { PaginationComponent } from "@/components/PaginationComponent";
 import { usePagination } from "@/hooks/usePagination";
 import AgentFileUploadModal from "@/components/AgentFileUploadModal";
 
+// AgentDocumentList component
+interface AgentDocumentListProps {
+  agentId?: number;
+}
+
+const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
+  const { data: documents } = useQuery({
+    queryKey: [`/api/admin/documents`],
+    enabled: !!agentId,
+  });
+
+  const { toast } = useToast();
+
+  // 선택된 에이전트의 문서만 필터링
+  const agentDocuments = useMemo(() => {
+    if (!documents || !agentId) return [];
+    return documents.filter((doc: any) => doc.agentId === agentId);
+  }, [documents, agentId]);
+
+  // 파일 크기 포맷
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
+  // 날짜 포맷
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return "정보 없음";
+    }
+  };
+
+  // 문서 종류 매핑
+  const getDocumentTypeBadge = (mimeType: string) => {
+    if (mimeType.includes('pdf')) return { label: '정책 문서', color: 'secondary' };
+    if (mimeType.includes('word')) return { label: '교육과정', color: 'secondary' };
+    if (mimeType.includes('presentation')) return { label: '강의 자료', color: 'secondary' };
+    if (mimeType.includes('text')) return { label: '매뉴얼', color: 'secondary' };
+    return { label: '기타', color: 'secondary' };
+  };
+
+  // 문서 미리보기
+  const handleDocumentPreview = async (doc: any) => {
+    try {
+      const response = await fetch(`/api/admin/documents/${doc.id}/preview`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`미리보기 실패: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      
+      toast({
+        title: "미리보기 열림",
+        description: `${doc.originalName} 문서가 새 창에서 열렸습니다.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "미리보기 실패",
+        description: error instanceof Error ? error.message : "문서 미리보기 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 문서 다운로드
+  const handleDocumentDownload = async (doc: any) => {
+    try {
+      const response = await fetch(`/api/admin/documents/${doc.id}/download`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`다운로드 실패: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = doc.originalName || doc.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "다운로드 완료",
+        description: `${doc.originalName} 파일이 다운로드되었습니다.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "다운로드 실패",
+        description: error instanceof Error ? error.message : "문서 다운로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 문서 삭제
+  const handleDocumentDelete = async (doc: any) => {
+    if (!confirm(`"${doc.originalName}" 문서를 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/documents/${doc.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`삭제 실패: ${response.status}`);
+      }
+      
+      // 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      
+      toast({
+        title: "삭제 완료",
+        description: `${doc.originalName} 문서가 삭제되었습니다.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "삭제 실패",
+        description: error instanceof Error ? error.message : "문서 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <div className="border-t pt-6">
+      <div className="flex items-center justify-between mb-4">
+        <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
+        <Badge variant="outline">총 {agentDocuments.length}개</Badge>
+      </div>
+      
+      {agentDocuments.length === 0 ? (
+        <div className="border rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
+          <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <p className="text-sm">업로드된 문서가 없습니다.</p>
+          <p className="text-xs mt-1">위의 파일 업로드 영역을 사용하여 문서를 추가하세요.</p>
+        </div>
+      ) : (
+        <div className="border rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  문서명
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  종류
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  크기
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  업로드 날짜
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  상태
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  설정
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+              {agentDocuments.map((doc: any) => {
+                const docType = getDocumentTypeBadge(doc.mimeType);
+                return (
+                  <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <td className="px-4 py-4">
+                      <div className="flex items-center">
+                        <FileText className="w-5 h-5 text-blue-500 mr-2" />
+                        <div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {doc.originalName || doc.filename}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {doc.description || '설명 없음'}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Badge variant={docType.color as any}>{docType.label}</Badge>
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                      {formatFileSize(doc.size)}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                      {formatDate(doc.createdAt)}
+                    </td>
+                    <td className="px-4 py-4">
+                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                        활성
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex space-x-1">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          title="미리보기"
+                          onClick={() => handleDocumentPreview(doc)}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          title="다운로드"
+                          onClick={() => handleDocumentDownload(doc)}
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          title="삭제" 
+                          className="text-red-600 hover:text-red-700"
+                          onClick={() => handleDocumentDelete(doc)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // UserActiveAgents component
 interface UserActiveAgentsProps {
   userId?: string;
@@ -9753,167 +10010,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
 
                           {/* 문서 목록 */}
-                          <div className="border-t pt-6">
-                            <div className="flex items-center justify-between mb-4">
-                              <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
-                              <Badge variant="outline">총 3개</Badge>
-                            </div>
-                            
-                            <div className="border rounded-lg overflow-hidden">
-                              <table className="w-full">
-                                <thead className="bg-gray-50 dark:bg-gray-800">
-                                  <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      문서명
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      종류
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      크기
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      업로드 날짜
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      상태
-                                    </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                      설정
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <td className="px-4 py-4">
-                                      <div className="flex items-center">
-                                        <FileText className="w-5 h-5 text-blue-500 mr-2" />
-                                        <div>
-                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                            컴퓨터공학과 교육과정.pdf
-                                          </div>
-                                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            컴퓨터공학과 학부 교육과정 안내
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge variant="secondary">교육과정</Badge>
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                      2.4 MB
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                      2024.12.15
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                        활성
-                                      </Badge>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <div className="flex space-x-1">
-                                        <Button variant="outline" size="sm" title="미리보기">
-                                          <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="다운로드">
-                                          <Download className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
-                                          <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <td className="px-4 py-4">
-                                      <div className="flex items-center">
-                                        <FileText className="w-5 h-5 text-green-500 mr-2" />
-                                        <div>
-                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                            학생회칙.docx
-                                          </div>
-                                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            컴퓨터공학과 학생회 운영 규정
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge variant="secondary">정책 문서</Badge>
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                      845 KB
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                      2024.11.28
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                        활성
-                                      </Badge>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <div className="flex space-x-1">
-                                        <Button variant="outline" size="sm" title="미리보기">
-                                          <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="다운로드">
-                                          <Download className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
-                                          <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <td className="px-4 py-4">
-                                      <div className="flex items-center">
-                                        <FileText className="w-5 h-5 text-orange-500 mr-2" />
-                                        <div>
-                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                            장학금 신청서.pdf
-                                          </div>
-                                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            각종 장학금 신청 양식 모음
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge variant="secondary">양식</Badge>
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                                      1.2 MB
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                      2024.10.12
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <Badge variant="outline" className="text-gray-600">
-                                        비활성
-                                      </Badge>
-                                    </td>
-                                    <td className="px-4 py-4">
-                                      <div className="flex space-x-1">
-                                        <Button variant="outline" size="sm" title="미리보기">
-                                          <Eye className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="다운로드">
-                                          <Download className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
-                                          <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+                          <AgentDocumentList agentId={selectedAgent?.id} />
                         </div>
                       </TabsContent>
 

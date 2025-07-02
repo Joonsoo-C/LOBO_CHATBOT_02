@@ -778,6 +778,13 @@ Changelog:
   * Applied consistent styling matching document management popup design patterns
   * Added action buttons for preview, download, and delete operations
   * Document list displays with proper icons, badges, and hover effects matching existing UI standards
+- July 2, 2025. Fixed agent document list to show authentic data instead of dummy content:
+  * Removed hardcoded sample document entries from agent detail popup
+  * Created AgentDocumentList component that fetches real data from /api/admin/documents
+  * Added proper filtering to show only documents uploaded to the selected agent
+  * Implemented empty state message when no documents are uploaded
+  * Maintained consistent UI styling with document management system without affecting other menu systems
+  * Document count badge now accurately reflects actual uploaded document count per agent
 - July 2, 2025. Fixed master admin icon change functionality:
   * Resolved disabled "이미지 업로드" button in master admin page icon change dialog
   * Added custom image upload state management (isUsingCustomImage, customImageFile, customImagePreview)
