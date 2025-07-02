@@ -10080,20 +10080,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 ))}
                               </div>
                             )}
+                            
+                            {/* 업로드 시작 버튼 */}
+                            {selectedFiles.length > 0 && (
+                              <div className="flex justify-end mt-4">
+                                <Button 
+                                  onClick={handleAgentFileUpload}
+                                  disabled={!agentDocumentType || isAgentFileUploading}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                                >
+                                  {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
+                                </Button>
+                              </div>
+                            )}
                           </div>
-
-                          {/* 업로드 시작 버튼 */}
-                          {selectedFiles.length > 0 && (
-                            <div className="flex justify-end">
-                              <Button 
-                                onClick={handleAgentFileUpload}
-                                disabled={!agentDocumentType || isAgentFileUploading}
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                              >
-                                {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
-                              </Button>
-                            </div>
-                          )}
 
                           {/* 문서 목록 */}
                           <AgentDocumentList agentId={selectedAgent?.id} />
