@@ -38,7 +38,13 @@ const adminUpload = multer({
       'application/vnd.ms-powerpoint',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'text/plain',
-      'text/csv'
+      'text/csv',
+      // Image types for agent icons
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/webp'
     ];
 
     // Fix Korean filename encoding immediately
@@ -51,7 +57,8 @@ const adminUpload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Unsupported file type') as any, false);
+      console.log('Rejected file with mimetype:', file.mimetype);
+      cb(new Error('지원하지 않는 파일 형식입니다. 이미지는 JPG, PNG, GIF, WEBP만 가능합니다.') as any, false);
     }
   }
 });
