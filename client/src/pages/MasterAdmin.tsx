@@ -26,6 +26,105 @@ import { PaginationComponent } from "@/components/PaginationComponent";
 import { usePagination } from "@/hooks/usePagination";
 import AgentFileUploadModal from "@/components/AgentFileUploadModal";
 
+// UserActiveAgents component
+interface UserActiveAgentsProps {
+  userId?: string;
+}
+
+const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
+  const { data: userConversations } = useQuery({
+    queryKey: [`/api/admin/users/${userId}/conversations`],
+    enabled: !!userId,
+  });
+
+  const { data: allAgents } = useQuery<any[]>({
+    queryKey: ['/api/admin/agents'],
+  });
+
+  const userAgentsWithData = useMemo(() => {
+    if (!userConversations || !allAgents) return [];
+    
+    const agentMap = new Map(allAgents.map(agent => [agent.id, agent]));
+    const userAgentIds = userConversations
+      .filter((conv: any) => conv.userId === userId)
+      .map((conv: any) => conv.agentId);
+    
+    const uniqueAgentIds = [...new Set(userAgentIds)];
+    
+    return uniqueAgentIds
+      .map(agentId => agentMap.get(agentId))
+      .filter(Boolean)
+      .map(agent => ({
+        ...agent,
+        lastUsed: userConversations
+          .filter((conv: any) => conv.agentId === agent.id && conv.userId === userId)
+          .sort((a: any, b: any) => new Date(b.lastMessageAt || b.createdAt).getTime() - new Date(a.lastMessageAt || a.createdAt).getTime())[0]?.lastMessageAt || agent.createdAt
+      }))
+      .sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
+  }, [userConversations, allAgents, userId]);
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return "정보 없음";
+    }
+  };
+
+  const getCategoryBadgeColor = (category: string) => {
+    switch (category) {
+      case "학교": return "bg-blue-100 text-blue-800";
+      case "교수": return "bg-purple-100 text-purple-800";
+      case "학생": return "bg-green-100 text-green-800";
+      case "그룹": return "bg-orange-100 text-orange-800";
+      case "기능형": return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <Label className="text-sm font-medium">사용 중인 에이전트</Label>
+      <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+        {userId && userAgentsWithData.length > 0 ? (
+          <div className="max-h-48 overflow-y-auto space-y-3">
+            {userAgentsWithData.map((agent, index) => (
+              <div key={agent.id} className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
+                <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm">{agent.name}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                    {agent.description}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline" className={`text-xs ${getCategoryBadgeColor(agent.category)}`}>
+                      {agent.category}
+                    </Badge>
+                    <span className="text-xs text-gray-500">
+                      최근 사용: {formatDate(agent.lastUsed)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            <div className="text-sm font-medium mb-2">사용 중인 에이전트가 없습니다</div>
+            <div className="text-xs">
+              이 사용자는 아직 어떤 에이전트도 사용하지 않았습니다.
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 import { 
   Users, 
   MessageSquare, 
@@ -8703,64 +8802,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 />
 
                 {/* 사용 중인 에이전트 목록 */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">사용 중인 에이전트</Label>
-                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
-                    {selectedUser?.id ? (
-                      <div className="max-h-48 overflow-y-auto space-y-3">
-                        {/* 실제 사용자의 에이전트 목록을 표시 */}
-                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
-                          <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm">학사 정보 안내</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                              학사 일정, 수강신청, 성적 조회 등 학사 관련 업무를 지원합니다
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Badge variant="outline" className="text-xs">일반 사용자</Badge>
-                              <span className="text-xs text-gray-500">최근 사용: 2025.06.27</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
-                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm">생활관 도우미</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                              기숙사 및 생활관 관련 업무를 도와드립니다
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Badge variant="secondary" className="text-xs">문서 관리자</Badge>
-                              <span className="text-xs text-gray-500">최근 사용: 2025.06.26</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
-                          <div className="w-2 h-2 rounded-full bg-orange-500 mt-2"></div>
-                          <div className="flex-1">
-                            <div className="font-medium text-sm">취업 상담소</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                              취업 정보, 인턴십, 진로 상담을 제공합니다
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Badge variant="default" className="text-xs">에이전트 관리자</Badge>
-                              <span className="text-xs text-gray-500">최근 사용: 2025.06.25</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                        <div className="text-sm font-medium mb-2">사용 중인 에이전트가 없습니다</div>
-                        <div className="text-xs">
-                          이 사용자는 아직 어떤 에이전트도 사용하지 않았습니다.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <UserActiveAgents userId={selectedUser?.id} />
 
                 {/* 계정 정보 */}
                 <div className="space-y-3">
