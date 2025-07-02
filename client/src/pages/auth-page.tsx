@@ -100,11 +100,6 @@ export default function AuthPage() {
       await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       await queryClient.refetchQueries({ queryKey: ["/api/user"] });
       
-      toast({
-        title: t('auth.loginSuccess'),
-        description: t('auth.welcome'),
-      });
-      
       // Small delay to ensure auth state is updated before navigation
       setTimeout(() => {
         // Check if user is master admin and redirect accordingly
