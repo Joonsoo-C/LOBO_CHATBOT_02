@@ -3,7 +3,7 @@ import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { ChevronLeft, Settings, LogOut, User } from "lucide-react";
+import { ChevronLeft, Settings, LogOut, User, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -262,23 +262,14 @@ export default function Management() {
             </div>
             
             <div className="flex items-center space-x-1">
-              <ThemeSelector />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                    <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <button className="flex items-center space-x-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">기능 선택</span>
+                    <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
-                    <User className="w-4 h-4 mr-2" />
-                    계정 설정
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <LanguageSelector />
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
                     로그아웃
