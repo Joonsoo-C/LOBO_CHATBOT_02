@@ -178,6 +178,14 @@ import {
   FileText as FileTextIcon,
 } from "lucide-react";
 import { Link } from "wouter";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface User {
   id: string;
@@ -1740,9 +1748,26 @@ function MasterAdmin() {
   const [agentFilterUpperCategory, setAgentFilterUpperCategory] = useState('all');
   const [agentFilterLowerCategory, setAgentFilterLowerCategory] = useState('all');
   const [agentFilterDetailCategory, setAgentFilterDetailCategory] = useState('all');
+  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   const [agentFilterType, setAgentFilterType] = useState('all');
   const [agentFilterStatus, setAgentFilterStatus] = useState('all');
+  const [agentFilterManager, setAgentFilterManager] = useState('all');
   const [hasAgentSearched, setHasAgentSearched] = useState(true);
+
+  // 에이전트 행 클릭 핸들러
+  const handleAgentRowClick = (agent: Agent) => {
+    console.log('Agent row clicked:', agent);
+  };
+
+  // 에이전트 편집 핸들러
+  const handleEditAgent = (agent: Agent) => {
+    console.log('Edit agent:', agent);
+  };
+
+  // 에이전트 삭제 핸들러
+  const handleDeleteAgent = (agentId: number) => {
+    console.log('Delete agent:', agentId);
+  };
 
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
@@ -10064,8 +10089,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
         />
-      </main>
-    </div>
+      </Tabs>
+    </main>
+  </div>
   );
 }
 
