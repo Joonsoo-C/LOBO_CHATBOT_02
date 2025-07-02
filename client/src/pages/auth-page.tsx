@@ -189,6 +189,12 @@ export default function AuthPage() {
           {/* Header Section */}
           <div className="px-8 pt-12 pb-8 text-center">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">LoBo</h1>
+            <p className="text-gray-500 text-sm">
+              Already have an account? 
+              <button className="text-blue-600 hover:underline ml-1">
+                Sign In
+              </button>
+            </p>
           </div>
 
           {/* Form Section */}
