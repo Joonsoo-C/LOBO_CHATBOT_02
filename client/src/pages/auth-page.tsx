@@ -208,16 +208,14 @@ export default function AuthPage() {
                 <label className="block text-gray-500 text-sm mb-2">학번/교번</label>
                 <input
                   type="email"
-                  placeholder="noumansuleman000@gmail.com"
+                  placeholder="예 : 2024001234 또는 F2024001"
                   className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
                 />
               </div>
 
               {/* Password Field */}
               <div>
-                <label className="block text-gray-500 text-sm mb-2">
-                  Password
-                </label>
+                <label className="block text-gray-500 text-sm mb-2">비밀번호</label>
                 <div className="relative">
                   <input
                     id="login-password"
