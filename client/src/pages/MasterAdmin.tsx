@@ -958,6 +958,12 @@ function MasterAdmin() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [documentType, setDocumentType] = useState<string>('');
   
+  // 에이전트 파일 업로드 상태
+  const [agentDocumentType, setAgentDocumentType] = useState<string>('');
+  const [agentDocumentDescription, setAgentDocumentDescription] = useState<string>('');
+  const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
+  const [agentFileUploadProgress, setAgentFileUploadProgress] = useState(0);
+  
   // 공유 설정 상태
   const [sharingMode, setSharingMode] = useState<'organization' | 'group' | 'user' | 'private'>('organization');
   const [sharingGroups, setSharingGroups] = useState<Array<{upperCategory: string, lowerCategory: string, detailCategory: string}>>([]);
@@ -3485,6 +3491,114 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         description: error instanceof Error ? error.message : "파일 삭제 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+    }
+  };
+
+  // 에이전트 파일 업로드 핸들러
+  const handleAgentFileUpload = async () => {
+    if (selectedFiles.length === 0) {
+      toast({
+        title: "파일을 선택해주세요",
+        description: "업로드할 문서 파일을 먼저 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedAgent) {
+      toast({
+        title: "에이전트를 선택해주세요",
+        description: "문서를 업로드할 에이전트를 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!agentDocumentType) {
+      toast({
+        title: "문서 종류를 선택해주세요",
+        description: "업로드할 문서의 종류를 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAgentFileUploading(true);
+    setAgentFileUploadProgress(0);
+
+    try {
+      let successCount = 0;
+      let errorCount = 0;
+      const totalFiles = selectedFiles.length;
+
+      for (let i = 0; i < totalFiles; i++) {
+        const file = selectedFiles[i];
+        
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('agentId', selectedAgent.id.toString());
+          formData.append('documentType', agentDocumentType);
+          formData.append('description', agentDocumentDescription || '');
+
+          const response = await fetch('/api/admin/documents/upload', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+          });
+
+          if (!response.ok) {
+            throw new Error(`Upload failed for ${file.name}`);
+          }
+
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          console.error(`에이전트 파일 업로드 실패: ${file.name}`, error);
+        }
+
+        // 진행률 업데이트
+        setAgentFileUploadProgress(((i + 1) / totalFiles) * 100);
+      }
+
+      if (successCount > 0) {
+        toast({
+          title: "업로드 완료",
+          description: `${successCount}개 파일이 성공적으로 업로드되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
+        });
+        
+        // 실시간 캐시 무효화 - 문서 목록과 에이전트 문서 목록 모두 새로고침
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+        
+        // 선택된 파일과 입력값 초기화
+        setSelectedFiles([]);
+        setAgentDocumentType('');
+        setAgentDocumentDescription('');
+        
+        // 파일 입력 필드 초기화
+        if (agentFileInputRef.current) {
+          agentFileInputRef.current.value = '';
+        }
+      }
+
+      if (errorCount > 0 && successCount === 0) {
+        toast({
+          title: "업로드 실패",
+          description: "모든 파일 업로드에 실패했습니다.",
+          variant: "destructive",
+        });
+      }
+      
+    } catch (error) {
+      toast({
+        title: "업로드 실패",
+        description: "에이전트 파일 업로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAgentFileUploading(false);
+      setAgentFileUploadProgress(0);
     }
   };
 
@@ -9886,7 +10000,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           {/* 문서 종류 드롭다운 */}
                           <div>
                             <Label className="text-sm font-medium text-gray-700">문서 종류</Label>
-                            <Select>
+                            <Select value={agentDocumentType} onValueChange={setAgentDocumentType}>
                               <SelectTrigger className="mt-1">
                                 <SelectValue placeholder="문서 종류 선택" />
                               </SelectTrigger>
@@ -9909,6 +10023,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               placeholder="문서에 대한 간단한 설명을 입력하세요..."
                               rows={3}
                               className="mt-1"
+                              value={agentDocumentDescription}
+                              onChange={(e) => setAgentDocumentDescription(e.target.value)}
                             />
                           </div>
 
@@ -9965,6 +10081,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             )}
                           </div>
+
+                          {/* 업로드 시작 버튼 */}
+                          {selectedFiles.length > 0 && (
+                            <div className="flex justify-end">
+                              <Button 
+                                onClick={handleAgentFileUpload}
+                                disabled={!agentDocumentType || isAgentFileUploading}
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                              >
+                                {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
+                              </Button>
+                            </div>
+                          )}
 
                           {/* 문서 목록 */}
                           <AgentDocumentList agentId={selectedAgent?.id} />
