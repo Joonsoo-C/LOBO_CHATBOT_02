@@ -210,17 +210,6 @@
       "createdAt": "2025-07-01T06:40:28.168Z"
     },
     {
-      "agentId": 146,
-      "filename": "8e16d52ed04de4211a00dc163874983d",
-      "originalName": "컬러빌과 시간의 섬 (1).pdf",
-      "mimeType": "application/pdf",
-      "size": 1017000,
-      "content": "PDF 문서 텍스트 추출 중 오류가 발생했습니다: ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'",
-      "uploadedBy": "user1081",
-      "id": 119,
-      "createdAt": "2025-07-01T06:46:26.828Z"
-    },
-    {
       "agentId": 1,
       "filename": "1751385493022-681937586-한자노트양식_7&times;7.pdf",
       "originalName": "한자노트양식_7&times;7.pdf",
@@ -1846,6 +1835,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 141,
+  "nextId": 155,
   "nextOrganizationId": 125
 }

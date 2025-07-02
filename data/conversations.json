@@ -139,11 +139,11 @@
       {
         "id": 141,
         "userId": "user1082",
-        "agentId": 127,
+        "agentId": 117,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-01T14:07:04.813Z",
-        "createdAt": "2025-07-01T14:07:04.813Z"
+        "lastMessageAt": "2025-07-02T01:49:30.347Z",
+        "createdAt": "2025-07-02T01:47:21.265Z"
       }
     ],
     [
@@ -192,6 +192,30 @@
         "unreadCount": 0,
         "lastMessageAt": "2025-07-01T14:07:12.580Z",
         "createdAt": "2025-07-01T14:07:12.580Z"
+      }
+    ],
+    [
+      148,
+      {
+        "id": 148,
+        "userId": "user1082",
+        "agentId": 177,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T01:52:17.933Z",
+        "createdAt": "2025-07-02T01:49:50.141Z"
+      }
+    ],
+    [
+      155,
+      {
+        "id": 155,
+        "userId": "user1082",
+        "agentId": 197,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T01:53:06.453Z",
+        "createdAt": "2025-07-02T01:53:06.453Z"
       }
     ]
   ]
