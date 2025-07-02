@@ -947,9 +947,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                 const uniqueKey = msg.id ? `msg-${msg.id}-${index}` : `optimistic-${index}-${Date.now()}-${Math.random()}`;
                 
                 return (
-                  <div key={uniqueKey} className="message-row">
+                  <div key={uniqueKey} className="message-row overflow-visible">
                     <div 
-                      className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'}`}
+                      className={`relative w-full flex flex-col ${msg.isFromUser ? 'items-end' : 'items-start'} overflow-visible`}
 
                     >
                         <div
@@ -988,7 +988,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                         {/* Time info and reactions below message bubble */}
                         {!isSystem && (
                           <div 
-                            className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative`}
+                            className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative overflow-visible`}
                             onClick={(e) => {
                               // Prevent click from dismissing reaction UI if it's active for this message
                               if (!msg.isFromUser && activeReactionMessageId === msg.id) {
@@ -1013,8 +1013,11 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             {/* Reaction Options - positioned absolutely to prevent layout shift */}
                             {!msg.isFromUser && activeReactionMessageId === msg.id && (
                               <div 
-                                className="absolute left-full top-0 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
-                                style={{ marginLeft: '8px' }}
+                                className="absolute left-full top-1/2 -translate-y-1/2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150"
+                                style={{ 
+                                  marginLeft: '8px',
+                                  zIndex: 9999
+                                }}
                                 onClick={(e) => e.stopPropagation()}>
                                 {reactionOptions.map((option) => (
                                   <button
