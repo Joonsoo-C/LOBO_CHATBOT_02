@@ -183,7 +183,6 @@ export default function AuthPage() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
       <div className="w-full max-w-md mx-auto">
         {/* Main Login Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -272,9 +271,7 @@ export default function AuthPage() {
 
               {/* Account Type */}
               <div>
-                <label className="block text-gray-500 text-sm mb-4">
-                  Account Type
-                </label>
+                <label className="block text-gray-500 text-sm mb-4">데모 계정으로 빠른 로그인</label>
                 <div className="grid grid-cols-3 gap-3">
                   {/* 학생계정 */}
                   <button
