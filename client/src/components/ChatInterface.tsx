@@ -119,6 +119,32 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     }
   }, [conversationReactions]);
 
+  // Handle click outside to dismiss reaction UI
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (activeReactionMessageId) {
+        const target = event.target as Element;
+        // Check if clicked outside of reaction UI
+        if (!target.closest('[data-reaction-ui]')) {
+          setActiveReactionMessageId(null);
+        }
+      }
+    };
+
+    const handleMouseClick = (event: MouseEvent) => handleClickOutside(event);
+    const handleTouchStart = (event: TouchEvent) => handleClickOutside(event);
+
+    if (activeReactionMessageId) {
+      document.addEventListener('click', handleMouseClick);
+      document.addEventListener('touchstart', handleTouchStart);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleMouseClick);
+      document.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [activeReactionMessageId]);
+
   // Reaction mutations
   const createReactionMutation = useMutation({
     mutationFn: async ({ messageId, reaction }: { messageId: number; reaction: string }) => {
@@ -1019,6 +1045,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                             {!msg.isFromUser && activeReactionMessageId === msg.id && (
                               <div 
                                 className="absolute left-full top-1/2 -translate-y-1/2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150"
+                                data-reaction-ui
                                 style={{ 
                                   marginLeft: '8px',
                                   zIndex: 10000,
@@ -1029,6 +1056,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                   <button
                                     key={option.emoji}
                                     className="w-6 h-6 rounded-full bg-muted hover:bg-muted/80 transition-colors flex items-center justify-center"
+                                    data-reaction-ui
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       handleReactionSelect(msg.id, option.emoji);
