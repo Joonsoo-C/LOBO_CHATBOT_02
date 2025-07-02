@@ -178,14 +178,6 @@ import {
   FileText as FileTextIcon,
 } from "lucide-react";
 import { Link } from "wouter";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 interface User {
   id: string;
@@ -367,8 +359,6 @@ function MasterAdmin() {
   const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
   const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
   const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
-
-  // 에이전트 관리 상태는 아래에서 한 번만 정의됨
 
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
@@ -1745,29 +1735,13 @@ function MasterAdmin() {
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
+  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   const [agentFilterUpperCategory, setAgentFilterUpperCategory] = useState('all');
   const [agentFilterLowerCategory, setAgentFilterLowerCategory] = useState('all');
   const [agentFilterDetailCategory, setAgentFilterDetailCategory] = useState('all');
-  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   const [agentFilterType, setAgentFilterType] = useState('all');
   const [agentFilterStatus, setAgentFilterStatus] = useState('all');
-  const [agentFilterManager, setAgentFilterManager] = useState('all');
   const [hasAgentSearched, setHasAgentSearched] = useState(true);
-
-  // 에이전트 행 클릭 핸들러
-  const handleAgentRowClick = (agent: Agent) => {
-    console.log('Agent row clicked:', agent);
-  };
-
-  // 에이전트 편집 핸들러
-  const handleEditAgent = (agent: Agent) => {
-    console.log('Edit agent:', agent);
-  };
-
-  // 에이전트 삭제 핸들러
-  const handleDeleteAgent = (agentId: number) => {
-    console.log('Delete agent:', agentId);
-  };
 
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
@@ -3894,205 +3868,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-xl font-semibold tracking-tight">에이전트 관리</CardTitle>
-                </div>
-                <div className="flex gap-3 mt-4">
-                  <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                        <Plus className="w-4 h-4 mr-2" />
-                        에이전트 수동 추가
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
-                  <AgentFileUploadModal 
-                    isOpen={isAgentFileUploadModalOpen}
-                    onClose={() => setIsAgentFileUploadModalOpen(false)}
-                    onSuccess={() => {
-                      setIsAgentFileUploadModalOpen(false);
-                      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-                    }}
-                  />
-                  <Button 
-                    onClick={() => setIsAgentFileUploadModalOpen(true)}
-                    className="bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    파일 업로드
-                  </Button>
-                  <div className="text-sm text-gray-600 ml-2 flex items-center">
-                    Excel 또는 CSV 파일로 에이전트를 일괄 업로드할 수 있습니다
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {/* 에이전트 검색 및 관리 */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">에이전트 검색 및 관리</h3>
-                  
-                  {/* 검색 및 필터 영역 */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Input
-                      placeholder="에이전트 이름 검색..."
-                      value={agentSearchQuery}
-                      onChange={(e) => setAgentSearchQuery(e.target.value)}
-                      className="focus:ring-2 focus:ring-blue-500"
-                    />
-                    <Select value={agentFilterType} onValueChange={setAgentFilterType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="유형" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="학교">학교</SelectItem>
-                        <SelectItem value="교수">교수</SelectItem>
-                        <SelectItem value="학생">학생</SelectItem>
-                        <SelectItem value="그룹">그룹</SelectItem>
-                        <SelectItem value="기능형">기능형</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select value={agentFilterStatus} onValueChange={setAgentFilterStatus}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="상태" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="active">활성</SelectItem>
-                        <SelectItem value="inactive">비활성</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select value={agentFilterManager} onValueChange={setAgentFilterManager}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="관리자" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        {managers?.map((manager: any) => (
-                          <SelectItem key={manager.id} value={manager.id}>
-                            {manager.fullName || manager.username}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 결과 및 테이블 */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <p className="text-sm text-gray-600">
-                        검색 결과: {filteredAgents?.length || 0}개의 에이전트
-                      </p>
-                    </div>
-                    
-                    {/* 에이전트 테이블 */}
-                    <div className="border rounded-lg">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>이름</TableHead>
-                            <TableHead>유형</TableHead>
-                            <TableHead>관리자</TableHead>
-                            <TableHead>상태</TableHead>
-                            <TableHead>문서 수</TableHead>
-                            <TableHead>사용자 수</TableHead>
-                            <TableHead>마지막 사용</TableHead>
-                            <TableHead>작업</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredAgents?.map((agent: any) => (
-                            <TableRow 
-                              key={agent.id}
-                              className="hover:bg-gray-50 cursor-pointer"
-                              onClick={() => handleAgentRowClick(agent)}
-                            >
-                              <TableCell>
-                                <div className="flex items-center space-x-3">
-                                  <div 
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${agent.backgroundColor ? `bg-${agent.backgroundColor}` : 'bg-blue-500'}`}
-                                  >
-                                    {agent.isCustomIcon && agent.icon ? (
-                                      <img 
-                                        src={agent.icon} 
-                                        alt="Custom Icon" 
-                                        className="w-6 h-6 rounded-full object-cover"
-                                        onError={(e) => {
-                                          e.currentTarget.style.display = 'none';
-                                          e.currentTarget.nextElementSibling.style.display = 'block';
-                                        }}
-                                      />
-                                    ) : (
-                                      <span className="text-xs">AI</span>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <div className="font-medium">{agent.name}</div>
-                                    <div className="text-sm text-gray-500 max-w-xs truncate">
-                                      {agent.description}
-                                    </div>
-                                  </div>
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant="outline">{agent.category}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                {agent.managerName || '미지정'}
-                              </TableCell>
-                              <TableCell>
-                                <Badge 
-                                  variant={agent.isActive ? "default" : "secondary"}
-                                  className={agent.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
-                                >
-                                  {agent.isActive ? '활성' : '비활성'}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>{agent.documentCount || 0}</TableCell>
-                              <TableCell>{agent.userCount || 0}</TableCell>
-                              <TableCell>
-                                {agent.lastUsed ? new Date(agent.lastUsed).toLocaleDateString('ko-KR') : '사용 없음'}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex space-x-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleEditAgent(agent);
-                                    }}
-                                  >
-                                    편집
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDeleteAgent(agent.id);
-                                    }}
-                                    className="text-red-500 hover:text-red-700"
-                                  >
-                                    삭제
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 에이전트 생성 모달 */}
-            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-              <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">에이전트 관리</h2>
+              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
                   </DialogHeader>
@@ -5159,75 +4938,66 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
+                        {/* 하단 버튼 */}
+                        <div className="flex justify-between pt-6 border-t">
+                          <div className="flex space-x-2">
+                            {agentCreationTab !== 'basic' && (
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex > 0) {
+                                    setAgentCreationTab(tabs[currentIndex - 1] as any);
+                                  }
+                                }}
+                              >
+                                ← 이전
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => {
+                                // 폼 상태 초기화
+                                agentForm.reset();
+                                setSelectedAgentManagers([]);
+                                setSelectedDocumentManagers([]);
+                                setSelectedQaManagers([]);
+                                setSelectedFiles([]);
+                                setManagerSearchQuery('');
+                                setAgentCreationTab('basic');
+                                setIsAgentDialogOpen(false);
+                              }}
+                            >
+                              취소
+                            </Button>
+                            {agentCreationTab !== 'sharing' ? (
+                              <Button 
+                                type="button" 
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex < tabs.length - 1) {
+                                    setAgentCreationTab(tabs[currentIndex + 1] as any);
+                                  }
+                                }}
+                                disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
+                              >
+                                다음 →
+                              </Button>
+                            ) : (
+                              <Button type="submit" disabled={createAgentMutation.isPending}>
+                                {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
                       </form>
                     </Form>
-
-                    {/* 하단 버튼 */}
-                    <div className="flex justify-between pt-6 border-t">
-                      <div className="flex space-x-2">
-                        {agentCreationTab !== 'basic' && (
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            onClick={() => {
-                              const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
-                              const currentIndex = tabs.indexOf(agentCreationTab);
-                              if (currentIndex > 0) {
-                                setAgentCreationTab(tabs[currentIndex - 1] as any);
-                              }
-                            }}
-                          >
-                            ← 이전
-                          </Button>
-                        )}
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => {
-                            // 폼 상태 초기화
-                            agentForm.reset();
-                            setSelectedAgentManagers([]);
-                            setSelectedDocumentManagers([]);
-                            setSelectedQaManagers([]);
-                            setSelectedFiles([]);
-                            setManagerSearchQuery('');
-                            setAgentCreationTab('basic');
-                            setIsAgentDialogOpen(false);
-                          }}
-                        >
-                          취소
-                        </Button>
-                        {agentCreationTab !== 'sharing' ? (
-                          <Button 
-                            type="button" 
-                            onClick={() => {
-                              const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
-                              const currentIndex = tabs.indexOf(agentCreationTab);
-                              if (currentIndex < tabs.length - 1) {
-                                setAgentCreationTab(tabs[currentIndex + 1] as any);
-                              }
-                            }}
-                            disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
-                          >
-                            다음 →
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => {
-                              // 직접 에이전트 생성 함수 호출
-                              const formData = agentForm.getValues();
-                              createAgentMutation.mutate(formData);
-                            }}
-                            disabled={createAgentMutation.isPending}
-                          >
-                            {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </TabsContent>
                   </Tabs>
                 </DialogContent>
               </Dialog>
@@ -7500,6 +7270,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
         </Tabs>
 
 
@@ -9573,14 +9344,532 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
+        {/* 에이전트 상세 정보 대화상자 */}
+        <Dialog open={isAgentDetailDialogOpen} onOpenChange={setIsAgentDetailDialogOpen}>
+          <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>에이전트 상세 정보</DialogTitle>
+            </DialogHeader>
+            {selectedAgent && (
+              <>
+                {/* 탭 네비게이션 */}
+                <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="w-full">
+                  <TabsList className="grid w-full grid-cols-6 mb-6">
+                    <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      기본 정보
+                    </TabsTrigger>
+                    <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      페르소나
+                    </TabsTrigger>
+                    <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      모델 설정
+                    </TabsTrigger>
+                    <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      파일 업로드
+                    </TabsTrigger>
+                    <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      관리자 선정
+                    </TabsTrigger>
+                    <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                      공유 설정
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <Form {...agentForm}>
+                    <form onSubmit={agentForm.handleSubmit((data) => updateAgentMutation.mutate({ ...data, id: selectedAgent.id }))} className="space-y-6">
+                      
+                      {/* 기본 정보 탭 */}
+                      <TabsContent value="basic" className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={agentForm.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      placeholder="최대 20자" 
+                                      maxLength={20} 
+                                      className="focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="category"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectValue placeholder="유형 선택" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="학교">학교</SelectItem>
+                                      <SelectItem value="교수">교수</SelectItem>
+                                      <SelectItem value="학생">학생</SelectItem>
+                                      <SelectItem value="그룹">그룹</SelectItem>
+                                      <SelectItem value="기능형">기능형</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          {/* 소속 조직 선택 (순차적) */}
+                          <div className="space-y-4">
+                            <Label className="text-sm font-medium text-gray-700">소속 *</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="upperCategory"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-xs text-gray-600">상위 조직</FormLabel>
+                                    <Select 
+                                      onValueChange={(value) => {
+                                        field.onChange(value);
+                                        agentForm.setValue('lowerCategory', '');
+                                        agentForm.setValue('detailCategory', '');
+                                      }} 
+                                      value={field.value}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue placeholder="상위 조직 선택" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {getUpperCategories().map((category, index) => (
+                                          <SelectItem key={category} value={category}>
+                                            {category}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="lowerCategory"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-xs text-gray-600">하위 조직</FormLabel>
+                                    <Select 
+                                      onValueChange={(value) => {
+                                        field.onChange(value);
+                                        agentForm.setValue('detailCategory', '');
+                                      }} 
+                                      value={field.value}
+                                      disabled={!agentForm.watch('upperCategory')}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue placeholder="하위 조직 선택" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
+                                          <SelectItem key={category} value={category}>
+                                            {category}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={agentForm.control}
+                                name="detailCategory"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-xs text-gray-600">세부 조직</FormLabel>
+                                    <Select 
+                                      onValueChange={field.onChange} 
+                                      value={field.value}
+                                      disabled={!agentForm.watch('lowerCategory')}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue placeholder="세부 조직 선택" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category, index) => (
+                                          <SelectItem key={category} value={category}>
+                                            {category}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+                          
+                          <FormField
+                            control={agentForm.control}
+                            name="description"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">설명 *</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="에이전트의 목적과 역할을 설명해주세요 (최대 200자)" 
+                                    maxLength={200}
+                                    className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </TabsContent>
+
+                      {/* 페르소나 탭 */}
+                      <TabsContent value="persona" className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={agentForm.control}
+                              name="personaNickname"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">닉네임</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      placeholder="예: 민지, 교수님 어시스턴트"
+                                      className="focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="speechStyle"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      placeholder="예: 친근하고 정중한 말투"
+                                      className="focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          <FormField
+                            control={agentForm.control}
+                            name="personality"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">성격/개성</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="에이전트의 성격이나 개성을 설명해주세요"
+                                    className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </TabsContent>
+
+                      {/* 모델 설정 탭 */}
+                      <TabsContent value="model" className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={agentForm.control}
+                              name="llmModel"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">LLM 모델</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
+                                      <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                                      <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                                      <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="chatbotType"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">챗봇 유형</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
+                                      <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
+                                      <SelectItem value="general-llm">자유 대화형</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      {/* 파일 업로드 탭 */}
+                      <TabsContent value="upload" className="space-y-6">
+                        <div className="space-y-4">
+                          <Label className="text-sm font-medium text-gray-700">문서 파일 업로드</Label>
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                            <div className="text-center">
+                              <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                              <div className="mt-2 text-sm text-gray-600">
+                                파일을 드래그하거나 클릭하여 업로드
+                              </div>
+                              <div className="mt-1 text-xs text-gray-500">
+                                지원 형식: TXT, DOC, DOCX, PPT, PPTX (최대 10MB)
+                              </div>
+                              <Input
+                                type="file"
+                                multiple
+                                accept=".txt,.doc,.docx,.ppt,.pptx"
+                                className="hidden"
+                                ref={agentFileInputRef}
+                                onChange={(e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  setSelectedFiles(prev => [...prev, ...files]);
+                                }}
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="mt-2"
+                                onClick={() => agentFileInputRef.current?.click()}
+                              >
+                                파일 선택
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {selectedFiles.length > 0 && (
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">선택된 파일:</Label>
+                              {selectedFiles.map((file, index) => (
+                                <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                                  <span className="text-sm">{file.name}</span>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </TabsContent>
+
+                      {/* 관리자 선정 탭 */}
+                      <TabsContent value="managers" className="space-y-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium text-gray-700">에이전트 관리자 *</Label>
+                            <div className="text-xs text-blue-600">
+                              {selectedAgentManagers.length}/3명 선택
+                            </div>
+                          </div>
+                          
+                          <div className="border rounded-lg p-4 max-h-64 overflow-y-auto">
+                            <div className="space-y-2">
+                              {managers?.filter(manager => 
+                                manager.role === 'agent_admin' || manager.role === 'master_admin'
+                              ).map((manager) => (
+                                <div key={manager.id} className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`agent-manager-${manager.id}`}
+                                    checked={selectedAgentManagers.some(m => m.id === manager.id)}
+                                    onCheckedChange={(checked: boolean) => {
+                                      if (checked) {
+                                        if (selectedAgentManagers.length < 3) {
+                                          setSelectedAgentManagers([...selectedAgentManagers, {
+                                            id: manager.id,
+                                            name: `${manager.firstName} ${manager.lastName}`,
+                                            email: manager.email || '',
+                                            upperCategory: '',
+                                            lowerCategory: ''
+                                          } as ManagerInfo]);
+                                        }
+                                      } else {
+                                        setSelectedAgentManagers(selectedAgentManagers.filter(m => m.id !== manager.id));
+                                      }
+                                    }}
+                                    disabled={!selectedAgentManagers.some(m => m.id === manager.id) && selectedAgentManagers.length >= 3}
+                                  />
+                                  <label
+                                    htmlFor={`agent-manager-${manager.id}`}
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                  >
+                                    {manager.firstName} {manager.lastName} ({manager.username})
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      {/* 공유 설정 탭 */}
+                      <TabsContent value="sharing" className="space-y-6">
+                        <div className="space-y-4">
+                          <FormField
+                            control={agentForm.control}
+                            name="visibility"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">공개 범위</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="public">전체 공개</SelectItem>
+                                    <SelectItem value="organization">소속 조직 내 공개</SelectItem>
+                                    <SelectItem value="private">비공개</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={agentForm.control}
+                            name="isActive"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                <div className="space-y-0.5">
+                                  <FormLabel className="text-base">
+                                    에이전트 활성화
+                                  </FormLabel>
+                                  <div className="text-sm text-muted-foreground">
+                                    에이전트를 즉시 사용할 수 있도록 활성화합니다.
+                                  </div>
+                                </div>
+                                <FormControl>
+                                  <Switch
+                                    checked={Boolean(field.value)}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </TabsContent>
+
+                      {/* 버튼들 */}
+                      <div className="flex justify-between pt-4">
+                        <Button 
+                          type="button" 
+                          variant="destructive"
+                          onClick={() => {
+                            if (confirm('정말로 이 에이전트를 삭제하시겠습니까?')) {
+                              deleteAgentMutation.mutate(selectedAgent.id);
+                            }
+                          }}
+                          disabled={deleteAgentMutation.isPending}
+                        >
+                          {deleteAgentMutation.isPending ? "삭제 중..." : "삭제"}
+                        </Button>
+                        <div className="flex space-x-2">
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => openIconChangeDialog(selectedAgent)}
+                          >
+                            아이콘 변경
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => {
+                              setIsAgentDetailDialogOpen(false);
+                              setSelectedAgent(null);
+                            }}
+                          >
+                            취소
+                          </Button>
+                          <Button 
+                            type="submit"
+                            disabled={updateAgentMutation.isPending}
+                          >
+                            {updateAgentMutation.isPending ? "저장 중..." : "수정"}
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
+                </Tabs>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {/* 에이전트 파일 업로드 모달 */}
         <AgentFileUploadModal
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
         />
-      </Tabs>
-    </main>
-  </div>
+      </main>
+    </div>
   );
 }
 
