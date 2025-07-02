@@ -3514,8 +3514,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       return;
     }
 
-    // 문서 종류가 선택되지 않았으면 기본값으로 "기타" 설정
-    const documentType = agentDocumentType || 'other';
+    if (!agentDocumentType) {
+      toast({
+        title: "문서 종류를 선택해주세요",
+        description: "업로드할 문서의 종류를 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsAgentFileUploading(true);
     setAgentFileUploadProgress(0);
@@ -3532,7 +3538,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           const formData = new FormData();
           formData.append('file', file);
           formData.append('agentId', selectedAgent.id.toString());
-          formData.append('documentType', documentType);
+          formData.append('documentType', agentDocumentType);
           formData.append('description', agentDocumentDescription || '');
 
           const response = await fetch('/api/admin/documents/upload', {
@@ -9993,7 +9999,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <div className="space-y-4">
                           {/* 문서 종류 드롭다운 */}
                           <div>
-                            <Label className="text-sm font-medium text-gray-700">문서 종류</Label>
+                            <Label className="text-sm font-medium text-gray-700">
+                              문서 종류 <span className="text-red-500">*</span>
+                            </Label>
                             <Select value={agentDocumentType} onValueChange={setAgentDocumentType}>
                               <SelectTrigger className="mt-1">
                                 <SelectValue placeholder="문서 종류 선택" />
@@ -10080,7 +10088,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <div className="flex justify-end mt-4">
                                 <Button 
                                   onClick={handleAgentFileUpload}
-                                  disabled={isAgentFileUploading}
+                                  disabled={!agentDocumentType || isAgentFileUploading}
                                   className="bg-blue-600 hover:bg-blue-700 text-white"
                                 >
                                   {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
