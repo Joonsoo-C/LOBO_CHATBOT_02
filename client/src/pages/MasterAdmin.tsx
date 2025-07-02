@@ -3514,14 +3514,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       return;
     }
 
-    if (!agentDocumentType) {
-      toast({
-        title: "문서 종류를 선택해주세요",
-        description: "업로드할 문서의 종류를 선택해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // 문서 종류가 선택되지 않았으면 기본값으로 "기타" 설정
+    const documentType = agentDocumentType || 'other';
 
     setIsAgentFileUploading(true);
     setAgentFileUploadProgress(0);
@@ -3538,7 +3532,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           const formData = new FormData();
           formData.append('file', file);
           formData.append('agentId', selectedAgent.id.toString());
-          formData.append('documentType', agentDocumentType);
+          formData.append('documentType', documentType);
           formData.append('description', agentDocumentDescription || '');
 
           const response = await fetch('/api/admin/documents/upload', {
@@ -10086,7 +10080,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <div className="flex justify-end mt-4">
                                 <Button 
                                   onClick={handleAgentFileUpload}
-                                  disabled={!agentDocumentType || isAgentFileUploading}
+                                  disabled={isAgentFileUploading}
                                   className="bg-blue-600 hover:bg-blue-700 text-white"
                                 >
                                   {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
