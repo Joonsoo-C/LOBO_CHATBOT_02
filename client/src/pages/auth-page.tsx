@@ -158,12 +158,19 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--neu-bg)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4" 
+         style={{ 
+           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+         }}>
       {/* Settings dropdown in top right */}
       <div className="fixed top-4 right-4 z-50">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
               <Settings className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -176,181 +183,203 @@ export default function AuthPage() {
         </DropdownMenu>
       </div>
       
-      <div className="w-full max-w-md mx-auto space-y-6">
-        {/* Logo Section */}
-        <div className="text-center space-y-4 mb-8">
-          <div className="neu-card w-32 h-32 mx-auto flex items-center justify-center">
-            <h1 className="text-4xl font-bold" style={{ color: 'var(--neu-text)' }}>
-              LoBo
+      <div className="w-full max-w-md mx-auto">
+        {/* Main Login Card */}
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header Section */}
+          <div className="px-8 pt-12 pb-8 text-center">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Get Started
             </h1>
+            <p className="text-gray-500 text-sm">
+              Already have an account? 
+              <button className="text-blue-600 hover:underline ml-1">
+                Sign In
+              </button>
+            </p>
           </div>
-          <h2 className="text-xl font-semibold" style={{ color: 'var(--neu-text-light)' }}>
-            {t('auth.subtitle')}
-          </h2>
-        </div>
 
-        {/* Auth Form */}
-        <div className="neu-card w-full">
-          <div className="mb-6">
-            <h3 className="text-2xl font-semibold text-center" style={{ color: 'var(--neu-text)' }}>
-              {t('auth.login')}
-            </h3>
-          </div>
-          <div className="space-y-6">
+          {/* Form Section */}
+          <div className="px-8 pb-8">
             <form onSubmit={(e) => {
               console.log("폼 제출 이벤트");
               loginForm.handleSubmit(onLogin)(e);
-            }} className="space-y-4">
-              <div className="space-y-3">
-                <label style={{ color: 'var(--neu-text)', fontWeight: '600' }}>
-                  {t('auth.username')}
+            }} className="space-y-6">
+              
+              {/* Full Name Field */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-2">
+                  Full Name
                 </label>
                 <input
                   id="login-username"
                   type="text"
-                  placeholder={t('auth.usernamePlaceholder')}
-                  className="neu-input w-full"
+                  placeholder="Nouman Suleman"
+                  className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
                   {...loginForm.register("username")}
                 />
                 {loginForm.formState.errors.username && (
-                  <p className="text-sm" style={{ color: 'var(--neu-error)' }}>
+                  <p className="text-sm text-red-500 mt-1">
                     {loginForm.formState.errors.username.message}
                   </p>
                 )}
               </div>
-              <div className="space-y-3">
-                <label style={{ color: 'var(--neu-text)', fontWeight: '600' }}>
-                  {t('auth.password')}
+
+              {/* Email Field */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="noumansuleman000@gmail.com"
+                  className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
+                />
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-2">
+                  Password
                 </label>
                 <div className="relative">
                   <input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
-                    className="neu-input w-full pr-12"
+                    placeholder="••••••••••••"
+                    className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
                     {...loginForm.register("password")}
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2"
-                    style={{ 
-                      background: 'transparent',
-                      boxShadow: 'none',
-                      color: 'var(--neu-text-light)',
-                      border: 'none'
-                    }}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
                 {loginForm.formState.errors.password && (
-                  <p className="text-sm" style={{ color: 'var(--neu-error)' }}>
+                  <p className="text-sm text-red-500 mt-1">
                     {loginForm.formState.errors.password.message}
                   </p>
                 )}
-                <div className="text-right">
-                  <button
-                    type="button"
-                    className="text-sm hover:underline"
-                    style={{ color: 'var(--neu-primary)' }}
-                    onClick={() => {
-                      toast({
-                        title: t('auth.forgotPassword'),
-                        description: t('auth.forgotPasswordMessage'),
-                      });
-                    }}
-                  >
-                    {t('auth.forgotPassword')}
-                  </button>
+              </div>
+
+              {/* Account Type */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-4">
+                  Account Type
+                </label>
+                <div className="flex space-x-6">
+                  <label className="flex items-center cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="accountType" 
+                      value="student"
+                      className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      defaultChecked
+                    />
+                    <span className="ml-2 text-gray-700">Student</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="accountType" 
+                      value="teacher"
+                      className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-gray-700">Teacher</span>
+                  </label>
                 </div>
               </div>
+
+              {/* Sign Up Button */}
               <button
                 type="submit"
-                className="neu-button-primary w-full text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
                 disabled={loginMutation.isPending}
-                onClick={(e) => {
-                  console.log("로그인 버튼 클릭됨");
-                  const formData = loginForm.getValues();
-                  console.log("현재 폼 데이터:", formData);
-                }}
               >
-                {loginMutation.isPending ? t('auth.loggingIn') : t('auth.loginButton')}
+                {loginMutation.isPending ? 'Signing In...' : 'Sign Up'}
               </button>
-            </form>
 
-            {/* 데모 계정 섹션 */}
-            <div className="neu-card">
-              <p className="text-sm font-semibold mb-4" style={{ color: 'var(--neu-text)' }}>
-                {t('auth.demoAccounts')}
+              {/* Terms */}
+              <p className="text-xs text-gray-400 text-center leading-relaxed">
+                By Sign up you agree to our 
+                <button className="text-blue-600 hover:underline mx-1">Privacy Policy</button> 
+                and 
+                <button className="text-blue-600 hover:underline ml-1">Terms and Condition</button>
               </p>
-              <div className="space-y-4">
-                <button
-                  type="button"
-                  className="neu-button-success w-full py-4"
-                  onClick={() => {
-                    loginForm.setValue("username", "user1082");
-                    loginForm.setValue("password", "student123");
-                  }}
-                >
-                  <div className="text-center">
-                    <div className="font-medium text-base">학생계정 (장지훈)</div>
-                    <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  className="neu-button-warning w-full py-4"
-                  onClick={() => {
-                    loginForm.setValue("username", "user1081");
-                    loginForm.setValue("password", "faculty123");
-                  }}
-                >
-                  <div className="text-center">
-                    <div className="font-medium text-base">교직원계정 (정수빈)</div>
-                    <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  className="neu-button-error w-full py-4"
-                  onClick={() => {
-                    console.log("마스터 계정 버튼 클릭됨");
-                    loginForm.setValue("username", "master_admin");
-                    loginForm.setValue("password", "MasterAdmin2024!");
-                    // 자동으로 로그인 시도
-                    setTimeout(() => {
-                      const formData = { username: "master_admin", password: "MasterAdmin2024!" };
-                      onLogin(formData);
-                    }, 100);
-                  }}
-                >
-                  <div className="text-center">
-                    <div className="font-medium text-base">마스터계정 (Master Admin)</div>
-                    <div className="text-xs opacity-90 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
-                  </div>
-                </button>
-              </div>
-              <p className="text-xs" style={{ color: 'var(--neu-text-light)' }}>
-                {t('auth.autoCreate')}
-              </p>
-            </div>
+            </form>
           </div>
         </div>
 
-        {/* 언어 선택 섹션 - 하단 */}
-        <div className="flex justify-center">
+        {/* Demo Accounts Section */}
+        <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+          <p className="text-white text-sm font-medium mb-4 text-center">
+            {t('auth.demoAccounts')}
+          </p>
+          <div className="space-y-3">
+            <button
+              type="button"
+              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
+              onClick={() => {
+                loginForm.setValue("username", "user1082");
+                loginForm.setValue("password", "student123");
+              }}
+            >
+              <div className="text-center">
+                <div className="font-medium">학생계정 (장지훈)</div>
+                <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
+              </div>
+            </button>
+            <button
+              type="button"
+              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
+              onClick={() => {
+                loginForm.setValue("username", "user1081");
+                loginForm.setValue("password", "faculty123");
+              }}
+            >
+              <div className="text-center">
+                <div className="font-medium">교직원계정 (정수빈)</div>
+                <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
+              </div>
+            </button>
+            <button
+              type="button"
+              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
+              onClick={() => {
+                console.log("마스터 계정 버튼 클릭됨");
+                loginForm.setValue("username", "master_admin");
+                loginForm.setValue("password", "MasterAdmin2024!");
+                setTimeout(() => {
+                  const formData = { username: "master_admin", password: "MasterAdmin2024!" };
+                  onLogin(formData);
+                }, 100);
+              }}
+            >
+              <div className="text-center">
+                <div className="font-medium">마스터계정 (Master Admin)</div>
+                <div className="text-xs opacity-90 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Language Selection */}
+        <div className="flex justify-center mt-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="outline" 
-                className="bg-white dark:bg-gray-800 border shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors px-4 py-3 h-auto w-[160px]"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm px-4 py-2"
               >
                 <Globe className="w-4 h-4 mr-2" />
-                <span className="text-sm font-medium">{languages.find(lang => lang.code === language)?.name}</span>
+                <span className="text-sm">{languages.find(lang => lang.code === language)?.name}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-[160px]">
