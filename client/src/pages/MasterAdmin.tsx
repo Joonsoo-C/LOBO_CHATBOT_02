@@ -9669,56 +9669,251 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       {/* 파일 업로드 탭 */}
                       <TabsContent value="upload" className="space-y-6">
                         <div className="space-y-4">
-                          <Label className="text-sm font-medium text-gray-700">문서 파일 업로드</Label>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                            <div className="text-center">
-                              <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                              <div className="mt-2 text-sm text-gray-600">
-                                파일을 드래그하거나 클릭하여 업로드
+                          {/* 문서 종류 드롭다운 */}
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">문서 종류</Label>
+                            <Select>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="문서 종류 선택" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="lecture">강의 자료</SelectItem>
+                                <SelectItem value="curriculum">교육과정</SelectItem>
+                                <SelectItem value="policy">정책 문서</SelectItem>
+                                <SelectItem value="manual">매뉴얼</SelectItem>
+                                <SelectItem value="form">양식</SelectItem>
+                                <SelectItem value="notice">공지사항</SelectItem>
+                                <SelectItem value="other">기타</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* 문서 설명 입력창 */}
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">문서 설명</Label>
+                            <Textarea 
+                              placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                              rows={3}
+                              className="mt-1"
+                            />
+                          </div>
+
+                          {/* 파일 업로드 영역 */}
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">문서 파일 업로드</Label>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 mt-1">
+                              <div className="text-center">
+                                <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                                <div className="mt-2 text-sm text-gray-600">
+                                  파일을 드래그하거나 클릭하여 업로드
+                                </div>
+                                <div className="mt-1 text-xs text-gray-500">
+                                  지원 형식: TXT, DOC, DOCX, PPT, PPTX (최대 10MB)
+                                </div>
+                                <Input
+                                  type="file"
+                                  multiple
+                                  accept=".txt,.doc,.docx,.ppt,.pptx"
+                                  className="hidden"
+                                  ref={agentFileInputRef}
+                                  onChange={(e) => {
+                                    const files = Array.from(e.target.files || []);
+                                    setSelectedFiles(prev => [...prev, ...files]);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className="mt-2"
+                                  onClick={() => agentFileInputRef.current?.click()}
+                                >
+                                  파일 선택
+                                </Button>
                               </div>
-                              <div className="mt-1 text-xs text-gray-500">
-                                지원 형식: TXT, DOC, DOCX, PPT, PPTX (최대 10MB)
+                            </div>
+                            
+                            {selectedFiles.length > 0 && (
+                              <div className="space-y-2 mt-4">
+                                <Label className="text-sm font-medium">선택된 파일:</Label>
+                                {selectedFiles.map((file, index) => (
+                                  <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                                    <span className="text-sm">{file.name}</span>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                ))}
                               </div>
-                              <Input
-                                type="file"
-                                multiple
-                                accept=".txt,.doc,.docx,.ppt,.pptx"
-                                className="hidden"
-                                ref={agentFileInputRef}
-                                onChange={(e) => {
-                                  const files = Array.from(e.target.files || []);
-                                  setSelectedFiles(prev => [...prev, ...files]);
-                                }}
-                              />
-                              <Button
-                                type="button"
-                                variant="outline"
-                                className="mt-2"
-                                onClick={() => agentFileInputRef.current?.click()}
-                              >
-                                파일 선택
-                              </Button>
+                            )}
+                          </div>
+
+                          {/* 문서 목록 */}
+                          <div className="border-t pt-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
+                              <Badge variant="outline">총 3개</Badge>
+                            </div>
+                            
+                            <div className="border rounded-lg overflow-hidden">
+                              <table className="w-full">
+                                <thead className="bg-gray-50 dark:bg-gray-800">
+                                  <tr>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      문서명
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      종류
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      크기
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      업로드 날짜
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      상태
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                      설정
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td className="px-4 py-4">
+                                      <div className="flex items-center">
+                                        <FileText className="w-5 h-5 text-blue-500 mr-2" />
+                                        <div>
+                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                            컴퓨터공학과 교육과정.pdf
+                                          </div>
+                                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                                            컴퓨터공학과 학부 교육과정 안내
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge variant="secondary">교육과정</Badge>
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                      2.4 MB
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                      2024.12.15
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        활성
+                                      </Badge>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <div className="flex space-x-1">
+                                        <Button variant="outline" size="sm" title="미리보기">
+                                          <Eye className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="다운로드">
+                                          <Download className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td className="px-4 py-4">
+                                      <div className="flex items-center">
+                                        <FileText className="w-5 h-5 text-green-500 mr-2" />
+                                        <div>
+                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                            학생회칙.docx
+                                          </div>
+                                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                                            컴퓨터공학과 학생회 운영 규정
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge variant="secondary">정책 문서</Badge>
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                      845 KB
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                      2024.11.28
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        활성
+                                      </Badge>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <div className="flex space-x-1">
+                                        <Button variant="outline" size="sm" title="미리보기">
+                                          <Eye className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="다운로드">
+                                          <Download className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td className="px-4 py-4">
+                                      <div className="flex items-center">
+                                        <FileText className="w-5 h-5 text-orange-500 mr-2" />
+                                        <div>
+                                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                            장학금 신청서.pdf
+                                          </div>
+                                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                                            각종 장학금 신청 양식 모음
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge variant="secondary">양식</Badge>
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                      1.2 MB
+                                    </td>
+                                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                      2024.10.12
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <Badge variant="outline" className="text-gray-600">
+                                        비활성
+                                      </Badge>
+                                    </td>
+                                    <td className="px-4 py-4">
+                                      <div className="flex space-x-1">
+                                        <Button variant="outline" size="sm" title="미리보기">
+                                          <Eye className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="다운로드">
+                                          <Download className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="outline" size="sm" title="삭제" className="text-red-600 hover:text-red-700">
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </div>
                           </div>
-                          
-                          {selectedFiles.length > 0 && (
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">선택된 파일:</Label>
-                              {selectedFiles.map((file, index) => (
-                                <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                                  <span className="text-sm">{file.name}</span>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       </TabsContent>
 

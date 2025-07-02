@@ -771,6 +771,13 @@ Changelog:
   * Moved filtering area to independent box below action buttons for better visual hierarchy
   * Applied consistent fonts, spacing, and styling matching organization management interface
   * Enhanced user experience with unified UI patterns across master admin sections
+- July 2, 2025. Enhanced agent detail popup file upload tab with comprehensive document management:
+  * Added document type dropdown with 7 categories (강의 자료, 교육과정, 정책 문서, 매뉴얼, 양식, 공지사항, 기타)
+  * Implemented document description textarea for detailed file descriptions
+  * Created complete document list table with columns: 문서명, 종류, 크기, 업로드 날짜, 상태, 설정
+  * Applied consistent styling matching document management popup design patterns
+  * Added action buttons for preview, download, and delete operations
+  * Document list displays with proper icons, badges, and hover effects matching existing UI standards
 - July 2, 2025. Fixed master admin icon change functionality:
   * Resolved disabled "이미지 업로드" button in master admin page icon change dialog
   * Added custom image upload state management (isUsingCustomImage, customImageFile, customImagePreview)
