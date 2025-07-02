@@ -349,6 +349,26 @@
         "id": 147,
         "createdAt": "2025-07-02T01:49:30.347Z"
       }
+    ],
+    [
+      155,
+      {
+        "conversationId": 112,
+        "content": "안녕",
+        "isFromUser": true,
+        "id": 155,
+        "createdAt": "2025-07-02T04:17:14.412Z"
+      }
+    ],
+    [
+      156,
+      {
+        "conversationId": 112,
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        "isFromUser": false,
+        "id": 156,
+        "createdAt": "2025-07-02T04:17:14.676Z"
+      }
     ]
   ]
 }
