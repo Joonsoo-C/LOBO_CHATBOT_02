@@ -764,6 +764,14 @@ Changelog:
   * Master account button triggers automatic login for immediate admin center access
   * Maintained transparent demo account buttons below main form with backdrop blur effects
   * Complete flat UI transformation following minimal design principles
+- July 2, 2025. Fixed master admin icon change functionality:
+  * Resolved disabled "이미지 업로드" button in master admin page icon change dialog
+  * Added custom image upload state management (isUsingCustomImage, customImageFile, customImagePreview)
+  * Implemented file validation for image uploads (5MB limit, JPG/PNG/GIF/WEBP formats)
+  * Enhanced changeIconMutation to support both custom images and standard icons via FormData
+  * Added image preview functionality showing selected custom images in icon preview area
+  * Updated UI to properly toggle between standard icon and custom image upload modes
+  * Custom image upload now works correctly in master admin agent management interface
 ```
 
 ## User Preferences

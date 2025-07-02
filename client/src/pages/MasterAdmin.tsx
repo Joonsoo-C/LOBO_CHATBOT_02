@@ -2207,11 +2207,19 @@ function MasterAdmin() {
 
   const handleIconChange = () => {
     if (iconChangeAgent) {
-      changeIconMutation.mutate({
-        agentId: iconChangeAgent.id,
-        icon: selectedIcon,
-        backgroundColor: selectedBgColor
-      });
+      if (isUsingCustomImage && customImageFile) {
+        changeIconMutation.mutate({
+          agentId: iconChangeAgent.id,
+          backgroundColor: selectedBgColor,
+          customImageFile: customImageFile
+        });
+      } else {
+        changeIconMutation.mutate({
+          agentId: iconChangeAgent.id,
+          icon: selectedIcon,
+          backgroundColor: selectedBgColor
+        });
+      }
     }
   };
 
@@ -8203,11 +8211,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="space-y-6">
               {/* 아이콘 미리보기 */}
               <div className="flex justify-center">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500`}>
-                  {(() => {
-                    const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
-                    return <IconComponent className="w-6 h-6 text-white" />;
-                  })()}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500 overflow-hidden`}>
+                  {isUsingCustomImage && customImagePreview ? (
+                    <img 
+                      src={customImagePreview} 
+                      alt="Custom icon preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    (() => {
+                      const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
+                      return <IconComponent className="w-6 h-6 text-white" />;
+                    })()
+                  )}
                 </div>
               </div>
 
@@ -8216,18 +8232,32 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
                 <div className="flex space-x-2">
                   <Button 
-                    variant={selectedIcon !== "custom" ? "default" : "outline"} 
+                    variant={!isUsingCustomImage ? "default" : "outline"} 
                     size="sm"
                     className="flex-1"
-                    onClick={() => setSelectedIcon("User")}
+                    onClick={() => {
+                      setIsUsingCustomImage(false);
+                      setCustomImageFile(null);
+                      setCustomImagePreview(null);
+                      setSelectedIcon("User");
+                    }}
                   >
                     기본 아이콘
                   </Button>
+                  <input
+                    type="file"
+                    id="custom-image-upload"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleCustomImageChange}
+                    style={{ display: 'none' }}
+                  />
                   <Button 
-                    variant="outline" 
+                    variant={isUsingCustomImage ? "default" : "outline"}
                     size="sm" 
                     className="flex-1"
-                    disabled
+                    onClick={() => {
+                      document.getElementById('custom-image-upload')?.click();
+                    }}
                   >
                     이미지 업로드
                   </Button>
