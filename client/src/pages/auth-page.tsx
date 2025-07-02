@@ -52,7 +52,7 @@ export default function AuthPage() {
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedAccountType, setSelectedAccountType] = useState("student");
+  const [selectedAccountType, setSelectedAccountType] = useState("");
 
   const loginSchema = createLoginSchema(t);
   const registerSchema = createRegisterSchema(t);
@@ -220,7 +220,7 @@ export default function AuthPage() {
                   <input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
+                    placeholder="비밀번호를 입력하세요."
                     className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
                     {...loginForm.register("password")}
                   />

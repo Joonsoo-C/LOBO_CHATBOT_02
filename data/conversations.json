@@ -139,11 +139,11 @@
       {
         "id": 155,
         "userId": "user1082",
-        "agentId": 119,
-        "type": "general",
+        "agentId": 184,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T07:40:01.065Z",
-        "createdAt": "2025-07-02T07:40:01.065Z"
+        "lastMessageAt": "2025-07-02T08:15:03.819Z",
+        "createdAt": "2025-07-02T08:15:03.819Z"
       }
     ]
   ]
