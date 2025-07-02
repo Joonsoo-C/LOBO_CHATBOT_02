@@ -138,12 +138,24 @@
       155,
       {
         "id": 155,
-        "userId": "user1081",
-        "agentId": 177,
+        "userId": "user1082",
+        "agentId": 116,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T09:51:23.563Z",
-        "createdAt": "2025-07-02T09:51:23.563Z"
+        "lastMessageAt": "2025-07-02T16:40:07.730Z",
+        "createdAt": "2025-07-02T16:40:07.730Z"
+      }
+    ],
+    [
+      156,
+      {
+        "id": 156,
+        "userId": "user1082",
+        "agentId": 123,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T16:54:16.503Z",
+        "createdAt": "2025-07-02T16:53:56.505Z"
       }
     ]
   ]

@@ -785,6 +785,11 @@ Changelog:
   * Implemented empty state message when no documents are uploaded
   * Maintained consistent UI styling with document management system without affecting other menu systems
   * Document count badge now accurately reflects actual uploaded document count per agent
+- July 2, 2025. Removed document text extraction repair action button from document management menu:
+  * Deleted "문서 텍스트 추출 수정" action button card from document management interface
+  * Removed handleFixDocuments function and fixDocumentsMutation mutation
+  * Cleaned up related code and comments for streamlined document management interface
+  * Document management screen now displays only document statistics without repair functionality
 - July 2, 2025. Fixed master admin icon change functionality:
   * Resolved disabled "이미지 업로드" button in master admin page icon change dialog
   * Added custom image upload state management (isUsingCustomImage, customImageFile, customImagePreview)
