@@ -203,44 +203,18 @@ export default function AuthPage() {
               
               
 
-              {/* Email Field */}
-              <div>
-                <label className="block text-gray-500 text-sm mb-2">학번/교번</label>
+              {/* Hidden Form Fields - Required for form functionality */}
+              <div style={{ display: 'none' }}>
                 <input
-                  type="email"
-                  placeholder="예 : 2024001234 또는 F2024001"
-                  className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
+                  id="login-username"
+                  type="text"
+                  {...loginForm.register("username")}
                 />
-              </div>
-
-              {/* Password Field */}
-              <div>
-                <label className="block text-gray-500 text-sm mb-2">비밀번호</label>
-                <div className="relative">
-                  <input
-                    id="login-password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••••"
-                    className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
-                    {...loginForm.register("password")}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-                {loginForm.formState.errors.password && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {loginForm.formState.errors.password.message}
-                  </p>
-                )}
+                <input
+                  id="login-password"
+                  type="password"
+                  {...loginForm.register("password")}
+                />
               </div>
 
               {/* Account Type */}
@@ -308,78 +282,19 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              {/* Sign Up Button */}
+              {/* Login Button */}
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
                 disabled={loginMutation.isPending}
               >
-                {loginMutation.isPending ? 'Signing In...' : 'Sign Up'}
+                {loginMutation.isPending ? '로그인 중...' : '로그인'}
               </button>
-
-              {/* Terms */}
-              <p className="text-xs text-gray-400 text-center leading-relaxed">
-                By Sign up you agree to our 
-                <button className="text-blue-600 hover:underline mx-1">Privacy Policy</button> 
-                and 
-                <button className="text-blue-600 hover:underline ml-1">Terms and Condition</button>
-              </p>
             </form>
           </div>
         </div>
 
-        {/* Demo Accounts Section */}
-        <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-          <p className="text-white text-sm font-medium mb-4 text-center">
-            {t('auth.demoAccounts')}
-          </p>
-          <div className="space-y-3">
-            <button
-              type="button"
-              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
-              onClick={() => {
-                loginForm.setValue("username", "user1082");
-                loginForm.setValue("password", "student123");
-              }}
-            >
-              <div className="text-center">
-                <div className="font-medium">학생계정 (장지훈)</div>
-                <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공</div>
-              </div>
-            </button>
-            <button
-              type="button"
-              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
-              onClick={() => {
-                loginForm.setValue("username", "user1081");
-                loginForm.setValue("password", "faculty123");
-              }}
-            >
-              <div className="text-center">
-                <div className="font-medium">교직원계정 (정수빈)</div>
-                <div className="text-xs opacity-90 mt-1">인문대학 / 국어국문학과 / 현대문학전공, 교수</div>
-              </div>
-            </button>
-            <button
-              type="button"
-              className="w-full bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm"
-              onClick={() => {
-                console.log("마스터 계정 버튼 클릭됨");
-                loginForm.setValue("username", "master_admin");
-                loginForm.setValue("password", "MasterAdmin2024!");
-                setTimeout(() => {
-                  const formData = { username: "master_admin", password: "MasterAdmin2024!" };
-                  onLogin(formData);
-                }, 100);
-              }}
-            >
-              <div className="text-center">
-                <div className="font-medium">마스터계정 (Master Admin)</div>
-                <div className="text-xs opacity-90 mt-1">LoBo AI 챗봇 통합 관리자 센터</div>
-              </div>
-            </button>
-          </div>
-        </div>
+        
 
         {/* Language Selection */}
         <div className="flex justify-center mt-6">
