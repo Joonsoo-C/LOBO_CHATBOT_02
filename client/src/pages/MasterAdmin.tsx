@@ -5158,8 +5158,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             )}
                           </div>
                         </TabsContent>
-
-                        {/* 하단 버튼 */}
                         <div className="flex justify-between pt-6 border-t">
                           <div className="flex space-x-2">
                             {agentCreationTab !== 'basic' && (
