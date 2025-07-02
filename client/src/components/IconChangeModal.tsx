@@ -113,7 +113,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         return await response.json();
       }
     },
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       console.log("Icon change success, using server response data:", response);
       
       // Get updated agent data from server response
@@ -188,15 +188,20 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         setIsUsingCustomImage(false);
       }
       
-      // Step 5: Force comprehensive invalidation across ALL UI components
-      // Invalidate all agent-related queries for Home.tsx, TabletLayout.tsx, AgentManagement.tsx
-      queryClient.invalidateQueries({ queryKey: ["/api/agents"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] });
-      
-      // Invalidate conversation queries for agent list display 
-      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] });
+      // Step 5: Force comprehensive invalidation and immediate refetch
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/agents"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/agents/managed"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/agents"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/conversations"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/conversations", agent.id] })
+      ]).then(() => {
+        // Immediately refetch all agent data
+        return Promise.all([
+          queryClient.refetchQueries({ queryKey: ["/api/agents"] }),
+          queryClient.refetchQueries({ queryKey: ["/api/admin/agents"] })
+        ]);
+      });
       
       // Step 6: Emit global events for immediate UI updates
       console.log("Emitting global agent update events...");
@@ -237,11 +242,11 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         console.log("Force refetch completed after icon change");
       }, 50);
       
-      // Strategy 3: Additional refetch after longer delay to ensure UI update
+      // Strategy 3: Force page reload to ensure all UI components show updated icon
       setTimeout(() => {
-        queryClient.refetchQueries({ queryKey: ["/api/agents"] });
-        console.log("Secondary refetch for agents query");
-      }, 200);
+        console.log("Forcing page reload to ensure icon change is visible everywhere");
+        window.location.reload();
+      }, 1000);
       
       // Step 7: Close modal and show success message
       toast({
