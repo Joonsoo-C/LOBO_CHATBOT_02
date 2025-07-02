@@ -32,9 +32,11 @@ export function useSSE(isAuthenticated: boolean) {
         const data = JSON.parse(event.data);
         
         if (data.type === 'agent_update') {
-          // Invalidate agent-related queries to trigger refresh
+          // Invalidate all agent-related queries to trigger refresh across all interfaces
           queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
           queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
           
           console.log(`실시간 에이전트 아이콘 업데이트 수신됨 (에이전트 ID: ${data.agentId})`);
         }
