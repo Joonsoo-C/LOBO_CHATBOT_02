@@ -364,34 +364,44 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               >
                 기본 아이콘
               </Button>
-              <label htmlFor="image-upload-direct" className="flex-1">
+              <div className="flex-1">
+                <input
+                  type="file"
+                  id="image-upload-input"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={(e) => {
+                    console.log("File input changed!", e.target.files);
+                    setIsUsingCustomImage(true);
+                    handleFileChange(e);
+                  }}
+                  style={{ display: 'none' }}
+                />
                 <Button
                   variant={isUsingCustomImage ? "default" : "outline"}
                   size="sm"
                   className="w-full"
                   type="button"
-                  asChild
+                  onClick={() => {
+                    console.log("Image upload button clicked!");
+                    const input = document.getElementById('image-upload-input') as HTMLInputElement;
+                    if (input) {
+                      console.log("Found input, clicking it");
+                      input.click();
+                    } else {
+                      console.error("Input not found!");
+                    }
+                  }}
                 >
-                  <span>이미지 업로드</span>
+                  이미지 업로드
                 </Button>
-              </label>
-              <input
-                type="file"
-                id="image-upload-direct"
-                accept="image/jpeg,image/png,image/gif,image/webp"
-                onChange={(e) => {
-                  console.log("Direct file input changed!");
-                  setIsUsingCustomImage(true);
-                  handleFileChange(e);
-                }}
-                className="hidden"
-              />
+              </div>
             </div>
           </div>
 
-          {/* Debug state */}
-          <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
-            Debug: isUsingCustomImage = {isUsingCustomImage.toString()}, imageFile = {imageFile ? imageFile.name : 'null'}
+          {/* Debug state - visible debug panel */}
+          <div className="text-xs text-white bg-red-500 p-3 rounded font-bold">
+            DEBUG MODE: isUsingCustomImage = {isUsingCustomImage.toString()}, imageFile = {imageFile ? imageFile.name : 'null'}
+            <br />Modal Agent: {agent.name} (ID: {agent.id})
           </div>
 
           {/* Custom Image Upload Section */}

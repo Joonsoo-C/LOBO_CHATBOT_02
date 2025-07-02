@@ -426,6 +426,9 @@ function MasterAdmin() {
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
   const [selectedBgColor, setSelectedBgColor] = useState("blue");
+  const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
+  const [customImageFile, setCustomImageFile] = useState<File | null>(null);
+  const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
   
 
   
@@ -2112,11 +2115,71 @@ function MasterAdmin() {
     },
   });
 
+  // 커스텀 이미지 파일 핸들러
+  const handleCustomImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // 파일 크기 체크 (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "파일 크기 오류",
+          description: "이미지 파일은 5MB 이하여야 합니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // 파일 타입 체크
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        toast({
+          title: "파일 형식 오류",
+          description: "JPG, PNG, GIF, WEBP 형식만 지원됩니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setCustomImageFile(file);
+      setIsUsingCustomImage(true);
+
+      // 미리보기 생성
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCustomImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // 아이콘 변경 뮤테이션
   const changeIconMutation = useMutation({
-    mutationFn: async ({ agentId, icon, backgroundColor }: { agentId: number, icon: string, backgroundColor: string }) => {
-      const response = await apiRequest("PATCH", `/api/admin/agents/${agentId}/icon`, { icon, backgroundColor });
-      return response.json();
+    mutationFn: async ({ agentId, icon, backgroundColor, customImageFile }: { 
+      agentId: number, 
+      icon?: string, 
+      backgroundColor: string,
+      customImageFile?: File 
+    }) => {
+      if (customImageFile) {
+        // 커스텀 이미지 업로드
+        const formData = new FormData();
+        formData.append('customImageFile', customImageFile);
+        formData.append('backgroundColor', backgroundColor);
+
+        const response = await fetch(`/api/admin/agents/${agentId}/icon`, {
+          method: 'PATCH',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('아이콘 변경에 실패했습니다');
+        }
+        return response.json();
+      } else {
+        // 기본 아이콘 사용
+        const response = await apiRequest("PATCH", `/api/admin/agents/${agentId}/icon`, { icon, backgroundColor });
+        return response.json();
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
@@ -2128,6 +2191,10 @@ function MasterAdmin() {
       });
       setIsIconChangeDialogOpen(false);
       setIconChangeAgent(null);
+      // 상태 초기화
+      setIsUsingCustomImage(false);
+      setCustomImageFile(null);
+      setCustomImagePreview(null);
     },
     onError: (error: Error) => {
       toast({
