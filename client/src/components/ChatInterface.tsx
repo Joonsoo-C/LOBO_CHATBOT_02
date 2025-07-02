@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import PDFViewer from "./PDFViewer";
@@ -75,7 +75,7 @@ interface ChatInterfaceProps {
   isManagementMode?: boolean;
 }
 
-export default function ChatInterface({ agent, isManagementMode = false }: ChatInterfaceProps) {
+const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagementMode = false }, ref) => {
   const isTablet = useIsTablet();
   const { t, language } = useLanguage();
   const [message, setMessage] = useState("");
@@ -99,6 +99,17 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Expose functions and state to parent component
+  useImperativeHandle(ref, () => ({
+    setShowPersonaModal,
+    setShowIconModal,
+    setShowSettingsModal,
+    setShowFileModal,
+    setShowFileListModal,
+    setNotificationState,
+    addSystemMessage
+  }));
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -1490,4 +1501,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
       )}
     </div>
   );
-}
+});
+
+export default ChatInterface;

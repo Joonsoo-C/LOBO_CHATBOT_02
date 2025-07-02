@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +10,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import ChatInterface from "@/components/ChatInterface";
 import type { Agent } from "@/types/agent";
 
@@ -17,6 +18,7 @@ export default function Management() {
   const { agentId } = useParams<{ agentId: string }>();
   const { toast } = useToast();
   const { user } = useAuth();
+  const chatInterfaceRef = useRef<any>(null);
 
 
   const { data: agent, isLoading } = useQuery<Agent>({
@@ -41,6 +43,54 @@ export default function Management() {
       }
     } catch (error) {
       console.error('Logout failed:', error);
+    }
+  };
+
+  const handlePersonaChange = () => {
+    if (chatInterfaceRef.current?.setShowPersonaModal) {
+      chatInterfaceRef.current.setShowPersonaModal(true);
+      chatInterfaceRef.current.addSystemMessage("페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.");
+    }
+  };
+
+  const handleIconChange = () => {
+    if (chatInterfaceRef.current?.setShowIconModal) {
+      chatInterfaceRef.current.setShowIconModal(true);
+      chatInterfaceRef.current.addSystemMessage("아이콘 변경 창을 열었습니다. 에이전트의 아이콘과 배경색을 변경할 수 있습니다.");
+    }
+  };
+
+  const handleChatbotSettings = () => {
+    if (chatInterfaceRef.current?.setShowSettingsModal) {
+      chatInterfaceRef.current.setShowSettingsModal(true);
+      chatInterfaceRef.current.addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+    }
+  };
+
+  const handleNotifications = () => {
+    if (chatInterfaceRef.current?.setNotificationState) {
+      chatInterfaceRef.current.setNotificationState("waiting_input");
+      chatInterfaceRef.current.addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+    }
+  };
+
+  const handleDocumentUpload = () => {
+    if (chatInterfaceRef.current?.setShowFileModal) {
+      chatInterfaceRef.current.setShowFileModal(true);
+      chatInterfaceRef.current.addSystemMessage("문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.");
+    }
+  };
+
+  const handleDocumentManagement = () => {
+    if (chatInterfaceRef.current?.setShowFileListModal) {
+      chatInterfaceRef.current.setShowFileListModal(true);
+      chatInterfaceRef.current.addSystemMessage("문서 관리 창을 열었습니다. 업로드된 문서를 확인하고 삭제할 수 있습니다.");
+    }
+  };
+
+  const handlePerformanceAnalysis = async () => {
+    if (chatInterfaceRef.current?.addSystemMessage) {
+      chatInterfaceRef.current.addSystemMessage("에이전트 성과 분석을 실행합니다...");
     }
   };
 
@@ -238,31 +288,31 @@ export default function Management() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handlePersonaChange}>
                     <User className="w-4 h-4 mr-2" />
                     페르소나 변경
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleIconChange}>
                     <Edit className="w-4 h-4 mr-2" />
                     아이콘 변경
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleChatbotSettings}>
                     <Settings className="w-4 h-4 mr-2" />
                     챗봇 설정
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleNotifications}>
                     <Bell className="w-4 h-4 mr-2" />
                     알림보내기
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDocumentUpload}>
                     <FileText className="w-4 h-4 mr-2" />
                     문서 업로드
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDocumentManagement}>
                     <Files className="w-4 h-4 mr-2" />
                     문서 관리
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handlePerformanceAnalysis}>
                     <BarChart3 className="w-4 h-4 mr-2" />
                     성과 분석
                   </DropdownMenuItem>
@@ -279,7 +329,11 @@ export default function Management() {
 
       {/* Chat Interface without header */}
       <div className="pt-20 md:pt-0">
-        <ChatInterface agent={agent} isManagementMode={true} />
+        <ChatInterface 
+          ref={chatInterfaceRef}
+          agent={agent} 
+          isManagementMode={true} 
+        />
       </div>
 
 
