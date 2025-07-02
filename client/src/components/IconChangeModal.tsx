@@ -262,10 +262,14 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handleFileChange called, event:", event);
     const file = event.target.files?.[0];
+    console.log("Selected file:", file);
+    
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
+        console.log("Invalid file type:", file.type);
         toast({
           title: "잘못된 파일 형식",
           description: "이미지 파일만 업로드할 수 있습니다.",
@@ -276,6 +280,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
       
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
+        console.log("File too large:", file.size);
         toast({
           title: "파일 크기 초과",
           description: "이미지 파일은 5MB 이하여야 합니다.",
@@ -284,15 +289,19 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         return;
       }
       
+      console.log("Setting file and custom image state");
       setImageFile(file);
       setIsUsingCustomImage(true);
       
       // Create preview URL
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log("FileReader loaded, setting custom image preview");
         setCustomImage(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+    } else {
+      console.log("No file selected");
     }
   };
 
@@ -371,12 +380,21 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 className="flex-1"
                 type="button"
                 onClick={() => {
-                  document.getElementById('image-upload-trigger')?.click();
+                  console.log("이미지 업로드 button clicked, current state:", { isUsingCustomImage });
+                  setIsUsingCustomImage(true);
+                  setTimeout(() => {
+                    document.getElementById('image-upload-trigger')?.click();
+                  }, 100);
                 }}
               >
                 이미지 업로드
               </Button>
             </div>
+          </div>
+
+          {/* Debug state */}
+          <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
+            Debug: isUsingCustomImage = {isUsingCustomImage.toString()}, imageFile = {imageFile ? imageFile.name : 'null'}
           </div>
 
           {/* Custom Image Upload Section */}
