@@ -5256,7 +5256,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   >
                                     {(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? (
                                       <img 
-                                        src={(agent as any).icon} 
+                                        key={`custom-icon-${agent.id}-${(agent as any).icon}`}
+                                        src={`${(agent as any).icon}?t=${Date.now()}`} 
                                         alt={`${agent.name} 커스텀 아이콘`}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {

@@ -2141,8 +2141,8 @@
         "averageRating": null,
         "messageCount": 0,
         "creatorId": "system",
-        "updatedAt": "2025-07-02T09:24:15.937Z",
-        "isCustomIcon": false,
+        "updatedAt": "2025-07-02T09:38:35.133Z",
+        "isCustomIcon": true,
         "organizationId": null,
         "maxResponseLength": null,
         "speakingStyle": "친근하고 도움이 되는 말투",
@@ -2153,7 +2153,9 @@
         "uploadFormats": [],
         "uploadMethod": null,
         "maxFileCount": null,
-        "maxFileSizeMB": null
+        "maxFileSizeMB": null,
+        "backgroundColor": "undefined",
+        "icon": "/uploads/agent-162-icon-1751449108581.png"
       }
     ],
     [

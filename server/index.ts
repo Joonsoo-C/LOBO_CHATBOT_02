@@ -21,6 +21,9 @@ app.use(compression({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
 // Add support for Korean filenames in multipart forms
 app.use((req, res, next) => {
   // Set proper charset for handling Korean filenames
