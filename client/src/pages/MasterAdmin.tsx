@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
+
 // Remove hardcoded organization categories import - now using API data
 
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
@@ -164,6 +165,17 @@ import {
   Eye,
   X,
   ChevronsUpDown,
+  Code,
+  FlaskRound,
+  Map,
+  Languages,
+  Dumbbell,
+  Lightbulb,
+  Pen,
+  Calendar,
+  Bot as BotIcon,
+  Database as DatabaseIcon,
+  FileText as FileTextIcon,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -5238,24 +5250,49 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             >
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
-                                  <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border-2 border-gray-200">
+                                  <div 
+                                    className="w-12 h-12 rounded-full overflow-hidden mr-3 border-2 border-gray-200 flex items-center justify-center"
+                                    style={{ backgroundColor: agent.backgroundColor || '#6B7280' }}
+                                  >
                                     {(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? (
                                       <img 
                                         src={(agent as any).icon} 
-                                        alt={`${agent.name} 프로필`}
+                                        alt={`${agent.name} 커스텀 아이콘`}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
+                                          console.log(`Failed to load custom icon: ${(agent as any).icon}`);
                                           const target = e.target as HTMLImageElement;
-                                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&size=48&background=random`;
+                                          target.style.display = 'none';
+                                          const nextElement = target.nextElementSibling as HTMLElement;
+                                          if (nextElement) {
+                                            nextElement.classList.remove('hidden');
+                                          }
                                         }}
                                       />
-                                    ) : (
-                                      <img 
-                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&size=48&background=random`}
-                                        alt={`${agent.name} 프로필`}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    )}
+                                    ) : null}
+                                    <div className={`${(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? 'hidden' : ''} w-full h-full flex items-center justify-center`}>
+                                      {(() => {
+                                        const iconValue = agent.icon || 'fas fa-user';
+                                        const iconMap: { [key: string]: any } = {
+                                          'fas fa-graduation-cap': GraduationCap,
+                                          'fas fa-code': Code,
+                                          'fas fa-robot': BotIcon,
+                                          'fas fa-user': User,
+                                          'fas fa-flask': FlaskRound,
+                                          'fas fa-map': Map,
+                                          'fas fa-language': Languages,
+                                          'fas fa-dumbbell': Dumbbell,
+                                          'fas fa-database': DatabaseIcon,
+                                          'fas fa-lightbulb': Lightbulb,
+                                          'fas fa-heart': Heart,
+                                          'fas fa-calendar': Calendar,
+                                          'fas fa-pen': Pen,
+                                          'fas fa-file-alt': FileTextIcon,
+                                        };
+                                        const IconComponent = iconMap[iconValue] || User;
+                                        return <IconComponent className="text-white w-6 h-6" />;
+                                      })()}
+                                    </div>
                                   </div>
                                   <div>
                                     <div className="text-sm font-medium text-gray-900 dark:text-white">
