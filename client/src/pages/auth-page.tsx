@@ -190,10 +190,7 @@ export default function AuthPage() {
           <div className="px-8 pt-12 pb-8 text-center">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">LoBo</h1>
             <p className="text-gray-500 text-sm">
-              Already have an account? 
-              <button className="text-blue-600 hover:underline ml-1">
-                Sign In
-              </button>
+              대학교 AI 챗봇 메신저
             </p>
           </div>
 
@@ -206,9 +203,7 @@ export default function AuthPage() {
               
               {/* Full Name Field */}
               <div>
-                <label className="block text-gray-500 text-sm mb-2">
-                  Full Name
-                </label>
+                <label className="block text-gray-500 text-sm mb-2">학번 / 교번</label>
                 <input
                   id="login-username"
                   type="text"
