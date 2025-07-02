@@ -100,16 +100,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Expose functions and state to parent component
-  useImperativeHandle(ref, () => ({
-    setShowPersonaModal,
-    setShowIconModal,
-    setShowSettingsModal,
-    setShowFileModal,
-    setShowFileListModal,
-    setNotificationState,
-    addSystemMessage
-  }));
+
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -196,6 +187,17 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     };
     setOptimisticMessages(prev => [...prev, systemMessage]);
   };
+
+  // Expose functions and state to parent component
+  useImperativeHandle(ref, () => ({
+    setShowPersonaModal,
+    setShowIconModal,
+    setShowSettingsModal,
+    setShowFileModal,
+    setShowFileListModal,
+    setNotificationState,
+    addSystemMessage
+  }));
 
   // Function to check if a message is a system message
   const isSystemMessage = (content: string): boolean => {
