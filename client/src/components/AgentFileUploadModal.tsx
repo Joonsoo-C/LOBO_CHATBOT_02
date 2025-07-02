@@ -348,7 +348,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 <Checkbox
                   id="clear-existing"
                   checked={clearExisting}
-                  onCheckedChange={setClearExisting}
+                  onCheckedChange={(checked) => setClearExisting(checked === true)}
                   disabled={validateOnly}
                 />
                 <Label htmlFor="clear-existing" className="text-sm korean-text">기존 에이전트 모두 삭제 후 업로드</Label>
