@@ -211,11 +211,23 @@
       {
         "id": 155,
         "userId": "user1082",
-        "agentId": 197,
+        "agentId": 123,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T01:57:47.177Z",
-        "createdAt": "2025-07-02T01:53:06.453Z"
+        "lastMessageAt": "2025-07-02T02:29:07.756Z",
+        "createdAt": "2025-07-02T02:29:07.756Z"
+      }
+    ],
+    [
+      157,
+      {
+        "id": 157,
+        "userId": "user1082",
+        "agentId": 184,
+        "type": "management",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T01:58:51.655Z",
+        "createdAt": "2025-07-02T01:58:51.655Z"
       }
     ]
   ]
