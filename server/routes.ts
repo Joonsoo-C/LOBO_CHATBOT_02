@@ -102,15 +102,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Load user-specific hidden agents
       let userHiddenAgents: number[] = [];
       try {
-        const fs = require('fs');
-        const path = require('path');
         const userHiddenAgentsFile = path.join(process.cwd(), 'data', 'user-hidden-agents.json');
         if (fs.existsSync(userHiddenAgentsFile)) {
           const hiddenAgentsData = JSON.parse(fs.readFileSync(userHiddenAgentsFile, 'utf8'));
           userHiddenAgents = hiddenAgentsData[userId] || [];
+          console.log(`[DEBUG] Loaded hidden agents for user ${userId}:`, userHiddenAgents);
+        } else {
+          console.log(`[DEBUG] Hidden agents file not found: ${userHiddenAgentsFile}`);
         }
       } catch (error) {
-        console.log("No user-specific hidden agents file found or error reading it");
+        console.log("Error loading user-specific hidden agents:", error);
       }
 
       // Master admin can see all agents (except their own hidden list if any)
