@@ -5226,8 +5226,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </Button>
                         )}
                       </div>
-                    </div>
-                  </TabsContent>
+                    </TabsContent>
                   </Tabs>
                 </DialogContent>
               </Dialog>
@@ -7500,6 +7499,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
         </Tabs>
 
 
