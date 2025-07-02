@@ -5159,66 +5159,74 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 하단 버튼 */}
-                        <div className="flex justify-between pt-6 border-t">
-                          <div className="flex space-x-2">
-                            {agentCreationTab !== 'basic' && (
-                              <Button 
-                                type="button" 
-                                variant="outline" 
-                                onClick={() => {
-                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
-                                  const currentIndex = tabs.indexOf(agentCreationTab);
-                                  if (currentIndex > 0) {
-                                    setAgentCreationTab(tabs[currentIndex - 1] as any);
-                                  }
-                                }}
-                              >
-                                ← 이전
-                              </Button>
-                            )}
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              onClick={() => {
-                                // 폼 상태 초기화
-                                agentForm.reset();
-                                setSelectedAgentManagers([]);
-                                setSelectedDocumentManagers([]);
-                                setSelectedQaManagers([]);
-                                setSelectedFiles([]);
-                                setManagerSearchQuery('');
-                                setAgentCreationTab('basic');
-                                setIsAgentDialogOpen(false);
-                              }}
-                            >
-                              취소
-                            </Button>
-                            {agentCreationTab !== 'sharing' ? (
-                              <Button 
-                                type="button" 
-                                onClick={() => {
-                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
-                                  const currentIndex = tabs.indexOf(agentCreationTab);
-                                  if (currentIndex < tabs.length - 1) {
-                                    setAgentCreationTab(tabs[currentIndex + 1] as any);
-                                  }
-                                }}
-                                disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
-                              >
-                                다음 →
-                              </Button>
-                            ) : (
-                              <Button type="submit" disabled={createAgentMutation.isPending}>
-                                {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
-                              </Button>
-                            )}
-                          </div>
-                        </div>
                       </form>
                     </Form>
+
+                    {/* 하단 버튼 */}
+                    <div className="flex justify-between pt-6 border-t">
+                      <div className="flex space-x-2">
+                        {agentCreationTab !== 'basic' && (
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => {
+                              const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                              const currentIndex = tabs.indexOf(agentCreationTab);
+                              if (currentIndex > 0) {
+                                setAgentCreationTab(tabs[currentIndex - 1] as any);
+                              }
+                            }}
+                          >
+                            ← 이전
+                          </Button>
+                        )}
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => {
+                            // 폼 상태 초기화
+                            agentForm.reset();
+                            setSelectedAgentManagers([]);
+                            setSelectedDocumentManagers([]);
+                            setSelectedQaManagers([]);
+                            setSelectedFiles([]);
+                            setManagerSearchQuery('');
+                            setAgentCreationTab('basic');
+                            setIsAgentDialogOpen(false);
+                          }}
+                        >
+                          취소
+                        </Button>
+                        {agentCreationTab !== 'sharing' ? (
+                          <Button 
+                            type="button" 
+                            onClick={() => {
+                              const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                              const currentIndex = tabs.indexOf(agentCreationTab);
+                              if (currentIndex < tabs.length - 1) {
+                                setAgentCreationTab(tabs[currentIndex + 1] as any);
+                              }
+                            }}
+                            disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
+                          >
+                            다음 →
+                          </Button>
+                        ) : (
+                          <Button 
+                            onClick={() => {
+                              // 직접 에이전트 생성 함수 호출
+                              const formData = agentForm.getValues();
+                              createAgentMutation.mutate(formData);
+                            }}
+                            disabled={createAgentMutation.isPending}
+                          >
+                            {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </Tabs>
                 </DialogContent>
               </Dialog>
@@ -9565,8 +9573,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 에이전트 상세 정보 대화상자 */}
-        <Dialog open={isAgentDetailDialogOpen} onOpenChange={setIsAgentDetailDialogOpen}>
+
           <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>에이전트 상세 정보</DialogTitle>
