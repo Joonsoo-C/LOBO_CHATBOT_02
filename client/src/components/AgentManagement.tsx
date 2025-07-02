@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Upload } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Upload, Edit, MoreVertical, Palette } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,8 +8,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Agent, AgentStats } from "@/types/agent";
 import AgentFileUploadModal from "./AgentFileUploadModal";
+import IconChangeModal from "./IconChangeModal";
 
 interface ManagedAgent extends Agent {
   stats?: AgentStats;
@@ -35,6 +42,8 @@ export default function AgentManagement() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<ManagedAgent | null>(null);
+  const [isIconModalOpen, setIsIconModalOpen] = useState(false);
 
   // Check if user has agent management permissions
   const hasAgentManagementRole = user?.role === 'agent_admin' || user?.role === 'master_admin' || user?.userType === 'admin' || user?.id === 'master_admin';
@@ -49,6 +58,18 @@ export default function AgentManagement() {
   const handleManagementChat = (agentId: number) => {
     console.log(`[DEBUG] AgentManagement: Clicking agent ${agentId}, navigating to /management/${agentId}`);
     setLocation(`/management/${agentId}`);
+  };
+
+  const handleIconChange = (agent: ManagedAgent) => {
+    setSelectedAgent(agent);
+    setIsIconModalOpen(true);
+  };
+
+  const handleIconChangeSuccess = (message: string) => {
+    toast({
+      title: "아이콘 변경 완료",
+      description: message,
+    });
   };
 
   // Show access denied message if user doesn't have permissions
@@ -148,16 +169,39 @@ export default function AgentManagement() {
                     <p className="text-sm text-gray-600 korean-text">{agent.description}</p>
                   </div>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Settings functionality can be added here later
-                  }}
-                >
-                  <Settings className="text-gray-400 w-5 h-5" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <MoreVertical className="text-gray-400 w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="korean-text">
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleIconChange(agent);
+                      }}
+                    >
+                      <Palette className="w-4 h-4 mr-2" />
+                      아이콘 변경
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleManagementChat(agent.id);
+                      }}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      관리 설정
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               {/* Badges */}
@@ -213,6 +257,15 @@ export default function AgentManagement() {
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
       />
+
+      {selectedAgent && (
+        <IconChangeModal
+          agent={selectedAgent}
+          isOpen={isIconModalOpen}
+          onClose={() => setIsIconModalOpen(false)}
+          onSuccess={handleIconChangeSuccess}
+        />
+      )}
     </div>
   );
 }
