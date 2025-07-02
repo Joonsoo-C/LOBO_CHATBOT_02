@@ -268,8 +268,8 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-background border border-border rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-lg">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-background border border-border rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-lg" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h3 className="text-lg font-medium text-foreground korean-text">
@@ -470,7 +470,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 <Checkbox
                   id="overwrite-existing"
                   checked={overwriteExisting}
-                  onCheckedChange={setOverwriteExisting}
+                  onCheckedChange={(checked) => setOverwriteExisting(checked === true)}
                 />
                 <Label htmlFor="overwrite-existing" className="text-sm korean-text">
                   기존 사용자 정보 덮어쓰기 (모든 기존 사용자 데이터 삭제 후 새 데이터로 교체)
@@ -480,7 +480,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                 <Checkbox
                   id="validate-only"
                   checked={validateOnly}
-                  onCheckedChange={setValidateOnly}
+                  onCheckedChange={(checked) => setValidateOnly(checked === true)}
                 />
                 <Label htmlFor="validate-only" className="text-sm korean-text">
                   검증만 수행 (실제 저장하지 않고 파일 유효성만 확인)

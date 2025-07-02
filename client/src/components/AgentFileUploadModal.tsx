@@ -194,8 +194,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-background border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-lg">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={handleClose}>
+      <div className="bg-background border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-lg" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
@@ -340,7 +340,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 <Checkbox
                   id="validate-only"
                   checked={validateOnly}
-                  onCheckedChange={setValidateOnly}
+                  onCheckedChange={(checked) => setValidateOnly(checked === true)}
                 />
                 <Label htmlFor="validate-only" className="text-sm korean-text">검증만 수행 (실제 업로드하지 않음)</Label>
               </div>
