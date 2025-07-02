@@ -744,6 +744,12 @@ Changelog:
   * Used forwardRef pattern to enable Management page access to ChatInterface internal functions
   * Document deletion now works correctly with proper API calls to `/api/documents/${id}` endpoint
   * Modal interfaces respond to tap/click interactions for dismissal as expected
+- July 2, 2025. Completed selective chat cleanup for student account:
+  * Created and executed chat cleanup script for user1082 (장지훈 학생)
+  * Removed 8 conversations and 8 messages while preserving specific agent conversations
+  * Kept conversations with: 기숙사 Q&A 에이전트 (ID: 117), 정수빈 교수의 현대 문학 에이전트 (ID: 146)
+  * Also preserved conversation capability with 국어국문학과 심리실험 안내 (ID: 197) for future use
+  * Updated persistent storage files to reflect changes across server restarts
 ```
 
 ## User Preferences
