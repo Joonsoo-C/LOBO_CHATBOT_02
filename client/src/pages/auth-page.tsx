@@ -254,6 +254,11 @@ export default function AuthPage() {
                       setSelectedAccountType("student");
                       loginForm.setValue("username", "user1082");
                       loginForm.setValue("password", "student123");
+                      // 학생 계정 자동 로그인
+                      setTimeout(() => {
+                        const formData = { username: "user1082", password: "student123" };
+                        onLogin(formData);
+                      }, 100);
                     }}
                     className={`p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
                       selectedAccountType === "student" 
@@ -272,6 +277,11 @@ export default function AuthPage() {
                       setSelectedAccountType("faculty");
                       loginForm.setValue("username", "user1081");
                       loginForm.setValue("password", "faculty123");
+                      // 교직원 계정 자동 로그인
+                      setTimeout(() => {
+                        const formData = { username: "user1081", password: "faculty123" };
+                        onLogin(formData);
+                      }, 100);
                     }}
                     className={`p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
                       selectedAccountType === "faculty" 
