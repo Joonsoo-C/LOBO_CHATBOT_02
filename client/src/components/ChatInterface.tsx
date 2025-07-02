@@ -98,7 +98,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
-  const [isLongPressActive, setIsLongPressActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch reactions for conversation
@@ -123,7 +122,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
   // Handle click outside to dismiss reaction UI
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (activeReactionMessageId && !isLongPressActive) {
+      if (activeReactionMessageId) {
         const target = event.target as Element;
         // Check if clicked outside of reaction UI
         if (!target.closest('[data-reaction-ui]')) {
@@ -136,19 +135,15 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     const handleTouchStart = (event: TouchEvent) => handleClickOutside(event);
 
     if (activeReactionMessageId) {
-      // Add a small delay to prevent immediate dismissal after long press
-      const timeoutId = setTimeout(() => {
-        document.addEventListener('click', handleMouseClick);
-        document.addEventListener('touchstart', handleTouchStart);
-      }, 100);
-
-      return () => {
-        clearTimeout(timeoutId);
-        document.removeEventListener('click', handleMouseClick);
-        document.removeEventListener('touchstart', handleTouchStart);
-      };
+      document.addEventListener('click', handleMouseClick);
+      document.addEventListener('touchstart', handleTouchStart);
     }
-  }, [activeReactionMessageId, isLongPressActive]);
+
+    return () => {
+      document.removeEventListener('click', handleMouseClick);
+      document.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [activeReactionMessageId]);
 
   // Reaction mutations
   const createReactionMutation = useMutation({
@@ -286,8 +281,6 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       clearTimeout(longPressTimer);
     }
     
-    setIsLongPressActive(true);
-    
     const timer = setTimeout(() => {
       setActiveReactionMessageId(messageId);
       // Add haptic feedback if available (mobile only)
@@ -304,11 +297,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
     }
-    
-    // Reset long press state after a short delay to allow reaction UI to be shown
-    setTimeout(() => {
-      setIsLongPressActive(false);
-    }, 200);
+    // Don't clear activeReactionMessageId here - let it persist until manual dismissal
   };
 
   const handleLongPressCancel = () => {
@@ -316,7 +305,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
     }
-    setIsLongPressActive(false);
+    // Don't clear activeReactionMessageId here - let it persist until manual dismissal
   };
 
   const handleMessageClick = (messageId: number, isFromUser: boolean, isSystem: boolean) => {
@@ -998,7 +987,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
                           onClick={(e) => {
-                            // Allow click to dismiss reaction UI by not stopping propagation
+                            // Prevent click from dismissing reaction UI if it's active for this message
+                            if (!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id) {
+                              e.stopPropagation();
+                            }
                             handleMessageClick(msg.id, msg.isFromUser, isSystem);
                           }}
                           onTouchStart={() => {
@@ -1024,7 +1016,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           <div 
                             className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative overflow-visible`}
                             onClick={(e) => {
-                              // Allow click to dismiss reaction UI by not stopping propagation
+                              // Prevent click from dismissing reaction UI if it's active for this message
+                              if (!msg.isFromUser && activeReactionMessageId === msg.id) {
+                                e.stopPropagation();
+                              }
                             }}>
                             <div className="text-xs text-muted-foreground">
                               {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
