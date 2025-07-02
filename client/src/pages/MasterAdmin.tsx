@@ -3570,14 +3570,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           description: `${successCount}개 파일이 성공적으로 업로드되었습니다.${errorCount > 0 ? ` (${errorCount}개 실패)` : ''}`,
         });
         
-        // 실시간 캐시 무효화 - 문서 목록과 에이전트 문서 목록 모두 새로고침
+        // 실시간 캐시 무효화 - 모든 문서 관련 캐시 새로고침
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
         
+        // LOBO 챗봇 문서 목록도 무효화 (실시간 반영)
+        await queryClient.invalidateQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
+        
         // 추가적인 강제 새로고침
         queryClient.refetchQueries({ queryKey: ['/api/admin/documents'] });
         queryClient.refetchQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
+        queryClient.refetchQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
         
         // 선택된 파일과 입력값 초기화
         setSelectedFiles([]);

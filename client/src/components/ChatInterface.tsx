@@ -389,7 +389,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   // Get agent documents for file list
   const { data: documents = [] } = useQuery<any[]>({
     queryKey: [`/api/agents/${agent.id}/documents`],
-    enabled: showFileListModal
+    enabled: showFileListModal,
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000, // 5초마다 자동 새로고침
   });
 
   // Set conversation when data is available and mark as read (only once)

@@ -157,6 +157,18 @@
         "lastMessageAt": "2025-07-02T16:54:16.503Z",
         "createdAt": "2025-07-02T16:53:56.505Z"
       }
+    ],
+    [
+      158,
+      {
+        "id": 158,
+        "userId": "master_admin",
+        "agentId": 123,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T17:55:03.713Z",
+        "createdAt": "2025-07-02T17:55:03.713Z"
+      }
     ]
   ]
 }
