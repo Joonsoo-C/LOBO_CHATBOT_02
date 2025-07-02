@@ -2182,9 +2182,25 @@ function MasterAdmin() {
       }
     },
     onSuccess: () => {
+      // 강력한 캐시 무효화 - 모든 에이전트 관련 쿼리
       queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
       queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
       queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
+      queryClient.invalidateQueries({ predicate: (query) => 
+        query.queryKey[0] === '/api/agents' || 
+        query.queryKey[0] === '/api/admin/agents' 
+      });
+      
+      // 강제로 데이터 다시 가져오기
+      setTimeout(async () => {
+        await Promise.all([
+          queryClient.refetchQueries({ queryKey: ['/api/admin/agents'], type: "all" }),
+          queryClient.refetchQueries({ queryKey: ['/api/agents'], type: "all" }),
+          queryClient.refetchQueries({ queryKey: ['/api/agents/managed'], type: "all" })
+        ]);
+        console.log("Icon change: All agent queries forcefully refetched");
+      }, 100);
+      
       toast({
         title: "성공",
         description: "아이콘이 변경되었습니다.",

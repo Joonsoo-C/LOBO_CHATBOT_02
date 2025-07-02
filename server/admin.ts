@@ -379,20 +379,63 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Agent icon change
-  app.patch("/api/admin/agents/:id/icon", requireAgentAdmin, async (req, res) => {
+  // Agent icon change (supports both standard icons and custom image upload)
+  app.patch("/api/admin/agents/:id/icon", requireAgentAdmin, adminUpload.single('customImageFile'), async (req: any, res) => {
     try {
       const agentId = parseInt(req.params.id);
       const { icon, backgroundColor } = req.body;
+      const file = req.file;
 
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
 
-      const updatedAgent = await storage.updateAgent(agentId, { 
-        icon: icon,
-        backgroundColor: backgroundColor 
-      });
+      let updateData: any = {
+        backgroundColor: backgroundColor
+      };
+
+      if (file) {
+        // Custom image upload
+        try {
+          // Fix Korean filename encoding
+          let originalName = file.originalname;
+          try {
+            originalName = Buffer.from(originalName, 'latin1').toString('utf8');
+          } catch (e) {
+            // Keep original name if encoding fails
+          }
+
+          // Generate unique filename for custom icon
+          const timestamp = Date.now();
+          const ext = path.extname(originalName) || '.png';
+          const filename = `agent-${agentId}-icon-${timestamp}${ext}`;
+          const uploadPath = path.join(process.cwd(), 'uploads', filename);
+
+          // Ensure uploads directory exists
+          const uploadsDir = path.join(process.cwd(), 'uploads');
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+          }
+
+          // Move file to permanent location
+          fs.copyFileSync(file.path, uploadPath);
+          fs.unlinkSync(file.path); // Remove temporary file
+
+          updateData.icon = `/uploads/${filename}`;
+          updateData.isCustomIcon = true;
+
+          console.log(`Custom icon uploaded for agent ${agentId}: ${updateData.icon}`);
+        } catch (error) {
+          console.error("Error processing custom image:", error);
+          return res.status(500).json({ message: "이미지 처리에 실패했습니다." });
+        }
+      } else {
+        // Standard icon
+        updateData.icon = icon;
+        updateData.isCustomIcon = false;
+      }
+
+      const updatedAgent = await storage.updateAgent(agentId, updateData);
 
       res.json({
         success: true,

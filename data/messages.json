@@ -354,20 +354,20 @@
       155,
       {
         "conversationId": 112,
-        "content": "안녕",
+        "content": "어떤 것을 도와 줄 수 있니?",
         "isFromUser": true,
         "id": 155,
-        "createdAt": "2025-07-02T04:18:36.409Z"
+        "createdAt": "2025-07-02T09:28:35.399Z"
       }
     ],
     [
       156,
       {
         "conversationId": 112,
-        "content": "안녕하세요! 어떻게 도와드릴까요?",
+        "content": "죄송합니다. 현재 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
         "isFromUser": false,
         "id": 156,
-        "createdAt": "2025-07-02T04:18:38.502Z"
+        "createdAt": "2025-07-02T09:28:35.695Z"
       }
     ]
   ]
