@@ -738,6 +738,12 @@ Changelog:
   * Added haptic feedback (vibration) when long-press successfully triggers reaction options
   * Simplified reaction display to appear in same row as timestamp for cleaner interface
   * Removed unnecessary hover timeout references and cleaned up state management for mobile-optimized UX
+- July 2, 2025. Fixed mobile management mode dropdown functionality and document deletion system:
+  * Implemented complete mobile Management page dropdown with 7 management features matching PC version
+  * Fixed document deletion API path mismatch between frontend and backend endpoints
+  * Used forwardRef pattern to enable Management page access to ChatInterface internal functions
+  * Document deletion now works correctly with proper API calls to `/api/documents/${id}` endpoint
+  * Modal interfaces respond to tap/click interactions for dismissal as expected
 ```
 
 ## User Preferences
