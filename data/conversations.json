@@ -133,6 +133,18 @@
         "lastMessageAt": "2025-07-02T01:49:30.347Z",
         "createdAt": "2025-07-02T01:47:21.265Z"
       }
+    ],
+    [
+      155,
+      {
+        "id": 155,
+        "userId": "user1082",
+        "agentId": 177,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-02T03:31:22.007Z",
+        "createdAt": "2025-07-02T03:31:22.007Z"
+      }
     ]
   ]
 }

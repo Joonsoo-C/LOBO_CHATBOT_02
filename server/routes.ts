@@ -99,14 +99,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userLowerCategory = req.user.lowerCategory;
       const userDetailCategory = req.user.detailCategory;
 
-      // Master admin can see all agents
+      // Load user-specific hidden agents
+      let userHiddenAgents: number[] = [];
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const userHiddenAgentsFile = path.join(process.cwd(), 'data', 'user-hidden-agents.json');
+        if (fs.existsSync(userHiddenAgentsFile)) {
+          const hiddenAgentsData = JSON.parse(fs.readFileSync(userHiddenAgentsFile, 'utf8'));
+          userHiddenAgents = hiddenAgentsData[userId] || [];
+        }
+      } catch (error) {
+        console.log("No user-specific hidden agents file found or error reading it");
+      }
+
+      // Master admin can see all agents (except their own hidden list if any)
       if (userType === 'admin' || userId === 'master_admin') {
-        res.json(allAgents);
+        const visibleAgents = allAgents.filter(agent => !userHiddenAgents.includes(agent.id));
+        res.json(visibleAgents);
         return;
       }
 
       // Filter agents based on visibility and organization matching
       const filteredAgents = allAgents.filter(agent => {
+        // First check if agent is hidden for this user
+        if (userHiddenAgents.includes(agent.id)) {
+          return false;
+        }
+
         // Public agents are visible to everyone
         if (agent.visibility === 'public') {
           return true;
