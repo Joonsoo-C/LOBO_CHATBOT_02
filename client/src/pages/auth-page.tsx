@@ -188,9 +188,9 @@ export default function AuthPage() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Header Section */}
           <div className="px-8 pt-12 pb-8 text-center">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Get Started
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">LoBo-t
+            messenger
+</h1>
             <p className="text-gray-500 text-sm">
               Already have an account? 
               <button className="text-blue-600 hover:underline ml-1">
