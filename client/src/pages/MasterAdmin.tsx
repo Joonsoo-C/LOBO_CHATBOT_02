@@ -3584,9 +3584,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
         
+        // ChatInterface의 에이전트 문서 캐시도 무효화
+        await queryClient.invalidateQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
+        
         // 추가적인 강제 새로고침 - await 사용하여 즉시 새로고침
         await queryClient.refetchQueries({ queryKey: ['/api/admin/documents'] });
         await queryClient.refetchQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
+        await queryClient.refetchQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
         
         // 추가 대기 시간으로 캐시 동기화 보장
         await new Promise(resolve => setTimeout(resolve, 200));

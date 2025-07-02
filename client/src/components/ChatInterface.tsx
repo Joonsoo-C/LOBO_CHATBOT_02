@@ -387,13 +387,13 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const messages = messagesData;
 
   // Get agent documents for file list
-  const { data: allDocuments = [] } = useQuery<any[]>({
-    queryKey: [`/api/admin/documents`],
+  const { data: documents = [] } = useQuery<any[]>({
+    queryKey: [`/api/agents/${agent.id}/documents`],
     enabled: showFileListModal,
     refetchOnWindowFocus: true,
     refetchInterval: 3000, // 3초마다 자동 새로고침 (더 빠른 동기화)
     queryFn: async () => {
-      const response = await fetch('/api/admin/documents', {
+      const response = await fetch(`/api/agents/${agent.id}/documents`, {
         credentials: 'include'
       });
       if (!response.ok) {
@@ -402,12 +402,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
       return response.json();
     }
   });
-  
-  // 선택된 에이전트의 문서만 필터링
-  const documents = useMemo(() => {
-    if (!allDocuments || !agent.id) return [];
-    return allDocuments.filter((doc: any) => doc.agentId === agent.id);
-  }, [allDocuments, agent.id]);
 
   // Set conversation when data is available and mark as read (only once)
   useEffect(() => {

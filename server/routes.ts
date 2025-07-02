@@ -161,6 +161,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get documents for a specific agent (for regular users)
+  app.get('/api/agents/:id/documents', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Get all documents and filter by agentId
+      const allDocuments = await storage.getAllDocuments();
+      const agentDocuments = allDocuments.filter(doc => doc.agentId === agentId);
+      
+      console.log(`[DEBUG] Found ${agentDocuments.length} documents for agent ${agentId}`);
+      
+      res.json(agentDocuments);
+    } catch (error) {
+      console.error("Error fetching agent documents:", error);
+      res.status(500).json({ message: "Failed to fetch agent documents" });
+    }
+  });
+
   app.get('/api/agents/managed', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
