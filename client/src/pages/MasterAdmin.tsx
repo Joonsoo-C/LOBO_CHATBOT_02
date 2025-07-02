@@ -5231,7 +5231,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Tabs>
                 </DialogContent>
               </Dialog>
-            </TabsContent>
+            </div>
 
             {/* 에이전트 관리 섹션 */}
             <Card>
