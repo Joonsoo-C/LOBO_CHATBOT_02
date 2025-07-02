@@ -271,6 +271,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
     }
+    // Don't clear activeReactionMessageId here - let it persist until manual dismissal
   };
 
   const handleLongPressCancel = () => {
@@ -278,6 +279,7 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
     }
+    // Don't clear activeReactionMessageId here - let it persist until manual dismissal
   };
 
   const handleMessageClick = (messageId: number, isFromUser: boolean, isSystem: boolean) => {
@@ -378,6 +380,21 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
       }
     };
   }, [longPressTimer]);
+
+  // Global click handler to dismiss reaction UI
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setActiveReactionMessageId(null);
+    };
+
+    if (activeReactionMessageId !== null) {
+      document.addEventListener('click', handleGlobalClick);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, [activeReactionMessageId]);
 
   // Show welcome message for management mode when conversation is empty
   useEffect(() => {
@@ -943,7 +960,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 ? "minimal-message system-message"
                                 : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
-                          onClick={() => handleMessageClick(msg.id, msg.isFromUser, isSystem)}
+                          onClick={(e) => {
+                            // Prevent click from dismissing reaction UI if it's active for this message
+                            if (!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id) {
+                              e.stopPropagation();
+                            }
+                            handleMessageClick(msg.id, msg.isFromUser, isSystem);
+                          }}
                           onTouchStart={() => {
                             if (!msg.isFromUser && !isSystem) {
                               handleLongPressStart(msg.id);
@@ -964,7 +987,14 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
                         {/* Time info and reactions below message bubble */}
                         {!isSystem && (
-                          <div className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative`}>
+                          <div 
+                            className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative`}
+                            onClick={(e) => {
+                              // Prevent click from dismissing reaction UI if it's active for this message
+                              if (!msg.isFromUser && activeReactionMessageId === msg.id) {
+                                e.stopPropagation();
+                              }
+                            }}>
                             <div className="text-xs text-muted-foreground">
                               {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
                                 hour: '2-digit',
@@ -982,7 +1012,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
                             {/* Reaction Options - positioned to the right of time info for AI messages */}
                             {!msg.isFromUser && activeReactionMessageId === msg.id && (
-                              <div className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50">
+                              <div 
+                                className="flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150 z-50"
+                                onClick={(e) => e.stopPropagation()}>
                                 {reactionOptions.map((option) => (
                                   <button
                                     key={option.emoji}
