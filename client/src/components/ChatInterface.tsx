@@ -987,10 +987,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                                 : "minimal-message assistant"
                           } text-sm md:text-base leading-relaxed korean-text relative`}
                           onClick={(e) => {
-                            // Prevent click from dismissing reaction UI if it's active for this message
-                            if (!msg.isFromUser && !isSystem && activeReactionMessageId === msg.id) {
-                              e.stopPropagation();
-                            }
+                            // Allow click to dismiss reaction UI by not stopping propagation
                             handleMessageClick(msg.id, msg.isFromUser, isSystem);
                           }}
                           onTouchStart={() => {
@@ -1016,10 +1013,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           <div 
                             className={`flex items-center gap-2 mt-1 ${msg.isFromUser ? 'justify-end' : 'justify-start'} relative overflow-visible`}
                             onClick={(e) => {
-                              // Prevent click from dismissing reaction UI if it's active for this message
-                              if (!msg.isFromUser && activeReactionMessageId === msg.id) {
-                                e.stopPropagation();
-                              }
+                              // Allow click to dismiss reaction UI by not stopping propagation
                             }}>
                             <div className="text-xs text-muted-foreground">
                               {new Date(msg.createdAt).toLocaleTimeString('ko-KR', {
