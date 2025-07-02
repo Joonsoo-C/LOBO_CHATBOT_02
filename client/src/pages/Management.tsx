@@ -3,18 +3,13 @@ import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { ChevronLeft, Settings, LogOut, User, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, LogOut, ChevronDown } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator 
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { ThemeSelector } from "@/components/ThemeSelector";
-import { LanguageSelector } from "@/components/LanguageSelector";
-import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import ChatInterface from "@/components/ChatInterface";
 import type { Agent } from "@/types/agent";
 
@@ -22,7 +17,7 @@ export default function Management() {
   const { agentId } = useParams<{ agentId: string }>();
   const { toast } = useToast();
   const { user } = useAuth();
-  const [showAccountModal, setShowAccountModal] = useState(false);
+
 
   const { data: agent, isLoading } = useQuery<Agent>({
     queryKey: [`/api/agents/${agentId}`],
@@ -52,37 +47,28 @@ export default function Management() {
   if (isLoading) {
     return (
       <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
-        {/* Global Navigation Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 neu-card mx-4 mt-4 md:static md:shadow-none md:mb-0">
+        {/* Minimal Flat UI Global Navigation Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:static md:border-none">
           <div className="px-4 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Link href="/management">
-                  <Button variant="ghost" size="sm" className="p-2">
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
+                  <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  </button>
                 </Link>
-                <h1 className="text-lg font-semibold korean-text">로딩 중...</h1>
+                <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text">로딩 중...</h1>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <ThemeSelector />
+              <div className="flex items-center space-x-1">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-2">
-                      <Settings className="w-5 h-5" />
-                    </Button>
+                    <button className="flex items-center space-x-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">기능 선택</span>
+                      <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
-                      <User className="w-4 h-4 mr-2" />
-                      계정 설정
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LanguageSelector />
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                  <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
                       로그아웃
@@ -120,24 +106,15 @@ export default function Management() {
                 <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text">에이전트를 찾을 수 없음</h1>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <ThemeSelector />
+              <div className="flex items-center space-x-1">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-2">
-                      <Settings className="w-5 h-5" />
-                    </Button>
+                    <button className="flex items-center space-x-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">기능 선택</span>
+                      <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
-                      <User className="w-4 h-4 mr-2" />
-                      계정 설정
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LanguageSelector />
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                  <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
                       로그아웃
@@ -174,24 +151,15 @@ export default function Management() {
                 <h1 className="text-base font-medium text-gray-900 dark:text-gray-100 korean-text">권한 없음</h1>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <ThemeSelector />
+              <div className="flex items-center space-x-1">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-2">
-                      <Settings className="w-5 h-5" />
-                    </Button>
+                    <button className="flex items-center space-x-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">기능 선택</span>
+                      <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
-                      <User className="w-4 h-4 mr-2" />
-                      계정 설정
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LanguageSelector />
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                  <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
                       로그아웃
@@ -286,11 +254,7 @@ export default function Management() {
         <ChatInterface agent={agent} isManagementMode={true} />
       </div>
 
-      {/* Account Settings Modal */}
-      <AccountSettingsModal 
-        isOpen={showAccountModal} 
-        onClose={() => setShowAccountModal(false)} 
-      />
+
     </div>
   );
 }
