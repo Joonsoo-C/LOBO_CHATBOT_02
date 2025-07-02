@@ -3,7 +3,7 @@ import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { ChevronLeft, LogOut, ChevronDown } from "lucide-react";
+import { ChevronLeft, LogOut, ChevronDown, User, Edit, Settings, Bell, FileText, Files, BarChart3 } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -238,6 +238,34 @@ export default function Management() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem>
+                    <User className="w-4 h-4 mr-2" />
+                    페르소나 변경
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Edit className="w-4 h-4 mr-2" />
+                    아이콘 변경
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="w-4 h-4 mr-2" />
+                    챗봇 설정
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Bell className="w-4 h-4 mr-2" />
+                    알림보내기
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <FileText className="w-4 h-4 mr-2" />
+                    문서 업로드
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Files className="w-4 h-4 mr-2" />
+                    문서 관리
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    성과 분석
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
                     로그아웃
