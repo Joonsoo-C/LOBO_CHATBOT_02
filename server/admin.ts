@@ -444,6 +444,21 @@ export function setupAdminRoutes(app: Express) {
 
       const updatedAgent = await storage.updateAgent(agentId, updateData);
 
+      // Broadcast agent icon update to all connected clients
+      try {
+        const { broadcastAgentUpdate } = await import('./index');
+        broadcastAgentUpdate(agentId, {
+          type: 'icon_update',
+          agentId: agentId,
+          icon: updatedAgent.icon,
+          backgroundColor: updatedAgent.backgroundColor,
+          isCustomIcon: updatedAgent.isCustomIcon
+        });
+        console.log(`Broadcasted icon update for agent ${agentId} to all clients`);
+      } catch (broadcastError) {
+        console.log('Broadcast function not available, skipping real-time update');
+      }
+
       res.json({
         success: true,
         message: "아이콘이 성공적으로 변경되었습니다.",

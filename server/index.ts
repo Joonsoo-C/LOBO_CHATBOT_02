@@ -1,11 +1,62 @@
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleAgents } from "./initialize-sample-agents";
 import { initializeSampleUsers, initializeSampleOrganizations } from "./initialize-sample-users";
 
 const app = express();
+
+// Store connected SSE clients
+const sseClients = new Set<any>();
+
+// SSE endpoint for real-time updates
+app.get('/events', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Cache-Control'
+  });
+
+  // Add client to the set
+  sseClients.add(res);
+  console.log('SSE client connected, total clients:', sseClients.size);
+
+  // Send initial connection message
+  res.write('data: {"type":"connected"}\n\n');
+
+  // Handle client disconnect
+  req.on('close', () => {
+    sseClients.delete(res);
+    console.log('SSE client disconnected, remaining clients:', sseClients.size);
+  });
+});
+
+// Broadcast function for sending updates to all clients
+export function broadcastAgentUpdate(agentId: number, updateData: any) {
+  const message = JSON.stringify({
+    type: 'agent_update',
+    agentId,
+    data: updateData
+  });
+  
+  const messageData = `data: ${message}\n\n`;
+  
+  sseClients.forEach((client) => {
+    try {
+      client.write(messageData);
+    } catch (error) {
+      // Remove dead connections
+      sseClients.delete(client);
+    }
+  });
+  
+  console.log(`Broadcasted agent update for agent ${agentId} to ${sseClients.size} clients`);
+}
 
 // Enable gzip compression for better performance
 app.use(compression({
@@ -62,7 +113,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  const httpServer = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -76,7 +127,7 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    await setupVite(app, server);
+    await setupVite(app, httpServer);
   } else {
     serveStatic(app);
   }
@@ -85,7 +136,7 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen({
+  httpServer.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
