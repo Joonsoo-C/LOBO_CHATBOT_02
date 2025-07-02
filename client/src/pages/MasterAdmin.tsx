@@ -5157,7 +5157,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             )}
                           </div>
-                        
                         </TabsContent>
 
                         {/* 하단 버튼 */}
