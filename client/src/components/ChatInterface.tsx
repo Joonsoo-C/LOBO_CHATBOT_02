@@ -249,15 +249,15 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     { emoji: '👎', icon: ThumbsDown, label: 'Dislike' }
   ];
 
-  // Long press handlers for mobile
-  const handleTouchStart = (messageId: number) => {
+  // Long press handlers for mobile and desktop
+  const handleLongPressStart = (messageId: number) => {
     if (longPressTimer) {
       clearTimeout(longPressTimer);
     }
     
     const timer = setTimeout(() => {
       setActiveReactionMessageId(messageId);
-      // Add haptic feedback if available
+      // Add haptic feedback if available (mobile only)
       if (navigator.vibrate) {
         navigator.vibrate(50);
       }
@@ -266,14 +266,14 @@ export default function ChatInterface({ agent, isManagementMode = false }: ChatI
     setLongPressTimer(timer);
   };
 
-  const handleTouchEnd = () => {
+  const handleLongPressEnd = () => {
     if (longPressTimer) {
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
     }
   };
 
-  const handleTouchMove = () => {
+  const handleLongPressCancel = () => {
     if (longPressTimer) {
       clearTimeout(longPressTimer);
       setLongPressTimer(null);
@@ -946,11 +946,18 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           onClick={() => handleMessageClick(msg.id, msg.isFromUser, isSystem)}
                           onTouchStart={() => {
                             if (!msg.isFromUser && !isSystem) {
-                              handleTouchStart(msg.id);
+                              handleLongPressStart(msg.id);
                             }
                           }}
-                          onTouchEnd={handleTouchEnd}
-                          onTouchMove={handleTouchMove}
+                          onTouchEnd={handleLongPressEnd}
+                          onTouchMove={handleLongPressCancel}
+                          onMouseDown={() => {
+                            if (!msg.isFromUser && !isSystem) {
+                              handleLongPressStart(msg.id);
+                            }
+                          }}
+                          onMouseUp={handleLongPressEnd}
+                          onMouseLeave={handleLongPressCancel}
                         >
                           {msg.content}
                         </div>
