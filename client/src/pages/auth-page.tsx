@@ -201,6 +201,48 @@ export default function AuthPage() {
               loginForm.handleSubmit(onLogin)(e);
             }} className="space-y-6">
               
+              
+
+              {/* Email Field */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-2">학번/교번</label>
+                <input
+                  type="email"
+                  placeholder="예 : 2024001234 또는 F2024001"
+                  className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
+                />
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label className="block text-gray-500 text-sm mb-2">비밀번호</label>
+                <div className="relative">
+                  <input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••••••"
+                    className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
+                    {...loginForm.register("password")}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+                {loginForm.formState.errors.password && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
               {/* Account Type */}
               <div>
                 <label className="block text-gray-500 text-sm mb-4">데모 계정으로 빠른 로그인</label>
