@@ -360,6 +360,8 @@ function MasterAdmin() {
   const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
   const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
 
+  // 에이전트 관리 상태는 아래에서 한 번만 정의됨
+
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
   const { data: allManagers } = useQuery<User[]>({
@@ -1735,7 +1737,6 @@ function MasterAdmin() {
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
-  const [agentSearchQuery, setAgentSearchQuery] = useState('');
   const [agentFilterUpperCategory, setAgentFilterUpperCategory] = useState('all');
   const [agentFilterLowerCategory, setAgentFilterLowerCategory] = useState('all');
   const [agentFilterDetailCategory, setAgentFilterDetailCategory] = useState('all');
@@ -3868,10 +3869,205 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">에이전트 관리</h2>
-              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-xl font-semibold tracking-tight">에이전트 관리</CardTitle>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                        <Plus className="w-4 h-4 mr-2" />
+                        에이전트 수동 추가
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+                  <AgentFileUploadModal 
+                    isOpen={isAgentFileUploadModalOpen}
+                    onClose={() => setIsAgentFileUploadModalOpen(false)}
+                    onSuccess={() => {
+                      setIsAgentFileUploadModalOpen(false);
+                      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+                    }}
+                  />
+                  <Button 
+                    onClick={() => setIsAgentFileUploadModalOpen(true)}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    파일 업로드
+                  </Button>
+                  <div className="text-sm text-gray-600 ml-2 flex items-center">
+                    Excel 또는 CSV 파일로 에이전트를 일괄 업로드할 수 있습니다
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* 에이전트 검색 및 관리 */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">에이전트 검색 및 관리</h3>
+                  
+                  {/* 검색 및 필터 영역 */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Input
+                      placeholder="에이전트 이름 검색..."
+                      value={agentSearchQuery}
+                      onChange={(e) => setAgentSearchQuery(e.target.value)}
+                      className="focus:ring-2 focus:ring-blue-500"
+                    />
+                    <Select value={agentFilterType} onValueChange={setAgentFilterType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="유형" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="학교">학교</SelectItem>
+                        <SelectItem value="교수">교수</SelectItem>
+                        <SelectItem value="학생">학생</SelectItem>
+                        <SelectItem value="그룹">그룹</SelectItem>
+                        <SelectItem value="기능형">기능형</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={agentFilterStatus} onValueChange={setAgentFilterStatus}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="상태" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="inactive">비활성</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={agentFilterManager} onValueChange={setAgentFilterManager}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="관리자" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">전체</SelectItem>
+                        {managers?.map((manager: any) => (
+                          <SelectItem key={manager.id} value={manager.id}>
+                            {manager.fullName || manager.username}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 결과 및 테이블 */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm text-gray-600">
+                        검색 결과: {filteredAgents?.length || 0}개의 에이전트
+                      </p>
+                    </div>
+                    
+                    {/* 에이전트 테이블 */}
+                    <div className="border rounded-lg">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>이름</TableHead>
+                            <TableHead>유형</TableHead>
+                            <TableHead>관리자</TableHead>
+                            <TableHead>상태</TableHead>
+                            <TableHead>문서 수</TableHead>
+                            <TableHead>사용자 수</TableHead>
+                            <TableHead>마지막 사용</TableHead>
+                            <TableHead>작업</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredAgents?.map((agent: any) => (
+                            <TableRow 
+                              key={agent.id}
+                              className="hover:bg-gray-50 cursor-pointer"
+                              onClick={() => handleAgentRowClick(agent)}
+                            >
+                              <TableCell>
+                                <div className="flex items-center space-x-3">
+                                  <div 
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${agent.backgroundColor ? `bg-${agent.backgroundColor}` : 'bg-blue-500'}`}
+                                  >
+                                    {agent.isCustomIcon && agent.icon ? (
+                                      <img 
+                                        src={agent.icon} 
+                                        alt="Custom Icon" 
+                                        className="w-6 h-6 rounded-full object-cover"
+                                        onError={(e) => {
+                                          e.currentTarget.style.display = 'none';
+                                          e.currentTarget.nextElementSibling.style.display = 'block';
+                                        }}
+                                      />
+                                    ) : (
+                                      <span className="text-xs">AI</span>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <div className="font-medium">{agent.name}</div>
+                                    <div className="text-sm text-gray-500 max-w-xs truncate">
+                                      {agent.description}
+                                    </div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{agent.category}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                {agent.managerName || '미지정'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge 
+                                  variant={agent.isActive ? "default" : "secondary"}
+                                  className={agent.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
+                                >
+                                  {agent.isActive ? '활성' : '비활성'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{agent.documentCount || 0}</TableCell>
+                              <TableCell>{agent.userCount || 0}</TableCell>
+                              <TableCell>
+                                {agent.lastUsed ? new Date(agent.lastUsed).toLocaleDateString('ko-KR') : '사용 없음'}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditAgent(agent);
+                                    }}
+                                  >
+                                    편집
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteAgent(agent.id);
+                                    }}
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    삭제
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 에이전트 생성 모달 */}
+            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+              <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>새 에이전트 생성</DialogTitle>
                   </DialogHeader>
