@@ -675,6 +675,23 @@
   color: #cbd5e1;
 }
 
+/* 리액션 UI 오버플로우 설정 */
+.messages-container,
+.message-row,
+.chat-interface-messages {
+  overflow-x: visible !important;
+}
+
+.message-row {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* 리액션 UI가 잘리지 않도록 보장 */
+.message-row > div {
+  overflow: visible !important;
+}
+
 /* 모바일에서 입력창이 화면 전체 폭 사용 */
 @media (max-width: 767px) {
   .apple-input-container {

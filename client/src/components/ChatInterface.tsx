@@ -917,13 +917,13 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
 
       {/* Chat Messages */}
       <div 
-        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
+        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto overflow-x-visible chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
           paddingTop: isTablet ? '1rem' : '0', 
           paddingBottom: isTablet ? '1rem' : '40px',
         }}
       >
-        <div className="messages-container space-y-4">
+        <div className="messages-container space-y-4 overflow-visible">
           {messagesLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -1003,20 +1003,26 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               })}
                             </div>
                             
-                            {/* Reaction display for AI messages */}
+                            {/* Reaction display for AI messages - positioned absolutely */}
                             {!msg.isFromUser && messageReactions[msg.id] && (
-                              <div className="text-sm">
+                              <div 
+                                className="absolute left-full top-0 text-sm"
+                                style={{ 
+                                  marginLeft: '8px',
+                                  zIndex: 100
+                                }}>
                                 {messageReactions[msg.id]}
                               </div>
                             )}
 
-                            {/* Reaction Options - positioned absolutely to prevent layout shift */}
+                            {/* Reaction Options - positioned absolutely with proper overflow handling */}
                             {!msg.isFromUser && activeReactionMessageId === msg.id && (
                               <div 
                                 className="absolute left-full top-1/2 -translate-y-1/2 flex gap-1 bg-background border border-border rounded-full shadow-lg px-1 py-1 animate-in fade-in-0 zoom-in-95 duration-150"
                                 style={{ 
                                   marginLeft: '8px',
-                                  zIndex: 9999
+                                  zIndex: 10000,
+                                  position: 'absolute'
                                 }}
                                 onClick={(e) => e.stopPropagation()}>
                                 {reactionOptions.map((option) => (
