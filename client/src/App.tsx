@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsTablet } from "@/hooks/use-tablet";
+import { useSSE } from "@/hooks/useSSE";
 import AuthPage from "@/pages/auth-page";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
@@ -18,6 +19,11 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
   const isTablet = useIsTablet();
+  
+  // Setup SSE for real-time updates when authenticated
+  if (isAuthenticated) {
+    useSSE();
+  }
 
   if (isLoading) {
     return (
