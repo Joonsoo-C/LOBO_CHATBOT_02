@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Settings, Globe, Eye, EyeOff } from "lucide-react";
+import { Settings, Globe, Eye, EyeOff, GraduationCap, UserCheck, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +52,7 @@ export default function AuthPage() {
   const { user } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedAccountType, setSelectedAccountType] = useState("student");
 
   const loginSchema = createLoginSchema(t);
   const registerSchema = createRegisterSchema(t);
@@ -274,26 +275,65 @@ export default function AuthPage() {
                 <label className="block text-gray-500 text-sm mb-4">
                   Account Type
                 </label>
-                <div className="flex space-x-6">
-                  <label className="flex items-center cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="accountType" 
-                      value="student"
-                      className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
-                      defaultChecked
-                    />
-                    <span className="ml-2 text-gray-700">Student</span>
-                  </label>
-                  <label className="flex items-center cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="accountType" 
-                      value="teacher"
-                      className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-gray-700">Teacher</span>
-                  </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {/* 학생계정 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAccountType("student");
+                      loginForm.setValue("username", "user1082");
+                      loginForm.setValue("password", "student123");
+                    }}
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
+                      selectedAccountType === "student" 
+                        ? "border-blue-500 bg-blue-50 text-blue-700" 
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    <GraduationCap className="w-6 h-6" />
+                    <span className="text-xs font-medium">학생</span>
+                  </button>
+
+                  {/* 교직원계정 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAccountType("faculty");
+                      loginForm.setValue("username", "user1081");
+                      loginForm.setValue("password", "faculty123");
+                    }}
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
+                      selectedAccountType === "faculty" 
+                        ? "border-blue-500 bg-blue-50 text-blue-700" 
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    <UserCheck className="w-6 h-6" />
+                    <span className="text-xs font-medium">교직원</span>
+                  </button>
+
+                  {/* 마스터계정 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAccountType("master");
+                      loginForm.setValue("username", "master_admin");
+                      loginForm.setValue("password", "MasterAdmin2024!");
+                      // 마스터 계정은 자동 로그인
+                      setTimeout(() => {
+                        const formData = { username: "master_admin", password: "MasterAdmin2024!" };
+                        onLogin(formData);
+                      }, 100);
+                    }}
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
+                      selectedAccountType === "master" 
+                        ? "border-blue-500 bg-blue-50 text-blue-700" 
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    <Shield className="w-6 h-6" />
+                    <span className="text-xs font-medium">마스터</span>
+                  </button>
                 </div>
               </div>
 
