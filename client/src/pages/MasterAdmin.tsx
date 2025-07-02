@@ -38,6 +38,15 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     enabled: !!agentId,
     refetchOnWindowFocus: true,
     refetchInterval: 5000, // 5초마다 자동 새로고침
+    queryFn: async () => {
+      const response = await fetch('/api/admin/documents', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch documents');
+      }
+      return response.json();
+    }
   });
 
   const { toast } = useToast();
@@ -3575,13 +3584,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
         await queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
         
-        // LOBO 챗봇 문서 목록도 무효화 (실시간 반영)
-        await queryClient.invalidateQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
+        // 추가적인 강제 새로고침 - await 사용하여 즉시 새로고침
+        await queryClient.refetchQueries({ queryKey: ['/api/admin/documents'] });
+        await queryClient.refetchQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
         
-        // 추가적인 강제 새로고침
-        queryClient.refetchQueries({ queryKey: ['/api/admin/documents'] });
-        queryClient.refetchQueries({ queryKey: ['/api/admin/documents', selectedAgent.id] });
-        queryClient.refetchQueries({ queryKey: [`/api/agents/${selectedAgent.id}/documents`] });
+        // 추가 대기 시간으로 캐시 동기화 보장
+        await new Promise(resolve => setTimeout(resolve, 200));
         
         // 선택된 파일과 입력값 초기화
         setSelectedFiles([]);

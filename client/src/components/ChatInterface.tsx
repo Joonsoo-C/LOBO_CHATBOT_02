@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import PDFViewer from "./PDFViewer";
@@ -387,12 +387,27 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const messages = messagesData;
 
   // Get agent documents for file list
-  const { data: documents = [] } = useQuery<any[]>({
-    queryKey: [`/api/agents/${agent.id}/documents`],
+  const { data: allDocuments = [] } = useQuery<any[]>({
+    queryKey: [`/api/admin/documents`],
     enabled: showFileListModal,
     refetchOnWindowFocus: true,
-    refetchInterval: 5000, // 5초마다 자동 새로고침
+    refetchInterval: 3000, // 3초마다 자동 새로고침 (더 빠른 동기화)
+    queryFn: async () => {
+      const response = await fetch('/api/admin/documents', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch documents');
+      }
+      return response.json();
+    }
   });
+  
+  // 선택된 에이전트의 문서만 필터링
+  const documents = useMemo(() => {
+    if (!allDocuments || !agent.id) return [];
+    return allDocuments.filter((doc: any) => doc.agentId === agent.id);
+  }, [allDocuments, agent.id]);
 
   // Set conversation when data is available and mark as read (only once)
   useEffect(() => {
