@@ -312,25 +312,45 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
   });
 
   const userAgentsWithData = useMemo(() => {
-    if (!userConversations || !allAgents) return [];
+    if (!userConversations || !allAgents || !Array.isArray(allAgents) || !Array.isArray(userConversations)) {
+      console.log('Missing data for userAgentsWithData:', { userConversations: !!userConversations, allAgents: !!allAgents, isAgentsArray: Array.isArray(allAgents), isConversationsArray: Array.isArray(userConversations) });
+      return [];
+    }
     
-    const agentMap = new Map(allAgents.map(agent => [agent.id, agent]));
-    const userAgentIds = userConversations
-      .filter((conv: any) => conv.userId === userId)
-      .map((conv: any) => conv.agentId);
-    
-    const uniqueAgentIds = [...new Set(userAgentIds)];
-    
-    return uniqueAgentIds
-      .map(agentId => agentMap.get(agentId))
-      .filter(Boolean)
-      .map(agent => ({
-        ...agent,
-        lastUsed: userConversations
-          .filter((conv: any) => conv.agentId === agent.id && conv.userId === userId)
-          .sort((a: any, b: any) => new Date(b.lastMessageAt || b.createdAt).getTime() - new Date(a.lastMessageAt || a.createdAt).getTime())[0]?.lastMessageAt || agent.createdAt
-      }))
-      .sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
+    try {
+      // 에이전트가 올바른 구조인지 확인
+      const validAgents = allAgents.filter(agent => agent && typeof agent === 'object' && agent.id);
+      if (validAgents.length === 0) {
+        console.log('No valid agents found');
+        return [];
+      }
+      
+      const agentMap = new Map();
+      validAgents.forEach(agent => {
+        agentMap.set(agent.id, agent);
+      });
+      
+      const userAgentIds = userConversations
+        .filter((conv: any) => conv && conv.userId === userId)
+        .map((conv: any) => conv.agentId)
+        .filter(Boolean);
+      
+      const uniqueAgentIds = Array.from(new Set(userAgentIds));
+      
+      return uniqueAgentIds
+        .map(agentId => agentMap.get(agentId))
+        .filter(Boolean)
+        .map(agent => ({
+          ...agent,
+          lastUsed: userConversations
+            .filter((conv: any) => conv.agentId === agent.id && conv.userId === userId)
+            .sort((a: any, b: any) => new Date(b.lastMessageAt || b.createdAt).getTime() - new Date(a.lastMessageAt || a.createdAt).getTime())[0]?.lastMessageAt || agent.createdAt
+        }))
+        .sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
+    } catch (error) {
+      console.error('Error processing user agents:', error);
+      return [];
+    }
   }, [userConversations, allAgents, userId]);
 
   const formatDate = (dateString: string) => {
@@ -9059,12 +9079,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <DialogDescription>사용자 정보를 수정합니다.</DialogDescription>
             </DialogHeader>
             
-            <Form {...userEditForm}>
-              <form onSubmit={userEditForm.handleSubmit((data) => {
-                if (selectedUser) {
-                  updateUserMutation.mutate({ ...data, id: selectedUser.id });
-                }
-              })} className="space-y-6">
+            {selectedUser ? (
+              <Form {...userEditForm}>
+                <form onSubmit={userEditForm.handleSubmit((data) => {
+                  if (selectedUser) {
+                    updateUserMutation.mutate({ ...data, id: selectedUser.id });
+                  }
+                })} className="space-y-6">
                 
                 {/* 기본 정보 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -9356,7 +9377,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
               </form>
-            </Form>
+              </Form>
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-center">
+                  <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 

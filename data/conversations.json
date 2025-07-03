@@ -188,10 +188,10 @@
         "id": 162,
         "userId": "master_admin",
         "agentId": 143,
-        "type": "general",
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T20:25:26.576Z",
-        "createdAt": "2025-07-02T20:25:26.576Z"
+        "lastMessageAt": "2025-07-03T05:22:29.571Z",
+        "createdAt": "2025-07-03T05:22:29.571Z"
       }
     ],
     [
@@ -199,11 +199,11 @@
       {
         "id": 165,
         "userId": "master_admin",
-        "agentId": 129,
+        "agentId": 117,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T20:30:00.491Z",
-        "createdAt": "2025-07-02T20:30:00.491Z"
+        "lastMessageAt": "2025-07-03T05:31:18.640Z",
+        "createdAt": "2025-07-03T05:31:18.640Z"
       }
     ],
     [
@@ -211,11 +211,11 @@
       {
         "id": 166,
         "userId": "master_admin",
-        "agentId": 158,
-        "type": "general",
+        "agentId": 146,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T19:01:41.627Z",
-        "createdAt": "2025-07-02T19:00:52.996Z"
+        "lastMessageAt": "2025-07-03T05:44:36.849Z",
+        "createdAt": "2025-07-03T05:44:36.849Z"
       }
     ],
     [
@@ -235,11 +235,11 @@
       {
         "id": 163,
         "userId": "master_admin",
-        "agentId": 176,
-        "type": "general",
+        "agentId": 123,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T20:27:28.734Z",
-        "createdAt": "2025-07-02T20:27:28.734Z"
+        "lastMessageAt": "2025-07-03T05:22:41.545Z",
+        "createdAt": "2025-07-03T05:22:41.545Z"
       }
     ],
     [
@@ -247,11 +247,11 @@
       {
         "id": 164,
         "userId": "master_admin",
-        "agentId": 115,
+        "agentId": 177,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-02T20:29:50.827Z",
-        "createdAt": "2025-07-02T20:29:50.827Z"
+        "lastMessageAt": "2025-07-03T05:29:19.447Z",
+        "createdAt": "2025-07-03T05:29:19.447Z"
       }
     ]
   ]
