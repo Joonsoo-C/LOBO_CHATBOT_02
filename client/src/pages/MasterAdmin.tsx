@@ -18,6 +18,8 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
 
 
 // Remove hardcoded organization categories import - now using API data
@@ -302,68 +304,44 @@ interface UserActiveAgentsProps {
 }
 
 const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
-  const { data: userConversations } = useQuery({
+  const { data: userConversations, isLoading, error } = useQuery({
     queryKey: [`/api/admin/users/${userId}/conversations`],
     enabled: !!userId,
   });
 
-  const { data: allAgents } = useQuery<any[]>({
-    queryKey: ['/api/admin/agents'],
-  });
+  console.log('UserActiveAgents - userId:', userId, 'conversations:', userConversations);
 
-  const userAgentsWithData = useMemo(() => {
-    if (!userConversations || !allAgents || !Array.isArray(allAgents) || !Array.isArray(userConversations)) {
-      console.log('Missing data for userAgentsWithData:', { userConversations: !!userConversations, allAgents: !!allAgents, isAgentsArray: Array.isArray(allAgents), isConversationsArray: Array.isArray(userConversations) });
-      return [];
-    }
-    
-    try {
-      // 에이전트가 올바른 구조인지 확인
-      const validAgents = allAgents.filter(agent => agent && typeof agent === 'object' && agent.id);
-      if (validAgents.length === 0) {
-        console.log('No valid agents found');
-        return [];
-      }
-      
-      const agentMap = new Map();
-      validAgents.forEach(agent => {
-        agentMap.set(agent.id, agent);
-      });
-      
-      const userAgentIds = userConversations
-        .filter((conv: any) => conv && conv.userId === userId)
-        .map((conv: any) => conv.agentId)
-        .filter(Boolean);
-      
-      const uniqueAgentIds = Array.from(new Set(userAgentIds));
-      
-      return uniqueAgentIds
-        .map(agentId => agentMap.get(agentId))
-        .filter(Boolean)
-        .map(agent => ({
-          ...agent,
-          lastUsed: userConversations
-            .filter((conv: any) => conv.agentId === agent.id && conv.userId === userId)
-            .sort((a: any, b: any) => new Date(b.lastMessageAt || b.createdAt).getTime() - new Date(a.lastMessageAt || a.createdAt).getTime())[0]?.lastMessageAt || agent.createdAt
-        }))
-        .sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
-    } catch (error) {
-      console.error('Error processing user agents:', error);
-      return [];
-    }
-  }, [userConversations, allAgents, userId]);
+  if (!userId) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">사용자를 선택해주세요.</div>
+      </div>
+    );
+  }
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-    } catch {
-      return "정보 없음";
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</div>
+      </div>
+    );
+  }
+
+  if (!userConversations || !Array.isArray(userConversations) || userConversations.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">사용 중인 에이전트가 없습니다.</div>
+      </div>
+    );
+  }
 
   const getCategoryBadgeColor = (category: string) => {
     switch (category) {
@@ -378,39 +356,41 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">사용 중인 에이전트</Label>
-      <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
-        {userId && userAgentsWithData.length > 0 ? (
-          <div className="max-h-48 overflow-y-auto space-y-3">
-            {userAgentsWithData.map((agent, index) => (
-              <div key={agent.id} className="flex items-start space-x-3 p-3 border rounded bg-white dark:bg-gray-700">
-                <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">{agent.name}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    {agent.description}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="outline" className={`text-xs ${getCategoryBadgeColor(agent.category)}`}>
-                      {agent.category}
-                    </Badge>
-                    <span className="text-xs text-gray-500">
-                      최근 사용: {formatDate(agent.lastUsed)}
-                    </span>
-                  </div>
+      {userConversations.map((conversation: any, index: number) => {
+        const agent = conversation.agent;
+        if (!agent) return null;
+        
+        return (
+          <div key={`${agent.id}-${conversation.id}` || index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="flex items-center space-x-3">
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                style={{ backgroundColor: agent.backgroundColor || '#4F46E5' }}
+              >
+                {agent.icon ? (
+                  <span>{agent.icon}</span>
+                ) : (
+                  agent.name?.charAt(0) || '?'
+                )}
+              </div>
+              <div>
+                <div className="font-medium text-sm">{agent.name}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {conversation.lastMessageAt 
+                    ? formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: true, locale: ko })
+                    : '사용 기록 없음'
+                  }
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            <div className="text-sm font-medium mb-2">사용 중인 에이전트가 없습니다</div>
+            </div>
             <div className="text-xs">
-              이 사용자는 아직 어떤 에이전트도 사용하지 않았습니다.
+              <Badge variant="outline" className={getCategoryBadgeColor(agent.category || agent.type)}>
+                {agent.category || agent.type}
+              </Badge>
             </div>
           </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 };
