@@ -382,8 +382,35 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
         return (
           <div key={`${agent.id}-${conversation.id}` || index} className="border rounded-lg p-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
             <div className="flex items-start space-x-3">
-              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                <div className="w-2 h-2 rounded-full bg-white"></div>
+              <div 
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
+                style={{ backgroundColor: agent.backgroundColor || '#4F46E5' }}
+              >
+                {agent.icon?.startsWith('/uploads') ? (
+                  <img 
+                    src={agent.icon} 
+                    alt={agent.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const fallback = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
+                      if (fallback) fallback.style.display = 'block';
+                    }}
+                  />
+                ) : null}
+                <span 
+                  className={`fallback-icon text-lg ${agent.icon?.startsWith('/uploads') ? 'hidden' : 'block'}`}
+                  style={{ display: agent.icon?.startsWith('/uploads') ? 'none' : 'block' }}
+                >
+                  {agent.icon === 'Bot' ? (
+                    <Bot className="w-5 h-5" />
+                  ) : agent.icon && !agent.icon.startsWith('/uploads') ? (
+                    agent.icon
+                  ) : (
+                    agent.name?.charAt(0) || '?'
+                  )}
+                </span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
