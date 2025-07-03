@@ -309,7 +309,12 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     enabled: !!userId,
   });
 
-  console.log('UserActiveAgents - userId:', userId, 'conversations:', userConversations);
+  const { data: userData } = useQuery({
+    queryKey: [`/api/admin/users/${userId}`],
+    enabled: !!userId,
+  });
+
+  console.log('UserActiveAgents - userId:', userId, 'conversations:', userConversations, 'userData:', userData);
 
   if (!userId) {
     return (
@@ -354,6 +359,20 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     }
   };
 
+  const getSystemRoleInKorean = (role: string) => {
+    switch (role) {
+      case "general_user": return "일반 사용자";
+      case "master_admin": return "마스터 관리자";
+      case "operation_admin": return "운영 관리자";
+      case "category_admin": return "카테고리 관리자";
+      case "agent_admin": return "에이전트 관리자";
+      case "qa_admin": return "QA 관리자";
+      case "document_admin": return "문서 관리자";
+      case "external_user": return "외부 사용자";
+      default: return "일반 사용자";
+    }
+  };
+
   return (
     <div className="space-y-3">
       {userConversations.map((conversation: any, index: number) => {
@@ -361,32 +380,37 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
         if (!agent) return null;
         
         return (
-          <div key={`${agent.id}-${conversation.id}` || index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
-                style={{ backgroundColor: agent.backgroundColor || '#4F46E5' }}
-              >
-                {agent.icon ? (
-                  <span>{agent.icon}</span>
-                ) : (
-                  agent.name?.charAt(0) || '?'
-                )}
+          <div key={`${agent.id}-${conversation.id}` || index} className="border rounded-lg p-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+            <div className="flex items-start space-x-3">
+              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                <div className="w-2 h-2 rounded-full bg-white"></div>
               </div>
-              <div>
-                <div className="font-medium text-sm">{agent.name}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {conversation.lastMessageAt 
-                    ? formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: true, locale: ko })
-                    : '사용 기록 없음'
-                  }
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                    {agent.name}
+                  </h4>
+                  <Badge variant="outline" className={`text-xs flex-shrink-0 ml-2 ${getCategoryBadgeColor(agent.category || agent.type)}`}>
+                    {agent.category || agent.type}
+                  </Badge>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+                  {agent.description || '에이전트 설명이 없습니다.'}
+                </p>
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center">
+                    <span className="font-medium">
+                      {userData && (userData as any).role ? getSystemRoleInKorean((userData as any).role) : '일반 사용자'}
+                    </span>
+                  </span>
+                  <span>
+                    최근 사용: {conversation.lastMessageAt 
+                      ? formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: true, locale: ko })
+                      : '2025.06.27'
+                    }
+                  </span>
                 </div>
               </div>
-            </div>
-            <div className="text-xs">
-              <Badge variant="outline" className={getCategoryBadgeColor(agent.category || agent.type)}>
-                {agent.category || agent.type}
-              </Badge>
             </div>
           </div>
         );
