@@ -563,6 +563,68 @@
   }
 }
 
+/* 관리자 페이지 반응형 네비게이션 탭 */
+.admin-tabs-responsive {
+  @apply grid w-full gap-1 h-auto p-1;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) {
+  .admin-tabs-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-tabs-responsive {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+.admin-tab-trigger {
+  @apply text-xs px-2 py-2 h-auto flex items-center justify-center;
+  min-height: 48px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .admin-tab-trigger {
+    @apply text-sm px-3 py-2;
+    font-size: 14px;
+    min-height: 52px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-tab-trigger {
+    @apply text-base px-4 py-3;
+    font-size: 16px;
+    min-height: 56px;
+  }
+}
+
+.admin-tab-icon {
+  @apply mr-1;
+  width: 12px;
+  height: 12px;
+}
+
+@media (min-width: 640px) {
+  .admin-tab-icon {
+    @apply mr-2;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-tab-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* 아이패드 세로 모드 (768px - 834px) */
 @media (min-width: 768px) and (max-width: 834px) and (orientation: portrait) {
   .responsive-agent-grid {

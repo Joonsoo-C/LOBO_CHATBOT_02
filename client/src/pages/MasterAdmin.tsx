@@ -3692,17 +3692,25 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4">
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => window.open('/', '_blank')}
+                  className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                 >
-                  LoBo 챗봇
+                  <span className="hidden sm:inline">LoBo 챗봇</span>
+                  <span className="sm:hidden">챗봇</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  로그아웃
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                >
+                  <LogOut className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">로그아웃</span>
+                  <span className="sm:hidden">종료</span>
                 </Button>
               </div>
             </div>
@@ -3711,38 +3719,46 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-8 md:pt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="dashboard">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              대시보드
+          <TabsList className="admin-tabs-responsive">
+            <TabsTrigger value="dashboard" className="admin-tab-trigger">
+              <BarChart3 className="admin-tab-icon" />
+              <span className="hidden sm:inline">대시보드</span>
+              <span className="sm:hidden">대시보드</span>
             </TabsTrigger>
-            <TabsTrigger value="categories">
-              <Database className="w-4 h-4 mr-2" />
-              조직 카테고리 관리
+            <TabsTrigger value="categories" className="admin-tab-trigger">
+              <Database className="admin-tab-icon" />
+              <span className="hidden sm:inline">조직 카테고리 관리</span>
+              <span className="sm:hidden">조직</span>
             </TabsTrigger>
-            <TabsTrigger value="users">
-              <Users className="w-4 h-4 mr-2" />
-              사용자 관리
+            <TabsTrigger value="users" className="admin-tab-trigger">
+              <Users className="admin-tab-icon" />
+              <span className="hidden sm:inline">사용자 관리</span>
+              <span className="sm:hidden">사용자</span>
             </TabsTrigger>
-            <TabsTrigger value="agents">
-              <Bot className="w-4 h-4 mr-2" />
-              에이전트 관리
+            <TabsTrigger value="agents" className="admin-tab-trigger">
+              <Bot className="admin-tab-icon" />
+              <span className="hidden sm:inline">에이전트 관리</span>
+              <span className="sm:hidden">에이전트</span>
             </TabsTrigger>
-            <TabsTrigger value="documents">
-              <FileText className="w-4 h-4 mr-2" />
-              문서 관리
+            <TabsTrigger value="documents" className="admin-tab-trigger">
+              <FileText className="admin-tab-icon" />
+              <span className="hidden sm:inline">문서 관리</span>
+              <span className="sm:hidden">문서</span>
             </TabsTrigger>
-            <TabsTrigger value="conversations">
-              <MessageSquare className="w-4 h-4 mr-2" />
-              질문/응답 로그
+            <TabsTrigger value="conversations" className="admin-tab-trigger">
+              <MessageSquare className="admin-tab-icon" />
+              <span className="hidden sm:inline">질문/응답 로그</span>
+              <span className="sm:hidden">Q&A</span>
             </TabsTrigger>
-            <TabsTrigger value="tokens">
-              <Zap className="w-4 h-4 mr-2" />
-              토큰 관리
+            <TabsTrigger value="tokens" className="admin-tab-trigger">
+              <Zap className="admin-tab-icon" />
+              <span className="hidden sm:inline">토큰 관리</span>
+              <span className="sm:hidden">토큰</span>
             </TabsTrigger>
-            <TabsTrigger value="system">
-              <Settings className="w-4 h-4 mr-2" />
-              시스템 설정
+            <TabsTrigger value="system" className="admin-tab-trigger">
+              <Settings className="admin-tab-icon" />
+              <span className="hidden sm:inline">시스템 설정</span>
+              <span className="sm:hidden">설정</span>
             </TabsTrigger>
           </TabsList>
 
