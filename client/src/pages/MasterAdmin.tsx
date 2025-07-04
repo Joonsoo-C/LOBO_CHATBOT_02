@@ -352,6 +352,9 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
   const getUserRoleForAgent = (userData: any, agent: any) => {
     if (!userData || !agent) return 'user';
     
+    console.log('getUserRoleForAgent - userData:', userData, 'agent:', agent);
+    console.log('agent.managerId:', agent.managerId, 'userData.id:', userData.id, 'userData.username:', userData.username);
+    
     // 마스터 관리자는 항상 마스터 관리자로 표시
     if ((userData as any).role === 'master_admin') {
       return 'master_admin';
@@ -359,6 +362,7 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     
     // 에이전트 관리자인지 확인
     if (agent.managerId === userData.id || agent.managerId === userData.username) {
+      console.log('Found agent manager match!');
       return 'agent_admin';
     }
     
@@ -373,6 +377,7 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     }
     
     // 기본값은 사용자의 시스템 역할
+    console.log('Falling back to user role:', (userData as any).role);
     return (userData as any).role || 'user';
   };
 
