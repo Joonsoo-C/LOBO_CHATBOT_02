@@ -531,6 +531,7 @@ import {
   Bot as BotIcon,
   Database as DatabaseIcon,
   FileText as FileTextIcon,
+  AlertTriangle,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -837,6 +838,7 @@ function MasterAdmin() {
   const [selectedDocumentCategory, setSelectedDocumentCategory] = useState('all');
   const [isDocumentDetailDialogOpen, setIsDocumentDetailDialogOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [isDeleteDocumentDialogOpen, setIsDeleteDocumentDialogOpen] = useState(false);
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
@@ -8166,16 +8168,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex justify-between">
                   <Button 
                     variant="destructive"
-                    onClick={() => {
-                      // 문서 삭제 로직
-                      toast({
-                        title: "문서 삭제",
-                        description: `${selectedDocument.name}이(가) 삭제되었습니다.`,
-                      });
-                      setIsDocumentDetailDialogOpen(false);
-                    }}
+                    onClick={() => setIsDeleteDocumentDialogOpen(true)}
                   >
-                    취소
+                    문서 삭제
                   </Button>
                   <div className="flex space-x-2">
                     <Button variant="outline" onClick={() => setIsDocumentDetailDialogOpen(false)}>
@@ -10591,6 +10586,61 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Form>
                 </Tabs>
               </>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 문서 삭제 확인 다이얼로그 */}
+        <Dialog open={isDeleteDocumentDialogOpen} onOpenChange={setIsDeleteDocumentDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-red-600">문서 삭제 확인</DialogTitle>
+            </DialogHeader>
+            {selectedDocument && (
+              <div className="space-y-4">
+                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-red-900 dark:text-red-100 mb-2">
+                        "{selectedDocument.name}"을(를) 삭제하시겠습니까?
+                      </h4>
+                      <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                        이 작업은 되돌릴 수 없으며, 다음 항목들이 함께 삭제됩니다:
+                      </p>
+                      <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                        <li>• 문서 파일 및 모든 내용</li>
+                        <li>• 연결된 모든 에이전트와의 관계</li>
+                        <li>• 해당 문서와 관련된 대화 기록</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsDeleteDocumentDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    variant="destructive"
+                    onClick={() => {
+                      if (selectedDocument?.id) {
+                        deleteDocumentMutation.mutate(selectedDocument.id);
+                        setIsDeleteDocumentDialogOpen(false);
+                        setIsDocumentDetailDialogOpen(false);
+                      }
+                    }}
+                    disabled={deleteDocumentMutation.isPending}
+                  >
+                    {deleteDocumentMutation.isPending ? "삭제 중..." : "삭제 확인"}
+                  </Button>
+                </div>
+              </div>
             )}
           </DialogContent>
         </Dialog>
