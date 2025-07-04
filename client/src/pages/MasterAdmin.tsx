@@ -9316,32 +9316,48 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 액션 버튼 */}
-                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
                   <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setIsDocumentDetailOpen(false);
-                      setDocumentDetailData(null);
-                    }}
-                    disabled={updateDocumentMutation.isPending}
-                  >
-                    취소
-                  </Button>
-                  <Button 
+                    variant="destructive"
                     onClick={() => {
                       if (documentDetailData) {
-                        updateDocumentMutation.mutate({
-                          id: documentDetailData.id,
-                          status: editingDocumentStatus,
-                          type: editingDocumentType,
-                          description: editingDocumentDescription,
-                        });
+                        setSelectedDocument(documentDetailData);
+                        setIsDeleteDocumentDialogOpen(true);
                       }
                     }}
                     disabled={updateDocumentMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700 text-white"
                   >
-                    {updateDocumentMutation.isPending ? "저장 중..." : "저장"}
+                    문서 삭제
                   </Button>
+                  
+                  <div className="flex space-x-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsDocumentDetailOpen(false);
+                        setDocumentDetailData(null);
+                      }}
+                      disabled={updateDocumentMutation.isPending}
+                    >
+                      취소
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        if (documentDetailData) {
+                          updateDocumentMutation.mutate({
+                            id: documentDetailData.id,
+                            status: editingDocumentStatus,
+                            type: editingDocumentType,
+                            description: editingDocumentDescription,
+                          });
+                        }
+                      }}
+                      disabled={updateDocumentMutation.isPending}
+                    >
+                      {updateDocumentMutation.isPending ? "저장 중..." : "저장"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
