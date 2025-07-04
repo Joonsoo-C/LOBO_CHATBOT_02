@@ -9267,37 +9267,40 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                {/* 사용자 ID 정보 */}
-                <div className="space-y-1">
-                  <div className="text-sm font-medium">사용자 ID</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
-                </div>
+                {/* 계정 상태와 사용자 ID 정보를 수평 배치 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* 계정 상태 */}
+                  <div className="space-y-3">
+                    <FormField
+                      control={userEditForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">계정 상태</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="active">활성</SelectItem>
+                              <SelectItem value="inactive">비활성</SelectItem>
+                              <SelectItem value="locked">잠금</SelectItem>
+                              <SelectItem value="pending">대기</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                {/* 계정 상태 */}
-                <div className="space-y-3">
-                  <FormField
-                    control={userEditForm.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">계정 상태</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="active">활성</SelectItem>
-                            <SelectItem value="inactive">비활성</SelectItem>
-                            <SelectItem value="locked">잠금</SelectItem>
-                            <SelectItem value="pending">대기</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {/* 사용자 ID 정보 */}
+                  <div className="space-y-1">
+                    <div className="text-sm font-medium">사용자 ID</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
+                  </div>
                 </div>
 
                 {/* 소속 정보 */}
