@@ -306,7 +306,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">전체</SelectItem>
+                        <SelectItem value="all">전체</SelectItem>
                         {getUpperCategories().map((category) => (
                           <SelectItem key={category} value={category} className="korean-text">
                             {category}
@@ -332,7 +332,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">전체</SelectItem>
+                        <SelectItem value="all">전체</SelectItem>
                         {getLowerCategories(settings.upperCategory || "").map((category) => (
                           <SelectItem key={category} value={category} className="korean-text">
                             {category}
@@ -357,7 +357,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">전체</SelectItem>
+                        <SelectItem value="all">전체</SelectItem>
                         {getDetailCategories(settings.upperCategory || "", settings.lowerCategory || "").map((category) => (
                           <SelectItem key={category} value={category} className="korean-text">
                             {category}

@@ -1853,6 +1853,7 @@ function MasterAdmin() {
 
   // 사용자 상세 정보 편집 열기
   const openUserDetailDialog = (user: User) => {
+    console.log('Opening user detail dialog for user:', user);
     setSelectedUser(user);
     userEditForm.reset({
       name: (user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
@@ -1873,6 +1874,7 @@ function MasterAdmin() {
       position: (user as any).position || ""
     }]);
     
+    console.log('Selected user set to:', user);
     setIsUserDetailDialogOpen(true);
   };
 
@@ -9167,6 +9169,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {selectedUser ? (
               <Form {...userEditForm}>
                 <form onSubmit={userEditForm.handleSubmit((data) => {
+                  console.log('Form submitted with data:', data);
                   if (selectedUser) {
                     updateUserMutation.mutate({ ...data, id: selectedUser.id });
                   }
@@ -9280,7 +9283,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
                               {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
@@ -9300,7 +9302,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => !affiliation.upperCategory || org.upperCategory === affiliation.upperCategory)
@@ -9325,7 +9326,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">선택</SelectItem>
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => 
@@ -9463,7 +9463,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             ) : (
               <div className="flex items-center justify-center py-8">
                 <div className="text-center">
-                  <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+                  <div className="text-gray-500 dark:text-gray-400">
+                    사용자 정보를 불러오는 중...
+                  </div>
+                  <div className="text-xs text-gray-400 mt-2">
+                    다이얼로그 상태: {isUserDetailDialogOpen ? '열림' : '닫힘'}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    선택된 사용자: {selectedUser ? selectedUser.id : '없음'}
+                  </div>
                 </div>
               </div>
             )}
