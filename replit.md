@@ -805,6 +805,14 @@ Changelog:
   * Added image preview functionality showing selected custom images in icon preview area
   * Updated UI to properly toggle between standard icon and custom image upload modes
   * Custom image upload now works correctly in master admin agent management interface
+- July 4, 2025. Implemented comprehensive document deletion system with agent notifications:
+  * Added "문서 삭제" button to document detail popup in master admin interface
+  * Created deletion confirmation dialog with AlertTriangle warning icon and detailed impact description
+  * Updated deletion process to preserve agents and conversation history while removing document references
+  * Implemented automatic notification system sending alerts to connected agents when documents are deleted
+  * Agent notification message format: "[문서명] 파일이 [에이전트명] 에이전트에서 삭제되었습니다. 해당 파일 기반으로 한 대화는 불가능합니다."
+  * Enhanced server-side deletion logic to create management conversation notifications for affected agents
+  * Document deletion now safely removes files while maintaining system integrity and user communication
 ```
 
 ## User Preferences

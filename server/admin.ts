@@ -1820,6 +1820,17 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
       }
 
+      // Get agent information for notification
+      let agentName = "알 수 없는 에이전트";
+      try {
+        const agent = await storage.getAgent(document.agentId);
+        if (agent) {
+          agentName = agent.name;
+        }
+      } catch (err) {
+        console.log("Could not retrieve agent info for notification:", err);
+      }
+
       // Delete file from filesystem
       const filePath = path.join(adminUploadDir, document.filename);
       if (fs.existsSync(filePath)) {
@@ -1828,6 +1839,32 @@ export function setupAdminRoutes(app: Express) {
 
       // Delete document record from storage
       await storage.deleteDocument(documentId);
+
+      // Create notification message for the agent
+      const notificationMessage = `"${document.originalName}" 파일이 ${agentName} 에이전트에서 삭제되었습니다. 해당 파일 기반으로 한 대화는 불가능합니다.`;
+      
+      // Send system notification to the agent's conversation
+      try {
+        // Find existing conversations for this agent with master_admin
+        const adminConversations = await storage.getConversationsByUserId('master_admin');
+        let managementConversation = adminConversations.find((conv: any) => 
+          conv.agentId === document.agentId && conv.type === 'management'
+        );
+        
+        if (!managementConversation) {
+          // For now, just log the notification instead of creating conversation
+          console.log(`Document deletion notification for agent ${agentName} (ID: ${document.agentId}): ${notificationMessage}`);
+        } else {
+          // If management conversation exists, we could add the message here
+          // This would require implementing createMessage in storage
+          console.log(`Document deletion notification would be sent to agent ${agentName} (ID: ${document.agentId}): ${notificationMessage}`);
+        }
+
+        console.log(`Document deletion notification logged for agent ${agentName} (ID: ${document.agentId})`);
+      } catch (notificationError) {
+        console.error("Error processing document deletion notification:", notificationError);
+        // Continue with successful response even if notification fails
+      }
 
       res.json({ 
         success: true, 

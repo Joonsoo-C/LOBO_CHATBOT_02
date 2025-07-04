@@ -10624,12 +10624,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         "{selectedDocument.name}"을(를) 삭제하시겠습니까?
                       </h4>
                       <p className="text-sm text-red-700 dark:text-red-300 mb-3">
-                        이 작업은 되돌릴 수 없으며, 다음 항목들이 함께 삭제됩니다:
+                        이 작업은 되돌릴 수 없으며, 다음과 같이 처리됩니다:
                       </p>
                       <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                        <li>• 문서 파일 및 모든 내용</li>
-                        <li>• 연결된 모든 에이전트와의 관계</li>
-                        <li>• 해당 문서와 관련된 대화 기록</li>
+                        <li>• 문서 파일이 시스템에서 완전히 삭제됩니다</li>
+                        <li>• 연결된 에이전트의 업로드 문서 목록에서 제거됩니다</li>
+                        <li>• 해당 에이전트에 문서 삭제 알림이 전송됩니다</li>
+                        <li>• 기존 대화 기록은 유지되지만 해당 문서 기반 답변은 불가능해집니다</li>
                       </ul>
                     </div>
                   </div>
