@@ -6420,12 +6420,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold">조직 카테고리 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold">{t('org.searchAndManagement')}</h3>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label> 상위조직</Label>
+                  <Label>{t('org.upperCategory')}</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -6441,7 +6441,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>하위조직</Label>
+                  <Label>{t('org.lowerCategory')}</Label>
                   <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
                     <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
                       <SelectValue placeholder="선택" />
@@ -6457,7 +6457,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>세부조직</Label>
+                  <Label>{t('org.detailCategory')}</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
@@ -6478,18 +6478,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div className="flex items-end">
                   <Button variant="outline" onClick={resetFilters}>
-                    필터 초기화
+                    {t('org.resetFilters')}
                   </Button>
                 </div>
               </div>
 
               {/* 카테고리 검색 */}
               <div className="space-y-2">
-                <Label>조직명 검색</Label>
+                <Label>{t('org.organizationSearch')}</Label>
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="조직명으로 검색..."
+                      placeholder={t('org.searchPlaceholder')}
                       value={userSearchQuery}
                       onChange={(e) => {
                         setUserSearchQuery(e.target.value);
@@ -6498,7 +6498,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   <Button onClick={executeSearch} variant="outline">
-                    검색
+                    {t('org.search')}
                   </Button>
                 </div>
               </div>
