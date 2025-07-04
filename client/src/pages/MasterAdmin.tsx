@@ -301,9 +301,11 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
 // UserActiveAgents component
 interface UserActiveAgentsProps {
   userId?: string;
+  getUserRoleForAgent: (userData: any, agent: any) => string;
+  getUserRoleDisplayForAgent: (userData: any, agent: any) => string;
 }
 
-const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
+const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRoleForAgent, getUserRoleDisplayForAgent }) => {
   const { data: userConversations, isLoading, error } = useQuery({
     queryKey: [`/api/admin/users/${userId}/conversations`],
     enabled: !!userId,
@@ -349,42 +351,9 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     }
   };
 
-  const getUserRoleForAgent = (userData: any, agent: any) => {
-    if (!userData || !agent) return 'user';
-    
-    console.log('getUserRoleForAgent - userData:', userData, 'agent:', agent);
-    console.log('agent.managerId:', agent.managerId, 'userData.id:', userData.id, 'userData.username:', userData.username);
-    
-    // 마스터 관리자는 항상 마스터 관리자로 표시
-    if ((userData as any).role === 'master_admin') {
-      return 'master_admin';
-    }
-    
-    // 에이전트 관리자인지 확인
-    if (agent.managerId === userData.id || agent.managerId === userData.username) {
-      console.log('Found agent manager match!');
-      return 'agent_admin';
-    }
-    
-    // 에이전트 편집자인지 확인
-    if (agent.agentEditorIds && agent.agentEditorIds.includes(userData.id || userData.username)) {
-      return 'agent_admin';
-    }
-    
-    // 문서 관리자인지 확인
-    if (agent.documentManagerIds && agent.documentManagerIds.includes(userData.id || userData.username)) {
-      return 'doc_admin';
-    }
-    
-    // 기본값은 사용자의 시스템 역할
-    console.log('Falling back to user role:', (userData as any).role);
-    return (userData as any).role || 'user';
-  };
 
-  const getUserRoleDisplayForAgent = (userData: any, agent: any) => {
-    const role = getUserRoleForAgent(userData, agent);
-    return getSystemRoleInKorean(role);
-  };
+
+
 
   if (!userId) {
     return (
@@ -730,6 +699,57 @@ interface TokenUsage {
 
 function MasterAdmin() {
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  // 헬퍼 함수들
+  const getUserRoleForAgent = (userData: any, agent: any) => {
+    if (!userData || !agent) return 'user';
+    
+    console.log('MasterAdmin getUserRoleForAgent - userData:', userData, 'agent:', agent);
+    console.log('agent.managerId:', agent.managerId, 'userData.id:', userData.id, 'userData.username:', userData.username);
+    
+    // 마스터 관리자는 항상 마스터 관리자로 표시
+    if ((userData as any).role === 'master_admin') {
+      return 'master_admin';
+    }
+    
+    // 에이전트 관리자인지 확인
+    if (agent.managerId === userData.id || agent.managerId === userData.username) {
+      console.log('Found agent manager match in MasterAdmin!');
+      return 'agent_admin';
+    }
+    
+    // 에이전트 편집자인지 확인
+    if (agent.agentEditorIds && agent.agentEditorIds.includes(userData.id || userData.username)) {
+      return 'agent_admin';
+    }
+    
+    // 문서 관리자인지 확인
+    if (agent.documentManagerIds && agent.documentManagerIds.includes(userData.id || userData.username)) {
+      return 'doc_admin';
+    }
+    
+    // 기본값은 사용자의 시스템 역할
+    console.log('Falling back to user role in MasterAdmin:', (userData as any).role);
+    return (userData as any).role || 'user';
+  };
+
+  const getUserRoleDisplayForAgent = (userData: any, agent: any) => {
+    const role = getUserRoleForAgent(userData, agent);
+    const getSystemRoleInKorean = (role: string) => {
+      switch (role) {
+        case "user": return "일반 사용자";
+        case "master_admin": return "마스터 관리자";
+        case "operation_admin": return "운영 관리자";
+        case "category_admin": return "카테고리 관리자";
+        case "agent_admin": return "에이전트 관리자";
+        case "qa_admin": return "QA 관리자";
+        case "doc_admin": return "문서 관리자";
+        case "external": return "외부 사용자";
+        default: return "일반 사용자";
+      }
+    };
+    return getSystemRoleInKorean(role);
+  };
   
   // 토큰 관리 상태
   const [tokenPeriodFilter, setTokenPeriodFilter] = useState("month");
@@ -9484,7 +9504,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
                   <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-[14px]">사용 중인 에이전트 목록</Label>
-                  <UserActiveAgents userId={selectedUser?.id} />
+                  <UserActiveAgents 
+                    userId={selectedUser?.id} 
+                    getUserRoleForAgent={getUserRoleForAgent}
+                    getUserRoleDisplayForAgent={getUserRoleDisplayForAgent}
+                  />
                 </div>
 
                 {/* 계정 정보 */}
