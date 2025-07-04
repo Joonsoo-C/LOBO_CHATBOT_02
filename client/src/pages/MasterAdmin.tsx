@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -701,6 +702,7 @@ interface TokenUsage {
 }
 
 function MasterAdmin() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [documentCurrentPage, setDocumentCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
@@ -1188,7 +1190,6 @@ function MasterAdmin() {
   };
   
   const { toast } = useToast();
-  const { t } = useLanguage();
 
   // Move organization-dependent calculations after useQuery declarations
 
@@ -3864,21 +3865,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="flex items-center space-x-4">
                 <Shield className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">LoBo AI 챗봇 통합 관리자 센터</h1>
+                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">{t('admin.title')}</h1>
                   <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
-                    대학교 AI 챗봇 서비스 통합 관리
+                    {t('admin.subtitle')}
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4">
+                <LanguageSelector />
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => window.open('/', '_blank')}
                   className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                 >
-                  <span className="hidden sm:inline">LoBo 챗봇</span>
-                  <span className="sm:hidden">챗봇</span>
+                  <span className="hidden sm:inline">{t('admin.chatbot')}</span>
+                  <span className="sm:hidden">{t('admin.chatbot')}</span>
                 </Button>
                 <Button 
                   variant="outline" 
@@ -3887,8 +3889,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                 >
                   <LogOut className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">로그아웃</span>
-                  <span className="sm:hidden">종료</span>
+                  <span className="hidden sm:inline">{t('admin.logout')}</span>
+                  <span className="sm:hidden">{t('admin.logout')}</span>
                 </Button>
               </div>
             </div>
@@ -3900,42 +3902,42 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsList className="admin-tabs-responsive">
             <TabsTrigger value="dashboard" className="admin-tab-trigger">
               <BarChart3 className="admin-tab-icon" />
-              <span className="hidden sm:inline">대시보드</span>
-              <span className="sm:hidden">대시보드</span>
+              <span className="hidden sm:inline">{t('admin.dashboard')}</span>
+              <span className="sm:hidden">{t('admin.dashboard')}</span>
             </TabsTrigger>
             <TabsTrigger value="categories" className="admin-tab-trigger">
               <Database className="admin-tab-icon" />
-              <span className="hidden sm:inline">조직 카테고리 관리</span>
+              <span className="hidden sm:inline">{t('admin.categories')}</span>
               <span className="sm:hidden">조직</span>
             </TabsTrigger>
             <TabsTrigger value="users" className="admin-tab-trigger">
               <Users className="admin-tab-icon" />
-              <span className="hidden sm:inline">사용자 관리</span>
+              <span className="hidden sm:inline">{t('admin.users')}</span>
               <span className="sm:hidden">사용자</span>
             </TabsTrigger>
             <TabsTrigger value="agents" className="admin-tab-trigger">
               <Bot className="admin-tab-icon" />
-              <span className="hidden sm:inline">에이전트 관리</span>
+              <span className="hidden sm:inline">{t('admin.agents')}</span>
               <span className="sm:hidden">에이전트</span>
             </TabsTrigger>
             <TabsTrigger value="documents" className="admin-tab-trigger">
               <FileText className="admin-tab-icon" />
-              <span className="hidden sm:inline">문서 관리</span>
+              <span className="hidden sm:inline">{t('admin.documents')}</span>
               <span className="sm:hidden">문서</span>
             </TabsTrigger>
             <TabsTrigger value="conversations" className="admin-tab-trigger">
               <MessageSquare className="admin-tab-icon" />
-              <span className="hidden sm:inline">질문/응답 로그</span>
+              <span className="hidden sm:inline">{t('admin.conversations')}</span>
               <span className="sm:hidden">Q&A</span>
             </TabsTrigger>
             <TabsTrigger value="tokens" className="admin-tab-trigger">
               <Zap className="admin-tab-icon" />
-              <span className="hidden sm:inline">토큰 관리</span>
+              <span className="hidden sm:inline">{t('admin.tokens')}</span>
               <span className="sm:hidden">토큰</span>
             </TabsTrigger>
             <TabsTrigger value="system" className="admin-tab-trigger">
               <Settings className="admin-tab-icon" />
-              <span className="hidden sm:inline">시스템 설정</span>
+              <span className="hidden sm:inline">{t('admin.system')}</span>
               <span className="sm:hidden">설정</span>
             </TabsTrigger>
           </TabsList>
@@ -3945,52 +3947,52 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 사용자</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.totalUsers')}</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalUsers || 0}</div>
                   <p className="text-xs text-muted-foreground">
-                    활성 사용자: {stats?.activeUsers || 0}
+                    {t('admin.activeUsers')}: {stats?.activeUsers || 0}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 에이전트</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.totalAgents')}</CardTitle>
                   <Bot className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalAgents || 0}</div>
                   <p className="text-xs text-muted-foreground">
-                    활성 에이전트: {stats?.activeAgents || 0}
+                    {t('admin.activeAgents')}: {stats?.activeAgents || 0}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">총 대화</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.totalConversations')}</CardTitle>
                   <MessageSquare className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalConversations || 0}</div>
                   <p className="text-xs text-muted-foreground">
-                    총 메시지: {stats?.totalMessages || 0}
+                    {t('admin.totalMessages')}: {stats?.totalMessages || 0}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">오늘 활동</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.todayActivity')}</CardTitle>
                   <Activity className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.todayMessages || 0}</div>
                   <p className="text-xs text-muted-foreground">
-                    주간 증가율: +{stats?.weeklyGrowth || 0}%
+                    {t('admin.weeklyGrowth')}: +{stats?.weeklyGrowth || 0}%
                   </p>
                 </CardContent>
               </Card>
@@ -4000,7 +4002,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">시스템 상태</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.systemStatus')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
