@@ -1753,6 +1753,60 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Document update endpoint
+  app.patch("/api/admin/documents/:id", requireMasterAdmin, async (req, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const { status, type, description } = req.body;
+
+      // Validate request body
+      if (!status && !type && description === undefined) {
+        return res.status(400).json({ message: "At least one field must be provided for update" });
+      }
+
+      // Get existing document
+      const existingDocument = await storage.getDocument(documentId);
+      if (!existingDocument) {
+        return res.status(404).json({ message: "문서를 찾을 수 없습니다" });
+      }
+
+      // Update document with new information
+      const updatedDocument = {
+        ...existingDocument,
+        ...(status && { status }),
+        ...(type && { type }),
+        ...(description !== undefined && { description }),
+        updatedAt: new Date()
+      };
+
+      // Save updated document (assuming storage has updateDocument method)
+      if (storage.updateDocument) {
+        await storage.updateDocument(documentId, updatedDocument);
+      } else {
+        // Fallback: remove old and create new (if updateDocument doesn't exist)
+        await storage.deleteDocument(documentId);
+        await storage.createDocument({
+          ...updatedDocument,
+          id: documentId
+        });
+      }
+
+      res.json({ 
+        success: true, 
+        message: "문서 정보가 성공적으로 업데이트되었습니다",
+        document: updatedDocument
+      });
+
+    } catch (error) {
+      console.error("Error updating document:", error);
+      res.status(500).json({ message: "문서 정보 업데이트에 실패했습니다" });
+    }
+  });
+
   // Document delete endpoint
   app.delete("/api/admin/documents/:id", requireMasterAdmin, async (req, res) => {
     try {

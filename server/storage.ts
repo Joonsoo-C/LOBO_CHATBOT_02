@@ -62,6 +62,7 @@ export interface IStorage {
   getAgentDocuments(agentId: number): Promise<Document[]>;
   getAllDocuments(): Promise<Document[]>;
   getDocument(id: number): Promise<Document | undefined>;
+  updateDocument(id: number, updates: any): Promise<Document | undefined>;
   //delete document operations
   deleteDocument(id: number): Promise<void>;
   updateDocumentContent(id: number, content: string): Promise<Document | null>;
@@ -346,6 +347,20 @@ export class DatabaseStorage implements IStorage {
   async getDocument(id: number): Promise<Document | undefined> {
     const [document] = await db.select().from(documents).where(eq(documents.id, id));
     return document;
+  }
+
+  async updateDocument(id: number, updates: any): Promise<Document | undefined> {
+    try {
+      const result = await db
+        .update(documents)
+        .set(updates)
+        .where(eq(documents.id, id))
+        .returning();
+      return result[0];
+    } catch (error) {
+      console.error("Error updating document:", error);
+      throw error;
+    }
   }
 
   async deleteDocument(id: number): Promise<void> {

@@ -866,6 +866,11 @@ function MasterAdmin() {
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
   
+  // 문서 편집 상태
+  const [editingDocumentStatus, setEditingDocumentStatus] = useState<string>('active');
+  const [editingDocumentType, setEditingDocumentType] = useState<string>('기타');
+  const [editingDocumentDescription, setEditingDocumentDescription] = useState<string>('');
+  
   // 문서 상세 팝업 필터 상태
   const [selectedAgentManager, setSelectedAgentManager] = useState('');
   const [selectedAgentStatus, setSelectedAgentStatus] = useState('');
@@ -3545,6 +3550,47 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       toast({
         title: "삭제 실패",
         description: error.message || "문서 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 문서 정보 업데이트 mutation
+  const updateDocumentMutation = useMutation({
+    mutationFn: async (data: { id: string; status: string; type: string; description: string }) => {
+      const response = await fetch(`/api/admin/documents/${data.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          status: data.status,
+          type: data.type,
+          description: data.description,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('문서 정보 업데이트 실패');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      
+      toast({
+        title: "성공",
+        description: "문서 정보가 저장되었습니다.",
+      });
+      setIsDocumentDetailOpen(false);
+      setDocumentDetailData(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "문서 정보 저장에 실패했습니다.",
         variant: "destructive",
       });
     },
@@ -7430,6 +7476,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             onClick={() => {
                               setDocumentDetailData(doc);
                               setSelectedDocumentAgents([]);
+                              // 편집 상태 초기화
+                              setEditingDocumentStatus(doc.status || 'active');
+                              setEditingDocumentType(doc.type || '기타');
+                              setEditingDocumentDescription(doc.description || '');
                               setIsDocumentDetailOpen(true);
                             }}
                           >
@@ -7472,6 +7522,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 e.stopPropagation();
                                 setDocumentDetailData(doc);
                                 setSelectedDocumentAgents([]);
+                                // 편집 상태 초기화
+                                setEditingDocumentStatus(doc.status || 'active');
+                                setEditingDocumentType(doc.type || '기타');
+                                setEditingDocumentDescription(doc.description || '');
                                 setIsDocumentDetailOpen(true);
                               }}
                             >
@@ -8986,7 +9040,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label className="text-sm font-medium">문서 상태</Label>
-                      <Select defaultValue="active">
+                      <Select value={editingDocumentStatus} onValueChange={setEditingDocumentStatus}>
                         <SelectTrigger className="mt-1">
                           <SelectValue />
                         </SelectTrigger>
@@ -8996,6 +9050,32 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </SelectContent>
                       </Select>
                     </div>
+                    <div>
+                      <Label className="text-sm font-medium">문서 종류</Label>
+                      <Select value={editingDocumentType} onValueChange={setEditingDocumentType}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="강의 자료">강의 자료</SelectItem>
+                          <SelectItem value="교육과정">교육과정</SelectItem>
+                          <SelectItem value="정책 문서">정책 문서</SelectItem>
+                          <SelectItem value="매뉴얼">매뉴얼</SelectItem>
+                          <SelectItem value="양식">양식</SelectItem>
+                          <SelectItem value="공지사항">공지사항</SelectItem>
+                          <SelectItem value="기타">기타</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Label className="text-sm font-medium">문서 설명</Label>
+                    <textarea
+                      value={editingDocumentDescription}
+                      onChange={(e) => setEditingDocumentDescription(e.target.value)}
+                      placeholder="문서에 대한 설명을 입력하세요..."
+                      className="mt-1 w-full h-20 px-3 py-2 border border-gray-300 rounded-md resize-none text-sm"
+                    />
                   </div>
                 </div>
 
@@ -9238,6 +9318,35 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </table>
                     </div>
                   </div>
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsDocumentDetailOpen(false);
+                      setDocumentDetailData(null);
+                    }}
+                    disabled={updateDocumentMutation.isPending}
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      if (documentDetailData) {
+                        updateDocumentMutation.mutate({
+                          id: documentDetailData.id,
+                          status: editingDocumentStatus,
+                          type: editingDocumentType,
+                          description: editingDocumentDescription,
+                        });
+                      }
+                    }}
+                    disabled={updateDocumentMutation.isPending}
+                  >
+                    {updateDocumentMutation.isPending ? "저장 중..." : "저장"}
+                  </Button>
                 </div>
               </div>
             )}

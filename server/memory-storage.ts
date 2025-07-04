@@ -858,13 +858,15 @@ export class MemoryStorage implements IStorage {
     return Array.from(this.documents.values());
   }
 
-  async updateDocument(id: number, updates: Partial<Document>): Promise<void> {
+  async updateDocument(id: number, updates: Partial<Document>): Promise<Document | undefined> {
     const document = this.documents.get(id);
     if (document) {
       Object.assign(document, updates);
       this.savePersistedDocuments(); // Persist immediately
       console.log(`Document ${id} updated and persisted: ${document.originalName}`);
+      return document;
     }
+    return undefined;
   }
 
   async updateDocumentContent(id: number, content: string): Promise<Document | null> {
