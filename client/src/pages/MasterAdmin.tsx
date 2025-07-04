@@ -4006,27 +4006,27 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">데이터베이스</span>
+                    <span className="text-sm">{t('admin.database')}</span>
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      정상
+                      {t('admin.status.healthy')}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">OpenAI API</span>
+                    <span className="text-sm">{t('admin.openaiApi')}</span>
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      정상
+                      {t('admin.status.healthy')}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">세션 스토어</span>
+                    <span className="text-sm">{t('admin.sessionStore')}</span>
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      정상
+                      {t('admin.status.healthy')}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">파일 업로드</span>
+                    <span className="text-sm">{t('admin.fileUpload')}</span>
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      정상
+                      {t('admin.status.healthy')}
                     </Badge>
                   </div>
                 </CardContent>
@@ -4034,7 +4034,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 활동</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.recentActivity')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -4062,7 +4062,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 사용자 관리 */}
           <TabsContent value="users" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">사용자 관리</h2>
+              <h2 className="text-2xl font-bold">{t('admin.userManagement')}</h2>
               <div className="flex space-x-2">
                 <Button 
                   variant="outline"
@@ -4486,7 +4486,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 에이전트 관리 */}
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">에이전트 관리</h2>
+              <h2 className="text-2xl font-bold">{t('admin.agentManagement')}</h2>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
@@ -6372,7 +6372,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 조직 카테고리 관리 */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">조직 카테고리 관리</h2>
+              <h2 className="text-2xl font-bold">{t('admin.organizationManagement')}</h2>
               <Button 
                 className="whitespace-nowrap"
                 onClick={() => setIsNewCategoryDialogOpen(true)}
@@ -7170,7 +7170,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 문서 관리 */}
           <TabsContent value="documents" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">문서 관리</h2>
+              <h2 className="text-2xl font-bold">{t('admin.documentManagement')}</h2>
             </div>
 
             {/* 문서 업로드 방법 안내 */}
@@ -7625,7 +7625,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 토큰 관리 */}
           <TabsContent value="tokens" className="space-y-4">
-            <h2 className="text-2xl font-bold">토큰 관리</h2>
+            <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
             {/* 요약 카드 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -7894,7 +7894,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 시스템 설정 */}
           <TabsContent value="system" className="space-y-6">
-            <h2 className="text-2xl font-bold">시스템 설정</h2>
+            <h2 className="text-2xl font-bold">{t('admin.systemSettings')}</h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>

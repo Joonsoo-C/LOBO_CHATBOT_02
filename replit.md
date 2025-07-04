@@ -813,6 +813,16 @@ Changelog:
   * Agent notification message format: "[문서명] 파일이 [에이전트명] 에이전트에서 삭제되었습니다. 해당 파일 기반으로 한 대화는 불가능합니다."
   * Enhanced server-side deletion logic to create management conversation notifications for affected agents
   * Document deletion now safely removes files while maintaining system integrity and user communication
+- July 4, 2025. Enhanced multilingual admin center with comprehensive translation system:
+  * Fixed service title display issue by shortening titles in all 5 languages for single-line display
+  * Updated Korean: "LoBo AI 챗봇 통합 관리자 센터" → "LoBo AI 관리자 센터"
+  * Updated English: "LoBo AI Chatbot Integrated Management Center" → "LoBo AI Admin Center"
+  * Added CSS styling to prevent title text wrapping with ellipsis overflow handling
+  * Converted System Status items to use translation keys: Database, OpenAI API, Session Store, File Upload
+  * Translated "최근 활동" (Recent Activities) title to use multilingual translation system
+  * Updated all major section headers to use translation keys: User Management, Agent Management, Organization Management, Document Management, Token Management, System Settings
+  * Enhanced status indicators to display localized text (정상/Healthy/正常/Tốt/正常) based on selected language
+  * Complete admin center now serves all content in user's selected language (Korean, English, Chinese, Vietnamese, Japanese)
 ```
 
 ## User Preferences
