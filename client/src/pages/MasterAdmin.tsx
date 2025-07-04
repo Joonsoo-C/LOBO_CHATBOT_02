@@ -4024,7 +4024,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="flex items-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>+ 사용자 추가</span>
+                  <span>사용자 추가</span>
                 </Button>
               </div>
             </div>
