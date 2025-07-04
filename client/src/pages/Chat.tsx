@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeSelector } from "@/components/ThemeSelector";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "../contexts/LanguageContext";
 import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import ChatInterface from "@/components/ChatInterface";
 import type { Agent } from "@/types/agent";
@@ -22,6 +23,7 @@ export default function Chat() {
   const { agentId } = useParams<{ agentId: string }>();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [showAccountModal, setShowAccountModal] = useState(false);
 
   const { data: agent, isLoading } = useQuery<Agent>({
@@ -85,7 +87,7 @@ export default function Chat() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {t("common.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -97,7 +99,7 @@ export default function Chat() {
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center korean-text">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-muted-foreground">로딩 중...</p>
+            <p className="text-muted-foreground">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -140,7 +142,7 @@ export default function Chat() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {t("common.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -227,7 +229,7 @@ export default function Chat() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
-                    로그아웃
+                    {t("common.logout")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -205,22 +205,22 @@ export default function AuthPage() {
 
               {/* Email Field */}
               <div>
-                <label className="block text-gray-500 text-sm mb-2">학번/교번</label>
+                <label className="block text-gray-500 text-sm mb-2">{t('auth.username')}</label>
                 <input
                   type="email"
-                  placeholder="예 : 2024001234 또는 F2024001"
+                  placeholder={t('auth.usernamePlaceholder')}
                   className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
                 />
               </div>
 
               {/* Password Field */}
               <div>
-                <label className="block text-gray-500 text-sm mb-2">비밀번호</label>
+                <label className="block text-gray-500 text-sm mb-2">{t('auth.password')}</label>
                 <div className="relative">
                   <input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="비밀번호를 입력하세요."
+                    placeholder={t('auth.passwordPlaceholder')}
                     className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg pr-12"
                     {...loginForm.register("password")}
                   />
@@ -245,7 +245,7 @@ export default function AuthPage() {
 
               {/* Account Type */}
               <div>
-                <label className="block text-gray-500 text-sm mb-4">데모 계정으로 빠른 로그인</label>
+                <label className="block text-gray-500 text-sm mb-4">{t('auth.demoAccounts')}</label>
                 <div className="grid grid-cols-3 gap-3">
                   {/* 학생계정 */}
                   <button
@@ -267,7 +267,7 @@ export default function AuthPage() {
                     }`}
                   >
                     <GraduationCap className="w-6 h-6" />
-                    <span className="text-xs font-medium">학생</span>
+                    <span className="text-xs font-medium">{t('auth.studentAccount').replace('👨‍🎓 ', '')}</span>
                   </button>
 
                   {/* 교직원계정 */}
@@ -290,7 +290,7 @@ export default function AuthPage() {
                     }`}
                   >
                     <UserCheck className="w-6 h-6" />
-                    <span className="text-xs font-medium">교직원</span>
+                    <span className="text-xs font-medium">{t('auth.facultyAccount').replace('👨‍🏫 ', '')}</span>
                   </button>
 
                   {/* 마스터계정 */}
@@ -313,7 +313,7 @@ export default function AuthPage() {
                     }`}
                   >
                     <Shield className="w-6 h-6" />
-                    <span className="text-xs font-medium">마스터</span>
+                    <span className="text-xs font-medium">{t('auth.masterAccount').replace('🔑 ', '')}</span>
                   </button>
                 </div>
               </div>
@@ -324,7 +324,7 @@ export default function AuthPage() {
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-2xl font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg"
                 disabled={loginMutation.isPending}
               >
-                {loginMutation.isPending ? 'Signing In...' : 'Sign Up'}
+                {loginMutation.isPending ? t('auth.loggingIn') : t('auth.loginButton')}
               </button>
 
               

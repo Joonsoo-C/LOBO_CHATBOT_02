@@ -13,11 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import ChatInterface from "@/components/ChatInterface";
 import type { Agent } from "@/types/agent";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Management() {
   const { agentId } = useParams<{ agentId: string }>();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const chatInterfaceRef = useRef<any>(null);
 
 
@@ -121,7 +123,7 @@ export default function Management() {
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {t("common.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -167,7 +169,7 @@ export default function Management() {
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {t("common.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -212,7 +214,7 @@ export default function Management() {
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />
-                      로그아웃
+                      {t("common.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -318,7 +320,7 @@ export default function Management() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
-                    로그아웃
+                    {t("common.logout")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
