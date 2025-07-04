@@ -6079,7 +6079,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <Label>상위조직</Label>
+                  <Label> 상위조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -6425,7 +6425,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>상위조직</Label>
+                  <Label> 상위조직</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -6508,9 +6508,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             <Card className="rounded-lg border">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">조직 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('org.organizationList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
+                  {t('org.totalOrganizations').replace('124', filteredOrganizationCategories.length.toString()).replace('1-20', `${organizationCategoriesStartIndex + 1}-${Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}`)}
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -8551,7 +8551,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>조직 카테고리 파일 업로드</DialogTitle>
+              <DialogTitle>{t('org.categorySearchManagement')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -8713,9 +8713,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
                   <p>• 첫 번째 행: 헤더 (조직명, 상위조직, 하위조직, 세부조직)</p>
                   <p>• 조직명: 조직의 정식 명칭 (필수)</p>
-                  <p>• 상위조직: 대학/본부 등 최상위 조직</p>
-                  <p>• 하위조직: 단과대학/처/부 등</p>
-                  <p>• 세부조직: 학과/팀/과 등</p>
+                  <p>• {t('org.upperOrganization')}: 대학/본부 등 최상위 조직</p>
+                  <p>• {t('org.lowerOrganization')}: 단과대학/처/부 등</p>
+                  <p>• {t('org.detailOrganization')}: 학과/팀/과 등</p>
                 </div>
               </div>
 
