@@ -200,7 +200,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
         <div className="border rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
           <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p className="text-sm">업로드된 문서가 없습니다.</p>
-          <p className="text-xs mt-1">위의 파일 업로드 영역을 사용하여 문서를 추가하세요.</p>
+          <p className="text-xs mt-1">위의 {t("admin.fileUpload")} 영역을 사용하여 문서를 추가하세요.</p>
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
@@ -601,7 +601,7 @@ const agentSchema = z.object({
   personality: z.string().optional(),
   forbiddenResponseStyle: z.string().optional(),
   
-  // 📌 파일 업로드 설정
+  // 📌 {t("admin.fileUpload")} 설정
   documentType: z.string().optional(),
   maxFileSize: z.string().optional(),
   
@@ -901,7 +901,7 @@ function MasterAdmin() {
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   
-  // 사용자 파일 업로드 관련 상태
+  // 사용자 {t("admin.fileUpload")} 관련 상태
   const [selectedUserFiles, setSelectedUserFiles] = useState<File[]>([]);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isUserFileUploading, setIsUserFileUploading] = useState(false);
@@ -911,7 +911,7 @@ function MasterAdmin() {
   const [validateOnly, setValidateOnly] = useState(false);
   const userFileInputRef = useRef<HTMLInputElement>(null);
   
-  // 에이전트 파일 업로드 관련 상태
+  // 에이전트 {t("admin.fileUpload")} 관련 상태
   const [isAgentFileUploadModalOpen, setIsAgentFileUploadModalOpen] = useState(false);
 
   // Organization category upload states
@@ -1145,11 +1145,11 @@ function MasterAdmin() {
   const [selectedLowerCategory, setSelectedLowerCategory] = useState<string>('');
   const [selectedDetailCategory, setSelectedDetailCategory] = useState<string>('');
   
-  // 파일 업로드 상태
+  // {t("admin.fileUpload")} 상태
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [documentType, setDocumentType] = useState<string>('');
   
-  // 에이전트 파일 업로드 상태
+  // 에이전트 {t("admin.fileUpload")} 상태
   const [agentDocumentType, setAgentDocumentType] = useState<string>('');
   const [agentDocumentDescription, setAgentDocumentDescription] = useState<string>('');
   const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
@@ -2980,7 +2980,7 @@ function MasterAdmin() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || '조직 카테고리 파일 업로드에 실패했습니다');
+        throw new Error(errorData.message || `조직 카테고리 ${t("admin.fileUpload")}에 실패했습니다`);
       }
 
       const result = await response.json();
@@ -3011,7 +3011,7 @@ function MasterAdmin() {
       console.error('Organization category upload error:', error);
       toast({
         title: "업로드 실패",
-        description: error.message || "조직 카테고리 파일 업로드 중 오류가 발생했습니다.",
+        description: error.message || `조직 카테고리 ${t("admin.fileUpload")} 중 오류가 발생했습니다.`,
         variant: "destructive",
       });
     } finally {
@@ -3154,7 +3154,7 @@ function MasterAdmin() {
     }
   };
 
-  // 사용자 파일 업로드 핸들러
+  // 사용자 {t("admin.fileUpload")} 핸들러
   const handleUserFileUpload = async () => {
     if (selectedUserFiles.length === 0) {
       toast({
@@ -3195,7 +3195,7 @@ function MasterAdmin() {
           successCount++;
         } catch (error) {
           errorCount++;
-          console.error(`사용자 파일 업로드 실패: ${file.name}`, error);
+          console.error(`사용자 {t("admin.fileUpload")} 실패: ${file.name}`, error);
         }
 
         // 진행률 업데이트
@@ -3219,7 +3219,7 @@ function MasterAdmin() {
       if (errorCount > 0 && successCount === 0) {
         toast({
           title: "업로드 실패",
-          description: "모든 파일 업로드에 실패했습니다.",
+          description: `모든 ${t("admin.fileUpload")}에 실패했습니다.`,
           variant: "destructive",
         });
       }
@@ -3230,7 +3230,7 @@ function MasterAdmin() {
     } catch (error) {
       toast({
         title: "업로드 실패",
-        description: "사용자 파일 업로드 중 오류가 발생했습니다.",
+        description: `사용자 ${t("admin.fileUpload")} 중 오류가 발생했습니다.`,
         variant: "destructive",
       });
     } finally {
@@ -3301,7 +3301,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           successCount++;
         } catch (error) {
           errorCount++;
-          console.error(`파일 업로드 실패: ${file.name}`, error);
+          console.error(`{t("admin.fileUpload")} 실패: ${file.name}`, error);
         }
 
         // 진행률 업데이트
@@ -3323,7 +3323,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       if (errorCount > 0 && successCount === 0) {
         toast({
           title: "업로드 실패",
-          description: "모든 파일 업로드에 실패했습니다.",
+          description: `모든 ${t("admin.fileUpload")}에 실패했습니다.`,
           variant: "destructive",
         });
       }
@@ -3736,7 +3736,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     }
   };
 
-  // 에이전트 파일 업로드 핸들러
+  // 에이전트 {t("admin.fileUpload")} 핸들러
   const handleAgentFileUpload = async () => {
     if (selectedFiles.length === 0) {
       toast({
@@ -3796,7 +3796,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           successCount++;
         } catch (error) {
           errorCount++;
-          console.error(`에이전트 파일 업로드 실패: ${file.name}`, error);
+          console.error(`에이전트 {t("admin.fileUpload")} 실패: ${file.name}`, error);
         }
 
         // 진행률 업데이트
@@ -3839,7 +3839,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       if (errorCount > 0 && successCount === 0) {
         toast({
           title: "업로드 실패",
-          description: "모든 파일 업로드에 실패했습니다.",
+          description: `모든 ${t("admin.fileUpload")}에 실패했습니다.`,
           variant: "destructive",
         });
       }
@@ -3847,7 +3847,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     } catch (error) {
       toast({
         title: "업로드 실패",
-        description: "에이전트 파일 업로드 중 오류가 발생했습니다.",
+        description: `에이전트 ${t("admin.fileUpload")} 중 오류가 발생했습니다.`,
         variant: "destructive",
       });
     } finally {
@@ -4109,7 +4109,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
+                    {t("admin.fileUpload")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -4506,7 +4506,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         모델 설정
                       </TabsTrigger>
                       <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        파일 업로드
+                        {t("admin.fileUpload")}
                       </TabsTrigger>
                       <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
                         관리자 선정
@@ -4888,7 +4888,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 파일 업로드 탭 */}
+                        {/* {t("admin.fileUpload")} 탭 */}
                         <TabsContent value="upload" className="space-y-6">
                           <div className="space-y-4">
                             {/* 숨겨진 파일 입력 */}
@@ -5646,7 +5646,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
+                    {t("admin.fileUpload")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -5671,7 +5671,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setHasAgentSearched(true);
                     }}>
                       <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -5696,7 +5696,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       disabled={agentFilterUpperCategory === 'all'}
                     >
                       <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -5720,7 +5720,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       disabled={agentFilterLowerCategory === 'all' || agentFilterUpperCategory === 'all'}
                     >
                       <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -5753,7 +5753,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setHasAgentSearched(true);
                     }}>
                       <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -5772,7 +5772,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setHasAgentSearched(true);
                     }}>
                       <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -5994,7 +5994,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p className="text-lg font-medium mb-2">에이전트 검색</p>
                     <p className="text-sm">
-                      위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 에이전트를 찾아보세요.
+                      위의 검색 조건을 설정하고 {t("admin.search")} 버튼을 클릭하여 에이전트를 찾아보세요.
                     </p>
                   </div>
                 </CardContent>
@@ -6369,7 +6369,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="tokens" className="space-y-6">
           </TabsContent>
 
-          {/* 조직 카테고리 관리 */}
+          {/* {t("admin.organizationCategoryManagement")} */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.organizationManagement')}</h2>
@@ -6407,7 +6407,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
+                    {t("admin.fileUpload")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -6489,7 +6489,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="조직명으로 검색..."
+                      placeholder={t("admin.searchPlaceholder")}
                       value={userSearchQuery}
                       onChange={(e) => {
                         setUserSearchQuery(e.target.value);
@@ -8033,7 +8033,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">상위 카테고리</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8046,7 +8046,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">하위 카테고리</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8061,7 +8061,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">세부 카테고리"</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8140,10 +8140,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <Label className="text-sm text-gray-600">상위 카테고리</Label>
                       <Select defaultValue="인문대학">
                         <SelectTrigger>
-                          <SelectValue placeholder="전체" />
+                          <SelectValue placeholder={t("admin.all")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value={t("admin.all")}>전체</SelectItem>
                           <SelectItem value="인문대학">인문대학</SelectItem>
                           <SelectItem value="공과대학">공과대학</SelectItem>
                           <SelectItem value="경영대학">경영대학</SelectItem>
@@ -8154,10 +8154,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <Label className="text-sm text-gray-600">하위 카테고리</Label>
                       <Select defaultValue="국문학과">
                         <SelectTrigger>
-                          <SelectValue placeholder="전체" />
+                          <SelectValue placeholder={t("admin.all")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value={t("admin.all")}>전체</SelectItem>
                           <SelectItem value="국문학과">국문학과</SelectItem>
                           <SelectItem value="영문학과">영문학과</SelectItem>
                         </SelectContent>
@@ -8167,10 +8167,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <Label className="text-sm text-gray-600">세부 카테고리</Label>
                       <Select defaultValue="4학년">
                         <SelectTrigger>
-                          <SelectValue placeholder="전체" />
+                          <SelectValue placeholder={t("admin.all")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="전체">전체</SelectItem>
+                          <SelectItem value={t("admin.all")}>전체</SelectItem>
                           <SelectItem value="1학년">1학년</SelectItem>
                           <SelectItem value="2학년">2학년</SelectItem>
                           <SelectItem value="3학년">3학년</SelectItem>
@@ -8368,7 +8368,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">상위 카테고리</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8381,7 +8381,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">하위 카테고리</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8396,7 +8396,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Label className="text-sm text-gray-600">세부 카테고리</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="전체" />
+                        <SelectValue placeholder={t("admin.all")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8547,11 +8547,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 조직 카테고리 파일 업로드 다이얼로그 */}
+        {/* 조직 카테고리 {t("admin.fileUpload")} 다이얼로그 */}
         <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>조직 카테고리 파일 업로드</DialogTitle>
+              <DialogTitle>조직 카테고리 {t("admin.fileUpload")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -8773,11 +8773,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 파일 업로드 다이얼로그 */}
+        {/* {t("admin.fileUpload")} 다이얼로그 */}
         <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>사용자 파일 업로드</DialogTitle>
+              <DialogTitle>사용자 {t("admin.fileUpload")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -9174,7 +9174,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <Label className="text-sm font-medium">상위 카테고리</Label>
                         <Select value={selectedDocumentUpperCategory} onValueChange={setSelectedDocumentUpperCategory}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="전체" />
+                            <SelectValue placeholder={t("admin.all")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
@@ -9191,7 +9191,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <Label className="text-sm font-medium">하위 카테고리</Label>
                         <Select value={selectedDocumentLowerCategory} onValueChange={setSelectedDocumentLowerCategory}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="전체" />
+                            <SelectValue placeholder={t("admin.all")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
@@ -9213,7 +9213,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <Label className="text-sm font-medium">세부 카테고리</Label>
                         <Select value={selectedDocumentDetailCategory} onValueChange={setSelectedDocumentDetailCategory}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="전체" />
+                            <SelectValue placeholder={t("admin.all")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
@@ -9241,7 +9241,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <Label className="text-sm font-medium">에이전트 유형</Label>
                         <Select value={selectedDocumentAgentType} onValueChange={setSelectedDocumentAgentType}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="전체" />
+                            <SelectValue placeholder={t("admin.all")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">전체</SelectItem>
@@ -10232,7 +10232,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       모델 설정
                     </TabsTrigger>
                     <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                      파일 업로드
+                      {t("admin.fileUpload")}
                     </TabsTrigger>
                     <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
                       관리자 선정
@@ -10526,7 +10526,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                       </TabsContent>
 
-                      {/* 파일 업로드 탭 */}
+                      {/* {t("admin.fileUpload")} 탭 */}
                       <TabsContent value="upload" className="space-y-6">
                         <div className="space-y-4">
                           {/* 문서 종류 드롭다운 */}
@@ -10562,9 +10562,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             />
                           </div>
 
-                          {/* 파일 업로드 영역 */}
+                          {/* {t("admin.fileUpload")} 영역 */}
                           <div>
-                            <Label className="text-sm font-medium text-gray-700">문서 파일 업로드</Label>
+                            <Label className="text-sm font-medium text-gray-700">문서 {t("admin.fileUpload")}</Label>
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 mt-1">
                               <div className="text-center">
                                 <Upload className="mx-auto h-8 w-8 text-gray-400" />
@@ -10838,7 +10838,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 에이전트 파일 업로드 모달 */}
+        {/* 에이전트 {t("admin.fileUpload")} 모달 */}
         <AgentFileUploadModal
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
