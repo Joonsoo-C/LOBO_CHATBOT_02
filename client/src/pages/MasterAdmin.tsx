@@ -7215,15 +7215,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.statistics')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-sm">전체 문서</span>
+                    <span className="text-sm">{t('doc.totalFiles')}</span>
                     <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">활성 문서</span>
+                    <span className="text-sm">{t('doc.totalFiles')}</span>
                     <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
@@ -7242,7 +7242,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 종류별 분포</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.statistics')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -7287,12 +7287,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 문서 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('doc.searchAndManagement')}</h3>
               
               {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>문서 종류</Label>
+                  <Label>{t('doc.category')}</Label>
                   <Select value={selectedDocumentCategory} onValueChange={(value) => {
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
@@ -7358,14 +7358,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="문서명, 내용으로 검색..."
+                      placeholder={t('doc.searchPlaceholder')}
                       value={documentSearchQuery}
                       onChange={(e) => setDocumentSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
                     />
                   </div>
                   <Button onClick={() => setHasDocumentSearched(true)}>
-                    검색
+                    {t('doc.search')}
                   </Button>
                 </div>
               </div>
@@ -7396,7 +7396,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('name')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>문서명</span>
+                            <span>{t('doc.fileName')}</span>
                             {documentSortField === 'name' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7409,7 +7409,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('type')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>종류</span>
+                            <span>{t('doc.category')}</span>
                             {documentSortField === 'type' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7435,7 +7435,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('date')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>업로드 날짜</span>
+                            <span>{t('doc.uploadDate')}</span>
                             {documentSortField === 'date' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
