@@ -185,6 +185,12 @@ export const documents = pgTable("documents", {
   content: text("content"), // Extracted text content
   uploadedBy: varchar("uploaded_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+  // Document metadata fields
+  type: varchar("type"), // Document type/category
+  description: text("description"), // Document description
+  status: varchar("status").default("active"), // Document status
+  connectedAgents: jsonb("connected_agents").default(JSON.stringify([])), // Connected agents list
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const agentStats = pgTable("agent_stats", {
@@ -362,6 +368,7 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const insertMessageReactionSchema = createInsertSchema(messageReactions).omit({

@@ -823,7 +823,12 @@ export class MemoryStorage implements IStorage {
       ...document,
       id,
       content: document.content || null,
-      createdAt: new Date()
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: document.status || "active",
+      type: document.type || null,
+      description: document.description || null,
+      connectedAgents: document.connectedAgents || []
     };
     this.documents.set(id, newDocument);
     this.savePersistedDocuments(); // Persist immediately
@@ -861,7 +866,7 @@ export class MemoryStorage implements IStorage {
   async updateDocument(id: number, updates: Partial<Document>): Promise<Document | undefined> {
     const document = this.documents.get(id);
     if (document) {
-      Object.assign(document, updates);
+      Object.assign(document, { ...updates, updatedAt: new Date() });
       this.savePersistedDocuments(); // Persist immediately
       console.log(`Document ${id} updated and persisted: ${document.originalName}`);
       return document;
@@ -991,7 +996,11 @@ export class MemoryStorage implements IStorage {
           {
             ...doc,
             createdAt: new Date(doc.createdAt),
-            updatedAt: new Date(doc.updatedAt)
+            updatedAt: doc.updatedAt ? new Date(doc.updatedAt) : new Date(),
+            status: doc.status || "active",
+            type: doc.type || null,
+            description: doc.description || null,
+            connectedAgents: doc.connectedAgents || []
           }
         ]);
         this.documents = new Map(documentsWithDates);

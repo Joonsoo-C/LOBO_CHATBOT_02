@@ -1761,10 +1761,10 @@ export function setupAdminRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid document ID" });
       }
 
-      const { status, type, description } = req.body;
+      const { status, type, description, connectedAgents } = req.body;
 
       // Validate request body
-      if (!status && !type && description === undefined) {
+      if (!status && !type && description === undefined && !connectedAgents) {
         return res.status(400).json({ message: "At least one field must be provided for update" });
       }
 
@@ -1780,8 +1780,17 @@ export function setupAdminRoutes(app: Express) {
         ...(status && { status }),
         ...(type && { type }),
         ...(description !== undefined && { description }),
+        ...(connectedAgents !== undefined && { connectedAgents }),
         updatedAt: new Date()
       };
+
+      console.log(`Updating document ${documentId} with:`, {
+        status,
+        type,
+        description,
+        connectedAgents: connectedAgents?.length || 0,
+        existingConnectedAgents: existingDocument.connectedAgents?.length || 0
+      });
 
       // Save updated document (assuming storage has updateDocument method)
       if (storage.updateDocument) {
