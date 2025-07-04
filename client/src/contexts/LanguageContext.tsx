@@ -105,7 +105,7 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.inputPlaceholder': '메시지를 입력하세요...',
     
     // 마스터 관리자 센터
-    'admin.title': 'LoBo AI 챗봇 통합 관리자 센터',
+    'admin.title': 'LoBo AI 관리자 센터',
     'admin.subtitle': '대학교 AI 챗봇 서비스 통합 관리',
     'admin.dashboard': '대시보드',
     'admin.categories': '조직 카테고리 관리',
@@ -221,7 +221,7 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.inputPlaceholder': 'Type a message...',
     
     // Master Admin Center
-    'admin.title': 'LoBo AI Chatbot Integrated Management Center',
+    'admin.title': 'LoBo AI Admin Center',
     'admin.subtitle': 'University AI Chatbot Service Integrated Management',
     'admin.dashboard': 'Dashboard',
     'admin.categories': 'Organization Category Management',
@@ -337,7 +337,7 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.inputPlaceholder': '输入消息...',
     
     // 主管理员中心
-    'admin.title': 'LoBo AI 聊天机器人集成管理中心',
+    'admin.title': 'LoBo AI 管理中心',
     'admin.subtitle': '大学 AI 聊天机器人服务集成管理',
     'admin.dashboard': '仪表板',
     'admin.categories': '组织类别管理',
@@ -453,7 +453,7 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.inputPlaceholder': 'Nhập tin nhắn...',
     
     // Trung tâm Quản trị chính
-    'admin.title': 'Trung tâm Quản lý Tích hợp Chatbot AI LoBo',
+    'admin.title': 'LoBo AI Admin Center',
     'admin.subtitle': 'Quản lý Tích hợp Dịch vụ Chatbot AI Trường đại học',
     'admin.dashboard': 'Bảng điều khiển',
     'admin.categories': 'Quản lý Danh mục Tổ chức',
@@ -569,7 +569,7 @@ const translations: Record<Language, Record<string, string>> = {
     'chat.inputPlaceholder': 'メッセージを入力...',
     
     // マスター管理センター
-    'admin.title': 'LoBo AI チャットボット統合管理センター',
+    'admin.title': 'LoBo AI 管理センター',
     'admin.subtitle': '大学 AI チャットボットサービス統合管理',
     'admin.dashboard': 'ダッシュボード',
     'admin.categories': '組織カテゴリー管理',

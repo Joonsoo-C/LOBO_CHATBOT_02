@@ -3865,8 +3865,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="flex items-center space-x-4">
                 <Shield className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
                 <div>
-                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">{t('admin.title')}</h1>
-                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+                  <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis">{t('admin.title')}</h1>
+                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 hidden sm:block whitespace-nowrap overflow-hidden text-ellipsis">
                     {t('admin.subtitle')}
                   </p>
                 </div>
