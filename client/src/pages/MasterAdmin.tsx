@@ -316,38 +316,7 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
 
   console.log('UserActiveAgents - userId:', userId, 'conversations:', userConversations, 'userData:', userData);
 
-  if (!userId) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-gray-500 dark:text-gray-400">사용자를 선택해주세요.</div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</div>
-      </div>
-    );
-  }
-
-  if (!userConversations || !Array.isArray(userConversations) || userConversations.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-gray-500 dark:text-gray-400">사용 중인 에이전트가 없습니다.</div>
-      </div>
-    );
-  }
-
+  // 헬퍼 함수들
   const getCategoryBadgeColor = (category: string) => {
     // 에이전트 유형 뱃지는 색깔 등 시각적으로 부각시키지 않음
     return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
@@ -380,10 +349,92 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
     }
   };
 
+  const getUserRoleForAgent = (userData: any, agent: any) => {
+    if (!userData || !agent) return 'user';
+    
+    // 마스터 관리자는 항상 마스터 관리자로 표시
+    if ((userData as any).role === 'master_admin') {
+      return 'master_admin';
+    }
+    
+    // 에이전트 관리자인지 확인
+    if (agent.managerId === userData.id || agent.managerId === userData.username) {
+      return 'agent_admin';
+    }
+    
+    // 에이전트 편집자인지 확인
+    if (agent.agentEditorIds && agent.agentEditorIds.includes(userData.id || userData.username)) {
+      return 'agent_admin';
+    }
+    
+    // 문서 관리자인지 확인
+    if (agent.documentManagerIds && agent.documentManagerIds.includes(userData.id || userData.username)) {
+      return 'doc_admin';
+    }
+    
+    // 기본값은 사용자의 시스템 역할
+    return (userData as any).role || 'user';
+  };
+
+  const getUserRoleDisplayForAgent = (userData: any, agent: any) => {
+    const role = getUserRoleForAgent(userData, agent);
+    return getSystemRoleInKorean(role);
+  };
+
+  if (!userId) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">사용자를 선택해주세요.</div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</div>
+      </div>
+    );
+  }
+
+  if (!userConversations || !Array.isArray(userConversations) || userConversations.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 dark:text-gray-400">사용 중인 에이전트가 없습니다.</div>
+      </div>
+    );
+  }
+
+  // 중복 에이전트 제거
+  const uniqueConversations = userConversations.reduce((acc: any[], conversation: any) => {
+    const agent = conversation.agent;
+    if (!agent) return acc;
+    
+    // 이미 같은 에이전트가 있는지 확인
+    const existingIndex = acc.findIndex(item => item.agent.id === agent.id);
+    if (existingIndex === -1) {
+      acc.push(conversation);
+    } else {
+      // 더 최근 대화로 업데이트
+      if (new Date(conversation.lastMessageAt || 0) > new Date(acc[existingIndex].lastMessageAt || 0)) {
+        acc[existingIndex] = conversation;
+      }
+    }
+    return acc;
+  }, []);
+
   return (
-    <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-80 overflow-y-auto">
+    <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-96 overflow-y-auto">
       <div className="space-y-3">
-        {userConversations.map((conversation: any, index: number) => {
+        {uniqueConversations.map((conversation: any, index: number) => {
           const agent = conversation.agent;
           if (!agent) return null;
           
@@ -435,9 +486,9 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
                   <div className="flex items-center justify-between">
                     <Badge 
                       variant="outline" 
-                      className={`text-xs ${getSystemRoleBadgeColor((userData as any)?.role || 'user')} font-medium`}
+                      className={`text-xs ${getSystemRoleBadgeColor(getUserRoleForAgent(userData, agent))} font-medium`}
                     >
-                      {userData && (userData as any).role ? getSystemRoleInKorean((userData as any).role) : '일반 사용자'}
+                      {getUserRoleDisplayForAgent(userData, agent)}
                     </Badge>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
                       {conversation.lastMessageAt 
