@@ -9414,7 +9414,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
                   <Label className="text-lg font-medium">사용 중인 에이전트 목록</Label>
-                <UserActiveAgents userId={selectedUser?.id} />
+                  <UserActiveAgents userId={selectedUser?.id} />
+                </div>
 
                 {/* 계정 정보 */}
                 <div className="space-y-3">
