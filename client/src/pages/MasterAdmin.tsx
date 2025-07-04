@@ -349,99 +349,109 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId }) => {
   }
 
   const getCategoryBadgeColor = (category: string) => {
-    switch (category) {
-      case "학교": return "bg-blue-100 text-blue-800";
-      case "교수": return "bg-purple-100 text-purple-800";
-      case "학생": return "bg-green-100 text-green-800";
-      case "그룹": return "bg-orange-100 text-orange-800";
-      case "기능형": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
+    // 에이전트 유형 뱃지는 색깔 등 시각적으로 부각시키지 않음
+    return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
   };
 
   const getSystemRoleInKorean = (role: string) => {
     switch (role) {
-      case "general_user": return "일반 사용자";
+      case "user": return "일반 사용자";
       case "master_admin": return "마스터 관리자";
       case "operation_admin": return "운영 관리자";
       case "category_admin": return "카테고리 관리자";
       case "agent_admin": return "에이전트 관리자";
       case "qa_admin": return "QA 관리자";
-      case "document_admin": return "문서 관리자";
-      case "external_user": return "외부 사용자";
+      case "doc_admin": return "문서 관리자";
+      case "external": return "외부 사용자";
       default: return "일반 사용자";
     }
   };
 
+  const getSystemRoleBadgeColor = (role: string) => {
+    switch (role) {
+      case "master_admin": return "bg-red-100 text-red-800 border-red-200";
+      case "operation_admin": return "bg-purple-100 text-purple-800 border-purple-200";
+      case "category_admin": return "bg-blue-100 text-blue-800 border-blue-200";
+      case "agent_admin": return "bg-green-100 text-green-800 border-green-200";
+      case "qa_admin": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "doc_admin": return "bg-orange-100 text-orange-800 border-orange-200";
+      case "external": return "bg-gray-100 text-gray-800 border-gray-200";
+      default: return "bg-gray-50 text-gray-600 border-gray-200";
+    }
+  };
+
   return (
-    <div className="space-y-3">
-      {userConversations.map((conversation: any, index: number) => {
-        const agent = conversation.agent;
-        if (!agent) return null;
-        
-        return (
-          <div key={`${agent.id}-${conversation.id}` || index} className="border rounded-lg p-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-            <div className="flex items-start space-x-3">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
-                style={{ backgroundColor: agent.backgroundColor || '#4F46E5' }}
-              >
-                {agent.icon?.startsWith('/uploads') ? (
-                  <img 
-                    src={agent.icon} 
-                    alt={agent.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const fallback = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
-                      if (fallback) fallback.style.display = 'block';
-                    }}
-                  />
-                ) : null}
-                <span 
-                  className={`fallback-icon text-lg ${agent.icon?.startsWith('/uploads') ? 'hidden' : 'block'}`}
-                  style={{ display: agent.icon?.startsWith('/uploads') ? 'none' : 'block' }}
+    <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-80 overflow-y-auto">
+      <div className="space-y-3">
+        {userConversations.map((conversation: any, index: number) => {
+          const agent = conversation.agent;
+          if (!agent) return null;
+          
+          return (
+            <div key={`${agent.id}-${conversation.id}` || index} className="border rounded-lg p-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <div className="flex items-start space-x-3">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
+                  style={{ backgroundColor: agent.backgroundColor || '#4F46E5' }}
                 >
-                  {agent.icon === 'Bot' ? (
-                    <Bot className="w-5 h-5" />
-                  ) : agent.icon && !agent.icon.startsWith('/uploads') ? (
-                    agent.icon
-                  ) : (
-                    agent.name?.charAt(0) || '?'
-                  )}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                    {agent.name}
-                  </h4>
-                  <Badge variant="outline" className={`text-xs flex-shrink-0 ml-2 ${getCategoryBadgeColor(agent.category || agent.type)}`}>
-                    {agent.category || agent.type}
-                  </Badge>
+                  {agent.icon?.startsWith('/uploads') ? (
+                    <img 
+                      src={agent.icon} 
+                      alt={agent.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const fallback = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
+                        if (fallback) fallback.style.display = 'block';
+                      }}
+                    />
+                  ) : null}
+                  <span 
+                    className={`fallback-icon text-sm ${agent.icon?.startsWith('/uploads') ? 'hidden' : 'block'}`}
+                    style={{ display: agent.icon?.startsWith('/uploads') ? 'none' : 'block' }}
+                  >
+                    {agent.icon === 'Bot' ? (
+                      <Bot className="w-4 h-4" />
+                    ) : agent.icon && !agent.icon.startsWith('/uploads') ? (
+                      agent.icon
+                    ) : (
+                      agent.name?.charAt(0) || '?'
+                    )}
+                  </span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
-                  {agent.description || '에이전트 설명이 없습니다.'}
-                </p>
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <span className="flex items-center">
-                    <span className="font-medium">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                      {agent.name}
+                    </h4>
+                    <Badge variant="outline" className={`text-xs flex-shrink-0 ml-2 ${getCategoryBadgeColor(agent.category || agent.type)}`}>
+                      {agent.category || agent.type}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-1">
+                    {agent.description || '에이전트 설명이 없습니다.'}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs ${getSystemRoleBadgeColor((userData as any)?.role || 'user')} font-medium`}
+                    >
                       {userData && (userData as any).role ? getSystemRoleInKorean((userData as any).role) : '일반 사용자'}
+                    </Badge>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {conversation.lastMessageAt 
+                        ? formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: true, locale: ko })
+                        : '2025.06.27'
+                      }
                     </span>
-                  </span>
-                  <span>
-                    최근 사용: {conversation.lastMessageAt 
-                      ? formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: true, locale: ko })
-                      : '2025.06.27'
-                    }
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -9206,36 +9216,37 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                {/* 기본 정보 영역 */}
-                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="text-sm font-medium">사용자 ID</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
-                    </div>
-                    <FormField
-                      control={userEditForm.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="w-32">
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="active">활성</SelectItem>
-                              <SelectItem value="inactive">비활성</SelectItem>
-                              <SelectItem value="locked">잠금</SelectItem>
-                              <SelectItem value="pending">대기</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                {/* 사용자 ID 정보 */}
+                <div className="space-y-1">
+                  <div className="text-sm font-medium">사용자 ID</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
+                </div>
+
+                {/* 계정 상태 */}
+                <div className="space-y-3">
+                  <FormField
+                    control={userEditForm.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium">계정 상태</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">활성</SelectItem>
+                            <SelectItem value="inactive">비활성</SelectItem>
+                            <SelectItem value="locked">잠금</SelectItem>
+                            <SelectItem value="pending">대기</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* 소속 정보 */}
@@ -9413,7 +9424,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
-                  <Label className="text-lg font-medium">사용 중인 에이전트 목록</Label>
+                  <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-[14px]">사용 중인 에이전트 목록</Label>
                   <UserActiveAgents userId={selectedUser?.id} />
                 </div>
 
@@ -9470,7 +9481,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     다이얼로그 상태: {isUserDetailDialogOpen ? '열림' : '닫힘'}
                   </div>
                   <div className="text-xs text-gray-400">
-                    선택된 사용자: {selectedUser ? selectedUser.id : '없음'}
+                    선택된 사용자: {selectedUser ? String((selectedUser as any).id || (selectedUser as any).username || '알 수 없음') : '없음'}
                   </div>
                 </div>
               </div>
