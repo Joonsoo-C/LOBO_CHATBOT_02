@@ -186,12 +186,12 @@
       162,
       {
         "id": 162,
-        "userId": "master_admin",
-        "agentId": 143,
-        "type": "management",
+        "userId": "user1082",
+        "agentId": 164,
+        "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-03T05:22:29.571Z",
-        "createdAt": "2025-07-03T05:22:29.571Z"
+        "lastMessageAt": "2025-07-04T05:24:00.927Z",
+        "createdAt": "2025-07-04T05:24:00.927Z"
       }
     ],
     [

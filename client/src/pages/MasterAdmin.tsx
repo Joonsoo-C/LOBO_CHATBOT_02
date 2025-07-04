@@ -7477,7 +7477,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                             onClick={() => {
                               setDocumentDetailData(doc);
-                              setSelectedDocumentAgents([]);
+                              // 연결된 에이전트 ID를 이름으로 변환
+                              const connectedAgentNames = (doc.connectedAgents || []).map((agentId: number) => {
+                                const agent = agents?.find((a: any) => a.id === agentId);
+                                return agent ? agent.name : `에이전트 ${agentId}`;
+                              });
+                              setSelectedDocumentAgents(connectedAgentNames);
                               // 편집 상태 초기화
                               setEditingDocumentStatus(doc.status || 'active');
                               setEditingDocumentType(doc.type || '기타');
@@ -7523,7 +7528,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setDocumentDetailData(doc);
-                                setSelectedDocumentAgents([]);
+                                // 연결된 에이전트 ID를 이름으로 변환
+                                const connectedAgentNames = (doc.connectedAgents || []).map((agentId: number) => {
+                                  const agent = agents?.find((a: any) => a.id === agentId);
+                                  return agent ? agent.name : `에이전트 ${agentId}`;
+                                });
+                                setSelectedDocumentAgents(connectedAgentNames);
                                 // 편집 상태 초기화
                                 setEditingDocumentStatus(doc.status || 'active');
                                 setEditingDocumentType(doc.type || '기타');
@@ -9345,11 +9355,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Button 
                       onClick={() => {
                         if (documentDetailData) {
+                          // 에이전트 이름을 ID로 변환
+                          const connectedAgentIds = selectedDocumentAgents.map(agentName => {
+                            const agent = agents?.find((a: any) => a.name === agentName);
+                            return agent ? agent.id : null;
+                          }).filter(id => id !== null);
+                          
                           updateDocumentMutation.mutate({
                             id: documentDetailData.id,
                             status: editingDocumentStatus,
                             type: editingDocumentType,
                             description: editingDocumentDescription,
+                            connectedAgents: connectedAgentIds,
                           });
                         }
                       }}
