@@ -832,6 +832,14 @@ Changelog:
   * Pagination text: 전체 124개 조직 중 1-20개 표시 translated to all languages
   * Complete UI consistency achieved across all organization management interface elements
   * All hardcoded Korean text replaced with translation keys for international accessibility
+- July 5, 2025. Completed comprehensive document management multilingual translation and UI optimization:
+  * Fixed all hardcoded English text in document management section to use translation keys
+  * Added complete document management translations for all 5 languages: 비활성 문서, 총 용량, 기타, 필터 초기화, 검색 결과, 검색어
+  * Enhanced question/answer logs with 4 cards including restored user satisfaction card (사용자 만족도)
+  * Redesigned token management cards to match question/answer logs compact style with 3-column grid layout
+  * All document management interface elements now properly display in user's selected language
+  * Korean language mode completely eliminates English text throughout admin interface
+  * Token management statistics now show compact inline format matching Q&A log card design
 ```
 
 ## User Preferences

@@ -181,6 +181,12 @@ const translations: Record<Language, Record<string, string>> = {
     // Document Management Korean
     'doc.fileType': '파일 형식',
     'doc.fileRequirements': '파일 형식 요구사항',
+    'doc.inactiveFiles': '비활성 문서',
+    'doc.totalCapacity': '총 용량',
+    'doc.others': '기타',
+    'doc.resetFilters': '필터 초기화',
+    'doc.searchResults': '검색 결과',
+    'doc.searchKeyword': '검색어',
 
     // Organization Management
     'org.searchAndManagement': '조직 카테고리 검색 및 관리',
@@ -328,6 +334,12 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.search': 'Search',
     'doc.fileType': 'File Type',
     'doc.fileRequirements': 'File Format Requirements',
+    'doc.inactiveFiles': 'Inactive Documents',
+    'doc.totalCapacity': 'Total Capacity',
+    'doc.others': 'Others',
+    'doc.resetFilters': 'Reset Filters',
+    'doc.searchResults': 'Search Results: {count} documents',
+    'doc.searchKeyword': 'Search Keyword',
 
     // Organization Management
     'org.searchAndManagement': 'Organization Category Search & Management',
@@ -506,6 +518,12 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.search': '搜索',
     'doc.fileType': '文件类型',
     'doc.fileRequirements': '文件格式要求',
+    'doc.inactiveFiles': '非活动文档',
+    'doc.totalCapacity': '总容量',
+    'doc.others': '其他',
+    'doc.resetFilters': '重置筛选',
+    'doc.searchResults': '搜索结果：{count}个文档',
+    'doc.searchKeyword': '搜索关键词',
     
     // 主管理员中心
     'admin.title': 'LoBo AI 管理中心',
@@ -696,6 +714,12 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.search': 'Tìm kiếm',
     'doc.fileType': 'Loại Tệp',
     'doc.fileRequirements': 'Yêu Cầu Định Dạng Tệp',
+    'doc.inactiveFiles': 'Tài liệu không hoạt động',
+    'doc.totalCapacity': 'Tổng dung lượng',
+    'doc.others': 'Khác',
+    'doc.resetFilters': 'Đặt lại Bộ lọc',
+    'doc.searchResults': 'Kết quả tìm kiếm: {count} tài liệu',
+    'doc.searchKeyword': 'Từ khóa tìm kiếm',
     
     // Trung tâm Quản trị chính
     'admin.title': 'LoBo AI Admin Center',
@@ -886,6 +910,12 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.search': '検索',
     'doc.fileType': 'ファイル形式',
     'doc.fileRequirements': 'ファイル形式要件',
+    'doc.inactiveFiles': '非アクティブな文書',
+    'doc.totalCapacity': '総容量',
+    'doc.others': 'その他',
+    'doc.resetFilters': 'フィルターをリセット',
+    'doc.searchResults': '検索結果：{count}個の文書',
+    'doc.searchKeyword': '検索キーワード',
     
     // マスター管理センター
     'admin.title': 'LoBo AI 管理センター',

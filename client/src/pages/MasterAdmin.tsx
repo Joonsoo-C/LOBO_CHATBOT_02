@@ -6058,6 +6058,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </div>
               </Card>
+
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">사용자 만족도</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">4.6/5</div>
+                    <p className="text-xs text-muted-foreground">평균 점수</p>
+                  </div>
+                </div>
+              </Card>
             </div>
 
             {/* 필터링 옵션 */}
@@ -7214,11 +7227,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">비활성 문서</span>
+                    <span className="text-sm">{t('doc.inactiveFiles')}</span>
                     <span className="font-medium">0</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">총 용량</span>
+                    <span className="text-sm">{t('doc.totalCapacity')}</span>
                     <span className="font-medium">{documentList?.reduce((total, doc) => {
                       const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
                       return total + sizeInMB;
@@ -7245,7 +7258,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <span className="font-medium">98 (8%)</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">기타</span>
+                    <span className="text-sm">{t('doc.others')}</span>
                     <span className="font-medium">35 (3%)</span>
                   </div>
                 </CardContent>
@@ -7253,7 +7266,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 업로드</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.recentUploads')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {documentList && documentList.length > 0 ? (
@@ -7335,7 +7348,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div className="flex items-end">
                   <Button variant="outline" onClick={resetDocumentFilters}>
-                    필터 초기화
+                    {t('doc.resetFilters')}
                   </Button>
                 </div>
               </div>
@@ -7360,8 +7373,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 검색 결과 표시 */}
               {hasDocumentSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  검색 결과: 2개 문서
-                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
+검색 결과: 2개 문서
+                  {documentSearchQuery && ` (${t('doc.searchKeyword')}: "${documentSearchQuery}")`}
                 </div>
               )}
             </div>
@@ -7642,8 +7655,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
                 <div className="text-xs text-green-600 mt-1">이번 달 예상 내</div>
               </div>
-
-
             </div>
 
             {/* 로그 필터링 */}
