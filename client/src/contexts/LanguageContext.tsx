@@ -178,6 +178,10 @@ const translations: Record<Language, Record<string, string>> = {
     'org.select': '선택',
     'admin.userList': '사용자 목록',
     
+    // Document Management Korean
+    'doc.fileType': '파일 형식',
+    'doc.fileRequirements': '파일 형식 요구사항',
+    
     // 언어 이름
     'language.ko': '한국어',
     'language.en': 'English',
@@ -315,6 +319,8 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.uploadDate': 'Upload Date',
     'doc.searchPlaceholder': 'Search by file name, category, manager...',
     'doc.search': 'Search',
+    'doc.fileType': 'File Type',
+    'doc.fileRequirements': 'File Format Requirements',
 
     // Master Admin Center
     'admin.title': 'LoBo AI Admin Center',
@@ -483,6 +489,8 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.uploadDate': '上传日期',
     'doc.searchPlaceholder': '按文件名、类别、管理员搜索...',
     'doc.search': '搜索',
+    'doc.fileType': '文件类型',
+    'doc.fileRequirements': '文件格式要求',
     
     // 主管理员中心
     'admin.title': 'LoBo AI 管理中心',
@@ -671,6 +679,8 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.uploadDate': 'Ngày tải lên',
     'doc.searchPlaceholder': 'Tìm theo tên tệp, danh mục, quản lý...',
     'doc.search': 'Tìm kiếm',
+    'doc.fileType': 'Loại Tệp',
+    'doc.fileRequirements': 'Yêu Cầu Định Dạng Tệp',
     
     // Trung tâm Quản trị chính
     'admin.title': 'LoBo AI Admin Center',
@@ -859,6 +869,8 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.uploadDate': 'アップロード日',
     'doc.searchPlaceholder': 'ファイル名、カテゴリー、管理者で検索...',
     'doc.search': '検索',
+    'doc.fileType': 'ファイル形式',
+    'doc.fileRequirements': 'ファイル形式要件',
     
     // マスター管理センター
     'admin.title': 'LoBo AI 管理センター',
