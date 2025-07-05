@@ -7627,42 +7627,43 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="tokens" className="space-y-4">
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
-            {/* 요약 카드 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">월간 사용량</span>
+            {/* 요약 카드 - 컴팩트 스타일 */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
                 </div>
-                <div className="mt-2">
-                  <div className="text-2xl font-bold">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
-                  <div className="text-xs text-green-600 mt-1">73% 사용</div>
-                </div>
-              </Card>
+                <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
+                <div className="text-xs text-green-600 mt-1">73% 사용</div>
+              </div>
               
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">일일 평균</span>
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <BarChart3 className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
                 </div>
-                <div className="mt-2">
-                  <div className="text-2xl font-bold">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
-                  <div className="text-xs text-green-600 mt-1">토큰/일</div>
-                  <div className="text-xs text-muted-foreground">↑ 12% 지난 주 대비</div>
-                </div>
-              </Card>
+                <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
+                <div className="text-xs text-green-600 mt-1">토큰/일 ↑ 12% 지난 주 대비</div>
+              </div>
               
-              <Card className="p-4">
-                <div className="flex items-center space-x-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">예상 비용</span>
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <DollarSign className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
                 </div>
-                <div className="mt-2">
-                  <div className="text-2xl font-bold">₩{tokenStats.estimatedCost.toLocaleString()}</div>
-                  <div className="text-xs text-green-600 mt-1">이번 달</div>
-                  <div className="text-xs text-muted-foreground">예상 내</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
+                <div className="text-xs text-green-600 mt-1">이번 달 예상 내</div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">사용자 만족도</span>
                 </div>
-              </Card>
+                <div className="text-xl font-bold text-gray-900 dark:text-white">4.6/5</div>
+                <div className="text-xs text-green-600 mt-1">평균 점수</div>
+              </div>
             </div>
 
             {/* 로그 필터링 */}
