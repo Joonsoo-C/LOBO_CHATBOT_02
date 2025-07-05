@@ -6018,59 +6018,59 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
             </div>
 
-            {/* 통계 카드 - 상단으로 이동 및 높이 최소화 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Card className="p-3">
+            {/* 통계 카드 - 한 줄 컴팩트 레이아웃 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">오늘 질문 수</span>
+                    <MessageSquare className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">오늘 질문 수</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold">247</div>
-                    <p className="text-xs text-muted-foreground">+12%</p>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">247</div>
+                    <div className="text-xs text-green-600">+12%</div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Activity className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">평균 응답 시간</span>
+                    <Activity className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">평균 응답 시간</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold">2.3초</div>
-                    <p className="text-xs text-muted-foreground">-0.3초</p>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">2.3초</div>
+                    <div className="text-xs text-green-600">-0.3초</div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <XCircle className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">응답 실패율</span>
+                    <XCircle className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">응답 실패율</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold">3.2%</div>
-                    <p className="text-xs text-muted-foreground">전일 대비</p>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">3.2%</div>
+                    <div className="text-xs text-green-600">전일 대비</div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">사용자 만족도</span>
+                    <TrendingUp className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">사용자 만족도</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold">4.6/5</div>
-                    <p className="text-xs text-muted-foreground">평균 점수</p>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">4.6/5</div>
+                    <div className="text-xs text-green-600">평균 점수</div>
                   </div>
                 </div>
-              </Card>
+              </div>
             </div>
 
             {/* 필터링 옵션 */}
@@ -7627,33 +7627,45 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="tokens" className="space-y-4">
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
-            {/* 요약 카드 - 컴팩트 스타일 */}
+            {/* 요약 카드 - 한 줄 컴팩트 스타일 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Clock className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
+                    <div className="text-xs text-green-600">73% 사용</div>
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
-                <div className="text-xs text-green-600 mt-1">73% 사용</div>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center space-x-2 mb-2">
-                  <BarChart3 className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <BarChart3 className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
+                    <div className="text-xs text-green-600">↑ 12% 지난 주 대비</div>
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
-                <div className="text-xs text-green-600 mt-1">토큰/일 ↑ 12% 지난 주 대비</div>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center space-x-2 mb-2">
-                  <DollarSign className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <DollarSign className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
+                    <div className="text-xs text-green-600">이번 달 예상 내</div>
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
-                <div className="text-xs text-green-600 mt-1">이번 달 예상 내</div>
               </div>
             </div>
 

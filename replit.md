@@ -840,6 +840,9 @@ Changelog:
   * All document management interface elements now properly display in user's selected language
   * Korean language mode completely eliminates English text throughout admin interface
   * Token management statistics now show compact inline format matching Q&A log card design
+  * Redesigned both question/answer logs and token management cards to use single-line layout
+  * Cards now display title and icon on left side, statistics and analysis on right side
+  * Applied consistent horizontal layout across all summary cards for improved visual hierarchy
 ```
 
 ## User Preferences
