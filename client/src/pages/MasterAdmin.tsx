@@ -7215,23 +7215,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.statistics')}</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-sm">{t('doc.totalFiles')}</span>
+                    <span className="text-sm">전체 파일</span>
                     <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">{t('doc.totalFiles')}</span>
+                    <span className="text-sm">전체 파일</span>
                     <span className="font-medium">{documentList?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">{t('doc.inactiveFiles')}</span>
+                    <span className="text-sm">비활성 문서</span>
                     <span className="font-medium">0</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">{t('doc.totalCapacity')}</span>
+                    <span className="text-sm">총 용량</span>
                     <span className="font-medium">{documentList?.reduce((total, doc) => {
                       const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
                       return total + sizeInMB;
@@ -7242,7 +7242,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.statistics')}</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -7258,7 +7258,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <span className="font-medium">98 (8%)</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">{t('doc.others')}</span>
+                    <span className="text-sm">기타</span>
                     <span className="font-medium">35 (3%)</span>
                   </div>
                 </CardContent>
@@ -7266,7 +7266,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('doc.recentUploads')}</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 업로드</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {documentList && documentList.length > 0 ? (
@@ -7287,12 +7287,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 문서 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">{t('doc.searchAndManagement')}</h3>
+              <h3 className="text-lg font-semibold mb-4">문서 검색 및 관리</h3>
               
               {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>{t('doc.category')}</Label>
+                  <Label>파일 형식</Label>
                   <Select value={selectedDocumentCategory} onValueChange={(value) => {
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
@@ -7311,7 +7311,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>{t('doc.fileType')}</Label>
+                  <Label>파일 형식</Label>
                   <Select value={selectedDocumentType} onValueChange={(value) => {
                     setSelectedDocumentType(value);
                     handleDocumentFilterChange();
@@ -7329,7 +7329,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>{t('doc.uploadDate')}</Label>
+                  <Label>업로드 날짜</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     handleDocumentFilterChange();
@@ -7348,7 +7348,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div className="flex items-end">
                   <Button variant="outline" onClick={resetDocumentFilters}>
-                    {t('doc.resetFilters')}
+                    필터 초기화
                   </Button>
                 </div>
               </div>
@@ -7358,14 +7358,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex space-x-2">
                   <div className="flex-1">
                     <Input
-                      placeholder={t('doc.searchPlaceholder')}
+                      placeholder="문서명 또는 내용으로 검색..."
                       value={documentSearchQuery}
                       onChange={(e) => setDocumentSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
                     />
                   </div>
                   <Button onClick={() => setHasDocumentSearched(true)}>
-                    {t('doc.search')}
+                    검색
                   </Button>
                 </div>
               </div>
@@ -7374,7 +7374,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {hasDocumentSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
 검색 결과: 2개 문서
-                  {documentSearchQuery && ` (${t('doc.searchKeyword')}: "${documentSearchQuery}")`}
+                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
                 </div>
               )}
             </div>
@@ -7396,7 +7396,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('name')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>{t('doc.fileName')}</span>
+                            <span>파일명</span>
                             {documentSortField === 'name' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7409,7 +7409,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('type')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>{t('doc.category')}</span>
+                            <span>종류</span>
                             {documentSortField === 'type' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7435,7 +7435,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('date')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>{t('doc.uploadDate')}</span>
+                            <span>업로드 날짜</span>
                             {documentSortField === 'date' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 

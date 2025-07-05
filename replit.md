@@ -843,6 +843,11 @@ Changelog:
   * Redesigned both question/answer logs and token management cards to use single-line layout
   * Cards now display title and icon on left side, statistics and analysis on right side
   * Applied consistent horizontal layout across all summary cards for improved visual hierarchy
+  * Fixed Korean mode document management by replacing all translation keys with direct Korean text
+  * Document statistics cards now display: "문서 통계", "전체 파일", "비활성 문서", "총 용량", "최근 업로드"
+  * Document search interface now shows: "문서 검색 및 관리", "파일 형식", "업로드 날짜", "필터 초기화"
+  * Table headers properly display: "파일명", "종류", "크기", "업로드 날짜" in Korean mode
+  * Search placeholder and buttons now use Korean text: "문서명 또는 내용으로 검색...", "검색", "검색어"
 ```
 
 ## User Preferences
