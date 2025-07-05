@@ -6005,7 +6005,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* 질문/응답 로그 */}
           <TabsContent value="conversations" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">질문 응답 로그</h2>
+              <h2 className="text-2xl font-bold">{t('admin.conversations')}</h2>
               <div className="flex space-x-2">
                 <Button variant="outline">
                   <FileText className="w-4 h-4 mr-2" />
@@ -6019,7 +6019,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             {/* 통계 카드 - 상단으로 이동 및 높이 최소화 */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Card className="p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -6055,19 +6055,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="text-right">
                     <div className="text-lg font-bold">3.2%</div>
                     <p className="text-xs text-muted-foreground">전일 대비</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">사용자 만족도</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold">4.6/5</div>
-                    <p className="text-xs text-muted-foreground">평균 점수</p>
                   </div>
                 </div>
               </Card>
@@ -7662,13 +7649,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 로그 필터링 */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">로그 검색</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('org.organizationSearch')}</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   <div className="space-y-2">
-                    <Label>상위 조직</Label>
+                    <Label>{t('org.upperCategory')}</Label>
                     <Select 
                       value={tokenUpperCategoryFilter} 
                       onValueChange={(value) => {
@@ -7691,7 +7678,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div className="space-y-2">
-                    <Label>하위 조직</Label>
+                    <Label>{t('org.lowerCategory')}</Label>
                     <Select 
                       value={tokenLowerCategoryFilter} 
                       onValueChange={(value) => {
@@ -7714,7 +7701,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div className="space-y-2">
-                    <Label>세부 조직</Label>
+                    <Label>{t('org.detailCategory')}</Label>
                     <Select 
                       value={tokenDetailCategoryFilter} 
                       onValueChange={setTokenDetailCategoryFilter}

@@ -181,6 +181,14 @@ const translations: Record<Language, Record<string, string>> = {
     // Document Management Korean
     'doc.fileType': '파일 형식',
     'doc.fileRequirements': '파일 형식 요구사항',
+
+    // Organization Management
+    'org.searchAndManagement': '조직 카테고리 검색 및 관리',
+    'org.upperCategory': '상위조직',
+    'org.lowerCategory': '하위조직', 
+    'org.detailCategory': '세부조직',
+    'org.organizationSearch': '조직 검색',
+    'org.searchPlaceholder': '조직명으로 검색...',
     
     // 언어 이름
     'language.ko': '한국어',
@@ -252,7 +260,6 @@ const translations: Record<Language, Record<string, string>> = {
     'org.all': 'All',
     'org.lowerOrganization': 'Lower Organization',
     'org.detailOrganization': 'Detail Organization',
-    'org.resetFilters': 'Reset Filters',
     'org.organizationList': 'Organization List',
     'org.totalOrganizations': 'Showing 1-20 of 124 total organizations',
     'org.upperOrg': 'Upper Organization',
@@ -321,6 +328,14 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.search': 'Search',
     'doc.fileType': 'File Type',
     'doc.fileRequirements': 'File Format Requirements',
+
+    // Organization Management
+    'org.searchAndManagement': 'Organization Category Search & Management',
+    'org.upperCategory': 'Upper Organization',
+    'org.lowerCategory': 'Lower Organization', 
+    'org.detailCategory': 'Detail Organization',
+    'org.organizationSearch': 'Organization Search',
+    'org.searchPlaceholder': 'Search by organization name...',
 
     // Master Admin Center
     'admin.title': 'LoBo AI Admin Center',
