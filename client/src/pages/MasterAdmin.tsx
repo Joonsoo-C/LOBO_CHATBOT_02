@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { PaginationComponent } from "@/components/PaginationComponent";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -26,7 +27,6 @@ import { ko } from "date-fns/locale";
 // Remove hardcoded organization categories import - now using API data
 
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
-import { PaginationComponent } from "@/components/PaginationComponent";
 import { usePagination } from "@/hooks/usePagination";
 import AgentFileUploadModal from "@/components/AgentFileUploadModal";
 
@@ -704,8 +704,18 @@ interface TokenUsage {
 function MasterAdmin() {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
+  
+  // 페이지네이션 상태들 - 모든 관리 목록에 동일하게 적용
+  const [organizationCurrentPage, setOrganizationCurrentPage] = useState(1);
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const [agentCurrentPage, setAgentCurrentPage] = useState(1);
   const [documentCurrentPage, setDocumentCurrentPage] = useState(1);
+  const [qaLogCurrentPage, setQaLogCurrentPage] = useState(1);
+  const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
+  
+  // 페이지당 아이템 수 (모든 목록에 동일하게 적용)
+  const itemsPerPage = 20;
 
   // 헬퍼 함수들
   const getUserRoleForAgent = (userData: any, agent: any) => {
@@ -1193,8 +1203,7 @@ function MasterAdmin() {
 
   // Move organization-dependent calculations after useQuery declarations
 
-  // 페이지네이션 상태
-  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  // 레거시 상수들 (삭제된 중복 상태 변수들을 위한 호환성 유지)
   const usersPerPage = 20;
   const organizationCategoriesPerPage = 20;
 
@@ -1452,12 +1461,11 @@ function MasterAdmin() {
     };
   }, [filteredTokenData]);
 
-  // 토큰 데이터 페이지네이션
-  const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
+  // 토큰 데이터 페이지네이션 (레거시 상수 호환성)
   const tokenItemsPerPage = 20;
-  const tokenTotalPages = Math.ceil(filteredTokenData.length / tokenItemsPerPage);
-  const tokenStartIndex = (tokenCurrentPage - 1) * tokenItemsPerPage;
-  const tokenEndIndex = tokenStartIndex + tokenItemsPerPage;
+  const tokenTotalPages = Math.ceil(filteredTokenData.length / itemsPerPage);
+  const tokenStartIndex = (tokenCurrentPage - 1) * itemsPerPage;
+  const tokenEndIndex = tokenStartIndex + itemsPerPage;
   const paginatedTokenData = filteredTokenData.slice(tokenStartIndex, tokenEndIndex);
 
   // 필터된 사용자 목록
@@ -1520,13 +1528,13 @@ function MasterAdmin() {
 
   // 페이지네이션된 사용자 목록
   const paginatedUsers = useMemo(() => {
-    const startIndex = (userCurrentPage - 1) * usersPerPage;
-    const endIndex = startIndex + usersPerPage;
+    const startIndex = (userCurrentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, userCurrentPage, usersPerPage]);
+  }, [filteredUsers, userCurrentPage, itemsPerPage]);
 
   // 총 페이지 수 계산
-  const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const totalUserPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   // 관리자 선정용 사용자 필터링 (관리자 권한을 가진 사용자만)
   const filteredManagerUsers = useMemo(() => {
@@ -4258,11 +4266,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">사용자 목록</CardTitle>
-                {hasSearched && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {filteredUsers.length}명 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}개 표시
-                  </div>
-                )}
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {filteredUsers?.length || 0}명 사용자 중 {((userCurrentPage - 1) * itemsPerPage) + 1}-{Math.min(userCurrentPage * itemsPerPage, filteredUsers?.length || 0)}개 표시
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">

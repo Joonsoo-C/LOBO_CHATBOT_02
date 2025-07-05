@@ -1,107 +1,117 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
+import React from 'react';
+import { Button } from '@/components/ui/button';
 
 interface PaginationComponentProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  className?: string
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  totalItems: number;
+  itemsPerPage: number;
+  itemName?: string; // 예: "사용자", "에이전트", "문서" 등
 }
 
-export function PaginationComponent({
+export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  className
-}: PaginationComponentProps) {
-  // 표시할 페이지 번호들을 계산
-  const getVisiblePages = () => {
-    const pages = []
-    const maxVisible = 7 // 최대 표시할 페이지 수
-    
-    if (totalPages <= maxVisible) {
-      // 전체 페이지가 7개 이하면 모두 표시
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-      }
-    } else {
-      // 현재 페이지 기준으로 앞뒤 2개씩 표시
-      let start = Math.max(1, currentPage - 2)
-      let end = Math.min(totalPages, currentPage + 2)
-      
-      // 시작이나 끝에 가까우면 조정
-      if (currentPage <= 3) {
-        end = Math.min(5, totalPages)
-      } else if (currentPage >= totalPages - 2) {
-        start = Math.max(totalPages - 4, 1)
-      }
-      
-      // 첫 페이지 추가
-      if (start > 1) {
-        pages.push(1)
-        if (start > 2) {
-          pages.push('ellipsis-start')
-        }
-      }
-      
-      // 중간 페이지들 추가
-      for (let i = start; i <= end; i++) {
-        pages.push(i)
-      }
-      
-      // 마지막 페이지 추가
-      if (end < totalPages) {
-        if (end < totalPages - 1) {
-          pages.push('ellipsis-end')
-        }
-        pages.push(totalPages)
-      }
-    }
-    
-    return pages
-  }
+  totalItems,
+  itemsPerPage,
+  itemName = "항목"
+}) => {
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-  const visiblePages = getVisiblePages()
+  const getPageNumbers = () => {
+    const pages = [];
+    const showPages = 5; // 표시할 페이지 수
+    let startPage = Math.max(1, currentPage - Math.floor(showPages / 2));
+    let endPage = Math.min(totalPages, startPage + showPages - 1);
+
+    if (endPage - startPage + 1 < showPages) {
+      startPage = Math.max(1, endPage - showPages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
+  if (totalPages <= 1) return null;
 
   return (
-    <Pagination className={className}>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious 
-            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-          />
-        </PaginationItem>
+    <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+      {/* 상단 우측 텍스트 */}
+      <div className="text-sm text-gray-600 dark:text-gray-400">
+        전체 {totalItems}개 {itemName} 중 {startItem}-{endItem}개 표시
+      </div>
+      
+      {/* 하단 중앙 페이지네이션 버튼들 */}
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+          disabled={currentPage === 1}
+          className="!w-10 !h-10 !text-sm"
+        >
+          이전
+        </Button>
         
-        {visiblePages.map((page, index) => (
-          <PaginationItem key={index}>
-            {typeof page === 'string' ? (
-              <PaginationEllipsis />
-            ) : (
-              <PaginationLink
-                isActive={page === currentPage}
-                onClick={() => onPageChange(page)}
-              >
-                {page}
-              </PaginationLink>
-            )}
-          </PaginationItem>
+        {/* 첫 페이지 */}
+        {currentPage > 3 && (
+          <>
+            <Button
+              variant={1 === currentPage ? "default" : "outline"}
+              size="sm"
+              onClick={() => onPageChange(1)}
+              className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
+            >
+              1
+            </Button>
+            {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
+          </>
+        )}
+        
+        {/* 현재 페이지 주변 페이지들 */}
+        {getPageNumbers().map((page) => (
+          <Button
+            key={page}
+            variant={page === currentPage ? "default" : "outline"}
+            size="sm"
+            onClick={() => onPageChange(page)}
+            className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
+          >
+            {page}
+          </Button>
         ))}
         
-        <PaginationItem>
-          <PaginationNext 
-            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  )
-}
+        {/* 마지막 페이지 */}
+        {currentPage < totalPages - 2 && (
+          <>
+            {currentPage < totalPages - 3 && <span className="px-2 text-gray-500">...</span>}
+            <Button
+              variant={totalPages === currentPage ? "default" : "outline"}
+              size="sm"
+              onClick={() => onPageChange(totalPages)}
+              className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
+            >
+              {totalPages}
+            </Button>
+          </>
+        )}
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="!w-10 !h-10 !text-sm"
+        >
+          다음
+        </Button>
+      </div>
+    </div>
+  );
+};
