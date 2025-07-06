@@ -855,6 +855,12 @@ Changelog:
   * New user addition form: Updated labels to "상위/하위/세부 조직 카테고리" with required field indicators (*)
   * Established consistent terminology across all three user management interfaces
   * Enhanced form validation with clear required field indicators throughout user management system
+- July 6, 2025. Implemented user management UI improvements and agent click functionality:
+  * Removed required field indicator (*) from all three instances of "하위 조직 카테고리" labels in user management forms
+  * Enhanced UserActiveAgents component with click navigation functionality
+  * Added onAgentClick prop to UserActiveAgents interface for agent detail popup navigation
+  * Implemented cursor-pointer styling and click events on agent cards in user active agent list
+  * Agent cards now open detailed information popup when clicked for improved user experience
 ```
 
 ## User Preferences

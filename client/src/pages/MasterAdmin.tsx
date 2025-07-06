@@ -304,9 +304,10 @@ interface UserActiveAgentsProps {
   userId?: string;
   getUserRoleForAgent: (userData: any, agent: any) => string;
   getUserRoleDisplayForAgent: (userData: any, agent: any) => string;
+  onAgentClick?: (agent: any) => void;
 }
 
-const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRoleForAgent, getUserRoleDisplayForAgent }) => {
+const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRoleForAgent, getUserRoleDisplayForAgent, onAgentClick }) => {
   const { data: userConversations, isLoading, error } = useQuery({
     queryKey: [`/api/admin/users/${userId}/conversations`],
     enabled: !!userId,
@@ -414,7 +415,11 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRole
           if (!agent) return null;
           
           return (
-            <div key={`${agent.id}-${conversation.id}` || index} className="border rounded-lg p-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+            <div 
+              key={`${agent.id}-${conversation.id}` || index} 
+              className="border rounded-lg p-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+              onClick={() => onAgentClick?.(agent)}
+            >
               <div className="flex items-start space-x-3">
                 <div 
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0"
@@ -9690,7 +9695,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                         
                         <div>
-                          <Label className="text-sm">하위 조직 카테고리 *</Label>
+                          <Label className="text-sm">하위 조직 카테고리</Label>
                           <Select 
                             value={affiliation.lowerCategory || ""} 
                             onValueChange={(value) => updateUserEditAffiliation(index, 'lowerCategory', value)}
@@ -9822,6 +9827,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     userId={selectedUser?.id} 
                     getUserRoleForAgent={getUserRoleForAgent}
                     getUserRoleDisplayForAgent={getUserRoleDisplayForAgent}
+                    onAgentClick={openAgentDetailDialog}
                   />
                 </div>
 
@@ -10012,7 +10018,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="lowerCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">하위 조직 카테고리 *</FormLabel>
+                          <FormLabel className="text-sm">하위 조직 카테고리</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
@@ -10189,7 +10195,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                         
                         <div>
-                          <Label className="text-sm">하위 조직 카테고리 *</Label>
+                          <Label className="text-sm">하위 조직 카테고리</Label>
                           <Select 
                             value={affiliation.lowerCategory || ""} 
                             onValueChange={(value) => updateNewUserAffiliation(index, 'lowerCategory', value)}
