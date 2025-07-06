@@ -4153,7 +4153,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>하위 카테고리</Label>
+                  <Label>하위 조직</Label>
                   <Select 
                     value={selectedCollege} 
                     onValueChange={handleLowerCategoryChange}
@@ -4173,7 +4173,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>세부 카테고리</Label>
+                  <Label>세부 조직</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
