@@ -9740,71 +9740,78 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                       </div>
                       
-                      <div>
-                        <Label className="text-sm">직책/역할</Label>
-                        <Select 
-                          value={affiliation.position || ""} 
-                          onValueChange={(value) => updateUserEditAffiliation(index, 'position', value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="선택" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="학생">학생</SelectItem>
-                            <SelectItem value="교수">교수</SelectItem>
-                            <SelectItem value="직원">직원</SelectItem>
-                            <SelectItem value="연구원">연구원</SelectItem>
-                            <SelectItem value="조교">조교</SelectItem>
-                            <SelectItem value="대학원생">대학원생</SelectItem>
-                            <SelectItem value="박사과정">박사과정</SelectItem>
-                            <SelectItem value="석사과정">석사과정</SelectItem>
-                            <SelectItem value="학부생">학부생</SelectItem>
-                            <SelectItem value="졸업생">졸업생</SelectItem>
-                            <SelectItem value="강사">강사</SelectItem>
-                            <SelectItem value="부교수">부교수</SelectItem>
-                            <SelectItem value="정교수">정교수</SelectItem>
-                            <SelectItem value="명예교수">명예교수</SelectItem>
-                            <SelectItem value="초빙교수">초빙교수</SelectItem>
-                            <SelectItem value="겸임교수">겸임교수</SelectItem>
-                            <SelectItem value="시간강사">시간강사</SelectItem>
-                            <SelectItem value="연구교수">연구교수</SelectItem>
-                            <SelectItem value="외래교수">외래교수</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">직책/역할</Label>
+                          <Select 
+                            value={affiliation.position || ""} 
+                            onValueChange={(value) => updateUserEditAffiliation(index, 'position', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          {index === 0 ? (
+                            <FormField
+                              control={userEditForm.control}
+                              name="role"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm">시스템 역할</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="일반 사용자" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="user">일반 사용자</SelectItem>
+                                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                                      <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          ) : (
+                            <div>
+                              <Label className="text-sm text-gray-400">시스템 역할</Label>
+                              <div className="text-sm text-gray-400 p-2 bg-gray-100 dark:bg-gray-700 rounded border">
+                                첫 번째 소속에서만 설정
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
-                  
-                  {/* 시스템 역할 */}
-                  <div>
-                    <FormField
-                      control={userEditForm.control}
-                      name="role"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium">시스템 역할</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="일반 사용자" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="user">일반 사용자</SelectItem>
-                              <SelectItem value="master_admin">마스터 관리자</SelectItem>
-                              <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
-                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
-                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
-                              <SelectItem value="external">외부 사용자</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+
                 </div>
 
                 {/* 사용 중인 에이전트 목록 */}
@@ -10121,11 +10128,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectItem value="user">일반 사용자</SelectItem>
                               <SelectItem value="master_admin">마스터 관리자</SelectItem>
                               <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                              <SelectItem value="category_admin">카테고리 관리자</SelectItem>
-                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
-                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
-                              <SelectItem value="external">외부 사용자</SelectItem>
+                              <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -10134,29 +10137,179 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <FormLabel className="text-sm">에이전트 관리자</FormLabel>
-                      <Select 
-                        onValueChange={(value) => {
-                          // Store the selected manager in form state or separate state
-                          console.log('Selected agent manager:', value);
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="에이전트 관리자 선택 (선택사항)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">없음</SelectItem>
-                          {managers.map((manager) => (
-                            <SelectItem key={manager.id} value={manager.id}>
-                              {(manager as any).name || manager.id} ({manager.id})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="flex justify-end mt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={addNewUserAffiliation}
+                      disabled={newUserAffiliations.length >= 3}
+                      className="text-sm"
+                    >
+                      + 소속된 카테고리 추가
+                    </Button>
                   </div>
+                  
+                  {/* 동적 소속 정보 목록 */}
+                  {newUserAffiliations.map((affiliation, index) => (
+                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-medium">소속 정보 {index + 1}</Label>
+                        {newUserAffiliations.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeNewUserAffiliation(index)}
+                            className="text-red-600 hover:text-red-700 text-xs"
+                          >
+                            삭제
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-sm">상위 조직 카테고리 *</Label>
+                          <Select 
+                            value={affiliation.upperCategory || ""} 
+                            onValueChange={(value) => updateNewUserAffiliation(index, 'upperCategory', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label className="text-sm">하위 조직 카테고리 *</Label>
+                          <Select 
+                            value={affiliation.lowerCategory || ""} 
+                            onValueChange={(value) => updateNewUserAffiliation(index, 'lowerCategory', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => !affiliation.upperCategory || org.upperCategory === affiliation.upperCategory)
+                                  .map(org => org.lowerCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label className="text-sm">세부 조직 카테고리</Label>
+                          <Select 
+                            value={affiliation.detailCategory || ""} 
+                            onValueChange={(value) => updateNewUserAffiliation(index, 'detailCategory', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(new Set(
+                                organizations
+                                  .filter(org => 
+                                    (!affiliation.upperCategory || org.upperCategory === affiliation.upperCategory) &&
+                                    (!affiliation.lowerCategory || org.lowerCategory === affiliation.lowerCategory)
+                                  )
+                                  .map(org => org.detailCategory)
+                                  .filter(Boolean)
+                              )).sort().map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm">직책/역할</Label>
+                          <Select 
+                            value={affiliation.position || ""} 
+                            onValueChange={(value) => updateNewUserAffiliation(index, 'position', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="학생">학생</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="직원">직원</SelectItem>
+                              <SelectItem value="연구원">연구원</SelectItem>
+                              <SelectItem value="조교">조교</SelectItem>
+                              <SelectItem value="대학원생">대학원생</SelectItem>
+                              <SelectItem value="박사과정">박사과정</SelectItem>
+                              <SelectItem value="석사과정">석사과정</SelectItem>
+                              <SelectItem value="학부생">학부생</SelectItem>
+                              <SelectItem value="졸업생">졸업생</SelectItem>
+                              <SelectItem value="강사">강사</SelectItem>
+                              <SelectItem value="부교수">부교수</SelectItem>
+                              <SelectItem value="정교수">정교수</SelectItem>
+                              <SelectItem value="명예교수">명예교수</SelectItem>
+                              <SelectItem value="초빙교수">초빙교수</SelectItem>
+                              <SelectItem value="겸임교수">겸임교수</SelectItem>
+                              <SelectItem value="시간강사">시간강사</SelectItem>
+                              <SelectItem value="연구교수">연구교수</SelectItem>
+                              <SelectItem value="외래교수">외래교수</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          {index === 0 ? (
+                            <FormField
+                              control={newUserForm.control}
+                              name="role"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm">시스템 역할</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="일반 사용자" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="user">일반 사용자</SelectItem>
+                                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                                      <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          ) : (
+                            <div>
+                              <Label className="text-sm text-gray-400">시스템 역할</Label>
+                              <div className="text-sm text-gray-400 p-2 bg-gray-100 dark:bg-gray-700 rounded border">
+                                첫 번째 소속에서만 설정
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* 계정 설정 */}
