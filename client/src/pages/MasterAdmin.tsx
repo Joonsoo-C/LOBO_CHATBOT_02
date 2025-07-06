@@ -9978,7 +9978,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="upperCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">상위 카테고리</FormLabel>
+                          <FormLabel className="text-sm">상위 조직</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
