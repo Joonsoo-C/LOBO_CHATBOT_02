@@ -186,12 +186,12 @@
       162,
       {
         "id": 162,
-        "userId": "master_admin",
-        "agentId": 129,
+        "userId": "user1082",
+        "agentId": 119,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-06T22:15:59.614Z",
-        "createdAt": "2025-07-06T22:15:59.614Z"
+        "lastMessageAt": "2025-07-06T22:53:54.334Z",
+        "createdAt": "2025-07-06T22:53:54.334Z"
       }
     ],
     [
@@ -234,12 +234,12 @@
       163,
       {
         "id": 163,
-        "userId": "master_admin",
-        "agentId": 129,
-        "type": "management",
+        "userId": "user1082",
+        "agentId": 118,
+        "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-06T22:20:21.443Z",
-        "createdAt": "2025-07-06T22:20:21.443Z"
+        "lastMessageAt": "2025-07-06T22:54:00.165Z",
+        "createdAt": "2025-07-06T22:54:00.165Z"
       }
     ],
     [
@@ -247,11 +247,11 @@
       {
         "id": 164,
         "userId": "master_admin",
-        "agentId": 177,
+        "agentId": 129,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-03T05:29:19.447Z",
-        "createdAt": "2025-07-03T05:29:19.447Z"
+        "lastMessageAt": "2025-07-06T22:58:00.974Z",
+        "createdAt": "2025-07-06T22:58:00.974Z"
       }
     ]
   ]
