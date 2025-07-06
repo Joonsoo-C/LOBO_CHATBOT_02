@@ -5738,16 +5738,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full h-10 mt-6"
-                      onClick={resetAgentFilters}
-                    >
-                      필터 초기화
-                    </Button>
-                  </div>
                 </div>
                 
                 {/* 유형 및 상태 필터 행 */}
@@ -5787,6 +5777,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                
+                {/* 필터 초기화 버튼 */}
+                <div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-10 mt-4"
+                    onClick={resetAgentFilters}
+                  >
+                    필터 초기화
+                  </Button>
                 </div>
                 
                 {/* 검색 행 */}
