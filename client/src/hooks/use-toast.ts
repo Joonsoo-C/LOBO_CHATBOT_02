@@ -161,6 +161,11 @@ function toast({ ...props }: Toast) {
     },
   })
 
+  // 1초 후 자동으로 토스트 닫기
+  setTimeout(() => {
+    dismiss()
+  }, 1000)
+
   return {
     id: id,
     dismiss,
