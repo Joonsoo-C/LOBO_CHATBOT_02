@@ -432,6 +432,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete conversation with messages route
+  app.delete('/api/conversations/:userId/:agentId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId, agentId } = req.params;
+      const requestingUserId = req.user.id;
+      const userType = req.user.userType;
+      
+      // Authorization check: user can only delete their own conversations
+      // OR admin/master_admin can delete any conversation
+      if (userId !== requestingUserId && userType !== 'admin' && requestingUserId !== 'master_admin') {
+        return res.status(403).json({ message: "Unauthorized to delete this conversation" });
+      }
+      
+      const agentIdNum = parseInt(agentId);
+      if (isNaN(agentIdNum)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      await storage.deleteConversationWithMessages(userId, agentIdNum);
+      
+      res.json({ 
+        success: true, 
+        message: "Conversation and all related messages deleted successfully" 
+      });
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+      res.status(500).json({ message: "Failed to delete conversation" });
+    }
+  });
+
   // Management conversation route
   app.post('/api/conversations/management', isAuthenticated, async (req: any, res) => {
     try {

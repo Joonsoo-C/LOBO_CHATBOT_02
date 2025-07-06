@@ -51,6 +51,7 @@ export interface IStorage {
   getAllConversations(): Promise<Conversation[]>;
   getConversation(id: number): Promise<Conversation | undefined>;
   updateConversation(conversationId: number, updates: Partial<Conversation>): Promise<void>;
+  deleteConversationWithMessages(userId: string, agentId: number): Promise<void>;
 
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
@@ -277,6 +278,42 @@ export class DatabaseStorage implements IStorage {
       .update(conversations)
       .set(updates)
       .where(eq(conversations.id, conversationId));
+  }
+
+  async deleteConversationWithMessages(userId: string, agentId: number): Promise<void> {
+    // Find conversations for this user and agent
+    const conversationsToDelete = await db
+      .select()
+      .from(conversations)
+      .where(and(
+        eq(conversations.userId, userId),
+        eq(conversations.agentId, agentId)
+      ));
+
+    for (const conversation of conversationsToDelete) {
+      // Delete all messages in this conversation
+      await db
+        .delete(messages)
+        .where(eq(messages.conversationId, conversation.id));
+
+      // Delete message reactions for this conversation
+      const conversationMessages = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(eq(messages.conversationId, conversation.id));
+      
+      if (conversationMessages.length > 0) {
+        const messageIds = conversationMessages.map(m => m.id);
+        await db
+          .delete(messageReactions)
+          .where(inArray(messageReactions.messageId, messageIds));
+      }
+
+      // Delete the conversation itself
+      await db
+        .delete(conversations)
+        .where(eq(conversations.id, conversation.id));
+    }
   }
 
   // Message operations

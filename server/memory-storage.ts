@@ -760,6 +760,47 @@ export class MemoryStorage implements IStorage {
     this.savePersistedMessages();
   }
 
+  async deleteConversationWithMessages(userId: string, agentId: number): Promise<void> {
+    console.log(`Deleting conversations for user ${userId} and agent ${agentId}`);
+    
+    // Find conversations for this user and agent
+    const conversationsToDelete = Array.from(this.conversations.values())
+      .filter(conv => conv.userId === userId && conv.agentId === agentId);
+
+    for (const conversation of conversationsToDelete) {
+      console.log(`Deleting conversation ${conversation.id}`);
+      
+      // Delete all messages in this conversation
+      const messagesToDelete = Array.from(this.messages.values())
+        .filter(msg => msg.conversationId === conversation.id);
+      
+      for (const message of messagesToDelete) {
+        this.messages.delete(message.id);
+        
+        // Delete message reactions for this message
+        const reactionsToDelete = Array.from(this.messageReactions.values())
+          .filter(reaction => reaction.messageId === message.id);
+        
+        for (const reaction of reactionsToDelete) {
+          this.messageReactions.delete(reaction.id);
+        }
+      }
+
+      // Delete the conversation itself
+      this.conversations.delete(conversation.id);
+    }
+
+    // Clear related caches
+    cache.delete(`user_conversations_${userId}`);
+    cache.delete(`all_user_conversations_${userId}`);
+    
+    // Save to persistent storage
+    this.savePersistedConversations();
+    this.savePersistedMessages();
+    
+    console.log(`Deleted ${conversationsToDelete.length} conversations for user ${userId} and agent ${agentId}`);
+  }
+
   // Message operations
   async getConversationMessages(conversationId: number): Promise<Message[]> {
     // Always fetch fresh data for management conversations to ensure persistence
