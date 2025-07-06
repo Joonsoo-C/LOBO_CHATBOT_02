@@ -4137,7 +4137,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>상위 카테고리</Label>
+                  <Label>상위 조직</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="선택" />
@@ -10004,7 +10004,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="lowerCategory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">하위 카테고리</FormLabel>
+                          <FormLabel className="text-sm">하위 조직</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
                               <SelectTrigger>
