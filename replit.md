@@ -848,6 +848,13 @@ Changelog:
   * Document search interface now shows: "문서 검색 및 관리", "파일 형식", "업로드 날짜", "필터 초기화"
   * Table headers properly display: "파일명", "종류", "크기", "업로드 날짜" in Korean mode
   * Search placeholder and buttons now use Korean text: "문서명 또는 내용으로 검색...", "검색", "검색어"
+- July 6, 2025. Completed comprehensive user management dropdown terminology standardization:
+  * Successfully updated all user management areas to use unified "조직 카테고리" terminology
+  * User search area: Updated "상위/하위/세부 카테고리" to "상위/하위/세부 조직 카테고리"
+  * User edit modal: Converted labels to "상위/하위/세부 조직 카테고리" and added required field indicators (*)
+  * New user addition form: Updated labels to "상위/하위/세부 조직 카테고리" with required field indicators (*)
+  * Established consistent terminology across all three user management interfaces
+  * Enhanced form validation with clear required field indicators throughout user management system
 ```
 
 ## User Preferences
