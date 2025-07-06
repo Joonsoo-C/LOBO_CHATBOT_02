@@ -575,7 +575,7 @@ export default function TabletLayout() {
                 navigate("/");
               }}
             >
-              {t('agent.generalChat')}
+              에이전트 채팅
             </div>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
               <div 
