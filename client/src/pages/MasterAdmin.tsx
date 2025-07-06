@@ -4159,7 +4159,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     onValueChange={handleLowerCategoryChange}
                     disabled={selectedUniversity === 'all'}
                   >
-                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4207,7 +4207,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     setSelectedDocumentType(value);
                     executeSearch();
                   }}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4225,7 +4225,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     setSelectedDocumentPeriod(value);
                     executeSearch();
                   }}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -5676,7 +5676,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setAgentFilterDetailCategory('all');
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5701,7 +5701,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                       disabled={agentFilterUpperCategory === 'all'}
                     >
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5725,7 +5725,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                       disabled={agentFilterLowerCategory === 'all' || agentFilterUpperCategory === 'all'}
                     >
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5758,7 +5758,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setAgentFilterType(value);
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5777,7 +5777,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setAgentFilterStatus(value);
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10">
+                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -6087,7 +6087,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label> 상위조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6103,7 +6103,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label>하위조직</Label>
                   <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
-                    <SelectTrigger className={qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`mt-[8px] mb-[8px] ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6123,7 +6123,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     onValueChange={handleQADetailCategoryChange}
                     disabled={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all'}
                   >
-                    <SelectTrigger className={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`mt-[8px] mb-[8px] ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6142,7 +6142,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label>사용자 유형</Label>
                   <Select defaultValue="all">
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="사용자 유형" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6156,7 +6156,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label>기간</Label>
                   <Select defaultValue="today">
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="기간 선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6449,7 +6449,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label>{t('org.lowerCategory')}</Label>
                   <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger className={selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6732,7 +6732,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <FormLabel>하위 조직</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="mt-[8px] mb-[8px]">
                                   <SelectValue placeholder="하위 조직 선택" />
                                 </SelectTrigger>
                               </FormControl>
@@ -6758,7 +6758,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <FormLabel>세부 조직</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="mt-[8px] mb-[8px]">
                                   <SelectValue placeholder="세부 조직 선택" />
                                 </SelectTrigger>
                               </FormControl>
@@ -6972,7 +6972,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         setSelectedManagerCollege('all');
                         setSelectedManagerDepartment('all');
                       }}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-[8px] mb-[8px]">
                           <SelectValue placeholder="상위 조직 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -6996,7 +6996,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         }}
                         disabled={selectedManagerUniversity === 'all'}
                       >
-                        <SelectTrigger className={selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                        <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                           <SelectValue placeholder="하위 조직 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -7025,7 +7025,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         onValueChange={setSelectedManagerDepartment}
                         disabled={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all'}
                       >
-                        <SelectTrigger className={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                        <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedManagerCollege === 'all' || selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                           <SelectValue placeholder="세부 조직 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -7303,7 +7303,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -7322,7 +7322,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     setSelectedDocumentType(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -7340,7 +7340,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     setSelectedDocumentPeriod(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger>
+                    <SelectTrigger className="mt-[8px] mb-[8px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
