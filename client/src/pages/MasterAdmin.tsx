@@ -9895,7 +9895,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 
                 {/* 사용자 기본 정보 */}
                 <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
-                  <Label className="text-sm font-medium">사용자 기본 정보</Label>
+                  <Label className="text-sm font-medium"> 기본 정보</Label>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
