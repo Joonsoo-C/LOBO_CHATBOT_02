@@ -57,6 +57,7 @@ export interface IStorage {
   getConversationMessages(conversationId: number): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   markConversationAsRead(conversationId: number): Promise<void>;
+  deleteConversationMessages(conversationId: number): Promise<void>;
 
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
@@ -356,6 +357,20 @@ export class DatabaseStorage implements IStorage {
       .set({ 
         unreadCount: 0,
         lastReadAt: new Date()
+      })
+      .where(eq(conversations.id, conversationId));
+  }
+
+  async deleteConversationMessages(conversationId: number): Promise<void> {
+    // Delete all messages for this conversation
+    await db.delete(messages).where(eq(messages.conversationId, conversationId));
+    
+    // Update conversation to clear last message info
+    await db
+      .update(conversations)
+      .set({ 
+        lastMessageAt: null,
+        unreadCount: 0
       })
       .where(eq(conversations.id, conversationId));
   }

@@ -99,6 +99,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [selectedPDFDocument, setSelectedPDFDocument] = useState<any>(null);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showGeneralMenu, setShowGeneralMenu] = useState(false);
+  const [showChatHistoryDeleteDialog, setShowChatHistoryDeleteDialog] = useState(false);
+  const [showLeaveChatDialog, setShowLeaveChatDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
 
@@ -201,6 +204,75 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
       }
     },
   });
+
+  // Delete chat history mutation
+  const deleteChatHistoryMutation = useMutation({
+    mutationFn: async () => {
+      if (!conversation?.id) throw new Error('No conversation found');
+      const response = await fetch(`/api/conversations/${conversation.id}/messages`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to delete chat history');
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate messages query to refresh the chat
+      queryClient.invalidateQueries({ queryKey: [`/api/conversations/${conversation?.id}/messages`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
+      
+      // Clear optimistic messages
+      setOptimisticMessages([]);
+      
+      // Add friendly restart message
+      setTimeout(() => {
+        addSystemMessage("채팅 기록이 모두 삭제되었습니다. 새로운 대화를 시작해보세요! 😊");
+      }, 500);
+      
+      toast({ 
+        title: "채팅 기록 삭제 완료", 
+        description: "모든 대화 기록이 삭제되었습니다." 
+      });
+    },
+  });
+
+  // Leave chat mutation (delete conversation)
+  const leaveChatMutation = useMutation({
+    mutationFn: async () => {
+      if (!conversation?.id) throw new Error('No conversation found');
+      const response = await fetch(`/api/conversations/${conversation.id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to leave chat');
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate conversations list to refresh the chat list
+      queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
+      
+      toast({ 
+        title: "채팅방 나가기 완료", 
+        description: "에이전트 목록에서 삭제되었습니다. 언제든지 다시 대화를 시작할 수 있습니다." 
+      });
+      
+      // Navigate back to home page if not on tablet
+      if (!isTablet && window.location.pathname.includes('/chat/')) {
+        window.location.href = '/';
+      }
+    },
+  });
+
+  // Handler functions for the new actions
+  const handleDeleteChatHistory = () => {
+    deleteChatHistoryMutation.mutate();
+    setShowChatHistoryDeleteDialog(false);
+  };
+
+  const handleLeaveChat = () => {
+    leaveChatMutation.mutate();
+    setShowLeaveChatDialog(false);
+  };
 
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
@@ -821,16 +893,69 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {/* Files Button - Only visible in general mode */}
+                {/* Function Selection Button - Only visible in general mode */}
                 {!isManagementMode && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="p-2"
-                    onClick={() => setShowFileListModal(true)}
-                  >
-                    <Files className="w-4 h-4" />
-                  </Button>
+                  <div className="relative">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="px-3 py-2 korean-text"
+                      onClick={() => setShowGeneralMenu(!showGeneralMenu)}
+                    >
+                      기능선택
+                    </Button>
+                  
+                    {/* General Chat Dropdown Menu */}
+                    {showGeneralMenu && (
+                      <>
+                        {/* Invisible overlay to catch outside clicks */}
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setShowGeneralMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border rounded-xl shadow-lg z-50">
+                          <div className="py-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowFileListModal(true);
+                                setShowGeneralMenu(false);
+                              }}
+                            >
+                              <Files className="w-4 h-4 mr-2" />
+                              업로드된 파일 목록
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowChatHistoryDeleteDialog(true);
+                                setShowGeneralMenu(false);
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              채팅 기록 삭제
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowLeaveChatDialog(true);
+                                setShowGeneralMenu(false);
+                              }}
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              채팅방 나가기
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 )}
                 
                 {isManagementMode && (
@@ -1612,6 +1737,70 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
               >
                 {deleteConversationMutation.isPending ? "삭제 중..." : "삭제"}
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat History Delete Confirmation Dialog */}
+      {showChatHistoryDeleteDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowChatHistoryDeleteDialog(false)}>
+          <div className="bg-background border border-border rounded-xl shadow-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-foreground mb-4 korean-text">채팅 기록 삭제</h3>
+              <p className="text-muted-foreground mb-6 korean-text">
+                현재 에이전트와의 모든 대화 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 정말로 삭제하시겠습니까?
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowChatHistoryDeleteDialog(false)}
+                  className="korean-text"
+                >
+                  취소
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDeleteChatHistory}
+                  disabled={deleteChatHistoryMutation.isPending}
+                  className="korean-text"
+                >
+                  {deleteChatHistoryMutation.isPending ? "삭제 중..." : "확인"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Leave Chat Confirmation Dialog */}
+      {showLeaveChatDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowLeaveChatDialog(false)}>
+          <div className="bg-background border border-border rounded-xl shadow-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-foreground mb-4 korean-text">채팅방 나가기</h3>
+              <p className="text-muted-foreground mb-6 korean-text">
+                에이전트 채팅 목록에서 이 채팅방이 삭제되고 더 이상 목록에 표시되지 않습니다. 
+                언제든지 에이전트명이나 키워드로 검색해서 다시 대화를 시작할 수 있습니다. 
+                채팅방을 나가시겠습니까?
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowLeaveChatDialog(false)}
+                  className="korean-text"
+                >
+                  취소
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleLeaveChat}
+                  disabled={leaveChatMutation.isPending}
+                  className="korean-text"
+                >
+                  {leaveChatMutation.isPending ? "나가는 중..." : "확인"}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

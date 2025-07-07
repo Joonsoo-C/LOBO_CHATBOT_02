@@ -857,6 +857,39 @@ export class MemoryStorage implements IStorage {
     }
   }
 
+  async deleteConversationMessages(conversationId: number): Promise<void> {
+    // Delete all messages for this conversation
+    const messagesToDelete: number[] = [];
+    for (const [messageId, message] of this.messages.entries()) {
+      if (message.conversationId === conversationId) {
+        messagesToDelete.push(messageId);
+      }
+    }
+    
+    // Remove all messages from memory
+    messagesToDelete.forEach(messageId => {
+      this.messages.delete(messageId);
+    });
+    
+    // Update conversation last message info
+    const conversation = this.conversations.get(conversationId);
+    if (conversation) {
+      const updatedConversation = {
+        ...conversation,
+        lastMessageAt: null,
+        unreadCount: 0
+      };
+      this.conversations.set(conversationId, updatedConversation);
+    }
+    
+    // Clear cache and save to persistent storage
+    cache.delete(`conversation_messages_${conversationId}`);
+    this.savePersistedMessages();
+    this.savePersistedConversations();
+    
+    console.log(`Deleted ${messagesToDelete.length} messages from conversation ${conversationId}`);
+  }
+
   // Document operations
   async createDocument(document: InsertDocument): Promise<Document> {
     const id = this.nextId++;
