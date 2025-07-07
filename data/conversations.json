@@ -187,11 +187,11 @@
       {
         "id": 162,
         "userId": "user1082",
-        "agentId": 164,
+        "agentId": 119,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-06T23:47:10.170Z",
-        "createdAt": "2025-07-06T23:45:50.842Z"
+        "lastMessageAt": "2025-07-07T02:01:18.105Z",
+        "createdAt": "2025-07-07T01:00:14.362Z"
       }
     ],
     [
@@ -234,12 +234,12 @@
       163,
       {
         "id": 163,
-        "userId": "master_admin",
-        "agentId": 129,
-        "type": "management",
+        "userId": "user1082",
+        "agentId": 164,
+        "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-06T22:20:21.443Z",
-        "createdAt": "2025-07-06T22:20:21.443Z"
+        "lastMessageAt": "2025-07-07T01:01:14.066Z",
+        "createdAt": "2025-07-07T01:00:55.087Z"
       }
     ],
     [

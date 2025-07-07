@@ -5632,7 +5632,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             {/* 에이전트 관리 액션 버튼들 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-4 mb-6">
               <Card 
                 className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => setIsAgentDialogOpen(true)}
@@ -5646,23 +5646,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     새로운 에이전트를 직접 생성하고 설정합니다.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card 
-                className="border-green-200 bg-green-50 dark:bg-green-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsAgentFileUploadModalOpen(true)}
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center">
-                    <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.
                   </p>
                 </CardContent>
               </Card>

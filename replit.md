@@ -861,6 +861,13 @@ Changelog:
   * Added onAgentClick prop to UserActiveAgents interface for agent detail popup navigation
   * Implemented cursor-pointer styling and click events on agent cards in user active agent list
   * Agent cards now open detailed information popup when clicked for improved user experience
+- July 7, 2025. Updated agent management modal UI terminology and removed file upload functionality:
+  * Modified organization dropdown labels in agent detail modal to include "카테고리" suffix
+  * Changed "상위 조직" → "상위 조직 카테고리", "하위 조직" → "하위 조직 카테고리", "세부 조직" → "세부 조직 카테고리"
+  * Repositioned required field indicator (*) to appear only on "상위 조직 카테고리" field
+  * Removed required field indicators from "소속" and "설명" fields
+  * Removed "파일 업로드" (File Upload) button from agent management section
+  * Simplified agent management action buttons to show only "에이전트 수동 추가" (Manual Agent Creation)
 ```
 
 ## User Preferences
