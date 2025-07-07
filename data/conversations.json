@@ -186,24 +186,12 @@
       165,
       {
         "id": 165,
-        "userId": "master_admin",
-        "agentId": 117,
+        "userId": "user1082",
+        "agentId": 119,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-03T05:31:18.640Z",
-        "createdAt": "2025-07-03T05:31:18.640Z"
-      }
-    ],
-    [
-      166,
-      {
-        "id": 166,
-        "userId": "master_admin",
-        "agentId": 146,
-        "type": "management",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-03T05:44:36.849Z",
-        "createdAt": "2025-07-03T05:44:36.849Z"
+        "lastMessageAt": "2025-07-07T20:42:11.173Z",
+        "createdAt": "2025-07-07T20:42:11.173Z"
       }
     ],
     [
@@ -219,39 +207,15 @@
       }
     ],
     [
-      163,
+      167,
       {
-        "id": 163,
-        "userId": "master_admin",
-        "agentId": 129,
-        "type": "management",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-06T22:20:21.443Z",
-        "createdAt": "2025-07-06T22:20:21.443Z"
-      }
-    ],
-    [
-      164,
-      {
-        "id": 164,
-        "userId": "master_admin",
-        "agentId": 177,
-        "type": "general",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-03T05:29:19.447Z",
-        "createdAt": "2025-07-03T05:29:19.447Z"
-      }
-    ],
-    [
-      162,
-      {
-        "id": 162,
+        "id": 167,
         "userId": "user1082",
-        "agentId": 119,
+        "agentId": 149,
         "type": "general",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-07T04:37:50.924Z",
-        "createdAt": "2025-07-07T04:37:50.924Z"
+        "lastMessageAt": "2025-07-07T20:42:42.805Z",
+        "createdAt": "2025-07-07T20:42:42.805Z"
       }
     ]
   ]

@@ -659,7 +659,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete entire conversation (leave chat room)
+  // Hide conversation (leave chat room)
   app.delete('/api/conversations/:id', isAuthenticated, async (req, res) => {
     try {
       const conversationId = parseInt(req.params.id);
@@ -677,13 +677,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Conversation not found" });
       }
 
-      // Delete the entire conversation with all messages
-      await storage.deleteConversationWithMessages(userId, conversation.agentId);
+      // Hide the conversation instead of deleting it
+      await storage.hideConversation(conversationId);
 
-      res.json({ message: "Conversation deleted successfully" });
+      res.json({ message: "Conversation hidden successfully" });
     } catch (error) {
-      console.error("Error deleting conversation:", error);
-      res.status(500).json({ message: "Failed to delete conversation" });
+      console.error("Error hiding conversation:", error);
+      res.status(500).json({ message: "Failed to hide conversation" });
     }
   });
 

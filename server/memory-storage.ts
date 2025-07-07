@@ -643,6 +643,11 @@ export class MemoryStorage implements IStorage {
     );
 
     if (existing) {
+      // If conversation exists but is hidden, unhide it
+      if (existing.isHidden) {
+        await this.unhideConversation(existing.id);
+        return { ...existing, isHidden: false };
+      }
       return existing;
     }
 
@@ -655,6 +660,7 @@ export class MemoryStorage implements IStorage {
       unreadCount: 0,
       lastReadAt: null,
       lastMessageAt: new Date(),
+      isHidden: false,
       createdAt: new Date()
     };
     this.conversations.set(id, newConversation);
@@ -671,7 +677,7 @@ export class MemoryStorage implements IStorage {
     if (cached) return cached;
 
     const userConversations = Array.from(this.conversations.values())
-      .filter(conv => conv.userId === userId && conv.type === "general")
+      .filter(conv => conv.userId === userId && conv.type === "general" && !conv.isHidden)
       .sort((a, b) => {
         const aTime = a.lastMessageAt?.getTime() || 0;
         const bTime = b.lastMessageAt?.getTime() || 0;
@@ -888,6 +894,42 @@ export class MemoryStorage implements IStorage {
     this.savePersistedConversations();
     
     console.log(`Deleted ${messagesToDelete.length} messages from conversation ${conversationId}`);
+  }
+
+  async hideConversation(conversationId: number): Promise<void> {
+    const conversation = this.conversations.get(conversationId);
+    if (conversation) {
+      const updatedConversation = {
+        ...conversation,
+        isHidden: true
+      };
+      this.conversations.set(conversationId, updatedConversation);
+      
+      // Clear cache and save to persistent storage
+      cache.delete(`user_conversations_${conversation.userId}`);
+      cache.delete(`conversation_${conversationId}`);
+      this.savePersistedConversations();
+      
+      console.log(`Conversation ${conversationId} hidden and persisted`);
+    }
+  }
+
+  async unhideConversation(conversationId: number): Promise<void> {
+    const conversation = this.conversations.get(conversationId);
+    if (conversation) {
+      const updatedConversation = {
+        ...conversation,
+        isHidden: false
+      };
+      this.conversations.set(conversationId, updatedConversation);
+      
+      // Clear cache and save to persistent storage
+      cache.delete(`user_conversations_${conversation.userId}`);
+      cache.delete(`conversation_${conversationId}`);
+      this.savePersistedConversations();
+      
+      console.log(`Conversation ${conversationId} unhidden and persisted`);
+    }
   }
 
   // Document operations
@@ -1586,7 +1628,8 @@ export class MemoryStorage implements IStorage {
             ...conv,
             createdAt: conv.createdAt ? new Date(conv.createdAt) : null,
             lastReadAt: conv.lastReadAt ? new Date(conv.lastReadAt) : null,
-            lastMessageAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : null
+            lastMessageAt: conv.lastMessageAt ? new Date(conv.lastMessageAt) : null,
+            isHidden: conv.isHidden ?? false // 기본값 false 설정
           }
         ]);
         this.conversations = new Map(conversationsWithDates);

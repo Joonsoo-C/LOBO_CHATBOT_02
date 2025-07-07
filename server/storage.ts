@@ -58,6 +58,8 @@ export interface IStorage {
   createMessage(message: InsertMessage): Promise<Message>;
   markConversationAsRead(conversationId: number): Promise<void>;
   deleteConversationMessages(conversationId: number): Promise<void>;
+  hideConversation(conversationId: number): Promise<void>;
+  unhideConversation(conversationId: number): Promise<void>;
 
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
@@ -180,6 +182,11 @@ export class DatabaseStorage implements IStorage {
       ));
 
     if (existing) {
+      // If conversation exists but is hidden, unhide it
+      if (existing.isHidden) {
+        await this.unhideConversation(existing.id);
+        return { ...existing, isHidden: false };
+      }
       return existing;
     }
 
@@ -200,7 +207,8 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(agents, eq(conversations.agentId, agents.id))
       .where(and(
         eq(conversations.userId, userId),
-        eq(conversations.type, "general") // Only show general conversations in the main list
+        eq(conversations.type, "general"), // Only show general conversations in the main list
+        eq(conversations.isHidden, false) // Only show non-hidden conversations
       ))
       .orderBy(desc(conversations.lastMessageAt));
 
@@ -372,6 +380,20 @@ export class DatabaseStorage implements IStorage {
         lastMessageAt: null,
         unreadCount: 0
       })
+      .where(eq(conversations.id, conversationId));
+  }
+
+  async hideConversation(conversationId: number): Promise<void> {
+    await db
+      .update(conversations)
+      .set({ isHidden: true })
+      .where(eq(conversations.id, conversationId));
+  }
+
+  async unhideConversation(conversationId: number): Promise<void> {
+    await db
+      .update(conversations)
+      .set({ isHidden: false })
       .where(eq(conversations.id, conversationId));
   }
 

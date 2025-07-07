@@ -164,6 +164,7 @@ export const conversations = pgTable("conversations", {
   unreadCount: integer("unread_count").default(0),
   lastReadAt: timestamp("last_read_at"),
   lastMessageAt: timestamp("last_message_at").defaultNow(),
+  isHidden: boolean("is_hidden").default(false), // 사용자가 채팅방에서 나갔는지 여부
   createdAt: timestamp("created_at").defaultNow(),
 });
 
