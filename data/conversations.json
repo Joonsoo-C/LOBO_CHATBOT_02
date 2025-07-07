@@ -9,7 +9,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-06-29T10:32:36.435Z",
-        "createdAt": "2025-06-29T10:32:36.435Z"
+        "createdAt": "2025-06-29T10:32:36.435Z",
+        "isHidden": false
       }
     ],
     [
@@ -21,7 +22,8 @@
         "type": "management",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T00:42:18.207Z",
-        "createdAt": "2025-07-01T03:38:18.797Z"
+        "createdAt": "2025-07-01T03:38:18.797Z",
+        "isHidden": false
       }
     ],
     [
@@ -33,7 +35,8 @@
         "type": "management",
         "unreadCount": 0,
         "lastMessageAt": "2025-06-30T22:13:27.091Z",
-        "createdAt": "2025-06-30T22:13:27.091Z"
+        "createdAt": "2025-06-30T22:13:27.091Z",
+        "isHidden": false
       }
     ],
     [
@@ -46,7 +49,8 @@
         "unreadCount": 0,
         "lastMessageAt": "2025-07-01T17:07:38.910Z",
         "createdAt": "2025-06-30T22:15:14.708Z",
-        "lastReadAt": "2025-07-01T14:07:10.341Z"
+        "lastReadAt": "2025-07-01T14:07:10.341Z",
+        "isHidden": false
       }
     ],
     [
@@ -59,7 +63,8 @@
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T09:35:37.262Z",
         "createdAt": "2025-06-30T22:30:45.323Z",
-        "lastReadAt": "2025-07-01T07:14:57.795Z"
+        "lastReadAt": "2025-07-01T07:14:57.795Z",
+        "isHidden": false
       }
     ],
     [
@@ -71,7 +76,8 @@
         "type": "management",
         "unreadCount": 0,
         "lastMessageAt": "2025-06-30T22:13:25.386Z",
-        "createdAt": "2025-06-30T22:13:25.386Z"
+        "createdAt": "2025-06-30T22:13:25.386Z",
+        "isHidden": false
       }
     ],
     [
@@ -83,7 +89,8 @@
         "type": "management",
         "unreadCount": 0,
         "lastMessageAt": "2025-06-30T22:13:28.801Z",
-        "createdAt": "2025-06-30T22:13:28.801Z"
+        "createdAt": "2025-06-30T22:13:28.801Z",
+        "isHidden": false
       }
     ],
     [
@@ -95,7 +102,8 @@
         "type": "management",
         "unreadCount": 0,
         "lastMessageAt": "2025-06-30T22:13:31.384Z",
-        "createdAt": "2025-06-30T22:13:31.384Z"
+        "createdAt": "2025-06-30T22:13:31.384Z",
+        "isHidden": false
       }
     ],
     [
@@ -107,7 +115,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-01T07:51:52.815Z",
-        "createdAt": "2025-07-01T05:57:52.595Z"
+        "createdAt": "2025-07-01T05:57:52.595Z",
+        "isHidden": false
       }
     ],
     [
@@ -119,7 +128,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T00:55:45.560Z",
-        "createdAt": "2025-07-02T00:55:45.560Z"
+        "createdAt": "2025-07-02T00:55:45.560Z",
+        "isHidden": false
       }
     ],
     [
@@ -131,7 +141,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T01:49:30.347Z",
-        "createdAt": "2025-07-02T01:47:21.265Z"
+        "createdAt": "2025-07-02T01:47:21.265Z",
+        "isHidden": false
       }
     ],
     [
@@ -143,7 +154,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T16:40:07.730Z",
-        "createdAt": "2025-07-02T16:40:07.730Z"
+        "createdAt": "2025-07-02T16:40:07.730Z",
+        "isHidden": false
       }
     ],
     [
@@ -155,7 +167,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T16:54:16.503Z",
-        "createdAt": "2025-07-02T16:53:56.505Z"
+        "createdAt": "2025-07-02T16:53:56.505Z",
+        "isHidden": false
       }
     ],
     [
@@ -167,7 +180,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T18:02:50.464Z",
-        "createdAt": "2025-07-02T18:02:50.464Z"
+        "createdAt": "2025-07-02T18:02:50.464Z",
+        "isHidden": false
       }
     ],
     [
@@ -179,7 +193,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T18:10:39.046Z",
-        "createdAt": "2025-07-02T18:10:39.046Z"
+        "createdAt": "2025-07-02T18:10:39.046Z",
+        "isHidden": false
       }
     ],
     [
@@ -191,7 +206,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-07T20:42:11.173Z",
-        "createdAt": "2025-07-07T20:42:11.173Z"
+        "createdAt": "2025-07-07T20:42:11.173Z",
+        "isHidden": false
       }
     ],
     [
@@ -203,7 +219,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-02T19:02:12.720Z",
-        "createdAt": "2025-07-02T19:02:12.720Z"
+        "createdAt": "2025-07-02T19:02:12.720Z",
+        "isHidden": false
       }
     ],
     [
@@ -215,7 +232,8 @@
         "type": "general",
         "unreadCount": 0,
         "lastMessageAt": "2025-07-07T20:42:42.805Z",
-        "createdAt": "2025-07-07T20:42:42.805Z"
+        "createdAt": "2025-07-07T20:42:42.805Z",
+        "isHidden": false
       }
     ]
   ]
