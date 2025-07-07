@@ -403,11 +403,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             </div>
           </div>
 
-          {/* Debug state - visible debug panel */}
-          <div className="text-xs text-white bg-red-500 p-3 rounded font-bold">
-            DEBUG MODE: isUsingCustomImage = {isUsingCustomImage.toString()}, imageFile = {imageFile ? imageFile.name : 'null'}
-            <br />Modal Agent: {agent.name} (ID: {agent.id})
-          </div>
+
 
           {/* Custom Image Upload Section */}
           {isUsingCustomImage && (
