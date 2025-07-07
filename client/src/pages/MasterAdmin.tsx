@@ -6701,7 +6701,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         name="upperCategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>상위 조직</FormLabel>
+                            <FormLabel>상위 조직 카테고리</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
@@ -6727,7 +6727,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         name="lowerCategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>하위 조직</FormLabel>
+                            <FormLabel>하위 조직 카테고리</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="mt-[8px] mb-[8px]">
@@ -6753,7 +6753,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         name="detailCategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>세부 조직</FormLabel>
+                            <FormLabel>세부 조직 카테고리</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="mt-[8px] mb-[8px]">
@@ -6964,7 +6964,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                      <Label>상위 조직</Label>
+                      <Label>상위 조직 카테고리</Label>
                       <Select value={selectedManagerUniversity} onValueChange={(value) => {
                         setSelectedManagerUniversity(value);
                         setSelectedManagerCollege('all');
@@ -6985,7 +6985,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </div>
                     
                     <div>
-                      <Label>하위 조직</Label>
+                      <Label>하위 조직 카테고리</Label>
                       <Select 
                         value={selectedManagerCollege} 
                         onValueChange={(value) => {
@@ -7017,7 +7017,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </div>
                     
                     <div>
-                      <Label>세부 조직</Label>
+                      <Label>세부 조직 카테고리</Label>
                       <Select 
                         value={selectedManagerDepartment} 
                         onValueChange={setSelectedManagerDepartment}
@@ -10458,14 +10458,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           
                           {/* 소속 조직 선택 (순차적) */}
                           <div className="space-y-4">
-                            <Label className="text-sm font-medium text-gray-700">소속 *</Label>
+                            <Label className="text-sm font-medium text-gray-700">소속</Label>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <FormField
                                 control={agentForm.control}
                                 name="upperCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">상위 조직</FormLabel>
+                                    <FormLabel className="text-xs text-gray-600">상위 조직 카테고리 *</FormLabel>
                                     <Select 
                                       onValueChange={(value) => {
                                         field.onChange(value);
@@ -10496,7 +10496,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="lowerCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">하위 조직</FormLabel>
+                                    <FormLabel className="text-xs text-gray-600">하위 조직 카테고리</FormLabel>
                                     <Select 
                                       onValueChange={(value) => {
                                         field.onChange(value);
@@ -10527,7 +10527,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="detailCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">세부 조직</FormLabel>
+                                    <FormLabel className="text-xs text-gray-600">세부 조직 카테고리</FormLabel>
                                     <Select 
                                       onValueChange={field.onChange} 
                                       value={field.value}
