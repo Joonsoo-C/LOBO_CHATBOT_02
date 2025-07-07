@@ -659,6 +659,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete entire conversation (leave chat room)
+  app.delete('/api/conversations/:id', isAuthenticated, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const userId = req.user.id;
+
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+
+      // Verify conversation belongs to user
+      const allConversations = await storage.getAllConversations();
+      const conversation = allConversations.find(conv => conv.id === conversationId && conv.userId === userId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+
+      // Delete the entire conversation with all messages
+      await storage.deleteConversationWithMessages(userId, conversation.agentId);
+
+      res.json({ message: "Conversation deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+      res.status(500).json({ message: "Failed to delete conversation" });
+    }
+  });
+
   // Document routes
   app.get('/api/agents/:id/documents', isAuthenticated, async (req, res) => {
     try {
