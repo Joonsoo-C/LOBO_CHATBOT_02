@@ -4581,14 +4581,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             
                             {/* 소속 조직 선택 (순차적) */}
                             <div className="space-y-4">
-                              <Label className="text-sm font-medium text-gray-700">소속 *</Label>
+                              <Label className="text-sm font-medium text-gray-700">소속</Label>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <FormField
                                   control={agentForm.control}
                                   name="upperCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">상위 조직</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">상위 조직 카테고리 *</FormLabel>
                                       <Select 
                                         onValueChange={(value) => {
                                           field.onChange(value);
@@ -4619,7 +4619,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   name="lowerCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">하위 조직</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">하위 조직 카테고리</FormLabel>
                                       <Select 
                                         onValueChange={(value) => {
                                           field.onChange(value);
@@ -4650,7 +4650,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   name="detailCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">세부 조직 (선택)</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">세부 조직 카테고리</FormLabel>
                                       <Select 
                                         onValueChange={field.onChange} 
                                         defaultValue={field.value}
@@ -10558,7 +10558,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             name="description"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700">설명 *</FormLabel>
+                                <FormLabel className="text-sm font-medium text-gray-700">설명</FormLabel>
                                 <FormControl>
                                   <Textarea 
                                     placeholder="에이전트의 목적과 역할을 설명해주세요 (최대 200자)" 
