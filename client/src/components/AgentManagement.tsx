@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Upload, Edit, MoreVertical, Palette } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Edit, MoreVertical, Palette } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Agent, AgentStats } from "@/types/agent";
-import AgentFileUploadModal from "./AgentFileUploadModal";
+
 import IconChangeModal from "./IconChangeModal";
 
 interface ManagedAgent extends Agent {
@@ -41,15 +41,14 @@ export default function AgentManagement() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
   const [selectedAgent, setSelectedAgent] = useState<ManagedAgent | null>(null);
   const [isIconModalOpen, setIsIconModalOpen] = useState(false);
 
   // Check if user has agent management permissions
   const hasAgentManagementRole = user?.role === 'agent_admin' || user?.role === 'master_admin' || user?.userType === 'admin' || user?.id === 'master_admin';
   
-  // Check if user is master admin (only master admins can upload files)
-  const isMasterAdmin = user?.role === 'master_admin' || user?.userType === 'admin' || user?.id === 'master_admin';
+
 
   const { data: managedAgents = [], isLoading } = useQuery<ManagedAgent[]>({
     queryKey: ["/api/agents/managed"],
@@ -111,17 +110,7 @@ export default function AgentManagement() {
             <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
             <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
           </div>
-          {isMasterAdmin && (
-            <div className="flex gap-2">
-              <Button
-                onClick={() => setIsUploadModalOpen(true)}
-                className="bg-green-600 hover:bg-green-700 text-white korean-text"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                파일 업로드
-              </Button>
-            </div>
-          )}
+
         </div>
       </div>
 
@@ -258,10 +247,7 @@ export default function AgentManagement() {
         </div>
       )}
       
-      <AgentFileUploadModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-      />
+
 
       {selectedAgent && (
         <IconChangeModal
