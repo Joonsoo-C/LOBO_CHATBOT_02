@@ -861,6 +861,13 @@ Changelog:
   * Added onAgentClick prop to UserActiveAgents interface for agent detail popup navigation
   * Implemented cursor-pointer styling and click events on agent cards in user active agent list
   * Agent cards now open detailed information popup when clicked for improved user experience
+- July 8, 2025. Implemented consistent pagination rules across all management sections:
+  * Standardized all management sections to show 20 items per page using unified ITEMS_PER_PAGE constant
+  * Added "전체 N개 중 N개 표시" pagination count display to all sections (users, agents, organizations, documents, QA logs, tokens)
+  * Updated user management, agent management, document management, QA logs, and token management pagination
+  * Implemented previous/next buttons and page number navigation using PaginationComponent
+  * Fixed Excel export metadata and security headers to avoid Protected View warnings
+  * All pagination displays now consistent across organization categories, users, agents, documents, conversations, and token management
 ```
 
 ## User Preferences

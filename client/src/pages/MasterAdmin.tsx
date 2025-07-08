@@ -719,8 +719,7 @@ function MasterAdmin() {
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
   
-  // 페이지당 아이템 수 (모든 목록에 동일하게 적용)
-  const itemsPerPage = 20;
+
 
   // 헬퍼 함수들
   const getUserRoleForAgent = (userData: any, agent: any) => {
@@ -1210,7 +1209,6 @@ function MasterAdmin() {
 
   // 레거시 상수들 (삭제된 중복 상태 변수들을 위한 호환성 유지)
   const usersPerPage = 20;
-  const organizationCategoriesPerPage = 20;
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
@@ -1466,11 +1464,10 @@ function MasterAdmin() {
     };
   }, [filteredTokenData]);
 
-  // 토큰 데이터 페이지네이션 (레거시 상수 호환성)
-  const tokenItemsPerPage = 20;
-  const tokenTotalPages = Math.ceil(filteredTokenData.length / itemsPerPage);
-  const tokenStartIndex = (tokenCurrentPage - 1) * itemsPerPage;
-  const tokenEndIndex = tokenStartIndex + itemsPerPage;
+  // 토큰 데이터 페이지네이션 (통일된 20개 항목 페이지네이션)
+  const tokenTotalPages = Math.ceil(filteredTokenData.length / ITEMS_PER_PAGE);
+  const tokenStartIndex = (tokenCurrentPage - 1) * ITEMS_PER_PAGE;
+  const tokenEndIndex = tokenStartIndex + ITEMS_PER_PAGE;
   const paginatedTokenData = filteredTokenData.slice(tokenStartIndex, tokenEndIndex);
 
   // 필터된 사용자 목록
@@ -1533,13 +1530,13 @@ function MasterAdmin() {
 
   // 페이지네이션된 사용자 목록
   const paginatedUsers = useMemo(() => {
-    const startIndex = (userCurrentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    const startIndex = (userCurrentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
     return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, userCurrentPage, itemsPerPage]);
+  }, [filteredUsers, userCurrentPage, ITEMS_PER_PAGE]);
 
   // 총 페이지 수 계산
-  const totalUserPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const totalUserPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
 
   // 관리자 선정용 사용자 필터링 (관리자 권한을 가진 사용자만)
   const filteredManagerUsers = useMemo(() => {
@@ -1867,10 +1864,10 @@ function MasterAdmin() {
   // Organization categories pagination state
   const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
 
-  // Organization categories pagination calculations
-  const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / organizationCategoriesPerPage);
-  const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * organizationCategoriesPerPage;
-  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + organizationCategoriesPerPage;
+  // Organization categories pagination calculations (통일된 20개 항목 페이지네이션)
+  const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / ITEMS_PER_PAGE);
+  const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * ITEMS_PER_PAGE;
+  const organizationCategoriesEndIndex = organizationCategoriesStartIndex + ITEMS_PER_PAGE;
   const paginatedOrganizationCategories = filteredOrganizationCategories?.slice(organizationCategoriesStartIndex, organizationCategoriesEndIndex) || [];
 
   // 검색 실행 함수
@@ -2466,8 +2463,8 @@ function MasterAdmin() {
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasAgentSearched]);
 
-  // 페이지네이션 설정
-  const ITEMS_PER_PAGE = 10;
+  // 페이지네이션 설정 (모든 관리 섹션에 일관된 20개 항목)
+  const ITEMS_PER_PAGE = 20;
   
   // 사용자 목록 페이지네이션
   const userPagination = usePagination({
@@ -4268,7 +4265,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">사용자 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredUsers?.length || 0}명 사용자 중 {((userCurrentPage - 1) * itemsPerPage) + 1}-{Math.min(userCurrentPage * itemsPerPage, filteredUsers?.length || 0)}개 표시
+                  전체 {filteredUsers?.length || 0}명 사용자 중 {((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -6179,7 +6176,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]"> 질문 응답 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {conversationLogs?.length || 0}개 중 {filteredConversationLogs?.length || 0}개 표시
+                  전체 {filteredConversationLogs?.length || 0}개 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -6231,7 +6228,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                         </tr>
                       ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
-                        filteredConversationLogs.slice(0, 10).map((log: any) => (
+                        filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
                           <tr key={log.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
@@ -6291,6 +6288,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </tbody>
                   </table>
                 </div>
+                
+                {/* QA 로그 페이지네이션 */}
+                {filteredConversationLogs && filteredConversationLogs.length > ITEMS_PER_PAGE && (
+                  <div className="mt-4 flex items-center justify-between px-6 py-4 border-t">
+                    <div className="text-sm text-gray-500">
+                      전체 {filteredConversationLogs.length}개 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs.length)}개 표시
+                    </div>
+                    <PaginationComponent
+                      currentPage={qaLogCurrentPage}
+                      totalPages={Math.ceil(filteredConversationLogs.length / ITEMS_PER_PAGE)}
+                      onPageChange={setQaLogCurrentPage}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -7478,7 +7489,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       {/* 실제 업로드된 문서 */}
                       {documentList && documentList.length > 0 ? (
                         documentList
-                          .slice((documentCurrentPage - 1) * 10, documentCurrentPage * 10)
+                          .slice((documentCurrentPage - 1) * ITEMS_PER_PAGE, documentCurrentPage * ITEMS_PER_PAGE)
                           .map((doc, index) => (
                           <tr 
                             key={index}
@@ -7575,7 +7586,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {documentList && documentList.length > 0 && (
                   <div className="flex items-center justify-between px-6 py-4 border-t">
                     <div className="text-sm text-gray-500">
-                      전체 {documentList.length}개 중 {Math.min(documentCurrentPage * 10, documentList.length)}개 표시
+                      전체 {documentList.length}개 중 {((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length)}개 표시
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button
@@ -7588,7 +7599,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
                       
-                      {Array.from({ length: Math.ceil(documentList.length / 10) }, (_, i) => i + 1).map(page => (
+                      {Array.from({ length: Math.ceil(documentList.length / ITEMS_PER_PAGE) }, (_, i) => i + 1).map(page => (
                         <Button
                           key={page}
                           variant={page === documentCurrentPage ? "default" : "outline"}
@@ -7610,8 +7621,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setDocumentCurrentPage(Math.min(Math.ceil(documentList.length / 10), documentCurrentPage + 1))}
-                        disabled={documentCurrentPage === Math.ceil(documentList.length / 10)}
+                        onClick={() => setDocumentCurrentPage(Math.min(Math.ceil(documentList.length / ITEMS_PER_PAGE), documentCurrentPage + 1))}
+                        disabled={documentCurrentPage === Math.ceil(documentList.length / ITEMS_PER_PAGE)}
                         className="w-10 h-10 p-0"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -7884,7 +7895,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 페이지네이션 */}
                 {tokenTotalPages > 1 && (
-                  <div className="mt-4">
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      전체 {filteredTokenData.length}개 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData.length)}개 표시
+                    </div>
                     <PaginationComponent
                       currentPage={tokenCurrentPage}
                       totalPages={tokenTotalPages}
