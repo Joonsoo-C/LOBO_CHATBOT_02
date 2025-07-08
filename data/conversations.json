@@ -240,13 +240,13 @@
       162,
       {
         "id": 162,
-        "userId": "user1081",
-        "agentId": 164,
-        "type": "general",
+        "userId": "master_admin",
+        "agentId": 116,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-07T22:18:24.181Z",
+        "lastMessageAt": "2025-07-08T15:09:34.878Z",
         "isHidden": false,
-        "createdAt": "2025-07-07T22:18:24.181Z"
+        "createdAt": "2025-07-08T15:09:34.878Z"
       }
     ],
     [
