@@ -107,7 +107,6 @@ export default function AgentManagement() {
       <div className="text-center mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-medium text-foreground mb-2 korean-text">{t('agent.management')}</h2>
             <p className="text-muted-foreground text-sm korean-text">{t('agent.managementDesc')}</p>
           </div>
 
