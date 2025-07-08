@@ -719,7 +719,8 @@ function MasterAdmin() {
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
   
-
+  // 페이지네이션 설정 (모든 관리 섹션에 일관된 20개 항목)
+  const ITEMS_PER_PAGE = 20;
 
   // 헬퍼 함수들
   const getUserRoleForAgent = (userData: any, agent: any) => {
@@ -2463,9 +2464,6 @@ function MasterAdmin() {
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasAgentSearched]);
 
-  // 페이지네이션 설정 (모든 관리 섹션에 일관된 20개 항목)
-  const ITEMS_PER_PAGE = 20;
-  
   // 사용자 목록 페이지네이션
   const userPagination = usePagination({
     data: sortedUsers,
