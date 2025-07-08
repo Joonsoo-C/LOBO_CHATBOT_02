@@ -1338,7 +1338,8 @@ export function setupAdminRoutes(app: Express) {
       const colWidths = [
         { wch: 15 }, // ID
         { wch: 15 }, // 사용자명
-        { wch: 20 }, // 이름        { wch: 30 }, // 이메일
+        { wch: 20 }, // 이름
+        { wch: 30 }, // 이메일
         { wch: 10 }, // 사용자유형
         { wch: 15 }, // 상위카테고리
         { wch: 20 }, // 하위카테고리
@@ -1357,17 +1358,34 @@ export function setupAdminRoutes(app: Express) {
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, '사용자목록');
 
-      // Generate Excel file buffer
+      // Set workbook properties to avoid Protected View
+      workbook.Props = {
+        Title: "사용자목록",
+        Subject: "LoBo AI 관리자 센터 사용자 목록",
+        Author: "LoBo AI Admin Center",
+        CreatedDate: new Date(),
+        ModifiedDate: new Date(),
+        Application: "LoBo AI Admin Center",
+        Company: "LoBo University"
+      };
+
+      // Generate Excel file buffer with compression to avoid corruption
       const excelBuffer = XLSX.write(workbook, { 
         type: 'buffer', 
-        bookType: 'xlsx' 
+        bookType: 'xlsx',
+        compression: true,
+        bookSST: false // Disable shared string table for compatibility
       });
 
-      // Set response headers for file download
+      // Set comprehensive response headers for secure file download
       const fileName = `사용자목록_${new Date().toISOString().split('T')[0]}.xlsx`;
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`);
-      res.setHeader('Content-Length', excelBuffer.length);
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+      res.setHeader('Content-Length', excelBuffer.length.toString());
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
 
       // Send file
       res.send(excelBuffer);
