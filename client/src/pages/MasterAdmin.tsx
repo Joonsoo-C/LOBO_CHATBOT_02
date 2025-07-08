@@ -3948,11 +3948,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <span className="hidden sm:inline">{t('admin.tokens')}</span>
               <span className="sm:hidden">토큰</span>
             </TabsTrigger>
-            <TabsTrigger value="system" className="admin-tab-trigger">
-              <Settings className="admin-tab-icon" />
-              <span className="hidden sm:inline">{t('admin.system')}</span>
-              <span className="sm:hidden">설정</span>
-            </TabsTrigger>
+
           </TabsList>
 
           {/* 대시보드 */}
@@ -7900,60 +7896,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
           </TabsContent>
 
-          {/* 시스템 설정 */}
-          <TabsContent value="system" className="space-y-6">
-            <h2 className="text-2xl font-bold">{t('admin.systemSettings')}</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">OpenAI 설정</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>API 키</Label>
-                    <Input type="password" placeholder="sk-..." />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>기본 모델</Label>
-                    <Select defaultValue="gpt-4o">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button>설정 저장</Button>
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">데이터베이스 관리</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
-                      <Database className="w-4 h-4 mr-2" />
-                      데이터베이스 백업
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      <FileText className="w-4 h-4 mr-2" />
-                      로그 다운로드
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      <TrendingUp className="w-4 h-4 mr-2" />
-                      사용량 분석
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
         </Tabs>
 
 
