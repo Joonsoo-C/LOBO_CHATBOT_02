@@ -835,6 +835,29 @@ function MasterAdmin() {
     retryDelay: 1000,
   });
 
+  // 인기 질문 TOP 5 데이터 조회
+  const { data: popularQuestions, isLoading: popularQuestionsLoading, error: popularQuestionsError } = useQuery({
+    queryKey: ['/api/admin/popular-questions'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/popular-questions', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) {
+        console.error('Popular questions fetch failed:', response.status, response.statusText);
+        throw new Error(`Failed to fetch popular questions: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Popular questions loaded:', data?.length || 0, 'questions');
+      return data;
+    },
+    retry: 2,
+    retryDelay: 1000,
+  });
+
 
 
 
@@ -4168,6 +4191,59 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent>
                   <div className="text-2xl font-bold">₩6,761</div>
                   <p className="text-xs text-muted-foreground">이번 달 예상 비용</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 인기 질문 TOP 5 카드 */}
+            <div className="grid grid-cols-1 gap-6">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="font-semibold tracking-tight text-sm">인기 질문 TOP 5</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  {popularQuestionsLoading ? (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-muted-foreground">로딩 중...</div>
+                    </div>
+                  ) : popularQuestionsError ? (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-red-500">데이터를 불러올 수 없습니다</div>
+                    </div>
+                  ) : popularQuestions && popularQuestions.length > 0 ? (
+                    <div className="space-y-3">
+                      {popularQuestions.map((question: any) => (
+                        <div key={question.rank} className="flex items-start justify-between space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <Badge variant="outline" className="text-xs font-bold">
+                                #{question.rank}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground">
+                                {question.agentName}
+                              </span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
+                              {question.question}
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <div className="text-lg font-bold text-[#16a34a]">
+                              {question.count}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              회
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-muted-foreground">질문 데이터가 없습니다</div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
