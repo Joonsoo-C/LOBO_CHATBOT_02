@@ -10881,102 +10881,571 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </TabsContent>
 
                       {/* 관리자 선정 탭 */}
-                      <TabsContent value="managers" className="space-y-6">
+                      <TabsContent value="managers" className="space-y-4">
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-sm font-medium text-gray-700">에이전트 관리자 *</Label>
-                            <div className="text-xs text-blue-600">
-                              {selectedAgentManagers.length}/3명 선택
+                          {/* 간단한 설명 */}
+                          <div className="text-sm text-gray-600 px-1">
+                            각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
+                          </div>
+
+                          {/* 선정된 관리자 영역 - 상단으로 이동 */}
+                          <Tabs value={currentManagerTab} onValueChange={(value) => handleManagerTabChange(value as 'agent' | 'document' | 'qa')} className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                              <TabsTrigger value="agent" className="relative">
+                                에이전트 관리자
+                                {selectedAgentManagers.length > 0 && (
+                                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {selectedAgentManagers.length}
+                                  </span>
+                                )}
+                              </TabsTrigger>
+                              <TabsTrigger value="document" className="relative">
+                                문서 관리자
+                                {selectedDocumentManagers.length > 0 && (
+                                  <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {selectedDocumentManagers.length}
+                                  </span>
+                                )}
+                              </TabsTrigger>
+                              <TabsTrigger value="qa" className="relative">
+                                QA 관리자
+                                {selectedQaManagers.length > 0 && (
+                                  <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {selectedQaManagers.length}
+                                  </span>
+                                )}
+                              </TabsTrigger>
+                            </TabsList>
+
+                            {/* 에이전트 관리자 */}
+                            <TabsContent value="agent" className="space-y-3">
+                              <div className="min-h-[80px] p-3 border-2 border-dashed border-blue-200 rounded-lg bg-blue-50/30">
+                                {selectedAgentManagers.length === 0 ? (
+                                  <div className="flex items-center justify-center h-12">
+                                    <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-wrap gap-2">
+                                    {selectedAgentManagers.map((manager, index) => (
+                                      <div key={index} className="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-2 rounded-lg border border-blue-200">
+                                        <span className="font-medium">{(manager as any).name || manager.id}</span>
+                                        <span className="ml-1 text-blue-600">({manager.id})</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedAgentManagers(prev => prev.filter((_, i) => i !== index))}
+                                          className="ml-2 text-blue-600 hover:text-blue-800 hover:bg-blue-200 rounded-full w-5 h-5 flex items-center justify-center"
+                                        >
+                                          ×
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </TabsContent>
+
+                            {/* 문서 관리자 */}
+                            <TabsContent value="document" className="space-y-3">
+                              <div className="min-h-[80px] p-3 border-2 border-dashed border-green-200 rounded-lg bg-green-50/30">
+                                {selectedDocumentManagers.length === 0 ? (
+                                  <div className="flex items-center justify-center h-12">
+                                    <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-wrap gap-2">
+                                    {selectedDocumentManagers.map((manager, index) => (
+                                      <div key={index} className="inline-flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-lg border border-green-200">
+                                        <span className="font-medium">{(manager as any).name || manager.id}</span>
+                                        <span className="ml-1 text-green-600">({manager.id})</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedDocumentManagers(prev => prev.filter((_, i) => i !== index))}
+                                          className="ml-2 text-green-600 hover:text-green-800 hover:bg-green-200 rounded-full w-5 h-5 flex items-center justify-center"
+                                        >
+                                          ×
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </TabsContent>
+
+                            {/* QA 관리자 */}
+                            <TabsContent value="qa" className="space-y-3">
+                              <div className="min-h-[80px] p-3 border-2 border-dashed border-purple-200 rounded-lg bg-purple-50/30">
+                                {selectedQaManagers.length === 0 ? (
+                                  <div className="flex items-center justify-center h-12">
+                                    <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-wrap gap-2">
+                                    {selectedQaManagers.map((manager, index) => (
+                                      <div key={index} className="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-2 rounded-lg border border-purple-200">
+                                        <span className="font-medium">{(manager as any).name || manager.id}</span>
+                                        <span className="ml-1 text-purple-600">({manager.id})</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedQaManagers(prev => prev.filter((_, i) => i !== index))}
+                                          className="ml-2 text-purple-600 hover:text-purple-800 hover:bg-purple-200 rounded-full w-5 h-5 flex items-center justify-center"
+                                        >
+                                          ×
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </TabsContent>
+                          </Tabs>
+
+                          {/* 검색 시스템 - 하단으로 이동 */}
+                          <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
+                            <div className="p-4 space-y-4">
+                              <h4 className="text-base font-medium text-gray-900">사용자 검색</h4>
+                              
+                              {/* 검색 입력창 */}
+                              <div className="relative">
+                                <Input
+                                  type="text"
+                                  placeholder="이름 또는 사용자 ID로 검색..."
+                                  value={managerSearchQuery}
+                                  onChange={(e) => setManagerSearchQuery(e.target.value)}
+                                  className="h-9 text-sm"
+                                />
+                              </div>
+
+                              {/* 조직 필터 */}
+                              <div className="grid grid-cols-3 gap-2">
+                                <Select value={managerFilterUpperCategory} onValueChange={(value) => {
+                                  setManagerFilterUpperCategory(value);
+                                  setManagerFilterLowerCategory('all');
+                                  setManagerFilterDetailCategory('all');
+                                  setManagerCurrentPage(1);
+                                }}>
+                                  <SelectTrigger className="h-8 text-xs">
+                                    <SelectValue placeholder="상위 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getUpperCategories().map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Select value={managerFilterLowerCategory} onValueChange={(value) => {
+                                  setManagerFilterLowerCategory(value);
+                                  setManagerFilterDetailCategory('all');
+                                  setManagerCurrentPage(1);
+                                }} disabled={managerFilterUpperCategory === 'all'}>
+                                  <SelectTrigger className="h-8 text-xs">
+                                    <SelectValue placeholder="하위 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getLowerCategories(managerFilterUpperCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Select value={managerFilterDetailCategory} onValueChange={(value) => {
+                                  setManagerFilterDetailCategory(value);
+                                  setManagerCurrentPage(1);
+                                }} disabled={managerFilterLowerCategory === 'all'}>
+                                  <SelectTrigger className="h-8 text-xs">
+                                    <SelectValue placeholder="세부 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              {/* 결과 요약 */}
+                              <div className="text-xs text-gray-500 flex justify-between items-center">
+                                <span>총 {filteredManagerUsers.length}명의 사용자를 찾았습니다</span>
+                                <span>
+                                  {currentManagerTab} 관리자: {
+                                    currentManagerTab === 'agent' ? selectedAgentManagers.length :
+                                    currentManagerTab === 'document' ? selectedDocumentManagers.length :
+                                    selectedQaManagers.length
+                                  }/3명 선택됨
+                                </span>
+                              </div>
+
+                              {/* 검색 결과 리스트 */}
+                              <div className="space-y-2 max-h-64 overflow-y-auto">
+                                {filteredManagerUsers.length === 0 ? (
+                                  <div className="text-center py-8">
+                                    <div className="text-gray-400 mb-2">
+                                      <Users className="w-8 h-8 mx-auto" />
+                                    </div>
+                                    <p className="text-sm text-gray-500">검색 조건에 맞는 사용자가 없습니다</p>
+                                  </div>
+                                ) : (
+                                  <>
+                                    {filteredManagerUsers.slice((managerCurrentPage - 1) * 10, managerCurrentPage * 10).map((user) => {
+                                      const isSelected = (
+                                        currentManagerTab === 'agent' ? selectedAgentManagers :
+                                        currentManagerTab === 'document' ? selectedDocumentManagers :
+                                        selectedQaManagers
+                                      ).some(m => m.id === user.id);
+
+                                      const currentList = 
+                                        currentManagerTab === 'agent' ? selectedAgentManagers :
+                                        currentManagerTab === 'document' ? selectedDocumentManagers :
+                                        selectedQaManagers;
+
+                                      return (
+                                        <div
+                                          key={user.id}
+                                          onClick={() => {
+                                            if (isSelected) {
+                                              // 선택 해제
+                                              if (currentManagerTab === 'agent') {
+                                                setSelectedAgentManagers(prev => prev.filter(m => m.id !== user.id));
+                                              } else if (currentManagerTab === 'document') {
+                                                setSelectedDocumentManagers(prev => prev.filter(m => m.id !== user.id));
+                                              } else {
+                                                setSelectedQaManagers(prev => prev.filter(m => m.id !== user.id));
+                                              }
+                                            } else if (currentList.length < 3) {
+                                              // 선택 추가 (3명 제한)
+                                              const newManager = {
+                                                id: user.id,
+                                                name: (user as any).name || user.id,
+                                                email: user.email || '',
+                                                upperCategory: user.upperCategory || '',
+                                                lowerCategory: user.lowerCategory || '',
+                                                role: currentManagerTab
+                                              };
+
+                                              if (currentManagerTab === 'agent') {
+                                                setSelectedAgentManagers(prev => [...prev, newManager]);
+                                              } else if (currentManagerTab === 'document') {
+                                                setSelectedDocumentManagers(prev => [...prev, newManager]);
+                                              } else {
+                                                setSelectedQaManagers(prev => [...prev, newManager]);
+                                              }
+                                            }
+                                          }}
+                                          className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
+                                            isSelected
+                                              ? 'border-blue-300 bg-blue-50'
+                                              : currentList.length >= 3
+                                              ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-50'
+                                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                          }`}
+                                        >
+                                          <div className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-3">
+                                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+                                                isSelected ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+                                              }`}>
+                                                {((user as any).name || user.id).charAt(0).toUpperCase()}
+                                              </div>
+                                              <div>
+                                                <p className="text-sm font-medium text-gray-900">
+                                                  {(user as any).name || user.id}
+                                                </p>
+                                                <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
+                                                  {user.role}
+                                                </span>
+                                              </div>
+                                              {user.email && (
+                                                <p className="text-xs text-gray-500 mt-1">{user.email}</p>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+
+                                    {/* 페이지네이션 */}
+                                    {totalManagerPages > 1 && (
+                                      <div className="flex items-center justify-between">
+                                        <div className="text-xs text-gray-500">
+                                          페이지 {managerCurrentPage} / {totalManagerPages}
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setManagerCurrentPage(Math.max(1, managerCurrentPage - 1))}
+                                            disabled={managerCurrentPage <= 1}
+                                            className="h-7 px-2 text-xs"
+                                          >
+                                            이전
+                                          </Button>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setManagerCurrentPage(Math.min(totalManagerPages, managerCurrentPage + 1))}
+                                            disabled={managerCurrentPage >= totalManagerPages}
+                                            className="h-7 px-2 text-xs"
+                                          >
+                                            다음
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
-                          
-                          <div className="border rounded-lg p-4 max-h-64 overflow-y-auto">
-                            <div className="space-y-2">
-                              {managers?.filter(manager => 
-                                manager.role === 'agent_admin' || manager.role === 'master_admin'
-                              ).map((manager) => (
-                                <div key={manager.id} className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id={`agent-manager-${manager.id}`}
-                                    checked={selectedAgentManagers.some(m => m.id === manager.id)}
-                                    onCheckedChange={(checked: boolean) => {
-                                      if (checked) {
-                                        if (selectedAgentManagers.length < 3) {
-                                          setSelectedAgentManagers([...selectedAgentManagers, {
-                                            id: manager.id,
-                                            name: `${manager.firstName} ${manager.lastName}`,
-                                            email: manager.email || '',
-                                            upperCategory: '',
-                                            lowerCategory: ''
-                                          } as ManagerInfo]);
-                                        }
-                                      } else {
-                                        setSelectedAgentManagers(selectedAgentManagers.filter(m => m.id !== manager.id));
-                                      }
-                                    }}
-                                    disabled={!selectedAgentManagers.some(m => m.id === manager.id) && selectedAgentManagers.length >= 3}
-                                  />
-                                  <label
-                                    htmlFor={`agent-manager-${manager.id}`}
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                  >
-                                    {manager.firstName} {manager.lastName} ({manager.username})
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+
+
                         </div>
                       </TabsContent>
 
                       {/* 공유 설정 탭 */}
                       <TabsContent value="sharing" className="space-y-6">
                         <div className="space-y-4">
-                          <FormField
-                            control={agentForm.control}
-                            name="visibility"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700">공개 범위</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                  </FormControl>
+                          <div className="w-full">
+                            <FormField
+                              control={agentForm.control}
+                              name="visibility"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">공유 모드</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || "organization"}>
+                                    <FormControl>
+                                      <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
+                                      <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
+                                      <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
+                                      <SelectItem value="private">프라이빗 - 관리자만 사용 가능</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          {/* 그룹 지정 옵션 - 완전 새로운 구조 */}
+                          {agentForm.watch('visibility') === 'group' && (
+                            <div className="space-y-4 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                              <Label className="text-sm font-medium">조직 그룹 지정</Label>
+                              
+                              {/* 단일 3단계 드롭다운 세트 */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <Select value={selectedUpperCategory} onValueChange={(value) => {
+                                  setSelectedUpperCategory(value);
+                                  setSelectedLowerCategory('');
+                                  setSelectedDetailCategory('');
+                                }}>
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="상위 조직" />
+                                  </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="public">전체 공개</SelectItem>
-                                    <SelectItem value="organization">소속 조직 내 공개</SelectItem>
-                                    <SelectItem value="private">비공개</SelectItem>
+                                    {getUpperCategories().map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
                                   </SelectContent>
                                 </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={agentForm.control}
-                            name="isActive"
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                <div className="space-y-0.5">
-                                  <FormLabel className="text-base">
-                                    에이전트 활성화
-                                  </FormLabel>
-                                  <div className="text-sm text-muted-foreground">
-                                    에이전트를 즉시 사용할 수 있도록 활성화합니다.
+                                
+                                <Select 
+                                  value={selectedLowerCategory} 
+                                  onValueChange={(value) => {
+                                    setSelectedLowerCategory(value);
+                                    setSelectedDetailCategory('');
+                                  }}
+                                  disabled={!selectedUpperCategory}
+                                >
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="하위 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="none">선택 안함</SelectItem>
+                                    {getLowerCategories(selectedUpperCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                
+                                <Select 
+                                  value={selectedDetailCategory} 
+                                  onValueChange={setSelectedDetailCategory}
+                                  disabled={!selectedLowerCategory}
+                                >
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="세부 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="none">선택 안함</SelectItem>
+                                    {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              {/* 그룹 추가 버튼 - 조건부 활성화 */}
+                              <div className="flex justify-between items-center">
+                                <Button 
+                                  type="button"
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    if (selectedUpperCategory && selectedGroups.length < 10) {
+                                      const newGroup = {
+                                        id: `group-${Date.now()}`,
+                                        upperCategory: selectedUpperCategory,
+                                        lowerCategory: selectedLowerCategory || undefined,
+                                        detailCategory: selectedDetailCategory || undefined
+                                      };
+                                      setSelectedGroups([...selectedGroups, newGroup]);
+                                      // 입력 필드 초기화
+                                      setSelectedUpperCategory('');
+                                      setSelectedLowerCategory('');
+                                      setSelectedDetailCategory('');
+                                    }
+                                  }}
+                                  disabled={!selectedUpperCategory || selectedGroups.length >= 10}
+                                >
+                                  + 그룹 추가
+                                </Button>
+                                
+                                <div className="text-xs text-blue-600">
+                                  {selectedGroups.length}/10개 그룹
+                                </div>
+                              </div>
+                              
+                              {/* 추가된 그룹 목록 */}
+                              {selectedGroups.length > 0 && (
+                                <div className="space-y-2">
+                                  <Label className="text-xs font-medium">추가된 그룹:</Label>
+                                  <div className="max-h-32 overflow-y-auto space-y-1">
+                                    {selectedGroups.map((group, index) => (
+                                      <div key={group.id} className="flex items-center justify-between bg-white p-2 rounded border text-xs">
+                                        <span>
+                                          {[group.upperCategory, group.lowerCategory, group.detailCategory].filter(Boolean).join(' > ')}
+                                        </span>
+                                        <Button 
+                                          type="button"
+                                          variant="ghost" 
+                                          size="sm" 
+                                          onClick={() => {
+                                            setSelectedGroups(selectedGroups.filter((_, i) => i !== index));
+                                          }}
+                                          className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                                        >
+                                          ×
+                                        </Button>
+                                      </div>
+                                    ))}
                                   </div>
                                 </div>
-                                <FormControl>
-                                  <Switch
-                                    checked={Boolean(field.value)}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* 사용자 지정 옵션 */}
+                          {agentForm.watch('visibility') === 'custom' && (
+                            <div className="space-y-4 mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                              <Label className="text-sm font-medium">사용자 검색 및 선택</Label>
+                              
+                              {/* 사용자 검색 입력창 */}
+                              <Input 
+                                placeholder="사용자 이름, ID, 이메일로 검색..." 
+                                value={userFilterSearchQuery}
+                                onChange={(e) => setUserFilterSearchQuery(e.target.value)}
+                                className="focus:ring-2 focus:ring-green-500"
+                              />
+                              
+                              {/* 조직별 필터 */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <Select value={userFilterUpperCategory} onValueChange={setUserFilterUpperCategory}>
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="상위 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getUpperCategories().map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                
+                                <Select value={userFilterLowerCategory} onValueChange={setUserFilterLowerCategory} disabled={!userFilterUpperCategory}>
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="하위 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getLowerCategories(userFilterUpperCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                
+                                <Select value={userFilterDetailCategory} onValueChange={setUserFilterDetailCategory} disabled={!userFilterLowerCategory}>
+                                  <SelectTrigger className="text-xs">
+                                    <SelectValue placeholder="세부 조직" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">전체</SelectItem>
+                                    {getDetailCategories(userFilterUpperCategory, userFilterLowerCategory).map((cat) => (
+                                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              {/* 사용자 목록 테이블 */}
+                              <div className="max-h-64 overflow-y-auto border rounded bg-white">
+                                <table className="w-full text-xs">
+                                  <thead className="bg-gray-50 sticky top-0">
+                                    <tr>
+                                      <th className="px-3 py-2 text-left">선택</th>
+                                      <th className="px-3 py-2 text-left">이름</th>
+                                      <th className="px-3 py-2 text-left">ID</th>
+                                      <th className="px-3 py-2 text-left">조직</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {filteredUsersForCustomAccess.slice(0, 20).map((user) => (
+                                      <tr key={user.id} className="hover:bg-gray-50 border-b">
+                                        <td className="px-3 py-2">
+                                          <Checkbox
+                                            checked={selectedCustomUsers.some(u => u.id === user.id)}
+                                            onCheckedChange={(checked) => {
+                                              if (checked) {
+                                                setSelectedCustomUsers([...selectedCustomUsers, user]);
+                                              } else {
+                                                setSelectedCustomUsers(selectedCustomUsers.filter(u => u.id !== user.id));
+                                              }
+                                            }}
+                                          />
+                                        </td>
+                                        <td className="px-3 py-2 font-medium">{(user as any).name || user.id}</td>
+                                        <td className="px-3 py-2 text-gray-600">{user.id}</td>
+                                        <td className="px-3 py-2 text-gray-500">
+                                          {[user.upperCategory, user.lowerCategory, user.detailCategory].filter(Boolean).join(' > ')}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                              
+                              {/* 선택된 사용자 요약 */}
+                              {selectedCustomUsers.length > 0 && (
+                                <div className="text-xs text-green-600 bg-green-100 p-2 rounded">
+                                  {selectedCustomUsers.length}명 선택됨: {selectedCustomUsers.map(u => (u as any).name || u.id).join(', ')}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </TabsContent>
 
