@@ -9225,21 +9225,55 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 현재 연결된 에이전트 */}
                 <div>
                   <h3 className="text-lg font-medium mb-3">현재 연결된 에이전트</h3>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {selectedDocumentAgents.map((agent, index) => (
-                      <span 
-                        key={index}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                      >
-                        {agent}
-                        <button
-                          onClick={() => setSelectedDocumentAgents(prev => prev.filter((_, i) => i !== index))}
-                          className="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
+                  <div className="space-y-3 mb-4">
+                    {selectedDocumentAgents.length > 0 ? (
+                      selectedDocumentAgents.map((agentName, index) => {
+                        const agentData = agents?.find((a: any) => a.name === agentName);
+                        const agentOrgData = organizations?.find((org: any) => org.id === agentData?.organizationId);
+                        return (
+                          <div 
+                            key={index}
+                            className="bg-white dark:bg-gray-700 border rounded-lg p-4"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                                    <User className="w-5 h-5 text-white" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-medium text-gray-900 dark:text-gray-100">{agentName}</h4>
+                                    <div className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                      {agentOrgData && (
+                                        <div>
+                                          <span className="font-medium">조직:</span> {agentOrgData.upperCategory} / {agentOrgData.lowerCategory}
+                                          {agentOrgData.detailCategory && ` / ${agentOrgData.detailCategory}`}
+                                        </div>
+                                      )}
+                                      <div>
+                                        <span className="font-medium">연결일:</span> {new Date().toLocaleDateString('ko-KR')}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => setSelectedDocumentAgents(prev => prev.filter((_, i) => i !== index))}
+                                className="text-red-500 hover:text-red-700 p-2"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <p>연결된 에이전트가 없습니다</p>
+                        <p className="text-sm">아래에서 에이전트를 검색하여 연결하세요</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -9404,7 +9438,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 // 유형 필터
                                 const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
                                 
-                                return searchMatch && typeMatch;
+                                // 조직 카테고리 필터
+                                const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                                const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                                  (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                                  (agent.upperCategory === selectedDocumentUpperCategory);
+                                
+                                const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                                  (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                                  (agent.lowerCategory === selectedDocumentLowerCategory);
+                                
+                                const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                                  (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                                  (agent.detailCategory === selectedDocumentDetailCategory);
+                                
+                                return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                               })
                               .slice((documentAgentCurrentPage - 1) * 10, documentAgentCurrentPage * 10)
                               .map((agent) => (
@@ -9432,18 +9480,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </span>
                               </td>
                               <td className="px-4 py-4">
-                                <div className="text-sm text-gray-900 dark:text-gray-100">
-                                  예술대학
-                                </div>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">
-                                  음악학과
-                                </div>
+                                {(() => {
+                                  const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                                  return (
+                                    <div>
+                                      <div className="text-sm text-gray-900 dark:text-gray-100">
+                                        {agentOrgData?.upperCategory || agent.upperCategory || '미지정'}
+                                      </div>
+                                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        {agentOrgData?.lowerCategory || agent.lowerCategory || '미지정'}
+                                      </div>
+                                      {(agentOrgData?.detailCategory || agent.detailCategory) && (
+                                        <div className="text-xs text-gray-400">
+                                          {agentOrgData?.detailCategory || agent.detailCategory}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
                               </td>
                               <td className="px-4 py-4">
-                                <span className="text-sm text-gray-900 dark:text-gray-100">3개</span>
+                                <span className="text-sm text-gray-900 dark:text-gray-100">{agent.documentCount || 0}개</span>
                               </td>
                               <td className="px-4 py-4">
-                                <span className="text-sm text-gray-900 dark:text-gray-100">13명</span>
+                                <span className="text-sm text-gray-900 dark:text-gray-100">{agent.userCount || 0}명</span>
                               </td>
                               <td className="px-4 py-4">
                                 <input
@@ -9484,13 +9544,33 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
                               (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
                             const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
-                            return searchMatch && typeMatch;
+                            const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                            const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                              (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                              (agent.upperCategory === selectedDocumentUpperCategory);
+                            const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                              (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                              (agent.lowerCategory === selectedDocumentLowerCategory);
+                            const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                              (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                              (agent.detailCategory === selectedDocumentDetailCategory);
+                            return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                           }).length}개 중 {Math.min(documentAgentCurrentPage * 10, agents.filter(agent => {
                             const searchMatch = !documentAgentSearchQuery.trim() || 
                               agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
                               (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
                             const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
-                            return searchMatch && typeMatch;
+                            const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                            const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                              (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                              (agent.upperCategory === selectedDocumentUpperCategory);
+                            const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                              (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                              (agent.lowerCategory === selectedDocumentLowerCategory);
+                            const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                              (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                              (agent.detailCategory === selectedDocumentDetailCategory);
+                            return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                           }).length)}개 표시
                         </div>
                         <div className="flex items-center space-x-2">
@@ -9510,7 +9590,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
                                 (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
                               const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
-                              return searchMatch && typeMatch;
+                              const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                              const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                                (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                                (agent.upperCategory === selectedDocumentUpperCategory);
+                              const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                                (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                                (agent.lowerCategory === selectedDocumentLowerCategory);
+                              const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                                (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                                (agent.detailCategory === selectedDocumentDetailCategory);
+                              return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                             });
                             return Array.from({ length: Math.ceil(filteredAgents.length / 10) }, (_, i) => i + 1).map(page => (
                               <Button
@@ -9541,7 +9631,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
                                   (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
                                 const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
-                                return searchMatch && typeMatch;
+                                const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                                const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                                  (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                                  (agent.upperCategory === selectedDocumentUpperCategory);
+                                const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                                  (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                                  (agent.lowerCategory === selectedDocumentLowerCategory);
+                                const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                                  (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                                  (agent.detailCategory === selectedDocumentDetailCategory);
+                                return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                               });
                               setDocumentAgentCurrentPage(Math.min(Math.ceil(filteredAgents.length / 10), documentAgentCurrentPage + 1));
                             }}
@@ -9551,7 +9651,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   agent.name.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()) ||
                                   (agent.description && agent.description.toLowerCase().includes(documentAgentSearchQuery.toLowerCase()));
                                 const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
-                                return searchMatch && typeMatch;
+                                const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
+                                const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
+                                  (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
+                                  (agent.upperCategory === selectedDocumentUpperCategory);
+                                const lowerCategoryMatch = selectedDocumentLowerCategory === 'all' || 
+                                  (agentOrgData?.lowerCategory === selectedDocumentLowerCategory) ||
+                                  (agent.lowerCategory === selectedDocumentLowerCategory);
+                                const detailCategoryMatch = selectedDocumentDetailCategory === 'all' || 
+                                  (agentOrgData?.detailCategory === selectedDocumentDetailCategory) ||
+                                  (agent.detailCategory === selectedDocumentDetailCategory);
+                                return searchMatch && typeMatch && upperCategoryMatch && lowerCategoryMatch && detailCategoryMatch;
                               });
                               return documentAgentCurrentPage === Math.ceil(filteredAgents.length / 10);
                             })()}
