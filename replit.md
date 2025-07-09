@@ -988,6 +988,14 @@ Changelog:
   * Added response time display calculated from conversation ID for consistency
   * Category hierarchy shows only existing levels (상위 only, 상위>하위, or 상위>하위>세부)
   * All data generated from conversation logs and agent organization information for authentic display
+- July 9, 2025. Enhanced Q&A management with dual modal functionality and improved interaction:
+  * Modified Q&A table rows to be clickable for opening detailed Q&A modal (질문응답 상세보기)
+  * Changed category label from "카테고리" to "소속 조직" in Q&A detail modal
+  * Updated Q&A detail modal to show real conversation data instead of sample responses
+  * Separated improvement request functionality: MessageSquare icon opens "개선 요청 및 코멘트" modal
+  * Implemented improvement request modal with question/answer display and comment textarea
+  * Added proper event handling to prevent row clicks when clicking improvement request button
+  * Both modals now display authentic conversation data from messages and agent organization information
 - July 9, 2025. Enhanced Q&A management table with improved column names and data:
   * Changed "작업" column to "개선 요청" for better clarity
   * Updated "응답 실패율" to "응답 실패" for simplified display

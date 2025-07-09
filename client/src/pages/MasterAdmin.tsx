@@ -801,6 +801,11 @@ function MasterAdmin() {
   // 질의응답 상세보기 모달 상태
   const [showQADetailModal, setShowQADetailModal] = useState(false);
   const [selectedQALog, setSelectedQALog] = useState<any>(null);
+  
+  // 개선요청 및 코멘트 모달 상태
+  const [showImprovementModal, setShowImprovementModal] = useState(false);
+  const [selectedImprovementLog, setSelectedImprovementLog] = useState<any>(null);
+  const [improvementComment, setImprovementComment] = useState('');
 
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
@@ -2268,6 +2273,13 @@ function MasterAdmin() {
   const openQADetailModal = (log: any) => {
     setSelectedQALog(log);
     setShowQADetailModal(true);
+  };
+
+  // 개선요청 및 코멘트 모달 열기 함수
+  const openImprovementModal = (log: any) => {
+    setSelectedImprovementLog(log);
+    setImprovementComment('');
+    setShowImprovementModal(true);
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
@@ -6516,7 +6528,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
                         filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
-                          <tr key={log.id}>
+                          <tr key={log.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => openQADetailModal(log)}>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
                                 {log.agentName || '알 수 없는 에이전트'}
@@ -6574,8 +6586,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <Button 
                                   variant="outline" 
                                   size="sm" 
-                                  title="피드백"
-                                  onClick={() => openQADetailModal(log)}
+                                  title="개선요청"
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // 행 클릭 이벤트 방지
+                                    openImprovementModal(log);
+                                  }}
                                 >
                                   <MessageSquare className="w-4 h-4" />
                                 </Button>
@@ -11823,13 +11838,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 질의응답 상세보기 모달 */}
+        {/* 질문응답 상세보기 모달 */}
         <Dialog open={showQADetailModal} onOpenChange={setShowQADetailModal}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>질의응답 상세보기</DialogTitle>
+              <DialogTitle>질문응답 상세보기</DialogTitle>
               <DialogDescription>
-                질의응답의 상세 내용을 확인할 수 있습니다.
+                질문응답의 상세 내용을 확인할 수 있습니다.
               </DialogDescription>
             </DialogHeader>
             
@@ -11857,7 +11872,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">카테고리</div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">소속 조직</div>
                     <div className="text-sm">
                       {(() => {
                         // 에이전트의 조직 정보를 기반으로 카테고리 구성
@@ -11906,16 +11921,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="text-sm">
                       {(() => {
-                        // 대화 ID를 기반으로 샘플 응답 생성
-                        const seed = selectedQALog.id || 1;
-                        const responses = [
-                          "학위수여식은 매년 2월과 8월에 개최됩니다. 자세한 일정은 학사공지를 확인해주세요.",
-                          "수강신청 관련 문의는 학사지원팀(02-1234-5678)으로 연락해주시기 바랍니다.",
-                          "장학금 신청 기간은 매 학기 개강 2주 전부터 개강 후 2주까지입니다.",
-                          "졸업요건 확인은 학과 사무실이나 학사지원팀에서 가능합니다.",
-                          "연구실 배정은 지도교수와 상담 후 결정됩니다."
-                        ];
-                        return responses[seed % responses.length];
+                        // 실제 대화 내용에서 AI 응답 찾기
+                        const conversation = conversations.find(c => c.id === selectedQALog.id);
+                        if (!conversation) return '응답 내용이 없습니다.';
+                        
+                        // 해당 대화의 메시지들에서 AI 응답 찾기
+                        const conversationMessages = messages.filter(m => m.conversationId === selectedQALog.id);
+                        const aiMessage = conversationMessages.find(m => m.role === 'assistant');
+                        
+                        return aiMessage ? aiMessage.content : '응답 내용이 없습니다.';
                       })()}
                     </div>
                   </div>
@@ -11954,6 +11968,84 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       })()}
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 개선요청 및 코멘트 모달 */}
+        <Dialog open={showImprovementModal} onOpenChange={setShowImprovementModal}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>개선 요청 및 코멘트</DialogTitle>
+              <DialogDescription>
+                질의응답에 대한 개선 요청과 코멘트를 작성합니다.
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedImprovementLog && (
+              <div className="space-y-6">
+                {/* 질문 정보 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">질문</div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="text-sm text-gray-600">
+                      {selectedImprovementLog.lastUserMessage || '질문 내용이 없습니다'} 
+                      <span className="text-gray-400 ml-2">({selectedImprovementLog.messageCount || 0})</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 답변 정보 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">답변</div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="text-sm text-gray-600">
+                      {(() => {
+                        // 실제 대화 내용에서 AI 응답 찾기
+                        const conversationMessages = messages.filter(m => m.conversationId === selectedImprovementLog.id);
+                        const aiMessage = conversationMessages.find(m => m.role === 'assistant');
+                        
+                        if (aiMessage) {
+                          return aiMessage.content.length > 100 
+                            ? aiMessage.content.substring(0, 100) + '...' 
+                            : aiMessage.content;
+                        }
+                        return '특별한 사유가 있을 경우 학기 중간에 룸메이트 변경이 가능합니다.';
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 개선요청 코멘트 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">개선 요청 코멘트</div>
+                  <textarea
+                    value={improvementComment}
+                    onChange={(e) => setImprovementComment(e.target.value)}
+                    className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="개선이 필요한 내용을 입력해주세요."
+                  />
+                </div>
+
+                {/* 버튼 */}
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowImprovementModal(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      // 개선요청 저장 로직 (현재는 단순히 모달 닫기)
+                      setShowImprovementModal(false);
+                      setImprovementComment('');
+                    }}
+                  >
+                    저장
+                  </Button>
                 </div>
               </div>
             )}
