@@ -540,6 +540,7 @@ import {
   Database as DatabaseIcon,
   FileText as FileTextIcon,
   AlertTriangle,
+  AlertCircle,
   HardDrive,
   Star,
 } from "lucide-react";
