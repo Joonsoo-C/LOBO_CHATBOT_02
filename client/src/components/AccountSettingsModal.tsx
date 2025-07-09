@@ -86,15 +86,15 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case "일반 사용자": return "일반 사용자";
-      case "에이전트 관리자": return "에이전트 관리자";
-      case "마스터 관리자": return "마스터 관리자";
-      case "운영 관리자": return "운영 관리자";
-      case "카테고리 관리자": return "카테고리 관리자";
-      case "QA 관리자": return "QA 관리자";
-      case "문서 관리자": return "문서 관리자";
-      case "외부 사용자": return "외부 사용자";
-      default: return role || "일반 사용자";
+      case "일반 사용자": return t('account.regularUser');
+      case "에이전트 관리자": return t('account.agentManager');
+      case "마스터 관리자": return t('account.masterAdmin');
+      case "운영 관리자": return t('account.operationManager');
+      case "카테고리 관리자": return t('account.categoryManager');
+      case "QA 관리자": return t('account.qaManager');
+      case "문서 관리자": return t('account.documentManager');
+      case "외부 사용자": return t('account.externalUser');
+      default: return role || t('account.regularUser');
     }
   };
 
@@ -110,11 +110,11 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "active": return "활성";
-      case "inactive": return "비활성";
-      case "locked": return "잠금";
-      case "pending": return "대기";
-      default: return status || "알 수 없음";
+      case "active": return t('account.active');
+      case "inactive": return t('account.inactive');
+      case "locked": return t('account.locked');
+      case "pending": return t('account.pending');
+      default: return status || t('account.unknown');
     }
   };
 
@@ -123,7 +123,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto !z-[9999]">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold korean-text">
-            계정 정보
+            {t('home.accountSettings')}
           </DialogTitle>
         </DialogHeader>
 

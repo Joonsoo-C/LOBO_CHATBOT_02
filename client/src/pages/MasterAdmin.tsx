@@ -144,13 +144,13 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
       document.body.removeChild(a);
       
       toast({
-        title: "다운로드 완료",
-        description: `${doc.originalName} 파일이 다운로드되었습니다.`,
+        title: t('admin.downloadSuccess'),
+        description: `${doc.originalName} ${t('admin.downloadDescription')}`,
       });
     } catch (error: any) {
       toast({
-        title: "다운로드 실패",
-        description: error instanceof Error ? error.message : "문서 다운로드 중 오류가 발생했습니다.",
+        title: t('admin.downloadFailed'),
+        description: error instanceof Error ? error.message : t('admin.downloadError'),
         variant: "destructive",
       });
     }
@@ -272,7 +272,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          title="다운로드"
+                          title={t('admin.download')}
                           onClick={() => handleDocumentDownload(doc)}
                         >
                           <Download className="w-4 h-4" />
@@ -2686,13 +2686,13 @@ function MasterAdmin() {
       
       toast({
         title: "성공",
-        description: "에이전트 목록이 Excel 파일로 다운로드되었습니다.",
+        description: t('admin.agentDownloadSuccess'),
       });
     },
     onError: (error: Error) => {
       toast({
         title: "오류",
-        description: "Excel 파일 다운로드에 실패했습니다.",
+        description: t('admin.agentDownloadFailed'),
         variant: "destructive",
       });
     },

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface UserFileUploadModalProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // 업로드된 사용자 파일 목록 조회
   const { data: userFiles = [], isLoading: isLoadingUserFiles, refetch: refetchUserFiles } = useQuery<UserFile[]>({
@@ -87,10 +89,10 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
       setOverwriteExisting(false);
       setValidateOnly(false);
 
-      const actionText = validateOnly ? "검증" : overwriteExisting ? "덮어쓰기" : "추가";
+      const actionText = validateOnly ? t('file.validate') : overwriteExisting ? t('file.overwrite') : t('file.add');
       toast({
-        title: `파일 ${actionText} 완료`,
-        description: data.message || `파일이 성공적으로 ${actionText}되었습니다.`,
+        title: t('file.uploadComplete', { action: actionText }),
+        description: data.message || t('file.uploadSuccess', { action: actionText }),
       });
 
       if (onSuccess) {
@@ -136,14 +138,14 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
         queryKey: ["/api/admin/user-files"]
       });
       toast({
-        title: "삭제 완료",
-        description: "파일이 성공적으로 삭제되었습니다.",
+        title: t('file.deleteComplete'),
+        description: t('file.deleteSuccess'),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "삭제 실패",
-        description: error.message || "파일 삭제에 실패했습니다.",
+        title: t('file.deleteFailed'),
+        description: error.message || t('file.deleteError'),
         variant: "destructive",
       });
     },
@@ -162,8 +164,8 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
 
     if (!allowedTypes.includes(file.type) && !isValidExtension) {
       toast({
-        title: "지원하지 않는 파일 형식",
-        description: "Excel(.xlsx, .xls) 또는 CSV(.csv) 파일만 업로드 가능합니다.",
+        title: t('file.unsupportedFormat'),
+        description: t('file.formatRequirement'),
         variant: "destructive",
       });
       return false;
@@ -171,8 +173,8 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
 
     if (file.size > 50 * 1024 * 1024) {
       toast({
-        title: "파일 크기 초과",
-        description: "50MB 이하의 파일만 업로드 가능합니다.",
+        title: t('file.sizeExceeded'),
+        description: t('file.sizeLimit'),
         variant: "destructive",
       });
       return false;
@@ -231,22 +233,22 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
       });
 
       if (!response.ok) {
-        throw new Error('샘플 파일 다운로드에 실패했습니다.');
+        throw new Error(t('file.downloadFailed'));
       }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = '사용자업로드_샘플파일.xlsx';
+      a.download = t('file.sampleFileName');
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       toast({
-        title: "다운로드 실패",
-        description: "샘플 파일 다운로드에 실패했습니다.",
+        title: t('file.downloadFailed'),
+        description: t('file.downloadError'),
         variant: "destructive",
       });
     }

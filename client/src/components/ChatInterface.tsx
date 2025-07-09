@@ -499,7 +499,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
 대화를 통해 다음 기능들을 실행할 수 있습니다:
 
-• "페르소나" - 에이전트 성격 및 말투 설정
+• {t('management.personaTitle')} - {t('management.personaDesc')}
 • "챗봇 설정" - LLM 모델 및 동작 방식 변경  
 • "문서 업로드" - 지식베이스 확장용 문서 추가
 • "알림보내기" - 사용자들에게 공지사항 전송
@@ -1069,7 +1069,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             <div className="mb-2">
               <div className="flex justify-start">
                 <div className="minimal-message assistant text-sm md:text-base leading-relaxed korean-text">
-                  안녕하세요! 저는 {agent.name}입니다. 궁금한 것이 있으면 언제든지 물어보세요.
+                  {t('chat.agentGreeting', { name: agent.name })}
                 </div>
               </div>
             </div>
