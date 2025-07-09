@@ -7502,7 +7502,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">문서 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {documentList?.length || 0}개 중 1-{documentList?.length || 0}개 표시
+                  전체 {documentList?.length || 0}개 중 {documentList && documentList.length > 0 ? `${((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-${Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length)}개` : '0개'} 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -7637,7 +7637,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex flex-wrap gap-1">
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                에이전트 {doc.agentId}
+                                {(() => {
+                                  const agent = agents?.find((a: any) => a.id === doc.agentId);
+                                  return agent ? agent.name : `에이전트 ${doc.agentId}`;
+                                })()}
                               </span>
                             </div>
                           </td>
