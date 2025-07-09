@@ -24,7 +24,7 @@ import {
   ThumbsDown,
   Laugh,
   Angry,
-  Trash2,
+
   GraduationCap,
   Code,
   Bot,
@@ -85,7 +85,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showIconModal, setShowIconModal] = useState(false);
   const [showFileListModal, setShowFileListModal] = useState(false);
-  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -180,31 +180,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     },
   });
 
-  // Delete conversation mutation
-  const deleteConversationMutation = useMutation({
-    mutationFn: async (conversationId: number) => {
-      const response = await fetch(`/api/conversations/${conversationId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-      if (!response.ok) throw new Error('Failed to delete conversation');
-      return response.json();
-    },
-    onSuccess: () => {
-      // Invalidate conversations list to refresh the chat list
-      queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
-      // Show success toast
-      toast({ 
-        title: "대화방이 삭제되었습니다", 
-        description: "대화 내역이 영구적으로 삭제되었습니다." 
-      });
-      // Navigate back to home page if not on tablet
-      if (!isTablet && window.location.pathname.includes('/chat/')) {
-        window.location.href = '/';
-      }
-    },
-  });
-
   // Delete chat history mutation
   const deleteChatHistoryMutation = useMutation({
     mutationFn: async () => {
@@ -236,15 +211,11 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     },
   });
 
-
-
   // Handler functions for the new actions
   const handleDeleteChatHistory = () => {
     deleteChatHistoryMutation.mutate();
     setShowChatHistoryDeleteDialog(false);
   };
-
-
 
   // Function to add system message from agent
   const addSystemMessage = (content: string) => {
@@ -1067,18 +1038,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               <BarChart3 className="w-4 h-4 mr-2" />
                               성과 분석
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="w-full justify-start px-4 py-2 korean-text text-red-600 hover:text-red-700 hover:bg-red-50"
-                              onClick={() => {
-                                setShowMenu(false);
-                                setShowDeleteConfirmModal(true);
-                              }}
-                            >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              대화방 삭제
-                            </Button>
+
                           </div>
                         </div>
                       </>
@@ -1639,69 +1599,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
         />
       )}
 
-      {/* Delete Conversation Confirmation Modal */}
-      {showDeleteConfirmModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-background border border-border rounded-2xl shadow-xl w-full max-w-md">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-lg font-medium text-foreground korean-text">
-                대화방 삭제 확인
-              </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowDeleteConfirmModal(false)}
-                className="w-8 h-8 p-0"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
 
-            {/* Modal Content */}
-            <div className="p-6">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                  <Trash2 className="w-5 h-5 text-red-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-base font-medium text-foreground korean-text mb-2">
-                    "{agent.name}" 대화방을 삭제하시겠습니까?
-                  </h4>
-                  <p className="text-sm text-muted-foreground korean-text leading-relaxed">
-                    이 작업은 되돌릴 수 없으며, 대화방의 모든 메시지 내역이 영구적으로 삭제됩니다. 
-                    삭제 후에는 대화 내용을 복구할 수 없습니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
-              <Button
-                variant="outline"
-                onClick={() => setShowDeleteConfirmModal(false)}
-                className="korean-text"
-              >
-                취소
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  if (conversation?.id) {
-                    deleteConversationMutation.mutate(conversation.id);
-                  }
-                  setShowDeleteConfirmModal(false);
-                }}
-                disabled={deleteConversationMutation.isPending}
-                className="korean-text"
-              >
-                {deleteConversationMutation.isPending ? "삭제 중..." : "삭제"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Chat History Delete Confirmation Dialog */}
       {showChatHistoryDeleteDialog && (

@@ -886,6 +886,19 @@ Changelog:
   * Action cards: LMS 연동 (blue), 파일 업로드 (green), 새 조직 수동 추가 (orange)
   * Removed duplicate pagination text from bottom of organization list (kept only header count display)
   * Enhanced visual consistency across management sections with unified card-based interface
+- July 9, 2025. Completed comprehensive agent search functionality in document management system:
+  * Enhanced document detail modal with complete agent connection interface
+  * Implemented multi-tier organization category filtering (상위/하위/세부 카테고리)
+  * Added agent type filtering and real-time search functionality
+  * Created comprehensive agent selection table with organization data, statistics, and pagination
+  * Connected agents now display with card format showing organization hierarchy and connection dates
+  * All filtering, search, and pagination logic working with actual database organization data
+- July 9, 2025. Removed chat room deletion functionality from agent management interface:
+  * Deleted "대화방 삭제" menu item from management mode dropdown in ChatInterface
+  * Removed showDeleteConfirmModal state variable and related confirmation modal
+  * Removed deleteConversationMutation and all related deletion logic
+  * Cleaned up unused Trash2 icon import from lucide-react
+  * Chat room deletion feature completely removed per user request from specific UI location
 ```
 
 ## User Preferences
