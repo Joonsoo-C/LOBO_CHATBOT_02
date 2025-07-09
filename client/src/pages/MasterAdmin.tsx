@@ -4083,7 +4083,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.todayMessages || 0}</div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-[#16a34a]">
                     {t('admin.weeklyGrowth')}: +{stats?.weeklyGrowth || 0}%
                   </p>
                 </CardContent>
