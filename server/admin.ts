@@ -369,28 +369,53 @@ export function setupAdminRoutes(app: Express) {
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(excelData);
 
-      // Add worksheet to workbook
-      XLSX.utils.book_append_sheet(workbook, worksheet, '에이전트 목록');
+      // Set column widths for better readability
+      const colWidths = [
+        { wch: 5 },   // 번호
+        { wch: 20 },  // 에이전트명
+        { wch: 30 },  // 설명
+        { wch: 10 },  // 유형
+        { wch: 15 },  // 상위조직
+        { wch: 15 },  // 하위조직
+        { wch: 15 },  // 세부조직
+        { wch: 8 },   // 상태
+        { wch: 12 },  // 모델
+        { wch: 15 },  // 챗봇유형
+        { wch: 15 },  // 페르소나닉네임
+        { wch: 20 },  // 말투스타일
+        { wch: 20 },  // 성격설정
+        { wch: 12 },  // 가시성
+        { wch: 12 },  // 생성일
+        { wch: 12 }   // 수정일
+      ];
+      worksheet['!cols'] = colWidths;
 
-      // Generate Excel buffer
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Agent List');
+
+      // Generate Excel buffer with proper settings
       const excelBuffer = XLSX.write(workbook, { 
         type: 'buffer', 
         bookType: 'xlsx',
-        compression: true
+        compression: false,
+        Props: {
+          Title: 'Agent List',
+          Subject: 'LoBo AI Agent Management Export',
+          Author: 'LoBo AI System',
+          CreatedDate: new Date()
+        }
       });
 
-      // Set response headers
-      const filename = `에이전트_목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      // Set response headers with proper encoding
+      const dateStr = new Date().toISOString().split('T')[0];
+      const filename = `Agent_List_${dateStr}.xlsx`;
       
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
       res.setHeader('Content-Length', excelBuffer.length);
-      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
-      res.setHeader('X-Content-Type-Options', 'nosniff');
-      res.setHeader('X-Frame-Options', 'DENY');
-      res.setHeader('X-XSS-Protection', '1; mode=block');
 
       res.send(excelBuffer);
     } catch (error) {

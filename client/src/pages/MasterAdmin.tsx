@@ -2597,7 +2597,7 @@ function MasterAdmin() {
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = `에이전트_목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      a.download = `Agent_List_${new Date().toISOString().split('T')[0]}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
