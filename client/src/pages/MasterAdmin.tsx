@@ -717,7 +717,7 @@ function MasterAdmin() {
   const [organizationCurrentPage, setOrganizationCurrentPage] = useState(1);
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const [agentCurrentPage, setAgentCurrentPage] = useState(1);
-  const AGENTS_PER_PAGE = 20;
+  const AGENTS_PER_PAGE = 15;
   const [documentCurrentPage, setDocumentCurrentPage] = useState(1);
   const [qaLogCurrentPage, setQaLogCurrentPage] = useState(1);
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
@@ -1236,7 +1236,7 @@ function MasterAdmin() {
   // Move organization-dependent calculations after useQuery declarations
 
   // 레거시 상수들 (삭제된 중복 상태 변수들을 위한 호환성 유지)
-  const usersPerPage = 20;
+  const usersPerPage = 15;
 
   // 통계 데이터 조회
   const { data: stats } = useQuery<SystemStats>({
@@ -1492,7 +1492,7 @@ function MasterAdmin() {
     };
   }, [filteredTokenData]);
 
-  // 토큰 데이터 페이지네이션 (통일된 20개 항목 페이지네이션)
+  // 토큰 데이터 페이지네이션 (통일된 15개 항목 페이지네이션)
   const tokenTotalPages = Math.ceil(filteredTokenData.length / ITEMS_PER_PAGE);
   const tokenStartIndex = (tokenCurrentPage - 1) * ITEMS_PER_PAGE;
   const tokenEndIndex = tokenStartIndex + ITEMS_PER_PAGE;
@@ -1892,7 +1892,7 @@ function MasterAdmin() {
   // Organization categories pagination state
   const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
 
-  // Organization categories pagination calculations (통일된 20개 항목 페이지네이션)
+  // Organization categories pagination calculations (통일된 15개 항목 페이지네이션)
   const totalOrgCategoriesPages = Math.ceil((filteredOrganizationCategories?.length || 0) / ITEMS_PER_PAGE);
   const organizationCategoriesStartIndex = (orgCategoriesCurrentPage - 1) * ITEMS_PER_PAGE;
   const organizationCategoriesEndIndex = organizationCategoriesStartIndex + ITEMS_PER_PAGE;
