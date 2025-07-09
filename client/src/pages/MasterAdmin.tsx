@@ -2574,6 +2574,54 @@ function MasterAdmin() {
     },
   });
 
+  // 에이전트 Excel 내보내기 뮤테이션
+  const exportAgentsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/admin/agents/export', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+      
+      const blob = await response.blob();
+      return blob;
+    },
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `에이전트_목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "성공",
+        description: "에이전트 목록이 Excel 파일로 다운로드되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류",
+        description: "Excel 파일 다운로드에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 에이전트 Excel 내보내기 함수
+  const exportAgentsToExcel = () => {
+    exportAgentsMutation.mutate();
+  };
+
   // 커스텀 이미지 파일 핸들러
   const handleCustomImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -4489,6 +4537,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="agents" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.agentManagement')}</h2>
+              <div className="flex items-center space-x-2">
+                <Button
+                  onClick={exportAgentsToExcel}
+                  disabled={exportAgentsMutation.isPending}
+                  className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white"
+                  size="sm"
+                >
+                  {exportAgentsMutation.isPending ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                      <span>다운로드 중...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      <span>에이전트 목록 다운로드</span>
+                    </>
+                  )}
+                </Button>
+              </div>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>

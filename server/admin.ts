@@ -330,6 +330,75 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Export agents to Excel
+  app.get("/api/admin/agents/export", requireMasterAdmin, async (req, res) => {
+    try {
+      const XLSX = await import('xlsx');
+      const agents = await storage.getAllAgents();
+
+      // Filter out agents with 로보대학교 affiliation
+      const filteredAgents = agents.filter(agent => {
+        const hasRoboUnivAffiliation = 
+          agent.upperCategory === '로보대학교' || 
+          agent.lowerCategory === '로보대학교' ||
+          (agent as any).organizationName === '로보대학교';
+        return !hasRoboUnivAffiliation;
+      });
+
+      // Prepare data for Excel
+      const excelData = filteredAgents.map((agent, index) => ({
+        '번호': index + 1,
+        '에이전트명': agent.name,
+        '설명': agent.description,
+        '유형': agent.category,
+        '상위조직': agent.upperCategory || '',
+        '하위조직': agent.lowerCategory || '',
+        '세부조직': agent.detailCategory || '',
+        '상태': agent.isActive ? '활성' : '비활성',
+        '모델': agent.llmModel || 'gpt-4o',
+        '챗봇유형': agent.chatbotType || 'doc-fallback-llm',
+        '페르소나닉네임': agent.personaNickname || '',
+        '말투스타일': agent.speechStyle || '',
+        '성격설정': agent.personality || '',
+        '가시성': agent.visibility || 'organization',
+        '생성일': agent.createdAt ? new Date(agent.createdAt).toISOString().split('T')[0] : '',
+        '수정일': agent.updatedAt ? new Date(agent.updatedAt).toISOString().split('T')[0] : ''
+      }));
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, '에이전트 목록');
+
+      // Generate Excel buffer
+      const excelBuffer = XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx',
+        compression: true
+      });
+
+      // Set response headers
+      const filename = `에이전트_목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+      res.setHeader('Content-Length', excelBuffer.length);
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-Frame-Options', 'DENY');
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+
+      res.send(excelBuffer);
+    } catch (error) {
+      console.error("Error exporting agents to Excel:", error);
+      res.status(500).json({ message: "Excel 파일 생성에 실패했습니다." });
+    }
+  });
+
   // Managers (faculty users)
   app.get("/api/admin/managers", requireMasterAdmin, async (req, res) => {
     try {
