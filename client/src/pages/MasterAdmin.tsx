@@ -4153,7 +4153,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-900 dark:text-green-100">3.2%</div>
-                  <p className="text-xs text-green-700 dark:text-green-300">전월 대비</p>
+                  <p className="text-xs text-green-700 dark:text-green-300">전일 대비</p>
                 </CardContent>
               </Card>
 
