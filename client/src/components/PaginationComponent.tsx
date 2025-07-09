@@ -41,7 +41,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center space-x-2 px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+    <div className="flex items-center justify-center space-x-2 px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-center">
       {/* 페이지네이션 버튼들 */}
       <Button
         variant="outline"
@@ -52,7 +52,6 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
       >
         이전
       </Button>
-      
       {/* 첫 페이지 */}
       {currentPage > 3 && (
         <>
@@ -67,7 +66,6 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
           {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
         </>
       )}
-      
       {/* 현재 페이지 주변 페이지들 */}
       {getPageNumbers().map((page) => (
         <Button
@@ -80,7 +78,6 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
           {page}
         </Button>
       ))}
-      
       {/* 마지막 페이지 */}
       {currentPage < totalPages - 2 && (
         <>
@@ -95,7 +92,6 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
           </Button>
         </>
       )}
-      
       <Button
         variant="outline"
         size="sm"
