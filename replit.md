@@ -971,6 +971,7 @@ Changelog:
   * Removed eye icon button from action column, keeping only message feedback button
   * Dynamic response method assignment based on conversation ID for consistent data display
   * Repositioned "시간" column between "응답 시간" and "개선 요청" columns for better information flow
+  * Filtered out "메시지 없음" entries to show only conversations with actual user-chatbot interactions
 - July 9, 2025. Enhanced Q&A management table with improved column names and data:
   * Changed "작업" column to "개선 요청" for better clarity
   * Updated "응답 실패율" to "응답 실패" for simplified display

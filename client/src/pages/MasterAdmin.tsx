@@ -1832,6 +1832,13 @@ function MasterAdmin() {
     
     let filtered = [...conversationLogs];
     
+    // "메시지 없음" 항목들 필터링 - 실제 질문-응답 인터랙션이 있는 대화만 표시
+    filtered = filtered.filter(log => 
+      log.lastUserMessage && 
+      log.lastUserMessage.trim() !== '' && 
+      log.lastUserMessage !== '메시지 없음'
+    );
+    
     // 상위 조직 카테고리 필터링
     if (qaSelectedUpperCategory !== 'all') {
       filtered = filtered.filter(log => log.upperCategory === qaSelectedUpperCategory);
