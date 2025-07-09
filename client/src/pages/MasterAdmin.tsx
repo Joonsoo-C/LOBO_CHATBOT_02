@@ -6176,7 +6176,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">로그 검색</h3>
+              <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
