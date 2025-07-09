@@ -4191,7 +4191,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-sm">일일 평균</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-sm">토큰 소비량 일일 평균</CardTitle>
                   <Zap className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
