@@ -4417,7 +4417,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Button variant="outline" onClick={resetFilters} className="h-10 w-full">
+                  <Button onClick={resetFilters} className="h-10 w-full">
                     필터 초기화
                   </Button>
                 </div>
@@ -6020,7 +6020,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   <div>
                     <Button 
-                      variant="outline" 
                       className="h-10 w-full"
                       onClick={resetAgentFilters}
                     >
@@ -6755,7 +6754,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Button variant="outline" onClick={resetFilters} className="h-10 w-full">
+                  <Button onClick={resetFilters} className="h-10 w-full">
                     필터 초기화
                   </Button>
                 </div>
@@ -7608,7 +7607,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Button variant="outline" onClick={resetDocumentFilters} className="h-10 w-full">
+                  <Button onClick={resetDocumentFilters} className="h-10 w-full">
                     필터 초기화
                   </Button>
                 </div>
@@ -8017,7 +8016,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Button variant="outline" onClick={() => {
+                    <Button onClick={() => {
                       setTokenPeriodFilter("month");
                       setTokenUpperCategoryFilter("all");
                       setTokenLowerCategoryFilter("all");
@@ -9493,7 +9492,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       
                       <div>
                         <Button 
-                          variant="outline" 
                           onClick={() => {
                             setDocumentAgentSearchQuery("");
                             setSelectedDocumentUpperCategory("all");
