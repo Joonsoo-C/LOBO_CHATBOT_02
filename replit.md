@@ -936,6 +936,12 @@ Changelog:
   * Changed ITEMS_PER_PAGE from 20 to 15 across all management sections
   * Updated document management to use PaginationComponent for consistent center alignment
   * All list sections now display 15 items per page: Q&A logs, users, agents, organizations, documents, tokens
+- July 9, 2025. Standardized search input interface across all management sections:
+  * Updated search input placeholders: "조직명으로 검색하세요." for organizations, "문서명 또는 내용으로 검색하세요." for documents, "질문 내용으로 검색하세요." for questions
+  * Unified all search input labels to "검색어" across all management sections
+  * Applied consistent search button styling with variant="outline" and h-10 w-full classes
+  * Fixed separate AGENTS_PER_PAGE and usersPerPage constants to use unified 15 items per page
+  * All search interfaces now follow consistent design pattern matching user management section
 ```
 
 ## User Preferences

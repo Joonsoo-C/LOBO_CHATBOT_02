@@ -6404,12 +6404,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드 검색</Label>
-                  <Input placeholder="질문 내용 검색..." className="h-10" />
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Input placeholder="질문 내용으로 검색하세요." className="h-10" />
                 </div>
                 <div>
-                  <Button className="h-10 w-full">
-                    필터 적용
+                  <Button variant="outline" className="h-10 w-full">
+                    검색
                   </Button>
                 </div>
               </div>
@@ -6762,9 +6762,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 카테고리 검색 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div className="col-span-3">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.organizationSearch')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                   <Input
-                    placeholder={t('org.searchPlaceholder')}
+                    placeholder="조직명으로 검색하세요."
                     value={userSearchQuery}
                     onChange={(e) => {
                       setUserSearchQuery(e.target.value);
@@ -6775,7 +6775,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button onClick={executeSearch} variant="outline" className="h-10 w-full">
-                    {t('org.search')}
+                    검색
                   </Button>
                 </div>
               </div>
@@ -7617,7 +7617,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="col-span-3">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                   <Input
-                    placeholder="문서명 또는 내용으로 검색..."
+                    placeholder="문서명 또는 내용으로 검색하세요."
                     value={documentSearchQuery}
                     onChange={(e) => setDocumentSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
@@ -7625,7 +7625,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
                 <div>
-                  <Button onClick={() => setHasDocumentSearched(true)} className="h-10 w-full">
+                  <Button onClick={() => setHasDocumentSearched(true)} variant="outline" className="h-10 w-full">
                     검색
                   </Button>
                 </div>
