@@ -868,6 +868,12 @@ Changelog:
   * Implemented previous/next buttons and page number navigation using PaginationComponent
   * Fixed Excel export metadata and security headers to avoid Protected View warnings
   * All pagination displays now consistent across organization categories, users, agents, documents, conversations, and token management
+- July 9, 2025. Reorganized user management action buttons layout to match agent management:
+  * Restructured user management section with three action cards at the same height
+  * Action cards: LMS 연동 (blue), 파일 업로드 (green), 사용자 수동 추가 (orange)
+  * Changed grid layout from 2 columns to 3 columns for consistent action button placement
+  * Moved "사용자 추가" button from header to dedicated action card following agent management design pattern
+  * Enhanced visual consistency across management sections with unified card-based interface
 ```
 
 ## User Preferences

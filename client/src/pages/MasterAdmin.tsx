@@ -4124,19 +4124,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Download className="w-4 h-4" />
                   <span>사용자 목록 다운로드</span>
                 </Button>
-                <Button 
-                  variant="default"
-                  onClick={() => setIsNewUserDialogOpen(true)}
-                  className="flex items-center space-x-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>사용자 추가</span>
-                </Button>
               </div>
             </div>
 
-            {/* 사용자 관리 방법 안내 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* 사용자 관리 액션 버튼들 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Card 
                 className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => setIsLmsDialogOpen(true)}
@@ -4167,6 +4159,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsNewUserDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Plus className="w-5 h-5 mr-2 text-orange-600" />
+                    사용자 수동 추가
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    새로운 사용자를 직접 생성하고 설정합니다.
                   </p>
                 </CardContent>
               </Card>
