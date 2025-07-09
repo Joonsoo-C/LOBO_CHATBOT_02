@@ -11086,7 +11086,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <p className="text-sm text-gray-500">검색 조건에 맞는 사용자가 없습니다</p>
                                   </div>
                                 ) : (
-                                  <>
+                                  <div className="space-y-2">
                                     {filteredManagerUsers.slice((managerCurrentPage - 1) * 10, managerCurrentPage * 10).map((user) => {
                                       const isSelected = (
                                         currentManagerTab === 'agent' ? selectedAgentManagers :
@@ -11154,16 +11154,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                                 <span className="text-xs px-2 py-1 bg-gray-100 rounded-full">
                                                   {user.role}
                                                 </span>
+                                                {user.email && (
+                                                  <p className="text-xs text-gray-500 mt-1">{user.email}</p>
+                                                )}
                                               </div>
-                                              {user.email && (
-                                                <p className="text-xs text-gray-500 mt-1">{user.email}</p>
-                                              )}
                                             </div>
                                           </div>
                                         </div>
-                                      ))}
-                                    </div>
-
+                                      );
+                                    })}
+                                    
                                     {/* 페이지네이션 */}
                                     {totalManagerPages > 1 && (
                                       <div className="flex items-center justify-between">
@@ -11192,7 +11192,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         </div>
                                       </div>
                                     )}
-                                  </>
+                                  </div>
                                 )}
                               </div>
                             </div>
