@@ -540,6 +540,7 @@ import {
   Database as DatabaseIcon,
   FileText as FileTextIcon,
   AlertTriangle,
+  HardDrive,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -7341,77 +7342,64 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
 
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm">전체 파일</span>
-                    <span className="font-medium">{documentList?.length || 0}</span>
+            {/* 문서 통계 카드 - 질문/응답 관리 스타일과 동일한 컴팩트 레이아웃 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">전체 파일 수</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">전체 파일</span>
-                    <span className="font-medium">{documentList?.length || 0}</span>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{documentList?.length || 0}</div>
+                    <div className="text-xs text-gray-500">개</div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">비활성 문서</span>
-                    <span className="font-medium">0</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">총 용량</span>
-                    <span className="font-medium">{documentList?.reduce((total, doc) => {
-                      const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
-                      return total + sizeInMB;
-                    }, 0).toFixed(1) || '0'} MB</span>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">문서 통계</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm">PDF</span>
-                    <span className="font-medium">856 (69%)</span>
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">인덱스 실패율</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Word</span>
-                    <span className="font-medium">245 (20%)</span>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">2.4%</div>
+                    <div className="text-xs text-red-600">처리 실패</div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Excel</span>
-                    <span className="font-medium">98 (8%)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">기타</span>
-                    <span className="font-medium">35 (3%)</span>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">최근 업로드</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {documentList && documentList.length > 0 ? (
-                    documentList.slice(0, 3).map((doc, index) => (
-                      <div key={index} className="text-sm">
-                        <div className="font-medium">{doc.name}</div>
-                        <div className="text-gray-500">{doc.date}</div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-gray-500">
-                      업로드된 문서가 없습니다.
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <XCircle className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">비활성 문서 수</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">0</div>
+                    <div className="text-xs text-gray-500">개</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <HardDrive className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">총 용량</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">
+                      {documentList?.reduce((total, doc) => {
+                        const sizeInMB = parseFloat(doc.size?.replace(' MB', '') || '0');
+                        return total + sizeInMB;
+                      }, 0).toFixed(1) || '0'}
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                    <div className="text-xs text-gray-500">MB</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* 문서 검색 및 필터링 */}
