@@ -10796,18 +10796,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </Select>
                           </div>
 
-                          {/* 문서 설명 입력창 */}
-                          <div>
-                            <Label className="text-sm font-medium text-gray-700">문서 설명</Label>
-                            <Textarea 
-                              placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                              rows={3}
-                              className="mt-1"
-                              value={agentDocumentDescription}
-                              onChange={(e) => setAgentDocumentDescription(e.target.value)}
-                            />
-                          </div>
-
                           {/* 파일 업로드 영역 */}
                           <div>
                             <Label className="text-sm font-medium text-gray-700">문서 파일 업로드</Label>
@@ -10873,6 +10861,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </Button>
                               </div>
                             )}
+                          </div>
+
+                          {/* 문서 설명 입력창 */}
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">문서 설명</Label>
+                            <Textarea 
+                              placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                              rows={3}
+                              className="mt-1"
+                              value={agentDocumentDescription}
+                              onChange={(e) => setAgentDocumentDescription(e.target.value)}
+                            />
                           </div>
 
                           {/* 문서 목록 */}
