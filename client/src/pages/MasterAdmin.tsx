@@ -6359,9 +6359,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* QA 로그 페이지네이션 */}
                 {filteredConversationLogs && filteredConversationLogs.length > ITEMS_PER_PAGE && (
                   <div className="mt-4 flex items-center justify-between px-6 py-4 border-t">
-                    <div className="text-sm text-gray-500">
-                      전체 {filteredConversationLogs.length}개 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs.length)}개 표시
-                    </div>
                     <PaginationComponent
                       currentPage={qaLogCurrentPage}
                       totalPages={Math.ceil(filteredConversationLogs.length / ITEMS_PER_PAGE)}
