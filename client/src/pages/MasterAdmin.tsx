@@ -4585,20 +4585,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <h2 className="text-2xl font-bold">{t('admin.agentManagement')}</h2>
               <div className="flex items-center space-x-2">
                 <Button
+                  variant="outline"
                   onClick={exportAgentsToExcel}
                   disabled={exportAgentsMutation.isPending}
-                  className="flex items-center space-x-2 bg-[#f4f4f5] hover:bg-gray-200 text-black"
-                  size="sm"
+                  className="flex items-center space-x-2"
                 >
                   {exportAgentsMutation.isPending ? (
                     <>
-                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></span>
                       <span>다운로드 중...</span>
                     </>
                   ) : (
                     <>
                       <Download className="w-4 h-4" />
-                      <span className="text-black">에이전트 목록 다운로드</span>
+                      <span>에이전트 목록 다운로드</span>
                     </>
                   )}
                 </Button>
