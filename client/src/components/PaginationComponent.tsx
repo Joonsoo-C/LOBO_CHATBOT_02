@@ -41,7 +41,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center space-x-2 px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-center">
+    <div className="flex items-center justify-center space-x-2 px-6 py-4 text-center">
       {/* 페이지네이션 버튼들 */}
       <Button
         variant="outline"
