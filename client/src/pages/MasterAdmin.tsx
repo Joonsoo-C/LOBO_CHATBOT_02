@@ -4187,7 +4187,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Clock className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">2.3초</div>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">2.3sec</div>
                   <p className="text-xs text-green-700 dark:text-green-300">-0.3초</p>
                 </CardContent>
               </Card>
