@@ -4099,108 +4099,98 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.todayActivity')}</CardTitle>
-                  <Activity className="h-4 w-4 text-muted-foreground" />
+                  <Activity className="h-4 w-4 text-blue-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats?.todayMessages || 0}</div>
-                  <p className="text-xs text-[#16a34a]">
+                  <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats?.todayMessages || 0}</div>
+                  <p className="text-xs text-blue-700 dark:text-blue-300">
                     {t('admin.weeklyGrowth')}: +{stats?.weeklyGrowth || 0}%
                   </p>
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[14px]">문서 총 용량</CardTitle>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">0.1M</div>
-                  <p className="text-xs text-[#16a34a]">토큰</p>
-                </CardContent>
-              </Card>
             </div>
 
-            {/* 질문응답 관리 카드들 */}
+            {/* 질문응답 관리 카드들 - 녹색 계열 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">오늘 질문 수</CardTitle>
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <MessageSquare className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">247</div>
-                  <p className="text-xs text-green-600">+12%</p>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">247</div>
+                  <p className="text-xs text-green-700 dark:text-green-300">+12%</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">평균 응답 시간</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <Clock className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">2.3초</div>
-                  <p className="text-xs text-green-600">-0.3초</p>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">2.3초</div>
+                  <p className="text-xs text-green-700 dark:text-green-300">-0.3초</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">질문 응답 실패율</CardTitle>
-                  <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                  <AlertCircle className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">3.2%</div>
-                  <p className="text-xs text-green-600">전월 대비</p>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">3.2%</div>
+                  <p className="text-xs text-green-700 dark:text-green-300">전월 대비</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">응답 사용자 만족도</CardTitle>
-                  <Star className="h-4 w-4 text-muted-foreground" />
+                  <Star className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">4.6/5</div>
-                  <p className="text-xs text-green-600">향상 중</p>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">4.6/5</div>
+                  <p className="text-xs text-green-700 dark:text-green-300">향상 중</p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* 토큰 관리 카드들 */}
+            {/* 토큰 관리 카드들 - 주황색 계열 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">토큰 소비량 일일 평균</CardTitle>
-                  <Zap className="h-4 w-4 text-muted-foreground" />
+                  <Zap className="h-4 w-4 text-orange-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">2.6K</div>
-                  <p className="text-xs text-green-600">+12% 지난 주 대비</p>
+                  <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">2.6K</div>
+                  <p className="text-xs text-orange-700 dark:text-orange-300">+12% 지난 주 대비</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">토큰 예상 비용</CardTitle>
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <DollarSign className="h-4 w-4 text-orange-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">₩6,761</div>
-                  <p className="text-xs text-muted-foreground">이번 달 예상 비용</p>
+                  <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">₩6,761</div>
+                  <p className="text-xs text-orange-700 dark:text-orange-300">이번 달 예상 비용</p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* 인기 질문 TOP 5 카드 */}
+            {/* 인기 질문 TOP 5 카드 - 보라색 계열 */}
             <div className="grid grid-cols-1 gap-6">
-              <Card>
+              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">인기 질문 TOP 5</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <TrendingUp className="h-4 w-4 text-purple-600" />
                 </CardHeader>
                 <CardContent>
                   {popularQuestionsLoading ? (
