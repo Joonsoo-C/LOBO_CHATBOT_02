@@ -3210,6 +3210,43 @@ function MasterAdmin() {
     }
   };
 
+  // 조직 카테고리 엑셀 내보내기 핸들러
+  const handleOrganizationExcelExport = async () => {
+    try {
+      const response = await fetch('/api/admin/organizations/export', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('엑셀 내보내기에 실패했습니다');
+      }
+
+      // 파일 다운로드
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `조직카테고리목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "내보내기 완료",
+        description: "조직 카테고리 목록이 엑셀 파일로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('Organization Excel export error:', error);
+      toast({
+        title: "내보내기 실패",
+        description: "엑셀 파일 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // 사용자 파일 업로드 핸들러
   const handleUserFileUpload = async () => {
     if (selectedUserFiles.length === 0) {
@@ -6448,6 +6485,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.organizationManagement')}</h2>
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline"
+                  onClick={handleOrganizationExcelExport}
+                  className="flex items-center space-x-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>조직 카테고리 목록 다운로드</span>
+                </Button>
+              </div>
             </div>
 
             {/* 카테고리 관리 방법 안내 */}

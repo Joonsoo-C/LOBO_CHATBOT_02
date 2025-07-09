@@ -1490,6 +1490,92 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Export organizations to Excel
+  app.get("/api/admin/organizations/export", requireMasterAdmin, async (req, res) => {
+    try {
+      const organizations = await storage.getAllOrganizations();
+
+      if (!organizations || organizations.length === 0) {
+        return res.status(404).json({ message: "조직 카테고리 데이터가 없습니다" });
+      }
+
+      // Prepare organization data for Excel export
+      const excelData = organizations.map(org => ({
+        'ID': org.id,
+        '상위 조직': org.upperCategory || '',
+        '하위 조직': org.lowerCategory || '',
+        '세부 조직': org.detailCategory || '',
+        '관리자': org.manager || '',
+        '소속 인원': org.memberCount || 0,
+        '에이전트 수': org.agentCount || 0,
+        '상태': org.status === 'active' ? '활성' : org.status === 'inactive' ? '비활성' : org.status,
+        '설명': org.description || '',
+        '생성일': org.createdAt ? new Date(org.createdAt).toLocaleString('ko-KR') : '',
+        '수정일': org.updatedAt ? new Date(org.updatedAt).toLocaleString('ko-KR') : ''
+      }));
+
+      // Create workbook and worksheet
+      const { default: XLSX } = await import('xlsx');
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Auto-size columns
+      const colWidths = [
+        { wch: 8 },  // ID
+        { wch: 20 }, // 상위 조직
+        { wch: 25 }, // 하위 조직
+        { wch: 30 }, // 세부 조직
+        { wch: 15 }, // 관리자
+        { wch: 10 }, // 소속 인원
+        { wch: 10 }, // 에이전트 수
+        { wch: 8 },  // 상태
+        { wch: 40 }, // 설명
+        { wch: 20 }, // 생성일
+        { wch: 20 }  // 수정일
+      ];
+      worksheet['!cols'] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, '조직카테고리목록');
+
+      // Set workbook properties to avoid Protected View
+      workbook.Props = {
+        Title: "조직카테고리목록",
+        Subject: "LoBo AI 관리자 센터 조직 카테고리 목록",
+        Author: "LoBo AI Admin Center",
+        CreatedDate: new Date(),
+        ModifiedDate: new Date(),
+        Application: "LoBo AI Admin Center",
+        Company: "LoBo University"
+      };
+
+      // Generate Excel file buffer with compression to avoid corruption
+      const excelBuffer = XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx',
+        compression: true,
+        bookSST: false // Disable shared string table for compatibility
+      });
+
+      // Set comprehensive response headers for secure file download
+      const fileName = `조직카테고리목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+      res.setHeader('Content-Length', excelBuffer.length.toString());
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+
+      // Send file
+      res.send(excelBuffer);
+
+    } catch (error) {
+      console.error("Error exporting organizations to Excel:", error);
+      res.status(500).json({ message: "엑셀 파일 생성에 실패했습니다" });
+    }
+  });
+
   // Get admin documents
   app.get("/api/admin/documents", requireMasterAdmin, async (req, res) => {
     try {
