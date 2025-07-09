@@ -109,10 +109,32 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': '관리자 모드',
     'agent.generalChat': '채팅',
     
+    // 카테고리
+    'category.school': '학교',
+    'category.professor': '교수',
+    'category.student': '학생',
+    'category.group': '그룹',
+    'category.function': '기능형',
+    
+    // 시간 표시
+    'time.recent': '최근',
+    
     // 계정 설정
     'account.settings': '계정 설정',
     'account.lightMode': '라이트 모드',
     'account.logout': '로그아웃',
+    
+    // 대시보드 카드 설명
+    'dashboard.activeUsersDesc': '활성 사용자: 12',
+    'dashboard.activeAgentsDesc': '활성 에이전트: 79',
+    'dashboard.totalMessagesDesc': '총 메시지: 145',
+    'dashboard.weeklyGrowthDesc': '주간 성장률: +15.2%',
+    'dashboard.todayQuestionsPercent': '+12%',
+    'dashboard.avgResponseTimeChange': '-0.3초',
+    'dashboard.responseSuccessPercent': '전월 대비',
+    'dashboard.userSatisfactionDesc': '향상 중',
+    'dashboard.tokenUsageDailyPercent': '+12% 지난 주 대비',
+    'dashboard.estimatedCostDesc': '이번 달 예상 비용',
     'account.noInfo': '정보 없음',
     'account.student': '학생',
     'account.faculty': '교직원',
@@ -143,6 +165,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Chat interface
     'chat.typing': '메시지 작성 중...',
     'chat.inputPlaceholder': '메시지를 입력하세요...',
+    'chat.deleteHistory': '채팅 기록 삭제',
     
     // 마스터 관리자 센터
     'admin.title': 'LoBo AI 관리자 센터',
@@ -217,6 +240,9 @@ const translations: Record<Language, Record<string, string>> = {
     'org.status': '상태',
     'org.select': '선택',
     'admin.userList': '사용자 목록',
+    'admin.select': '선택',
+    'admin.none': '선택 안함',
+    'admin.selected': '명 선택됨',
     
     // Document Management Korean
     'doc.fileType': '파일 형식',
@@ -241,6 +267,17 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.todayQuestions': '247',
     'admin.avgResponseTime': '2.3초',
     'admin.responseSuccessTitle': '질문 응답 성공률',
+    'admin.dailyImprovement': '전일 대비 향상',
+    'admin.improving': '향상 중',
+    'admin.tokenDailyAvgTitle': '토큰 소비량 일일 평균',
+    'admin.weeklyCompared': '+12% 지난 주 대비',
+    'admin.tokenEstimatedCostTitle': '토큰 예상 비용',
+    'admin.monthlyEstimated': '이번 달 예상 비용',
+    'admin.popularQuestionsTop5': '인기 질문 TOP 5',
+    'admin.loading': '로딩 중...',
+    'admin.dataLoadError': '데이터를 불러올 수 없습니다',
+    'admin.times': '회',
+    'admin.noQuestionData': '질문 데이터가 없습니다',
     'admin.responseSuccess': '96.8%',
     'admin.userSatisfactionValue': '4.6/5',
     'admin.dailyAverageTitle': '토큰 소비량 일평균',
@@ -400,10 +437,32 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': 'Management Mode',
     'agent.generalChat': 'General Chat',
     
+    // Categories
+    'category.school': 'School',
+    'category.professor': 'Professor',
+    'category.student': 'Student',
+    'category.group': 'Group',
+    'category.function': 'Function',
+    
+    // Time display
+    'time.recent': 'Recent',
+    
     // Account Settings
     'account.settings': 'Account Settings',
     'account.lightMode': 'Light Mode',
     'account.logout': 'Logout',
+    
+    // Dashboard card descriptions
+    'dashboard.activeUsersDesc': 'Active Users: 12',
+    'dashboard.activeAgentsDesc': 'Active Agents: 79',
+    'dashboard.totalMessagesDesc': 'Total Messages: 145',
+    'dashboard.weeklyGrowthDesc': 'Weekly Growth: +15.2%',
+    'dashboard.todayQuestionsPercent': '+12%',
+    'dashboard.avgResponseTimeChange': '-0.3s',
+    'dashboard.responseSuccessPercent': 'vs Last Month',
+    'dashboard.userSatisfactionDesc': 'Improving',
+    'dashboard.tokenUsageDailyPercent': '+12% vs Last Week',
+    'dashboard.estimatedCostDesc': 'This Month Estimate',
     'account.noInfo': 'No information',
     'account.student': 'Student',
     'account.faculty': 'Faculty',
@@ -434,6 +493,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Chat interface
     'chat.typing': 'Typing...',
     'chat.inputPlaceholder': 'Type a message...',
+    'chat.deleteHistory': 'Delete Chat History',
     
     // Document Management
     'doc.management': 'Document Management',
@@ -526,12 +586,26 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.fileUploadDesc': 'File Upload',
     'admin.organizationList': 'Organization List',
     'admin.userList': 'User List',
+    'admin.select': 'Select',
+    'admin.none': 'None',
+    'admin.selected': ' selected',
     
     // Q&A and Token Management English
     'admin.qaManagement': 'Q&A Management',
     'admin.todayQuestions': '247',
     'admin.avgResponseTime': '2.3s',
     'admin.responseSuccessTitle': 'Response Success Rate',
+    'admin.dailyImprovement': 'Daily Improvement',
+    'admin.improving': 'Improving',
+    'admin.tokenDailyAvgTitle': 'Daily Token Usage Average',
+    'admin.weeklyCompared': '+12% compared to last week',
+    'admin.tokenEstimatedCostTitle': 'Token Estimated Cost',
+    'admin.monthlyEstimated': 'Monthly Estimated Cost',
+    'admin.popularQuestionsTop5': 'Popular Questions TOP 5',
+    'admin.loading': 'Loading...',
+    'admin.dataLoadError': 'Unable to load data',
+    'admin.times': 'times',
+    'admin.noQuestionData': 'No question data available',
     'admin.responseSuccess': '96.8%',
     'admin.userSatisfactionValue': '4.6/5',
     'admin.dailyAverageTitle': 'Daily Token Usage',
@@ -667,9 +741,20 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managementMode': '管理模式',
     'agent.generalChat': '一般对话',
     
+    // Categories
+    'category.school': '学校',
+    'category.professor': '教授',
+    'category.student': '学生',
+    'category.group': '群组',
+    'category.function': '功能型',
+    
+    // Time display
+    'time.recent': '最近',
+    
     // Chat interface
     'chat.typing': '正在输入...',
     'chat.inputPlaceholder': '输入消息...',
+    'chat.deleteHistory': '删除聊天记录',
     
     // 文档管理
     'doc.management': '文档管理',
@@ -753,6 +838,18 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.lmsSync': 'LMS 集成（推荐）',
     'admin.fileUploadDesc': '文件上传',
     'admin.organizationList': '组织列表',
+    'admin.responseSuccessTitle': '问题响应成功率',
+    'admin.dailyImprovement': '比前日改善',
+    'admin.improving': '改善中',
+    'admin.tokenDailyAvgTitle': '令牌消耗量日平均',
+    'admin.weeklyCompared': '+12% 比上周',
+    'admin.tokenEstimatedCostTitle': '令牌预计成本',
+    'admin.monthlyEstimated': '本月预计成本',
+    'admin.popularQuestionsTop5': '热门问题TOP 5',
+    'admin.loading': '加载中...',
+    'admin.dataLoadError': '无法加载数据',
+    'admin.times': '次',
+    'admin.noQuestionData': '无问题数据',
     
     // Organization Management
     'org.lmsIntegration': 'LMS集成 (推荐)',
@@ -774,6 +871,9 @@ const translations: Record<Language, Record<string, string>> = {
     'org.status': '状态',
     'org.select': '选择',
     'admin.userList': '用户列表',
+    'admin.select': '选择',
+    'admin.none': '不选择',
+    'admin.selected': '名已选择',
     
     // 语言名称
     'language.ko': '한국어',
@@ -870,6 +970,17 @@ const translations: Record<Language, Record<string, string>> = {
     // Chat interface
     'chat.typing': 'Đang nhập...',
     'chat.inputPlaceholder': 'Nhập tin nhắn...',
+    'chat.deleteHistory': 'Xóa lịch sử trò chuyện',
+    
+    // Categories
+    'category.school': 'Trường học',
+    'category.professor': 'Giáo sư',
+    'category.student': 'Sinh viên',
+    'category.group': 'Nhóm',
+    'category.function': 'Chức năng',
+    
+    // Time display
+    'time.recent': 'Gần đây',
     
     // Quản lý Tài liệu
     'doc.management': 'Quản lý Tài liệu',
@@ -953,6 +1064,18 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.lmsSync': 'Tích hợp LMS (Khuyến nghị)',
     'admin.fileUploadDesc': 'Tải lên Tệp',
     'admin.organizationList': 'Danh sách Tổ chức',
+    'admin.responseSuccessTitle': 'Tỷ lệ phản hồi thành công',
+    'admin.dailyImprovement': 'Cải thiện hàng ngày',
+    'admin.improving': 'Đang cải thiện',
+    'admin.tokenDailyAvgTitle': 'Mức tiêu thụ token hàng ngày',
+    'admin.weeklyCompared': '+12% so với tuần trước',
+    'admin.tokenEstimatedCostTitle': 'Chi phí token ước tính',
+    'admin.monthlyEstimated': 'Ước tính chi phí tháng này',
+    'admin.popularQuestionsTop5': 'Câu hỏi phổ biến TOP 5',
+    'admin.loading': 'Đang tải...',
+    'admin.dataLoadError': 'Không thể tải dữ liệu',
+    'admin.times': 'lần',
+    'admin.noQuestionData': 'Không có dữ liệu câu hỏi',
     
     // Organization Management
     'org.lmsIntegration': 'Tích hợp LMS (Khuyến nghị)',
@@ -974,6 +1097,9 @@ const translations: Record<Language, Record<string, string>> = {
     'org.status': 'Trạng thái',
     'org.select': 'Chọn',
     'admin.userList': 'Danh sách Người dùng',
+    'admin.select': 'Chọn',
+    'admin.none': 'Không chọn',
+    'admin.selected': ' đã chọn',
     
     // Tên ngôn ngữ
     'language.ko': '한국어',
@@ -1070,6 +1196,17 @@ const translations: Record<Language, Record<string, string>> = {
     // Chat interface
     'chat.typing': '入力中...',
     'chat.inputPlaceholder': 'メッセージを入力...',
+    'chat.deleteHistory': 'チャット履歴を削除',
+    
+    // Categories
+    'category.school': '学校',
+    'category.professor': '教授',
+    'category.student': '学生',
+    'category.group': 'グループ',
+    'category.function': '機能型',
+    
+    // Time display
+    'time.recent': '最近',
     
     // ドキュメント管理
     'doc.management': 'ドキュメント管理',
@@ -1153,6 +1290,18 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.lmsSync': 'LMS連携（推奨）',
     'admin.fileUploadDesc': 'ファイルアップロード',
     'admin.organizationList': '組織リスト',
+    'admin.responseSuccessTitle': '回答成功率',
+    'admin.dailyImprovement': '日次改善',
+    'admin.improving': '改善中',
+    'admin.tokenDailyAvgTitle': 'トークン消費量日平均',
+    'admin.weeklyCompared': '+12% 先週比',
+    'admin.tokenEstimatedCostTitle': 'トークン推定費用',
+    'admin.monthlyEstimated': '今月推定費用',
+    'admin.popularQuestionsTop5': '人気質問TOP 5',
+    'admin.loading': '読み込み中...',
+    'admin.dataLoadError': 'データを読み込めません',
+    'admin.times': '回',
+    'admin.noQuestionData': '質問データがありません',
     
     // Organization Management
     'org.lmsIntegration': 'LMS連携 (推奨)',
@@ -1174,6 +1323,9 @@ const translations: Record<Language, Record<string, string>> = {
     'org.status': 'ステータス',
     'org.select': '選択',
     'admin.userList': 'ユーザーリスト',
+    'admin.select': '選択',
+    'admin.none': '選択しない',
+    'admin.selected': '名選択済み',
     
     // 言語名
     'language.ko': '한국어',

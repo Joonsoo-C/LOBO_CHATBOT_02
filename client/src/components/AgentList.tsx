@@ -1,9 +1,10 @@
 import { Link, useLocation } from "wouter";
 import { formatDistanceToNow } from "date-fns";
-import { ko } from "date-fns/locale";
+import { ko, enUS } from "date-fns/locale";
 import { GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText } from "lucide-react";
 import { useMemo } from "react";
 import { debounce } from "@/utils/performance";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Agent, Conversation } from "@/types/agent";
 
 interface AgentListProps {
@@ -62,6 +63,7 @@ function getCategoryBadgeStyle(category: string) {
 
 export default function AgentList({ agents, conversations }: AgentListProps) {
   const [location] = useLocation();
+  const { t, language } = useLanguage();
   const getConversationForAgent = useMemo(() => {
     return (agentId: number) => conversations.find(conv => conv.agentId === agentId);
   }, [conversations]);
@@ -69,15 +71,16 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
   const getTimeAgo = useMemo(() => {
     return (date: string) => {
       try {
+        const locale = language === 'ko' ? ko : enUS;
         return formatDistanceToNow(new Date(date), { 
           addSuffix: true, 
-          locale: ko 
+          locale 
         });
       } catch {
-        return "최근";
+        return t('time.recent');
       }
     };
-  }, []);
+  }, [language, t]);
 
   // Category priority order: 학교, 교수, 그룹, 학생, 기능
   const getCategoryPriority = useMemo(() => {
@@ -167,7 +170,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                         {agent.name}
                       </h3>
                       <span className={`${getCategoryBadgeStyle(agent.category)} text-xs px-2 py-0.5 rounded-md`}>
-                        {agent.category}
+                        {t(`category.${agent.category === '학교' ? 'school' : agent.category === '교수' ? 'professor' : agent.category === '학생' ? 'student' : agent.category === '그룹' ? 'group' : 'function'}`)}
                       </span>
                     </div>
                     {conversation?.lastMessageAt && (

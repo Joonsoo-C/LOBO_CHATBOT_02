@@ -881,7 +881,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Trash2 className="w-4 h-4 mr-2" />
-                              채팅 기록 삭제
+                              {t('chat.deleteHistory')}
                             </Button>
 
                           </div>
