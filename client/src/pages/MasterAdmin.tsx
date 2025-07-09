@@ -6448,16 +6448,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.organizationManagement')}</h2>
-              <Button 
-                className="whitespace-nowrap"
-                onClick={() => setIsNewCategoryDialogOpen(true)}
-              >
-                + 새 조직 카테고리 추가
-              </Button>
             </div>
 
             {/* 카테고리 관리 방법 안내 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Card 
                 className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => setIsLmsDialogOpen(true)}
@@ -6488,6 +6482,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setIsNewCategoryDialogOpen(true)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center">
+                    <Plus className="w-5 h-5 mr-2 text-orange-600" />
+                    새 조직 수동 추가
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    개별 조직을 수동으로 생성하고 설정합니다.
                   </p>
                 </CardContent>
               </Card>
