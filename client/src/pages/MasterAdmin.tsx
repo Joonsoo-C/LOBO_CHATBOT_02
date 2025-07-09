@@ -4202,7 +4202,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-sm">예상 비용</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-sm">토큰 예상 비용</CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
