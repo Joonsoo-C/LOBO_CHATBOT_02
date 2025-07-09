@@ -6070,14 +6070,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.conversations')}</h2>
               <div className="flex space-x-2">
-                <Button variant="outline">
-                  <FileText className="w-4 h-4 mr-2" />
-                  로그 내보내기
-                </Button>
-                <Button variant="outline">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  분석 보고서
-                </Button>
               </div>
             </div>
 
