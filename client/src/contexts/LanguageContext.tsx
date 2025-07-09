@@ -205,13 +205,10 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Q&A and Token Management
     'admin.qaManagement': 'Q&A 관리',
-    'admin.todayQuestionsTitle': '오늘 질문 수',
     'admin.todayQuestions': '247',
-    'admin.avgResponseTimeTitle': '평균 응답 시간',
     'admin.avgResponseTime': '2.3초',
     'admin.responseSuccessTitle': '질문 응답 성공률',
     'admin.responseSuccess': '96.8%',
-    'admin.userSatisfactionTitle': '응답 사용자 만족도',
     'admin.userSatisfactionValue': '4.6/5',
     'admin.dailyAverageTitle': '토큰 소비량 일평균',
     'admin.dailyAverage': '2.6K',
@@ -466,13 +463,10 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Q&A and Token Management English
     'admin.qaManagement': 'Q&A Management',
-    'admin.todayQuestionsTitle': 'Today\'s Questions',
     'admin.todayQuestions': '247',
-    'admin.avgResponseTimeTitle': 'Average Response Time',
     'admin.avgResponseTime': '2.3s',
     'admin.responseSuccessTitle': 'Response Success Rate',
     'admin.responseSuccess': '96.8%',
-    'admin.userSatisfactionTitle': 'User Satisfaction',
     'admin.userSatisfactionValue': '4.6/5',
     'admin.dailyAverageTitle': 'Daily Token Usage',
     'admin.dailyAverage': '2.6K',

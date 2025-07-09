@@ -953,6 +953,13 @@ Changelog:
   * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
   * All search buttons now use consistent basic styling with h-10 w-full classes
   * Complete UI consistency achieved with agent management section as the reference standard
+- July 9, 2025. Fixed critical multilingual translation system for master admin dashboard:
+  * Identified and resolved hardcoded Korean text in Q&A management cards preventing language switching
+  * Added comprehensive translation keys for dashboard metrics: todayQuestionsTitle, avgResponseTimeTitle, responseFailureTitle, userSatisfactionTitle
+  * Implemented complete translations for all 5 languages (Korean, English, Chinese, Vietnamese, Japanese)
+  * Resolved duplicate key warnings in LanguageContext.tsx by removing redundant entries
+  * Master admin dashboard now fully supports language switching with proper translation of all UI elements
+  * Fixed internationalization issue where English language setting didn't properly translate dashboard card titles
 - July 9, 2025. Completed comprehensive filter reset button styling standardization:
   * Removed variant="outline" from all filter reset buttons across all management sections
   * Updated filter reset buttons in user management, agent management, organization category management, document management, Q&A management, and token management
