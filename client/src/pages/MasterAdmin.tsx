@@ -6429,9 +6429,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          시간
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           에이전트
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -6445,6 +6442,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 시간
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          시간
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           개선 요청
@@ -6474,15 +6474,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
                         filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
                           <tr key={log.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit', 
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
                                 {log.agentName || '알 수 없는 에이전트'}
@@ -6525,6 +6516,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 const responseTime = ((seed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
                                 return responseTime.toFixed(1) + '초';
                               })()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit', 
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
