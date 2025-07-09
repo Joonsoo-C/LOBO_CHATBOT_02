@@ -4225,11 +4225,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardTitle className="font-semibold tracking-tight text-[20px]">사용자 검색</CardTitle>
               
               {/* 조직 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label>상위 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4243,13 +4243,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>하위 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직 카테고리</Label>
                   <Select 
                     value={selectedCollege} 
                     onValueChange={handleLowerCategoryChange}
                     disabled={selectedUniversity === 'all'}
                   >
-                    <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4263,13 +4263,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>세부 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직 카테고리</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
                     disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
                   >
-                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4282,22 +4282,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetFilters}>
+                <div>
+                  <Button variant="outline" onClick={resetFilters} className="h-10 w-full">
                     필터 초기화
                   </Button>
                 </div>
               </div>
 
               {/* 상태 및 시스템 역할 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label>상태</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상태</Label>
                   <Select value={selectedDocumentType} onValueChange={(value) => {
                     setSelectedDocumentType(value);
                     executeSearch();
                   }}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4310,12 +4310,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>시스템 역할</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">시스템 역할</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     executeSearch();
                   }}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4331,21 +4331,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
-                <div></div>
-              </div>
-
-              {/* 사용자 검색 */}
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <div className="flex-1">
+                <div className="col-span-2">
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <div className="flex space-x-2">
                     <Input
                       placeholder="사용자명 또는 이메일 주소를 입력하세요."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                      className="h-10 flex-1"
                     />
+                    <Button onClick={executeSearch} className="h-10 px-6">검색</Button>
                   </div>
-                  <Button onClick={executeSearch}>검색</Button>
                 </div>
               </div>
               
@@ -5777,16 +5774,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="font-semibold text-[20px]">에이전트 검색</h3>
                 {/* 필터 행 */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium">상위 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 카테고리</Label>
                     <Select value={agentFilterUpperCategory} onValueChange={(value) => {
                       setAgentFilterUpperCategory(value);
                       setAgentFilterLowerCategory('all');
                       setAgentFilterDetailCategory('all');
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5801,7 +5798,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">하위 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 카테고리</Label>
                     <Select 
                       value={agentFilterLowerCategory} 
                       onValueChange={(value) => {
@@ -5811,7 +5808,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                       disabled={agentFilterUpperCategory === 'all'}
                     >
-                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5826,7 +5823,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">세부 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 카테고리</Label>
                     <Select 
                       value={agentFilterDetailCategory} 
                       onValueChange={(value) => {
@@ -5835,7 +5832,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                       disabled={agentFilterLowerCategory === 'all' || agentFilterUpperCategory === 'all'}
                     >
-                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5851,14 +5848,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 
                 {/* 유형 및 상태 필터 행 */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium">유형</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">유형</Label>
                     <Select value={agentFilterType} onValueChange={(value) => {
                       setAgentFilterType(value);
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5872,12 +5869,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">상태</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상태</Label>
                     <Select value={agentFilterStatus} onValueChange={(value) => {
                       setAgentFilterStatus(value);
                       setHasAgentSearched(true);
                     }}>
-                      <SelectTrigger className="h-10 mt-[8px] mb-[8px]">
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
@@ -5887,10 +5884,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex items-end">
+                  <div>
                     <Button 
                       variant="outline" 
-                      className="h-10 px-6"
+                      className="h-10 w-full"
                       onClick={resetAgentFilters}
                     >
                       필터 초기화
@@ -5899,8 +5896,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 
                 {/* 검색 행 */}
-                <div className="flex gap-4">
-                  <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div className="col-span-3">
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                     <Input
                       placeholder="에이전트명 또는 설명 키워드를 입력하세요"
                       value={agentSearchQuery}
@@ -5909,15 +5907,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       className="h-10"
                     />
                   </div>
-                  <Button 
-                    onClick={handleAgentSearch}
-                    className="h-10 px-6"
-                  >
-                    검색
-                  </Button>
+                  <div>
+                    <Button 
+                      onClick={handleAgentSearch}
+                      className="h-10 px-6"
+                    >
+                      검색
+                    </Button>
+                  </div>
                 </div>
                 
-
             </div>
 
             
@@ -6178,11 +6177,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
-                  <Label> 상위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6196,9 +6195,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>하위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위조직</Label>
                   <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
-                    <SelectTrigger className={`mt-[8px] mb-[8px] ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <SelectTrigger className={`h-10 ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6212,13 +6211,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>세부조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부조직</Label>
                   <Select 
                     value={qaSelectedDetailCategory} 
                     onValueChange={handleQADetailCategoryChange}
                     disabled={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all'}
                   >
-                    <SelectTrigger className={`mt-[8px] mb-[8px] ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <SelectTrigger className={`h-10 ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6233,11 +6232,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label>사용자 유형</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 유형</Label>
                   <Select defaultValue="all">
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="사용자 유형" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6249,9 +6248,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>기간</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                   <Select defaultValue="today">
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="기간 선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6263,15 +6262,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>키워드 검색</Label>
-                  <Input placeholder="질문 내용 검색..." />
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드 검색</Label>
+                  <Input placeholder="질문 내용 검색..." className="h-10" />
                 </div>
-              </div>
-
-              <div className="flex justify-end">
-                <Button>
-                  필터 적용
-                </Button>
+                <div>
+                  <Button className="h-10 w-full">
+                    필터 적용
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -6556,11 +6554,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <h3 className="font-semibold text-[20px]">{t('org.searchAndManagement')}</h3>
               
               {/* 3단계 카테고리 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label>{t('org.upperCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.upperCategory')}</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6574,9 +6572,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>{t('org.lowerCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.lowerCategory')}</Label>
                   <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
-                    <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6590,13 +6588,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>{t('org.detailCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.detailCategory')}</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
                     disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
                   >
-                    <SelectTrigger className={selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}>
+                    <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -6609,28 +6607,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetFilters}>
+                <div>
+                  <Button variant="outline" onClick={resetFilters} className="h-10 w-full">
                     {t('org.resetFilters')}
                   </Button>
                 </div>
               </div>
 
               {/* 카테고리 검색 */}
-              <div className="space-y-2">
-                <Label>{t('org.organizationSearch')}</Label>
-                <div className="flex space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      placeholder={t('org.searchPlaceholder')}
-                      value={userSearchQuery}
-                      onChange={(e) => {
-                        setUserSearchQuery(e.target.value);
-                      }}
-                      onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
-                    />
-                  </div>
-                  <Button onClick={executeSearch} variant="outline">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div className="col-span-3">
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.organizationSearch')}</Label>
+                  <Input
+                    placeholder={t('org.searchPlaceholder')}
+                    value={userSearchQuery}
+                    onChange={(e) => {
+                      setUserSearchQuery(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
+                    className="h-10"
+                  />
+                </div>
+                <div>
+                  <Button onClick={executeSearch} variant="outline" className="h-10 w-full">
                     {t('org.search')}
                   </Button>
                 </div>
@@ -7420,14 +7419,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <h3 className="font-semibold mb-4 text-[20px]">문서 검색 및 관리</h3>
               
               {/* 카테고리 필터 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label>파일 형식</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">파일 형식</Label>
                   <Select value={selectedDocumentCategory} onValueChange={(value) => {
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -7441,12 +7440,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>파일 형식</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">파일 형식</Label>
                   <Select value={selectedDocumentType} onValueChange={(value) => {
                     setSelectedDocumentType(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -7459,12 +7458,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label>업로드 날짜</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">업로드 날짜</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     handleDocumentFilterChange();
                   }}>
-                    <SelectTrigger className="mt-[8px] mb-[8px]">
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
                     <SelectContent>
@@ -7476,25 +7475,27 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-end">
-                  <Button variant="outline" onClick={resetDocumentFilters}>
+                <div>
+                  <Button variant="outline" onClick={resetDocumentFilters} className="h-10 w-full">
                     필터 초기화
                   </Button>
                 </div>
               </div>
 
               {/* 문서 검색 */}
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="문서명 또는 내용으로 검색..."
-                      value={documentSearchQuery}
-                      onChange={(e) => setDocumentSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
-                    />
-                  </div>
-                  <Button onClick={() => setHasDocumentSearched(true)}>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div className="col-span-3">
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Input
+                    placeholder="문서명 또는 내용으로 검색..."
+                    value={documentSearchQuery}
+                    onChange={(e) => setDocumentSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
+                    className="h-10"
+                  />
+                </div>
+                <div>
+                  <Button onClick={() => setHasDocumentSearched(true)} className="h-10 w-full">
                     검색
                   </Button>
                 </div>
@@ -7806,9 +7807,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div className="space-y-2">
-                    <Label>{t('org.upperCategory')}</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.upperCategory')}</Label>
                     <Select 
                       value={tokenUpperCategoryFilter} 
                       onValueChange={(value) => {
@@ -7818,7 +7819,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         setTokenDetailCategoryFilter("all");
                       }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -7830,8 +7831,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>{t('org.lowerCategory')}</Label>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.lowerCategory')}</Label>
                     <Select 
                       value={tokenLowerCategoryFilter} 
                       onValueChange={(value) => {
@@ -7841,7 +7842,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                       disabled={tokenUpperCategoryFilter === 'all'}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={`h-10 ${tokenUpperCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -7853,14 +7854,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>{t('org.detailCategory')}</Label>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.detailCategory')}</Label>
                     <Select 
                       value={tokenDetailCategoryFilter} 
                       onValueChange={setTokenDetailCategoryFilter}
                       disabled={tokenLowerCategoryFilter === 'all'}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -7874,11 +7875,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>기간</Label>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -7890,10 +7891,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>모델</Label>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
                     <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -7906,13 +7907,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>키워드</Label>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드</Label>
                     <Input
                       placeholder="에이전트명 또는 질문 키워드"
                       value={tokenKeywordFilter}
                       onChange={(e) => setTokenKeywordFilter(e.target.value)}
+                      className="h-10"
                     />
+                  </div>
+                  
+                  <div>
+                    <Button variant="outline" className="h-10 w-full">
+                      필터 적용
+                    </Button>
                   </div>
                 </div>
               </CardContent>
