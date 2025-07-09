@@ -41,13 +41,8 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-      {/* 상단 우측 텍스트 */}
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        전체 {totalItems}개 {itemName} 중 {startItem}-{endItem}개 표시
-      </div>
-      
-      {/* 하단 중앙 페이지네이션 버튼들 */}
+    <div className="flex items-center justify-center px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+      {/* 페이지네이션 버튼들 */}
       <div className="flex items-center space-x-2">
         <Button
           variant="outline"
