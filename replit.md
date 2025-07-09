@@ -874,6 +874,12 @@ Changelog:
   * Changed grid layout from 2 columns to 3 columns for consistent action button placement
   * Moved "사용자 추가" button from header to dedicated action card following agent management design pattern
   * Enhanced visual consistency across management sections with unified card-based interface
+- July 9, 2025. Updated organization status from "등록 승인 대기중" to "비활성":
+  * Successfully updated 18 organizations from "등록 승인 대기중" status to "비활성"
+  * Updated organizations include: IR팀, 교육과정혁신팀, 영어교육전공, 국제관계전공, 통계학전공, 데이터사이언스전공, 인사조직전공, 아동간호전공, 일러스트레이션전공, 발레전공, 작곡전공, 생활체육전공, 연기전공, 복지증진팀, 봉사동아리연계팀, 정책건의팀, 교육대학원, 산업기술연구소
+  * All affected organizations now have status: "비활성", isActive: false, and updated description fields
+  * Total "비활성" organizations: 35, Total organizations: 124
+  * Verification confirmed zero remaining "등록 승인 대기중" organizations in the system
 ```
 
 ## User Preferences
