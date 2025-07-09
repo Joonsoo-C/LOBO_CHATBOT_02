@@ -222,7 +222,7 @@
       "status": "active",
       "type": "Word",
       "description": "",
-      "updatedAt": "2025-07-04T05:26:00.469Z"
+      "updatedAt": "2025-07-09T06:32:16.140Z"
     }
   ],
   "organizationCategories": [
@@ -297,12 +297,12 @@
       "upperCategory": "대학본부",
       "lowerCategory": "기획처",
       "detailCategory": "IR팀",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.567Z",
-      "updatedAt": "2025-06-29T10:11:14.567Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 7,
@@ -414,12 +414,12 @@
       "upperCategory": "학사부서",
       "lowerCategory": "교육혁신원",
       "detailCategory": "교육과정혁신팀",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.567Z",
-      "updatedAt": "2025-06-29T10:11:14.567Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 16,
@@ -557,12 +557,12 @@
       "upperCategory": "인문대학",
       "lowerCategory": "영어영문학과",
       "detailCategory": "영어교육전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.567Z",
-      "updatedAt": "2025-06-29T10:11:14.567Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 27,
@@ -648,12 +648,12 @@
       "upperCategory": "사회과학대학",
       "lowerCategory": "정치외교학과",
       "detailCategory": "국제관계전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.567Z",
-      "updatedAt": "2025-06-29T10:11:14.567Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 34,
@@ -778,12 +778,12 @@
       "upperCategory": "자연과학대학",
       "lowerCategory": "수학과",
       "detailCategory": "통계학전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.568Z",
-      "updatedAt": "2025-06-29T10:11:14.568Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 44,
@@ -908,12 +908,12 @@
       "upperCategory": "공과대학",
       "lowerCategory": "컴퓨터공학과",
       "detailCategory": "데이터사이언스전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.568Z",
-      "updatedAt": "2025-06-29T10:11:14.568Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 54,
@@ -1051,12 +1051,12 @@
       "upperCategory": "경영대학",
       "lowerCategory": "경영학과",
       "detailCategory": "인사조직전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.568Z",
-      "updatedAt": "2025-06-29T10:11:14.568Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 65,
@@ -1194,12 +1194,12 @@
       "upperCategory": "의과대학",
       "lowerCategory": "간호학과",
       "detailCategory": "아동간호전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 76,
@@ -1298,12 +1298,12 @@
       "upperCategory": "예술대학",
       "lowerCategory": "시각디자인학과",
       "detailCategory": "일러스트레이션전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 84,
@@ -1337,12 +1337,12 @@
       "upperCategory": "예술대학",
       "lowerCategory": "무용학과",
       "detailCategory": "발레전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 87,
@@ -1376,12 +1376,12 @@
       "upperCategory": "예술대학",
       "lowerCategory": "음악학과",
       "detailCategory": "작곡전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 90,
@@ -1415,12 +1415,12 @@
       "upperCategory": "예체능대학",
       "lowerCategory": "체육학과",
       "detailCategory": "생활체육전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 93,
@@ -1454,12 +1454,12 @@
       "upperCategory": "예체능대학",
       "lowerCategory": "연극영화학과",
       "detailCategory": "연기전공",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 96,
@@ -1493,12 +1493,12 @@
       "upperCategory": "학생자치기구",
       "lowerCategory": "총학생회",
       "detailCategory": "복지증진팀",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 99,
@@ -1532,12 +1532,12 @@
       "upperCategory": "학생자치기구",
       "lowerCategory": "동아리연합회",
       "detailCategory": "봉사동아리연계팀",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 102,
@@ -1571,12 +1571,12 @@
       "upperCategory": "학생자치기구",
       "lowerCategory": "대학원학생회",
       "detailCategory": "정책건의팀",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 105,
@@ -1636,12 +1636,12 @@
       "upperCategory": "대학원",
       "lowerCategory": "특수대학원",
       "detailCategory": "교육대학원",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.569Z",
-      "updatedAt": "2025-06-29T10:11:14.569Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 110,
@@ -1740,12 +1740,12 @@
       "upperCategory": "연구기관",
       "lowerCategory": "중앙연구소",
       "detailCategory": "산업기술연구소",
-      "description": "세부 조직 (등록 승인 대기중)",
+      "description": "세부 조직 (비활성)",
       "isActive": false,
-      "status": "등록 승인 대기중",
+      "status": "비활성",
       "manager": null,
       "createdAt": "2025-06-29T10:11:14.570Z",
-      "updatedAt": "2025-06-29T10:11:14.570Z"
+      "updatedAt": "2025-07-09T02:51:20.447Z"
     },
     {
       "id": 118,

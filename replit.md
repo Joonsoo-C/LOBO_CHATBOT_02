@@ -899,6 +899,13 @@ Changelog:
   * Removed deleteConversationMutation and all related deletion logic
   * Cleaned up unused Trash2 icon import from lucide-react
   * Chat room deletion feature completely removed per user request from specific UI location
+- July 9, 2025. Enhanced dashboard with new analytics cards replacing recent activity:
+  * Removed "최근 활동" (Recent Activity) summary card from dashboard
+  * Added document total capacity card showing "0.1M 토큰" with FileText icon
+  * Added Q&A management cards section with 4 cards: daily questions (247, +12%), average response time (2.3초, -0.3초), response failure rate (3.2%, 전월 대비), user satisfaction (4.6/5, 향상 중)
+  * Added token management cards section with 3 cards: daily average (2.6K, +12% 지난 주 대비), estimated cost (₩6,761, 이번 달 예상 비용), input average (73% 상승, 전월 평균)
+  * All new cards follow existing dashboard card styling with consistent icons, typography, and responsive grid layout
+  * Added Clock, Star, DollarSign, TrendingUp icons from lucide-react for enhanced visual indicators
 ```
 
 ## User Preferences
