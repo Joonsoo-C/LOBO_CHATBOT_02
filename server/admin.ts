@@ -1493,7 +1493,7 @@ export function setupAdminRoutes(app: Express) {
   // Export organizations to Excel
   app.get("/api/admin/organizations/export", requireMasterAdmin, async (req, res) => {
     try {
-      const organizations = await storage.getAllOrganizations();
+      const organizations = await storage.getOrganizationCategories();
 
       if (!organizations || organizations.length === 0) {
         return res.status(404).json({ message: "조직 카테고리 데이터가 없습니다" });
