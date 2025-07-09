@@ -4475,7 +4475,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                       className="h-10 flex-1"
                     />
-                    <Button onClick={executeSearch} variant="outline" className="h-10 px-6">검색</Button>
+                    <Button onClick={executeSearch} className="h-10 px-6">검색</Button>
                   </div>
                 </div>
               </div>
@@ -6408,7 +6408,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Input placeholder="질문 내용으로 검색하세요." className="h-10" />
                 </div>
                 <div>
-                  <Button variant="outline" className="h-10 w-full">
+                  <Button className="h-10 w-full">
                     검색
                   </Button>
                 </div>
@@ -6774,7 +6774,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
                 <div>
-                  <Button onClick={executeSearch} variant="outline" className="h-10 w-full">
+                  <Button onClick={executeSearch} className="h-10 w-full">
                     검색
                   </Button>
                 </div>
@@ -7625,7 +7625,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
                 <div>
-                  <Button onClick={() => setHasDocumentSearched(true)} variant="outline" className="h-10 w-full">
+                  <Button onClick={() => setHasDocumentSearched(true)} className="h-10 w-full">
                     검색
                   </Button>
                 </div>
@@ -8009,7 +8009,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Button variant="outline" className="h-10 w-full">
+                    <Button className="h-10 w-full">
                       검색
                     </Button>
                   </div>

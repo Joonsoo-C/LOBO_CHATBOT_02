@@ -948,6 +948,11 @@ Changelog:
   * Added missing filter reset button to token management section with proper functionality
   * All filter reset buttons now have consistent padding and outline styling
   * Enhanced token management section with 5-column grid layout to accommodate new filter reset button
+- July 9, 2025. Unified search button styling across all management sections to match agent management:
+  * Removed variant="outline" from all search buttons to match agent management section baseline
+  * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
+  * All search buttons now use consistent basic styling with h-10 w-full classes
+  * Complete UI consistency achieved with agent management section as the reference standard
 ```
 
 ## User Preferences
