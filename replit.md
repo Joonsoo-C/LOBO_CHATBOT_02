@@ -972,6 +972,13 @@ Changelog:
   * Dynamic response method assignment based on conversation ID for consistent data display
   * Repositioned "시간" column between "응답 시간" and "개선 요청" columns for better information flow
   * Filtered out "메시지 없음" entries to show only conversations with actual user-chatbot interactions
+- July 9, 2025. Implemented comprehensive Q&A management filter reset functionality:
+  * Added "필터 초기화" button to Q&A log search area using 5-column grid layout
+  * Created resetQAFilters function to reset all Q&A filter states (organization categories, user type, period, search query)
+  * Added Q&A filter state variables: qaUserTypeFilter, qaPeriodFilter, qaSearchQuery
+  * Connected all Q&A filter inputs to state variables with proper onChange handlers
+  * Filter reset button now clears all filters and resets pagination to page 1
+  * All Q&A management buttons now follow consistent styling matching agent management search button design
 - July 9, 2025. Enhanced Q&A management table with improved column names and data:
   * Changed "작업" column to "개선 요청" for better clarity
   * Updated "응답 실패율" to "응답 실패" for simplified display

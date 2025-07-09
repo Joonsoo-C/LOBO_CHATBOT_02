@@ -792,6 +792,11 @@ function MasterAdmin() {
   const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
   const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
   const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
+  
+  // Q&A 로그 추가 필터 상태
+  const [qaUserTypeFilter, setQaUserTypeFilter] = useState('all');
+  const [qaPeriodFilter, setQaPeriodFilter] = useState('today');
+  const [qaSearchQuery, setQaSearchQuery] = useState('');
 
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
@@ -2242,6 +2247,17 @@ function MasterAdmin() {
 
   const handleQADetailCategoryChange = (value: string) => {
     setQASelectedDetailCategory(value);
+  };
+
+  // Q&A 로그 필터 초기화 함수
+  const resetQAFilters = () => {
+    setQASelectedUpperCategory('all');
+    setQASelectedLowerCategory('all');
+    setQASelectedDetailCategory('all');
+    setQaUserTypeFilter('all');
+    setQaPeriodFilter('today');
+    setQaSearchQuery('');
+    setQaLogCurrentPage(1); // 페이지 리셋
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
@@ -6381,10 +6397,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 유형</Label>
-                  <Select defaultValue="all">
+                  <Select value={qaUserTypeFilter} onValueChange={setQaUserTypeFilter}>
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="사용자 유형" />
                     </SelectTrigger>
@@ -6398,7 +6414,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
-                  <Select defaultValue="today">
+                  <Select value={qaPeriodFilter} onValueChange={setQaPeriodFilter}>
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="기간 선택" />
                     </SelectTrigger>
@@ -6412,11 +6428,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
-                  <Input placeholder="질문 내용으로 검색하세요." className="h-10" />
+                  <Input 
+                    placeholder="질문 내용으로 검색하세요." 
+                    className="h-10" 
+                    value={qaSearchQuery}
+                    onChange={(e) => setQaSearchQuery(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Button className="h-10 w-full">
                     검색
+                  </Button>
+                </div>
+                <div>
+                  <Button className="h-10 w-full" onClick={resetQAFilters}>
+                    필터 초기화
                   </Button>
                 </div>
               </div>
