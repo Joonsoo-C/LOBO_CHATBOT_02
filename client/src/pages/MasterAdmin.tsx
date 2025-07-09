@@ -4475,7 +4475,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                       className="h-10 flex-1"
                     />
-                    <Button onClick={executeSearch} className="h-10 px-6">검색</Button>
+                    <Button onClick={executeSearch} variant="outline" className="h-10 px-6">검색</Button>
                   </div>
                 </div>
               </div>
@@ -6754,7 +6754,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button variant="outline" onClick={resetFilters} className="h-10 w-full">
-                    {t('org.resetFilters')}
+                    필터 초기화
                   </Button>
                 </div>
               </div>
@@ -7966,7 +7966,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
@@ -7999,7 +7999,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                     <Input
                       placeholder="에이전트명 또는 질문 키워드"
                       value={tokenKeywordFilter}
@@ -8010,7 +8010,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   <div>
                     <Button variant="outline" className="h-10 w-full">
-                      필터 적용
+                      검색
+                    </Button>
+                  </div>
+                  
+                  <div>
+                    <Button variant="outline" onClick={() => {
+                      setTokenPeriodFilter("month");
+                      setTokenUpperCategoryFilter("all");
+                      setTokenLowerCategoryFilter("all");
+                      setTokenDetailCategoryFilter("all");
+                      setTokenKeywordFilter("");
+                      setTokenModelFilter("all");
+                    }} className="h-10 w-full">
+                      필터 초기화
                     </Button>
                   </div>
                 </div>

@@ -942,6 +942,12 @@ Changelog:
   * Applied consistent search button styling with variant="outline" and h-10 w-full classes
   * Fixed separate AGENTS_PER_PAGE and usersPerPage constants to use unified 15 items per page
   * All search interfaces now follow consistent design pattern matching user management section
+- July 9, 2025. Implemented consistent filter reset button styling across all management sections:
+  * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+  * Updated all "필터 초기화" buttons to match search button appearance
+  * Added missing filter reset button to token management section with proper functionality
+  * All filter reset buttons now have consistent padding and outline styling
+  * Enhanced token management section with 5-column grid layout to accommodate new filter reset button
 ```
 
 ## User Preferences
