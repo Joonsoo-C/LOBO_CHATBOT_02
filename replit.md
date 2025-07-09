@@ -970,6 +970,20 @@ Changelog:
     - Success responses display with green badges, failures with red badges
     - Updated dashboard card to show "96.8% 성공률" with CheckCircle icon instead of failure rate
   * Complete UI consistency achieved across all management interface components
+- July 9, 2025. Implemented comprehensive language system cleanup and English mode Korean text conversion:
+  * Removed Chinese, Vietnamese, and Japanese languages from language conversion menu system
+  * Updated Language type definition to only include 'ko' | 'en' types
+  * Cleaned up LanguageContext.tsx to contain only Korean and English translations
+  * Updated LanguageSelector component to show only Korean and English options
+  * Implemented automatic Korean text to English translation when English mode is selected:
+    - User messages containing Korean text are automatically translated to English
+    - Agent names, descriptions, speaking styles, and personality traits are translated
+    - Conversation history is translated to maintain context in English
+    - Document content is translated to English for proper context understanding
+    - Management system messages are displayed in appropriate language
+  * Enhanced OpenAI integration with intelligent Korean text detection and translation
+  * Language menu now displays only Korean (🇰🇷 한국어) and English (🇺🇸 English) options
+  * Complete multilingual functionality preserved for Korean and English while removing unnecessary languages
 - July 9, 2025. Enhanced Q&A management table with improved column naming and data:
   * Changed "작업" column to "개선 요청" for better clarity
   * Updated "응답 실패율" to "응답 실패" for simplified display

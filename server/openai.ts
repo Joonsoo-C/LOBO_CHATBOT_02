@@ -66,6 +66,13 @@ export async function generateManagementResponse(
   prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
   userLanguage: string = "ko"
 ): Promise<ChatResponse> {
+  // Check if we need to translate Korean text to English
+  if (userLanguage === "en" && containsKorean(userMessage)) {
+    console.log("Korean text detected in English mode (management), translating...");
+    userMessage = await translateKoreanToEnglish(userMessage);
+    console.log("Translated management message:", userMessage);
+  }
+
   const lowerMessage = userMessage.toLowerCase();
   
   // Check for management commands with typo tolerance
@@ -73,8 +80,11 @@ export async function generateManagementResponse(
       lowerMessage.includes("말투") || lowerMessage.includes("캐릭터") || lowerMessage.includes("개성") ||
       lowerMessage.includes("닉네임") || lowerMessage.includes("특성") || lowerMessage.includes("변경") ||
       lowerMessage.includes("수정") || lowerMessage.includes("편집")) {
+    const personaMessage = userLanguage === "en" 
+      ? "🔧 Persona editing window opened. You can modify nickname, speaking style, knowledge domain, personality traits, and prohibited word response."
+      : "🔧 페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.";
     return {
-      message: "🔧 페르소나 편집 창을 열었습니다. 닉네임, 말투 스타일, 지식 분야, 성격 특성, 금칙어 반응 방식을 수정할 수 있습니다.",
+      message: personaMessage,
       usedDocuments: [],
       triggerAction: "openPersonaModal"
     };
@@ -83,8 +93,11 @@ export async function generateManagementResponse(
   if (lowerMessage.includes("챗봇") || lowerMessage.includes("설정") || lowerMessage.includes("모델") ||
       lowerMessage.includes("llm") || lowerMessage.includes("gpt") || lowerMessage.includes("ai설정") ||
       lowerMessage.includes("봇설정") || lowerMessage.includes("동작") || lowerMessage.includes("유형")) {
+    const settingsMessage = userLanguage === "en" 
+      ? "🔧 Chatbot settings window opened. You can change LLM model and chatbot type."
+      : "🔧 챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.";
     return {
-      message: "🔧 챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.",
+      message: settingsMessage,
       usedDocuments: [],
       triggerAction: "openSettingsModal"
     };
@@ -93,8 +106,11 @@ export async function generateManagementResponse(
   if (lowerMessage.includes("문서") || lowerMessage.includes("업로드") || lowerMessage.includes("파일") ||
       lowerMessage.includes("자료") || lowerMessage.includes("첨부") || lowerMessage.includes("지식") ||
       lowerMessage.includes("학습") || lowerMessage.includes("데이터") || lowerMessage.includes("정보")) {
+    const fileMessage = userLanguage === "en" 
+      ? "🔧 Document upload window opened. You can upload TXT, DOC, DOCX, PPT, PPTX format documents to expand the agent's knowledge base."
+      : "🔧 문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.";
     return {
-      message: "🔧 문서 업로드 창을 열었습니다. TXT, DOC, DOCX, PPT, PPTX 형식의 문서를 업로드하여 에이전트의 지식베이스를 확장할 수 있습니다.",
+      message: fileMessage,
       usedDocuments: [],
       triggerAction: "openFileModal"
     };
@@ -103,8 +119,11 @@ export async function generateManagementResponse(
   if (lowerMessage.includes("알림") || lowerMessage.includes("notification") || lowerMessage.includes("브로드캐스트") ||
       lowerMessage.includes("공지") || lowerMessage.includes("메시지") || lowerMessage.includes("전송") ||
       lowerMessage.includes("안내") || lowerMessage.includes("소식")) {
+    const notificationMessage = userLanguage === "en" 
+      ? "🔧 Notification function started. Enter notification content. It will be sent to all users."
+      : "🔧 알림 기능을 시작합니다. 알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.";
     return {
-      message: "🔧 알림 기능을 시작합니다. 알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.",
+      message: notificationMessage,
       usedDocuments: [],
       triggerAction: "startNotification"
     };
@@ -113,8 +132,19 @@ export async function generateManagementResponse(
   if (lowerMessage.includes("도움말") || lowerMessage.includes("명령어") || lowerMessage.includes("기능") || 
       lowerMessage.includes("help") || lowerMessage.includes("사용법") || lowerMessage.includes("메뉴") ||
       lowerMessage.includes("옵션") || lowerMessage.includes("가이드")) {
-    return {
-      message: `🔧 에이전트 관리 명령어:
+    const helpMessage = userLanguage === "en" 
+      ? `🔧 Agent Management Commands:
+
+📝 Main Features:
+• "persona" / "personality" / "style" - Set agent personality and speaking style
+• "chatbot settings" / "model" / "AI settings" - Change LLM model and operation mode
+• "document upload" / "file" / "data" - Add documents to expand knowledge base
+• "notification" / "announcement" / "message" - Send announcements to users
+• "performance analysis" / "statistics" / "status" - View agent usage statistics and analysis
+
+💡 Usage: Send a message containing the above keywords to execute the function.
+General conversation is also always possible!`
+      : `🔧 에이전트 관리 명령어:
 
 📝 주요 기능:
 • "페르소나" / "성격" / "말투" - 에이전트 성격 및 말투 설정
@@ -124,7 +154,9 @@ export async function generateManagementResponse(
 • "성과 분석" / "통계" / "현황" - 에이전트 사용 통계 및 분석
 
 💡 사용법: 위 키워드가 포함된 메시지를 보내면 해당 기능이 실행됩니다.
-일반 대화도 언제든 가능합니다!`,
+일반 대화도 언제든 가능합니다!`;
+    return {
+      message: helpMessage,
       usedDocuments: []
     };
   }
@@ -142,6 +174,38 @@ export async function generateManagementResponse(
     prohibitedWordResponse,
     userLanguage
   );
+}
+
+// Function to detect Korean text
+function containsKorean(text: string): boolean {
+  const koreanRegex = /[\u3131-\u318E\u3200-\u321E\u3260-\u327E\uAC00-\uD7A3]/;
+  return koreanRegex.test(text);
+}
+
+// Function to translate Korean text to English
+async function translateKoreanToEnglish(text: string): Promise<string> {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: "You are a professional Korean to English translator. Translate the given Korean text to natural, fluent English. Only return the translated text without any additional comments or explanations."
+        },
+        {
+          role: "user",
+          content: text
+        }
+      ],
+      max_tokens: 1000,
+      temperature: 0.1,
+    });
+
+    return response.choices[0].message.content || text;
+  } catch (error) {
+    console.error("Translation failed:", error);
+    return text; // Return original text if translation fails
+  }
 }
 
 export async function generateChatResponse(
@@ -164,12 +228,63 @@ export async function generateChatResponse(
       chatbotType
     });
 
+    // Check if we need to translate Korean text to English
+    if (userLanguage === "en" && containsKorean(userMessage)) {
+      console.log("Korean text detected in English mode, translating...");
+      userMessage = await translateKoreanToEnglish(userMessage);
+      console.log("Translated message:", userMessage);
+    }
+
+    // Translate agent name and description to English if needed
+    if (userLanguage === "en") {
+      if (containsKorean(agentName)) {
+        agentName = await translateKoreanToEnglish(agentName);
+      }
+      if (containsKorean(agentDescription)) {
+        agentDescription = await translateKoreanToEnglish(agentDescription);
+      }
+      if (containsKorean(speakingStyle)) {
+        speakingStyle = await translateKoreanToEnglish(speakingStyle);
+      }
+      if (containsKorean(personalityTraits)) {
+        personalityTraits = await translateKoreanToEnglish(personalityTraits);
+      }
+    }
+
+    // Translate conversation history to English if needed
+    if (userLanguage === "en") {
+      for (let i = 0; i < conversationHistory.length; i++) {
+        if (containsKorean(conversationHistory[i].content)) {
+          conversationHistory[i].content = await translateKoreanToEnglish(conversationHistory[i].content);
+        }
+      }
+    }
+
     // Prepare context from documents with enhanced processing
-    const documentContext = availableDocuments.length > 0 
-      ? `\n\n참고 문서:\n${availableDocuments.map(doc => 
+    let documentContext = "";
+    if (availableDocuments.length > 0) {
+      if (userLanguage === "en") {
+        // Translate Korean document content to English
+        const translatedDocs = [];
+        for (const doc of availableDocuments) {
+          let translatedContent = doc.content;
+          if (containsKorean(doc.content)) {
+            translatedContent = await translateKoreanToEnglish(doc.content);
+          }
+          translatedDocs.push({
+            filename: doc.filename,
+            content: translatedContent
+          });
+        }
+        documentContext = `\n\nReference Documents:\n${translatedDocs.map(doc => 
+          `[Document: ${doc.filename}]\n${doc.content}`
+        ).join('\n\n')}`;
+      } else {
+        documentContext = `\n\n참고 문서:\n${availableDocuments.map(doc => 
           `[문서명: ${doc.filename}]\n${doc.content}`
-        ).join('\n\n')}`
-      : "";
+        ).join('\n\n')}`;
+      }
+    }
 
     // Enhanced document analysis for better responses
     const hasDocumentQuestion = userMessage.includes("문서") || userMessage.includes("내용") || 
