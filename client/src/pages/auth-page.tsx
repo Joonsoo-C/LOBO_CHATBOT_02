@@ -38,12 +38,10 @@ const createRegisterSchema = (t: (key: string) => string) => z.object({
   userType: z.enum(["student", "faculty"]),
 });
 
-const languages: { code: 'ko' | 'en' | 'zh' | 'vi' | 'ja'; flag: string; name: string }[] = [
+const languages: { code: 'ko' | 'en'; flag: string; name: string }[] = [
   { code: 'ko', flag: '🇰🇷', name: '한국어' },
   { code: 'en', flag: '🇺🇸', name: 'English' },
-  { code: 'zh', flag: '🇨🇳', name: '中文' },
-  { code: 'vi', flag: '🇻🇳', name: 'Tiếng Việt' },
-  { code: 'ja', flag: '🇯🇵', name: '日本語' },
+
 ];
 
 export default function AuthPage() {
