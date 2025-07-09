@@ -930,6 +930,12 @@ Changelog:
   * Eliminated top borders and background colors for cleaner appearance
   * Centered all pagination controls across management sections (users, agents, organizations, documents)
   * Simplified pagination component styling for consistent display throughout admin interface
+- July 9, 2025. Implemented realistic response times and standardized pagination to 15 items:
+  * Replaced "즉시" text with realistic response times (0.1초 ~ 2.5초) in Q&A management section
+  * Generated consistent response times based on conversation ID for data stability
+  * Changed ITEMS_PER_PAGE from 20 to 15 across all management sections
+  * Updated document management to use PaginationComponent for consistent center alignment
+  * All list sections now display 15 items per page: Q&A logs, users, agents, organizations, documents, tokens
 ```
 
 ## User Preferences

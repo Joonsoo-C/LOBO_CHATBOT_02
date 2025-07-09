@@ -723,8 +723,8 @@ function MasterAdmin() {
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
   
-  // 페이지네이션 설정 (모든 관리 섹션에 일관된 20개 항목)
-  const ITEMS_PER_PAGE = 20;
+  // 페이지네이션 설정 (모든 관리 섹션에 일관된 15개 항목)
+  const ITEMS_PER_PAGE = 15;
 
   // 헬퍼 함수들
   const getUserRoleForAgent = (userData: any, agent: any) => {
@@ -7834,52 +7834,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 
                 {/* 문서 목록 페이지네이션 */}
-                {documentList && documentList.length > 0 && (
-                  <div className="flex items-center justify-between px-6 py-4 border-t">
-                    <div className="text-sm text-gray-500">
-                      전체 {documentList.length}개 중 {((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length)}개 표시
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDocumentCurrentPage(Math.max(1, documentCurrentPage - 1))}
-                        disabled={documentCurrentPage === 1}
-                        className="w-10 h-10 p-0"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </Button>
-                      
-                      {Array.from({ length: Math.ceil(documentList.length / ITEMS_PER_PAGE) }, (_, i) => i + 1).map(page => (
-                        <Button
-                          key={page}
-                          variant={page === documentCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setDocumentCurrentPage(page)}
-                          className="w-10 h-10 p-0 !min-w-[40px] !min-h-[40px] !box-border"
-                          style={{
-                            width: '40px !important',
-                            height: '40px !important',
-                            minWidth: '40px !important',
-                            minHeight: '40px !important',
-                            border: page === documentCurrentPage ? '2px solid #3b82f6' : '1px solid #d1d5db'
-                          }}
-                        >
-                          {page}
-                        </Button>
-                      ))}
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDocumentCurrentPage(Math.min(Math.ceil(documentList.length / ITEMS_PER_PAGE), documentCurrentPage + 1))}
-                        disabled={documentCurrentPage === Math.ceil(documentList.length / ITEMS_PER_PAGE)}
-                        className="w-10 h-10 p-0"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
+                {documentList && documentList.length > ITEMS_PER_PAGE && (
+                  <PaginationComponent
+                    currentPage={documentCurrentPage}
+                    totalPages={Math.ceil(documentList.length / ITEMS_PER_PAGE)}
+                    onPageChange={setDocumentCurrentPage}
+                  />
                 )}
               </CardContent>
             </Card>
