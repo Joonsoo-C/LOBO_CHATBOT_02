@@ -4088,54 +4088,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </p>
                 </CardContent>
               </Card>
-            </div>
-
-            {/* 시스템 상태 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
-                <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.systemStatus')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">{t('admin.database')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      {t('admin.status.healthy')}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">{t('admin.openaiApi')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      {t('admin.status.healthy')}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">{t('admin.sessionStore')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      {t('admin.status.healthy')}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">{t('admin.fileUpload')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      {t('admin.status.healthy')}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-[14px]">문서 총 용량</CardTitle>
+                  <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl font-bold">0.1M</div>
-                      <p className="text-xs text-muted-foreground">토큰</p>
-                    </div>
-                    <FileText className="h-6 w-6 text-blue-500" />
-                  </div>
+                  <div className="text-2xl font-bold">0.1M</div>
+                  <p className="text-xs text-[#16a34a]">토큰</p>
                 </CardContent>
               </Card>
             </div>
@@ -4188,7 +4148,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
 
             {/* 토큰 관리 카드들 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">토큰 소비량 일일 평균</CardTitle>
@@ -4210,15 +4170,39 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <p className="text-xs text-muted-foreground">이번 달 예상 비용</p>
                 </CardContent>
               </Card>
+            </div>
 
+            {/* 시스템 상태 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-sm">입력 평균</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardHeader>
+                  <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.systemStatus')}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">73% 상승</div>
-                  <p className="text-xs text-muted-foreground">전월 평균</p>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{t('admin.database')}</span>
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      {t('admin.status.healthy')}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{t('admin.openaiApi')}</span>
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      {t('admin.status.healthy')}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{t('admin.sessionStore')}</span>
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      {t('admin.status.healthy')}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">{t('admin.fileUpload')}</span>
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      {t('admin.status.healthy')}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             </div>
