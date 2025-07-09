@@ -541,6 +541,7 @@ import {
   FileText as FileTextIcon,
   AlertTriangle,
   AlertCircle,
+  CheckCircle,
   HardDrive,
   Star,
 } from "lucide-react";
@@ -4148,12 +4149,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-sm">질문 응답 실패율</CardTitle>
-                  <AlertCircle className="h-4 w-4 text-green-600" />
+                  <CardTitle className="font-semibold tracking-tight text-sm">질문 응답 성공률</CardTitle>
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">3.2%</div>
-                  <p className="text-xs text-green-700 dark:text-green-300">전일 대비</p>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">96.8%</div>
+                  <p className="text-xs text-green-700 dark:text-green-300">전일 대비 향상</p>
                 </CardContent>
               </Card>
 
@@ -6440,7 +6441,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           응답 방식
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 실패
+                          응답 성공
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 시간
@@ -6502,8 +6503,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 })()}
                               </Badge>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              실패
+                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                              {(() => {
+                                // 대화에 메시지가 있고, lastUserMessage가 있으면 AI 응답도 있다고 가정
+                                const hasResponse = log.lastUserMessage && log.messageCount > 1;
+                                return hasResponse ? (
+                                  <Badge variant="default" className="bg-green-100 text-green-800">
+                                    성공
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="destructive" className="bg-red-100 text-red-800">
+                                    실패
+                                  </Badge>
+                                );
+                              })()}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {(() => {
