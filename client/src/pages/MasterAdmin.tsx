@@ -4074,7 +4074,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="flex items-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
-                  <span>다운로드</span>
+                  <span>사용자 목록 다운로드</span>
                 </Button>
                 <Button 
                   variant="default"
