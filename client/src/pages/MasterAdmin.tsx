@@ -717,6 +717,7 @@ function MasterAdmin() {
   const [organizationCurrentPage, setOrganizationCurrentPage] = useState(1);
   const [userCurrentPage, setUserCurrentPage] = useState(1);
   const [agentCurrentPage, setAgentCurrentPage] = useState(1);
+  const AGENTS_PER_PAGE = 20;
   const [documentCurrentPage, setDocumentCurrentPage] = useState(1);
   const [qaLogCurrentPage, setQaLogCurrentPage] = useState(1);
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
@@ -2247,6 +2248,7 @@ function MasterAdmin() {
   // 에이전트 검색 함수
   const handleAgentSearch = () => {
     setHasAgentSearched(true);
+    setAgentCurrentPage(1); // 검색 시 페이지 리셋
   };
 
 
@@ -2260,6 +2262,7 @@ function MasterAdmin() {
     setAgentFilterType('all');
     setAgentFilterStatus('all');
     setHasAgentSearched(false);
+    setAgentCurrentPage(1); // 필터 초기화 시 페이지 리셋
   };
 
   // 에이전트 필터링 로직
@@ -2490,17 +2493,23 @@ function MasterAdmin() {
     });
   }, [agents, filteredAgents, agentSortField, agentSortDirection, hasAgentSearched]);
 
+  // 에이전트 페이지네이션 처리
+  const paginatedAgents = useMemo(() => {
+    if (!sortedAgents) return [];
+    const startIndex = (agentCurrentPage - 1) * AGENTS_PER_PAGE;
+    const endIndex = startIndex + AGENTS_PER_PAGE;
+    return sortedAgents.slice(startIndex, endIndex);
+  }, [sortedAgents, agentCurrentPage, AGENTS_PER_PAGE]);
+
+  const agentTotalPages = Math.ceil((sortedAgents?.length || 0) / AGENTS_PER_PAGE);
+
   // 사용자 목록 페이지네이션
   const userPagination = usePagination({
     data: sortedUsers,
     itemsPerPage: ITEMS_PER_PAGE,
   });
 
-  // 에이전트 목록 페이지네이션  
-  const agentPagination = usePagination({
-    data: sortedAgents,
-    itemsPerPage: ITEMS_PER_PAGE,
-  });
+
 
   // 조직 카테고리 목록 페이지네이션
   const organizationPagination = usePagination({
@@ -6052,7 +6061,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="font-semibold tracking-tight text-[20px]">에이전트 목록</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {sortedAgents?.length || 0}개 에이전트 표시
+                    전체 {sortedAgents?.length || 0}개 중 {Math.min((agentCurrentPage - 1) * AGENTS_PER_PAGE + 1, sortedAgents?.length || 0)}-{Math.min(agentCurrentPage * AGENTS_PER_PAGE, sortedAgents?.length || 0)}개 표시
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -6084,7 +6093,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                        {(!sortedAgents || sortedAgents.length === 0) ? (
+                        {(!paginatedAgents || paginatedAgents.length === 0) ? (
                           <tr>
                             <td colSpan={7} className="px-6 py-12 text-center">
                               <div className="text-gray-500 dark:text-gray-400">
@@ -6097,7 +6106,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                           </tr>
                         ) : (
-                          sortedAgents.map((agent) => (
+                          paginatedAgents.map((agent) => (
                             <tr 
                               key={agent.id} 
                               className={`hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
@@ -6215,6 +6224,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </table>
                   </div>
                 </CardContent>
+                
+                {/* 에이전트 페이지네이션 */}
+                {agentTotalPages > 1 && (
+                  <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex justify-center">
+                      <PaginationComponent
+                        currentPage={agentCurrentPage}
+                        totalPages={agentTotalPages}
+                        onPageChange={setAgentCurrentPage}
+                      />
+                    </div>
+                  </div>
+                )}
               </Card>
             ) : (
               <Card>
