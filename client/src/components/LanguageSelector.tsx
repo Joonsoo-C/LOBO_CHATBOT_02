@@ -11,9 +11,6 @@ import { useLanguage, Language } from "@/contexts/LanguageContext";
 const languages: { code: Language; flag: string; name: string }[] = [
   { code: 'ko', flag: '🇰🇷', name: '한국어' },
   { code: 'en', flag: '🇺🇸', name: 'English' },
-  { code: 'zh', flag: '🇨🇳', name: '中文' },
-  { code: 'vi', flag: '🇻🇳', name: 'Tiếng Việt' },
-  { code: 'ja', flag: '🇯🇵', name: '日本語' },
 ];
 
 export function LanguageSelector() {
