@@ -4177,7 +4177,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-sm">사용자 만족도</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-sm">사용자 응답 만족도</CardTitle>
                   <Star className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
