@@ -585,7 +585,7 @@ export default function TabletLayout() {
                   navigate("/management");
                 }}
               >
-                {t('agent.management')}
+                Agent management
               </div>
             )}
           </div>
