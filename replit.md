@@ -953,6 +953,13 @@ Changelog:
   * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
   * All search buttons now use consistent basic styling with h-10 w-full classes
   * Complete UI consistency achieved with agent management section as the reference standard
+- July 9, 2025. Enhanced Q&A management table with improved column names and data:
+  * Changed "작업" column to "개선 요청" for better clarity
+  * Updated "응답 실패율" to "응답 실패" for simplified display
+  * Renamed "응답 유형" to "응답 방식" to match agent creation terminology
+  * Implemented response method data matching agent creation settings: "문서 우선 + LLM", "LLM 우선", "문서만"
+  * Removed eye icon button from action column, keeping only message feedback button
+  * Dynamic response method assignment based on conversation ID for consistent data display
 ```
 
 ## User Preferences

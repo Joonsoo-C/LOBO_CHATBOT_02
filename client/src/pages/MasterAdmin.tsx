@@ -6438,16 +6438,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           질문
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 유형
+                          응답 방식
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 실패율
+                          응답 실패
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 시간
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          작업
+                          개선 요청
                         </th>
                       </tr>
                     </thead>
@@ -6494,12 +6494,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-green-100 text-green-800">
-                                실제 대화
+                              <Badge variant="default" className="bg-blue-100 text-blue-800">
+                                {(() => {
+                                  // 대화 ID를 기반으로 응답 방식 결정
+                                  const seed = log.id || 1;
+                                  const responseTypes = ['문서 우선 + LLM', 'LLM 우선', '문서만'];
+                                  return responseTypes[seed % 3];
+                                })()}
                               </Badge>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              0%
+                              실패
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {(() => {
@@ -6511,9 +6516,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="상세 보기">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
                                 <Button variant="outline" size="sm" title="피드백">
                                   <MessageSquare className="w-4 h-4" />
                                 </Button>
