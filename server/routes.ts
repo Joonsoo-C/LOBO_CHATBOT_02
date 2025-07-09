@@ -1582,8 +1582,22 @@ export async function setupDocumentFix(app: Express) {
     try {
       // Only allow admin users
       const userId = (req as any).session.userId;
+      console.log('Popular questions request - userId:', userId);
+      
       const user = await storage.getUser(userId!);
-      if (!user || user.role !== 'master_admin') {
+      console.log('Popular questions request - user:', user);
+      
+      // Allow master admin or any admin user
+      const isAdmin = user && (
+        user.role === 'master_admin' || 
+        user.userType === 'admin' || 
+        userId === 'master_admin'
+      );
+      
+      console.log('Popular questions request - isAdmin:', isAdmin);
+      
+      if (!isAdmin) {
+        console.log('Popular questions request - access denied for user:', userId);
         return res.status(403).json({ message: "Access denied" });
       }
 
