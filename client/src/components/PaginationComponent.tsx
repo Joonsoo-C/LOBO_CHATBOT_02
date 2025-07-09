@@ -41,72 +41,70 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+    <div className="flex items-center justify-center space-x-2 px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
       {/* 페이지네이션 버튼들 */}
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
-          disabled={currentPage === 1}
-          className="!w-10 !h-10 !text-sm"
-        >
-          이전
-        </Button>
-        
-        {/* 첫 페이지 */}
-        {currentPage > 3 && (
-          <>
-            <Button
-              variant={1 === currentPage ? "default" : "outline"}
-              size="sm"
-              onClick={() => onPageChange(1)}
-              className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
-            >
-              1
-            </Button>
-            {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
-          </>
-        )}
-        
-        {/* 현재 페이지 주변 페이지들 */}
-        {getPageNumbers().map((page) => (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        disabled={currentPage === 1}
+        className="!w-10 !h-10 !text-sm"
+      >
+        이전
+      </Button>
+      
+      {/* 첫 페이지 */}
+      {currentPage > 3 && (
+        <>
           <Button
-            key={page}
-            variant={page === currentPage ? "default" : "outline"}
+            variant={1 === currentPage ? "default" : "outline"}
             size="sm"
-            onClick={() => onPageChange(page)}
+            onClick={() => onPageChange(1)}
             className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
           >
-            {page}
+            1
           </Button>
-        ))}
-        
-        {/* 마지막 페이지 */}
-        {currentPage < totalPages - 2 && (
-          <>
-            {currentPage < totalPages - 3 && <span className="px-2 text-gray-500">...</span>}
-            <Button
-              variant={totalPages === currentPage ? "default" : "outline"}
-              size="sm"
-              onClick={() => onPageChange(totalPages)}
-              className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
-            >
-              {totalPages}
-            </Button>
-          </>
-        )}
-        
+          {currentPage > 4 && <span className="px-2 text-gray-500">...</span>}
+        </>
+      )}
+      
+      {/* 현재 페이지 주변 페이지들 */}
+      {getPageNumbers().map((page) => (
         <Button
-          variant="outline"
+          key={page}
+          variant={page === currentPage ? "default" : "outline"}
           size="sm"
-          onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="!w-10 !h-10 !text-sm"
+          onClick={() => onPageChange(page)}
+          className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
         >
-          다음
+          {page}
         </Button>
-      </div>
+      ))}
+      
+      {/* 마지막 페이지 */}
+      {currentPage < totalPages - 2 && (
+        <>
+          {currentPage < totalPages - 3 && <span className="px-2 text-gray-500">...</span>}
+          <Button
+            variant={totalPages === currentPage ? "default" : "outline"}
+            size="sm"
+            onClick={() => onPageChange(totalPages)}
+            className="!w-10 !h-10 !text-sm !min-w-[40px] !max-w-[40px]"
+          >
+            {totalPages}
+          </Button>
+        </>
+      )}
+      
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className="!w-10 !h-10 !text-sm"
+      >
+        다음
+      </Button>
     </div>
   );
 };
