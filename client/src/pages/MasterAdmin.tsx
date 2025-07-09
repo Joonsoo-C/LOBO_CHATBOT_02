@@ -4770,12 +4770,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   {exportAgentsMutation.isPending ? (
                     <>
                       <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></span>
-                      <span>다운로드 중...</span>
+                      <span>{t('common.downloading')}</span>
                     </>
                   ) : (
                     <>
                       <Download className="w-4 h-4" />
-                      <span>에이전트 목록 다운로드</span>
+                      <span>{t('agent.downloadAgentList')}</span>
                     </>
                   )}
                 </Button>
@@ -4783,29 +4783,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>새 에이전트 생성</DialogTitle>
+                    <DialogTitle>{t('agent.createNewAgent')}</DialogTitle>
                   </DialogHeader>
                   
                   {/* 탭 네비게이션 */}
                   <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="w-full">
                     <TabsList className="grid w-full grid-cols-6 mb-6">
                       <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        기본 정보
+                        {t('agent.basicInfo')}
                       </TabsTrigger>
                       <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        페르소나
+                        {t('agent.persona')}
                       </TabsTrigger>
                       <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        모델 설정
+                        {t('agent.modelSettings')}
                       </TabsTrigger>
                       <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        파일 업로드
+                        {t('agent.fileUpload')}
                       </TabsTrigger>
                       <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        관리자 선정
+                        {t('agent.managerSelection')}
                       </TabsTrigger>
                       <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        공유 설정
+                        {t('agent.sharingSettings')}
                       </TabsTrigger>
                     </TabsList>
 
@@ -4821,16 +4821,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="name"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.name')} *</FormLabel>
                                     <FormControl>
                                       <Input 
-                                        placeholder="최대 20자" 
+                                        placeholder={t('agent.maxTwentyChars')} 
                                         maxLength={20} 
                                         className="focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
                                     </FormControl>
-                                    <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
+                                    <div className="text-xs text-gray-500">{field.value?.length || 0}/20{t('common.characters')}</div>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -4840,19 +4840,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="category"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.type')} *</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                       <FormControl>
                                         <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                          <SelectValue placeholder="유형 선택" />
+                                          <SelectValue placeholder={t('agent.selectType')} />
                                         </SelectTrigger>
                                       </FormControl>
                                       <SelectContent>
-                                        <SelectItem value="학교">학교</SelectItem>
-                                        <SelectItem value="교수">교수</SelectItem>
-                                        <SelectItem value="학생">학생</SelectItem>
-                                        <SelectItem value="그룹">그룹</SelectItem>
-                                        <SelectItem value="기능형">기능형</SelectItem>
+                                        <SelectItem value="학교">{t('agent.school')}</SelectItem>
+                                        <SelectItem value="교수">{t('agent.professor')}</SelectItem>
+                                        <SelectItem value="학생">{t('agent.student')}</SelectItem>
+                                        <SelectItem value="그룹">{t('agent.group')}</SelectItem>
+                                        <SelectItem value="기능형">{t('agent.functional')}</SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -4863,14 +4863,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             
                             {/* 소속 조직 선택 (순차적) */}
                             <div className="space-y-4">
-                              <Label className="text-sm font-medium text-gray-700">소속</Label>
+                              <Label className="text-sm font-medium text-gray-700">{t('agent.organization')}</Label>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <FormField
                                   control={agentForm.control}
                                   name="upperCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">상위 조직 카테고리 *</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">{t('org.upperOrganization')} *</FormLabel>
                                       <Select 
                                         onValueChange={(value) => {
                                           field.onChange(value);
@@ -4881,7 +4881,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       >
                                         <FormControl>
                                           <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder="상위 조직 선택" />
+                                            <SelectValue placeholder={t('org.selectUpper')} />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -4901,7 +4901,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   name="lowerCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">하위 조직 카테고리</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">{t('org.lowerOrganization')}</FormLabel>
                                       <Select 
                                         onValueChange={(value) => {
                                           field.onChange(value);
@@ -4912,7 +4912,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       >
                                         <FormControl>
                                           <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder="하위 조직 선택" />
+                                            <SelectValue placeholder={t('org.selectLower')} />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -4932,7 +4932,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   name="detailCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">세부 조직 카테고리</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">{t('org.detailOrganization')}</FormLabel>
                                       <Select 
                                         onValueChange={field.onChange} 
                                         defaultValue={field.value}
@@ -4940,7 +4940,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       >
                                         <FormControl>
                                           <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder="세부 조직 선택" />
+                                            <SelectValue placeholder={t('org.selectDetail')} />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -4965,16 +4965,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="description"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 설명</FormLabel>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.description')}</FormLabel>
                                   <FormControl>
                                     <Textarea 
-                                      placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)" 
+                                      placeholder={t('agent.descriptionPlaceholder')}
                                       maxLength={200}
                                       className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                       {...field} 
                                     />
                                   </FormControl>
-                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
+                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/200{t('common.characters')}</div>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -4984,10 +4984,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="personality"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">역할/프롬프트</FormLabel>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.rolePrompt')}</FormLabel>
                                   <FormControl>
                                     <Textarea 
-                                      placeholder="예: 대학원 논문 첨삭 도우미, 학과 정보 안내 봇"
+                                      placeholder={t('agent.rolePromptPlaceholder')}
                                       className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                       {...field} 
                                     />
@@ -5008,9 +5008,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="personaNickname"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">닉네임</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.nickname')}</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="예: 민지, 교수님 어시스턴트" {...field} />
+                                      <Input placeholder={t('agent.nicknamePlaceholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -5021,10 +5021,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="speechStyle"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.speechStyle')}</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 공손하고 친절한 말투로 대화합니다"
+                                        placeholder={t('agent.speechStylePlaceholder')}
                                         className="min-h-[60px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5040,10 +5040,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="expertiseArea"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">지식/전문 분야</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.expertiseArea')}</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 컴퓨터공학, 프로그래밍, 학사업무, 입학상담 등"
+                                        placeholder={t('agent.expertiseAreaPlaceholder')}
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5057,10 +5057,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="personality"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">성격특성</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.personality')}</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 친절하고 도움이 되는 성격, 논리적 사고, 인내심 있음"
+                                        placeholder={t('agent.personalityPlaceholder')}
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5074,10 +5074,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="forbiddenResponseStyle"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">금칙어 반응 방식</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.forbiddenResponse')}</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder="예: 죄송하지만 해당 질문에 대해서는 답변드릴 수 없습니다. 다른 주제로 대화해주세요."
+                                        placeholder={t('agent.forbiddenResponsePlaceholder')}
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5099,7 +5099,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="llmModel"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">사용 LLM 모델</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.llmModel')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "gpt-4o"}>
                                       <FormControl>
                                         <SelectTrigger>
@@ -5122,7 +5122,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="chatbotType"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">응답 방식</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.responseMethod')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
                                       <FormControl>
                                         <SelectTrigger>
@@ -5130,9 +5130,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         </SelectTrigger>
                                       </FormControl>
                                       <SelectContent>
-                                        <SelectItem value="doc-fallback-llm">문서 우선 + LLM</SelectItem>
-                                        <SelectItem value="general-llm">LLM 우선</SelectItem>
-                                        <SelectItem value="strict-doc">문서 only</SelectItem>
+                                        <SelectItem value="doc-fallback-llm">{t('agent.docPriorityLLM')}</SelectItem>
+                                        <SelectItem value="general-llm">{t('agent.llmPriority')}</SelectItem>
+                                        <SelectItem value="strict-doc">{t('agent.docOnly')}</SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -5144,7 +5144,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="maxInputLength"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">최대 입력 글자 수</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.maxInputLength')}</FormLabel>
                                     <FormControl>
                                       <Input 
                                         type="number" 
@@ -5163,7 +5163,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="maxOutputLength"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">최대 응답 글자 수</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.maxOutputLength')}</FormLabel>
                                     <FormControl>
                                       <Input 
                                         type="number" 
@@ -5200,7 +5200,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="documentType"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">문서 유형</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.documentType')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "manual"}>
                                       <FormControl>
                                         <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
@@ -5208,14 +5208,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         </SelectTrigger>
                                       </FormControl>
                                       <SelectContent>
-                                        <SelectItem value="manual">매뉴얼/가이드</SelectItem>
-                                        <SelectItem value="faq">FAQ/질답</SelectItem>
-                                        <SelectItem value="policy">정책/규정</SelectItem>
-                                        <SelectItem value="procedure">절차/프로세스</SelectItem>
-                                        <SelectItem value="reference">참고자료</SelectItem>
-                                        <SelectItem value="course">강의자료</SelectItem>
-                                        <SelectItem value="research">연구자료</SelectItem>
-                                        <SelectItem value="other">기타</SelectItem>
+                                        <SelectItem value="manual">{t('agent.documentManual')}</SelectItem>
+                                        <SelectItem value="faq">{t('agent.documentFAQ')}</SelectItem>
+                                        <SelectItem value="policy">{t('agent.documentPolicy')}</SelectItem>
+                                        <SelectItem value="procedure">{t('agent.documentProcedure')}</SelectItem>
+                                        <SelectItem value="reference">{t('agent.documentReference')}</SelectItem>
+                                        <SelectItem value="course">{t('agent.documentCourse')}</SelectItem>
+                                        <SelectItem value="research">{t('agent.documentResearch')}</SelectItem>
+                                        <SelectItem value="other">{t('agent.documentOther')}</SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -5231,7 +5231,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             >
                               <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                               <div className="space-y-2">
-                                <p className="text-lg font-medium text-gray-700">파일을 여기로 드래그하거나 클릭해서 업로드하세요</p>
+                                <p className="text-lg font-medium text-gray-700">{t('agent.dragOrClick')}</p>
                                 <Button 
                                   type="button" 
                                   variant="outline" 
@@ -5243,22 +5243,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   }}
                                 >
                                   <Upload className="w-4 h-4 mr-2" />
-                                  파일 선택
+                                  {t('agent.selectFile')}
                                 </Button>
                               </div>
                               <div className="mt-4 text-sm text-gray-500">
-                                <p>지원 형식: PDF, DOC, DOCX, TXT, PPT, PPTX</p>
-                                <p>최대 크기: 50MB</p>
+                                <p>{t('agent.supportedFormats')}</p>
+                                <p>{t('agent.maxSize')}</p>
                               </div>
                             </div>
                             
                             {/* 업로드된 파일 목록 */}
                             <div className="space-y-2">
-                              <Label className="text-sm font-medium text-gray-700">선택된 파일</Label>
+                              <Label className="text-sm font-medium text-gray-700">{t('agent.selectedFiles')}</Label>
                               <div className="border rounded-lg p-3 bg-white min-h-[100px]">
                                 {selectedFiles.length === 0 ? (
                                   <div className="text-center text-sm text-gray-500 py-4">
-                                    아직 선택된 파일이 없습니다
+                                    {t('agent.noFilesSelected')}
                                   </div>
                                 ) : (
                                   <div className="space-y-2">
