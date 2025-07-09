@@ -6311,7 +6311,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">오늘 질문 수</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.todayQuestionsTitle')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">247</div>
@@ -6324,7 +6324,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Activity className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">평균 응답 시간</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.avgResponseTimeTitle')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">2.3초</div>
@@ -6337,11 +6337,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <XCircle className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">응답 실패율</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.responseFailureTitle')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">3.2%</div>
-                    <div className="text-xs text-green-600">전일 대비</div>
+                    <div className="text-xs text-green-600">Daily Comparison</div>
                   </div>
                 </div>
               </div>
@@ -6350,11 +6350,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <TrendingUp className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">사용자 만족도</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.userSatisfactionTitle')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">4.6/5</div>
-                    <div className="text-xs text-green-600">평균 점수</div>
+                    <div className="text-xs text-green-600">Average Score</div>
                   </div>
                 </div>
               </div>

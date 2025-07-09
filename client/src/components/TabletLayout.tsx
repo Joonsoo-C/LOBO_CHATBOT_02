@@ -160,7 +160,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                   className="px-3 py-2 korean-text"
                   onClick={() => setShowMenu(!showMenu)}
                 >
-                  기능선택
+                  {t('agent.functionsSelect')}
                 </Button>
               
                 {/* Dropdown Menu */}
@@ -474,7 +474,7 @@ export default function TabletLayout() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center korean-text">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">로딩 중...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -575,7 +575,7 @@ export default function TabletLayout() {
                 navigate("/");
               }}
             >
-              에이전트 채팅
+              {t('agent.chat')}
             </div>
             {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
               <div 
