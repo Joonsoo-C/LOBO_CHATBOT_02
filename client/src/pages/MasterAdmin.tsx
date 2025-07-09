@@ -4057,7 +4057,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalAgents || 0}</div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-[#16a34a]">
                     {t('admin.activeAgents')}: {stats?.activeAgents || 0}
                   </p>
                 </CardContent>
