@@ -24,6 +24,7 @@ import {
   ThumbsDown,
   Laugh,
   Angry,
+  Trash2,
 
   GraduationCap,
   Code,
