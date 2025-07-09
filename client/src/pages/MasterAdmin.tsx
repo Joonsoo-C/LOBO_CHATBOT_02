@@ -4222,7 +4222,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <CardTitle>사용자 검색</CardTitle>
+              <CardTitle className="font-semibold tracking-tight text-[20px]">사용자 검색</CardTitle>
               
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -6553,7 +6553,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="text-lg font-semibold">{t('org.searchAndManagement')}</h3>
+              <h3 className="font-semibold text-[20px]">{t('org.searchAndManagement')}</h3>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
