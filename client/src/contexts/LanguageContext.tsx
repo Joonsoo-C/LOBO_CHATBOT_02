@@ -295,13 +295,20 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.searchResults': '검색 결과',
     'doc.searchKeyword': '검색어',
 
-    // Organization Management
+    // Organization Management - Unified Keys  
     'org.searchAndManagement': '조직 카테고리 검색 및 관리',
-    'org.upperCategory': '상위조직',
-    'org.lowerCategory': '하위조직', 
-    'org.detailCategory': '세부조직',
-    'org.organizationSearch': '조직 검색',
-    'org.searchPlaceholder': '조직명으로 검색...',
+    'org.upperCategory': '상위 조직 카테고리',
+    'org.lowerCategory': '하위 조직 카테고리', 
+    'org.detailCategory': '세부 조직 카테고리',
+    'org.selectOption': '선택',
+    'org.searchByName': '조직명으로 검색하세요.',
+    'org.lmsIntegrationRecommended': 'LMS 연동 (권장)',
+    'org.lmsIntegrationDesc': '대학 LMS 시스템과 연동하여 조직 구조를 자동으로 동기화합니다.',
+    'org.fileUploadAction': '파일 업로드',
+    'org.fileUploadDesc': 'CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.',
+    'org.addNewCategoryManual': '새 조직 수동 추가',
+    'org.addNewCategoryDesc': '개별 조직을 수동으로 생성하고 설정합니다.',
+    'org.resetFilters': '필터 초기화',
     
     // Q&A and Token Management
     'admin.qaManagement': 'Q&A 관리',
@@ -365,6 +372,35 @@ const translations: Record<Language, Record<string, string>> = {
     // 언어 이름
     'language.ko': '한국어',
     'language.en': 'English',
+    
+    // 조직 카테고리 관리 - 액션 카드
+    'org.lmsIntegrationRecommended': 'LMS 연동 (권장)',
+    'org.lmsIntegrationDesc': '대학 LMS 시스템과 연동하여 사용자 정보를 자동으로 동기화합니다.',
+    'org.fileUploadAction': '파일 업로드',
+    'org.fileUploadDesc': 'CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.',
+    'org.addNewCategoryManual': '새 조직 수동 추가',
+    'org.categorySearch': '조직 카테고리 검색',
+    'org.upperCategory': '상위 조직 카테고리',
+    'org.lowerCategory': '하위 조직 카테고리',
+    'org.detailCategory': '세부 조직 카테고리',
+    'org.selectOption': '선택',
+    'org.searchByName': '조직명으로 검색하세요.',
+    'org.searchAndManagement': '조직 카테고리 검색 및 관리',
+    'org.resetFilters': '필터 초기화',
+    'org.all': '전체',
+    'org.addNewCategoryDesc': '새로운 조직 카테고리를 직접 생성하고 설정합니다.',
+    'org.organizationList': '조직 목록',
+    'org.totalOrganizations': '전체 124개 조직 중 1-20개 표시',
+    
+    // 사용자 관리 - 액션 카드  
+    'user.lmsIntegrationRecommended': 'LMS 연동 (권장)',
+    'user.lmsIntegrationDesc': '대학 LMS 시스템과 연동하여 사용자 정보를 자동으로 동기화합니다.',
+    'user.fileUploadAction': '파일 업로드', 
+    'user.fileUploadDesc': 'CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.',
+    'user.addNewUser': '사용자 수동 추가',
+    'user.addNewUserDesc': '새로운 사용자를 직접 생성하고 설정합니다.',
+    'user.userSearch': '사용자 검색',
+    'user.downloadUserList': '사용자 목록 다운로드',
   },
   
   en: {
@@ -731,6 +767,35 @@ const translations: Record<Language, Record<string, string>> = {
     // Language names
     'language.ko': '한국어',
     'language.en': 'English',
+    
+    // Organization Category Management - Action Cards
+    'org.lmsIntegrationRecommended': 'LMS Integration (Recommended)',
+    'org.lmsIntegrationDesc': 'Synchronize user information automatically by integrating with university LMS system.',
+    'org.fileUploadAction': 'File Upload',
+    'org.fileUploadDesc': 'Upload CSV/Excel files to batch register organization structure.',
+    'org.addNewCategoryManual': 'Add New Organization Manually',
+    'org.categorySearch': 'Organization Category Search',
+    'org.upperCategory': 'Upper Organization Category',
+    'org.lowerCategory': 'Lower Organization Category',
+    'org.detailCategory': 'Detail Organization Category',
+    'org.selectOption': 'Select',
+    'org.searchByName': 'Search by organization name...',
+    'org.searchAndManagement': 'Organization Category Search and Management',
+    'org.resetFilters': 'Reset Filters',
+    'org.all': 'All',
+    'org.addNewCategoryDesc': 'Create and configure new organization categories directly.',
+    'org.organizationList': 'Organization List',
+    'org.totalOrganizations': 'Showing 1-20 of 124 organizations',
+    
+    // User Management - Action Cards
+    'user.lmsIntegrationRecommended': 'LMS Integration (Recommended)',
+    'user.lmsIntegrationDesc': 'Synchronize user information automatically by integrating with university LMS system.',
+    'user.fileUploadAction': 'File Upload',
+    'user.fileUploadDesc': 'Upload CSV/Excel files to batch register multiple users.',
+    'user.addNewUser': 'Add New User Manually',
+    'user.addNewUserDesc': 'Create and configure new users directly.',
+    'user.userSearch': 'User Search',
+    'user.downloadUserList': 'Download User List',
   },
 };
 

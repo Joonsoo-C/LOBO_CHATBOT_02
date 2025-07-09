@@ -4339,7 +4339,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="flex items-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
-                  <span>사용자 목록 다운로드</span>
+                  <span>{t('user.downloadUserList')}</span>
                 </Button>
               </div>
             </div>
@@ -4353,12 +4353,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Database className="w-5 h-5 mr-2 text-blue-600" />
-                    LMS 연동 (권장)
+                    {t('user.lmsIntegrationRecommended')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    대학 LMS 시스템과 연동하여 사용자 정보를 자동으로 동기화합니다.
+                    {t('user.lmsIntegrationDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -4370,12 +4370,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
+                    {t('user.fileUploadAction')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.
+                    {t('user.fileUploadDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -4387,12 +4387,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Plus className="w-5 h-5 mr-2 text-orange-600" />
-                    사용자 수동 추가
+                    {t('user.addNewUser')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    새로운 사용자를 직접 생성하고 설정합니다.
+                    {t('user.addNewUserDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -4402,18 +4402,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <CardTitle className="font-semibold tracking-tight text-[14px]">사용자 검색</CardTitle>
+              <CardTitle className="font-semibold tracking-tight text-[14px]">{t('user.userSearch')}</CardTitle>
               
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.upperCategory')}</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
                       {upperCategories.map((category, index) => (
                         <SelectItem key={`upper-${category}-${index}`} value={category}>
                           {category}
@@ -4423,7 +4423,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.lowerCategory')}</Label>
                   <Select 
                     value={selectedCollege} 
                     onValueChange={handleLowerCategoryChange}
@@ -4443,7 +4443,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직 카테고리</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.detailCategory')}</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
@@ -6726,12 +6726,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Database className="w-5 h-5 mr-2 text-blue-600" />
-                    LMS 연동 (권장)
+                    {t('org.lmsIntegrationRecommended')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    대학 LMS 시스템과 연동하여 조직 구조를 자동으로 동기화합니다.
+                    {t('org.lmsIntegrationDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -6743,12 +6743,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    파일 업로드
+                    {t('org.fileUploadAction')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 조직 구조를 일괄 등록합니다.
+                    {t('org.fileUploadDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -6760,12 +6760,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Plus className="w-5 h-5 mr-2 text-orange-600" />
-                    새 조직 수동 추가
+                    {t('org.addNewCategoryManual')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    개별 조직을 수동으로 생성하고 설정합니다.
+                    {t('org.addNewCategoryDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -6773,7 +6773,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 조직 카테고리 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold text-[20px]">조직 카테고리 검색</h3>
+              <h3 className="font-semibold text-[20px]">{t('org.searchAndManagement')}</h3>
               
               {/* 3단계 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -6781,10 +6781,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.upperCategory')}</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
                       {uniqueUpperCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6797,10 +6797,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.lowerCategory')}</Label>
                   <Select value={selectedCollege} onValueChange={handleLowerCategoryChange} disabled={selectedUniversity === 'all'}>
                     <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
                       {filteredLowerCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6817,10 +6817,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
                   >
                     <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t("org.selectOption")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t("org.all")}</SelectItem>
                       {filteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6831,7 +6831,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button onClick={resetFilters} className="h-10 w-full">
-                    필터 초기화
+                    {t('org.resetFilters')}
                   </Button>
                 </div>
               </div>
@@ -6839,9 +6839,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 카테고리 검색 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div className="col-span-3">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('doc.searchKeyword')}</Label>
                   <Input
-                    placeholder="조직명으로 검색하세요."
+                    placeholder={t('org.searchByName')}
                     value={userSearchQuery}
                     onChange={(e) => {
                       setUserSearchQuery(e.target.value);
@@ -6852,7 +6852,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button onClick={executeSearch} className="h-10 w-full">
-                    검색
+                    {t('admin.search')}
                   </Button>
                 </div>
               </div>
