@@ -6227,15 +6227,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 
                 {/* 에이전트 페이지네이션 */}
                 {agentTotalPages > 1 && (
-                  <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex justify-center">
-                      <PaginationComponent
-                        currentPage={agentCurrentPage}
-                        totalPages={agentTotalPages}
-                        onPageChange={setAgentCurrentPage}
-                      />
-                    </div>
-                  </div>
+                  <PaginationComponent
+                    currentPage={agentCurrentPage}
+                    totalPages={agentTotalPages}
+                    onPageChange={setAgentCurrentPage}
+                  />
                 )}
               </Card>
             ) : (
@@ -6539,13 +6535,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 
                 {/* QA 로그 페이지네이션 */}
                 {filteredConversationLogs && filteredConversationLogs.length > ITEMS_PER_PAGE && (
-                  <div className="mt-4 flex items-center justify-between px-6 py-4 border-t">
-                    <PaginationComponent
-                      currentPage={qaLogCurrentPage}
-                      totalPages={Math.ceil(filteredConversationLogs.length / ITEMS_PER_PAGE)}
-                      onPageChange={setQaLogCurrentPage}
-                    />
-                  </div>
+                  <PaginationComponent
+                    currentPage={qaLogCurrentPage}
+                    totalPages={Math.ceil(filteredConversationLogs.length / ITEMS_PER_PAGE)}
+                    onPageChange={setQaLogCurrentPage}
+                  />
                 )}
               </CardContent>
             </Card>
@@ -6927,13 +6921,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 페이지네이션 */}
             {totalOrgCategoriesPages > 1 && (
-              <div className="flex items-center justify-center">
-                <PaginationComponent
-                  currentPage={orgCategoriesCurrentPage}
-                  totalPages={totalOrgCategoriesPages}
-                  onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
-                />
-              </div>
+              <PaginationComponent
+                currentPage={orgCategoriesCurrentPage}
+                totalPages={totalOrgCategoriesPages}
+                onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
+              />
             )}
           </TabsContent>
 
@@ -8156,16 +8148,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 페이지네이션 */}
                 {tokenTotalPages > 1 && (
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      전체 {filteredTokenData.length}개 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData.length)}개 표시
-                    </div>
-                    <PaginationComponent
-                      currentPage={tokenCurrentPage}
-                      totalPages={tokenTotalPages}
-                      onPageChange={setTokenCurrentPage}
-                    />
-                  </div>
+                  <PaginationComponent
+                    currentPage={tokenCurrentPage}
+                    totalPages={tokenTotalPages}
+                    onPageChange={setTokenCurrentPage}
+                  />
                 )}
               </CardContent>
             </Card>
