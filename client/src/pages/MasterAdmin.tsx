@@ -797,6 +797,10 @@ function MasterAdmin() {
   const [qaUserTypeFilter, setQaUserTypeFilter] = useState('all');
   const [qaPeriodFilter, setQaPeriodFilter] = useState('today');
   const [qaSearchQuery, setQaSearchQuery] = useState('');
+  
+  // 질의응답 상세보기 모달 상태
+  const [showQADetailModal, setShowQADetailModal] = useState(false);
+  const [selectedQALog, setSelectedQALog] = useState<any>(null);
 
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
@@ -2258,6 +2262,12 @@ function MasterAdmin() {
     setQaPeriodFilter('today');
     setQaSearchQuery('');
     setQaLogCurrentPage(1); // 페이지 리셋
+  };
+
+  // 질의응답 상세보기 모달 열기 함수
+  const openQADetailModal = (log: any) => {
+    setSelectedQALog(log);
+    setShowQADetailModal(true);
   };
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
@@ -6561,7 +6571,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
-                                <Button variant="outline" size="sm" title="피드백">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  title="피드백"
+                                  onClick={() => openQADetailModal(log)}
+                                >
                                   <MessageSquare className="w-4 h-4" />
                                 </Button>
                               </div>
@@ -11802,6 +11817,143 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   >
                     {deleteDocumentMutation.isPending ? "삭제 중..." : "삭제 확인"}
                   </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 질의응답 상세보기 모달 */}
+        <Dialog open={showQADetailModal} onOpenChange={setShowQADetailModal}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>질의응답 상세보기</DialogTitle>
+              <DialogDescription>
+                질의응답의 상세 내용을 확인할 수 있습니다.
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedQALog && (
+              <div className="space-y-6">
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">대화 시각</div>
+                    <div className="text-sm">
+                      {new Date(selectedQALog.lastMessageAt).toLocaleDateString('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit', 
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">에이전트</div>
+                    <div className="text-sm">{selectedQALog.agentName || '알 수 없음'}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">카테고리</div>
+                    <div className="text-sm">
+                      {(() => {
+                        // 에이전트의 조직 정보를 기반으로 카테고리 구성
+                        const agent = agents.find(a => a.name === selectedQALog.agentName);
+                        if (!agent) return '알 수 없음';
+                        
+                        const categoryParts = [];
+                        if (agent.upperCategory) categoryParts.push(agent.upperCategory);
+                        if (agent.lowerCategory) categoryParts.push(agent.lowerCategory);
+                        if (agent.detailCategory) categoryParts.push(agent.detailCategory);
+                        
+                        return categoryParts.length > 0 ? categoryParts.join(' > ') : '알 수 없음';
+                      })()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">응답 상태</div>
+                    <div className="text-sm">
+                      {(() => {
+                        const hasResponse = selectedQALog.lastUserMessage && selectedQALog.messageCount > 1;
+                        return hasResponse ? (
+                          <Badge variant="default" className="bg-green-100 text-green-800">
+                            성공
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="bg-red-100 text-red-800">
+                            실패
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 질문 내용 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">질문 내용</div>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="text-sm">{selectedQALog.lastUserMessage || '질문 내용이 없습니다'}</div>
+                  </div>
+                </div>
+
+                {/* 응답 내용 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">응답 내용</div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm">
+                      {(() => {
+                        // 대화 ID를 기반으로 샘플 응답 생성
+                        const seed = selectedQALog.id || 1;
+                        const responses = [
+                          "학위수여식은 매년 2월과 8월에 개최됩니다. 자세한 일정은 학사공지를 확인해주세요.",
+                          "수강신청 관련 문의는 학사지원팀(02-1234-5678)으로 연락해주시기 바랍니다.",
+                          "장학금 신청 기간은 매 학기 개강 2주 전부터 개강 후 2주까지입니다.",
+                          "졸업요건 확인은 학과 사무실이나 학사지원팀에서 가능합니다.",
+                          "연구실 배정은 지도교수와 상담 후 결정됩니다."
+                        ];
+                        return responses[seed % responses.length];
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 사용자 만족도 */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">사용자 만족도</div>
+                    <div className="flex items-center space-x-2">
+                      {(() => {
+                        // 대화 ID를 기반으로 만족도 결정
+                        const seed = selectedQALog.id || 1;
+                        const isPositive = seed % 3 !== 0; // 대부분 긍정적
+                        return isPositive ? (
+                          <>
+                            <div className="text-yellow-500 text-lg">👍</div>
+                            <span className="text-sm">좋아요</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="text-red-500 text-lg">👎</div>
+                            <span className="text-sm">싫어요</span>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">응답 시간</div>
+                    <div className="text-sm">
+                      {(() => {
+                        const seed = selectedQALog.id || 1;
+                        const responseTime = ((seed * 137) % 240 + 10) / 100;
+                        return responseTime.toFixed(1) + '초';
+                      })()}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

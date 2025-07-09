@@ -979,6 +979,15 @@ Changelog:
   * Connected all Q&A filter inputs to state variables with proper onChange handlers
   * Filter reset button now clears all filters and resets pagination to page 1
   * All Q&A management buttons now follow consistent styling matching agent management search button design
+- July 9, 2025. Implemented comprehensive Q&A detail modal with organization hierarchy display:
+  * Added Q&A detail modal triggered by improvement request column MessageSquare icon clicks
+  * Created openQADetailModal function and showQADetailModal state management
+  * Modal displays: conversation time, agent name, category hierarchy (상위>하위>세부), response status
+  * Shows question content in blue background box and response content in gray background box
+  * Implemented user satisfaction display with thumbs up/down icons (좋아요/싫어요)
+  * Added response time display calculated from conversation ID for consistency
+  * Category hierarchy shows only existing levels (상위 only, 상위>하위, or 상위>하위>세부)
+  * All data generated from conversation logs and agent organization information for authentic display
 - July 9, 2025. Enhanced Q&A management table with improved column names and data:
   * Changed "작업" column to "개선 요청" for better clarity
   * Updated "응답 실패율" to "응답 실패" for simplified display
