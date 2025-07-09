@@ -4185,8 +4185,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
 
-            {/* 인기 질문 TOP 5 카드 - 보라색 계열 */}
-            <div className="grid grid-cols-1 gap-6">
+            {/* 인기 질문 TOP 5와 시스템 상태를 같은 높이에 배치 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 인기 질문 TOP 5 카드 - 보라색 계열 */}
               <Card className="border-purple-200 bg-purple-50 dark:bg-purple-900/20">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="font-semibold tracking-tight text-sm">인기 질문 TOP 5</CardTitle>
@@ -4236,10 +4237,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   )}
                 </CardContent>
               </Card>
-            </div>
 
-            {/* 시스템 상태 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 시스템 상태 */}
               <Card>
                 <CardHeader>
                   <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.systemStatus')}</CardTitle>
@@ -6079,8 +6078,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             사용자
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                            수정
+                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            설정
                           </th>
                         </tr>
                       </thead>
@@ -6205,8 +6204,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     }}
                                     className="hover:bg-blue-50 hover:text-blue-600"
                                   >
-                                    <Edit className="w-4 h-4 mr-1" />
-                                    수정
+                                    <Edit className="w-4 h-4" />
                                   </Button>
                                 </div>
                               </td>

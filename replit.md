@@ -906,6 +906,17 @@ Changelog:
   * Added token management cards section with 3 cards: daily average (2.6K, +12% 지난 주 대비), estimated cost (₩6,761, 이번 달 예상 비용), input average (73% 상승, 전월 평균)
   * All new cards follow existing dashboard card styling with consistent icons, typography, and responsive grid layout
   * Added Clock, Star, DollarSign, TrendingUp icons from lucide-react for enhanced visual indicators
+- July 9, 2025. Implemented color-coded dashboard cards and improved agent management interface:
+  * Added comprehensive color-coded grouping for dashboard summary cards:
+    - System statistics: default white background  
+    - Today activity: blue theme (border-blue-200, bg-blue-50)
+    - Q&A management cards: green theme (border-green-200, bg-green-50)
+    - Token management cards: orange theme (border-orange-200, bg-orange-50)
+    - Popular questions TOP 5: purple theme (border-purple-200, bg-purple-50)
+  * Repositioned popular questions TOP 5 and system status cards on same row for balanced layout
+  * Enhanced agent management table by removing "수정" text and keeping only edit icon
+  * Changed table header from "수정" to "설정" for better clarity
+  * Improved visual hierarchy with consistent color theming across all dashboard sections
 ```
 
 ## User Preferences
