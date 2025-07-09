@@ -4039,7 +4039,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.totalUsers')}</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.totalUsers')}</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
