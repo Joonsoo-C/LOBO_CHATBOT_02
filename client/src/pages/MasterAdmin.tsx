@@ -4552,7 +4552,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   ) : (
                     <>
                       <Download className="w-4 h-4" />
-                      <span>에이전트 목록 다운로드</span>
+                      <span className="text-[#18181b]">에이전트 목록 다운로드</span>
                     </>
                   )}
                 </Button>
