@@ -7502,7 +7502,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">문서 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {documentList?.length || 0}개 문서 표시
+                  전체 {documentList?.length || 0}개 중 1-{documentList?.length || 0}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -7540,14 +7540,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleDocumentSort('size')}
                         >
-                          <div className="flex items-center space-x-1">
-                            <span>크기</span>
-                            {documentSortField === 'size' && (
-                              documentSortDirection === 'asc' ? 
-                              <ChevronUp className="w-4 h-4" /> : 
-                              <ChevronDown className="w-4 h-4" />
-                            )}
-                          </div>
+                          <span>크기</span>
+                          {documentSortField === 'size' && (
+                            documentSortDirection === 'asc' ? 
+                            <ChevronUp className="w-4 h-4" /> : 
+                            <ChevronDown className="w-4 h-4" />
+                          )}
                         </th>
                         <th 
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
