@@ -4082,32 +4082,32 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <TabsTrigger value="categories" className="admin-tab-trigger">
               <Database className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.categories')}</span>
-              <span className="sm:hidden">조직</span>
+              <span className="sm:hidden">{t('nav.organizations')}</span>
             </TabsTrigger>
             <TabsTrigger value="users" className="admin-tab-trigger">
               <Users className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.users')}</span>
-              <span className="sm:hidden">사용자</span>
+              <span className="sm:hidden">{t('nav.users')}</span>
             </TabsTrigger>
             <TabsTrigger value="agents" className="admin-tab-trigger">
               <Bot className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.agents')}</span>
-              <span className="sm:hidden">에이전트</span>
+              <span className="sm:hidden">{t('nav.agents')}</span>
             </TabsTrigger>
             <TabsTrigger value="documents" className="admin-tab-trigger">
               <FileText className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.documents')}</span>
-              <span className="sm:hidden">문서</span>
+              <span className="sm:hidden">{t('nav.documents')}</span>
             </TabsTrigger>
             <TabsTrigger value="conversations" className="admin-tab-trigger">
               <MessageSquare className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.conversations')}</span>
-              <span className="sm:hidden">질문 응답</span>
+              <span className="sm:hidden">{t('nav.qa')}</span>
             </TabsTrigger>
             <TabsTrigger value="tokens" className="admin-tab-trigger">
               <Zap className="admin-tab-icon" />
               <span className="hidden sm:inline">{t('admin.tokens')}</span>
-              <span className="sm:hidden">토큰</span>
+              <span className="sm:hidden">{t('nav.tokens')}</span>
             </TabsTrigger>
 
           </TabsList>

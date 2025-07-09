@@ -248,6 +248,14 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.filterByOrganization': '필터 초기화',
     'admin.search': '검색',
     'admin.download': '다운로드',
+    
+    // Navigation mobile
+    'nav.organizations': '조직',
+    'nav.users': '사용자',
+    'nav.agents': '에이전트',
+    'nav.documents': '문서',
+    'nav.qa': '질문 응답',
+    'nav.tokens': '토큰',
     'admin.addUser': '사용자 추가',
     'admin.addOrganization': '새 조직 카테고리 추가',
     'admin.lmsSync': 'LMS 연동 (권장)',
@@ -534,6 +542,16 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.publicVisibility': '전체 공개',
     'agent.organizationVisibility': '조직 내 공개',
     'agent.privateVisibility': '비공개',
+    
+    // Navigation tabs
+    'nav.dashboard': '대시보드',
+    'nav.organizations': '조직',
+    'nav.users': '사용자',
+    'nav.agents': '에이전트',
+    'nav.documents': '문서',
+    'nav.qa': '질문응답',
+    'nav.tokens': '토큰',
+    'nav.settings': '설정',
   },
   
   en: {
@@ -1030,6 +1048,14 @@ const translations: Record<Language, Record<string, string>> = {
     // Token Management
     'token.dailyUsage': 'Daily Usage',
     'token.dailyAverage': 'Daily Average',
+    
+    // Navigation mobile
+    'nav.organizations': 'Organizations',
+    'nav.users': 'Users',
+    'nav.agents': 'Agents',
+    'nav.documents': 'Documents',
+    'nav.qa': 'Q&A',
+    'nav.tokens': 'Tokens',
     'token.estimatedCost': 'Estimated Cost',
     'token.organizationSearch': 'Organization Search',
     'token.tokenUsageList': 'Token Usage List',
@@ -1062,6 +1088,16 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.publicVisibility': 'Public',
     'agent.organizationVisibility': 'Organization Only',
     'agent.privateVisibility': 'Private',
+    
+    // Navigation tabs
+    'nav.dashboard': 'Dashboard',
+    'nav.organizations': 'Organizations',
+    'nav.users': 'Users',
+    'nav.agents': 'Agents',
+    'nav.documents': 'Documents',
+    'nav.qa': 'Q&A',
+    'nav.tokens': 'Tokens',
+    'nav.settings': 'Settings',
   },
 };
 
