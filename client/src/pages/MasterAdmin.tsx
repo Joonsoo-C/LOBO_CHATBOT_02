@@ -6735,10 +6735,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 페이지네이션 */}
             {totalOrgCategoriesPages > 1 && (
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  총 {filteredOrganizationCategories.length}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}개 표시
-                </div>
+              <div className="flex items-center justify-center">
                 <PaginationComponent
                   currentPage={orgCategoriesCurrentPage}
                   totalPages={totalOrgCategoriesPages}
