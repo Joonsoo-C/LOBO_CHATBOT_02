@@ -7409,7 +7409,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">파일 형식</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">문서 종류</Label>
                   <Select value={selectedDocumentCategory} onValueChange={(value) => {
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
