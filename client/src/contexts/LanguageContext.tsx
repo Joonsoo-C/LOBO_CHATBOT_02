@@ -91,12 +91,14 @@ const translations: Record<Language, Record<string, string>> = {
     // 에이전트 관리
     'agent.management': '에이전트 관리',
     'agent.managementDesc': '관리 중인 에이전트를 선택하여 설정하세요',
-    'agent.persona': '페르소나',
+    'agent.persona': '페르소나 변경',
     'agent.iconChange': '아이콘 변경',
     'agent.settings': '챗봇 설정',
     'agent.notification': '알림보내기',
     'agent.upload': '문서 업로드',
     'agent.performance': '성과 분석',
+    'agent.help': '도움말',
+    'agent.documentManagement': '문서 관리',
     'agent.active': '활성',
     'agent.chat': '에이전트 채팅',
     'agent.agentManagement': '에이전트 관리',
@@ -106,6 +108,37 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.ranking': '순위',
     'agent.managementMode': '관리자 모드',
     'agent.generalChat': '채팅',
+    
+    // 계정 설정
+    'account.settings': '계정 설정',
+    'account.lightMode': '라이트 모드',
+    'account.logout': '로그아웃',
+    'account.noInfo': '정보 없음',
+    'account.student': '학생',
+    'account.faculty': '교직원',
+    'account.admin': '관리자',
+    
+    // 파일 관리
+    'files.uploadedFiles': '업로드된 파일',
+    'files.size': '크기',
+    'files.uploadDate': '업로드',
+    'files.uploadTime': '업로드일',
+    'files.noFiles': '업로드된 파일이 없습니다',
+    
+    // 대시보드 카드
+    'dashboard.todayQuestions': '오늘 질문 수',
+    'dashboard.avgResponseTime': '평균 응답 시간',
+    'dashboard.responseSuccess': '질문 응답 성공률',
+    'dashboard.userSatisfaction': '응답 사용자 만족도',
+    'dashboard.tokenUsageDaily': '토큰 소비량 일평균',
+    'dashboard.estimatedCost': '토큰 예상 비용',
+    'dashboard.popularQuestions': '인기 질문 TOP 5',
+    'dashboard.systemStatus': 'System Status',
+    'dashboard.database': 'Database',
+    'dashboard.openaiApi': 'OpenAI API',
+    'dashboard.sessionStore': 'Session Store',
+    'dashboard.fileUpload': 'File Upload',
+    'dashboard.healthy': 'Healthy',
     
     // Chat interface
     'chat.typing': '메시지 작성 중...',
@@ -349,12 +382,14 @@ const translations: Record<Language, Record<string, string>> = {
     // Agent management
     'agent.management': 'Agent Management',
     'agent.managementDesc': 'Select a managed agent to configure settings',
-    'agent.persona': 'Persona',
+    'agent.persona': 'Persona Change',
     'agent.iconChange': 'Change Icon',
     'agent.settings': 'Bot Settings',
     'agent.notification': 'Send Notification',
     'agent.upload': 'Upload Document',
     'agent.performance': 'Performance Analysis',
+    'agent.help': 'Help',
+    'agent.documentManagement': 'Document Management',
     'agent.active': 'Active',
     'agent.chat': 'Agent Chat',
     'agent.agentManagement': 'Agent Management',
@@ -364,6 +399,37 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.ranking': 'Ranking',
     'agent.managementMode': 'Management Mode',
     'agent.generalChat': 'General Chat',
+    
+    // Account Settings
+    'account.settings': 'Account Settings',
+    'account.lightMode': 'Light Mode',
+    'account.logout': 'Logout',
+    'account.noInfo': 'No information',
+    'account.student': 'Student',
+    'account.faculty': 'Faculty',
+    'account.admin': 'Administrator',
+    
+    // File Management
+    'files.uploadedFiles': 'Uploaded Files',
+    'files.size': 'Size',
+    'files.uploadDate': 'Upload',
+    'files.uploadTime': 'Upload Date',
+    'files.noFiles': 'No uploaded files',
+    
+    // Dashboard Cards
+    'dashboard.todayQuestions': 'Today\'s Questions',
+    'dashboard.avgResponseTime': 'Average Response Time',
+    'dashboard.responseSuccess': 'Response Success Rate',
+    'dashboard.userSatisfaction': 'User Satisfaction',
+    'dashboard.tokenUsageDaily': 'Daily Token Usage',
+    'dashboard.estimatedCost': 'Estimated Token Cost',
+    'dashboard.popularQuestions': 'Popular Questions TOP 5',
+    'dashboard.systemStatus': 'System Status',
+    'dashboard.database': 'Database',
+    'dashboard.openaiApi': 'OpenAI API',
+    'dashboard.sessionStore': 'Session Store',
+    'dashboard.fileUpload': 'File Upload',
+    'dashboard.healthy': 'Healthy',
     
     // Chat interface
     'chat.typing': 'Typing...',

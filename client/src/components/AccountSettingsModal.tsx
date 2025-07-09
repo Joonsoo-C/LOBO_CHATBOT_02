@@ -67,19 +67,19 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
   }
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return "정보 없음";
+    if (!dateString) return t('account.noInfo');
     try {
       return format(new Date(dateString), "yyyy년 MM월 dd일 HH:mm", { locale: ko });
     } catch {
-      return "정보 없음";
+      return t('account.noInfo');
     }
   };
 
   const getUserTypeLabel = (userType: string) => {
     switch (userType) {
-      case "student": return "학생";
-      case "faculty": return "교직원";
-      case "admin": return "관리자";
+      case "student": return t('account.student');
+      case "faculty": return t('account.faculty');
+      case "admin": return t('account.admin');
       default: return userType;
     }
   };

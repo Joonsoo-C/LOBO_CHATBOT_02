@@ -832,7 +832,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                 <div>
                   <h3 className="font-medium text-foreground korean-text">{agent.name}</h3>
                   <p className="text-sm text-muted-foreground korean-text">
-                    {isManagementMode ? "관리자 모드" : "일반 대화"}
+                    {isManagementMode ? t('agent.managementMode') : t('agent.generalChat')}
                   </p>
                 </div>
               </div>
@@ -846,7 +846,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                       className="px-3 py-2 korean-text"
                       onClick={() => setShowGeneralMenu(!showGeneralMenu)}
                     >
-                      기능선택
+                      {t('agent.functionsSelect')}
                     </Button>
                   
                     {/* General Chat Dropdown Menu */}
@@ -869,7 +869,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Files className="w-4 h-4 mr-2" />
-                              업로드된 파일 목록
+                              {t('files.uploadedFiles')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -899,7 +899,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                       className="px-3 py-2 korean-text"
                       onClick={() => setShowMenu(!showMenu)}
                     >
-                      기능선택
+                      {t('agent.functionsSelect')}
                     </Button>
                   
                     {/* Dropdown Menu */}
@@ -923,7 +923,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <User className="w-4 h-4 mr-2" />
-                              페르소나 변경
+                              {t('agent.persona')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -936,7 +936,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Edit className="w-4 h-4 mr-2" />
-                              아이콘 변경
+                              {t('agent.iconChange')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -949,7 +949,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Settings className="w-4 h-4 mr-2" />
-                              챗봇 설정
+                              {t('agent.settings')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -962,7 +962,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Bell className="w-4 h-4 mr-2" />
-                              알림보내기
+                              {t('agent.notification')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -975,7 +975,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <FileText className="w-4 h-4 mr-2" />
-                              문서 업로드
+                              {t('agent.upload')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -988,7 +988,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               }}
                             >
                               <Files className="w-4 h-4 mr-2" />
-                              문서 관리
+                              {t('agent.documentManagement')}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -1037,7 +1037,7 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               }}
                             >
                               <BarChart3 className="w-4 h-4 mr-2" />
-                              성과 분석
+                              {t('agent.performance')}
                             </Button>
 
                           </div>
