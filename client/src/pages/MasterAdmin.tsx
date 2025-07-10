@@ -193,7 +193,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     <div className="border-t pt-6">
       <div className="flex items-center justify-between mb-4">
         <Label className="text-lg font-semibold">{t('admin.uploadedDocumentList')}</Label>
-        <Badge variant="outline">총 {agentDocuments.length}개</Badge>
+        <Badge variant="outline">{t('admin.totalCount', { count: agentDocuments.length })}</Badge>
       </div>
       
       {agentDocuments.length === 0 ? (
@@ -6073,7 +6073,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       className="h-10 w-full"
                       onClick={resetAgentFilters}
                     >
-                      필터 초기화
+                      {t('admin.filterReset')}
                     </Button>
                   </div>
                 </div>
@@ -6295,7 +6295,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardContent className="py-12">
                   <div className="text-center text-gray-500 dark:text-gray-400">
                     <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-lg font-medium mb-2">에이전트 검색</p>
+                    <p className="text-lg font-medium mb-2">{t('admin.emptySearchMessage')}</p>
                     <p className="text-sm">
 {t('admin.searchCondition')}
                     </p>
@@ -6472,7 +6472,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button className="h-10 w-full" onClick={resetQAFilters}>
-                    필터 초기화
+                    {t('admin.filterReset')}
                   </Button>
                 </div>
               </div>
@@ -7635,40 +7635,40 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 문서 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold mb-4 text-[20px]">문서 검색</h3>
+              <h3 className="font-semibold mb-4 text-[20px]">{t('admin.documentSearch')}</h3>
               
               {/* 카테고리 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">문서 종류</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.documentKind')}</Label>
                   <Select value={selectedDocumentCategory} onValueChange={(value) => {
                     setSelectedDocumentCategory(value);
                     handleDocumentFilterChange();
                   }}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="lecture">강의 자료</SelectItem>
-                      <SelectItem value="policy">정책 문서</SelectItem>
-                      <SelectItem value="manual">매뉴얼</SelectItem>
-                      <SelectItem value="form">양식</SelectItem>
-                      <SelectItem value="notice">공지사항</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
+                      <SelectItem value="lecture">{t('admin.lectureData')}</SelectItem>
+                      <SelectItem value="policy">{t('admin.policyDoc')}</SelectItem>
+                      <SelectItem value="manual">{t('admin.manual')}</SelectItem>
+                      <SelectItem value="form">{t('admin.form')}</SelectItem>
+                      <SelectItem value="notice">{t('admin.notice')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">파일 형식</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.fileFormat')}</Label>
                   <Select value={selectedDocumentType} onValueChange={(value) => {
                     setSelectedDocumentType(value);
                     handleDocumentFilterChange();
                   }}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
                       <SelectItem value="pdf">PDF</SelectItem>
                       <SelectItem value="word">Word</SelectItem>
                       <SelectItem value="excel">Excel</SelectItem>
@@ -7677,26 +7677,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">업로드 날짜</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.uploadDate')}</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     handleDocumentFilterChange();
                   }}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="today">오늘</SelectItem>
-                      <SelectItem value="week">1주일</SelectItem>
-                      <SelectItem value="month">1개월</SelectItem>
-                      <SelectItem value="year">1년</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
+                      <SelectItem value="today">{t('admin.today')}</SelectItem>
+                      <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
+                      <SelectItem value="month">{t('admin.oneMonth')}</SelectItem>
+                      <SelectItem value="year">{t('admin.oneYear')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Button onClick={resetDocumentFilters} className="h-10 w-full">
-                    필터 초기화
+                    {t('admin.filterReset')}
                   </Button>
                 </div>
               </div>
@@ -7704,9 +7704,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 문서 검색 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div className="col-span-3">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('common.searchKeyword')}</Label>
                   <Input
-                    placeholder="문서명 또는 내용으로 검색하세요."
+                    placeholder={t('admin.searchByContent')}
                     value={documentSearchQuery}
                     onChange={(e) => setDocumentSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}
@@ -7715,7 +7715,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button onClick={() => setHasDocumentSearched(true)} className="h-10 w-full">
-                    검색
+                    {t('common.search')}
                   </Button>
                 </div>
               </div>
@@ -7723,8 +7723,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 검색 결과 표시 */}
               {hasDocumentSearched && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-검색 결과: 2개 문서
-                  {documentSearchQuery && ` (검색어: "${documentSearchQuery}")`}
+{t('admin.searchResults')}: 2{t('admin.documentFound')}
+                  {documentSearchQuery && ` (${t('common.searchKeyword')}: "${documentSearchQuery}")`}
                 </div>
               )}
             </div>
@@ -7750,7 +7750,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('name')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>파일명</span>
+                            <span>{t('admin.fileName')}</span>
                             {documentSortField === 'name' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7763,7 +7763,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('type')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>종류</span>
+                            <span>{t('admin.kind')}</span>
                             {documentSortField === 'type' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7775,7 +7775,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
                           onClick={() => handleDocumentSort('size')}
                         >
-                          <span>크기</span>
+                          <span>{t('admin.size')}</span>
                           {documentSortField === 'size' && (
                             documentSortDirection === 'asc' ? 
                             <ChevronUp className="w-4 h-4" /> : 
@@ -7787,7 +7787,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('date')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>업로드 날짜</span>
+                            <span>{t('admin.uploadedDate')}</span>
                             {documentSortField === 'date' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7800,7 +7800,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('agents')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>사용 중인 에이전트</span>
+                            <span>{t('admin.connectedAgent')}</span>
                             {documentSortField === 'agents' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7813,7 +7813,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('status')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>상태</span>
+                            <span>{t('common.status')}</span>
                             {documentSortField === 'status' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7822,7 +7822,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          설정
+                          {t('common.settings')}
                         </th>
                       </tr>
                     </thead>
@@ -8116,7 +8116,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setTokenKeywordFilter("");
                       setTokenModelFilter("all");
                     }} className="h-10 w-full">
-                      필터 초기화
+                      {t('admin.filterReset')}
                     </Button>
                   </div>
                 </div>
@@ -9593,7 +9593,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           }}
                           className="mt-6"
                         >
-                          필터 초기화
+                          {t('admin.filterReset')}
                         </Button>
                       </div>
                     </div>
