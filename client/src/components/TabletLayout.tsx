@@ -11,6 +11,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ThemeSelector } from "@/components/ThemeSelector";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText, Files, Edit, Bell, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -302,6 +303,7 @@ export default function TabletLayout() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"chat" | "management">("chat");
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -539,13 +541,7 @@ export default function TabletLayout() {
               <DropdownMenuContent align="end" className="w-48 z-[99999]" sideOffset={5}>
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
-                  onClick={() => {
-                    // Account settings functionality - placeholder for now
-                    toast({
-                      title: t('home.accountSettings'),
-                      description: "계정 설정 기능이 곧 추가될 예정입니다.",
-                    });
-                  }}
+                  onClick={() => setShowAccountModal(true)}
                 >
                   <User className="mr-2 h-4 w-4" />
                   {t('home.accountSettings')}
@@ -703,6 +699,12 @@ export default function TabletLayout() {
           )}
         </div>
       </div>
+
+      {/* Account Settings Modal */}
+      <AccountSettingsModal 
+        isOpen={showAccountModal} 
+        onClose={() => setShowAccountModal(false)} 
+      />
     </div>
   );
 }
