@@ -1271,6 +1271,38 @@ const translations: Record<Language, Record<string, string>> = {
     'language.ko': '한국어',
     'language.en': 'English',
     
+    // Additional admin translation keys
+    'admin.monthlyUsage': 'Monthly Usage',
+    'admin.dailyAverage': 'Daily Average',
+    'admin.expectedCost': 'Expected Cost',
+    'admin.tokens': 'Tokens',
+    'admin.used': 'Used',
+    'admin.userSatisfaction': 'User Satisfaction',
+    'admin.like': 'Like',
+    'admin.dislike': 'Dislike',
+    'admin.responseTime': 'Response Time',
+    'admin.type': 'Type',
+    'admin.status': 'Status',
+    'admin.searchKeyword': 'Search Keyword',
+    'admin.agentKeywordPlaceholder': 'Enter agent name or description keyword',
+    'admin.searchButton': 'Search',
+    
+    // Additional admin translation keys
+    'admin.monthlyUsage': '월간 사용량',
+    'admin.dailyAverage': '일일 평균',
+    'admin.expectedCost': '예상 비용',
+    'admin.tokens': '토큰',
+    'admin.used': '사용',
+    'admin.userSatisfaction': '사용자 만족도',
+    'admin.like': '좋아요',
+    'admin.dislike': '싫어요',
+    'admin.responseTime': '응답 시간',
+    'admin.type': '유형',
+    'admin.status': '상태',
+    'admin.searchKeyword': '검색어',
+    'admin.agentKeywordPlaceholder': '에이전트명 또는 설명 키워드를 입력하세요',
+    'admin.searchButton': '검색',
+    
     // Organization Category Management - Action Cards
     'org.lmsIntegrationRecommended': 'LMS Integration (Recommended)',
     'org.lmsIntegrationDesc': 'Synchronize user information automatically by integrating with university LMS system.',

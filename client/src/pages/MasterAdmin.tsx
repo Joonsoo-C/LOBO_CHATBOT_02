@@ -6034,7 +6034,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 유형 및 상태 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">유형</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.type')}</Label>
                     <Select value={agentFilterType} onValueChange={(value) => {
                       setAgentFilterType(value);
                       setHasAgentSearched(true);
@@ -6053,7 +6053,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상태</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.status')}</Label>
                     <Select value={agentFilterStatus} onValueChange={(value) => {
                       setAgentFilterStatus(value);
                       setHasAgentSearched(true);
@@ -6081,9 +6081,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 검색 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div className="col-span-3">
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
                     <Input
-                      placeholder="에이전트명 또는 설명 키워드를 입력하세요"
+                      placeholder={t('admin.agentKeywordPlaceholder')}
                       value={agentSearchQuery}
                       onChange={(e) => setAgentSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAgentSearch()}
@@ -6095,7 +6095,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       onClick={handleAgentSearch}
                       className="h-10 px-6"
                     >
-                      검색
+                      {t('admin.searchButton')}
                     </Button>
                   </div>
                 </div>
@@ -7948,11 +7948,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.monthlyUsage')}</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
-                    <div className="text-xs text-green-600">73% 사용</div>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M {t('admin.tokens')}</div>
+                    <div className="text-xs text-green-600">73% {t('admin.used')}</div>
                   </div>
                 </div>
               </div>
@@ -7961,7 +7961,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <BarChart3 className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.dailyAverage')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
@@ -7974,7 +7974,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.expectedCost')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
@@ -11954,7 +11954,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 사용자 만족도 */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className="text-sm font-medium text-gray-700 mb-2">사용자 만족도</div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.userSatisfaction')}</div>
                     <div className="flex items-center space-x-2">
                       {(() => {
                         // 대화 ID를 기반으로 만족도 결정
@@ -11963,19 +11963,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         return isPositive ? (
                           <>
                             <div className="text-yellow-500 text-lg">👍</div>
-                            <span className="text-sm">좋아요</span>
+                            <span className="text-sm">{t('admin.like')}</span>
                           </>
                         ) : (
                           <>
                             <div className="text-red-500 text-lg">👎</div>
-                            <span className="text-sm">싫어요</span>
+                            <span className="text-sm">{t('admin.dislike')}</span>
                           </>
                         );
                       })()}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-700 mb-2">응답 시간</div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.responseTime')}</div>
                     <div className="text-sm">
                       {(() => {
                         const seed = selectedQALog.id || 1;
