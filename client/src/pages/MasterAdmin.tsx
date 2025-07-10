@@ -6642,29 +6642,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">인기 질문 TOP 10</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.popularQuestionsTop10')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">수강신청 관련 문의</span>
-                      <Badge variant="outline">89건</Badge>
+                      <span className="text-sm">{t('admin.courseRegistrationInquiry')}</span>
+                      <Badge variant="outline">89{t('admin.cases')}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">졸업 요건 확인</span>
-                      <Badge variant="outline">67건</Badge>
+                      <span className="text-sm">{t('admin.graduationRequirementCheck')}</span>
+                      <Badge variant="outline">67{t('admin.cases')}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">장학금 신청</span>
-                      <Badge variant="outline">54건</Badge>
+                      <span className="text-sm">{t('admin.scholarshipApplication')}</span>
+                      <Badge variant="outline">54{t('admin.cases')}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">학과 사무실 위치</span>
-                      <Badge variant="outline">43건</Badge>
+                      <span className="text-sm">{t('admin.departmentOfficeLocation')}</span>
+                      <Badge variant="outline">43{t('admin.cases')}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">연구실 배정</span>
-                      <Badge variant="outline">38건</Badge>
+                      <span className="text-sm">{t('admin.labAssignment')}</span>
+                      <Badge variant="outline">38{t('admin.cases')}</Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -6672,12 +6672,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">응답 품질 분석</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.responseQualityAnalysis')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">문서 기반 응답</span>
+                      <span className="text-sm">{t('admin.documentBasedResponse')}</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-32 bg-gray-200 rounded-full h-2">
                           <div className="bg-green-600 h-2 rounded-full" style={{width: '84%'}}></div>
@@ -6686,7 +6686,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">하이브리드 응답</span>
+                      <span className="text-sm">{t('admin.hybridResponse')}</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-32 bg-gray-200 rounded-full h-2">
                           <div className="bg-blue-600 h-2 rounded-full" style={{width: '12%'}}></div>
@@ -6695,7 +6695,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">AI 생성 응답</span>
+                      <span className="text-sm">{t('admin.aiGeneratedResponse')}</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-32 bg-gray-200 rounded-full h-2">
                           <div className="bg-gray-600 h-2 rounded-full" style={{width: '4%'}}></div>
