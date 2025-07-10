@@ -8061,28 +8061,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 기간, 모델, 키워드 (하단) */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.period')}</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
                       <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="today">오늘</SelectItem>
-                        <SelectItem value="week">최근 1주일</SelectItem>
-                        <SelectItem value="month">최근 1개월</SelectItem>
-                        <SelectItem value="quarter">최근 3개월</SelectItem>
+                        <SelectItem value="today">{t('admin.today')}</SelectItem>
+                        <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
+                        <SelectItem value="month">{t('admin.oneMonth')}</SelectItem>
+                        <SelectItem value="quarter">{t('admin.threeMonths')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.model')}</Label>
                     <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
                       <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="all">{t('admin.all')}</SelectItem>
                         <SelectItem value="gpt-4o">GPT-4o</SelectItem>
                         <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
                         <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
@@ -8092,9 +8092,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
                     <Input
-                      placeholder="에이전트명 또는 질문 키워드"
+                      placeholder={t('admin.agentNameOrKeyword')}
                       value={tokenKeywordFilter}
                       onChange={(e) => setTokenKeywordFilter(e.target.value)}
                       className="h-10"
@@ -8103,7 +8103,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   <div>
                     <Button className="h-10 w-full">
-                      검색
+                      {t('admin.searchButton')}
                     </Button>
                   </div>
                   
@@ -8126,16 +8126,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 토큰 사용량 테이블 */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.tokenUsageList')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-3 font-medium">시간</th>
-                        <th className="text-left p-3 font-medium">에이전트</th>
-                        <th className="text-left p-3 font-medium">질문</th>
+                        <th className="text-left p-3 font-medium">{t('admin.time')}</th>
+                        <th className="text-left p-3 font-medium">{t('admin.agentName')}</th>
+                        <th className="text-left p-3 font-medium">{t('admin.question')}</th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
                           onClick={() => {
@@ -8147,7 +8147,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          입력 {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          {t('admin.input')} {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8160,7 +8160,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          출력 {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          {t('admin.output')} {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8173,7 +8173,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          색인 {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          {t('admin.index')} {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8186,9 +8186,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          문서 전처리 {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          {t('admin.documentPreprocessing')} {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="text-left p-3 font-medium">총합</th>
+                        <th className="text-left p-3 font-medium">{t('admin.total')}</th>
                       </tr>
                     </thead>
                     <tbody>
