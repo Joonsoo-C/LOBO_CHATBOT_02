@@ -232,7 +232,7 @@ function Home() {
                   }}
                 >
                   <User className="w-4 h-4 mr-2" />
-                  계정 설정
+                  {t('home.accountSettings')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <div className="px-3 py-2">

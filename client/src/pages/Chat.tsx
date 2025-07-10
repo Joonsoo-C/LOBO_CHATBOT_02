@@ -220,7 +220,7 @@ export default function Chat() {
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => setShowAccountModal(true)}>
                     <User className="w-4 h-4 mr-2" />
-                    계정 설정
+                    {t('home.accountSettings')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
