@@ -192,15 +192,15 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   return (
     <div className="border-t pt-6">
       <div className="flex items-center justify-between mb-4">
-        <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
+        <Label className="text-lg font-semibold">{t('admin.uploadedDocumentList')}</Label>
         <Badge variant="outline">총 {agentDocuments.length}개</Badge>
       </div>
       
       {agentDocuments.length === 0 ? (
         <div className="border rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
           <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-          <p className="text-sm">업로드된 문서가 없습니다.</p>
-          <p className="text-xs mt-1">위의 파일 업로드 영역을 사용하여 문서를 추가하세요.</p>
+          <p className="text-sm">{t('admin.noUploadedDocuments')}</p>
+          <p className="text-xs mt-1">{t('admin.useUploadArea')}</p>
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
@@ -4430,10 +4430,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     disabled={selectedUniversity === 'all'}
                   >
                     <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
                       {lowerCategories.map((category, index) => (
                         <SelectItem key={`lower-${category}-${index}`} value={category}>
                           {category}
@@ -4450,10 +4450,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     disabled={selectedCollege === 'all' || selectedUniversity === 'all'}
                   >
                     <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
                       {detailCategories.map((category, index) => (
                         <SelectItem key={`detail-${category}-${index}`} value={category}>
                           {category}
@@ -4464,7 +4464,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button onClick={resetFilters} className="h-10 w-full">
-                    필터 초기화
+                    {t('org.resetFilters')}
                   </Button>
                 </div>
               </div>
@@ -4472,56 +4472,56 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 상태 및 시스템 역할 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상태</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.status')}</Label>
                   <Select value={selectedDocumentType} onValueChange={(value) => {
                     setSelectedDocumentType(value);
                     executeSearch();
                   }}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="active">활성</SelectItem>
-                      <SelectItem value="inactive">비활성</SelectItem>
-                      <SelectItem value="locked">잠금</SelectItem>
-                      <SelectItem value="pending">대기</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
+                      <SelectItem value="active">{t('account.active')}</SelectItem>
+                      <SelectItem value="inactive">{t('account.inactive')}</SelectItem>
+                      <SelectItem value="locked">{t('account.locked')}</SelectItem>
+                      <SelectItem value="pending">{t('account.pending')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">시스템 역할</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('user.systemRole')}</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     executeSearch();
                   }}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
-                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                      <SelectItem value="category_admin">카테고리 관리자</SelectItem>
-                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                      <SelectItem value="qa_admin">QA 관리자</SelectItem>
-                      <SelectItem value="doc_admin">문서 관리자</SelectItem>
-                      <SelectItem value="user">일반 사용자</SelectItem>
-                      <SelectItem value="external">외부 사용자</SelectItem>
+                      <SelectItem value="all">{t('org.all')}</SelectItem>
+                      <SelectItem value="master_admin">{t('admin.systemRole.masterAdmin')}</SelectItem>
+                      <SelectItem value="operation_admin">{t('admin.systemRole.operationAdmin')}</SelectItem>
+                      <SelectItem value="category_admin">{t('admin.systemRole.categoryAdmin')}</SelectItem>
+                      <SelectItem value="agent_admin">{t('admin.systemRole.agentAdmin')}</SelectItem>
+                      <SelectItem value="qa_admin">{t('admin.systemRole.qaAdmin')}</SelectItem>
+                      <SelectItem value="doc_admin">{t('admin.systemRole.docAdmin')}</SelectItem>
+                      <SelectItem value="user">{t('admin.systemRole.user')}</SelectItem>
+                      <SelectItem value="external">{t('admin.systemRole.external')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="col-span-2">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
                   <div className="flex space-x-2">
                     <Input
-                      placeholder="사용자명 또는 이메일 주소를 입력하세요."
+                      placeholder={t('admin.searchPlaceholder')}
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && executeSearch()}
                       className="h-10 flex-1"
                     />
-                    <Button onClick={executeSearch} className="h-10 px-6">검색</Button>
+                    <Button onClick={executeSearch} className="h-10 px-6">{t('admin.searchButton')}</Button>
                   </div>
                 </div>
               </div>
@@ -4532,9 +4532,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 사용자 목록 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[14px]">사용자 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.userListTitle')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredUsers?.length || 0}명 사용자 중 {((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)}개 표시
+{t('admin.showingResults', { 
+                    total: filteredUsers?.length || 0,
+                    start: ((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
+                    end: Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)
+                  })}
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -4543,22 +4547,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          사용자
+                          {t('admin.user')}
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          소속 조직
+                          {t('admin.organization')}
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          직책/역할
+                          {t('admin.positionRole')}
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          이메일
+                          {t('admin.email')}
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          상태
+                          {t('admin.status')}
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          수정
+                          {t('admin.edit')}
                         </th>
                       </tr>
                     </thead>
@@ -4568,9 +4572,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <td colSpan={6} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">검색 결과 없음</p>
+                              <p className="text-lg font-medium mb-2">{t('admin.noSearchResults')}</p>
                               <p className="text-sm">
-                                검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.
+                                {t('admin.noSearchResultsDesc')}
                               </p>
                             </div>
                           </td>
@@ -5950,13 +5954,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
 
-            {/* 에이전트 검색 및 관리 */}
+            {/* {t('admin.agentSearchAndManagement')} */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold text-[20px]">에이전트 검색</h3>
+              <h3 className="font-semibold text-[20px]">{t('admin.agentSearch')}</h3>
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.upperCategory')}</Label>
                     <Select value={agentFilterUpperCategory} onValueChange={(value) => {
                       setAgentFilterUpperCategory(value);
                       setAgentFilterLowerCategory('all');
@@ -5978,7 +5982,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.lowerCategory')}</Label>
                     <Select 
                       value={agentFilterLowerCategory} 
                       onValueChange={(value) => {
@@ -6003,7 +6007,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 카테고리</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.detailCategory')}</Label>
                     <Select 
                       value={agentFilterDetailCategory} 
                       onValueChange={(value) => {
@@ -6104,9 +6108,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {hasAgentSearched ? (
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="font-semibold tracking-tight text-[20px]">에이전트 목록</CardTitle>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.agentListTitle')}</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {sortedAgents?.length || 0}개 중 {Math.min((agentCurrentPage - 1) * AGENTS_PER_PAGE + 1, sortedAgents?.length || 0)}-{Math.min(agentCurrentPage * AGENTS_PER_PAGE, sortedAgents?.length || 0)}개 표시
+{t('admin.agentShowingResults', {
+                      total: sortedAgents?.length || 0,
+                      start: Math.min((agentCurrentPage - 1) * AGENTS_PER_PAGE + 1, sortedAgents?.length || 0),
+                      end: Math.min(agentCurrentPage * AGENTS_PER_PAGE, sortedAgents?.length || 0)
+                    })}
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -6289,7 +6297,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p className="text-lg font-medium mb-2">에이전트 검색</p>
                     <p className="text-sm">
-                      위의 검색 조건을 설정하고 "검색" 버튼을 클릭하여 에이전트를 찾아보세요.
+{t('admin.searchCondition')}
                     </p>
                   </div>
                 </CardContent>
@@ -6297,7 +6305,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             )}
           </TabsContent>
 
-          {/* 질문/응답 로그 */}
+          {/* {t('admin.qaLogs')} */}
           <TabsContent value="conversations" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.conversations')}</h2>
@@ -6473,9 +6481,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[20px]"> 질문 응답 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredConversationLogs?.length || 0}개 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
+{t('admin.qaShowingResults', {
+                    total: filteredConversationLogs?.length || 0,
+                    start: ((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
+                    end: Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)
+                  })}
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -7719,9 +7731,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">문서 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.documentList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {documentList?.length || 0}개 중 {documentList && documentList.length > 0 ? `${((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-${Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length)}개` : '0개'} 표시
+{t('admin.documentShowingResults', {
+                    total: documentList?.length || 0,
+                    start: documentList && documentList.length > 0 ? ((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1 : 0,
+                    end: documentList && documentList.length > 0 ? Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length) : 0
+                  })}
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -9217,9 +9233,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              {/* 아이콘 유형 선택 */}
+              {/* {t('admin.iconTypeSelection')} */}
               <div>
-                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
+                <h3 className="text-sm font-medium mb-3">{t('admin.iconType')}</h3>
                 <div className="flex space-x-2">
                   <Button 
                     variant={!isUsingCustomImage ? "default" : "outline"} 
@@ -10804,11 +10820,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="category"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('admin.agentType')} *</FormLabel>
                                   <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                       <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                        <SelectValue placeholder="유형 선택" />
+                                        <SelectValue placeholder={t('admin.typeSelection')} />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
