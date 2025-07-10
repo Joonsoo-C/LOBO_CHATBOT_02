@@ -7027,7 +7027,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
               <DialogHeader>
-                <DialogTitle className="font-semibold tracking-tight text-[20px]">조직 상세 정보 편집</DialogTitle>
+                <DialogTitle className="font-semibold tracking-tight text-[20px]">{t('org.editDetailInfo')}</DialogTitle>
                 <div id="org-edit-description" className="sr-only">조직의 상세 정보를 편집하고 관리할 수 있습니다.</div>
               </DialogHeader>
               <Form {...orgCategoryEditForm}>
@@ -7313,7 +7313,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <Dialog open={isCategoryManagerDialogOpen} onOpenChange={setIsCategoryManagerDialogOpen}>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>카테고리 관리자 선택</DialogTitle>
+                <DialogTitle>{t('org.categoryManagerSelect')}</DialogTitle>
               </DialogHeader>
               
               <div className="space-y-6">
@@ -8238,7 +8238,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>LMS 연동 설정</DialogTitle>
+              <DialogTitle>{t('org.lmsIntegrationSettings')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -8399,7 +8399,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isDocumentDetailDialogOpen} onOpenChange={setIsDocumentDetailDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>에이전트 연결 설정</DialogTitle>
+              <DialogTitle>{t('admin.agentConnectionSettings')}</DialogTitle>
             </DialogHeader>
             {selectedDocument && (
               <div className="space-y-6">
@@ -8547,7 +8547,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>문서 업로드</DialogTitle>
+              <DialogTitle>{t('admin.documentUpload')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -8746,7 +8746,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-md">
             <DialogHeader>
               <div className="flex items-center justify-between">
-                <DialogTitle>새 카테고리 생성</DialogTitle>
+                <DialogTitle>{t('org.createNewCategory')}</DialogTitle>
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -9061,7 +9061,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isFileUploadDialogOpen} onOpenChange={setIsFileUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>사용자 파일 업로드</DialogTitle>
+              <DialogTitle>{t('user.fileUpload')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -11980,7 +11980,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       {(() => {
                         const seed = selectedQALog.id || 1;
                         const responseTime = ((seed * 137) % 240 + 10) / 100;
-                        return responseTime.toFixed(1) + '초';
+                        return responseTime.toFixed(1) + (language === 'en' ? 's' : '초');
                       })()}
                     </div>
                   </div>
@@ -11994,9 +11994,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={showImprovementModal} onOpenChange={setShowImprovementModal}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>개선 요청 및 코멘트</DialogTitle>
+              <DialogTitle>{t('admin.improveRequestTitle')}</DialogTitle>
               <DialogDescription>
-                질의응답에 대한 개선 요청과 코멘트를 작성합니다.
+                {t('admin.improveRequestDesc')}
               </DialogDescription>
             </DialogHeader>
             
@@ -12004,10 +12004,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <div className="space-y-6">
                 {/* 질문 정보 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">질문</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.question')}</div>
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <div className="text-sm text-gray-600">
-                      {selectedImprovementLog.lastUserMessage || '질문 내용이 없습니다'} 
+                      {selectedImprovementLog.lastUserMessage || t('admin.noQuestionContent')} 
                       <span className="text-gray-400 ml-2">({selectedImprovementLog.messageCount || 0})</span>
                     </div>
                   </div>
@@ -12015,7 +12015,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 답변 정보 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">답변</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.answer')}</div>
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <div className="text-sm text-gray-600">
                       {(() => {
@@ -12036,12 +12036,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 개선요청 코멘트 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">개선 요청 코멘트</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.improveComment')}</div>
                   <textarea
                     value={improvementComment}
                     onChange={(e) => setImprovementComment(e.target.value)}
                     className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="개선이 필요한 내용을 입력해주세요."
+                    placeholder={t('admin.improveCommentPlaceholder')}
                   />
                 </div>
 
@@ -12051,7 +12051,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     variant="outline"
                     onClick={() => setShowImprovementModal(false)}
                   >
-                    취소
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -12060,7 +12060,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setImprovementComment('');
                     }}
                   >
-                    저장
+                    {t('common.save')}
                   </Button>
                 </div>
               </div>

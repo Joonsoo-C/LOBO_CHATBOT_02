@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AgentFileUploadModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface AgentFileUploadModalProps {
 }
 
 export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploadModalProps) {
+  const { t } = useLanguage();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [clearExisting, setClearExisting] = useState(false);
   const [validateOnly, setValidateOnly] = useState(false);
@@ -60,12 +62,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         });
         
         toast({
-          title: "업로드 완료",
-          description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 ${validateOnly ? '검증' : '업로드'}되었습니다.`,
+          title: t('agent.uploadComplete'),
+          description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 ${validateOnly ? t('agent.validationComplete') : t('agent.uploadComplete')}되었습니다.`,
         });
       } else {
         toast({
-          title: "검증 완료",
+          title: t('agent.validationComplete'),
           description: `${data.agentCount}개의 에이전트 레코드가 유효합니다.`,
         });
       }
@@ -73,8 +75,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "인증 오류",
-          description: "다시 로그인해주세요.",
+          title: t('agent.authError'),
+          description: t('agent.loginAgain'),
           variant: "destructive",
         });
         setTimeout(() => {
@@ -82,8 +84,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         }, 500);
       } else {
         toast({
-          title: "업로드 실패",
-          description: error.message || "파일 업로드에 실패했습니다.",
+          title: t('agent.uploadFailed'),
+          description: error.message || t('agent.uploadFailedDesc'),
           variant: "destructive",
         });
       }
@@ -99,8 +101,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
     if (!allowedTypes.includes(file.type)) {
       toast({
-        title: "지원하지 않는 파일 형식",
-        description: "CSV, XLS, XLSX 파일만 업로드 가능합니다.",
+        title: t('agent.unsupportedFormat'),
+        description: t('agent.csvXlsOnly'),
         variant: "destructive",
       });
       return false;
@@ -108,8 +110,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
     if (file.size > 10 * 1024 * 1024) {
       toast({
-        title: "파일 크기 초과",
-        description: "10MB 이하의 파일만 업로드 가능합니다.",
+        title: t('agent.fileSizeExceed'),
+        description: t('agent.fileSizeLimit'),
         variant: "destructive",
       });
       return false;
@@ -172,7 +174,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "에이전트_업로드_샘플.csv";
+    link.download = t('agent.downloadSample');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -200,10 +202,10 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
             <h3 className="text-lg font-medium text-foreground korean-text">
-              에이전트 파일 업로드
+              {t('agent.fileUpload')}
             </h3>
             <p className="text-sm text-muted-foreground korean-text mt-1">
-              CSV/Excel 파일로 에이전트를 대량 추가하세요
+              {t('agent.fileUploadDesc')}
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">
@@ -219,7 +221,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               <div className="flex items-center space-x-2">
                 <FileText className="w-5 h-5 text-green-600" />
                 <span className="text-sm font-medium text-green-800 dark:text-green-200 korean-text">
-                  파일 업로드
+                  {t('agent.fileUpload')}
                 </span>
               </div>
               <Button
@@ -229,11 +231,11 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 className="korean-text text-green-700 border-green-300 hover:bg-green-100"
               >
                 <Download className="w-4 h-4 mr-1" />
-                샘플 파일 다운로드
+                {t('agent.sampleDownload')}
               </Button>
             </div>
             <p className="text-sm text-green-700 dark:text-green-300 mt-2 korean-text">
-              CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.
+              {t('agent.fileUploadDesc')}
             </p>
           </div>
 
@@ -263,7 +265,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                     <FileText className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-foreground mb-1 korean-text">선택된 파일</h4>
+                    <h4 className="text-lg font-medium text-foreground mb-1 korean-text">{t('agent.selectedFile')}</h4>
                     <p className="text-sm font-medium text-green-600 dark:text-green-400 korean-text">{selectedFile.name}</p>
                     <p className="text-xs text-muted-foreground mt-1">{Math.round(selectedFile.size / 1024)} KB</p>
                   </div>
@@ -282,7 +284,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                       className="korean-text"
                     >
                       <Upload className="w-4 h-4 mr-1" />
-                      다른 파일 선택
+                      {t('agent.selectOtherFile')}
                     </Button>
                     <Button
                       type="button"
@@ -296,7 +298,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                       className="korean-text text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <X className="w-4 h-4 mr-1" />
-                      제거
+                      {t('common.remove')}
                     </Button>
                   </div>
                 </div>
@@ -306,9 +308,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                     <FileText className="w-8 h-8 text-gray-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 드래그하거나 클릭하여 업로드</h4>
+                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">{t('agent.dragOrClick')}</h4>
                     <p className="text-sm text-muted-foreground korean-text mb-4">
-                      CSV, XLS, XLSX 파일 지원 (최대 10MB)
+                      {t('agent.supportedFormats')}
                     </p>
                   </div>
                   <Button
@@ -317,7 +319,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                     className="korean-text bg-blue-600 hover:bg-blue-700"
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    파일 선택
+                    {t('agent.selectFile')}
                   </Button>
                 </div>
               )}
@@ -334,7 +336,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
           {/* Upload Options */}
           <div className="mb-6">
-            <Label className="text-sm font-medium mb-3 block korean-text">업로드 옵션</Label>
+            <Label className="text-sm font-medium mb-3 block korean-text">{t('agent.uploadOptions')}</Label>
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -342,7 +344,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   checked={validateOnly}
                   onCheckedChange={(checked) => setValidateOnly(checked === true)}
                 />
-                <Label htmlFor="validate-only" className="text-sm korean-text">검증만 수행 (실제 업로드하지 않음)</Label>
+                <Label htmlFor="validate-only" className="text-sm korean-text">{t('agent.validateOnly')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -351,7 +353,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   onCheckedChange={(checked) => setClearExisting(checked === true)}
                   disabled={validateOnly}
                 />
-                <Label htmlFor="clear-existing" className="text-sm korean-text">기존 에이전트 모두 삭제 후 업로드</Label>
+                <Label htmlFor="clear-existing" className="text-sm korean-text">{t('agent.clearExisting')}</Label>
               </div>
             </div>
           </div>
@@ -372,7 +374,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 <span className={`font-medium korean-text ${
                   uploadResult.success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'
                 }`}>
-                  {uploadResult.success ? '업로드 성공' : '업로드 실패'}
+                  {uploadResult.success ? t('agent.uploadSuccess') : t('agent.uploadFailed')}
                 </span>
               </div>
               <p className={`text-sm korean-text ${
@@ -384,7 +386,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 <p className={`text-sm korean-text mt-1 ${
                   uploadResult.success ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
                 }`}>
-                  처리된 에이전트: {uploadResult.agentCount}개
+                  {t('agent.processedAgents')}: {uploadResult.agentCount}개
                 </p>
               )}
             </div>
@@ -394,7 +396,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
           {uploadMutation.isPending && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium korean-text">업로드 중...</span>
+                <span className="text-sm font-medium korean-text">{t('agent.uploading')}</span>
                 <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
               </div>
               <Progress value={uploadProgress} className="h-2" />
@@ -409,7 +411,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               className="flex-1 korean-text h-12"
               disabled={uploadMutation.isPending}
             >
-              취소
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleUpload}
@@ -419,12 +421,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               {uploadMutation.isPending ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  {validateOnly ? '검증 중...' : '업로드 중...'}
+                  {validateOnly ? t('agent.validating') : t('agent.uploading')}
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  {validateOnly ? '검증 시작' : '업로드 시작'}
+                  {validateOnly ? t('agent.validateStart') : t('agent.uploadStart')}
                 </>
               )}
             </Button>

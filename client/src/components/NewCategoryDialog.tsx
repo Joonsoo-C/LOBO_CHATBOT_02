@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface NewCategoryFormData {
   categoryLevel: string;
@@ -20,6 +21,7 @@ interface NewCategoryDialogProps {
 }
 
 export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryDialogProps) {
+  const { t } = useLanguage();
   const [step, setStep] = useState(1);
   const [categoryType, setCategoryType] = useState("");
   const [upperCategory, setUpperCategory] = useState("");
@@ -70,9 +72,9 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>새 조직 카테고리 생성</DialogTitle>
+          <DialogTitle>{t('org.createNewCategory')}</DialogTitle>
           <p className="text-sm text-muted-foreground">
-            단계별로 진행하여 카테고리를 생성합니다.
+            {t('org.createStepByStep')}
           </p>
         </DialogHeader>
 
@@ -102,12 +104,12 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
           {/* 1단계: 카테고리 유형 선택 */}
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">생성할 카테고리 유형을 선택하세요</h3>
+              <h3 className="text-lg font-semibold">{t('org.selectCategoryType')}</h3>
               <div className="grid gap-3">
                 {[
-                  { value: "upper", title: "최상위 카테고리", desc: "예: 인문대학, 공과대학, 경영대학" },
-                  { value: "lower", title: "중간 카테고리", desc: "예: 국어국문학과, 컴퓨터공학과, 경영학과" },
-                  { value: "detail", title: "세부 카테고리", desc: "예: 1학년, 석사과정, 박사과정" }
+                  { value: "upper", title: t('org.upperCategory'), desc: t('org.upperCategoryDesc') },
+                  { value: "lower", title: t('org.lowerCategory'), desc: t('org.lowerCategoryDesc') },
+                  { value: "detail", title: t('org.detailCategory'), desc: t('org.detailCategoryDesc') }
                 ].map((option) => (
                   <div 
                     key={option.value}
@@ -136,10 +138,10 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
           {/* 2단계: 상위 카테고리 선택 */}
           {step === 2 && (categoryType === "lower" || categoryType === "detail") && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">상위 카테고리를 선택하세요</h3>
+              <h3 className="text-lg font-semibold">{t('org.selectUpperCategory')}</h3>
               <Select value={upperCategory} onValueChange={setUpperCategory}>
                 <SelectTrigger>
-                  <SelectValue placeholder="상위 카테고리를 선택하세요" />
+                  <SelectValue placeholder={t('org.selectUpperCategory')} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.upper.map((category) => (
@@ -150,10 +152,10 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
 
               {categoryType === "detail" && upperCategory && (
                 <div className="space-y-2">
-                  <Label>중간 카테고리 선택</Label>
+                  <Label>{t('org.middleCategorySelect')}</Label>
                   <Select value={middleCategory} onValueChange={setMiddleCategory}>
                     <SelectTrigger>
-                      <SelectValue placeholder="중간 카테고리를 선택하세요" />
+                      <SelectValue placeholder={t('org.selectMiddleCategory')} />
                     </SelectTrigger>
                     <SelectContent>
                       {getLowerCategories(upperCategory).map((category) => (
@@ -169,37 +171,37 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
           {/* 3단계: 카테고리 정보 입력 */}
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">카테고리 정보를 입력하세요</h3>
+              <h3 className="text-lg font-semibold">{t('org.categoryInfo')}</h3>
               
               {/* 경로 미리보기 */}
               <div className="bg-blue-50 p-3 rounded-lg">
-                <Label className="text-blue-800 text-sm font-medium">생성될 카테고리 경로:</Label>
+                <Label className="text-blue-800 text-sm font-medium">{t('org.categoryPath')}</Label>
                 <p className="text-blue-700 mt-1 font-medium">
                   {upperCategory && `${upperCategory} > `}
                   {middleCategory && `${middleCategory} > `}
-                  {categoryName || "새 카테고리"}
+                  {categoryName || t('org.newCategory')}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label>카테고리 이름 *</Label>
+                <Label>{t('org.categoryName')} *</Label>
                 <Input 
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
                   placeholder={
-                    categoryType === "upper" ? "예: 인문대학, 공과대학" :
-                    categoryType === "lower" ? "예: 국어국문학과, 컴퓨터공학과" :
-                    "예: 1학년, 석사과정"
+                    categoryType === "upper" ? t('org.categoryNamePlaceholder') :
+                    categoryType === "lower" ? t('org.categoryNamePlaceholderLower') :
+                    t('org.categoryNamePlaceholderDetail')
                   }
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>설명 (선택사항)</Label>
+                <Label>{t('org.description')}</Label>
                 <Textarea 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="카테고리에 대한 설명을 입력하세요"
+                  placeholder={t('org.descriptionPlaceholder')}
                   rows={3}
                 />
               </div>
@@ -209,13 +211,13 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
           {/* 버튼 그룹 */}
           <div className="flex justify-between pt-4 border-t">
             <Button variant="outline" onClick={handleClose}>
-              취소
+              {t('common.cancel')}
             </Button>
             
             <div className="flex space-x-2">
               {step > 1 && (
                 <Button variant="outline" onClick={handleBack}>
-                  이전
+                  {t('common.previous')}
                 </Button>
               )}
               
@@ -228,7 +230,7 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
                     (step === 2 && categoryType === "detail" && (!upperCategory || !middleCategory))
                   }
                 >
-                  다음
+                  {t('common.next')}
                 </Button>
               ) : (
                 <Button 
@@ -236,7 +238,7 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
                   disabled={!categoryName.trim()}
                   className="bg-blue-500 hover:bg-blue-600"
                 >
-                  생성하기
+                  {t('common.create')}
                 </Button>
               )}
             </div>
