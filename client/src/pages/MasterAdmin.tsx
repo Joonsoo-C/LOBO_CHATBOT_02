@@ -7543,12 +7543,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Database className="w-5 h-5 mr-2 text-blue-600" />
-                    LMS 문서 연동
+{t('admin.lmsIntegration')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    LMS 시스템에서 강의 자료 및 문서를 자동으로 가져옵니다.
+{t('admin.lmsIntegrationDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -7560,12 +7560,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <FileText className="w-5 h-5 mr-2 text-green-600" />
-                    직접 업로드
+{t('admin.directUpload')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    PDF, Word, Excel 파일을 직접 업로드하여 관리합니다.
+{t('admin.directUploadDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -7579,11 +7579,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <FileText className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">전체 파일 수</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.totalDocuments')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">{documentList?.length || 0}</div>
-                    <div className="text-xs text-gray-500">개</div>
+                    <div className="text-xs text-gray-500">{t('admin.countUnit')}</div>
                   </div>
                 </div>
               </div>
@@ -7592,11 +7592,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">인덱스 실패율</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.indexFailureRate')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">2.4%</div>
-                    <div className="text-xs text-red-600">처리 실패</div>
+                    <div className="text-xs text-red-600">{t('admin.processingFailure')}</div>
                   </div>
                 </div>
               </div>
@@ -7605,11 +7605,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <XCircle className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">비활성 문서 수</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.inactiveDocuments')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">0</div>
-                    <div className="text-xs text-gray-500">개</div>
+                    <div className="text-xs text-gray-500">{t('admin.countUnit')}</div>
                   </div>
                 </div>
               </div>
@@ -7618,7 +7618,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <HardDrive className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">총 용량</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.totalCapacity')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">
