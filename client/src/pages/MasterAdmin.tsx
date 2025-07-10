@@ -6370,17 +6370,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
+              <h3 className="font-semibold mb-4 text-[20px]">{t('admin.logSearch')}</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.upperCategory')}</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.select')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
                       {qaUniqueUpperCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6390,13 +6390,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.lowerCategory')}</Label>
                   <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
                     <SelectTrigger className={`h-10 ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.select')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
                       {qaFilteredLowerCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6406,17 +6406,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.detailCategory')}</Label>
                   <Select 
                     value={qaSelectedDetailCategory} 
                     onValueChange={handleQADetailCategoryChange}
                     disabled={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all'}
                   >
                     <SelectTrigger className={`h-10 ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder="선택" />
+                      <SelectValue placeholder={t('admin.select')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
                       {qaFilteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6429,37 +6429,37 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 유형</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.userType')}</Label>
                   <Select value={qaUserTypeFilter} onValueChange={setQaUserTypeFilter}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="사용자 유형" />
+                      <SelectValue placeholder={t('admin.userType')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="student">학생</SelectItem>
-                      <SelectItem value="faculty">교직원</SelectItem>
-                      <SelectItem value="admin">관리자</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
+                      <SelectItem value="student">{t('admin.student')}</SelectItem>
+                      <SelectItem value="faculty">{t('admin.faculty')}</SelectItem>
+                      <SelectItem value="admin">{t('admin.admin')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.period')}</Label>
                   <Select value={qaPeriodFilter} onValueChange={setQaPeriodFilter}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder="기간 선택" />
+                      <SelectValue placeholder={t('admin.periodSelect')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="today">오늘</SelectItem>
-                      <SelectItem value="week">최근 1주일</SelectItem>
-                      <SelectItem value="month">최근 1개월</SelectItem>
-                      <SelectItem value="quarter">최근 3개월</SelectItem>
+                      <SelectItem value="today">{t('admin.today')}</SelectItem>
+                      <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
+                      <SelectItem value="month">{t('admin.oneMonth')}</SelectItem>
+                      <SelectItem value="quarter">{t('admin.threeMonths')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
                   <Input 
-                    placeholder="질문 내용으로 검색하세요." 
+                    placeholder={t('admin.searchByQuestion')} 
                     className="h-10" 
                     value={qaSearchQuery}
                     onChange={(e) => setQaSearchQuery(e.target.value)}
@@ -6467,7 +6467,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button className="h-10 w-full">
-                    검색
+                    {t('admin.searchButton')}
                   </Button>
                 </div>
                 <div>
@@ -6496,22 +6496,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          에이전트
+                          {t('admin.agentName')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          질문
+                          {t('admin.question')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           응답 방식
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 성공
+                          {t('admin.responseSuccess')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 시간
+                          {t('admin.responseTime')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          시간
+                          {t('admin.time')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           개선 요청
