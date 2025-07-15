@@ -976,6 +976,11 @@ Changelog:
   * Cleaned up LanguageContext.tsx to contain only Korean and English translations
   * Updated LanguageSelector component to show only Korean and English options
   * Implemented automatic Korean text to English translation when English mode is selected:
+- July 9, 2025. Standardized document type dropdown menus across all file upload locations:
+  * Updated all document type dropdowns to use consistent Korean labels: 강의자료, 정책·규정 문서, 매뉴얼·가이드, 서식·양식, 공지·안내, 교육과정, FAQ·Q&A, 연구자료, 회의·내부자료, 기타
+  * Changed default selection to "기타" for all file upload modals: FileUploadModal.tsx, MasterAdmin.tsx agent detail modal
+  * Ensured consistency across three key upload locations: Agent management chat modal, Document management upload modal, Document detail modal agent connection tab
+  * All document type dropdown menus now provide uniform user experience with standardized terminology
     - User messages containing Korean text are automatically translated to English
     - Agent names, descriptions, speaking styles, and personality traits are translated
     - Conversation history is translated to maintain context in English

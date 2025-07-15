@@ -1207,7 +1207,7 @@ function MasterAdmin() {
   const [documentType, setDocumentType] = useState<string>('');
   
   // 에이전트 파일 업로드 상태
-  const [agentDocumentType, setAgentDocumentType] = useState<string>('');
+  const [agentDocumentType, setAgentDocumentType] = useState<string>('other');
   const [agentDocumentDescription, setAgentDocumentDescription] = useState<string>('');
   const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
   const [agentFileUploadProgress, setAgentFileUploadProgress] = useState(0);
@@ -8635,12 +8635,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectValue placeholder="문서 종류" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lecture">강의 자료</SelectItem>
-                    <SelectItem value="policy">정책 문서</SelectItem>
-                    <SelectItem value="manual">매뉴얼</SelectItem>
-                    <SelectItem value="form">양식</SelectItem>
-                    <SelectItem value="notice">공지사항</SelectItem>
+                    <SelectItem value="lecture">강의자료</SelectItem>
+                    <SelectItem value="policy">정책·규정 문서</SelectItem>
+                    <SelectItem value="manual">매뉴얼·가이드</SelectItem>
+                    <SelectItem value="form">서식·양식</SelectItem>
+                    <SelectItem value="notice">공지·안내</SelectItem>
                     <SelectItem value="curriculum">교육과정</SelectItem>
+                    <SelectItem value="faq">FAQ·Q&A</SelectItem>
+                    <SelectItem value="research">연구자료</SelectItem>
+                    <SelectItem value="internal">회의·내부자료</SelectItem>
+                    <SelectItem value="other">기타</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -11086,12 +11090,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue placeholder="문서 종류 선택" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="lecture">강의 자료</SelectItem>
+                                <SelectItem value="lecture">강의자료</SelectItem>
+                                <SelectItem value="policy">정책·규정 문서</SelectItem>
+                                <SelectItem value="manual">매뉴얼·가이드</SelectItem>
+                                <SelectItem value="form">서식·양식</SelectItem>
+                                <SelectItem value="notice">공지·안내</SelectItem>
                                 <SelectItem value="curriculum">교육과정</SelectItem>
-                                <SelectItem value="policy">정책 문서</SelectItem>
-                                <SelectItem value="manual">매뉴얼</SelectItem>
-                                <SelectItem value="form">양식</SelectItem>
-                                <SelectItem value="notice">공지사항</SelectItem>
+                                <SelectItem value="faq">FAQ·Q&A</SelectItem>
+                                <SelectItem value="research">연구자료</SelectItem>
+                                <SelectItem value="internal">회의·내부자료</SelectItem>
                                 <SelectItem value="other">기타</SelectItem>
                               </SelectContent>
                             </Select>

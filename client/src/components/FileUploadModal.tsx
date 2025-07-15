@@ -157,7 +157,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       const file = files[0];
       if (validateFile(file)) {
         setSelectedFile(file);
-        setDocumentType("참고자료");
+        setDocumentType("기타");
       }
     }
   };
@@ -181,7 +181,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       const file = files[0];
       if (validateFile(file)) {
         setSelectedFile(file);
-        setDocumentType("참고자료");
+        setDocumentType("기타");
       }
     }
   };
@@ -294,10 +294,19 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <h4 className="font-medium text-foreground korean-text">문서 종류</h4>
                 <Select value={documentType} onValueChange={setDocumentType}>
                   <SelectTrigger className="korean-text">
-                    <SelectValue placeholder="참고자료" />
+                    <SelectValue placeholder="문서 종류를 선택하세요" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="참고자료">참고자료</SelectItem>
+                    <SelectItem value="강의자료">강의자료</SelectItem>
+                    <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
+                    <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
+                    <SelectItem value="서식·양식">서식·양식</SelectItem>
+                    <SelectItem value="공지·안내">공지·안내</SelectItem>
+                    <SelectItem value="교육과정">교육과정</SelectItem>
+                    <SelectItem value="FAQ·Q&A">FAQ·Q&A</SelectItem>
+                    <SelectItem value="연구자료">연구자료</SelectItem>
+                    <SelectItem value="회의·내부자료">회의·내부자료</SelectItem>
+                    <SelectItem value="기타">기타</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
