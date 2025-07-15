@@ -203,7 +203,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b">
               <h3 className="text-lg font-medium text-foreground korean-text">
-                문서 업로드
+                문서 파일 업로드
               </h3>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
                 <X className="w-5 h-5" />
