@@ -8547,7 +8547,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{t('admin.documentUpload')}</DialogTitle>
+              <DialogTitle>문서 파일 업로드</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
