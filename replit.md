@@ -976,6 +976,12 @@ Changelog:
   * Cleaned up LanguageContext.tsx to contain only Korean and English translations
   * Updated LanguageSelector component to show only Korean and English options
   * Implemented automatic Korean text to English translation when English mode is selected:
+- July 16, 2025. Enhanced UI visibility and document management interface:
+  * Added document visibility column to master admin document table with status indicators
+  * Implemented quick toggle buttons for document visibility control (표시/숨김)
+  * Fixed ChatbotSettings modal gear icon visibility by changing color from text-primary to text-gray-900/white
+  * Enhanced document management with 8-column table layout including visibility controls
+  * Improved visual feedback with green/red badges for document visibility status
 - July 9, 2025. Standardized document type dropdown menus across all file upload locations:
   * Updated all document type dropdowns to use consistent Korean labels: 강의자료, 정책·규정 문서, 매뉴얼·가이드, 서식·양식, 공지·안내, 교육과정, FAQ·Q&A, 연구자료, 회의·내부자료, 기타
   * Changed default selection to "기타" for all file upload modals: FileUploadModal.tsx, MasterAdmin.tsx agent detail modal
