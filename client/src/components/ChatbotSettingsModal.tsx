@@ -73,6 +73,16 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Initialize settings first
+  const [settings, setSettings] = useState<ChatbotSettings>({
+    llmModel: (agent as any).llmModel || "gpt-4o",
+    chatbotType: (agent as any).chatbotType || "general-llm",
+    visibility: (agent as any).visibility || "public",
+    upperCategory: (agent as any).upperCategory || "",
+    lowerCategory: (agent as any).lowerCategory || "",
+    detailCategory: (agent as any).detailCategory || ""
+  });
+
   // Fetch organization categories
   const { data: organizationCategories = [], isLoading: isLoadingOrgs } = useQuery({
     queryKey: ["/api/organization-categories"],
@@ -124,15 +134,6 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     uniqueSet.forEach(cat => result.push(cat));
     return result;
   };
-  
-  const [settings, setSettings] = useState<ChatbotSettings>({
-    llmModel: (agent as any).llmModel || "gpt-4o",
-    chatbotType: (agent as any).chatbotType || "general-llm",
-    visibility: (agent as any).visibility || "public",
-    upperCategory: (agent as any).upperCategory || "",
-    lowerCategory: (agent as any).lowerCategory || "",
-    detailCategory: (agent as any).detailCategory || ""
-  });
 
   // State for selected users
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
