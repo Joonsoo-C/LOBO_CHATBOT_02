@@ -60,7 +60,7 @@ const VISIBILITY_OPTIONS = [
     label: "그룹 지정 - 특정 그룹의 사용자만 사용 가능" 
   },
   { 
-    value: "organization", 
+    value: "user", 
     label: "사용자 지정 - 개별 사용자 선택" 
   },
   { 
@@ -77,6 +77,12 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   const { data: organizationCategories = [], isLoading: isLoadingOrgs } = useQuery({
     queryKey: ["/api/organization-categories"],
     enabled: isOpen,
+  });
+
+  // Fetch users for user selection
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["/api/admin/users"],
+    enabled: isOpen && settings.visibility === 'user',
   });
 
   // Get unique upper categories
@@ -128,9 +134,39 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     detailCategory: (agent as any).detailCategory || ""
   });
 
+  // State for selected users
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [userUpperCategory, setUserUpperCategory] = useState("");
+  const [userLowerCategory, setUserLowerCategory] = useState("");
+  const [userDetailCategory, setUserDetailCategory] = useState("");
+
+  // Filter users based on search and category
+  const filteredUsers = users.filter((user: any) => {
+    const matchesSearch = !userSearch || 
+      user.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+      user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
+      user.email?.toLowerCase().includes(userSearch.toLowerCase());
+    
+    const matchesUpperCategory = !userUpperCategory || userUpperCategory === "all" || 
+      user.upperCategory === userUpperCategory;
+    
+    const matchesLowerCategory = !userLowerCategory || userLowerCategory === "all" || 
+      user.lowerCategory === userLowerCategory;
+    
+    const matchesDetailCategory = !userDetailCategory || userDetailCategory === "all" || 
+      user.detailCategory === userDetailCategory;
+    
+    return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
+  });
+
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: ChatbotSettings) => {
-      const response = await apiRequest("PUT", `/api/agents/${agent.id}/settings`, data);
+      const requestData = {
+        ...data,
+        selectedUsers: settings.visibility === 'user' ? selectedUsers : undefined
+      };
+      const response = await apiRequest("PUT", `/api/agents/${agent.id}/settings`, requestData);
       return response.json();
     },
     onSuccess: () => {
@@ -147,7 +183,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         
         let message = `챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}\n공유 범위: ${visibilityLabel}`;
         
-        if (settings.visibility === 'organization' && settings.upperCategory) {
+        if (settings.visibility === 'group' && settings.upperCategory) {
           message += `\n조직: ${settings.upperCategory}`;
           if (settings.lowerCategory) {
             message += ` > ${settings.lowerCategory}`;
@@ -155,6 +191,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
           if (settings.detailCategory) {
             message += ` > ${settings.detailCategory}`;
           }
+        }
+        
+        if (settings.visibility === 'user' && selectedUsers.length > 0) {
+          message += `\n선택된 사용자: ${selectedUsers.length}명`;
         }
         
         onSuccess(message);
@@ -268,9 +308,9 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                 setSettings(prev => ({ 
                   ...prev, 
                   visibility: value,
-                  upperCategory: value === "organization" ? prev.upperCategory : "",
-                  lowerCategory: value === "organization" ? prev.lowerCategory : "",
-                  detailCategory: value === "organization" ? prev.detailCategory : ""
+                  upperCategory: value === "group" ? prev.upperCategory : "",
+                  lowerCategory: value === "group" ? prev.lowerCategory : "",
+                  detailCategory: value === "group" ? prev.detailCategory : ""
                 }));
               }}
             >
@@ -286,8 +326,8 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
               </SelectContent>
             </Select>
 
-            {/* Organization Category Selection */}
-            {settings.visibility === 'organization' && (
+            {/* Group Category Selection */}
+            {settings.visibility === 'group' && (
               <div className="space-y-4 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Upper Category */}
@@ -365,6 +405,151 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                         ))}
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* User Selection Interface */}
+            {settings.visibility === 'user' && (
+              <div className="space-y-4 mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="space-y-4">
+                  {/* User Search */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm font-medium">사용자 검색 및 선택</Label>
+                    <input
+                      type="text"
+                      placeholder="사용자 이름, ID, 이메일로 검색..."
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md korean-text"
+                    />
+                  </div>
+
+                  {/* User Category Filters */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label className="korean-text text-sm">상위 조직</Label>
+                      <Select
+                        value={userUpperCategory}
+                        onValueChange={(value) => {
+                          setUserUpperCategory(value);
+                          setUserLowerCategory("");
+                          setUserDetailCategory("");
+                        }}
+                      >
+                        <SelectTrigger className="korean-text">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {getUpperCategories().map((category) => (
+                            <SelectItem key={category} value={category} className="korean-text">
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="korean-text text-sm">하위 조직</Label>
+                      <Select
+                        value={userLowerCategory}
+                        onValueChange={(value) => {
+                          setUserLowerCategory(value);
+                          setUserDetailCategory("");
+                        }}
+                        disabled={!userUpperCategory}
+                      >
+                        <SelectTrigger className="korean-text">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {getLowerCategories(userUpperCategory).map((category) => (
+                            <SelectItem key={category} value={category} className="korean-text">
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="korean-text text-sm">세부 조직</Label>
+                      <Select
+                        value={userDetailCategory}
+                        onValueChange={setUserDetailCategory}
+                        disabled={!userUpperCategory || !userLowerCategory}
+                      >
+                        <SelectTrigger className="korean-text">
+                          <SelectValue placeholder="전체" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          {getDetailCategories(userUpperCategory, userLowerCategory).map((category) => (
+                            <SelectItem key={category} value={category} className="korean-text">
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* User Selection Table */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Label className="korean-text text-sm font-medium">사용자 선택</Label>
+                      <span className="text-sm text-gray-500">선택된 사용자: {selectedUsers.length}명</span>
+                    </div>
+                    
+                    <div className="border rounded-md max-h-64 overflow-y-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-3 py-2 text-left">선택</th>
+                            <th className="px-3 py-2 text-left">이름</th>
+                            <th className="px-3 py-2 text-left">ID</th>
+                            <th className="px-3 py-2 text-left">이메일</th>
+                            <th className="px-3 py-2 text-left">소속</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredUsers.map((user: any) => (
+                            <tr key={user.id || user.username} className="border-t hover:bg-gray-50">
+                              <td className="px-3 py-2">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedUsers.includes(user.id || user.username)}
+                                  onChange={(e) => {
+                                    const userId = user.id || user.username;
+                                    if (e.target.checked) {
+                                      setSelectedUsers(prev => [...prev, userId]);
+                                    } else {
+                                      setSelectedUsers(prev => prev.filter(id => id !== userId));
+                                    }
+                                  }}
+                                  className="w-4 h-4"
+                                />
+                              </td>
+                              <td className="px-3 py-2 korean-text">{user.name || 'Master Admin'}</td>
+                              <td className="px-3 py-2 korean-text">{user.username}</td>
+                              <td className="px-3 py-2 korean-text">{user.email}</td>
+                              <td className="px-3 py-2 korean-text text-xs">
+                                {user.upperCategory} &gt; {user.lowerCategory} &gt; {user.detailCategory}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {filteredUsers.length === 0 && (
+                        <div className="p-4 text-center text-gray-500 korean-text">
+                          검색 조건에 맞는 사용자가 없습니다.
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
