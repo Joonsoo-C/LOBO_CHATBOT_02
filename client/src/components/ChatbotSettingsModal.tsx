@@ -89,10 +89,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     enabled: isOpen,
   });
 
-  // Fetch users for user selection
+  // Fetch users for user selection (always fetch when modal is open)
   const { data: users = [], isLoading: isLoadingUsers } = useQuery({
     queryKey: ["/api/admin/users"],
-    enabled: isOpen && settings.visibility === 'user',
+    enabled: isOpen,
   });
 
   // Get unique upper categories
@@ -108,6 +108,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   // Debug logging
   console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
   console.log("Upper categories:", getUpperCategories());
+  console.log("Users data:", users, "isLoading:", isLoadingUsers, "visibility:", settings.visibility);
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
@@ -144,21 +145,35 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
   // Filter users based on search and category
   const filteredUsers = users.filter((user: any) => {
+    // Search filter
     const matchesSearch = !userSearch || 
       user.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
       user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
       user.email?.toLowerCase().includes(userSearch.toLowerCase());
     
-    const matchesUpperCategory = !userUpperCategory || userUpperCategory === "all" || 
+    // Category filters - empty string or "all" means show all
+    const matchesUpperCategory = !userUpperCategory || 
       user.upperCategory === userUpperCategory;
     
-    const matchesLowerCategory = !userLowerCategory || userLowerCategory === "all" || 
+    const matchesLowerCategory = !userLowerCategory || 
       user.lowerCategory === userLowerCategory;
     
-    const matchesDetailCategory = !userDetailCategory || userDetailCategory === "all" || 
+    const matchesDetailCategory = !userDetailCategory || 
       user.detailCategory === userDetailCategory;
     
-    return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
+    const allMatches = matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
+    
+    // Debug logging for first few users or filtered results
+    if (user.name === 'Master Admin' || user.name === '정수빈' || user.name === '장지훈' || allMatches) {
+      console.log('User filter check:', user.name, {
+        filters: { userUpperCategory, userLowerCategory, userDetailCategory },
+        userCategories: { upper: user.upperCategory, lower: user.lowerCategory, detail: user.detailCategory },
+        matches: { search: matchesSearch, upper: matchesUpperCategory, lower: matchesLowerCategory, detail: matchesDetailCategory },
+        result: allMatches
+      });
+    }
+    
+    return allMatches;
   });
 
   const updateSettingsMutation = useMutation({
@@ -432,9 +447,9 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                     <div className="space-y-2">
                       <Label className="korean-text text-sm">상위 조직</Label>
                       <Select
-                        value={userUpperCategory}
+                        value={userUpperCategory || "all"}
                         onValueChange={(value) => {
-                          setUserUpperCategory(value);
+                          setUserUpperCategory(value === "all" ? "" : value);
                           setUserLowerCategory("");
                           setUserDetailCategory("");
                         }}
@@ -456,9 +471,9 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                     <div className="space-y-2">
                       <Label className="korean-text text-sm">하위 조직</Label>
                       <Select
-                        value={userLowerCategory}
+                        value={userLowerCategory || "all"}
                         onValueChange={(value) => {
-                          setUserLowerCategory(value);
+                          setUserLowerCategory(value === "all" ? "" : value);
                           setUserDetailCategory("");
                         }}
                         disabled={!userUpperCategory}
@@ -480,8 +495,8 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                     <div className="space-y-2">
                       <Label className="korean-text text-sm">세부 조직</Label>
                       <Select
-                        value={userDetailCategory}
-                        onValueChange={setUserDetailCategory}
+                        value={userDetailCategory || "all"}
+                        onValueChange={(value) => setUserDetailCategory(value === "all" ? "" : value)}
                         disabled={!userUpperCategory || !userLowerCategory}
                       >
                         <SelectTrigger className="korean-text">
