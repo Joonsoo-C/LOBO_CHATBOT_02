@@ -5,7 +5,7 @@ export type Language = 'ko' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -1791,8 +1791,18 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   };
 
   // 번역 함수
-  const t = (key: string): string => {
-    return translations[language][key] || key;
+  const t = (key: string, params?: Record<string, any>): string => {
+    let translation = translations[language][key] || key;
+    
+    // 매개변수가 있는 경우 플레이스홀더를 대체
+    if (params) {
+      Object.keys(params).forEach(param => {
+        const regex = new RegExp(`{{${param}}}`, 'g');
+        translation = translation.replace(regex, params[param]);
+      });
+    }
+    
+    return translation;
   };
 
   return (
