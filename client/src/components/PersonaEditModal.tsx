@@ -120,7 +120,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-lg font-medium korean-text">페르소나 편집</h2>
+          <h2 className="text-lg font-medium korean-text">에이전트 페르소나 편집</h2>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
           </Button>
