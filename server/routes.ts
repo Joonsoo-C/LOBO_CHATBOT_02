@@ -688,15 +688,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Document routes
-  app.get('/api/agents/:id/documents', isAuthenticated, async (req, res) => {
+  app.get('/api/agents/:id/documents', isAuthenticated, async (req: any, res) => {
     try {
       const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
 
       if (isNaN(agentId)) {
         return res.status(400).json({ message: "Invalid agent ID" });
       }
 
-      const documents = await storage.getAgentDocuments(agentId);
+      console.log(`[DEBUG] Found ${await storage.getAgentDocuments(agentId).then(docs => docs.length)} documents for agent ${agentId}`);
+      const documents = await storage.getAgentDocumentsForUser(agentId, userId);
       res.json(documents);
     } catch (error) {
       console.error("Error fetching documents:", error);
@@ -908,6 +910,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting document:", error);
       res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
+  // Update document visibility
+  app.patch('/api/documents/:id/visibility', isAuthenticated, async (req: any, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const { isVisible } = req.body;
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      if (typeof isVisible !== 'boolean') {
+        return res.status(400).json({ message: "isVisible must be a boolean value" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Check if user has permission to manage document visibility
+      const userId = req.user.id;
+      const userRole = req.user.role;
+      const agent = await storage.getAgent(document.agentId);
+      
+      const hasPermission = userRole === 'master_admin' || 
+                           userRole === 'admin' || 
+                           userRole === 'agent_admin' ||
+                           (agent && agent.managerId === userId);
+
+      if (!hasPermission) {
+        return res.status(403).json({ message: "Unauthorized to modify document visibility" });
+      }
+
+      const updatedDocument = await storage.updateDocumentVisibility(documentId, isVisible);
+      if (!updatedDocument) {
+        return res.status(404).json({ message: "Failed to update document visibility" });
+      }
+
+      res.json({ 
+        message: "Document visibility updated successfully",
+        document: updatedDocument
+      });
+    } catch (error) {
+      console.error("Error updating document visibility:", error);
+      res.status(500).json({ message: "Failed to update document visibility" });
     }
   });
 

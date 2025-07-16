@@ -64,12 +64,14 @@ export interface IStorage {
   // Document operations
   createDocument(document: InsertDocument): Promise<Document>;
   getAgentDocuments(agentId: number): Promise<Document[]>;
+  getAgentDocumentsForUser(agentId: number, userId: string): Promise<Document[]>;
   getAllDocuments(): Promise<Document[]>;
   getDocument(id: number): Promise<Document | undefined>;
   updateDocument(id: number, updates: any): Promise<Document | undefined>;
   //delete document operations
   deleteDocument(id: number): Promise<void>;
   updateDocumentContent(id: number, content: string): Promise<Document | null>;
+  updateDocumentVisibility(id: number, isVisible: boolean): Promise<Document | undefined>;
 
   // Stats operations
   getAgentStats(agentId: number): Promise<AgentStats | undefined>;

@@ -958,7 +958,30 @@ export class MemoryStorage implements IStorage {
       .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
-
+  async getAgentDocumentsForUser(agentId: number, userId: string): Promise<Document[]> {
+    const user = this.users.get(userId);
+    const agent = this.agents.get(agentId);
+    
+    // 모든 문서를 가져옴
+    const allDocuments = Array.from(this.documents.values())
+      .filter(doc => doc.agentId === agentId)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    
+    // 사용자가 에이전트 관리자인지 확인
+    const isAgentManager = user && agent && (
+      user.role === 'admin' || 
+      user.role === 'master_admin' ||
+      user.role === 'agent_admin' ||
+      agent.managerId === userId
+    );
+    
+    // 에이전트 관리자는 모든 문서를 볼 수 있고, 일반 사용자는 가시성이 true인 문서만 볼 수 있음
+    if (isAgentManager) {
+      return allDocuments;
+    } else {
+      return allDocuments.filter(doc => doc.isVisibleToUsers !== false);
+    }
+  }
 
   async getDocument(id: number): Promise<Document | undefined> {
     return this.documents.get(id);
@@ -999,6 +1022,18 @@ export class MemoryStorage implements IStorage {
       return document;
     }
     return null;
+  }
+
+  async updateDocumentVisibility(id: number, isVisible: boolean): Promise<Document | undefined> {
+    const document = this.documents.get(id);
+    if (document) {
+      document.isVisibleToUsers = isVisible;
+      document.updatedAt = new Date();
+      this.savePersistedDocuments(); // Persist immediately
+      console.log(`Document ${id} visibility updated to ${isVisible ? 'visible' : 'hidden'} and persisted: ${document.originalName}`);
+      return document;
+    }
+    return undefined;
   }
 
   // Stats operations

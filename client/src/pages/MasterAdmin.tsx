@@ -3736,6 +3736,36 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
+  // 문서 가시성 업데이트 뮤테이션
+  const updateDocumentVisibilityMutation = useMutation({
+    mutationFn: async ({ documentId, isVisible }: { documentId: number; isVisible: boolean }) => {
+      const response = await fetch(`/api/documents/${documentId}/visibility`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ isVisible }),
+      });
+      if (!response.ok) throw new Error('Failed to update document visibility');
+      return response.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      toast({
+        title: "가시성 업데이트 완료",
+        description: `문서가 일반 사용자에게 ${variables.isVisible ? '표시' : '숨김'} 처리되었습니다.`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "가시성 업데이트 실패",
+        description: error.message || "문서 가시성 업데이트 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // 문서 정보 업데이트 mutation
   const updateDocumentMutation = useMutation({
     mutationFn: async (data: { id: string; status: string; type: string; description: string }) => {
@@ -7822,6 +7852,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          가시성
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           {t('common.settings')}
                         </th>
                       </tr>
@@ -7884,6 +7917,32 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               활성
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                doc.isVisibleToUsers !== false 
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                              }`}>
+                                {doc.isVisibleToUsers !== false ? '표시' : '숨김'}
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateDocumentVisibilityMutation.mutate({
+                                    documentId: doc.id,
+                                    isVisible: doc.isVisibleToUsers === false
+                                  });
+                                }}
+                                disabled={updateDocumentVisibilityMutation.isPending}
+                                className="p-1 h-6 w-6"
+                              >
+                                {doc.isVisibleToUsers !== false ? '👁️' : '👁️‍🗨️'}
+                              </Button>
+                            </div>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             <Button
                               variant="ghost"
@@ -7911,7 +7970,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
+                          <td colSpan={8} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">업로드된 문서가 없습니다</p>
@@ -8517,12 +8576,33 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 버튼 */}
                 <div className="flex justify-between">
-                  <Button 
-                    variant="destructive"
-                    onClick={() => setIsDeleteDocumentDialogOpen(true)}
-                  >
-                    문서 삭제
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="destructive"
+                      onClick={() => setIsDeleteDocumentDialogOpen(true)}
+                    >
+                      문서 삭제
+                    </Button>
+                    {selectedDocument && (
+                      <Button 
+                        variant={selectedDocument.isVisibleToUsers !== false ? "secondary" : "outline"}
+                        onClick={() => {
+                          updateDocumentVisibilityMutation.mutate({
+                            documentId: selectedDocument.id,
+                            isVisible: selectedDocument.isVisibleToUsers === false
+                          });
+                        }}
+                        disabled={updateDocumentVisibilityMutation.isPending}
+                      >
+                        {updateDocumentVisibilityMutation.isPending 
+                          ? "처리중..." 
+                          : selectedDocument.isVisibleToUsers !== false 
+                            ? "사용자에게 숨김" 
+                            : "사용자에게 표시"
+                        }
+                      </Button>
+                    )}
+                  </div>
                   <div className="flex space-x-2">
                     <Button variant="outline" onClick={() => setIsDocumentDetailDialogOpen(false)}>
                       취소
