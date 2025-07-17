@@ -188,8 +188,10 @@ export const documents = pgTable("documents", {
   createdAt: timestamp("created_at").defaultNow(),
   // Document metadata fields
   type: varchar("type"), // Document type/category
+  documentType: varchar("document_type"), // Document type for UI display
   description: text("description"), // Document description
   status: varchar("status").default("active"), // Document status
+  isActive: boolean("is_active").default(true), // Document active status
   connectedAgents: jsonb("connected_agents").default(JSON.stringify([])), // Connected agents list
   isVisibleToUsers: boolean("is_visible_to_users").default(true), // 일반 사용자에게 보이는지 여부
   updatedAt: timestamp("updated_at").defaultNow(),

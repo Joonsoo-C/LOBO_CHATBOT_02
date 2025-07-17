@@ -1394,9 +1394,9 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               {doc.originalName || doc.filename}
                             </p>
                             {/* 문서 종류 태그 */}
-                            {doc.documentType && (
-                              <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                                {doc.documentType}
+                            {(doc.documentType || doc.type) && (
+                              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800">
+                                {doc.documentType || doc.type}
                               </Badge>
                             )}
                           </div>
@@ -1420,50 +1420,42 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                           {/* 관리자만 볼 수 있는 문서 관리 기능 */}
                           {(userRole === 'master_admin' || userRole === 'agent_admin') && (
                             <div className="flex items-center gap-4 mt-2">
-                              {/* 노출 여부 토글 */}
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="p-1 h-6 w-6"
-                                  onClick={() => toggleDocumentVisibilityMutation.mutate({
-                                    documentId: doc.id,
-                                    visible: !doc.isVisibleToUsers
-                                  })}
-                                  title={doc.isVisibleToUsers ? "사용자에게 노출됨 (클릭하여 숨김)" : "사용자에게 숨김 (클릭하여 노출)"}
-                                >
-                                  {doc.isVisibleToUsers ? (
-                                    <Eye className="w-3 h-3 text-green-600" />
-                                  ) : (
-                                    <EyeOff className="w-3 h-3 text-gray-400" />
-                                  )}
-                                </Button>
+                              {/* 노출 여부 토글 - 클릭 가능한 영역 확장 */}
+                              <div 
+                                className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-muted/50 transition-colors"
+                                onClick={() => toggleDocumentVisibilityMutation.mutate({
+                                  documentId: doc.id,
+                                  visible: !doc.isVisibleToUsers
+                                })}
+                                title={doc.isVisibleToUsers ? "사용자에게 노출됨 (클릭하여 숨김)" : "사용자에게 숨김 (클릭하여 노출)"}
+                              >
+                                {doc.isVisibleToUsers ? (
+                                  <Eye className="w-3 h-3 text-green-600" />
+                                ) : (
+                                  <EyeOff className="w-3 h-3 text-gray-400" />
+                                )}
                                 <span className="text-xs text-muted-foreground">
                                   {doc.isVisibleToUsers ? "노출" : "비노출"}
                                 </span>
                               </div>
 
-                              {/* 문서 상태 뱃지 토글 */}
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="p-1 h-6 w-6"
-                                  onClick={() => toggleDocumentStatusMutation.mutate({
-                                    documentId: doc.id,
-                                    active: !doc.isActive
-                                  })}
-                                  title={doc.isActive ? "사용 중 (클릭하여 미사용으로 변경)" : "미사용 (클릭하여 사용 중으로 변경)"}
-                                >
-                                  {doc.isActive ? (
-                                    <PlayCircle className="w-3 h-3 text-blue-600" />
-                                  ) : (
-                                    <PauseCircle className="w-3 h-3 text-gray-400" />
-                                  )}
-                                </Button>
-                                <Badge variant={doc.isActive ? "default" : "secondary"} className="text-xs px-2 py-0.5">
+                              {/* 문서 상태 토글 - 클릭 가능한 영역 확장, 텍스트로 변경 */}
+                              <div 
+                                className="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-muted/50 transition-colors"
+                                onClick={() => toggleDocumentStatusMutation.mutate({
+                                  documentId: doc.id,
+                                  active: !doc.isActive
+                                })}
+                                title={doc.isActive ? "사용 중 (클릭하여 미사용으로 변경)" : "미사용 (클릭하여 사용 중으로 변경)"}
+                              >
+                                {doc.isActive ? (
+                                  <PlayCircle className="w-3 h-3 text-blue-600" />
+                                ) : (
+                                  <PauseCircle className="w-3 h-3 text-gray-400" />
+                                )}
+                                <span className="text-xs text-muted-foreground">
                                   {doc.isActive ? "사용 중" : "미사용"}
-                                </Badge>
+                                </span>
                               </div>
                             </div>
                           )}

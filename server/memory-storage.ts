@@ -943,7 +943,9 @@ export class MemoryStorage implements IStorage {
       updatedAt: new Date(),
       status: document.status || "active",
       type: document.type || null,
+      documentType: document.documentType || document.type || null,
       description: document.description || null,
+      isActive: document.isActive !== undefined ? document.isActive : true,
       connectedAgents: document.connectedAgents || []
     };
     this.documents.set(id, newDocument);
@@ -955,6 +957,13 @@ export class MemoryStorage implements IStorage {
   async getAgentDocuments(agentId: number): Promise<Document[]> {
     return Array.from(this.documents.values())
       .filter(doc => doc.agentId === agentId)
+      .map(doc => ({
+        ...doc,
+        // Ensure all required fields have default values for backwards compatibility
+        isActive: doc.isActive !== undefined ? doc.isActive : true,
+        documentType: doc.documentType || doc.type || null,
+        isVisibleToUsers: doc.isVisibleToUsers !== undefined ? doc.isVisibleToUsers : true
+      }))
       .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
@@ -965,6 +974,13 @@ export class MemoryStorage implements IStorage {
     // 모든 문서를 가져옴
     const allDocuments = Array.from(this.documents.values())
       .filter(doc => doc.agentId === agentId)
+      .map(doc => ({
+        ...doc,
+        // Ensure all required fields have default values for backwards compatibility
+        isActive: doc.isActive !== undefined ? doc.isActive : true,
+        documentType: doc.documentType || doc.type || null,
+        isVisibleToUsers: doc.isVisibleToUsers !== undefined ? doc.isVisibleToUsers : true
+      }))
       .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
     
     // 사용자가 에이전트 관리자인지 확인
