@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { X, FileText, Upload, AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { X, FileText, Upload, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +25,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [documentType, setDocumentType] = useState<string>("");
   const [documentDescription, setDocumentDescription] = useState<string>("");
   const [documentVisibility, setDocumentVisibility] = useState(true);
-  const [documentStatus, setDocumentStatus] = useState<string>("사용 중");
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -59,7 +58,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         formData.append("documentType", documentType);
         formData.append("description", documentDescription);
         formData.append("isVisible", documentVisibility.toString());
-        formData.append("status", documentStatus);
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
@@ -123,7 +121,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       setDocumentType("");
       setDocumentDescription("");
       setDocumentVisibility(true);
-      setDocumentStatus("사용 중");
       onClose();
     },
     onError: (error: Error) => {
@@ -344,41 +341,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
                           <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
-                                {file.name}
-                              </p>
-                              {documentType && (
-                                <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">
-                                  {documentType}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-xs text-blue-600 dark:text-blue-400">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
-                              </p>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setDocumentVisibility(!documentVisibility)}
-                                className="p-1 h-6 w-6 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
-                              >
-                                {documentVisibility ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setDocumentStatus(documentStatus === "사용 중" ? "미사용" : "사용 중")}
-                                className={`px-2 py-1 text-xs rounded-full h-6 ${
-                                  documentStatus === "사용 중" 
-                                    ? "bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-700"
-                                    : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                }`}
-                              >
-                                {documentStatus}
-                              </Button>
-                            </div>
+                            <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                            </p>
                           </div>
                         </div>
                         <Button
@@ -429,11 +397,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 />
               </div>
 
-              {/* Document Settings */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg space-y-4">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 korean-text">문서 설정</h4>
-                
-                {/* Document Visibility Setting */}
+              {/* Document Visibility Setting */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 korean-text">문서 노출 설정</h4>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <input 
@@ -449,20 +415,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     체크 해제 시 관리자만 해당 문서에 접근할 수 있습니다.
                   </p>
                 </div>
-
-                {/* Document Status Setting */}
-                <div className="space-y-2">
-                  <Label className="korean-text">문서 상태</Label>
-                  <Select value={documentStatus} onValueChange={setDocumentStatus}>
-                    <SelectTrigger className="korean-text">
-                      <SelectValue placeholder="문서 상태를 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="사용 중">사용 중</SelectItem>
-                      <SelectItem value="미사용">미사용</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
               {/* Action Buttons */}
@@ -477,7 +429,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 </Button>
                 <Button
                   onClick={handleUpload}
-                  disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
+                  disabled={selectedFiles.length === 0 || uploadMutation.isPending}
                   className="bg-red-600 hover:bg-red-700 text-white korean-text"
                 >
                   {uploadMutation.isPending ? (
