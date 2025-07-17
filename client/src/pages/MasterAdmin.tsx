@@ -9487,12 +9487,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="강의 자료">강의 자료</SelectItem>
+                          <SelectItem value="강의자료">강의자료</SelectItem>
+                          <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
+                          <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
+                          <SelectItem value="서식·양식">서식·양식</SelectItem>
+                          <SelectItem value="공지·안내">공지·안내</SelectItem>
                           <SelectItem value="교육과정">교육과정</SelectItem>
-                          <SelectItem value="정책 문서">정책 문서</SelectItem>
-                          <SelectItem value="매뉴얼">매뉴얼</SelectItem>
-                          <SelectItem value="양식">양식</SelectItem>
-                          <SelectItem value="공지사항">공지사항</SelectItem>
+                          <SelectItem value="FAQ·Q&A">FAQ·Q&A</SelectItem>
+                          <SelectItem value="연구자료">연구자료</SelectItem>
+                          <SelectItem value="회의·내부자료">회의·내부자료</SelectItem>
                           <SelectItem value="기타">기타</SelectItem>
                         </SelectContent>
                       </Select>

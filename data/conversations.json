@@ -46,8 +46,8 @@
         "userId": "user1082",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-09T17:37:54.610Z",
+        "unreadCount": 1,
+        "lastMessageAt": "2025-07-17T04:42:09.595Z",
         "createdAt": "2025-06-30T22:15:14.708Z",
         "lastReadAt": "2025-07-01T14:07:10.341Z",
         "isHidden": false
@@ -60,8 +60,8 @@
         "userId": "user1081",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-09T07:26:23.309Z",
+        "unreadCount": 1,
+        "lastMessageAt": "2025-07-17T04:42:09.619Z",
         "createdAt": "2025-06-30T22:30:45.323Z",
         "lastReadAt": "2025-07-01T07:14:57.795Z",
         "isHidden": false
