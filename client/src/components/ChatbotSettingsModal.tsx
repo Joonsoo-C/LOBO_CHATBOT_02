@@ -109,6 +109,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
   console.log("Upper categories:", getUpperCategories());
   console.log("Users data:", users, "isLoading:", isLoadingUsers, "visibility:", settings.visibility);
+  console.log("Filtered users count:", users.length, "->", filteredUsers?.length || 0);
 
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
@@ -151,25 +152,43 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
       user.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
       user.email?.toLowerCase().includes(userSearch.toLowerCase());
     
-    // Category filters - empty string or "all" means show all
-    const matchesUpperCategory = !userUpperCategory || 
+    // Category filters - empty string, "all", or undefined means show all
+    const matchesUpperCategory = !userUpperCategory || userUpperCategory === "all" || 
       user.upperCategory === userUpperCategory;
     
-    const matchesLowerCategory = !userLowerCategory || 
+    const matchesLowerCategory = !userLowerCategory || userLowerCategory === "all" || 
       user.lowerCategory === userLowerCategory;
     
-    const matchesDetailCategory = !userDetailCategory || 
+    const matchesDetailCategory = !userDetailCategory || userDetailCategory === "all" || 
       user.detailCategory === userDetailCategory;
     
     const allMatches = matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
     
-    // Debug logging for first few users or filtered results
-    if (user.name === 'Master Admin' || user.name === '정수빈' || user.name === '장지훈' || allMatches) {
-      console.log('User filter check:', user.name, {
-        filters: { userUpperCategory, userLowerCategory, userDetailCategory },
-        userCategories: { upper: user.upperCategory, lower: user.lowerCategory, detail: user.detailCategory },
-        matches: { search: matchesSearch, upper: matchesUpperCategory, lower: matchesLowerCategory, detail: matchesDetailCategory },
-        result: allMatches
+    // Debug logging - show results when filters are applied
+    if ((userUpperCategory && userUpperCategory !== "all") || 
+        (userLowerCategory && userLowerCategory !== "all") || 
+        (userDetailCategory && userDetailCategory !== "all") ||
+        userSearch ||
+        allMatches) {
+      console.log('🔍 사용자 필터링:', user.name || user.username, {
+        필터조건: { 
+          상위조직: userUpperCategory || '전체', 
+          하위조직: userLowerCategory || '전체', 
+          세부조직: userDetailCategory || '전체',
+          검색어: userSearch || '없음'
+        },
+        사용자조직: { 
+          상위: user.upperCategory || '없음', 
+          하위: user.lowerCategory || '없음', 
+          세부: user.detailCategory || '없음' 
+        },
+        매칭결과: { 
+          검색: matchesSearch, 
+          상위: matchesUpperCategory, 
+          하위: matchesLowerCategory, 
+          세부: matchesDetailCategory 
+        },
+        최종결과: allMatches ? '✅ 포함' : '❌ 제외'
       });
     }
     
