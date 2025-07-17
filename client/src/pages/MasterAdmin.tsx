@@ -8846,22 +8846,34 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
 
               {/* 버튼 그룹 */}
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsNewCategoryDialogOpen(false)}>
-                  취소
-                </Button>
+              <div className="flex justify-between pt-4">
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700"
-                  onClick={() => {
-                    setIsNewCategoryDialogOpen(false);
-                    toast({
-                      title: "카테고리 생성",
-                      description: "새 카테고리가 성공적으로 생성되었습니다.",
-                    });
-                  }}
+                  variant="destructive"
+                  className="flex items-center space-x-1"
                 >
-                  생성
+                  <Trash2 className="w-4 h-4" />
+                  <span>삭제</span>
                 </Button>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsNewCategoryDialogOpen(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => {
+                      setIsNewCategoryDialogOpen(false);
+                      toast({
+                        title: "카테고리 생성",
+                        description: "새 카테고리가 성공적으로 생성되었습니다.",
+                      });
+                    }}
+                  >
+                    생성
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogContent>
