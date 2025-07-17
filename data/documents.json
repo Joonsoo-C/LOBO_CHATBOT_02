@@ -125,7 +125,10 @@
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z",
       "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T05:06:44.204Z"
+      "updatedAt": "2025-07-17T06:27:33.457Z",
+      "status": "active",
+      "type": "Word",
+      "description": ""
     },
     {
       "agentId": 146,
@@ -151,7 +154,10 @@
       "id": 112,
       "createdAt": "2025-07-01T05:55:59.607Z",
       "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T05:06:46.969Z"
+      "updatedAt": "2025-07-17T06:27:52.047Z",
+      "status": "active",
+      "type": "PDF",
+      "description": ""
     },
     {
       "agentId": 146,

@@ -983,6 +983,12 @@ Changelog:
   * Merged document status area into document information area for cleaner layout
   * Added proper userRole definition in ChatInterface to fix hidden document filtering
   * Document visibility system now fully functional with improved UI organization
+- July 17, 2025. Fixed document detail popup connected agents display and simplified file upload completion:
+  * Fixed document detail popup to properly show connected agent names using agentId field
+  * Connected agents now display correctly in "현재 연결된 에이전트" section of document detail popup
+  * Simplified agent chatbot file upload completion message from popup-over-popup to simple toast notification
+  * Removed duplicate result modal from FileUploadModal component for cleaner user experience
+  * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:
   * Removed upload options section from master admin system document upload popup
   * Added document visibility control feature allowing administrators to hide documents from regular users

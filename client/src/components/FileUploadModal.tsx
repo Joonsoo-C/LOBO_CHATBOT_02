@@ -27,8 +27,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [documentVisibility, setDocumentVisibility] = useState(true);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showResultModal, setShowResultModal] = useState(false);
-  const [uploadResult, setUploadResult] = useState<any>(null);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -88,16 +86,18 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     onSuccess: (data: any) => {
       console.log('Document upload successful:', data);
       
-      // Store result data and show result modal
-      setUploadResult(data);
-      setShowResultModal(true);
-      
       queryClient.invalidateQueries({
         queryKey: [`/api/agents/${agent.id}/documents`]
       });
       
       // Get filename
       const filename = data.document?.originalName || selectedFile?.name || '파일';
+
+      // Show success toast message
+      toast({
+        title: "문서 업로드 완료",
+        description: `${filename} 파일이 성공적으로 업로드되었습니다.`,
+      });
 
       // Send completion message to chat
       if (onSuccess) {
@@ -109,6 +109,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         agentId: agent.id,
         message: `📄 새로운 문서가 업로드되었습니다: ${filename}`
       });
+
+      // Reset form and close modal
+      setSelectedFile(null);
+      setDocumentType("");
+      setDocumentDescription("");
+      setDocumentVisibility(true);
+      onClose();
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
@@ -410,100 +417,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         </DialogContent>
       </Dialog>
 
-      {/* Upload Result Modal */}
-      <Dialog open={showResultModal} onOpenChange={setShowResultModal}>
-        <DialogContent className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl" style={{ zIndex: 9999 }}>
-          <DialogHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
-              </div>
-            </div>
-            <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100 korean-text">
-              문서 업로드 완료
-            </DialogTitle>
-          </DialogHeader>
-          <div className="px-6 pb-6">
-            {uploadResult && (
-              <div className="space-y-4">
-                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FileText className="w-5 h-5 text-amber-600" />
-                    <span className="font-medium text-amber-800 dark:text-amber-200 korean-text">
-                      {uploadResult.document?.originalName || '문서'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-amber-700 dark:text-amber-300 korean-text mb-3">
-                    대화를 통해 다음 기능들을 실행할 수 있습니다:
-                  </p>
-                  <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1 korean-text">
-                    <li>• "페르소나" - 에이전트 성격 및 말투 설정</li>
-                    <li>• "챗봇 설정" - LLM 모델 및 동작 방식 변경</li>
-                    <li>• "문서 업로드" - 지식베이스 확장용 문서 추가</li>
-                    <li>• "알림보내기" - 사용자들에게 공지사항 전송</li>
-                    <li>• "성과 분석" - 에이전트 사용 통계 및 분석</li>
-                    <li>• "도움말" - 명령어 목록 다시 보기</li>
-                  </ul>
-                  <p className="text-sm text-amber-700 dark:text-amber-300 korean-text mt-3">
-                    원하는 기능을 메시지로 입력하거나, 일반 대화도 가능합니다.
-                  </p>
-                </div>
 
-                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <span className="font-medium text-green-800 dark:text-green-200 korean-text">
-                      {uploadResult.document?.originalName || '문서'} 업로드가 완료되었습니다.
-                    </span>
-                  </div>
-                  <p className="text-sm text-green-700 dark:text-green-300 korean-text">
-                    문서가 성공적으로 업로드되어 에이전트의 지식베이스에 추가되었습니다.
-                  </p>
-                </div>
-
-                {uploadResult.analysis && (
-                  <div className="space-y-3">
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 korean-text">
-                        문서 분석 결과
-                      </h4>
-                      <p className="text-sm text-blue-800 dark:text-blue-200 korean-text">
-                        {uploadResult.analysis.summary}
-                      </p>
-                      {uploadResult.analysis.keyPoints && uploadResult.analysis.keyPoints.length > 0 && (
-                        <div className="mt-3">
-                          <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-1 korean-text">주요 내용:</h5>
-                          <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                            {uploadResult.analysis.keyPoints.map((point: string, index: number) => (
-                              <li key={index} className="korean-text">• {point}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            <div className="flex justify-center mt-6">
-              <Button
-                onClick={() => {
-                  setShowResultModal(false);
-                  setUploadResult(null);
-                  setSelectedFile(null);
-                  setDocumentType("");
-                  setDocumentDescription("");
-                  onClose();
-                }}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-lg korean-text"
-              >
-                확인
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
