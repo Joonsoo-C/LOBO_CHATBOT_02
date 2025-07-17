@@ -7843,7 +7843,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           onClick={() => handleDocumentSort('status')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>{t('common.status')}</span>
+                            <span>상태</span>
                             {documentSortField === 'status' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -7934,18 +7934,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 title={doc.isVisibleToUsers !== false ? '사용자에게 노출됨 (클릭하여 숨김)' : '사용자에게 숨김 (클릭하여 노출)'}
                               >
                                 {doc.isVisibleToUsers !== false ? (
-                                  // 노출됨 - 애플 스타일 열린 눈
+                                  // 노출됨 - 애플 스타일 열린 눈 (진한 파란색)
                                   <svg
                                     width="16"
                                     height="16"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    className="text-blue-600 dark:text-blue-400"
+                                    className="text-blue-600 dark:text-blue-400 drop-shadow-sm"
                                   >
                                     <path
                                       d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"
                                       stroke="currentColor"
-                                      strokeWidth="1.5"
+                                      strokeWidth="2"
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       fill="none"
@@ -7955,51 +7955,54 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       cy="12"
                                       r="3"
                                       stroke="currentColor"
-                                      strokeWidth="1.5"
+                                      strokeWidth="2"
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       fill="currentColor"
-                                      fillOpacity="0.2"
+                                      fillOpacity="0.3"
                                     />
                                   </svg>
                                 ) : (
-                                  // 숨김 - 애플 스타일 닫힌 눈 (slash 포함)
+                                  // 숨김 - 애플 스타일 닫힌 눈 (회색, 더 굵은 slash)
                                   <svg
                                     width="16"
                                     height="16"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    className="text-gray-400 dark:text-gray-600"
+                                    className="text-red-500 dark:text-red-400 drop-shadow-sm"
                                   >
-                                    <path
-                                      d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
-                                      stroke="currentColor"
-                                      strokeWidth="1.5"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-                                      stroke="currentColor"
-                                      strokeWidth="1.5"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-                                      stroke="currentColor"
-                                      strokeWidth="1.5"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
+                                    <g opacity="0.7">
+                                      <path
+                                        d="M14.12 14.12a3 3 0 1 1-4.24-4.24"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                      <path
+                                        d="M14.83 9.17A10.43 10.43 0 0 0 12 9C7 9 2.73 12.11 1 16.5a13.16 13.16 0 0 0 2.67 3.61"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                      <path
+                                        d="M17.39 17.39A13.526 13.526 0 0 0 22 12s-3-7-10-7a9.74 9.74 0 0 0-5.39 1.61"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </g>
                                     <line
-                                      x1="2"
-                                      y1="2"
-                                      x2="22"
-                                      y2="22"
+                                      x1="3"
+                                      y1="3"
+                                      x2="21"
+                                      y2="21"
                                       stroke="currentColor"
-                                      strokeWidth="1.5"
+                                      strokeWidth="2.5"
                                       strokeLinecap="round"
+                                      className="text-red-600 dark:text-red-500"
                                     />
                                   </svg>
                                 )}
