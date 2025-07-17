@@ -440,7 +440,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   ) : (
                     <>
                       <Upload className="w-4 h-4 mr-2" />
-                      업로드 시작 ({selectedFiles.length}개 파일)
+                      업로드 시작
                     </>
                   )}
                 </Button>

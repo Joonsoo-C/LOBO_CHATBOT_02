@@ -8809,7 +8809,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   onClick={handleDocumentUpload}
                   disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
                 >
-                  {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작 (${selectedDocumentFiles.length}개 파일)`}
+                  {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작`}
                 </Button>
               </div>
             </div>
@@ -9124,7 +9124,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     onClick={handleOrgCategoryUpload}
                     disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
                   >
-                    {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작 (${selectedOrgCategoryFiles.length}개 파일)`}
+                    {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작`}
                   </Button>
                 </div>
               </div>
@@ -9276,7 +9276,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   onClick={handleUserFileUpload}
                   disabled={selectedUserFiles.length === 0 || isUserFileUploading}
                 >
-                  {isUserFileUploading ? `업로드 중... (${Math.round(userFileUploadProgress)}%)` : `업로드 시작 (${selectedUserFiles.length}개 파일)`}
+                  {isUserFileUploading ? `업로드 중... (${Math.round(userFileUploadProgress)}%)` : `업로드 시작`}
                 </Button>
               </div>
             </div>
@@ -11254,7 +11254,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   disabled={!agentDocumentType || isAgentFileUploading}
                                   className="bg-blue-600 hover:bg-blue-700 text-white"
                                 >
-                                  {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작 (${selectedFiles.length}개 파일)`}
+                                  {isAgentFileUploading ? `업로드 중... (${Math.round(agentFileUploadProgress)}%)` : `업로드 시작`}
                                 </Button>
                               </div>
                             )}
