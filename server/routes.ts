@@ -1141,6 +1141,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 사용자 검색 엔드포인트 (에이전트 공유용)
+  app.get('/api/users/search', isAuthenticated, async (req: any, res) => {
+    try {
+      const { search, upperCategory, lowerCategory, detailCategory } = req.query;
+      
+      // 스토리지에서 모든 사용자 가져오기
+      const allUsers = await storage.getAllUsers();
+      
+      // 검색 조건에 따라 사용자 필터링
+      let filteredUsers = allUsers.filter(user => {
+        // 현재 사용자는 결과에서 제외
+        if (user.id === req.user.id) {
+          return false;
+        }
+        
+        // 검색어 필터
+        if (search && search.trim()) {
+          const searchTerm = search.toLowerCase().trim();
+          const matchesSearch = 
+            user.name?.toLowerCase().includes(searchTerm) ||
+            user.username?.toLowerCase().includes(searchTerm) ||
+            user.email?.toLowerCase().includes(searchTerm);
+          
+          if (!matchesSearch) {
+            return false;
+          }
+        }
+        
+        // 카테고리 필터 - "all" 또는 빈 값은 전체 포함
+        if (upperCategory && upperCategory !== "all" && user.upperCategory !== upperCategory) {
+          return false;
+        }
+        
+        if (lowerCategory && lowerCategory !== "all" && user.lowerCategory !== lowerCategory) {
+          return false;
+        }
+        
+        if (detailCategory && detailCategory !== "all" && user.detailCategory !== detailCategory) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // 성능을 위해 결과를 50명으로 제한
+      filteredUsers = filteredUsers.slice(0, 50);
+      
+      console.log(`[DEBUG] 사용자 검색: ${filteredUsers.length}명 발견, 조건:`, {
+        search,
+        upperCategory,
+        lowerCategory, 
+        detailCategory
+      });
+      
+      res.json(filteredUsers);
+    } catch (error) {
+      console.error("사용자 검색 오류:", error);
+      res.status(500).json({ message: "사용자 검색 실패" });
+    }
+  });
+
   // Setup admin routes
   setupAdminRoutes(app);
 

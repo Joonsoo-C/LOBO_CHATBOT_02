@@ -89,10 +89,18 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     enabled: isOpen,
   });
 
-  // Fetch users for user selection (always fetch when modal is open)
+  // Fetch users for user selection using search API with category filters
   const { data: users = [], isLoading: isLoadingUsers } = useQuery({
-    queryKey: ["/api/admin/users"],
-    enabled: isOpen,
+    queryKey: ["/api/users/search", userUpperCategory, userLowerCategory, userDetailCategory],
+    enabled: isOpen && visibility === "user",
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (userUpperCategory && userUpperCategory !== "all") params.append("upperCategory", userUpperCategory);
+      if (userLowerCategory && userLowerCategory !== "all") params.append("lowerCategory", userLowerCategory);
+      if (userDetailCategory && userDetailCategory !== "all") params.append("detailCategory", userDetailCategory);
+      
+      return fetch(`/api/users/search?${params.toString()}`).then(res => res.json());
+    }
   });
 
   // Get unique upper categories
@@ -194,6 +202,19 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   console.log("Upper categories:", getUpperCategories());
   console.log("Users data:", users, "isLoading:", isLoadingUsers, "visibility:", settings.visibility);
   console.log("Filtered users count:", users.length, "->", filteredUsers?.length || 0);
+  
+  // Refetch users when category selection changes
+  const { refetch: refetchUsers } = useQuery({
+    queryKey: ["/api/users/search", userUpperCategory, userLowerCategory, userDetailCategory],
+    enabled: false, // Don't auto-fetch, only on demand
+  });
+  
+  // Auto-refetch when user category filters change
+  useEffect(() => {
+    if (isOpen && visibility === "user") {
+      refetchUsers();
+    }
+  }, [userUpperCategory, userLowerCategory, userDetailCategory, visibility, isOpen, refetchUsers]);
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: ChatbotSettings) => {
