@@ -7871,12 +7871,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                             onClick={() => {
                               setDocumentDetailData(doc);
-                              // 연결된 에이전트 ID를 이름으로 변환
-                              const connectedAgentNames = (doc.connectedAgents || []).map((agentId: number) => {
-                                const agent = agents?.find((a: any) => a.id === agentId);
-                                return agent ? agent.name : `에이전트 ${agentId}`;
-                              });
-                              setSelectedDocumentAgents(connectedAgentNames);
+                              setSelectedDocument(doc);
+                              // 연결된 에이전트 정보 가져오기
+                              if (doc.agentId) {
+                                const agent = agents?.find((a: any) => a.id === doc.agentId);
+                                if (agent) {
+                                  setSelectedDocumentAgents([agent.name]);
+                                } else {
+                                  setSelectedDocumentAgents([]);
+                                }
+                              } else {
+                                setSelectedDocumentAgents([]);
+                              }
                               // 편집 상태 초기화
                               setEditingDocumentStatus(doc.status || 'active');
                               setEditingDocumentType(doc.type || '기타');
@@ -8007,12 +8013,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setDocumentDetailData(doc);
-                                // 연결된 에이전트 ID를 이름으로 변환
-                                const connectedAgentNames = (doc.connectedAgents || []).map((agentId: number) => {
-                                  const agent = agents?.find((a: any) => a.id === agentId);
-                                  return agent ? agent.name : `에이전트 ${agentId}`;
-                                });
-                                setSelectedDocumentAgents(connectedAgentNames);
+                                setSelectedDocument(doc);
+                                // 연결된 에이전트 정보 가져오기
+                                if (doc.agentId) {
+                                  const agent = agents?.find((a: any) => a.id === doc.agentId);
+                                  if (agent) {
+                                    setSelectedDocumentAgents([agent.name]);
+                                  } else {
+                                    setSelectedDocumentAgents([]);
+                                  }
+                                } else {
+                                  setSelectedDocumentAgents([]);
+                                }
                                 // 편집 상태 초기화
                                 setEditingDocumentStatus(doc.status || 'active');
                                 setEditingDocumentType(doc.type || '기타');
