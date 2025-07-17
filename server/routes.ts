@@ -914,17 +914,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update document visibility
-  app.patch('/api/documents/:id/visibility', isAuthenticated, async (req: any, res) => {
+  app.put('/api/documents/:id/visibility', isAuthenticated, async (req: any, res) => {
     try {
       const documentId = parseInt(req.params.id);
-      const { isVisible } = req.body;
+      const { isVisibleToUsers } = req.body;
 
       if (isNaN(documentId)) {
         return res.status(400).json({ message: "Invalid document ID" });
       }
 
-      if (typeof isVisible !== 'boolean') {
-        return res.status(400).json({ message: "isVisible must be a boolean value" });
+      if (typeof isVisibleToUsers !== 'boolean') {
+        return res.status(400).json({ message: "isVisibleToUsers must be a boolean value" });
       }
 
       const document = await storage.getDocument(documentId);
@@ -946,7 +946,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to modify document visibility" });
       }
 
-      const updatedDocument = await storage.updateDocumentVisibility(documentId, isVisible);
+      const updatedDocument = await storage.updateDocumentVisibility(documentId, isVisibleToUsers);
       if (!updatedDocument) {
         return res.status(404).json({ message: "Failed to update document visibility" });
       }
@@ -958,6 +958,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating document visibility:", error);
       res.status(500).json({ message: "Failed to update document visibility" });
+    }
+  });
+
+  // Update document status
+  app.put('/api/documents/:id/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const { isActive } = req.body;
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      if (typeof isActive !== 'boolean') {
+        return res.status(400).json({ message: "isActive must be a boolean value" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Check if user has permission to manage document status
+      const userId = req.user.id;
+      const userRole = req.user.role;
+      const agent = await storage.getAgent(document.agentId);
+      
+      const hasPermission = userRole === 'master_admin' || 
+                           userRole === 'admin' || 
+                           userRole === 'agent_admin' ||
+                           (agent && agent.managerId === userId);
+
+      if (!hasPermission) {
+        return res.status(403).json({ message: "Unauthorized to modify document status" });
+      }
+
+      const updatedDocument = await storage.updateDocumentStatus(documentId, isActive);
+      if (!updatedDocument) {
+        return res.status(404).json({ message: "Failed to update document status" });
+      }
+
+      res.json({ 
+        message: "Document status updated successfully",
+        document: updatedDocument
+      });
+    } catch (error) {
+      console.error("Error updating document status:", error);
+      res.status(500).json({ message: "Failed to update document status" });
     }
   });
 

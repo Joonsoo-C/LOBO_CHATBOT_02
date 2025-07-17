@@ -25,6 +25,10 @@ import {
   Laugh,
   Angry,
   Trash2,
+  Eye,
+  EyeOff,
+  PlayCircle,
+  PauseCircle,
 
   GraduationCap,
   Code,
@@ -41,6 +45,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
@@ -393,6 +398,58 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     },
     onError: () => {
       addSystemMessage("알림 전송에 실패했습니다.");
+    }
+  });
+
+  // Document visibility toggle mutation
+  const toggleDocumentVisibilityMutation = useMutation({
+    mutationFn: async ({ documentId, visible }: { documentId: number; visible: boolean }) => {
+      const response = await apiRequest("PUT", `/api/documents/${documentId}/visibility`, { 
+        isVisibleToUsers: visible 
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
+      toast({
+        title: "문서 노출 설정 변경",
+        description: "문서 노출 설정이 성공적으로 변경되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "설정 변경 실패",
+        description: "문서 노출 설정 변경 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Document status toggle mutation
+  const toggleDocumentStatusMutation = useMutation({
+    mutationFn: async ({ documentId, active }: { documentId: number; active: boolean }) => {
+      const response = await apiRequest("PUT", `/api/documents/${documentId}/status`, { 
+        isActive: active 
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
+      toast({
+        title: "문서 상태 변경",
+        description: "문서 상태가 성공적으로 변경되었습니다.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "상태 변경 실패",
+        description: "문서 상태 변경 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   });
 
@@ -1332,10 +1389,19 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       <div className="flex items-start space-x-3 flex-1 min-w-0">
                         <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium korean-text break-words mb-1">
-                            {doc.originalName || doc.filename}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-2 mb-2">
+                            <p className="text-sm font-medium korean-text break-words">
+                              {doc.originalName || doc.filename}
+                            </p>
+                            {/* 문서 종류 태그 */}
+                            {doc.documentType && (
+                              <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                                {doc.documentType}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-2">
                             <span>
                               크기: {doc.size ? (doc.size / (1024 * 1024)).toFixed(2) + ' MB' : '알 수 없음'}
                             </span>
@@ -1350,6 +1416,57 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               })}
                             </span>
                           </div>
+
+                          {/* 관리자만 볼 수 있는 문서 관리 기능 */}
+                          {(userRole === 'master_admin' || userRole === 'agent_admin') && (
+                            <div className="flex items-center gap-4 mt-2">
+                              {/* 노출 여부 토글 */}
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="p-1 h-6 w-6"
+                                  onClick={() => toggleDocumentVisibilityMutation.mutate({
+                                    documentId: doc.id,
+                                    visible: !doc.isVisibleToUsers
+                                  })}
+                                  title={doc.isVisibleToUsers ? "사용자에게 노출됨 (클릭하여 숨김)" : "사용자에게 숨김 (클릭하여 노출)"}
+                                >
+                                  {doc.isVisibleToUsers ? (
+                                    <Eye className="w-3 h-3 text-green-600" />
+                                  ) : (
+                                    <EyeOff className="w-3 h-3 text-gray-400" />
+                                  )}
+                                </Button>
+                                <span className="text-xs text-muted-foreground">
+                                  {doc.isVisibleToUsers ? "노출" : "비노출"}
+                                </span>
+                              </div>
+
+                              {/* 문서 상태 뱃지 토글 */}
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="p-1 h-6 w-6"
+                                  onClick={() => toggleDocumentStatusMutation.mutate({
+                                    documentId: doc.id,
+                                    active: !doc.isActive
+                                  })}
+                                  title={doc.isActive ? "사용 중 (클릭하여 미사용으로 변경)" : "미사용 (클릭하여 사용 중으로 변경)"}
+                                >
+                                  {doc.isActive ? (
+                                    <PlayCircle className="w-3 h-3 text-blue-600" />
+                                  ) : (
+                                    <PauseCircle className="w-3 h-3 text-gray-400" />
+                                  )}
+                                </Button>
+                                <Badge variant={doc.isActive ? "default" : "secondary"} className="text-xs px-2 py-0.5">
+                                  {doc.isActive ? "사용 중" : "미사용"}
+                                </Badge>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 flex-shrink-0 ml-3">

@@ -1036,6 +1036,18 @@ export class MemoryStorage implements IStorage {
     return undefined;
   }
 
+  async updateDocumentStatus(id: number, isActive: boolean): Promise<Document | undefined> {
+    const document = this.documents.get(id);
+    if (document) {
+      document.isActive = isActive;
+      document.updatedAt = new Date();
+      this.savePersistedDocuments(); // Persist immediately
+      console.log(`Document ${id} status updated to ${isActive ? 'active' : 'inactive'} and persisted: ${document.originalName}`);
+      return document;
+    }
+    return undefined;
+  }
+
   // Stats operations
   async getAgentStats(agentId: number): Promise<AgentStats | undefined> {
     return this.agentStats.get(agentId);

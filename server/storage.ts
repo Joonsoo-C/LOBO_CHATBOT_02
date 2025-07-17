@@ -72,6 +72,7 @@ export interface IStorage {
   deleteDocument(id: number): Promise<void>;
   updateDocumentContent(id: number, content: string): Promise<Document | null>;
   updateDocumentVisibility(id: number, isVisible: boolean): Promise<Document | undefined>;
+  updateDocumentStatus(id: number, isActive: boolean): Promise<Document | undefined>;
 
   // Stats operations
   getAgentStats(agentId: number): Promise<AgentStats | undefined>;
