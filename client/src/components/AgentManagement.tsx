@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Edit, MoreVertical, Palette } from "lucide-react";
+import { Users, MessageCircle, TrendingUp, Trophy, Settings, User, BookOpen, GraduationCap, Lightbulb, Heart, Edit, Palette } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,12 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import type { Agent, AgentStats } from "@/types/agent";
 
 import IconChangeModal from "./IconChangeModal";
@@ -161,39 +156,6 @@ export default function AgentManagement() {
                     <p className="text-sm text-gray-600 korean-text">{agent.description}</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <MoreVertical className="text-gray-400 w-5 h-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="korean-text">
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleIconChange(agent);
-                      }}
-                    >
-                      <Palette className="w-4 h-4 mr-2" />
-                      아이콘 변경
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleManagementChat(agent.id);
-                      }}
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      관리 설정
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
 
               {/* Badges */}

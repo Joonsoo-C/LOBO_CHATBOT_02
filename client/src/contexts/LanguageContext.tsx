@@ -844,7 +844,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.selectAgent': 'Select an agent',
     'home.selectAgentDesc': 'Choose an agent from the left to start chatting.',
     'home.manageAgent': 'Select an agent to manage',
-    'home.manageAgentDesc': 'Choose an agent from the left to access management interface.',
+    'home.manageAgentDesc': 'Select an agent from the left, then click the \'Functions\' menu in the top right of the chat screen to access agent settings.',
     
     // Agent management
     'agent.management': 'Agent Management',
