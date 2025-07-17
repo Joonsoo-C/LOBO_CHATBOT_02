@@ -8717,7 +8717,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       onClick={handleClearAllFiles}
                       className="text-red-600 hover:text-red-700"
                     >
-                      모두 제거
+                      전체 파일 삭제
                     </Button>
                   </div>
                   <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -8753,21 +8753,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               <div>
                 <Label>문서 종류</Label>
-                <Select>
+                <Select value={documentType} onValueChange={setDocumentType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="문서 종류" />
+                    <SelectValue placeholder="문서 종류를 선택해주세요" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lecture">강의자료</SelectItem>
-                    <SelectItem value="policy">정책·규정 문서</SelectItem>
-                    <SelectItem value="manual">매뉴얼·가이드</SelectItem>
-                    <SelectItem value="form">서식·양식</SelectItem>
-                    <SelectItem value="notice">공지·안내</SelectItem>
-                    <SelectItem value="curriculum">교육과정</SelectItem>
-                    <SelectItem value="faq">FAQ·Q&A</SelectItem>
-                    <SelectItem value="research">연구자료</SelectItem>
-                    <SelectItem value="internal">회의·내부자료</SelectItem>
-                    <SelectItem value="other">기타</SelectItem>
+                    <SelectItem value="강의자료">강의자료</SelectItem>
+                    <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
+                    <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
+                    <SelectItem value="서식·양식">서식·양식</SelectItem>
+                    <SelectItem value="공지·안내">공지·안내</SelectItem>
+                    <SelectItem value="교육과정">교육과정</SelectItem>
+                    <SelectItem value="FAQ·Q&A">FAQ·Q&A</SelectItem>
+                    <SelectItem value="연구자료">연구자료</SelectItem>
+                    <SelectItem value="회의·내부자료">회의·내부자료</SelectItem>
+                    <SelectItem value="기타">기타</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -8807,7 +8807,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Button>
                 <Button 
                   onClick={handleDocumentUpload}
-                  disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
+                  disabled={selectedDocumentFiles.length === 0 || !documentType || isDocumentUploading}
                 >
                   {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작`}
                 </Button>
