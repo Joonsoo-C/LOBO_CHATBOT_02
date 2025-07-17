@@ -227,13 +227,13 @@
       167,
       {
         "id": 167,
-        "userId": "user1082",
-        "agentId": 149,
-        "type": "general",
+        "userId": "master_admin",
+        "agentId": 146,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-07T20:42:42.805Z",
-        "createdAt": "2025-07-07T20:42:42.805Z",
-        "isHidden": false
+        "lastMessageAt": "2025-07-17T16:38:43.668Z",
+        "isHidden": false,
+        "createdAt": "2025-07-17T16:38:43.668Z"
       }
     ],
     [
@@ -273,6 +273,19 @@
         "lastMessageAt": "2025-07-07T22:20:58.000Z",
         "isHidden": false,
         "createdAt": "2025-07-07T22:20:58.000Z"
+      }
+    ],
+    [
+      168,
+      {
+        "id": 168,
+        "userId": "master_admin",
+        "agentId": 115,
+        "type": "management",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-17T16:40:15.109Z",
+        "isHidden": false,
+        "createdAt": "2025-07-17T16:40:15.109Z"
       }
     ]
   ]
