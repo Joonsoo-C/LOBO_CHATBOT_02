@@ -213,10 +213,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   
   // Auto-refetch when user category filters change
   useEffect(() => {
-    if (isOpen && visibility === "user") {
+    if (isOpen && settings.visibility === "user") {
       refetchUsers();
     }
-  }, [userUpperCategory, userLowerCategory, userDetailCategory, visibility, isOpen, refetchUsers]);
+  }, [userUpperCategory, userLowerCategory, userDetailCategory, settings.visibility, isOpen, refetchUsers]);
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: ChatbotSettings) => {
