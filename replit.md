@@ -975,7 +975,14 @@ Changelog:
   * Updated Language type definition to only include 'ko' | 'en' types
   * Cleaned up LanguageContext.tsx to contain only Korean and English translations
   * Updated LanguageSelector component to show only Korean and English options
-  * Implemented automatic Korean text to English translation when English mode is selected:
+  * Implemented automatic Korean text to English translation when English mode is selected
+- July 17, 2025. Completed comprehensive document visibility control system:
+  * Removed toggle functionality from document list visibility column
+  * Document list shows only status icons (blue open eye for visible, red closed eye for hidden)
+  * Moved visibility settings dropdown to document detail popup next to document status dropdown
+  * Merged document status area into document information area for cleaner layout
+  * Added proper userRole definition in ChatInterface to fix hidden document filtering
+  * Document visibility system now fully functional with improved UI organization
 - July 17, 2025. Implemented document upload options removal and visibility control system:
   * Removed upload options section from master admin system document upload popup
   * Added document visibility control feature allowing administrators to hide documents from regular users

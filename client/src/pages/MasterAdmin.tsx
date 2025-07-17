@@ -7920,19 +7920,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center justify-center">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  updateDocumentVisibilityMutation.mutate({
-                                    documentId: doc.id,
-                                    isVisible: doc.isVisibleToUsers !== true
-                                  });
-                                }}
-                                disabled={updateDocumentVisibilityMutation.isPending}
-                                className="p-2 h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                                title={doc.isVisibleToUsers === true ? '사용자에게 노출됨 (클릭하여 숨김)' : '사용자에게 숨김 (클릭하여 노출)'}
+                              <div
+                                className="p-2 h-8 w-8 rounded-lg flex items-center justify-center"
+                                title={doc.isVisibleToUsers === true ? '사용자에게 노출됨' : '사용자에게 숨김'}
                               >
                                 {doc.isVisibleToUsers === true ? (
                                   // 노출됨 - 애플 스타일 열린 눈 (진한 파란색)
@@ -8007,7 +7997,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     />
                                   </svg>
                                 )}
-                              </Button>
+                              </div>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -9416,14 +9406,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <p className="text-sm mt-1">{documentDetailData.uploader}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">가시성 상태</Label>
-                      <p className="text-sm mt-1">
-                        {selectedDocument?.isVisibleToUsers === true ? (
-                          <span className="text-green-600 dark:text-green-400">일반 사용자에게 표시됨</span>
-                        ) : (
-                          <span className="text-red-600 dark:text-red-400">관리자만 접근 가능</span>
-                        )}
-                      </p>
+                      <Label className="text-sm font-medium">노출 여부</Label>
+                      <Select 
+                        value={selectedDocument?.isVisibleToUsers === true ? "visible" : "hidden"} 
+                        onValueChange={(value) => {
+                          if (selectedDocument) {
+                            updateDocumentVisibilityMutation.mutate({
+                              documentId: selectedDocument.id,
+                              isVisible: value === "visible"
+                            });
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="visible">일반 사용자에게 표시</SelectItem>
+                          <SelectItem value="hidden">관리자만 접근 가능</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
@@ -9433,13 +9435,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 크기</Label>
                       <p className="text-sm mt-1">{documentDetailData.size}</p>
                     </div>
-                  </div>
-                </div>
-
-                {/* 상태 영역 */}
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                  <h3 className="text-lg font-medium mb-4">상태</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label className="text-sm font-medium">문서 상태</Label>
                       <Select value={editingDocumentStatus} onValueChange={setEditingDocumentStatus}>

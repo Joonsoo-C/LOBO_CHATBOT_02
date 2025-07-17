@@ -105,7 +105,12 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-
+  // Fetch current user information
+  const { data: user } = useQuery({
+    queryKey: ["/api/user"],
+  });
+  
+  const userRole = user?.role || 'general';
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
