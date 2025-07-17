@@ -105,12 +105,6 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     return result;
   };
 
-  // Debug logging
-  console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
-  console.log("Upper categories:", getUpperCategories());
-  console.log("Users data:", users, "isLoading:", isLoadingUsers, "visibility:", settings.visibility);
-  console.log("Filtered users count:", users.length, "->", filteredUsers?.length || 0);
-
   // Get lower categories for selected upper category
   const getLowerCategories = (upperCategory: string) => {
     if (!upperCategory || !organizationCategories || !Array.isArray(organizationCategories)) return [];
@@ -194,6 +188,12 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     
     return allMatches;
   });
+
+  // Debug logging after filteredUsers is defined
+  console.log("Organization categories loaded:", organizationCategories, "isLoading:", isLoadingOrgs);
+  console.log("Upper categories:", getUpperCategories());
+  console.log("Users data:", users, "isLoading:", isLoadingUsers, "visibility:", settings.visibility);
+  console.log("Filtered users count:", users.length, "->", filteredUsers?.length || 0);
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: ChatbotSettings) => {
