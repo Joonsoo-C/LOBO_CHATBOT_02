@@ -300,9 +300,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     <FileText className="w-8 h-8 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-foreground korean-text">
-                      파일을 드래그하거나 클릭하여 업로드
-                    </p>
+                    <p className="text-lg font-medium text-foreground korean-text">업로드할 문서 파일을 드래그하거나 파일 선택 버튼을 클릭하세요. </p>
                     <p className="text-sm text-muted-foreground mt-2">
                       PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 5개, 각각 50MB)
                     </p>
@@ -451,7 +449,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           </div>
         </div>
       </div>
-      
       {/* Error Modal */}
       <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
         <DialogContent className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl">
@@ -483,8 +480,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           </div>
         </DialogContent>
       </Dialog>
-
-
     </>
   );
 }
