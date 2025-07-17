@@ -957,6 +957,7 @@ function MasterAdmin() {
   const [selectedDocumentFiles, setSelectedDocumentFiles] = useState<File[]>([]);
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
+  const [documentVisibility, setDocumentVisibility] = useState(true);
   
   // 사용자 파일 업로드 관련 상태
   const [selectedUserFiles, setSelectedUserFiles] = useState<File[]>([]);
@@ -8753,20 +8754,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">업로드 옵션</h4>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">문서 노출 설정</h4>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="auto-categorize" className="rounded" />
-                    <Label htmlFor="auto-categorize">AI 자동 분류 활성화</Label>
+                    <input 
+                      type="checkbox" 
+                      id="document-visible" 
+                      className="rounded" 
+                      checked={documentVisibility}
+                      onChange={(e) => setDocumentVisibility(e.target.checked)}
+                    />
+                    <Label htmlFor="document-visible">일반 사용자에게 이 문서를 표시</Label>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="extract-keywords" className="rounded" />
-                    <Label htmlFor="extract-keywords">키워드 자동 추출</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input type="checkbox" id="notify-users" className="rounded" />
-                    <Label htmlFor="notify-users">해당 범위 사용자에게 알림 발송</Label>
-                  </div>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 ml-6">
+                    체크 해제 시 관리자만 해당 문서에 접근할 수 있습니다.
+                  </p>
                 </div>
               </div>
 

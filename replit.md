@@ -976,6 +976,13 @@ Changelog:
   * Cleaned up LanguageContext.tsx to contain only Korean and English translations
   * Updated LanguageSelector component to show only Korean and English options
   * Implemented automatic Korean text to English translation when English mode is selected:
+- July 17, 2025. Implemented document upload options removal and visibility control system:
+  * Removed upload options section from master admin system document upload popup
+  * Added document visibility control feature allowing administrators to hide documents from regular users
+  * Enhanced document visibility icons with stronger visual distinction (blue open eye vs red closed eye with slash)
+  * Implemented document visibility setting in agent chatbot file upload modal
+  * Added visibility control state management and form submission for both admin and agent upload interfaces
+  * Documents can now be hidden from regular users while remaining accessible to admin accounts
 - July 16, 2025. Enhanced UI visibility and document management interface:
   * Added document visibility column to master admin document table with status indicators
   * Implemented quick toggle buttons for document visibility control (표시/숨김)

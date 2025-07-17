@@ -24,6 +24,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [isDragOver, setIsDragOver] = useState(false);
   const [documentType, setDocumentType] = useState<string>("");
   const [documentDescription, setDocumentDescription] = useState<string>("");
+  const [documentVisibility, setDocumentVisibility] = useState(true);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showResultModal, setShowResultModal] = useState(false);
@@ -55,6 +56,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       formData.append("file", file);
       formData.append("documentType", documentType);
       formData.append("description", documentDescription);
+      formData.append("isVisible", documentVisibility.toString());
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
@@ -321,6 +323,26 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   className="korean-text"
                   rows={3}
                 />
+              </div>
+
+              {/* Document Visibility Setting */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 korean-text">문서 노출 설정</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="checkbox" 
+                      id="agent-document-visible" 
+                      className="rounded" 
+                      checked={documentVisibility}
+                      onChange={(e) => setDocumentVisibility(e.target.checked)}
+                    />
+                    <Label htmlFor="agent-document-visible" className="korean-text">일반 사용자에게 이 문서를 표시</Label>
+                  </div>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 ml-6 korean-text">
+                    체크 해제 시 관리자만 해당 문서에 접근할 수 있습니다.
+                  </p>
+                </div>
               </div>
 
               {/* Action Buttons */}
