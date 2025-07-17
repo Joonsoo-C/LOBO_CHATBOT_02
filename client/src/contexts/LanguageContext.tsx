@@ -115,7 +115,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.selectAgent': '에이전트를 선택하세요',
     'home.selectAgentDesc': '왼쪽에서 대화하고 싶은 에이전트를 선택하면 여기에 채팅창이 나타납니다.',
     'home.manageAgent': '관리할 에이전트를 선택하세요',
-    'home.manageAgentDesc': '왼쪽에서 관리하고 싶은 에이전트를 선택하면 여기에 관리 인터페이스가 나타납니다.',
+    'home.manageAgentDesc': '왼쪽 영역에서 에이전트 선택 후 채팅 화면 상단 우측 에 있는 기능 선택 메뉴를 클릭하면 에이전트 상세 설정 기능을 사용하실 수 있습니다.',
     
     // 에이전트 관리
     'agent.management': '에이전트 관리',
