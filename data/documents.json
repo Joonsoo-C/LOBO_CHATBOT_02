@@ -300,6 +300,38 @@
       "type": null,
       "description": null,
       "connectedAgents": []
+    },
+    {
+      "agentId": 1,
+      "filename": "1752768926984-559077358-CFC flyer content for translation-Korean (2).docx",
+      "originalName": "CFC flyer content for translation-Korean (2).docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 15251,
+      "content": "주택에 대한 열정이 있는 지역사회 커넥터이십니까?\n\n\n\n\n\nBellevue의 Office of Housing(주택 사무실)은 소득과 배경에 관계없이 여러분 모두에게 주택이 있도록 시의 저렴한 주택 전략(Affordable Housing Strategy, AHS)을 업데이트하고 있습니다. 지역 사회의 목소리, 특히 안전하고 저렴한 주택을 찾거나 계속 거주하는 것이 어려운 분들의 목소리는 이 과정에서 매우 중요한 부분입니다. 새롭고 다양한 목소리와 만나기 위해, 저희는 8월과 9월에 개최되는 지역 사회의 경험에 대한 더욱 큰 Bellevue 지역 사회와의 대화를 진행해 주실 지역사회 촉진자(facilitator)를 찾고 있습니다. 신청기간은 7월 28일까지입니다.\n\n\n\n \n\n상세정보 확인 및 신청은 온라인 신청서를 방문해 주십시오:\n\n\n\n\n\n관심이 있으시지만 더 자세한 정보를 원하십니까? 가상 정보 세션에 참가하세요: 7월 23일 수요일 오후 3시~오후 4시, 7월 24일 목요일 오후 4시~오후 5시 이 세션은 가상 드롭인 정보 세션입니다. 해당 시간대에 언제든 들르셔서 질문해 주세요. Link 등록:",
+      "uploadedBy": "master_admin",
+      "id": 165,
+      "createdAt": "2025-07-17T16:15:27.073Z",
+      "updatedAt": "2025-07-17T16:15:27.073Z",
+      "status": "active",
+      "type": null,
+      "description": null,
+      "connectedAgents": []
+    },
+    {
+      "agentId": 1,
+      "filename": "1752768927209-718633430-CFC flyer content for translation-Korean (2).docx",
+      "originalName": "CFC flyer content for translation-Korean (2).docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 15251,
+      "content": "주택에 대한 열정이 있는 지역사회 커넥터이십니까?\n\n\n\n\n\nBellevue의 Office of Housing(주택 사무실)은 소득과 배경에 관계없이 여러분 모두에게 주택이 있도록 시의 저렴한 주택 전략(Affordable Housing Strategy, AHS)을 업데이트하고 있습니다. 지역 사회의 목소리, 특히 안전하고 저렴한 주택을 찾거나 계속 거주하는 것이 어려운 분들의 목소리는 이 과정에서 매우 중요한 부분입니다. 새롭고 다양한 목소리와 만나기 위해, 저희는 8월과 9월에 개최되는 지역 사회의 경험에 대한 더욱 큰 Bellevue 지역 사회와의 대화를 진행해 주실 지역사회 촉진자(facilitator)를 찾고 있습니다. 신청기간은 7월 28일까지입니다.\n\n\n\n \n\n상세정보 확인 및 신청은 온라인 신청서를 방문해 주십시오:\n\n\n\n\n\n관심이 있으시지만 더 자세한 정보를 원하십니까? 가상 정보 세션에 참가하세요: 7월 23일 수요일 오후 3시~오후 4시, 7월 24일 목요일 오후 4시~오후 5시 이 세션은 가상 드롭인 정보 세션입니다. 해당 시간대에 언제든 들르셔서 질문해 주세요. Link 등록:",
+      "uploadedBy": "master_admin",
+      "id": 166,
+      "createdAt": "2025-07-17T16:15:27.239Z",
+      "updatedAt": "2025-07-17T16:15:27.239Z",
+      "status": "active",
+      "type": null,
+      "description": null,
+      "connectedAgents": []
     }
   ],
   "organizationCategories": [
@@ -1916,6 +1948,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 165,
+  "nextId": 167,
   "nextOrganizationId": 125
 }
