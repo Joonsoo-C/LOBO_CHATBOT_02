@@ -1311,7 +1311,14 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
             
             {Array.isArray(documents) && documents.length > 0 ? (
               <div className="space-y-3">
-                {documents.map((doc: any) => (
+                {documents.filter((doc: any) => {
+                  // 관리자가 아닌 일반 사용자에게는 숨김 처리된 문서를 보이지 않음
+                  if (userRole !== 'master_admin' && userRole !== 'agent_admin') {
+                    return doc.isVisibleToUsers === true;
+                  }
+                  // 관리자에게는 모든 문서 표시
+                  return true;
+                }).map((doc: any) => (
                   <div
                     key={doc.id}
                     className="w-full p-4 bg-muted rounded-lg border border-border"

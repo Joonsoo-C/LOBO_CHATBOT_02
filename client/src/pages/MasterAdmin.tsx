@@ -7927,14 +7927,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   e.stopPropagation();
                                   updateDocumentVisibilityMutation.mutate({
                                     documentId: doc.id,
-                                    isVisible: doc.isVisibleToUsers === false
+                                    isVisible: doc.isVisibleToUsers !== true
                                   });
                                 }}
                                 disabled={updateDocumentVisibilityMutation.isPending}
                                 className="p-2 h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                                title={doc.isVisibleToUsers !== false ? '사용자에게 노출됨 (클릭하여 숨김)' : '사용자에게 숨김 (클릭하여 노출)'}
+                                title={doc.isVisibleToUsers === true ? '사용자에게 노출됨 (클릭하여 숨김)' : '사용자에게 숨김 (클릭하여 노출)'}
                               >
-                                {doc.isVisibleToUsers !== false ? (
+                                {doc.isVisibleToUsers === true ? (
                                   // 노출됨 - 애플 스타일 열린 눈 (진한 파란색)
                                   <svg
                                     width="16"
@@ -8599,18 +8599,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Button>
                     {selectedDocument && (
                       <Button 
-                        variant={selectedDocument.isVisibleToUsers !== false ? "secondary" : "outline"}
+                        variant={selectedDocument.isVisibleToUsers === true ? "secondary" : "outline"}
                         onClick={() => {
                           updateDocumentVisibilityMutation.mutate({
                             documentId: selectedDocument.id,
-                            isVisible: selectedDocument.isVisibleToUsers === false
+                            isVisible: selectedDocument.isVisibleToUsers !== true
                           });
                         }}
                         disabled={updateDocumentVisibilityMutation.isPending}
                       >
                         {updateDocumentVisibilityMutation.isPending 
                           ? "처리중..." 
-                          : selectedDocument.isVisibleToUsers !== false 
+                          : selectedDocument.isVisibleToUsers === true 
                             ? "사용자에게 숨김" 
                             : "사용자에게 표시"
                         }
@@ -9414,6 +9414,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <div>
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">업로더 ID</Label>
                       <p className="text-sm mt-1">{documentDetailData.uploader}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">가시성 상태</Label>
+                      <p className="text-sm mt-1">
+                        {selectedDocument?.isVisibleToUsers === true ? (
+                          <span className="text-green-600 dark:text-green-400">일반 사용자에게 표시됨</span>
+                        ) : (
+                          <span className="text-red-600 dark:text-red-400">관리자만 접근 가능</span>
+                        )}
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">파일 형식</Label>
