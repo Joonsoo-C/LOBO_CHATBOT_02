@@ -89,10 +89,17 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     enabled: isOpen,
   });
 
+  // State for selected users (moved before the query that uses them)
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [userUpperCategory, setUserUpperCategory] = useState("");
+  const [userLowerCategory, setUserLowerCategory] = useState("");
+  const [userDetailCategory, setUserDetailCategory] = useState("");
+
   // Fetch users for user selection using search API with category filters
   const { data: users = [], isLoading: isLoadingUsers } = useQuery({
     queryKey: ["/api/users/search", userUpperCategory, userLowerCategory, userDetailCategory],
-    enabled: isOpen && visibility === "user",
+    enabled: isOpen && settings.visibility === "user",
     queryFn: () => {
       const params = new URLSearchParams();
       if (userUpperCategory && userUpperCategory !== "all") params.append("upperCategory", userUpperCategory);
@@ -139,12 +146,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     return result;
   };
 
-  // State for selected users
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [userSearch, setUserSearch] = useState("");
-  const [userUpperCategory, setUserUpperCategory] = useState("");
-  const [userLowerCategory, setUserLowerCategory] = useState("");
-  const [userDetailCategory, setUserDetailCategory] = useState("");
+
 
   // Filter users based on search and category
   const filteredUsers = users.filter((user: any) => {

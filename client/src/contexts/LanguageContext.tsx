@@ -73,6 +73,8 @@ const translations: Record<Language, Record<string, string>> = {
     'common.download': '다운로드',
     'common.error': '오류',
     'common.success': '성공',
+    'common.all': '전체',
+    'common.searchKeyword': '검색어',
     
     // 홈페이지
     'home.searchPlaceholder': '에이전트 검색...',
