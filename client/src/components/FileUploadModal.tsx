@@ -332,7 +332,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       onClick={clearAllFiles}
                       className="text-red-600 hover:text-red-700"
                     >
-                      모두 제거
+                      전체 파일 삭제
                     </Button>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
