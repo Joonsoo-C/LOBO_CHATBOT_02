@@ -2923,11 +2923,38 @@ function MasterAdmin() {
       }
       
       if (validFiles.length > 0) {
-        setSelectedDocumentFiles(prev => [...prev, ...validFiles]);
-        toast({
-          title: "파일 선택됨",
-          description: `${validFiles.length}개 파일이 선택되었습니다.`,
+        setSelectedDocumentFiles(prev => {
+          const totalFiles = prev.length + validFiles.length;
+          if (totalFiles > 8) {
+            const allowedCount = 8 - prev.length;
+            const allowedFiles = validFiles.slice(0, allowedCount);
+            
+            if (allowedCount > 0) {
+              toast({
+                title: "파일 개수 제한",
+                description: `최대 8개까지만 선택 가능합니다. ${allowedCount}개 파일만 추가되었습니다.`,
+                variant: "destructive",
+              });
+              return [...prev, ...allowedFiles];
+            } else {
+              toast({
+                title: "파일 개수 제한",
+                description: "최대 8개까지만 선택할 수 있습니다.",
+                variant: "destructive",
+              });
+              return prev;
+            }
+          }
+          
+          return [...prev, ...validFiles];
         });
+        
+        if (validFiles.length <= 8) {
+          toast({
+            title: "파일 선택됨",
+            description: `${validFiles.length}개 파일이 선택되었습니다.`,
+          });
+        }
       }
     }
     
@@ -8666,7 +8693,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 8개, 각각 50MB)
                 </p>
                 <Button 
                   variant="outline" 

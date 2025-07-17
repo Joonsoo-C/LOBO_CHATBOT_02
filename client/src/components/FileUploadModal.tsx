@@ -20,7 +20,7 @@ interface FileUploadModalProps {
 }
 
 export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: FileUploadModalProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [documentType, setDocumentType] = useState<string>("");
   const [documentDescription, setDocumentDescription] = useState<string>("");
@@ -49,69 +49,75 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   });
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("documentType", documentType);
-      formData.append("description", documentDescription);
-      formData.append("isVisible", documentVisibility.toString());
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
+    mutationFn: async (files: File[]) => {
+      const results = [];
       
-      try {
-        const response = await fetch(`/api/agents/${agent.id}/documents`, {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-          signal: controller.signal,
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`${response.status}: ${errorText}`);
-        }
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("documentType", documentType);
+        formData.append("description", documentDescription);
+        formData.append("isVisible", documentVisibility.toString());
 
-        return response.json();
-      } catch (error: any) {
-        clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-          throw new Error('업로드 시간 초과: 파일이 너무 크거나 네트워크가 느립니다.');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
+        
+        try {
+          const response = await fetch(`/api/agents/${agent.id}/documents`, {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+            signal: controller.signal,
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`${response.status}: ${errorText}`);
+          }
+
+          const result = await response.json();
+          results.push({ file, result });
+        } catch (error: any) {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            throw new Error('업로드 시간 초과: 파일이 너무 크거나 네트워크가 느립니다.');
+          }
+          throw error;
         }
-        throw error;
       }
+      
+      return results;
     },
-    onSuccess: (data: any) => {
-      console.log('Document upload successful:', data);
+    onSuccess: (results: any[]) => {
+      console.log('Document uploads successful:', results);
       
       queryClient.invalidateQueries({
         queryKey: [`/api/agents/${agent.id}/documents`]
       });
       
-      // Get filename
-      const filename = data.document?.originalName || selectedFile?.name || '파일';
+      const fileNames = results.map(r => r.result.document?.originalName || r.file.name).join(', ');
 
       // Show success toast message
       toast({
         title: "문서 업로드 완료",
-        description: `${filename} 파일이 성공적으로 업로드되었습니다.`,
+        description: `${results.length}개 파일이 성공적으로 업로드되었습니다.`,
       });
 
       // Send completion message to chat
       if (onSuccess) {
-        onSuccess(`${filename} 문서 업로드가 저장되었습니다.`);
+        onSuccess(`${results.length}개 문서 업로드가 완료되었습니다: ${fileNames}`);
       }
 
       // Broadcast document upload notification
       broadcastMutation.mutate({
         agentId: agent.id,
-        message: `📄 새로운 문서가 업로드되었습니다: ${filename}`
+        message: `📄 ${results.length}개의 새로운 문서가 업로드되었습니다`
       });
 
       // Reset form and close modal
-      setSelectedFile(null);
+      setSelectedFiles([]);
       setDocumentType("");
       setDocumentDescription("");
       setDocumentVisibility(true);
@@ -161,14 +167,36 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      if (validateFile(file)) {
-        setSelectedFile(file);
-        setDocumentType("기타");
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      const newValidFiles: File[] = [];
+      
+      for (const file of files) {
+        // 최대 5개까지만 허용
+        if (selectedFiles.length + newValidFiles.length >= 5) {
+          toast({
+            title: "파일 개수 제한",
+            description: "최대 5개까지만 선택할 수 있습니다.",
+            variant: "destructive",
+          });
+          break;
+        }
+        
+        if (validateFile(file)) {
+          newValidFiles.push(file);
+        }
+      }
+      
+      if (newValidFiles.length > 0) {
+        setSelectedFiles(prev => [...prev, ...newValidFiles]);
+        if (documentType === "") {
+          setDocumentType("기타");
+        }
       }
     }
+    
+    // 파일 입력 값 리셋
+    e.target.value = '';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -185,20 +213,47 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     e.preventDefault();
     setIsDragOver(false);
     
-    const files = e.dataTransfer.files;
+    const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      const file = files[0];
-      if (validateFile(file)) {
-        setSelectedFile(file);
-        setDocumentType("기타");
+      const newValidFiles: File[] = [];
+      
+      for (const file of files) {
+        // 최대 5개까지만 허용
+        if (selectedFiles.length + newValidFiles.length >= 5) {
+          toast({
+            title: "파일 개수 제한",
+            description: "최대 5개까지만 선택할 수 있습니다.",
+            variant: "destructive",
+          });
+          break;
+        }
+        
+        if (validateFile(file)) {
+          newValidFiles.push(file);
+        }
+      }
+      
+      if (newValidFiles.length > 0) {
+        setSelectedFiles(prev => [...prev, ...newValidFiles]);
+        if (documentType === "") {
+          setDocumentType("기타");
+        }
       }
     }
   };
 
   const handleUpload = () => {
-    if (selectedFile) {
-      uploadMutation.mutate(selectedFile);
+    if (selectedFiles.length > 0) {
+      uploadMutation.mutate(selectedFiles);
     }
+  };
+  
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+  
+  const clearAllFiles = () => {
+    setSelectedFiles([]);
   };
 
   if (!isOpen) return null;
@@ -249,7 +304,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       파일을 드래그하거나 클릭하여 업로드
                     </p>
                     <p className="text-sm text-muted-foreground mt-2">
-                      PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 50MB)
+                      PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 5개, 각각 50MB)
                     </p>
                   </div>
                   <Button variant="outline" type="button" className="korean-text">
@@ -259,42 +314,54 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <input
                   id="file-upload"
                   type="file"
+                  multiple
                   className="hidden"
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
                   onChange={handleFileSelect}
                 />
               </div>
 
-              {/* Selected File Display */}
-              {selectedFile && (
+              {/* Selected Files Display */}
+              {selectedFiles.length > 0 && (
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 korean-text">
-                    선택된 파일 (1개)
-                  </h4>
-                  <div className="flex items-center justify-between bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md p-3">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                      <div>
-                        <p className="font-medium text-blue-900 dark:text-blue-100 text-sm">
-                          {selectedFile.name}
-                        </p>
-                        <p className="text-xs text-blue-600 dark:text-blue-400">
-                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB • {selectedFile.type || 'VND.OPENXMLFORMATS-OFFICEDOCUMENT.WORDPROCESSINGML.DOCUMENT'}
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-blue-900 dark:text-blue-100 korean-text">
+                      선택된 파일 ({selectedFiles.length}개)
+                    </h4>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
-                      onClick={() => setSelectedFile(null)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1"
+                      onClick={clearAllFiles}
+                      className="text-red-600 hover:text-red-700"
                     >
-                      <X className="w-4 h-4" />
+                      모두 제거
                     </Button>
                   </div>
-                  <p className="text-xs text-red-600 dark:text-red-400 mt-2">
-                    모두 제거
-                  </p>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md p-3">
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(index)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1 ml-2"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -364,7 +431,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 </Button>
                 <Button
                   onClick={handleUpload}
-                  disabled={!selectedFile || uploadMutation.isPending}
+                  disabled={selectedFiles.length === 0 || uploadMutation.isPending}
                   className="bg-red-600 hover:bg-red-700 text-white korean-text"
                 >
                   {uploadMutation.isPending ? (
@@ -375,7 +442,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   ) : (
                     <>
                       <Upload className="w-4 h-4 mr-2" />
-                      업로드 시작 (1개 파일)
+                      업로드 시작 ({selectedFiles.length}개 파일)
                     </>
                   )}
                 </Button>
