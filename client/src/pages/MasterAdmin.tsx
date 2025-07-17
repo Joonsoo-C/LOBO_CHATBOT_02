@@ -7852,7 +7852,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          가시성
+                          노출
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           {t('common.settings')}
@@ -7918,14 +7918,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center space-x-2">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                doc.isVisibleToUsers !== false 
-                                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                              }`}>
-                                {doc.isVisibleToUsers !== false ? '표시' : '숨김'}
-                              </span>
+                            <div className="flex items-center justify-center">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -7937,9 +7930,79 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   });
                                 }}
                                 disabled={updateDocumentVisibilityMutation.isPending}
-                                className="p-1 h-6 w-6"
+                                className="p-2 h-8 w-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                title={doc.isVisibleToUsers !== false ? '사용자에게 노출됨 (클릭하여 숨김)' : '사용자에게 숨김 (클릭하여 노출)'}
                               >
-                                {doc.isVisibleToUsers !== false ? '👁️' : '👁️‍🗨️'}
+                                {doc.isVisibleToUsers !== false ? (
+                                  // 노출됨 - 애플 스타일 열린 눈
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    className="text-blue-600 dark:text-blue-400"
+                                  >
+                                    <path
+                                      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      fill="none"
+                                    />
+                                    <circle
+                                      cx="12"
+                                      cy="12"
+                                      r="3"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      fill="currentColor"
+                                      fillOpacity="0.2"
+                                    />
+                                  </svg>
+                                ) : (
+                                  // 숨김 - 애플 스타일 닫힌 눈 (slash 포함)
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    className="text-gray-400 dark:text-gray-600"
+                                  >
+                                    <path
+                                      d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <path
+                                      d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <path
+                                      d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <line
+                                      x1="2"
+                                      y1="2"
+                                      x2="22"
+                                      y2="22"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                )}
                               </Button>
                             </div>
                           </td>
@@ -8369,60 +8432,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Select>
               </div>
 
-              <div>
-                <Label>적용 범위</Label>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                  <div>
-                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="graduate">대학원</SelectItem>
-                        <SelectItem value="undergraduate">대학교</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="engineering">공과대학</SelectItem>
-                        <SelectItem value="business">경영대학</SelectItem>
-                        <SelectItem value="humanities">인문대학</SelectItem>
-                        <SelectItem value="science">자연과학대학</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-600">세부 카테고리"</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                        <SelectItem value="electrical">전자공학과</SelectItem>
-                        <SelectItem value="mechanical">기계공학과</SelectItem>
-                        <SelectItem value="business_admin">경영학과</SelectItem>
-                        <SelectItem value="economics">경제학과</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end">
-                    <Button className="w-full">
-                      적용
-                    </Button>
-                  </div>
-                </div>
-              </div>
+
 
               <div>
                 <Label>문서 설명</Label>
@@ -8729,60 +8739,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Select>
               </div>
 
-              <div>
-                <Label>적용 범위</Label>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                  <div>
-                    <Label className="text-sm text-gray-600">상위 카테고리</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="graduate">대학원</SelectItem>
-                        <SelectItem value="undergraduate">대학교</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-600">하위 카테고리</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="engineering">공과대학</SelectItem>
-                        <SelectItem value="business">경영대학</SelectItem>
-                        <SelectItem value="humanities">인문대학</SelectItem>
-                        <SelectItem value="science">자연과학대학</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-600">세부 카테고리</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="computer">컴퓨터공학과</SelectItem>
-                        <SelectItem value="electrical">전자공학과</SelectItem>
-                        <SelectItem value="mechanical">기계공학과</SelectItem>
-                        <SelectItem value="business_admin">경영학과</SelectItem>
-                        <SelectItem value="economics">경제학과</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end">
-                    <Button className="w-full">
-                      적용
-                    </Button>
-                  </div>
-                </div>
-              </div>
+
 
               <div>
                 <Label>문서 설명</Label>
