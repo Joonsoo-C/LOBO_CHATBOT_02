@@ -37,10 +37,15 @@ import {
   Database,
   Lightbulb,
   Calendar,
-  Pen
+  Pen,
+  Eye,
+  EyeOff,
+  Brain,
+  BrainCircuit
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
@@ -376,6 +381,89 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  // Document visibility toggle mutation
+  const toggleDocumentVisibilityMutation = useMutation({
+    mutationFn: async ({ documentId, isVisible }: { documentId: number; isVisible: boolean }) => {
+      const response = await apiRequest("PATCH", `/api/documents/${documentId}/visibility`, { 
+        isVisible: isVisible 
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "설정 변경 실패",
+        description: "문서 노출 설정을 변경할 수 없습니다.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Document training toggle mutation
+  const toggleDocumentTrainingMutation = useMutation({
+    mutationFn: async ({ documentId, isTraining }: { documentId: number; isTraining: boolean }) => {
+      const response = await apiRequest("PATCH", `/api/documents/${documentId}/training`, { 
+        isUsedForTraining: isTraining 
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/api/agents/${agent.id}/documents`]
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "설정 변경 실패",
+        description: "문서 학습 설정을 변경할 수 없습니다.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Helper function to get document type based on file extension
+  const getDocumentType = (filename: string): string => {
+    const extension = filename.toLowerCase().split('.').pop();
+    switch (extension) {
+      case 'pdf':
+        return '강의자료';
+      case 'doc':
+      case 'docx':
+        return '정책·규정 문서';
+      case 'ppt':
+      case 'pptx':
+        return '교육과정';
+      case 'txt':
+        return '매뉴얼';
+      default:
+        return '기타';
+    }
+  };
+
+  // Helper function to get document type badge color
+  const getDocumentTypeBadgeColor = (type: string): string => {
+    switch (type) {
+      case '강의자료':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
+      case '정책·규정 문서':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
+      case '교육과정':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      case '매뉴얼':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
+      case '양식':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
+      case '공지사항':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
+    }
+  };
 
   // Broadcast notification mutation
   const broadcastMutation = useMutation({
@@ -1332,10 +1420,17 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       <div className="flex items-start space-x-3 flex-1 min-w-0">
                         <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium korean-text break-words mb-1">
-                            {doc.originalName || doc.filename}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-medium korean-text break-words flex-1">
+                              {doc.originalName || doc.filename}
+                            </p>
+                            <Badge 
+                              className={`text-xs px-2 py-1 rounded-full ${getDocumentTypeBadgeColor(getDocumentType(doc.originalName || doc.filename))}`}
+                            >
+                              {getDocumentType(doc.originalName || doc.filename)}
+                            </Badge>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-2">
                             <span>
                               크기: {doc.size ? (doc.size / (1024 * 1024)).toFixed(2) + ' MB' : '알 수 없음'}
                             </span>
@@ -1350,6 +1445,49 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               })}
                             </span>
                           </div>
+                          {/* 관리자 모드에서만 토글 설정 표시 */}
+                          {isManagementMode && (
+                            <div className="flex items-center gap-4 mt-2">
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`p-1 h-auto ${doc.isVisibleToUsers !== false ? 'text-green-600 hover:text-green-700' : 'text-gray-400 hover:text-gray-600'}`}
+                                  onClick={() => {
+                                    toggleDocumentVisibilityMutation.mutate({
+                                      documentId: doc.id,
+                                      isVisible: doc.isVisibleToUsers === false
+                                    });
+                                  }}
+                                  title={doc.isVisibleToUsers !== false ? "사용자에게 노출됨 (클릭하여 숨김)" : "사용자에게 숨김 (클릭하여 노출)"}
+                                >
+                                  {doc.isVisibleToUsers !== false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                </Button>
+                                <span className="text-xs text-muted-foreground">
+                                  {doc.isVisibleToUsers !== false ? "노출" : "비노출"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`p-1 h-auto ${doc.isUsedForTraining !== false ? 'text-blue-600 hover:text-blue-700' : 'text-gray-400 hover:text-gray-600'}`}
+                                  onClick={() => {
+                                    toggleDocumentTrainingMutation.mutate({
+                                      documentId: doc.id,
+                                      isTraining: doc.isUsedForTraining === false
+                                    });
+                                  }}
+                                  title={doc.isUsedForTraining !== false ? "학습에 사용됨 (클릭하여 제외)" : "학습에서 제외됨 (클릭하여 포함)"}
+                                >
+                                  {doc.isUsedForTraining !== false ? <BrainCircuit className="w-4 h-4" /> : <Brain className="w-4 h-4" />}
+                                </Button>
+                                <span className="text-xs text-muted-foreground">
+                                  {doc.isUsedForTraining !== false ? "학습" : "미학습"}
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 flex-shrink-0 ml-3">
