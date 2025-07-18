@@ -116,6 +116,43 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     }
   });
 
+  // 문서-에이전트 연결 업데이트 뮤테이션
+  const updateDocumentAgentConnectionsMutation = useMutation({
+    mutationFn: async ({ documentId, connectedAgents }: { documentId: number; connectedAgents: number[] }) => {
+      const response = await fetch(`/api/documents/${documentId}/agent-connections`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ connectedAgents })
+      });
+      if (!response.ok) throw new Error('Failed to update document agent connections');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/documents`] });
+      toast({
+        title: "에이전트 연결 완료",
+        description: "선택한 에이전트들에 문서가 연결되었습니다."
+      });
+      setIsDocumentDetailOpen(false);
+      setDocumentDetailData(null);
+    },
+    onError: () => {
+      toast({
+        title: "연결 실패",
+        description: "문서와 에이전트 연결 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // 문서 연결된 에이전트 조회
+  const { data: documentConnectedAgents } = useQuery({
+    queryKey: [`/api/documents/${documentDetailData?.id}/connected-agents`],
+    enabled: !!documentDetailData?.id,
+    staleTime: 30000
+  });
+
   // 파일 크기 포맷
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
@@ -1048,6 +1085,7 @@ function MasterAdmin() {
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
   const [documentDetailData, setDocumentDetailData] = useState<any>(null);
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
+  const [connectedAgentsList, setConnectedAgentsList] = useState<number[]>([]);
   
   // 문서 편집 상태
   const [editingDocumentStatus, setEditingDocumentStatus] = useState<string>('active');
@@ -1471,6 +1509,16 @@ function MasterAdmin() {
       setHasSearched(true);
     }
   }, [users, hasSearched]);
+
+  // 문서 상세 팝업이 열릴 때 기존 연결된 에이전트들 로드
+  React.useEffect(() => {
+    if (documentDetailData && documentConnectedAgents) {
+      setConnectedAgentsList(documentConnectedAgents);
+    } else if (documentDetailData) {
+      // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
+      setConnectedAgentsList([]);
+    }
+  }, [documentDetailData, documentConnectedAgents]);
 
   // Move this after organizations is declared via useQuery
 
@@ -2820,6 +2868,26 @@ function MasterAdmin() {
   // 에이전트 Excel 내보내기 함수
   const exportAgentsToExcel = () => {
     exportAgentsMutation.mutate();
+  };
+
+  // 문서-에이전트 연결 관련 핸들러
+  const handleAgentSelection = (agentId: number, isSelected: boolean) => {
+    setConnectedAgentsList(prev => {
+      if (isSelected) {
+        return [...prev, agentId];
+      } else {
+        return prev.filter(id => id !== agentId);
+      }
+    });
+  };
+
+  const handleSaveDocumentConnections = () => {
+    if (documentDetailData) {
+      updateDocumentAgentConnectionsMutation.mutate({
+        documentId: documentDetailData.id,
+        connectedAgents: connectedAgentsList
+      });
+    }
   };
 
   // 커스텀 이미지 파일 핸들러
@@ -9878,8 +9946,52 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <tr key={agent.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                               <td className="px-4 py-4">
                                 <div className="flex items-center">
-                                  <div className={`w-8 h-8 rounded-full ${agent.backgroundColor} flex items-center justify-center text-white text-sm font-medium mr-3`}>
-                                    {agent.icon}
+                                  <div 
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3"
+                                    style={{ backgroundColor: agent.backgroundColor || '#6B7280' }}
+                                  >
+                                    {(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? (
+                                      <img 
+                                        src={`${(agent as any).icon}?t=${Date.now()}`} 
+                                        alt={`${agent.name} 아이콘`}
+                                        className="w-full h-full object-cover rounded-full"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.style.display = 'none';
+                                          const nextElement = target.nextElementSibling as HTMLElement;
+                                          if (nextElement) nextElement.classList.remove('hidden');
+                                        }}
+                                      />
+                                    ) : null}
+                                    <div className={`${(agent as any).isCustomIcon && (agent as any).icon?.startsWith('/uploads/') ? 'hidden' : ''} w-full h-full flex items-center justify-center`}>
+                                      {(() => {
+                                        const iconValue = agent.icon || 'fas fa-user';
+                                        const iconMap: { [key: string]: any } = {
+                                          'fas fa-graduation-cap': GraduationCap,
+                                          'fas fa-code': Code,
+                                          'fas fa-robot': BotIcon,
+                                          'fas fa-user': User,
+                                          'fas fa-flask': FlaskRound,
+                                          'fas fa-map': Map,
+                                          'fas fa-language': Languages,
+                                          'fas fa-dumbbell': Dumbbell,
+                                          'fas fa-database': DatabaseIcon,
+                                          'fas fa-lightbulb': Lightbulb,
+                                          'fas fa-heart': Heart,
+                                          'fas fa-calendar': Calendar,
+                                          'fas fa-pen': Pen,
+                                          'fas fa-file-alt': FileTextIcon,
+                                          'fas fa-book': BookOpen,
+                                          'fas fa-brain': Brain,
+                                          'fas fa-coffee': Coffee,
+                                          'fas fa-music': Music,
+                                          'fas fa-target': Target,
+                                          'fas fa-zap': Zap,
+                                        };
+                                        const IconComponent = iconMap[iconValue] || User;
+                                        return <IconComponent className="text-white w-4 h-4" />;
+                                      })()}
+                                    </div>
                                   </div>
                                   <div>
                                     <div className="text-sm font-medium text-gray-900 dark:text-gray-100">

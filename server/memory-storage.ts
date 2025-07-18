@@ -1048,6 +1048,42 @@ export class MemoryStorage implements IStorage {
     return undefined;
   }
 
+  async updateDocumentAgentConnections(id: number, connectedAgentIds: number[]): Promise<Document | undefined> {
+    const document = this.documents.get(id);
+    if (!document) {
+      return undefined;
+    }
+
+    // Update document with connected agents
+    (document as any).connectedAgents = connectedAgentIds;
+    document.updatedAt = new Date();
+    
+    // Save to file immediately to persist changes
+    this.savePersistedDocuments();
+    console.log(`Document ${id} agent connections updated and persisted: ${document.originalName}, connected to ${connectedAgentIds.length} agents`);
+    
+    return document;
+  }
+
+  async getDocumentConnectedAgents(documentId: number): Promise<Agent[]> {
+    const document = this.documents.get(documentId);
+    if (!document || !(document as any).connectedAgents) {
+      return [];
+    }
+
+    const connectedAgentIds = (document as any).connectedAgents as number[];
+    const connectedAgents: Agent[] = [];
+
+    for (const agentId of connectedAgentIds) {
+      const agent = this.agents.get(agentId);
+      if (agent) {
+        connectedAgents.push(agent);
+      }
+    }
+
+    return connectedAgents;
+  }
+
   // Stats operations
   async getAgentStats(agentId: number): Promise<AgentStats | undefined> {
     return this.agentStats.get(agentId);

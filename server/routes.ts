@@ -1009,6 +1009,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update document agent connections
+  app.patch('/api/documents/:id/agent-connections', isAuthenticated, async (req: any, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const { connectedAgents } = req.body;
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      if (!Array.isArray(connectedAgents)) {
+        return res.status(400).json({ message: "connectedAgents must be an array" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Check if user has permission to manage document agent connections
+      const userId = req.user.id;
+      const userRole = req.user.role;
+      
+      const hasPermission = userRole === 'master_admin' || 
+                           userRole === 'admin' || 
+                           userRole === 'agent_admin';
+
+      if (!hasPermission) {
+        return res.status(403).json({ message: "Unauthorized to modify document agent connections" });
+      }
+
+      const updatedDocument = await storage.updateDocumentAgentConnections(documentId, connectedAgents);
+      if (!updatedDocument) {
+        return res.status(404).json({ message: "Failed to update document agent connections" });
+      }
+
+      res.json({ 
+        message: "Document agent connections updated successfully",
+        document: updatedDocument
+      });
+    } catch (error) {
+      console.error("Error updating document agent connections:", error);
+      res.status(500).json({ message: "Failed to update document agent connections" });
+    }
+  });
+
+  // Get document connected agents
+  app.get('/api/documents/:id/connected-agents', isAuthenticated, async (req: any, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      const connectedAgents = await storage.getDocumentConnectedAgents(documentId);
+
+      res.json({ 
+        connectedAgents: connectedAgents
+      });
+    } catch (error) {
+      console.error("Error getting document connected agents:", error);
+      res.status(500).json({ message: "Failed to get document connected agents" });
+    }
+  });
+
   // Agent icon upload endpoint
   app.post('/api/agents/:id/icon-upload', isAuthenticated, imageUpload.single('image'), async (req: any, res) => {
     try {
