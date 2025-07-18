@@ -200,14 +200,20 @@ export default function AuthPage() {
               
               
 
-              {/* Email Field */}
+              {/* Username Field */}
               <div>
                 <label className="block text-gray-500 text-sm mb-2">{t('auth.username')}</label>
                 <input
-                  type="email"
+                  type="text"
                   placeholder={t('auth.usernamePlaceholder')}
                   className="w-full px-4 py-4 border-0 border-b-2 border-gray-200 bg-transparent text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors text-lg"
+                  {...loginForm.register("username")}
                 />
+                {loginForm.formState.errors.username && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {loginForm.formState.errors.username.message}
+                  </p>
+                )}
               </div>
 
               {/* Password Field */}

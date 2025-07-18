@@ -1055,6 +1055,13 @@ Changelog:
   * Implemented response method data matching agent creation settings: "문서 우선 + LLM", "LLM 우선", "문서만"
   * Removed eye icon button from action column, keeping only message feedback button
   * Dynamic response method assignment based on conversation ID for consistent data display
+- July 10, 2025. Completed comprehensive document management features in agent management mode:
+  * Implemented eye icon (노출/비노출) and brain icon (학습/미학습) toggle functionality in ChatInterface file list modal
+  * Added document visibility and training toggle mutations with proper API integration
+  * Document management features only appear in management mode (isManagementMode flag)
+  * Regular chatbot mode remains unchanged with basic file list functionality
+  * Document-agent connection system working with server-side API endpoints
+  * Fixed login screen username field registration issue preventing form submission
 ```
 
 ## User Preferences
