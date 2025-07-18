@@ -15,12 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   User, 
-  Mail, 
   Building, 
-  Calendar, 
-  Shield, 
-  Clock,
-  MapPin,
   Edit,
   Key,
   Save,
@@ -67,7 +62,6 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
   // Form states for editing
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
-  const [editPosition, setEditPosition] = useState("");
   const [editMemo, setEditMemo] = useState("");
   
   // Password change states
@@ -85,7 +79,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     if (user && isEditing) {
       setEditName(user.name || `${user.lastName || ""}${user.firstName || ""}`);
       setEditEmail(user.email || "");
-      setEditPosition(user.position || "");
+
       setEditMemo(user.userMemo || "");
     }
   }, [user, isEditing]);
@@ -259,7 +253,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     updateProfileMutation.mutate({
       name: editName,
       email: editEmail,
-      position: editPosition,
+
       userMemo: editMemo,
     });
   };
@@ -293,7 +287,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     setIsEditing(false);
     setEditName("");
     setEditEmail("");
-    setEditPosition("");
+
     setEditMemo("");
   };
 
@@ -368,12 +362,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
                   <span className="text-sm">{user.email || (language === 'ko' ? '정보 없음' : 'No information')}</span>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '직책' : 'Position'}
-                  </span>
-                  <span className="korean-text">{user.position || (language === 'ko' ? '정보 없음' : 'No information')}</span>
-                </div>
+
 
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -415,15 +404,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="editPosition">{language === 'ko' ? '직책' : 'Position'}</Label>
-                  <Input
-                    id="editPosition"
-                    value={editPosition}
-                    onChange={(e) => setEditPosition(e.target.value)}
-                    className="korean-text"
-                  />
-                </div>
+
 
                 <div>
                   <Label htmlFor="editMemo">{language === 'ko' ? '메모' : 'Memo'}</Label>
@@ -450,99 +431,51 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '상위 조직' : 'Upper Organization'}
-                </span>
-                <span className="korean-text">{user.upperCategory || (language === 'ko' ? '정보 없음' : 'No information')}</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '하위 조직' : 'Lower Organization'}
-                </span>
-                <span className="korean-text">{user.lowerCategory || (language === 'ko' ? '정보 없음' : 'No information')}</span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '세부 조직' : 'Detail Organization'}
-                </span>
-                <span className="korean-text">{user.detailCategory || (language === 'ko' ? '정보 없음' : 'No information')}</span>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Permission Information */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-purple-500" />
-              <h3 className="text-lg font-semibold korean-text">
-                {language === 'ko' ? '권한 정보' : 'Permission Information'}
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '시스템 역할' : 'System Role'}
-                </span>
-                <Badge variant="secondary" className="korean-text">
-                  {getRoleLabel(user.role || "일반 사용자")}
-                </Badge>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Activity Information */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-orange-500" />
-              <h3 className="text-lg font-semibold korean-text">
-                {language === 'ko' ? '활동 정보' : 'Activity Information'}
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '가입일' : 'Join Date'}
-                </span>
-                <span className="text-sm">{formatDate(user.createdAt || null)}</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '최근 로그인' : 'Last Login'}
-                </span>
-                <span className="text-sm">{formatDate(user.lastLoginAt || null)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Information (Memo) */}
-          {user.userMemo && (
-            <>
-              <Separator />
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-gray-500" />
-                  <h3 className="text-lg font-semibold korean-text">
-                    {language === 'ko' ? '추가 정보' : 'Additional Information'}
-                  </h3>
+            <div className="space-y-3">
+              {/* Primary Organization */}
+              <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-l-4 border-green-500">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                    {language === 'ko' ? '주 소속 조직' : 'Primary Organization'}
+                  </span>
+                  <Badge variant="outline" className="text-xs korean-text">
+                    {user.position || (language === 'ko' ? '직책 미정' : 'Position TBD')}
+                  </Badge>
                 </div>
                 
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-sm korean-text">{user.userMemo}</p>
+                <div className="space-y-1">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {user.upperCategory && (
+                      <span className="korean-text font-medium">{user.upperCategory}</span>
+                    )}
+                    {user.lowerCategory && (
+                      <>
+                        {user.upperCategory && <span className="mx-1">›</span>}
+                        <span className="korean-text font-medium">{user.lowerCategory}</span>
+                      </>
+                    )}
+                    {user.detailCategory && (
+                      <>
+                        {(user.upperCategory || user.lowerCategory) && <span className="mx-1">›</span>}
+                        <span className="korean-text font-medium">{user.detailCategory}</span>
+                      </>
+                    )}
+                  </div>
+                  
+                  {!user.upperCategory && !user.lowerCategory && !user.detailCategory && (
+                    <div className="text-sm text-gray-500 italic">
+                      {language === 'ko' ? '소속 조직 정보 없음' : 'No organization information'}
+                    </div>
+                  )}
                 </div>
               </div>
-            </>
-          )}
+              
+              {/* Future: Additional Organizations can be added here */}
+              {/* This structure supports multiple organization memberships */}
+            </div>
+          </div>
+
+
 
           {/* Password Change Section */}
           {showPasswordChange && (
