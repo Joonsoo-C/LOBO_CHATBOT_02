@@ -1023,6 +1023,14 @@ Changelog:
   * Removed eye icon button from action column, keeping only message feedback button
   * Dynamic response method assignment based on conversation ID for consistent data display
   * Repositioned "시간" column between "응답 시간" and "개선 요청" columns for better information flow
+- July 18, 2025. Enhanced message notification badges with improved visibility and refined styling:
+  * Increased message badge size and visual prominence with red background, white text, and font-bold styling
+  * Added shadow effects (shadow-lg) and white border (border-2) for better contrast
+  * Initially implemented animate-pulse effect for attention-grabbing behavior
+  * Refined badge sizing from 22px back to 18px for more balanced appearance
+  * Removed animate-pulse animation effect per user preference for cleaner interface
+  * Applied consistent styling across AgentList.tsx and TabletLayout.tsx components
+  * Final badge configuration: 18px height, red background, white border, shadow effect, no animation
   * Filtered out "메시지 없음" entries to show only conversations with actual user-chatbot interactions
 - July 9, 2025. Implemented comprehensive Q&A management filter reset functionality:
   * Added "필터 초기화" button to Q&A log search area using 5-column grid layout

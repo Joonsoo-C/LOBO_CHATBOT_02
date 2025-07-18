@@ -188,7 +188,7 @@ export default function AgentList({ agents, conversations }: AgentListProps) {
                       {conversation?.lastMessage?.content || agent.description}
                     </p>
                     {conversation && conversation.unreadCount > 0 && (
-                      <span className="bg-red-500 text-white text-sm font-bold rounded-full px-2.5 py-1 min-w-[22px] h-[22px] flex items-center justify-center ml-2 flex-shrink-0 shadow-lg border-2 border-white dark:border-gray-800 animate-pulse">
+                      <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[18px] h-[18px] flex items-center justify-center ml-2 flex-shrink-0 shadow-lg border-2 border-white dark:border-gray-800">
                         {conversation.unreadCount}
                       </span>
                     )}
