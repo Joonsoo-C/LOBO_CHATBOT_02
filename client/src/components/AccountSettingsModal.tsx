@@ -326,7 +326,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold korean-text">
-            {language === 'ko' ? '계정 설정' : 'Account Settings'}
+            {language === 'ko' ? '계정 정보' : 'Account Information'}
           </DialogTitle>
           <DialogDescription>
             {language === 'ko' ? '계정 정보를 확인하고 편집할 수 있습니다.' : 'View and edit your account information.'}
