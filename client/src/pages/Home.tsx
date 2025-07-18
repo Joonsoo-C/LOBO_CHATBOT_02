@@ -244,10 +244,7 @@ function Home() {
                     <LanguageSelector />
                   </div>
                 </div>
-                <DropdownMenuSeparator />
-                <div className="px-3 py-2">
-                  <ThemeSelector />
-                </div>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   className="korean-text cursor-pointer"

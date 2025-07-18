@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
-import { ThemeSelector } from "@/components/ThemeSelector";
+
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "../contexts/LanguageContext";
 import { AccountSettingsModal } from "@/components/AccountSettingsModal";
@@ -68,7 +68,6 @@ export default function Chat() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <ThemeSelector />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-2">
@@ -123,7 +122,6 @@ export default function Chat() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <ThemeSelector />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-2">
@@ -210,7 +208,6 @@ export default function Chat() {
             </div>
             
             <div className="flex items-center space-x-1">
-              <ThemeSelector />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">

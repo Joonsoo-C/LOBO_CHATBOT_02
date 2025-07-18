@@ -9,7 +9,7 @@ import AgentManagement from "@/components/AgentManagement";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { ThemeSelector } from "@/components/ThemeSelector";
+
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -546,10 +546,7 @@ export default function TabletLayout() {
                   <User className="mr-2 h-4 w-4" />
                   {t('home.accountSettings')}
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="korean-text">
-                  <ThemeSelector />
-                </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="korean-text cursor-pointer"
