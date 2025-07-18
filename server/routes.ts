@@ -961,6 +961,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update document training setting
+  app.patch('/api/documents/:id/training', isAuthenticated, async (req: any, res) => {
+    try {
+      const documentId = parseInt(req.params.id);
+      const { isUsedForTraining } = req.body;
+
+      if (isNaN(documentId)) {
+        return res.status(400).json({ message: "Invalid document ID" });
+      }
+
+      if (typeof isUsedForTraining !== 'boolean') {
+        return res.status(400).json({ message: "isUsedForTraining must be a boolean value" });
+      }
+
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Check if user has permission to manage document training settings
+      const userId = req.user.id;
+      const userRole = req.user.role;
+      const agent = await storage.getAgent(document.agentId);
+      
+      const hasPermission = userRole === 'master_admin' || 
+                           userRole === 'admin' || 
+                           userRole === 'agent_admin' ||
+                           (agent && agent.managerId === userId);
+
+      if (!hasPermission) {
+        return res.status(403).json({ message: "Unauthorized to modify document training settings" });
+      }
+
+      const updatedDocument = await storage.updateDocumentTraining(documentId, isUsedForTraining);
+      if (!updatedDocument) {
+        return res.status(404).json({ message: "Failed to update document training setting" });
+      }
+
+      res.json({ 
+        message: "Document training setting updated successfully",
+        document: updatedDocument
+      });
+    } catch (error) {
+      console.error("Error updating document training setting:", error);
+      res.status(500).json({ message: "Failed to update document training setting" });
+    }
+  });
+
   // Agent icon upload endpoint
   app.post('/api/agents/:id/icon-upload', isAuthenticated, imageUpload.single('image'), async (req: any, res) => {
     try {

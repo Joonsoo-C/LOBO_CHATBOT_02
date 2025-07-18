@@ -60,6 +60,62 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     return documents.filter((doc: any) => doc.agentId === agentId);
   }, [documents, agentId]);
 
+  // 문서 가시성 토글 뮤테이션
+  const toggleDocumentVisibilityMutation = useMutation({
+    mutationFn: async ({ documentId, isVisible }: { documentId: number; isVisible: boolean }) => {
+      const response = await fetch(`/api/documents/${documentId}/visibility`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ isVisible })
+      });
+      if (!response.ok) throw new Error('Failed to update document visibility');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/documents`, agentId] });
+      toast({
+        title: "설정 변경 완료",
+        description: "문서 노출 설정이 변경되었습니다."
+      });
+    },
+    onError: () => {
+      toast({
+        title: "설정 변경 실패",
+        description: "문서 노출 설정 변경 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // 문서 학습 사용 토글 뮤테이션
+  const toggleDocumentTrainingMutation = useMutation({
+    mutationFn: async ({ documentId, isUsedForTraining }: { documentId: number; isUsedForTraining: boolean }) => {
+      const response = await fetch(`/api/documents/${documentId}/training`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ isUsedForTraining })
+      });
+      if (!response.ok) throw new Error('Failed to update document training setting');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/documents`, agentId] });
+      toast({
+        title: "설정 변경 완료",
+        description: "문서 학습 설정이 변경되었습니다."
+      });
+    },
+    onError: () => {
+      toast({
+        title: "설정 변경 실패",
+        description: "문서 학습 설정 변경 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    }
+  });
+
   // 파일 크기 포맷
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
@@ -83,12 +139,25 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   };
 
   // 문서 종류 매핑
-  const getDocumentTypeBadge = (mimeType: string) => {
-    if (mimeType.includes('pdf')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('word')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('presentation')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('text')) return { label: t('doc.fileType'), color: 'secondary' };
-    return { label: t('doc.others'), color: 'secondary' };
+  const getDocumentTypeBadge = (doc: any) => {
+    // 사용자가 설정한 문서 종류가 있으면 사용, 없으면 파일 확장자 기준
+    if (doc.type) {
+      return { label: doc.type, color: 'default' };
+    }
+    
+    // 파일 확장자 기준 자동 분류
+    const extension = doc.originalName?.split('.').pop()?.toLowerCase() || '';
+    switch (extension) {
+      case 'pdf': return { label: 'PDF', color: 'destructive' };
+      case 'doc': 
+      case 'docx': return { label: 'Word', color: 'default' };
+      case 'ppt': 
+      case 'pptx': return { label: 'PowerPoint', color: 'secondary' };
+      case 'xls': 
+      case 'xlsx': return { label: 'Excel', color: 'outline' };
+      case 'txt': return { label: 'Text', color: 'secondary' };
+      default: return { label: '기타', color: 'outline' };
+    }
   };
 
   // 문서 미리보기
@@ -220,7 +289,10 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
                   업로드 날짜
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  상태
+                  노출 설정
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  학습 적용
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   설정
@@ -229,7 +301,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
             </thead>
             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
               {agentDocuments.map((doc: any) => {
-                const docType = getDocumentTypeBadge(doc.mimeType);
+                const docType = getDocumentTypeBadge(doc);
                 return (
                   <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-4 py-4">
@@ -255,9 +327,52 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
                       {formatDate(doc.createdAt)}
                     </td>
                     <td className="px-4 py-4">
-                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                        활성
-                      </Badge>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleDocumentVisibilityMutation.mutate({
+                            documentId: doc.id,
+                            isVisible: !doc.isVisibleToUsers
+                          })}
+                          disabled={toggleDocumentVisibilityMutation.isPending}
+                          className="p-1"
+                          title={doc.isVisibleToUsers ? "일반 사용자에게 노출됨" : "일반 사용자에게 숨김"}
+                        >
+                          {doc.isVisibleToUsers ? (
+                            <Eye className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <EyeOff className="w-4 h-4 text-gray-400" />
+                          )}
+                        </Button>
+                        <span className="text-xs text-gray-500">
+                          {doc.isVisibleToUsers ? "노출" : "비노출"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleDocumentTrainingMutation.mutate({
+                            documentId: doc.id,
+                            isUsedForTraining: !doc.isUsedForTraining
+                          })}
+                          disabled={toggleDocumentTrainingMutation.isPending}
+                          className="p-1"
+                          title={doc.isUsedForTraining ? "에이전트 학습에 사용됨" : "에이전트 학습에 사용 안함"}
+                        >
+                          {doc.isUsedForTraining ? (
+                            <Brain className="w-4 h-4 text-blue-600" />
+                          ) : (
+                            <BrainCircuit className="w-4 h-4 text-gray-400" />
+                          )}
+                        </Button>
+                        <span className="text-xs text-gray-500">
+                          {doc.isUsedForTraining ? "학습" : "미학습"}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex space-x-1">
@@ -544,6 +659,8 @@ import {
   CheckCircle,
   HardDrive,
   Star,
+  BrainCircuit,
+  EyeOff,
 } from "lucide-react";
 import { Link } from "wouter";
 

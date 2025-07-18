@@ -192,6 +192,7 @@ export const documents = pgTable("documents", {
   status: varchar("status").default("active"), // Document status
   connectedAgents: jsonb("connected_agents").default(JSON.stringify([])), // Connected agents list
   isVisibleToUsers: boolean("is_visible_to_users").default(true), // 일반 사용자에게 보이는지 여부
+  isUsedForTraining: boolean("is_used_for_training").default(true), // 에이전트 학습에 사용할지 여부
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
