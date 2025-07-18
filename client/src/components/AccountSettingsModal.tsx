@@ -20,9 +20,12 @@ import {
   Key,
   Save,
   X,
-  CheckCircle
+  CheckCircle,
+  Sun,
+  Moon
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -54,6 +57,7 @@ interface AccountSettingsModalProps {
 
 export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalProps) {
   const { t, language } = useLanguage();
+  const { theme, setTheme, actualTheme } = useTheme();
   const { toast } = useToast();
   
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -304,6 +308,10 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(actualTheme === 'dark' ? 'light' : 'dark');
+  };
+
   if (isLoading) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -487,7 +495,41 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
             </div>
           </div>
 
+          <Separator />
 
+          {/* Theme Settings */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              {actualTheme === 'dark' ? (
+                <Moon className="h-5 w-5 text-purple-500" />
+              ) : (
+                <Sun className="h-5 w-5 text-yellow-500" />
+              )}
+              <h3 className="text-lg font-semibold korean-text">
+                {language === 'ko' ? '테마 설정' : 'Theme Settings'}
+              </h3>
+            </div>
+            
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <Button
+                onClick={toggleTheme}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-3 h-12 korean-text"
+              >
+                {actualTheme === 'dark' ? (
+                  <>
+                    <Sun className="h-5 w-5" />
+                    {language === 'ko' ? '라이트 모드' : 'Light Mode'}
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-5 w-5" />
+                    {language === 'ko' ? '다크 모드' : 'Dark Mode'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
 
           {/* Password Change Section */}
           {showPasswordChange && (
@@ -569,51 +611,15 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
           <Separator />
           
           <div className="flex flex-wrap gap-3 pt-4">
-            {!isEditing && !showPasswordChange && (
-              <>
-                <Button 
-                  onClick={() => setIsEditing(true)}
-                  variant="outline"
-                  className="korean-text flex-1 min-w-[120px]"
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  {language === 'ko' ? '프로필 편집' : 'Edit Profile'}
-                </Button>
-                
-                <Button 
-                  onClick={() => setShowPasswordChange(true)}
-                  variant="outline"
-                  className="korean-text flex-1 min-w-[120px]"
-                >
-                  <Key className="w-4 h-4 mr-2" />
-                  {language === 'ko' ? '비밀번호 변경' : 'Change Password'}
-                </Button>
-              </>
-            )}
-            
-            {isEditing && (
-              <>
-                <Button 
-                  onClick={handleSaveProfile}
-                  disabled={updateProfileMutation.isPending}
-                  className="korean-text flex-1 min-w-[100px]"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {updateProfileMutation.isPending ? 
-                    (language === 'ko' ? '저장 중...' : 'Saving...') : 
-                    (language === 'ko' ? '저장' : 'Save')
-                  }
-                </Button>
-                
-                <Button 
-                  onClick={handleCancelEditing}
-                  variant="outline"
-                  className="korean-text flex-1 min-w-[100px]"
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  {language === 'ko' ? '취소' : 'Cancel'}
-                </Button>
-              </>
+            {!showPasswordChange && (
+              <Button 
+                onClick={() => setShowPasswordChange(true)}
+                variant="outline"
+                className="korean-text flex-1 min-w-[120px]"
+              >
+                <Key className="w-4 h-4 mr-2" />
+                {language === 'ko' ? '비밀번호 변경' : 'Change Password'}
+              </Button>
             )}
           </div>
         </div>
