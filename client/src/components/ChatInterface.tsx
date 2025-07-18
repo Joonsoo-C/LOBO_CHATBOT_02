@@ -1101,7 +1101,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                                     if (response.ok) {
                                       const data = await response.json();
                                       const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period}) 📑
-
 ▶ 주요 지표
 - 총 대화 수: ${data.metrics.totalMessages}건
 - 활성 사용자 수: ${data.metrics.activeUsers}명
@@ -1112,9 +1111,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 - 평균 응답 시간: ${data.metrics.avgResponseTime}초
 
 🔍 인사이트
-- 사용자 참여를 늘려보세요.
-- 업로드된 문서 수: ${data.metrics.documentsCount}개
-- 활성 사용자가 꾸준히 사용 중입니다.
+${data.insights.map(insight => `- ${insight}`).join('\n')}
 
 📈 성장 트렌드
 - 메시지 증가율: ${data.trends.messageGrowth}
