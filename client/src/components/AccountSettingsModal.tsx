@@ -456,7 +456,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-l-4 border-green-500">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                    {language === 'ko' ? '주 소속 조직' : 'Primary Organization'}
+                    {language === 'ko' ? '소속' : 'Primary Organization'}
                   </span>
                   <Badge variant="outline" className="text-xs korean-text">
                     {user.position || (language === 'ko' ? '직책 미정' : 'Position TBD')}
