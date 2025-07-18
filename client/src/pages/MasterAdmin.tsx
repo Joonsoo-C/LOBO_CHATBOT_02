@@ -8077,7 +8077,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               >
                                 {doc.isVisibleToUsers === true ? (
                                   // 노출됨 - 애플 스타일 열린 눈 (진한 파란색)
-                                  <svg
+                                  (<svg
                                     width="16"
                                     height="16"
                                     viewBox="0 0 24 24"
@@ -8103,10 +8103,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       fill="currentColor"
                                       fillOpacity="0.3"
                                     />
-                                  </svg>
+                                  </svg>)
                                 ) : (
                                   // 숨김 - 애플 스타일 닫힌 눈 (회색, 더 굵은 slash)
-                                  <svg
+                                  (<svg
                                     width="16"
                                     height="16"
                                     viewBox="0 0 24 24"
@@ -8146,7 +8146,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       strokeLinecap="round"
                                       className="text-red-600 dark:text-red-500"
                                     />
-                                  </svg>
+                                  </svg>)
                                 )}
                               </div>
                             </div>
@@ -9784,7 +9784,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                       
                       <div>
-                        <Label className="text-sm font-medium">에이전트 검색</Label>
+                        <Label className="text-sm font-medium">키워드 검색</Label>
                         <Input
                           placeholder="에이전트 이름 또는 설명에 포함된 키워드로 검색..."
                           value={documentAgentSearchQuery}
