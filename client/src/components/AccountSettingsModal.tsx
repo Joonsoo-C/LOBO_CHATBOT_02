@@ -392,23 +392,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
                 />
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '사용자 유형' : 'User Type'}
-                </span>
-                <Badge variant="outline" className="korean-text">
-                  {getUserTypeLabel(user.userType)}
-                </Badge>
-              </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '상태' : 'Status'}
-                </span>
-                <Badge variant={getStatusBadgeVariant(user.status || "active")} className="korean-text">
-                  {getStatusLabel(user.status || "active")}
-                </Badge>
-              </div>
 
               {/* Save/Reset buttons when changes detected */}
               {hasChanges && (
