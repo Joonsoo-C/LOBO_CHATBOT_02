@@ -128,11 +128,12 @@
       "uploadedBy": "user1081",
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T06:27:33.457Z",
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-18T05:06:45.671Z",
       "status": "active",
       "type": "Word",
-      "description": ""
+      "description": "",
+      "isUsedForTraining": true
     },
     {
       "agentId": 146,
@@ -144,8 +145,9 @@
       "uploadedBy": "user1081",
       "id": 111,
       "createdAt": "2025-07-01T05:38:00.262Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T05:06:52.749Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-18T05:07:12.784Z",
+      "isUsedForTraining": false
     },
     {
       "agentId": 146,

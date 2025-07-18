@@ -84,7 +84,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.categories.student': '학생',
     'home.categories.group': '그룹',
     'home.categories.function': '기능형',
-    'home.accountSettings': '계정 설정',
+    'home.accountSettings': '계정 정보',
     'account.regularUser': '일반 사용자',
     'account.agentManager': '에이전트 관리자',
     'account.masterAdmin': '마스터 관리자',
@@ -150,8 +150,8 @@ const translations: Record<Language, Record<string, string>> = {
     // 시간 표시
     'time.recent': '최근',
     
-    // 계정 설정
-    'account.settings': '계정 설정',
+    // 계정 정보
+    'account.settings': '계정 정보',
     'account.lightMode': '라이트 모드',
     'account.logout': '로그아웃',
     
@@ -880,7 +880,7 @@ const translations: Record<Language, Record<string, string>> = {
     'time.recent': 'Recent',
     
     // Account Settings
-    'account.settings': 'Account Settings',
+    'account.settings': 'Account Information',
     'account.lightMode': 'Light Mode',
     'account.logout': 'Logout',
     
