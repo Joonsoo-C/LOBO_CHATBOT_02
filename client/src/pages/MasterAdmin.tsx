@@ -661,6 +661,7 @@ import {
   Star,
   BrainCircuit,
   EyeOff,
+  ImageIcon,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -11167,6 +11168,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </FormItem>
                             )}
                           />
+                          
+                          {/* 아이콘 변경 버튼 추가 */}
+                          <div className="pt-4 border-t">
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => openIconChangeDialog(selectedAgent)}
+                              className="flex items-center space-x-2"
+                            >
+                              <ImageIcon className="h-4 w-4" />
+                              <span>아이콘 변경</span>
+                            </Button>
+                          </div>
                         </div>
                       </TabsContent>
 
@@ -11978,13 +11992,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           {deleteAgentMutation.isPending ? "삭제 중..." : "삭제"}
                         </Button>
                         <div className="flex space-x-2">
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            onClick={() => openIconChangeDialog(selectedAgent)}
-                          >
-                            아이콘 변경
-                          </Button>
                           <Button 
                             type="button" 
                             variant="outline" 
