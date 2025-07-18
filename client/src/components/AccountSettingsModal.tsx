@@ -374,7 +374,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {language === 'ko' ? '사용자명' : 'Username'}
+                  {language === 'ko' ? 'ID' : 'Username'}
                 </span>
                 <span className="font-mono text-sm">{user.username}</span>
               </div>
