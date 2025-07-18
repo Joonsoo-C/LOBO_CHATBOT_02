@@ -634,7 +634,6 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.size': '크기',
     'doc.uploadedDate': '업로드 날짜',
     'doc.connectedAgent': '연결된 에이전트',
-    'doc.searchKeyword': '검색어',
     
     // Q&A Management
     'qa.logs': '로그 검색',
@@ -688,12 +687,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Navigation tabs
     'nav.dashboard': '대시보드',
-    'nav.organizations': '조직',
-    'nav.users': '사용자',
-    'nav.agents': '에이전트',
-    'nav.documents': '문서',
-    'nav.qa': '질문응답',
-    'nav.tokens': '토큰',
+
     'nav.settings': '설정',
     
     // User Management - Missing Keys from Screenshots
@@ -1498,7 +1492,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Agent File Upload translations
     'agent.fileUpload': '에이전트 파일 업로드',
     'agent.fileUploadDesc': 'CSV/Excel 파일을 업로드하여 다수의 사용자를 일괄 등록합니다.',
-    'agent.dragOrClick': '파일을 드래그하거나 클릭하여 업로드',
+
     'agent.uploadOptions': '업로드 옵션',
     'agent.validateOnly': '검증만 수행 (실제 업로드하지 않음)',
     'agent.clearExisting': '기존 에이전트 모두 삭제 후 업로드',
@@ -1522,8 +1516,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.sampleDownload': '샘플 파일 다운로드',
     'agent.selectedFile': '선택된 파일',
     'agent.selectOtherFile': '다른 파일 선택',
-    'agent.supportedFormats': 'CSV, XLS, XLSX 파일 지원 (최대 10MB)',
-    'agent.selectFile': '파일 선택',
+
     'agent.processedAgents': '처리된 에이전트',
     
     // Account Settings translations
@@ -1699,7 +1692,6 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.size': 'Size',
     'doc.uploadedDate': 'Upload Date',
     'doc.connectedAgent': 'Connected Agent',
-    'doc.searchKeyword': 'Search Keyword',
     
     // Q&A Management
     'qa.logs': 'Log Search',
@@ -1719,13 +1711,6 @@ const translations: Record<Language, Record<string, string>> = {
     'token.dailyUsage': 'Daily Usage',
     'token.dailyAverage': 'Daily Average',
     
-    // Navigation mobile
-    'nav.organizations': 'Organizations',
-    'nav.users': 'Users',
-    'nav.agents': 'Agents',
-    'nav.documents': 'Documents',
-    'nav.qa': 'Q&A',
-    'nav.tokens': 'Tokens',
     'token.estimatedCost': 'Estimated Cost',
     'token.organizationSearch': 'Organization Search',
     'token.tokenUsageList': 'Token Usage List',
@@ -1748,9 +1733,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.documentCourse': 'Course Material',
     'agent.documentResearch': 'Research Material',
     'agent.documentOther': 'Other',
-    'agent.dragOrClick': 'Drag files here or click to upload',
-    'agent.selectFile': 'Select File',
-    'agent.supportedFormats': 'Supported formats: PDF, DOC, DOCX, TXT, PPT, PPTX',
+
     'agent.maxSize': 'Max size: 50MB',
     'agent.selectedFiles': 'Selected Files',
     'agent.noFilesSelected': 'No files selected yet',
