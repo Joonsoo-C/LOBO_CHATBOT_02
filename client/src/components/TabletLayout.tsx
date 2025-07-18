@@ -651,7 +651,7 @@ export default function TabletLayout() {
                             {conversation?.lastMessage?.content || agent.description}
                           </p>
                           {conversation && conversation.unreadCount > 0 && (
-                            <span className="notification-badge ml-2 flex-shrink-0">{conversation.unreadCount}</span>
+                            <span className="bg-red-500 text-white text-sm font-bold rounded-full px-2.5 py-1 min-w-[22px] h-[22px] flex items-center justify-center ml-2 flex-shrink-0 shadow-lg border-2 border-white dark:border-gray-800 animate-pulse">{conversation.unreadCount}</span>
                           )}
                         </div>
                       </div>
