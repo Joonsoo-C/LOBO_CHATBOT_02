@@ -359,6 +359,7 @@
   float: none;
   border-radius: 12px;
   border-left: 4px solid #f59e0b;
+  white-space: pre-line;
 }
 
 .dark .minimal-message.system-message {
