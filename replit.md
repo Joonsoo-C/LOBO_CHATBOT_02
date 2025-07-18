@@ -1062,6 +1062,8 @@ Changelog:
   * Regular chatbot mode remains unchanged with basic file list functionality
   * Document-agent connection system working with server-side API endpoints
   * Fixed login screen username field registration issue preventing form submission
+  * Updated performance analysis message format with proper icons (📊, ▶, 🔍, 📈) and structured layout
+  * Applied consistent line breaks and Korean terminology for system messages
 ```
 
 ## User Preferences

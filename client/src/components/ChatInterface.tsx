@@ -1100,24 +1100,26 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                                     
                                     if (response.ok) {
                                       const data = await response.json();
-                                      const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period})
+                                      const performanceMessage = `📊 ${data.agentName} 성과 분석 (${data.period}) 📑
 
-📈 주요 지표:
+▶ 주요 지표
+- 총 대화 수: ${data.metrics.totalMessages}건
+- 활성 사용자 수: ${data.metrics.activeUsers}명
+- 업로드된 문서 수: ${data.metrics.documentsCount}개
+- 최근 활동 횟수: ${data.metrics.recentActivity}건
+- 사용률: ${data.metrics.usagePercentage}%
+- 랭킹: ${data.metrics.ranking}위
+- 평균 응답 시간: ${data.metrics.avgResponseTime}초
 
-• 총 대화 수: ${data.metrics.totalMessages}개
-• 활성 사용자: ${data.metrics.activeUsers}명  
-• 업로드된 문서: ${data.metrics.documentsCount}개
-• 최근 활동: ${data.metrics.recentActivity}건
-• 사용률: ${data.metrics.usagePercentage}%
-• 랭킹: ${data.metrics.ranking}위
-• 평균 응답시간: ${data.metrics.avgResponseTime}초
+🔍 인사이트
+- 사용자 참여를 늘려보세요.
+- 업로드된 문서 수: ${data.metrics.documentsCount}개
+- 활성 사용자가 꾸준히 사용 중입니다.
 
-${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.insights.map((insight: string) => `• ${insight}`).join('\n') : ''}
-
-📊 성장 트렌드:
-• 메시지 증가율: ${data.trends.messageGrowth}
-• 사용자 증가율: ${data.trends.userGrowth}  
-• 참여율: ${data.trends.engagementRate}`;
+📈 성장 트렌드
+- 메시지 증가율: ${data.trends.messageGrowth}
+- 사용자 증가율: ${data.trends.userGrowth}
+- 참여율: ${data.trends.engagementRate}`;
                                       
                                       addSystemMessage(performanceMessage);
                                     } else {
