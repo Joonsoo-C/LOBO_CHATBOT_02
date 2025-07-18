@@ -221,7 +221,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
         title: language === 'ko' ? '프로필 업데이트됨' : 'Profile Updated',
         description: language === 'ko' ? '프로필이 성공적으로 업데이트되었습니다.' : 'Your profile has been updated successfully.',
       });
-      setIsEditing(false);
+      setHasChanges(false);
       refetch();
     },
     onError: () => {
