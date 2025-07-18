@@ -22,7 +22,11 @@
       "content": "파일 텍스트 추출 실패: 1750957163183-925973477-전남대학교 학생 징계 규정.pdf",
       "uploadedBy": "master_admin",
       "id": 101,
-      "createdAt": "2025-06-26T16:59:23.205Z"
+      "createdAt": "2025-06-26T16:59:23.205Z",
+      "status": "active",
+      "type": "PDF",
+      "description": "",
+      "updatedAt": "2025-07-18T03:10:29.980Z"
     },
     {
       "agentId": 1,

@@ -6384,6 +6384,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           'fas fa-calendar': Calendar,
                                           'fas fa-pen': Pen,
                                           'fas fa-file-alt': FileTextIcon,
+                                          'fas fa-book': BookOpen,
+                                          'fas fa-brain': Brain,
+                                          'fas fa-coffee': Coffee,
+                                          'fas fa-music': Music,
+                                          'fas fa-target': Target,
+                                          'fas fa-zap': Zap,
                                         };
                                         const IconComponent = iconMap[iconValue] || User;
                                         return <IconComponent className="text-white w-6 h-6" />;
