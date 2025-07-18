@@ -36,6 +36,7 @@ interface AgentDocumentListProps {
 }
 
 const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
+  const { t } = useLanguage();
   const { data: documents, refetch } = useQuery({
     queryKey: [`/api/admin/documents`, agentId],
     enabled: !!agentId,
@@ -53,6 +54,68 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   });
 
   const { toast } = useToast();
+
+  // 문서 가시성 업데이트 mutation
+  const updateDocumentVisibilityMutation = useMutation({
+    mutationFn: async ({ documentId, isVisible }: { documentId: number; isVisible: boolean }) => {
+      const response = await fetch(`/api/documents/${documentId}/visibility`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ isVisible }),
+      });
+      if (!response.ok) throw new Error('Failed to update document visibility');
+      return response.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/documents`, agentId] });
+      toast({
+        title: "가시성 업데이트 완료",
+        description: `문서가 일반 사용자에게 ${variables.isVisible ? '표시' : '숨김'} 처리되었습니다.`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "가시성 업데이트 실패",
+        description: error.message || "문서 가시성 업데이트 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // 문서 상태 업데이트 mutation
+  const updateDocumentStatusMutation = useMutation({
+    mutationFn: async ({ documentId, isActive }: { documentId: number; isActive: boolean }) => {
+      const response = await fetch(`/api/documents/${documentId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ isActive }),
+      });
+      if (!response.ok) throw new Error('Failed to update document status');
+      return response.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/documents`, agentId] });
+      toast({
+        title: "상태 업데이트 완료",
+        description: `문서가 ${variables.isActive ? '사용 중' : '미사용'} 상태로 변경되었습니다.`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "상태 업데이트 실패",
+        description: error.message || "문서 상태 업데이트 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // 선택된 에이전트의 문서만 필터링
   const agentDocuments = useMemo(() => {
@@ -83,12 +146,21 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   };
 
   // 문서 종류 매핑
-  const getDocumentTypeBadge = (mimeType: string) => {
-    if (mimeType.includes('pdf')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('word')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('presentation')) return { label: t('doc.fileType'), color: 'secondary' };
-    if (mimeType.includes('text')) return { label: t('doc.fileType'), color: 'secondary' };
-    return { label: t('doc.others'), color: 'secondary' };
+  const getDocumentTypeBadge = (type: string) => {
+    const typeMapping: { [key: string]: { label: string; color: string } } = {
+      'lecture': { label: '강의자료', color: 'bg-blue-100 text-blue-800' },
+      'policy': { label: '정책·규정 문서', color: 'bg-purple-100 text-purple-800' },
+      'manual': { label: '매뉴얼·가이드', color: 'bg-green-100 text-green-800' },
+      'form': { label: '서식·양식', color: 'bg-orange-100 text-orange-800' },
+      'notice': { label: '공지·안내', color: 'bg-red-100 text-red-800' },
+      'curriculum': { label: '교육과정', color: 'bg-indigo-100 text-indigo-800' },
+      'faq': { label: 'FAQ·Q&A', color: 'bg-yellow-100 text-yellow-800' },
+      'research': { label: '연구자료', color: 'bg-pink-100 text-pink-800' },
+      'internal': { label: '회의·내부자료', color: 'bg-gray-100 text-gray-800' },
+      'other': { label: '기타', color: 'bg-gray-100 text-gray-800' }
+    };
+    
+    return typeMapping[type] || { label: '기타', color: 'bg-gray-100 text-gray-800' };
   };
 
   // 문서 미리보기
@@ -229,7 +301,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
             </thead>
             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
               {agentDocuments.map((doc: any) => {
-                const docType = getDocumentTypeBadge(doc.mimeType);
+                const docType = getDocumentTypeBadge(doc.type || 'other');
                 return (
                   <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-4 py-4">
@@ -246,7 +318,34 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
                       </div>
                     </td>
                     <td className="px-4 py-4">
-                      <Badge variant={docType.color as any}>{docType.label}</Badge>
+                      <div className="space-y-2">
+                        <Badge className={`${docType.color} text-xs`}>{docType.label}</Badge>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-gray-500">노출 여부:</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`h-6 px-2 text-xs ${doc.isVisible !== false ? 'text-green-600 hover:text-green-700' : 'text-gray-500 hover:text-gray-600'}`}
+                            onClick={() => updateDocumentVisibilityMutation.mutate({ 
+                              documentId: doc.id, 
+                              isVisible: doc.isVisible === false 
+                            })}
+                            disabled={updateDocumentVisibilityMutation.isPending}
+                          >
+                            {doc.isVisible !== false ? (
+                              <>
+                                <Eye className="w-3 h-3 mr-1" />
+                                노출
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff className="w-3 h-3 mr-1" />
+                                비노출
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                       {formatFileSize(doc.size)}
@@ -255,9 +354,21 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
                       {formatDate(doc.createdAt)}
                     </td>
                     <td className="px-4 py-4">
-                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                        활성
-                      </Badge>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-500">상태:</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-6 px-2 text-xs ${doc.isActive !== false ? 'text-green-600 hover:text-green-700' : 'text-red-600 hover:text-red-700'}`}
+                          onClick={() => updateDocumentStatusMutation.mutate({ 
+                            documentId: doc.id, 
+                            isActive: doc.isActive === false 
+                          })}
+                          disabled={updateDocumentStatusMutation.isPending}
+                        >
+                          {doc.isActive !== false ? '사용 중' : '미사용'}
+                        </Button>
+                      </div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex space-x-1">
@@ -526,6 +637,7 @@ import {
   Download,
   ExternalLink,
   Eye,
+  EyeOff,
   X,
   ChevronsUpDown,
   Code,

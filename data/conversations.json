@@ -60,10 +60,10 @@
         "userId": "user1081",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 1,
+        "unreadCount": 0,
         "lastMessageAt": "2025-07-17T22:52:22.799Z",
         "createdAt": "2025-06-30T22:30:45.323Z",
-        "lastReadAt": "2025-07-17T14:14:45.667Z",
+        "lastReadAt": "2025-07-17T23:59:19.148Z",
         "isHidden": false
       }
     ],
