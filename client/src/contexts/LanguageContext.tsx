@@ -571,7 +571,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.manager': '관리자',
     'agent.affiliation': '소속',
     'agent.documents': '문서',
-    'agent.settings': '설정',
+    'agent.settings': '챗봇 설정',
     'agent.active': '활성',
     'agent.inactive': '비활성',
     'agent.basicInfo': '기본 정보',
