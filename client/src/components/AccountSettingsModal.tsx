@@ -582,6 +582,15 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
                   <div className="flex gap-2 pt-2">
                     <Button 
+                      onClick={() => setShowPasswordChange(false)}
+                      variant="outline"
+                      className="korean-text flex-1"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      {language === 'ko' ? '취소' : 'Cancel'}
+                    </Button>
+                    
+                    <Button 
                       onClick={handleChangePassword}
                       disabled={changePasswordMutation.isPending}
                       className="korean-text flex-1"
@@ -591,15 +600,6 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
                         (language === 'ko' ? '변경 중...' : 'Changing...') : 
                         (language === 'ko' ? '비밀번호 변경' : 'Change Password')
                       }
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => setShowPasswordChange(false)}
-                      variant="outline"
-                      className="korean-text flex-1"
-                    >
-                      <X className="w-4 h-4 mr-2" />
-                      {language === 'ko' ? '취소' : 'Cancel'}
                     </Button>
                   </div>
                 </div>
