@@ -56,13 +56,12 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
   const { t, language } = useLanguage();
   const { toast } = useToast();
   
-  const [isEditing, setIsEditing] = useState(false);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   
-  // Form states for editing
+  // Form states for inline editing
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
-  const [editMemo, setEditMemo] = useState("");
+  const [hasChanges, setHasChanges] = useState(false);
   
   // Password change states
   const [currentPassword, setCurrentPassword] = useState("");
@@ -74,24 +73,25 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     enabled: isOpen,
   });
 
-  // Initialize edit form when user data is loaded or when editing starts
+  // Initialize form when user data is loaded
   useEffect(() => {
-    if (user && isEditing) {
-      setEditName(user.name || `${user.lastName || ""}${user.firstName || ""}`);
-      setEditEmail(user.email || "");
-
-      setEditMemo(user.userMemo || "");
+    if (user) {
+      const currentName = user.name || `${user.lastName || ""}${user.firstName || ""}`;
+      const currentEmail = user.email || "";
+      setEditName(currentName);
+      setEditEmail(currentEmail);
+      setHasChanges(false);
     }
-  }, [user, isEditing]);
+  }, [user]);
 
   // Reset states when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setIsEditing(false);
       setShowPasswordChange(false);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setHasChanges(false);
     }
   }, [isOpen]);
 
@@ -184,6 +184,19 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
   };
 
   // Profile update mutation
+  // Track changes for save button
+  const handleNameChange = (value: string) => {
+    setEditName(value);
+    const originalName = user?.name || `${user?.lastName || ""}${user?.firstName || ""}`;
+    setHasChanges(value !== originalName || editEmail !== (user?.email || ""));
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEditEmail(value);
+    const originalName = user?.name || `${user?.lastName || ""}${user?.firstName || ""}`;
+    setHasChanges(editName !== originalName || value !== (user?.email || ""));
+  };
+
   const updateProfileMutation = useMutation({
     mutationFn: async (data: {
       name?: string;
@@ -253,8 +266,6 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     updateProfileMutation.mutate({
       name: editName,
       email: editEmail,
-
-      userMemo: editMemo,
     });
   };
 
@@ -283,12 +294,14 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
     });
   };
 
-  const handleCancelEditing = () => {
-    setIsEditing(false);
-    setEditName("");
-    setEditEmail("");
-
-    setEditMemo("");
+  const handleResetChanges = () => {
+    if (user) {
+      const originalName = user.name || `${user.lastName || ""}${user.firstName || ""}`;
+      const originalEmail = user.email || "";
+      setEditName(originalName);
+      setEditEmail(originalEmail);
+      setHasChanges(false);
+    }
   };
 
   if (isLoading) {
@@ -337,87 +350,86 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               </h3>
             </div>
             
-            {!isEditing ? (
-              <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '이름' : 'Name'}
-                  </span>
-                  <span className="font-medium korean-text">
-                    {user.name || `${user.lastName || ""}${user.firstName || ""}` || (language === 'ko' ? '정보 없음' : 'No information')}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '사용자명' : 'Username'}
-                  </span>
-                  <span className="font-mono text-sm">{user.username}</span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '이메일' : 'Email'}
-                  </span>
-                  <span className="text-sm">{user.email || (language === 'ko' ? '정보 없음' : 'No information')}</span>
-                </div>
-
-
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '사용자 유형' : 'User Type'}
-                  </span>
-                  <Badge variant="outline" className="korean-text">
-                    {getUserTypeLabel(user.userType)}
-                  </Badge>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {language === 'ko' ? '상태' : 'Status'}
-                  </span>
-                  <Badge variant={getStatusBadgeVariant(user.status || "active")} className="korean-text">
-                    {getStatusLabel(user.status || "active")}
-                  </Badge>
-                </div>
+            <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="space-y-2">
+                <Label htmlFor="editName" className="text-sm text-gray-600 dark:text-gray-400">
+                  {language === 'ko' ? '이름' : 'Name'}
+                </Label>
+                <Input
+                  id="editName"
+                  value={editName}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  className="korean-text"
+                  placeholder={language === 'ko' ? '이름을 입력하세요' : 'Enter your name'}
+                />
               </div>
-            ) : (
-              <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div>
-                  <Label htmlFor="editName">{language === 'ko' ? '이름' : 'Name'}</Label>
-                  <Input
-                    id="editName"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="korean-text"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="editEmail">{language === 'ko' ? '이메일' : 'Email'}</Label>
-                  <Input
-                    id="editEmail"
-                    type="email"
-                    value={editEmail}
-                    onChange={(e) => setEditEmail(e.target.value)}
-                  />
-                </div>
-
-
-
-                <div>
-                  <Label htmlFor="editMemo">{language === 'ko' ? '메모' : 'Memo'}</Label>
-                  <Textarea
-                    id="editMemo"
-                    value={editMemo}
-                    onChange={(e) => setEditMemo(e.target.value)}
-                    className="korean-text"
-                    rows={3}
-                  />
-                </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {language === 'ko' ? '사용자명' : 'Username'}
+                </span>
+                <span className="font-mono text-sm">{user.username}</span>
               </div>
-            )}
+
+              <div className="space-y-2">
+                <Label htmlFor="editEmail" className="text-sm text-gray-600 dark:text-gray-400">
+                  {language === 'ko' ? '이메일' : 'Email'}
+                </Label>
+                <Input
+                  id="editEmail"
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  placeholder={language === 'ko' ? '이메일을 입력하세요' : 'Enter your email'}
+                />
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {language === 'ko' ? '사용자 유형' : 'User Type'}
+                </span>
+                <Badge variant="outline" className="korean-text">
+                  {getUserTypeLabel(user.userType)}
+                </Badge>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {language === 'ko' ? '상태' : 'Status'}
+                </span>
+                <Badge variant={getStatusBadgeVariant(user.status || "active")} className="korean-text">
+                  {getStatusLabel(user.status || "active")}
+                </Badge>
+              </div>
+
+              {/* Save/Reset buttons when changes detected */}
+              {hasChanges && (
+                <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <Button 
+                    onClick={handleSaveProfile}
+                    disabled={updateProfileMutation.isPending}
+                    size="sm"
+                    className="korean-text flex-1"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {updateProfileMutation.isPending ? 
+                      (language === 'ko' ? '저장 중...' : 'Saving...') : 
+                      (language === 'ko' ? '저장' : 'Save')
+                    }
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleResetChanges}
+                    variant="outline"
+                    size="sm"
+                    className="korean-text flex-1"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    {language === 'ko' ? '취소' : 'Reset'}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           <Separator />
