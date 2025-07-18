@@ -26,7 +26,6 @@ import {
   Angry,
   Trash2,
 
-
   GraduationCap,
   Code,
   Bot,
@@ -42,7 +41,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
@@ -397,10 +395,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
       addSystemMessage("알림 전송에 실패했습니다.");
     }
   });
-
-
-
-
 
 
 
@@ -1338,19 +1332,10 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                       <div className="flex items-start space-x-3 flex-1 min-w-0">
                         <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <p className="text-sm font-medium korean-text break-words">
-                              {doc.originalName || doc.filename}
-                            </p>
-                            {/* 문서 종류 태그 */}
-                            {(doc.documentType || doc.type) && (
-                              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800">
-                                {doc.documentType || doc.type}
-                              </Badge>
-                            )}
-                          </div>
-                          
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-2">
+                          <p className="text-sm font-medium korean-text break-words mb-1">
+                            {doc.originalName || doc.filename}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                             <span>
                               크기: {doc.size ? (doc.size / (1024 * 1024)).toFixed(2) + ' MB' : '알 수 없음'}
                             </span>
@@ -1365,8 +1350,6 @@ ${data.insights && data.insights.length > 0 ? '\n🔍 인사이트:\n' + data.in
                               })}
                             </span>
                           </div>
-
-
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 flex-shrink-0 ml-3">

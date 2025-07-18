@@ -124,12 +124,11 @@
       "uploadedBy": "user1081",
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z",
-      "isVisibleToUsers": true,
-      "updatedAt": "2025-07-17T23:51:25.487Z",
+      "isVisibleToUsers": false,
+      "updatedAt": "2025-07-17T06:27:33.457Z",
       "status": "active",
       "type": "Word",
-      "description": "",
-      "isActive": true
+      "description": ""
     },
     {
       "agentId": 146,
@@ -142,7 +141,7 @@
       "id": 111,
       "createdAt": "2025-07-01T05:38:00.262Z",
       "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:46:17.836Z"
+      "updatedAt": "2025-07-17T05:06:52.749Z"
     },
     {
       "agentId": 146,
@@ -154,12 +153,11 @@
       "uploadedBy": "user1081",
       "id": 112,
       "createdAt": "2025-07-01T05:55:59.607Z",
-      "isVisibleToUsers": true,
-      "updatedAt": "2025-07-17T23:47:22.553Z",
+      "isVisibleToUsers": false,
+      "updatedAt": "2025-07-17T06:27:52.047Z",
       "status": "active",
       "type": "PDF",
-      "description": "",
-      "isActive": true
+      "description": ""
     },
     {
       "agentId": 146,
@@ -171,8 +169,8 @@
       "uploadedBy": "user1081",
       "id": 113,
       "createdAt": "2025-07-01T06:16:54.175Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:45:37.204Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-17T05:38:25.502Z"
     },
     {
       "agentId": 146,
@@ -184,8 +182,8 @@
       "uploadedBy": "user1081",
       "id": 114,
       "createdAt": "2025-07-01T06:21:35.091Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:45:38.283Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-17T05:38:24.019Z"
     },
     {
       "agentId": 146,
@@ -197,8 +195,8 @@
       "uploadedBy": "user1081",
       "id": 115,
       "createdAt": "2025-07-01T06:26:02.630Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:45:42.307Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-17T05:40:34.877Z"
     },
     {
       "agentId": 146,
@@ -210,8 +208,8 @@
       "uploadedBy": "user1081",
       "id": 116,
       "createdAt": "2025-07-01T06:30:53.882Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:45:41.610Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-17T05:40:35.501Z"
     },
     {
       "agentId": 146,
@@ -223,8 +221,8 @@
       "uploadedBy": "user1081",
       "id": 117,
       "createdAt": "2025-07-01T06:35:49.990Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T23:45:40.296Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-17T05:40:36.189Z"
     },
     {
       "agentId": 1,
@@ -393,13 +391,11 @@
       "uploadedBy": "user1081",
       "id": 170,
       "createdAt": "2025-07-17T22:52:16.365Z",
-      "updatedAt": "2025-07-17T23:45:47.912Z",
+      "updatedAt": "2025-07-17T22:52:16.365Z",
       "status": "active",
       "type": null,
       "description": null,
-      "connectedAgents": [],
-      "isVisibleToUsers": false,
-      "isActive": true
+      "connectedAgents": []
     },
     {
       "agentId": 146,

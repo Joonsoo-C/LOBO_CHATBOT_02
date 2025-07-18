@@ -1613,54 +1613,6 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
-  // Update document visibility
-  app.patch("/api/documents/:id/visibility", requireMasterAdmin, async (req, res) => {
-    try {
-      const documentId = parseInt(req.params.id);
-      const { isVisible } = req.body;
-
-      if (isNaN(documentId)) {
-        return res.status(400).json({ error: "Invalid document ID" });
-      }
-
-      if (typeof isVisible !== 'boolean') {
-        return res.status(400).json({ error: "isVisible must be a boolean" });
-      }
-
-      const updatedDocument = await storage.updateDocumentVisibility(documentId, isVisible);
-      
-      console.log(`Document visibility updated: ID ${documentId}, isVisible: ${isVisible}`);
-      res.json(updatedDocument);
-    } catch (error) {
-      console.error("Error updating document visibility:", error);
-      res.status(500).json({ error: "Failed to update document visibility" });
-    }
-  });
-
-  // Update document status
-  app.patch("/api/documents/:id/status", requireMasterAdmin, async (req, res) => {
-    try {
-      const documentId = parseInt(req.params.id);
-      const { isActive } = req.body;
-
-      if (isNaN(documentId)) {
-        return res.status(400).json({ error: "Invalid document ID" });
-      }
-
-      if (typeof isActive !== 'boolean') {
-        return res.status(400).json({ error: "isActive must be a boolean" });
-      }
-
-      const updatedDocument = await storage.updateDocumentStatus(documentId, isActive);
-      
-      console.log(`Document status updated: ID ${documentId}, isActive: ${isActive}`);
-      res.json(updatedDocument);
-    } catch (error) {
-      console.error("Error updating document status:", error);
-      res.status(500).json({ error: "Failed to update document status" });
-    }
-  });
-
   // Document existence check endpoint
   app.head("/api/admin/documents/:id", requireMasterAdmin, async (req, res) => {
     try {
