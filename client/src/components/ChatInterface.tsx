@@ -1146,10 +1146,13 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
 
       {/* Chat Messages */}
       <div 
-        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "flex-1"} px-4 overflow-y-auto overflow-x-visible chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
+        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "tablet-messages-container"} px-4 overflow-y-auto overflow-x-hidden chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
           paddingTop: isTablet ? '1rem' : '0', 
           paddingBottom: isTablet ? '1rem' : '40px',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 260px)'
         }}
       >
         <div className="messages-container space-y-4 overflow-visible">

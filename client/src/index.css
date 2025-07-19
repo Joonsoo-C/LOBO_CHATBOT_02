@@ -499,8 +499,10 @@
 .chat-interface-messages {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 220px);
+  scroll-behavior: smooth;
 }
 
 .messages-container {
@@ -508,7 +510,7 @@
   flex-direction: column;
   gap: 8px;
   padding-bottom: 40px;
-  min-height: auto;
+  min-height: 100%;
   justify-content: flex-end;
 }
 
@@ -527,8 +529,9 @@
   }
 
   .chat-interface-messages {
-    min-height: calc(100vh - 260px);
-    justify-content: flex-end;
+    height: calc(100vh - 260px);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   
   .messages-container {
@@ -554,6 +557,13 @@
   .apple-nav-tab {
     height: 64px;
     font-size: 18px;
+  }
+
+  .tablet-messages-container {
+    height: calc(100vh - 240px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scroll-behavior: smooth !important;
   }
 }
 
