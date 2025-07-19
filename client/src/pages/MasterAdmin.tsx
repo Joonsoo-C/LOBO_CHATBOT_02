@@ -146,20 +146,27 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     }
   });
 
-  // 문서 연결된 에이전트 조회
-  const { data: documentConnectedAgents = [] } = useQuery({
+  // 문서 연결된 에이전트 조회 - 안전한 방식으로 재작성
+  const connectedAgentsQuery = useQuery({
     queryKey: [`/api/documents/${documentDetailData?.id}/connected-agents`],
     queryFn: async () => {
       if (!documentDetailData?.id) return [];
-      const response = await fetch(`/api/documents/${documentDetailData.id}/connected-agents`, {
-        credentials: 'include'
-      });
-      if (!response.ok) throw new Error('Failed to fetch connected agents');
-      return response.json();
+      try {
+        const response = await fetch(`/api/documents/${documentDetailData.id}/connected-agents`, {
+          credentials: 'include'
+        });
+        if (!response.ok) return [];
+        return response.json();
+      } catch (error) {
+        console.error('Failed to fetch connected agents:', error);
+        return [];
+      }
     },
     enabled: !!documentDetailData?.id,
     staleTime: 30000
   });
+  
+  const documentConnectedAgents = connectedAgentsQuery.data || [];
 
   // 파일 크기 포맷
   const formatFileSize = (bytes: number) => {
