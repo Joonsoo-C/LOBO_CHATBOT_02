@@ -1525,18 +1525,13 @@ function MasterAdmin() {
     }
   }, [users, hasSearched]);
 
-  // 문서 상세 팝업이 열릴 때 기존 연결된 에이전트들 로드
+  // 문서 상세 팝업이 열릴 때 기존 연결된 에이전트들 로드 - 안전한 방식으로 처리
   React.useEffect(() => {
     if (documentDetailData) {
-      const connectedData = connectedAgentsQuery.data;
-      if (connectedData && Array.isArray(connectedData)) {
-        setConnectedAgentsList(connectedData);
-      } else {
-        // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
-        setConnectedAgentsList([]);
-      }
+      // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
+      setConnectedAgentsList([]);
     }
-  }, [documentDetailData, connectedAgentsQuery.data]);
+  }, [documentDetailData]);
 
   // Move this after organizations is declared via useQuery
 
