@@ -147,7 +147,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   });
 
   // 문서 연결된 에이전트 조회
-  const { data: documentConnectedAgents } = useQuery({
+  const { data: documentConnectedAgents = [] } = useQuery({
     queryKey: [`/api/documents/${documentDetailData?.id}/connected-agents`],
     queryFn: async () => {
       if (!documentDetailData?.id) return [];
@@ -1520,11 +1520,13 @@ function MasterAdmin() {
 
   // 문서 상세 팝업이 열릴 때 기존 연결된 에이전트들 로드
   React.useEffect(() => {
-    if (documentDetailData && documentConnectedAgents) {
-      setConnectedAgentsList(documentConnectedAgents);
-    } else if (documentDetailData) {
-      // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
-      setConnectedAgentsList([]);
+    if (documentDetailData) {
+      if (documentConnectedAgents && Array.isArray(documentConnectedAgents)) {
+        setConnectedAgentsList(documentConnectedAgents);
+      } else {
+        // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
+        setConnectedAgentsList([]);
+      }
     }
   }, [documentDetailData, documentConnectedAgents]);
 
