@@ -149,6 +149,14 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   // 문서 연결된 에이전트 조회
   const { data: documentConnectedAgents } = useQuery({
     queryKey: [`/api/documents/${documentDetailData?.id}/connected-agents`],
+    queryFn: async () => {
+      if (!documentDetailData?.id) return [];
+      const response = await fetch(`/api/documents/${documentDetailData.id}/connected-agents`, {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch connected agents');
+      return response.json();
+    },
     enabled: !!documentDetailData?.id,
     staleTime: 30000
   });
