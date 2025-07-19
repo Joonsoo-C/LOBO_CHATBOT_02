@@ -109,6 +109,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showChatHistoryDeleteDialog, setShowChatHistoryDeleteDialog] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch current user information
   const { data: user } = useQuery({
@@ -606,6 +607,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "auto" });
     }
@@ -832,9 +836,8 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     if (conversation?.id && messages && messages.length > 0 && !hasInitialScrolled) {
       // Only scroll once when first entering a conversation
       requestAnimationFrame(() => {
-        const messagesContainer = document.querySelector('.chat-interface-messages');
-        if (messagesContainer) {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
           setHasInitialScrolled(true);
         }
       });
@@ -1146,16 +1149,28 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
 
       {/* Chat Messages */}
       <div 
-        className={`chat-interface-messages ${!isTablet ? "mobile-messages-container" : "tablet-messages-container"} px-4 overflow-y-auto overflow-x-hidden chat-scroll chat-messages ${isTablet ? "md:px-12" : "md:px-6"}`}
+        ref={messagesContainerRef}
+        className={`px-4 ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
-          paddingTop: isTablet ? '1rem' : '0', 
-          paddingBottom: isTablet ? '1rem' : '40px',
+          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 260px)',
           overflowY: 'auto',
           overflowX: 'hidden',
-          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 260px)'
+          display: 'flex',
+          flexDirection: 'column',
+          paddingTop: isTablet ? '1rem' : '0', 
+          paddingBottom: isTablet ? '1rem' : '40px',
+          scrollBehavior: 'smooth'
         }}
       >
-        <div className="messages-container space-y-4 overflow-visible">
+        <div 
+          className="space-y-4"
+          style={{
+            minHeight: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end'
+          }}
+        >
           {messagesLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
