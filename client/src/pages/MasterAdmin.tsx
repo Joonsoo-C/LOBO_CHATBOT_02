@@ -166,7 +166,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     staleTime: 30000
   });
   
-  const documentConnectedAgents = connectedAgentsQuery.data || [];
+  // documentConnectedAgents 변수는 제거하고 직접 쿼리 데이터 사용
 
   // 파일 크기 포맷
   const formatFileSize = (bytes: number) => {
@@ -1528,14 +1528,15 @@ function MasterAdmin() {
   // 문서 상세 팝업이 열릴 때 기존 연결된 에이전트들 로드
   React.useEffect(() => {
     if (documentDetailData) {
-      if (documentConnectedAgents && Array.isArray(documentConnectedAgents)) {
-        setConnectedAgentsList(documentConnectedAgents);
+      const connectedData = connectedAgentsQuery.data;
+      if (connectedData && Array.isArray(connectedData)) {
+        setConnectedAgentsList(connectedData);
       } else {
         // 문서 상세 팝업이 처음 열릴 때 빈 배열로 초기화
         setConnectedAgentsList([]);
       }
     }
-  }, [documentDetailData, documentConnectedAgents]);
+  }, [documentDetailData, connectedAgentsQuery.data]);
 
   // Move this after organizations is declared via useQuery
 
