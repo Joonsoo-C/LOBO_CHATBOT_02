@@ -146,27 +146,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     }
   });
 
-  // 문서 연결된 에이전트 조회 - 안전한 방식으로 재작성
-  const connectedAgentsQuery = useQuery({
-    queryKey: [`/api/documents/${documentDetailData?.id}/connected-agents`],
-    queryFn: async () => {
-      if (!documentDetailData?.id) return [];
-      try {
-        const response = await fetch(`/api/documents/${documentDetailData.id}/connected-agents`, {
-          credentials: 'include'
-        });
-        if (!response.ok) return [];
-        return response.json();
-      } catch (error) {
-        console.error('Failed to fetch connected agents:', error);
-        return [];
-      }
-    },
-    enabled: !!documentDetailData?.id,
-    staleTime: 30000
-  });
-  
-  // documentConnectedAgents 변수는 제거하고 직접 쿼리 데이터 사용
+  // 문서 연결된 에이전트 조회 기능 임시 비활성화 (로그인 문제 해결을 위해)
 
   // 파일 크기 포맷
   const formatFileSize = (bytes: number) => {
