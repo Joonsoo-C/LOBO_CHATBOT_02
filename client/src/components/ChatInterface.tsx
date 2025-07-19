@@ -472,8 +472,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
       const response = await apiRequest("POST", `/api/agents/${agentId}/broadcast`, { message });
       return response.json();
     },
-    onSuccess: (data) => {
-      addSystemMessage(`알림이 전송되었습니다.\n\n내용: "${pendingNotification}"\n대상: ${agent.name} 사용자 ${data.totalRecipients}명\n시간: ${new Date().toLocaleString('ko-KR')}`);
+    onSuccess: (data, variables) => {
+      // Use the message from the mutation variables instead of pendingNotification state
+      addSystemMessage(`🔧 알림이 전송되었습니다.\n\n내용: "${variables.message}"\n대상: ${agent.name} 사용자 ${data.totalRecipients}명\n시간: ${new Date().toLocaleString('ko-KR')}`);
       
       // Immediately invalidate conversations cache to show new notifications
       queryClient.invalidateQueries({

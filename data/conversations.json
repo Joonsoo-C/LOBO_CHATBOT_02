@@ -21,7 +21,7 @@
         "agentId": 146,
         "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-19T15:15:18.704Z",
+        "lastMessageAt": "2025-07-19T15:30:12.314Z",
         "createdAt": "2025-07-01T03:38:18.797Z",
         "isHidden": false
       }
@@ -46,8 +46,8 @@
         "userId": "user1082",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 2,
-        "lastMessageAt": "2025-07-17T22:52:22.727Z",
+        "unreadCount": 3,
+        "lastMessageAt": "2025-07-19T15:31:57.188Z",
         "createdAt": "2025-06-30T22:15:14.708Z",
         "lastReadAt": "2025-07-17T04:56:22.669Z",
         "isHidden": false
@@ -60,8 +60,8 @@
         "userId": "user1081",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 0,
-        "lastMessageAt": "2025-07-17T22:52:22.799Z",
+        "unreadCount": 1,
+        "lastMessageAt": "2025-07-19T15:31:57.161Z",
         "createdAt": "2025-06-30T22:30:45.323Z",
         "lastReadAt": "2025-07-18T04:53:50.906Z",
         "isHidden": false
