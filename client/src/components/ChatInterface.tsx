@@ -1150,27 +1150,18 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
       {/* Chat Messages */}
       <div 
         ref={messagesContainerRef}
-        className={`px-4 ${isTablet ? "md:px-12" : "md:px-6"}`}
+        className={`chat-interface-messages px-4 ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
           height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 260px)',
-          overflowY: 'auto',
+          overflowY: 'scroll',
           overflowX: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
           paddingTop: isTablet ? '1rem' : '0', 
           paddingBottom: isTablet ? '1rem' : '40px',
-          scrollBehavior: 'smooth'
+          scrollBehavior: 'smooth',
+          WebkitOverflowScrolling: 'touch'
         }}
       >
-        <div 
-          className="space-y-4"
-          style={{
-            minHeight: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end'
-          }}
-        >
+        <div className="space-y-4">
           {messagesLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>

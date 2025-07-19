@@ -495,23 +495,30 @@
   animation-delay: 0.4s;
 }
 
-/* 메시지 컨테이너 */
+/* 메시지 컨테이너 - 강제 스크롤 활성화 */
 .chat-interface-messages {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: calc(100vh - 220px);
-  scroll-behavior: smooth;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  height: calc(100vh - 220px) !important;
+  max-height: calc(100vh - 220px) !important;
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+}
+
+/* PC에서 강제 스크롤 활성화 */
+@media (min-width: 769px) {
+  .chat-interface-messages {
+    overflow-y: scroll !important;
+    height: calc(100vh - 240px) !important;
+    max-height: calc(100vh - 240px) !important;
+  }
 }
 
 .messages-container {
-  display: flex;
-  flex-direction: column;
+  display: block;
   gap: 8px;
   padding-bottom: 40px;
-  min-height: 100%;
-  justify-content: flex-end;
 }
 
 /* 메시지 행 스타일링 */
