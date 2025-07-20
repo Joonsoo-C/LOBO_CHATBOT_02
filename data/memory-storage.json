@@ -4650,8 +4650,8 @@
         "userId": "user1082",
         "agentId": 146,
         "type": "general",
-        "unreadCount": 3,
-        "lastMessageAt": "2025-07-19T15:31:57.188Z",
+        "unreadCount": 4,
+        "lastMessageAt": "2025-07-19T15:36:41.469Z",
         "createdAt": "2025-06-30T22:15:14.708Z",
         "lastReadAt": "2025-07-17T04:56:22.669Z",
         "isHidden": false
@@ -4665,9 +4665,9 @@
         "agentId": 146,
         "type": "general",
         "unreadCount": 1,
-        "lastMessageAt": "2025-07-19T15:31:57.161Z",
+        "lastMessageAt": "2025-07-19T15:36:41.489Z",
         "createdAt": "2025-06-30T22:30:45.323Z",
-        "lastReadAt": "2025-07-18T04:53:50.906Z",
+        "lastReadAt": "2025-07-19T15:35:53.169Z",
         "isHidden": false
       }
     ],
@@ -5354,21 +5354,21 @@
     [
       172,
       {
-        "conversationId": 111,
-        "content": "/알림",
-        "isFromUser": true,
+        "conversationId": 117,
+        "content": "강의실이 234B로 변경되었습니다.",
+        "isFromUser": false,
         "id": 172,
-        "createdAt": "2025-07-19T15:29:29.512Z"
+        "createdAt": "2025-07-19T15:36:41.467Z"
       }
     ],
     [
       173,
       {
-        "conversationId": 111,
-        "content": "🔧 알림 기능을 시작합니다. 알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.",
+        "conversationId": 112,
+        "content": "강의실이 234B로 변경되었습니다.",
         "isFromUser": false,
         "id": 173,
-        "createdAt": "2025-07-19T15:29:29.519Z"
+        "createdAt": "2025-07-19T15:36:41.478Z"
       }
     ],
     [
@@ -6085,5 +6085,5 @@
   ],
   "agentStats": [],
   "messageReactions": [],
-  "nextId": 178
+  "nextId": 174
 }

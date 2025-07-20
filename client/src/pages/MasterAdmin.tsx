@@ -4639,7 +4639,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 사용자 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <CardTitle className="font-semibold tracking-tight text-[14px]">{t('user.userSearch')}</CardTitle>
+              <CardTitle className="font-semibold tracking-tight text-[20px]">{t('user.userSearch')}</CardTitle>
               
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
