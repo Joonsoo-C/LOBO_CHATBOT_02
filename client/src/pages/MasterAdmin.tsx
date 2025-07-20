@@ -1042,6 +1042,7 @@ function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedOrgStatus, setSelectedOrgStatus] = useState('all');
   const [selectedAgentType, setSelectedAgentType] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
@@ -2068,8 +2069,15 @@ function MasterAdmin() {
       );
     }
     
+    // 상태 필터링
+    if (selectedOrgStatus !== 'all') {
+      filtered = filtered.filter(category => 
+        category.status === selectedOrgStatus
+      );
+    }
+    
     return filtered;
-  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedOrgStatus]);
 
   // Organization categories pagination state
   const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
@@ -2092,6 +2100,7 @@ function MasterAdmin() {
     setSelectedUniversity('all');
     setSelectedCollege('all');
     setSelectedDepartment('all');
+    setSelectedOrgStatus('all'); // 상태 필터 초기화
     setSelectedDocumentType('all'); // 상태 필터 초기화
     setSelectedDocumentPeriod('all'); // 시스템 역할 필터 초기화
     setSelectedAgentType('all'); // 유형 필터 초기화
@@ -7092,7 +7101,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
 
               {/* 카테고리 검색 */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상태</Label>
+                  <Select value={selectedOrgStatus} onValueChange={setSelectedOrgStatus}>
+                    <SelectTrigger className="h-10">
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="활성">활성</SelectItem>
+                      <SelectItem value="비활성">비활성</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="col-span-3">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('doc.searchKeyword')}</Label>
                   <Input
