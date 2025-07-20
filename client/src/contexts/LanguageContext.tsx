@@ -306,7 +306,7 @@ const translations: Record<Language, Record<string, string>> = {
     'doc.searchKeyword': '검색어',
 
     // Organization Management - Unified Keys  
-    'org.searchAndManagement': '조직 카테고리 검색 및 관리',
+    'org.searchAndManagement': '조직 카테고리 검색 ',
     'org.upperCategory': '상위 조직 카테고리',
     'org.lowerCategory': '하위 조직 카테고리', 
     'org.detailCategory': '세부 조직 카테고리',
