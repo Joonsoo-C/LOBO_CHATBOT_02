@@ -4769,7 +4769,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 사용자 목록 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[14px]">{t('admin.userListTitle')}</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.userListTitle')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
 {t('admin.showingResults', { 
                     total: filteredUsers?.length || 0,
