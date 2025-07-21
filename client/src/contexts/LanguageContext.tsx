@@ -361,14 +361,20 @@ const translations: Record<Language, Record<string, string>> = {
     // Agent management
     'admin.agentSearchAndManagement': '에이전트 검색 및 관리',
     'admin.agentListTitle': '에이전트 목록',
-    'admin.agentShowingResults': '전체 {total}개 중 {start}-{end}개 표시',
+    'admin.agentShowingResults': '전체 {total}개 에이전트 중 {start}-{end}개 표시',
     
     // Q&A management
     'admin.qaLogs': '질문/응답 로그',
-    'admin.qaShowingResults': '전체 {total}개 중 {start}-{end}개 표시',
+    'admin.qaShowingResults': '전체 {total}개 질문응답 중 {start}-{end}개 표시',
     
     // Document management
-    'admin.documentShowingResults': '전체 {total}개 중 {start}-{end}개 표시',
+    'admin.documentShowingResults': '전체 {total}개 문서 중 {start}-{end}개 표시',
+    
+    // Organization management
+    'admin.orgShowingResults': '전체 {total}개 조직 카테고리 중 {start}-{end}개 표시',
+    
+    // Token management
+    'admin.tokenShowingResults': '전체 {total}개 토큰 사용 기록 중 {start}-{end}개 표시',
     
     // Agent icon selection
     'admin.iconTypeSelection': '아이콘 유형 선택',

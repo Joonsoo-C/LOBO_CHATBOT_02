@@ -4780,7 +4780,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.userListTitle')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.showingResults', { 
+{t('admin.userShowingResults', { 
                     total: filteredUsers?.length || 0,
                     start: ((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
                     end: Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)
@@ -7141,7 +7141,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('org.organizationList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('org.totalOrganizations').replace('124', filteredOrganizationCategories.length.toString()).replace('1-20', `${organizationCategoriesStartIndex + 1}-${Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories.length)}`)}
+{t('admin.organizationShowingResults', { 
+                    total: filteredOrganizationCategories?.length || 0,
+                    start: organizationCategoriesStartIndex + 1,
+                    end: Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories?.length || 0)
+                  })}
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -8487,8 +8491,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 토큰 사용량 테이블 */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.tokenUsageList')}</CardTitle>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('admin.tokenShowingResults', {
+                    total: filteredTokenData?.length || 0,
+                    start: ((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
+                    end: Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)
+                  })}
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
