@@ -6495,7 +6495,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           {/* {t('admin.qaLogs')} */}
           <TabsContent value="conversations" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">{t('admin.conversations')}</h2>
+              <h2 className="text-2xl font-bold">질문 응답 로그</h2>
               <div className="flex space-x-2">
               </div>
             </div>
