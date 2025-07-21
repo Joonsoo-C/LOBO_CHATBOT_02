@@ -948,7 +948,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Form labels
     'admin.searchKeyword': 'Search Keyword',
-    'admin.searchPlaceholder': 'Enter username or email address...',
+    'admin.searchPlaceholder': '사용자명 또는 이메일 주소를 입력하세요...',
     'admin.searchButton': 'Search',
     'admin.userListTitle': 'User List',
     'admin.showingResults': 'Showing {start}-{end} of {total} total users',
@@ -996,7 +996,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.kind': 'Type',
     'admin.size': 'Size',
     'admin.uploadedDate': 'Upload Date',
-    'admin.searchByContent': 'Search by document name or content...',
+    'admin.searchByContent': '문서명 또는 내용으로 검색하세요...',
     'admin.selectOption': 'Select',
     'admin.lectureData': 'Lecture Materials',
     'admin.policyDoc': 'Policy Documents',
@@ -1025,7 +1025,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.upperCategory': 'Upper Category',
     'admin.lowerCategory': 'Lower Category', 
     'admin.detailCategory': 'Detail Category',
-    'admin.searchByQuestion': 'Search by question content...',
+    'admin.searchByQuestion': '질문 내용으로 검색하세요...',
     'admin.questionAnswerList': 'Question Answer List',
     'admin.userType': 'User Type',
     'admin.period': 'Period',
@@ -1277,10 +1277,10 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.like': 'Like',
     'admin.dislike': 'Dislike',
     'admin.responseTime': 'Response Time',
-    'admin.type': 'Type',
+    'admin.type': '유형',
     'admin.status': 'Status',
     'admin.searchKeyword': 'Search Keyword',
-    'admin.agentKeywordPlaceholder': 'Enter agent name or description keyword',
+    'admin.agentKeywordPlaceholder': '에이전트명 또는 설명 키워드를 입력하세요',
     'admin.searchButton': 'Search',
     
     // Modal titles and descriptions
