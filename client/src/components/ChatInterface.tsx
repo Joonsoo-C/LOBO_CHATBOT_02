@@ -895,8 +895,8 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
   return (
     <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`} style={{ background: 'var(--neu-bg)' }}>
-      {/* Header for both mobile and tablet - hidden in Management mode for mobile */}
-      {(!isManagementMode || isTablet) && (
+      {/* Header for both mobile and tablet - completely hidden in Management mode for mobile */}
+      {!isManagementMode && (
         <header className={`relative bg-background border-b border-border ${!isTablet ? "fixed top-0 left-0 right-0 z-50" : ""}`}>
         <div className={`${isTablet ? "px-6 py-4" : "px-4 py-3"}`}>
             <div className="flex items-center justify-between">
