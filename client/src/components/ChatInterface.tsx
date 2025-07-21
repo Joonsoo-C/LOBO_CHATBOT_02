@@ -959,7 +959,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                       className="px-3 py-2 korean-text"
                       onClick={() => setShowGeneralMenu(!showGeneralMenu)}
                     >
-                      <Settings className="w-4 h-4 mr-2" />
                       기능 선택
                     </Button>
                   
