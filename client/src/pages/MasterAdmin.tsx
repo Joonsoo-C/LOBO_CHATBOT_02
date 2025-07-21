@@ -8398,7 +8398,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                     <Input
                       placeholder="에이전트명 또는 질문 키워드"
                       value={tokenKeywordFilter}
