@@ -8241,11 +8241,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.monthlyUsage')}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M {t('admin.tokens')}</div>
-                    <div className="text-xs text-green-600">73% {t('admin.used')}</div>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
+                    <div className="text-xs text-green-600">73% 사용</div>
                   </div>
                 </div>
               </div>
@@ -8254,11 +8254,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <BarChart3 className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.dailyAverage')}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
-                    <div className="text-xs text-green-600">↑ 12% {t('admin.weeklyCompared')}</div>
+                    <div className="text-xs text-green-600">↑ 12% 지난 주 대비</div>
                   </div>
                 </div>
               </div>
@@ -8267,20 +8267,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.expectedCost')}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
-                    <div className="text-xs text-green-600">{t('admin.monthlyExpected')}</div>
+                    <div className="text-xs text-green-600">이번 달 예상 비용</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* 로그 필터링 */}
+            {/* 조직 검색 */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('org.organizationSearch')}</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">조직 검색</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
@@ -8419,7 +8419,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             {/* 토큰 사용량 테이블 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.tokenUsageList')}</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   전체 {filteredTokenData?.length || 0}개 토큰 기록 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
                 </div>
@@ -8429,9 +8429,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-3 font-medium">{t('admin.time')}</th>
-                        <th className="text-left p-3 font-medium">{t('admin.agentName')}</th>
-                        <th className="text-left p-3 font-medium">{t('admin.question')}</th>
+                        <th className="text-left p-3 font-medium">시간</th>
+                        <th className="text-left p-3 font-medium">에이전트명</th>
+                        <th className="text-left p-3 font-medium">질문</th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
                           onClick={() => {
@@ -8443,7 +8443,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          {t('admin.input')} {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          입력 {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8456,7 +8456,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          {t('admin.output')} {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          출력 {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8469,7 +8469,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          {t('admin.index')} {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          인덱스 {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
@@ -8482,9 +8482,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             }
                           }}
                         >
-                          {t('admin.documentPreprocessing')} {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          읽기 {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="text-left p-3 font-medium">{t('admin.total')}</th>
+                        <th className="text-left p-3 font-medium">합계</th>
                       </tr>
                     </thead>
                     <tbody>
