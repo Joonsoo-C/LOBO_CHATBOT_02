@@ -119,7 +119,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
     queryKey: ["/api/user"],
   });
   
-  const userRole = user?.role || 'general';
+  const userRole = (user as any)?.role || 'general';
 
   // Fetch reactions for conversation
   const { data: conversationReactions } = useQuery({
@@ -894,11 +894,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 
   return (
     <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`}>
-      {/* Mobile header removed - now using global navigation */}
-      {/* Tablet Header - Simplified version without back button */}
-      {isTablet && (
-        <header className="relative bg-background border-b border-border">
-          <div className="px-6 py-4">
+      {/* Header for both mobile and tablet */}
+      <header className={`relative bg-background border-b border-border ${!isTablet ? "fixed top-0 left-0 right-0 z-50" : ""}`}>
+        <div className={`${isTablet ? "px-6 py-4" : "px-4 py-3"}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div 
@@ -1119,7 +1117,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 - 평균 응답 시간: ${data.metrics.avgResponseTime}초
 
 🔍 인사이트
-${data.insights.map(insight => `- ${insight}`).join('\n')}
+${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
 
 📈 성장 트렌드
 - 메시지 증가율: ${data.trends.messageGrowth}
@@ -1163,17 +1161,16 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
             </div>
           </div>
         </header>
-      )}
       {/* Chat Messages */}
       <div 
         ref={messagesContainerRef}
         className={`chat-interface-messages px-4 ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
-          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 260px)',
+          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 200px)',
           overflowY: 'scroll',
           overflowX: 'hidden',
-          paddingTop: isTablet ? '1rem' : '0', 
-          paddingBottom: isTablet ? '1rem' : '40px',
+          paddingTop: isTablet ? '1rem' : '70px', 
+          paddingBottom: isTablet ? '1rem' : '60px',
           scrollBehavior: 'smooth',
           WebkitOverflowScrolling: 'touch'
         }}
@@ -1760,7 +1757,7 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
       <FileUploadModal
         isOpen={showFileModal}
         onClose={() => setShowFileModal(false)}
-        agentId={agent.id}
+        agent={agent}
       />
       <PersonaEditModal
         isOpen={showPersonaModal}
