@@ -7094,9 +7094,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           세부 조직
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          관리자
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           소속 인원
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -7113,7 +7110,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredOrganizationCategories.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="px-6 py-12 text-center">
+                          <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -7172,11 +7169,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900 dark:text-white">
                                   {category.detailCategory || "-"}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900 dark:text-white">
-                                  {category.manager || "미지정"}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -7881,7 +7873,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.uploadDate')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">업로드 기간</Label>
                   <Select value={selectedDocumentPeriod} onValueChange={(value) => {
                     setSelectedDocumentPeriod(value);
                     handleDocumentFilterChange();
