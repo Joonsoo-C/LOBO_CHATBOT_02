@@ -861,7 +861,7 @@ interface TokenUsage {
 }
 
 function MasterAdmin() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
   
   // 페이지네이션 상태들 - 모든 관리 목록에 동일하게 적용
@@ -957,6 +957,18 @@ function MasterAdmin() {
   const [selectedImprovementLog, setSelectedImprovementLog] = useState<any>(null);
   const [improvementComment, setImprovementComment] = useState('');
 
+  // Missing state variables for QA modal functionality
+  const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
+  const [documentDetailData, setDocumentDetailData] = useState(null);
+
+  // Custom user access filtering states
+  const [filteredUsersForCustomAccess, setFilteredUsersForCustomAccess] = useState([]);
+  const [selectedCustomUsers, setSelectedCustomUsers] = useState([]);
+  const [userFilterSearchQuery, setUserFilterSearchQuery] = useState('');
+  const [userFilterUpperCategory, setUserFilterUpperCategory] = useState('all');
+  const [userFilterLowerCategory, setUserFilterLowerCategory] = useState('all');
+  const [userFilterDetailCategory, setUserFilterDetailCategory] = useState('all');
+
   // API 쿼리들을 먼저 선언
   // 관리자 목록 조회 (마스터 관리자, 에이전트 관리자만 필터링)
   const { data: allManagers } = useQuery<User[]>({
@@ -1000,6 +1012,27 @@ function MasterAdmin() {
     retry: 3,
     retryDelay: 1000,
   });
+
+  // Messages data query for QA modal functionality
+  const { data: messages } = useQuery({
+    queryKey: ['/api/admin/messages'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/messages', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
+      return response.json();
+    }
+  });
+
+  // Rename conversationLogs to conversations for consistency with QA modal
+  const conversations = conversationLogs;
 
   // 인기 질문 TOP 5 데이터 조회
   const { data: popularQuestions, isLoading: popularQuestionsLoading, error: popularQuestionsError } = useQuery({
@@ -1077,9 +1110,7 @@ function MasterAdmin() {
   const [selectedManagerCollege, setSelectedManagerCollege] = useState('all');
   const [selectedManagerDepartment, setSelectedManagerDepartment] = useState('all');
   
-  // 문서 상세 팝업 상태
-  const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
-  const [documentDetailData, setDocumentDetailData] = useState<any>(null);
+  // 문서 상세 팝업 상태 - 중복 제거됨 (위에서 이미 선언됨)
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
   const [connectedAgentsList, setConnectedAgentsList] = useState<number[]>([]);
   
@@ -1345,10 +1376,7 @@ function MasterAdmin() {
   // 공유 설정 상태
   const [selectedGroups, setSelectedGroups] = useState<Array<{id: string, upperCategory: string, lowerCategory?: string, detailCategory?: string}>>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [userFilterSearchQuery, setUserFilterSearchQuery] = useState('');
-  const [userFilterUpperCategory, setUserFilterUpperCategory] = useState('');
-  const [userFilterLowerCategory, setUserFilterLowerCategory] = useState('');
-  const [userFilterDetailCategory, setUserFilterDetailCategory] = useState('');
+  // userFilterSearchQuery 등 중복 제거됨 (위에서 이미 선언됨)
   
   // 조직 선택 상태
   const [selectedUpperCategory, setSelectedUpperCategory] = useState<string>('');
@@ -1498,6 +1526,33 @@ function MasterAdmin() {
       return 0;
     });
   }, [users, userSortField, userSortDirection]);
+
+  // 필터링된 사용자 목록 (검색 및 조직 필터 적용)
+  const filteredSortedUsers = useMemo(() => {
+    if (!sortedUsers || !hasSearched) return [];
+    
+    return sortedUsers.filter((user: any) => {
+      const matchesSearch = !userSearchQuery || 
+        user.username?.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+        (user as any).name?.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+        user.email?.toLowerCase().includes(userSearchQuery.toLowerCase());
+      
+      const matchesUpperCategory = !selectedUniversity || selectedUniversity === 'all' || 
+        (user as any).upperCategory === selectedUniversity;
+      const matchesLowerCategory = !selectedCollege || selectedCollege === 'all' || 
+        (user as any).lowerCategory === selectedCollege;
+      const matchesDetailCategory = !selectedDepartment || selectedDepartment === 'all' || 
+        (user as any).detailCategory === selectedDepartment;
+      
+      return matchesSearch && matchesUpperCategory && matchesLowerCategory && matchesDetailCategory;
+    });
+  }, [sortedUsers, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment]);
+
+  // 사용자 페이지네이션 계산
+  const totalUserPages = Math.ceil(filteredSortedUsers.length / ITEMS_PER_PAGE);
+  const userStartIndex = (userCurrentPage - 1) * ITEMS_PER_PAGE;
+  const userEndIndex = userStartIndex + ITEMS_PER_PAGE;
+  const paginatedUsers = filteredSortedUsers.slice(userStartIndex, userEndIndex);
 
   // 사용자 데이터가 로드되면 자동으로 검색 상태를 true로 설정
   React.useEffect(() => {
@@ -1674,73 +1729,7 @@ function MasterAdmin() {
   const tokenEndIndex = tokenStartIndex + ITEMS_PER_PAGE;
   const paginatedTokenData = filteredTokenData.slice(tokenStartIndex, tokenEndIndex);
 
-  // 필터된 사용자 목록
-  const filteredUsers = useMemo(() => {
-    if (!users) return [];
-    
-    let filtered = [...users];
-    
-    // 검색이 실행된 경우 또는 초기 상태에서 필터링 적용
-    if (hasSearched || !hasSearched) {
-      // 검색 쿼리 필터링 (검색어가 있을 때만)
-      if (userSearchQuery.trim()) {
-        const query = userSearchQuery.toLowerCase();
-        filtered = filtered.filter(user => 
-          user.username.toLowerCase().includes(query) ||
-          (user.firstName && user.firstName.toLowerCase().includes(query)) ||
-          (user.lastName && user.lastName.toLowerCase().includes(query)) ||
-          (user.email && user.email.toLowerCase().includes(query))
-        );
-      }
-      
-      // 상위 카테고리 필터링
-      if (selectedUniversity !== 'all') {
-        filtered = filtered.filter(user => 
-          (user as any).upperCategory === selectedUniversity
-        );
-      }
-      
-      // 하위 카테고리 필터링
-      if (selectedCollege !== 'all') {
-        filtered = filtered.filter(user => 
-          (user as any).lowerCategory === selectedCollege
-        );
-      }
-      
-      // 세부 카테고리 필터링
-      if (selectedDepartment !== 'all') {
-        filtered = filtered.filter(user => 
-          (user as any).detailCategory === selectedDepartment
-        );
-      }
-      
-      // 상태 필터링
-      if (selectedDocumentType !== 'all') {
-        filtered = filtered.filter(user => 
-          (user as any).status === selectedDocumentType
-        );
-      }
-      
-      // 시스템 역할 필터링
-      if (selectedDocumentPeriod !== 'all') {
-        filtered = filtered.filter(user => 
-          user.role === selectedDocumentPeriod
-        );
-      }
-    }
-    
-    return filtered;
-  }, [users, hasSearched, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedDocumentType, selectedDocumentPeriod]);
-
-  // 페이지네이션된 사용자 목록
-  const paginatedUsers = useMemo(() => {
-    const startIndex = (userCurrentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, userCurrentPage, ITEMS_PER_PAGE]);
-
-  // 총 페이지 수 계산
-  const totalUserPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  // 중복 제거됨 - filteredSortedUsers와 paginatedUsers 이미 위에서 정의됨
 
   // 관리자 선정용 사용자 필터링 (관리자 권한을 가진 사용자만)
   const filteredManagerUsers = useMemo(() => {
