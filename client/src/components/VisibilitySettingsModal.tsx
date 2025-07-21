@@ -148,38 +148,26 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
               </div>
             </div>
 
-            {/* Visibility Status */}
-            <div className="space-y-3">
-              <Label className="korean-text font-medium">공개 여부</Label>
-              <div className="flex space-x-3">
-                <Button
-                  type="button"
-                  variant={isVisible ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setIsVisible(true)}
-                  className={`flex-1 korean-text transition-colors ${
-                    isVisible 
-                      ? 'bg-green-600 hover:bg-green-700 text-white' 
-                      : 'border-green-600 text-green-600 hover:bg-green-50'
-                  }`}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  공개
-                </Button>
-                <Button
-                  type="button"
-                  variant={!isVisible ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setIsVisible(false)}
-                  className={`flex-1 korean-text transition-colors ${
-                    !isVisible 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'border-red-600 text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  비공개
-                </Button>
+            {/* Agent Sharing Target */}
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h3 className="font-medium korean-text text-sm mb-3">에이전트 공유 대상</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 korean-text">공개 범위:</span>
+                  <span className="text-sm font-medium korean-text">
+                    {visibility === "public" ? "조직 전체" : "특정 그룹"}
+                  </span>
+                </div>
+                {visibility === "group" && selectedUpperCategory && (
+                  <div className="space-y-2">
+                    <span className="text-sm text-gray-600 korean-text">공개 대상:</span>
+                    <div className="bg-white p-3 rounded border text-sm korean-text">
+                      {selectedUpperCategory}
+                      {selectedLowerCategory && ` > ${selectedLowerCategory}`}
+                      {selectedDetailCategory && ` > ${selectedDetailCategory}`}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -213,30 +201,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
               </div>
             )}
 
-            {/* Current Settings Display for Agent Managers */}
-            {!isMasterAdmin && (
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="font-medium korean-text text-sm mb-3">현재 공개 설정 상태</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 korean-text">공개 범위:</span>
-                    <span className="text-sm font-medium korean-text">
-                      {visibility === "public" ? "조직 전체" : "특정 그룹"}
-                    </span>
-                  </div>
-                  {visibility === "group" && selectedUpperCategory && (
-                    <div className="space-y-2">
-                      <span className="text-sm text-gray-600 korean-text">공개 대상:</span>
-                      <div className="bg-white p-3 rounded border text-sm korean-text">
-                        {selectedUpperCategory}
-                        {selectedLowerCategory && ` > ${selectedLowerCategory}`}
-                        {selectedDetailCategory && ` > ${selectedDetailCategory}`}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+
 
             {/* Group Category Selection - Only for Master Admin */}
             {isMasterAdmin && visibility === 'group' && (
@@ -329,6 +294,41 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
                 )}
               </div>
             )}
+
+            {/* Visibility Status */}
+            <div className="space-y-3">
+              <Label className="korean-text font-medium">공개 여부</Label>
+              <div className="flex space-x-3">
+                <Button
+                  type="button"
+                  variant={isVisible ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsVisible(true)}
+                  className={`flex-1 korean-text transition-colors ${
+                    isVisible 
+                      ? 'bg-green-600 hover:bg-green-700 text-white' 
+                      : 'border-green-600 text-green-600 hover:bg-green-50'
+                  }`}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  공개
+                </Button>
+                <Button
+                  type="button"
+                  variant={!isVisible ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsVisible(false)}
+                  className={`flex-1 korean-text transition-colors ${
+                    !isVisible 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'border-red-600 text-red-600 hover:bg-red-50'
+                  }`}
+                >
+                  <EyeOff className="w-4 h-4 mr-2" />
+                  비공개
+                </Button>
+              </div>
+            </div>
 
             {/* Action Buttons */}
             <div className="flex space-x-3 pt-4 border-t">
