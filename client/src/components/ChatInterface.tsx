@@ -908,7 +908,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                     className="p-1"
                     onClick={() => window.history.back()}
                   >
-                    <ArrowLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5" />
                   </Button>
                 )}
                 <div 
