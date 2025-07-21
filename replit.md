@@ -976,6 +976,12 @@ Changelog:
   * Cleaned up LanguageContext.tsx to contain only Korean and English translations
   * Updated LanguageSelector component to show only Korean and English options
   * Implemented automatic Korean text to English translation when English mode is selected
+- July 21, 2025. CRITICAL FIX: Resolved mobile Management page duplicate header issue:
+  * Identified root cause: URL routing conflict where `/chat/:agentId` was matching before `/management/:agentId`
+  * Fixed App.tsx routing order to prioritize Management routes over Chat routes
+  * Management pages now properly render Management.tsx component instead of Chat.tsx
+  * Eliminated duplicate headers in mobile Management mode - only proper management interface appears
+  * isManagementMode prop now correctly set to true for Management pages, removing unwanted Chat headers
 - July 21, 2025. Implemented role-based visibility settings for agent management:
   * Created comprehensive VisibilitySettingsModal with role-based permissions for master admin and agent managers
   * Master admin: Full control over public/group visibility settings and organization hierarchy selection

@@ -893,9 +893,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   // Skip loading state and show welcome message immediately if no messages exist yet
   // This prevents the loading spinner flash before welcome message appears
 
-  // DEBUG: Add console log to verify header rendering condition
-  console.log('[DEBUG] ChatInterface: isManagementMode=', isManagementMode, 'isTablet=', isTablet, 'agent=', agent.id, 'shouldShowHeader=', !isManagementMode);
-
   return (
     <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`} style={{ background: 'var(--neu-bg)' }}>
       {/* Header for both mobile and tablet - completely hidden in Management mode for mobile */}
