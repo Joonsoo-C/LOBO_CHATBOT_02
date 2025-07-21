@@ -316,7 +316,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
           {/* LLM Model Selection */}
           <div className="space-y-2">
-            <Label htmlFor="llmModel" className="korean-text">LLM 모델 선택</Label>
+            <Label htmlFor="llmModel" className="korean-text">LLM 모델 </Label>
             <Select
               value={settings.llmModel}
               onValueChange={(value) => setSettings(prev => ({ ...prev, llmModel: value }))}
