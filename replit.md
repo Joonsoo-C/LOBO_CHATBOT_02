@@ -982,6 +982,15 @@ Changelog:
   * Management pages now properly render Management.tsx component instead of Chat.tsx
   * Eliminated duplicate headers in mobile Management mode - only proper management interface appears
   * isManagementMode prop now correctly set to true for Management pages, removing unwanted Chat headers
+- July 21, 2025. Standardized organization category dropdown naming and fixed token management Korean localization:
+  * Simplified organization category dropdown labels across ALL management sections (users, agents, organizations, documents, Q&A, tokens):
+    - "상위 조직 카테고리" → "상위 조직"
+    - "하위 조직 카테고리" → "하위 조직"  
+    - "세부 조직 카테고리" → "세부 조직"
+  * Fixed token management section Korean localization by replacing translation keys with direct Korean text
+  * Applied consistent naming to user edit forms, new user creation forms, agent creation forms, and all filter dropdowns
+  * Token management filtering area now displays proper Korean labels instead of English translations
+  * Enhanced UI consistency across all administrative management interfaces
 - July 21, 2025. Implemented role-based visibility settings for agent management:
   * Created comprehensive VisibilitySettingsModal with role-based permissions for master admin and agent managers
   * Master admin: Full control over public/group visibility settings and organization hierarchy selection
