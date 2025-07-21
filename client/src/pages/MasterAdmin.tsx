@@ -938,7 +938,7 @@ function MasterAdmin() {
   const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
   const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  // Q&A 로그 조직 카테고리 상태
+  // Q&A 로그 조직 상태
   const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
   const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
   const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
@@ -1066,7 +1066,7 @@ function MasterAdmin() {
   
 
   
-  // 조직 카테고리 편집 관련 상태
+  // 조직 편집 관련 상태
   const [isOrgCategoryEditDialogOpen, setIsOrgCategoryEditDialogOpen] = useState(false);
   const [editingOrgCategory, setEditingOrgCategory] = useState<any>(null);
   
@@ -1848,7 +1848,7 @@ function MasterAdmin() {
     }
   });
 
-  // 업로드된 조직 카테고리 파일 목록 조회
+  // 업로드된 조직 파일 목록 조회
   const { data: uploadedOrgFiles = [], refetch: refetchOrgFiles } = useQuery<any[]>({
     queryKey: ['/api/admin/organization-files'],
     queryFn: async () => {
@@ -1965,7 +1965,7 @@ function MasterAdmin() {
     return categories.sort();
   }, [tokenUpperCategoryFilter, tokenLowerCategoryFilter, organizations]);
 
-  // Q&A 로그 섹션 전용 조직 카테고리 필터링 로직
+  // Q&A 로그 섹션 전용 조직 필터링 로직
   const qaUniqueUpperCategories = useMemo(() => {
     const categories = Array.from(new Set((organizations || []).map(org => org.upperCategory).filter(Boolean)));
     return categories.sort();
@@ -2001,7 +2001,7 @@ function MasterAdmin() {
     return categories.sort();
   }, [qaSelectedUpperCategory, qaSelectedLowerCategory, organizations]);
 
-  // Q&A 로그 조직 카테고리별 필터링 로직
+  // Q&A 로그 조직별 필터링 로직
   const filteredConversationLogs = useMemo(() => {
     if (!conversationLogs) return [];
     
@@ -2014,17 +2014,17 @@ function MasterAdmin() {
       log.lastUserMessage !== '메시지 없음'
     );
     
-    // 상위 조직 카테고리 필터링
+    // 상위 조직 필터링
     if (qaSelectedUpperCategory !== 'all') {
       filtered = filtered.filter(log => log.upperCategory === qaSelectedUpperCategory);
     }
     
-    // 하위 조직 카테고리 필터링
+    // 하위 조직 필터링
     if (qaSelectedLowerCategory !== 'all') {
       filtered = filtered.filter(log => log.lowerCategory === qaSelectedLowerCategory);
     }
     
-    // 세부 조직 카테고리 필터링
+    // 세부 조직 필터링
     if (qaSelectedDetailCategory !== 'all') {
       filtered = filtered.filter(log => log.detailCategory === qaSelectedDetailCategory);
     }
@@ -2032,7 +2032,7 @@ function MasterAdmin() {
     return filtered;
   }, [conversationLogs, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory]);
 
-  // 필터된 조직 카테고리 목록 (실시간 필터링) - API 데이터 사용
+  // 필터된 조직 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
     if (!organizations || organizations.length === 0) return [];
     
@@ -2092,7 +2092,7 @@ function MasterAdmin() {
   const executeSearch = () => {
     setHasSearched(true);
     setUserCurrentPage(1); // 검색 시 첫 페이지로 이동
-    setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
+    setOrgCategoriesCurrentPage(1); // 조직 페이지도 리셋
   };
 
   // 필터 초기화 함수
@@ -2107,7 +2107,7 @@ function MasterAdmin() {
     setUserSearchQuery('');
     setHasSearched(false);
     setUserCurrentPage(1); // 필터 초기화 시 첫 페이지로 이동
-    setOrgCategoriesCurrentPage(1); // 조직 카테고리 페이지도 리셋
+    setOrgCategoriesCurrentPage(1); // 조직 페이지도 리셋
   };
 
   // 문서 필터 초기화 함수
@@ -2164,7 +2164,7 @@ function MasterAdmin() {
     },
   });
 
-  // 조직 카테고리 편집 폼 초기화
+  // 조직 편집 폼 초기화
   const orgCategoryEditForm = useForm<OrgCategoryEditFormData>({
     resolver: zodResolver(orgCategoryEditSchema),
     defaultValues: {
@@ -2299,7 +2299,7 @@ function MasterAdmin() {
     },
   });
 
-  // 조직 카테고리 편집 열기
+  // 조직 편집 열기
   const openOrgCategoryEditDialog = (category: any) => {
     setEditingOrgCategory(category);
     orgCategoryEditForm.reset({
@@ -2314,7 +2314,7 @@ function MasterAdmin() {
     setIsOrgCategoryEditDialogOpen(true);
   };
 
-  // 조직 카테고리 편집 뮤테이션
+  // 조직 편집 뮤테이션
   const updateOrgCategoryMutation = useMutation({
     mutationFn: async (data: OrgCategoryEditFormData & { id: number }) => {
       const updatePayload = {
@@ -2411,7 +2411,7 @@ function MasterAdmin() {
     setUserCurrentPage(1); // 사용자 페이지 리셋
   };
 
-  // Q&A 로그 조직 카테고리 핸들러 함수들
+  // Q&A 로그 조직 핸들러 함수들
   const handleQAUpperCategoryChange = (value: string) => {
     setQASelectedUpperCategory(value);
     setQASelectedLowerCategory('all');
@@ -2726,7 +2726,7 @@ function MasterAdmin() {
 
 
 
-  // 조직 카테고리 목록 페이지네이션
+  // 조직 목록 페이지네이션
   const organizationPagination = usePagination({
     data: filteredOrganizationCategories,
     itemsPerPage: ITEMS_PER_PAGE,
@@ -3333,7 +3333,7 @@ function MasterAdmin() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || '조직 카테고리 파일 업로드에 실패했습니다');
+        throw new Error(errorData.message || '조직 파일 업로드에 실패했습니다');
       }
 
       const result = await response.json();
@@ -3341,7 +3341,7 @@ function MasterAdmin() {
       
       toast({
         title: "업로드 완료",
-        description: result.message || `${result.totalProcessed || selectedOrgCategoryFiles.length}개 조직 카테고리가 처리되었습니다.`,
+        description: result.message || `${result.totalProcessed || selectedOrgCategoryFiles.length}개 조직이 처리되었습니다.`,
       });
 
       // Refresh organization categories data and uploaded files list
@@ -3364,7 +3364,7 @@ function MasterAdmin() {
       console.error('Organization category upload error:', error);
       toast({
         title: "업로드 실패",
-        description: error.message || "조직 카테고리 파일 업로드 중 오류가 발생했습니다.",
+        description: error.message || "조직 파일 업로드 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -3507,7 +3507,7 @@ function MasterAdmin() {
     }
   };
 
-  // 조직 카테고리 엑셀 내보내기 핸들러
+  // 조직 엑셀 내보내기 핸들러
   const handleOrganizationExcelExport = async () => {
     try {
       const response = await fetch('/api/admin/organizations/export', {
@@ -3524,7 +3524,7 @@ function MasterAdmin() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `조직카테고리목록_${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.download = `조직목록_${new Date().toISOString().split('T')[0]}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3532,7 +3532,7 @@ function MasterAdmin() {
 
       toast({
         title: "내보내기 완료",
-        description: "조직 카테고리 목록이 엑셀 파일로 다운로드되었습니다.",
+        description: "조직 목록이 엑셀 파일로 다운로드되었습니다.",
       });
     } catch (error) {
       console.error('Organization Excel export error:', error);
@@ -3760,7 +3760,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     },
   });
 
-  // 조직 카테고리 파일 삭제 뮤테이션
+  // 조직 파일 삭제 뮤테이션
   const deleteOrgFileMutation = useMutation({
     mutationFn: async (fileName: string) => {
       const response = await apiRequest("DELETE", `/api/admin/organization-files/${encodeURIComponent(fileName)}`);
@@ -3770,7 +3770,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       refetchOrgFiles();
       toast({
         title: "파일 삭제 완료",
-        description: "조직 카테고리 파일이 성공적으로 삭제되었습니다.",
+        description: "조직 파일이 성공적으로 삭제되었습니다.",
       });
     },
     onError: (error: Error) => {
@@ -6900,7 +6900,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <TabsContent value="tokens" className="space-y-6">
           </TabsContent>
 
-          {/* 조직 카테고리 관리 */}
+          {/* 조직 관리 */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">{t('admin.organizationManagement')}</h2>
@@ -6911,7 +6911,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   className="flex items-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
-                  <span>조직 카테고리 목록 다운로드</span>
+                  <span>조직 목록 다운로드</span>
                 </Button>
               </div>
             </div>
@@ -6970,7 +6970,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </Card>
             </div>
 
-            {/* 조직 카테고리 검색 및 필터링 */}
+            {/* 조직 검색 및 필터링 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="font-semibold text-[20px]">{t('org.searchAndManagement')}</h3>
               
@@ -7213,13 +7213,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
                 totalItems={filteredOrganizationCategories.length}
                 itemsPerPage={ITEMS_PER_PAGE}
-                itemName="조직 카테고리"
+                itemName="조직"
                 showItemCount={false}
               />
             )}
           </TabsContent>
 
-          {/* 조직 카테고리 편집 다이얼로그 */}
+          {/* 조직 편집 다이얼로그 */}
           <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
               <DialogHeader>
@@ -7247,7 +7247,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                     </div>
 
-                    {/* 조직 카테고리 선택 - 드롭박스 */}
+                    {/* 조직 선택 - 드롭박스 */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <FormField
                         control={orgCategoryEditForm.control}
@@ -8668,7 +8668,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <h4 className="text-base font-medium mb-4">에이전트 검색</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                      <Label className="text-sm text-gray-600">상위 카테고리</Label>
+                      <Label className="text-sm text-gray-600">상위 조직</Label>
                       <Select defaultValue="인문대학">
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
@@ -8682,7 +8682,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-gray-600">하위 카테고리</Label>
+                      <Label className="text-sm text-gray-600">하위 조직</Label>
                       <Select defaultValue="국문학과">
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
@@ -8695,7 +8695,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-gray-600">세부 카테고리</Label>
+                      <Label className="text-sm text-gray-600">세부 조직</Label>
                       <Select defaultValue="4학년">
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
@@ -8961,7 +8961,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 새 조직 카테고리 생성 다이얼로그 */}
+        {/* 새 조직 생성 다이얼로그 */}
         <Dialog open={isNewCategoryDialogOpen} onOpenChange={setIsNewCategoryDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -9000,7 +9000,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               {/* 상위 카테고리 이름 */}
               <div className="space-y-2">
-                <Label>상위 카테고리 이름 *</Label>
+                <Label>상위 조직 이름 *</Label>
                 <Input 
                   placeholder="예: 인문대학, 공과대학"
                   className="w-full"
@@ -9051,7 +9051,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 조직 카테고리 파일 업로드 다이얼로그 */}
+        {/* 조직 파일 업로드 다이얼로그 */}
         <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
@@ -9253,7 +9253,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <Button 
                   variant="destructive" 
                   onClick={() => {
-                    if (confirm("로보대학교 관련 조직 카테고리를 모두 삭제하시겠습니까?")) {
+                    if (confirm("로보대학교 관련 조직을 모두 삭제하시겠습니까?")) {
                       deleteRoboUniversityMutation.mutate();
                     }
                   }}
@@ -9724,10 +9724,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   {/* 에이전트 검색 및 필터 */}
                   <div className="space-y-4 mb-4">
-                    {/* 조직 카테고리 필터 */}
+                    {/* 조직 필터 */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <Label className="text-sm font-medium">상위 카테고리</Label>
+                        <Label className="text-sm font-medium">상위 조직</Label>
                         <Select value={selectedDocumentUpperCategory} onValueChange={setSelectedDocumentUpperCategory}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
@@ -9744,7 +9744,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                       
                       <div>
-                        <Label className="text-sm font-medium">하위 카테고리</Label>
+                        <Label className="text-sm font-medium">하위 조직</Label>
                         <Select value={selectedDocumentLowerCategory} onValueChange={setSelectedDocumentLowerCategory}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
@@ -9766,7 +9766,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </div>
                       
                       <div>
-                        <Label className="text-sm font-medium">세부 카테고리</Label>
+                        <Label className="text-sm font-medium">세부 조직</Label>
                         <Select value={selectedDocumentDetailCategory} onValueChange={setSelectedDocumentDetailCategory}>
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
@@ -9878,7 +9878,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 // 유형 필터
                                 const typeMatch = selectedDocumentAgentType === 'all' || agent.category === selectedDocumentAgentType;
                                 
-                                // 조직 카테고리 필터
+                                // 조직 필터
                                 const agentOrgData = organizations?.find((org: any) => org.id === agent.organizationId);
                                 const upperCategoryMatch = selectedDocumentUpperCategory === 'all' || 
                                   (agentOrgData?.upperCategory === selectedDocumentUpperCategory) ||
@@ -10457,7 +10457,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectItem value="user">일반 사용자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
                                       <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                                      <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
+                                      <SelectItem value="category_admin">조직 관리자</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -10794,7 +10794,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectItem value="user">일반 사용자</SelectItem>
                               <SelectItem value="master_admin">마스터 관리자</SelectItem>
                               <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                              <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
+                              <SelectItem value="category_admin">조직 관리자</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -10957,7 +10957,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectItem value="user">일반 사용자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
                                       <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                                      <SelectItem value="category_admin">조직 카테고리 관리자</SelectItem>
+                                      <SelectItem value="category_admin">조직 관리자</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -12182,7 +12182,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <div className="text-sm font-medium text-gray-700 mb-1">소속 조직</div>
                     <div className="text-sm">
                       {(() => {
-                        // 에이전트의 조직 정보를 기반으로 카테고리 구성
+                        // 에이전트의 조직 정보를 기반으로 구성
                         const agent = agents.find(a => a.name === selectedQALog.agentName);
                         if (!agent) return '알 수 없음';
                         
