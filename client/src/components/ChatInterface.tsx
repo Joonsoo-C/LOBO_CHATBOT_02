@@ -894,9 +894,10 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   // This prevents the loading spinner flash before welcome message appears
 
   return (
-    <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`}>
-      {/* Header for both mobile and tablet */}
-      <header className={`relative bg-background border-b border-border ${!isTablet ? "fixed top-0 left-0 right-0 z-50" : ""}`}>
+    <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`} style={{ background: 'var(--neu-bg)' }}>
+      {/* Header for both mobile and tablet - hidden in Management mode for mobile */}
+      {(!isManagementMode || isTablet) && (
+        <header className={`relative bg-background border-b border-border ${!isTablet ? "fixed top-0 left-0 right-0 z-50" : ""}`}>
         <div className={`${isTablet ? "px-6 py-4" : "px-4 py-3"}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -1173,15 +1174,17 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
             </div>
           </div>
         </header>
+      )}
+      
       {/* Chat Messages */}
       <div 
         ref={messagesContainerRef}
         className={`chat-interface-messages px-4 ${isTablet ? "md:px-12" : "md:px-6"}`}
         style={{ 
-          height: isTablet ? 'calc(100vh - 240px)' : 'calc(100vh - 200px)',
+          height: isTablet ? 'calc(100vh - 240px)' : (isManagementMode ? 'calc(100vh - 100px)' : 'calc(100vh - 200px)'),
           overflowY: 'scroll',
           overflowX: 'hidden',
-          paddingTop: isTablet ? '1rem' : '70px', 
+          paddingTop: isTablet ? '1rem' : (isManagementMode ? '1rem' : '70px'), 
           paddingBottom: isTablet ? '1rem' : '60px',
           scrollBehavior: 'smooth',
           WebkitOverflowScrolling: 'touch'
