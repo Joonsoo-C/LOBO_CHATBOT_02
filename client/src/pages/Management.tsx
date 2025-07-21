@@ -49,11 +49,16 @@ export default function Management() {
     );
   }
 
+  // DEBUG: Add console log to verify this component is being rendered
+  console.log('[DEBUG] Management.tsx: Rendering Management component with agent:', agent.id, 'isManagementMode: true');
+
   return (
-    <ChatInterface 
-      ref={chatInterfaceRef}
-      agent={agent} 
-      isManagementMode={true} 
-    />
+    <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
+      <ChatInterface 
+        ref={chatInterfaceRef}
+        agent={agent} 
+        isManagementMode={true} 
+      />
+    </div>
   );
 }
