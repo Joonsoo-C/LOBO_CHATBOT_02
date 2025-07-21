@@ -595,7 +595,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
 대화를 통해 다음 기능들을 실행할 수 있습니다:
 
 • "페르소나 편집" - 에이전트 성격 및 말투 설정
-• "챗봇 설정" - LLM 모델 및 동작 방식 변경  
+• "AI 답변 설정" - LLM 모델 및 동작 방식 변경  
 • "문서 업로드" - 지식베이스 확장용 문서 추가
 • "알림보내기" - 사용자들에게 공지사항 전송
 • "성과 분석" - 에이전트 사용 통계 및 분석
@@ -1042,7 +1042,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               onClick={() => {
                                 setShowSettingsModal(true);
                                 setShowMenu(false);
-                                addSystemMessage("챗봇 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
+                                addSystemMessage("AI 답변 설정 창을 열었습니다. LLM 모델과 챗봇 유형을 변경할 수 있습니다.");
                               }}
                             >
                               <Settings className="w-4 h-4 mr-2" />
