@@ -7232,7 +7232,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 currentPage={orgCategoriesCurrentPage}
                 totalPages={totalOrgCategoriesPages}
                 onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
-                totalItems={filteredOrgCategories.length}
+                totalItems={filteredOrganizationCategories.length}
                 itemsPerPage={ITEMS_PER_PAGE}
                 itemName="조직 카테고리"
               />
