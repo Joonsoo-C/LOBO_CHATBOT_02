@@ -1749,7 +1749,7 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
                   disabled={deleteChatHistoryMutation.isPending}
                   className="korean-text"
                 >
-                  {deleteChatHistoryMutation.isPending ? "삭제 중..." : "확인"}
+                  {deleteChatHistoryMutation.isPending ? "삭제 중..." : "삭제"}
                 </Button>
               </div>
             </div>
