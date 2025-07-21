@@ -4933,76 +4933,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 페이지네이션 */}
             {hasSearched && totalUserPages > 1 && (
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700 dark:text-gray-300" style={{ display: 'none' }}>
-                  총 {filteredUsers.length}명의 사용자 중 {((userCurrentPage - 1) * usersPerPage) + 1}-{Math.min(userCurrentPage * usersPerPage, filteredUsers.length)}명 표시
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setUserCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={userCurrentPage === 1}
-                  >
-                    이전
-                  </Button>
-                  
-                  <div className="flex items-center space-x-1">
-                    {/* 첫 페이지 */}
-                    {userCurrentPage > 3 && (
-                      <>
-                        <Button
-                          variant={1 === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(1)}
-                        >
-                          1
-                        </Button>
-                        {userCurrentPage > 4 && <span className="px-2">...</span>}
-                      </>
-                    )}
-                    
-                    {/* 현재 페이지 주변 페이지들 */}
-                    {Array.from({ length: Math.min(5, totalUserPages) }, (_, i) => {
-                      const page = Math.max(1, Math.min(userCurrentPage - 2 + i, totalUserPages));
-                      if (page < Math.max(1, userCurrentPage - 2) || page > Math.min(userCurrentPage + 2, totalUserPages)) return null;
-                      return (
-                        <Button
-                          key={page}
-                          variant={page === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(page)}
-                        >
-                          {page}
-                        </Button>
-                      );
-                    })}
-                    
-                    {/* 마지막 페이지 */}
-                    {userCurrentPage < totalUserPages - 2 && (
-                      <>
-                        {userCurrentPage < totalUserPages - 3 && <span className="px-2">...</span>}
-                        <Button
-                          variant={totalUserPages === userCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setUserCurrentPage(totalUserPages)}
-                        >
-                          {totalUserPages}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setUserCurrentPage(prev => Math.min(prev + 1, totalUserPages))}
-                    disabled={userCurrentPage === totalUserPages}
-                  >
-                    다음
-                  </Button>
-                </div>
-              </div>
+              <PaginationComponent
+                currentPage={userCurrentPage}
+                totalPages={totalUserPages}
+                onPageChange={setUserCurrentPage}
+                totalItems={filteredSortedUsers.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                itemName="사용자"
+              />
             )}
           </TabsContent>
 
@@ -6536,6 +6474,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     currentPage={agentCurrentPage}
                     totalPages={agentTotalPages}
                     onPageChange={setAgentCurrentPage}
+                    totalItems={filteredAgents?.length || 0}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    itemName="에이전트"
                   />
                 )}
               </Card>
@@ -6885,6 +6826,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     currentPage={qaLogCurrentPage}
                     totalPages={Math.ceil(filteredConversationLogs.length / ITEMS_PER_PAGE)}
                     onPageChange={setQaLogCurrentPage}
+                    totalItems={filteredConversationLogs.length}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    itemName="질문응답"
                   />
                 )}
               </CardContent>
@@ -7288,6 +7232,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 currentPage={orgCategoriesCurrentPage}
                 totalPages={totalOrgCategoriesPages}
                 onPageChange={(page) => setOrgCategoriesCurrentPage(page)}
+                totalItems={filteredOrgCategories.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                itemName="조직 카테고리"
               />
             )}
           </TabsContent>
@@ -8298,6 +8245,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     currentPage={documentCurrentPage}
                     totalPages={Math.ceil(documentList.length / ITEMS_PER_PAGE)}
                     onPageChange={setDocumentCurrentPage}
+                    totalItems={documentList.length}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    itemName="문서"
                   />
                 )}
               </CardContent>
@@ -8596,6 +8546,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     currentPage={tokenCurrentPage}
                     totalPages={tokenTotalPages}
                     onPageChange={setTokenCurrentPage}
+                    totalItems={filteredTokenData.length}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    itemName="토큰 기록"
                   />
                 )}
               </CardContent>

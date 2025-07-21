@@ -354,7 +354,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.searchPlaceholder': '사용자명 또는 이메일 주소를 입력하세요.',
     'admin.searchButton': '검색',
     'admin.userListTitle': '사용자 목록',
-    'admin.showingResults': '전체 {total}명 사용자 중 {start}-{end}개 표시',
+    'admin.userShowingResults': '전체 {total}명 사용자 중 {start}-{end}개 표시',
     'admin.noSearchResults': '검색 결과 없음',
     'admin.noSearchResultsDesc': '검색 조건에 맞는 사용자가 없습니다. 다른 조건으로 검색해보세요.',
     
@@ -371,10 +371,10 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.documentShowingResults': '전체 {total}개 문서 중 {start}-{end}개 표시',
     
     // Organization management
-    'admin.orgShowingResults': '전체 {total}개 조직 카테고리 중 {start}-{end}개 표시',
+    'admin.organizationShowingResults': '전체 {total}개 조직 카테고리 중 {start}-{end}개 표시',
     
     // Token management
-    'admin.tokenShowingResults': '전체 {total}개 토큰 사용 기록 중 {start}-{end}개 표시',
+    'admin.tokenShowingResults': '전체 {total}개 토큰 기록 중 {start}-{end}개 표시',
     
     // Agent icon selection
     'admin.iconTypeSelection': '아이콘 유형 선택',
