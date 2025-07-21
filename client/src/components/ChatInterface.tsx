@@ -43,7 +43,8 @@ import {
   EyeOff,
   Brain,
   BrainCircuit,
-  Globe
+  Globe,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -949,7 +950,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {/* Function Selection Button - Only visible in general mode */}
+                {/* Settings button for general chat mode */}
                 {!isManagementMode && (
                   <div className="relative">
                     <Button 
@@ -958,7 +959,8 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                       className="px-3 py-2 korean-text"
                       onClick={() => setShowGeneralMenu(!showGeneralMenu)}
                     >
-                      {t('agent.functionsSelect')}
+                      <Settings className="w-4 h-4 mr-2" />
+                      설정
                     </Button>
                   
                     {/* General Chat Dropdown Menu */}
@@ -994,6 +996,45 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                             >
                               <Trash2 className="w-4 h-4 mr-2" />
                               {t('chat.deleteHistory')}
+                            </Button>
+                            <hr className="my-2" />
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                const event = new CustomEvent('openAccountSettings');
+                                window.dispatchEvent(event);
+                                setShowGeneralMenu(false);
+                              }}
+                            >
+                              <User className="w-4 h-4 mr-2" />
+                              계정 설정
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={async () => {
+                                setShowGeneralMenu(false);
+                                try {
+                                  const response = await fetch('/api/auth/logout', {
+                                    method: 'POST',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                    },
+                                  });
+                                  
+                                  if (response.ok) {
+                                    window.location.href = '/auth';
+                                  }
+                                } catch (error) {
+                                  console.error('Logout failed:', error);
+                                }
+                              }}
+                            >
+                              <LogOut className="w-4 h-4 mr-2" />
+                              {t('common.logout')}
                             </Button>
 
                           </div>
