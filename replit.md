@@ -960,6 +960,16 @@ Changelog:
   * Resolved duplicate key warnings in LanguageContext.tsx by removing redundant entries
   * Master admin dashboard now fully supports language switching with proper translation of all UI elements
   * Fixed internationalization issue where English language setting didn't properly translate dashboard card titles
+- July 21, 2025. Updated agent chat interface settings menu and system-wide organization terminology:
+  * Changed agent chat header button from "설정" to "기능 선택" per user request
+  * Removed "계정 설정" (Account Settings) and "로그아웃" (Logout) options from general chat mode dropdown menu
+  * Completed system-wide organization category dropdown naming standardization across ALL management sections:
+    - Changed "상위 조직 카테고리" → "상위 조직"
+    - Changed "하위 조직 카테고리" → "하위 조직"
+    - Changed "세부 조직 카테고리" → "세부 조직"
+  * Updated all filtering areas: user management, agent management, organization management, document management, token management
+  * All dropdown menus now use consistent simplified naming without "카테고리" suffix
+  * Completed full Korean localization of token management screen with proper organization filter labels
 - July 9, 2025. Completed comprehensive filter reset button styling standardization:
   * Removed variant="outline" from all filter reset buttons across all management sections
   * Updated filter reset buttons in user management, agent management, organization category management, document management, Q&A management, and token management
