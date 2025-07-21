@@ -1033,6 +1033,13 @@ Changelog:
   * Dynamic response method assignment based on conversation ID for consistent data display
   * Repositioned "시간" column between "응답 시간" and "개선 요청" columns for better information flow
 - July 18, 2025. Enhanced message notification badges with improved visibility and refined styling:
+- July 21, 2025. Completed comprehensive pagination layout standardization across all management sections:
+  * Updated PaginationComponent.tsx with conditional showItemCount display system
+  * Modified ALL management sections to show pagination information in CardHeader (top-right position)
+  * Added showItemCount={false} to all PaginationComponent instances to prevent duplicate pagination information
+  * Updated user management, Q&A management, organization category management, document management, and token management sections
+  * Implemented descriptive Korean text format: "전체 N개 [항목] 중 N-N개 표시" in all CardHeader components
+  * Complete pagination UI consistency achieved across entire master admin interface system
   * Increased message badge size and visual prominence with red background, white text, and font-bold styling
   * Added shadow effects (shadow-lg) and white border (border-2) for better contrast
   * Initially implemented animate-pulse effect for attention-grabbing behavior

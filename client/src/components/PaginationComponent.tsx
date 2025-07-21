@@ -8,6 +8,7 @@ interface PaginationComponentProps {
   totalItems: number;
   itemsPerPage: number;
   itemName?: string; // 예: "사용자", "에이전트", "문서" 등
+  showItemCount?: boolean; // 총계 표시 여부
 }
 
 export const PaginationComponent: React.FC<PaginationComponentProps> = ({
@@ -16,7 +17,8 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   onPageChange,
   totalItems,
   itemsPerPage,
-  itemName = "항목"
+  itemName = "항목",
+  showItemCount = true
 }) => {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -43,9 +45,11 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   return (
     <div className="flex flex-col items-center justify-center space-y-2 px-6 py-4 text-center">
       {/* 페이지네이션 설명 텍스트 */}
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        전체 {totalItems}개 {itemName} 중 {startItem}-{endItem}개 표시
-      </div>
+      {showItemCount && (
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          전체 {totalItems}개 {itemName} 중 {startItem}-{endItem}개 표시
+        </div>
+      )}
       
       <div className="flex items-center justify-center space-x-2">
         {/* 페이지네이션 버튼들 */}

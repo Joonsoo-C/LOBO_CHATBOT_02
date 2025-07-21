@@ -4780,11 +4780,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.userListTitle')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.userShowingResults', { 
-                    total: filteredUsers?.length || 0,
-                    start: ((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
-                    end: Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)
-                  })}
+                  전체 {filteredUsers?.length || 0}개 사용자 중 {((userCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(userCurrentPage * ITEMS_PER_PAGE, filteredUsers?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -4940,6 +4936,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 totalItems={filteredSortedUsers.length}
                 itemsPerPage={ITEMS_PER_PAGE}
                 itemName="사용자"
+                showItemCount={false}
               />
             )}
           </TabsContent>
@@ -6294,11 +6291,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.agentListTitle')}</CardTitle>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.agentShowingResults', {
-                      total: sortedAgents?.length || 0,
-                      start: Math.min((agentCurrentPage - 1) * AGENTS_PER_PAGE + 1, sortedAgents?.length || 0),
-                      end: Math.min(agentCurrentPage * AGENTS_PER_PAGE, sortedAgents?.length || 0)
-                    })}
+                    전체 {sortedAgents?.length || 0}개 에이전트 중 {Math.min((agentCurrentPage - 1) * AGENTS_PER_PAGE + 1, sortedAgents?.length || 0)}-{Math.min(agentCurrentPage * AGENTS_PER_PAGE, sortedAgents?.length || 0)}개 표시
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -6477,6 +6470,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     totalItems={filteredAgents?.length || 0}
                     itemsPerPage={ITEMS_PER_PAGE}
                     itemName="에이전트"
+                    showItemCount={false}
                   />
                 )}
               </Card>
@@ -6676,11 +6670,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.qaShowingResults', {
-                    total: filteredConversationLogs?.length || 0,
-                    start: ((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
-                    end: Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)
-                  })}
+                  전체 {filteredConversationLogs?.length || 0}개 질문응답 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -6829,6 +6819,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     totalItems={filteredConversationLogs.length}
                     itemsPerPage={ITEMS_PER_PAGE}
                     itemName="질문응답"
+                    showItemCount={false}
                   />
                 )}
               </CardContent>
@@ -7085,11 +7076,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('org.organizationList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.organizationShowingResults', { 
-                    total: filteredOrganizationCategories?.length || 0,
-                    start: organizationCategoriesStartIndex + 1,
-                    end: Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories?.length || 0)
-                  })}
+                  전체 {filteredOrganizationCategories?.length || 0}개 조직 중 {organizationCategoriesStartIndex + 1}-{Math.min(organizationCategoriesEndIndex, filteredOrganizationCategories?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -7235,6 +7222,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 totalItems={filteredOrganizationCategories.length}
                 itemsPerPage={ITEMS_PER_PAGE}
                 itemName="조직 카테고리"
+                showItemCount={false}
               />
             )}
           </TabsContent>
@@ -7949,11 +7937,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.documentList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.documentShowingResults', {
-                    total: documentList?.length || 0,
-                    start: documentList && documentList.length > 0 ? ((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1 : 0,
-                    end: documentList && documentList.length > 0 ? Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length) : 0
-                  })}
+                  전체 {documentList?.length || 0}개 문서 중 {documentList && documentList.length > 0 ? ((documentCurrentPage - 1) * ITEMS_PER_PAGE) + 1 : 0}-{documentList && documentList.length > 0 ? Math.min(documentCurrentPage * ITEMS_PER_PAGE, documentList.length) : 0}개 표시
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -8248,6 +8232,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     totalItems={documentList.length}
                     itemsPerPage={ITEMS_PER_PAGE}
                     itemName="문서"
+                    showItemCount={false}
                   />
                 )}
               </CardContent>
@@ -8444,11 +8429,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.tokenUsageList')}</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('admin.tokenShowingResults', {
-                    total: filteredTokenData?.length || 0,
-                    start: ((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1,
-                    end: Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)
-                  })}
+                  전체 {filteredTokenData?.length || 0}개 토큰 기록 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent>
@@ -8549,6 +8530,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     totalItems={filteredTokenData.length}
                     itemsPerPage={ITEMS_PER_PAGE}
                     itemName="토큰 기록"
+                    showItemCount={false}
                   />
                 )}
               </CardContent>
