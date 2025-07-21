@@ -8352,7 +8352,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mt-6">
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
