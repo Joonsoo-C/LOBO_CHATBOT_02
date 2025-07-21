@@ -279,13 +279,13 @@
       172,
       {
         "id": 172,
-        "userId": "user1081",
-        "agentId": 164,
-        "type": "general",
+        "userId": "master_admin",
+        "agentId": 115,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-18T16:08:09.853Z",
+        "lastMessageAt": "2025-07-21T06:51:41.165Z",
         "isHidden": false,
-        "createdAt": "2025-07-18T16:08:09.853Z"
+        "createdAt": "2025-07-21T06:51:41.165Z"
       }
     ]
   ]

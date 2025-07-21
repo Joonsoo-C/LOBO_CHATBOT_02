@@ -22,10 +22,18 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
   const [selectedLowerCategory, setSelectedLowerCategory] = useState("");
   const [selectedDetailCategory, setSelectedDetailCategory] = useState("");
 
+  // Fetch current user data
+  const { data: user } = useQuery({
+    queryKey: ["/api/user"],
+  });
+
   // Fetch organization categories
   const { data: organizationCategories = [] } = useQuery({
     queryKey: ["/api/organization-categories"],
   });
+
+  // Check if user is master admin
+  const isMasterAdmin = user?.role === 'master_admin' || user?.systemRole === 'master_admin';
 
   // Initialize settings from agent data
   useEffect(() => {
@@ -130,76 +138,118 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Current Settings Info */}
-          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-            <h3 className="font-medium korean-text text-sm">현재 설정</h3>
-            <div className="text-sm text-gray-600 korean-text">
-              <p>공개 범위: {visibility === "public" ? "조직 전체" : "특정 그룹"}</p>
-              <p>공개 여부: {isVisible ? "공개" : "비공개"}</p>
-              {visibility === "group" && selectedUpperCategory && (
-                <p>공개 대상: {selectedUpperCategory}{selectedLowerCategory ? ` > ${selectedLowerCategory}` : ""}{selectedDetailCategory ? ` > ${selectedDetailCategory}` : ""}</p>
-              )}
+        <div className="p-6 space-y-6">
+          {isMasterAdmin ? (
+            // Master Admin Interface - Full functionality
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Current Settings Info */}
+              <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                <h3 className="font-medium korean-text text-sm">현재 설정</h3>
+                <div className="text-sm text-gray-600 korean-text">
+                  <p>공개 범위: {visibility === "public" ? "조직 전체" : "특정 그룹"}</p>
+                  <p>공개 여부: {isVisible ? "공개" : "비공개"}</p>
+                  {visibility === "group" && selectedUpperCategory && (
+                    <p>공개 대상: {selectedUpperCategory}{selectedLowerCategory ? ` > ${selectedLowerCategory}` : ""}{selectedDetailCategory ? ` > ${selectedDetailCategory}` : ""}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Visibility Status */}
+              <div className="space-y-2">
+                <Label className="korean-text">공개 여부</Label>
+                <div className="flex space-x-4">
+                  <Button
+                    type="button"
+                    variant={isVisible ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setIsVisible(true)}
+                    className="flex-1 korean-text"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    공개
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={!isVisible ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setIsVisible(false)}
+                    className="flex-1 korean-text"
+                  >
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    비공개
+                  </Button>
+                </div>
+              </div>
+
+              {/* Visibility Scope */}
+              <div className="space-y-2">
+                <Label className="korean-text">공개 범위</Label>
+                <Select
+                  value={visibility}
+                  onValueChange={(value: "public" | "group") => {
+                    setVisibility(value);
+                    if (value === "public") {
+                      setSelectedUpperCategory("");
+                      setSelectedLowerCategory("");
+                      setSelectedDetailCategory("");
+                    }
+                  }}
+                >
+                  <SelectTrigger className="korean-text">
+                    <SelectValue placeholder="공개 범위를 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="public" className="korean-text">
+                      조직 전체 - 모든 구성원이 사용 가능
+                    </SelectItem>
+                    <SelectItem value="group" className="korean-text">
+                      특정 그룹 - 선택한 조직의 구성원만 사용 가능
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </form>
+          ) : (
+            // Agent Manager Interface - View only
+            <div className="space-y-6">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h3 className="font-medium korean-text text-sm mb-3">마스터 관리자가 지정한 공개 설정</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 korean-text">공개 범위:</span>
+                    <span className="text-sm font-medium korean-text">
+                      {visibility === "public" ? "조직 전체" : "특정 그룹"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 korean-text">공개 여부:</span>
+                    <span className="text-sm font-medium korean-text">
+                      {isVisible ? "공개" : "비공개"}
+                    </span>
+                  </div>
+                  {visibility === "group" && selectedUpperCategory && (
+                    <div className="space-y-2">
+                      <span className="text-sm text-gray-600 korean-text">공개 대상 조직:</span>
+                      <div className="bg-white p-3 rounded border text-sm korean-text">
+                        {selectedUpperCategory}
+                        {selectedLowerCategory && ` > ${selectedLowerCategory}`}
+                        {selectedDetailCategory && ` > ${selectedDetailCategory}`}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <p className="text-sm text-amber-800 korean-text">
+                  ℹ️ 에이전트 관리자는 공개 설정을 확인만 할 수 있습니다. 공개 범위 변경은 마스터 관리자만 가능합니다.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Visibility Status */}
-          <div className="space-y-2">
-            <Label className="korean-text">공개 여부</Label>
-            <div className="flex space-x-4">
-              <Button
-                type="button"
-                variant={isVisible ? "default" : "outline"}
-                size="sm"
-                onClick={() => setIsVisible(true)}
-                className="flex-1 korean-text"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                공개
-              </Button>
-              <Button
-                type="button"
-                variant={!isVisible ? "default" : "outline"}
-                size="sm"
-                onClick={() => setIsVisible(false)}
-                className="flex-1 korean-text"
-              >
-                <EyeOff className="w-4 h-4 mr-2" />
-                비공개
-              </Button>
-            </div>
-          </div>
-
-          {/* Visibility Scope */}
-          <div className="space-y-2">
-            <Label className="korean-text">공개 범위</Label>
-            <Select
-              value={visibility}
-              onValueChange={(value: "public" | "group") => {
-                setVisibility(value);
-                if (value === "public") {
-                  setSelectedUpperCategory("");
-                  setSelectedLowerCategory("");
-                  setSelectedDetailCategory("");
-                }
-              }}
-            >
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="공개 범위를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent className="z-[10000]">
-                <SelectItem value="public" className="korean-text">
-                  조직 전체 - 모든 구성원이 사용 가능
-                </SelectItem>
-                <SelectItem value="group" className="korean-text">
-                  특정 그룹 - 선택한 조직의 구성원만 사용 가능
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Group Category Selection */}
-          {visibility === 'group' && (
+          {/* Group Category Selection - Only for Master Admin */}
+          {isMasterAdmin && visibility === 'group' && (
             <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h4 className="font-medium korean-text text-sm">공개 대상 조직 선택</h4>
               <div className="grid grid-cols-1 gap-4">
@@ -290,35 +340,51 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="flex-1 korean-text"
-            >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              disabled={updateVisibilityMutation.isPending || (visibility === "group" && !selectedUpperCategory)}
-              className="flex-1 korean-text"
-            >
-              {updateVisibilityMutation.isPending ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>저장 중...</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <Save className="w-4 h-4" />
-                  <span>설정 저장</span>
-                </div>
-              )}
-            </Button>
-          </div>
-        </form>
+          {/* Action Buttons - Only for Master Admin */}
+          {isMasterAdmin && (
+            <div className="flex space-x-3 pt-4 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="flex-1 korean-text"
+              >
+                취소
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateVisibilityMutation.isPending || (visibility === "group" && !selectedUpperCategory)}
+                className="flex-1 korean-text"
+              >
+                {updateVisibilityMutation.isPending ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>저장 중...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <Save className="w-4 h-4" />
+                    <span>설정 저장</span>
+                  </div>
+                )}
+              </Button>
+            </div>
+          )}
+
+          {/* Close Button - For Agent Manager */}
+          {!isMasterAdmin && (
+            <div className="flex pt-4 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="w-full korean-text"
+              >
+                닫기
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
