@@ -6536,7 +6536,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">3.2%</div>
-                    <div className="text-xs text-green-600">Daily Comparison</div>
+                    <div className="text-xs text-green-600">전월 대비</div>
                   </div>
                 </div>
               </div>
@@ -6549,7 +6549,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">4.6/5</div>
-                    <div className="text-xs text-green-600">Average Score</div>
+                    <div className="text-xs text-green-600">향상 중</div>
                   </div>
                 </div>
               </div>
@@ -6557,17 +6557,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold mb-4 text-[20px]">{t('admin.logSearch')}</h3>
+              <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.upperCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder={t('admin.select')} />
+                      <SelectValue placeholder="전체" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('admin.all')}</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
                       {qaUniqueUpperCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6577,13 +6577,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.lowerCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위조직</Label>
                   <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
                     <SelectTrigger className={`h-10 ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder={t('admin.select')} />
+                      <SelectValue placeholder="전체" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('admin.all')}</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
                       {qaFilteredLowerCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6593,17 +6593,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.detailCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부조직</Label>
                   <Select 
                     value={qaSelectedDetailCategory} 
                     onValueChange={handleQADetailCategoryChange}
                     disabled={qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all'}
                   >
                     <SelectTrigger className={`h-10 ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                      <SelectValue placeholder={t('admin.select')} />
+                      <SelectValue placeholder="전체" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('admin.all')}</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
                       {qaFilteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -6614,44 +6614,44 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button className="h-10 w-full" onClick={resetQAFilters}>
-                    {t('admin.filterReset')}
+                    필터 초기화
                   </Button>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.userType')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 유형</Label>
                   <Select value={qaUserTypeFilter} onValueChange={setQaUserTypeFilter}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder={t('admin.userType')} />
+                      <SelectValue placeholder="전체" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('admin.all')}</SelectItem>
-                      <SelectItem value="student">{t('admin.student')}</SelectItem>
-                      <SelectItem value="faculty">{t('admin.faculty')}</SelectItem>
-                      <SelectItem value="admin">{t('admin.admin')}</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="student">학생</SelectItem>
+                      <SelectItem value="faculty">교직원</SelectItem>
+                      <SelectItem value="admin">관리자</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.period')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                   <Select value={qaPeriodFilter} onValueChange={setQaPeriodFilter}>
                     <SelectTrigger className="h-10">
-                      <SelectValue placeholder={t('admin.periodSelect')} />
+                      <SelectValue placeholder="오늘" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="today">{t('admin.today')}</SelectItem>
-                      <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
-                      <SelectItem value="month">{t('admin.oneMonth')}</SelectItem>
-                      <SelectItem value="quarter">{t('admin.threeMonths')}</SelectItem>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">최근 1주일</SelectItem>
+                      <SelectItem value="month">최근 1개월</SelectItem>
+                      <SelectItem value="quarter">최근 3개월</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드 검색</Label>
                   <Input 
-                    placeholder={t('admin.searchByQuestion')} 
+                    placeholder="질문 내용 검색..." 
                     className="h-10" 
                     value={qaSearchQuery}
                     onChange={(e) => setQaSearchQuery(e.target.value)}
@@ -6659,7 +6659,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
                 <div>
                   <Button className="h-10 w-full">
-                    {t('admin.searchButton')}
+                    검색
                   </Button>
                 </div>
               </div>
