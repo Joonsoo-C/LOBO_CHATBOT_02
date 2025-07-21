@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import PDFViewer from "./PDFViewer";
 import { 
   ChevronLeft, 
+  ArrowLeft,
   Paperclip, 
   Menu, 
   Send, 
@@ -899,6 +900,17 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
         <div className={`${isTablet ? "px-6 py-4" : "px-4 py-3"}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
+                {/* Back button for mobile */}
+                {!isTablet && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="p-1"
+                    onClick={() => window.history.back()}
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </Button>
+                )}
                 <div 
                   className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden"
                   style={{ backgroundColor: agent.backgroundColor }}
