@@ -6559,7 +6559,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="font-semibold mb-4 text-[20px]">{t('admin.logSearch')}</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.upperCategory')}</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
@@ -6612,9 +6612,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Button className="h-10 w-full" onClick={resetQAFilters}>
+                    {t('admin.filterReset')}
+                  </Button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.userType')}</Label>
                   <Select value={qaUserTypeFilter} onValueChange={setQaUserTypeFilter}>
@@ -6655,11 +6660,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Button className="h-10 w-full">
                     {t('admin.searchButton')}
-                  </Button>
-                </div>
-                <div>
-                  <Button className="h-10 w-full" onClick={resetQAFilters}>
-                    {t('admin.filterReset')}
                   </Button>
                 </div>
               </div>
@@ -8284,7 +8284,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 조직 (상단) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
                     <Select 
@@ -8349,10 +8349,23 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       </SelectContent>
                     </Select>
                   </div>
+                  
+                  <div>
+                    <Button onClick={() => {
+                      setTokenPeriodFilter("month");
+                      setTokenUpperCategoryFilter("all");
+                      setTokenLowerCategoryFilter("all");
+                      setTokenDetailCategoryFilter("all");
+                      setTokenKeywordFilter("");
+                      setTokenModelFilter("all");
+                    }} className="h-10 w-full">
+                      필터 초기화
+                    </Button>
+                  </div>
                 </div>
 
                 {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
@@ -8397,19 +8410,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div>
                     <Button className="h-10 w-full">
                       검색
-                    </Button>
-                  </div>
-                  
-                  <div>
-                    <Button onClick={() => {
-                      setTokenPeriodFilter("month");
-                      setTokenUpperCategoryFilter("all");
-                      setTokenLowerCategoryFilter("all");
-                      setTokenDetailCategoryFilter("all");
-                      setTokenKeywordFilter("");
-                      setTokenModelFilter("all");
-                    }} className="h-10 w-full">
-                      필터 초기화
                     </Button>
                   </div>
                 </div>
