@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Globe, X, Save, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -296,37 +297,26 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
             )}
 
             {/* Visibility Status */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Label className="korean-text font-medium">공개 여부</Label>
-              <div className="flex space-x-3">
-                <Button
-                  type="button"
-                  variant={isVisible ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setIsVisible(true)}
-                  className={`flex-1 korean-text transition-colors ${
-                    isVisible 
-                      ? 'bg-green-600 hover:bg-green-700 text-white' 
-                      : 'border-green-600 text-green-600 hover:bg-green-50'
-                  }`}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  공개
-                </Button>
-                <Button
-                  type="button"
-                  variant={!isVisible ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setIsVisible(false)}
-                  className={`flex-1 korean-text transition-colors ${
-                    !isVisible 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'border-red-600 text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  비공개
-                </Button>
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                <div className="flex items-center space-x-3">
+                  {isVisible ? (
+                    <Eye className="w-5 h-5 text-green-600" />
+                  ) : (
+                    <EyeOff className="w-5 h-5 text-red-600" />
+                  )}
+                  <span className={`korean-text font-medium ${
+                    isVisible ? 'text-green-700' : 'text-red-700'
+                  }`}>
+                    {isVisible ? '공개' : '비공개'}
+                  </span>
+                </div>
+                <Switch
+                  checked={isVisible}
+                  onCheckedChange={setIsVisible}
+                  className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-400"
+                />
               </div>
             </div>
 
