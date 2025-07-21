@@ -33,7 +33,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
   });
 
   // Check if user is master admin
-  const isMasterAdmin = user?.role === 'master_admin' || user?.systemRole === 'master_admin';
+  const isMasterAdmin = (user as any)?.role === 'master_admin' || (user as any)?.systemRole === 'master_admin';
 
   // Initialize settings from agent data
   useEffect(() => {
@@ -48,13 +48,13 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
 
   // Helper functions for category filtering
   const getUpperCategories = () => {
-    const categories = [...new Set(organizationCategories.map((org: any) => org.upperCategory))];
+    const categories = [...new Set((organizationCategories as any[]).map((org: any) => org.upperCategory))];
     return categories.filter(Boolean);
   };
 
   const getLowerCategories = (upperCategory: string) => {
     if (!upperCategory) return [];
-    const categories = organizationCategories
+    const categories = (organizationCategories as any[])
       .filter((org: any) => org.upperCategory === upperCategory)
       .map((org: any) => org.lowerCategory);
     return [...new Set(categories)].filter(Boolean);
@@ -62,7 +62,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
 
   const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
     if (!upperCategory || !lowerCategory) return [];
-    const categories = organizationCategories
+    const categories = (organizationCategories as any[])
       .filter((org: any) => 
         org.upperCategory === upperCategory && 
         org.lowerCategory === lowerCategory
@@ -139,53 +139,52 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
 
         {/* Form */}
         <div className="p-6 space-y-6">
-          {isMasterAdmin ? (
-            // Master Admin Interface - Full functionality
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Agent Organization Info */}
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 className="font-medium korean-text text-sm mb-3">에이전트 소속 조직</h3>
-                <div className="bg-white p-3 rounded border text-sm korean-text">
-                  {user?.upperCategory || "인문대학"} > {user?.lowerCategory || "국어국문학과"} > {user?.detailCategory || "현대 문학 전공"}
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Agent Organization Info */}
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <h3 className="font-medium korean-text text-sm mb-3">에이전트 소속 조직</h3>
+              <div className="bg-white p-3 rounded border text-sm korean-text">
+                {(user as any)?.upperCategory || "인문대학"} &gt; {(user as any)?.lowerCategory || "국어국문학과"} &gt; {(user as any)?.detailCategory || "현대 문학 전공"}
               </div>
+            </div>
 
-              {/* Visibility Status */}
-              <div className="space-y-3">
-                <Label className="korean-text font-medium">공개 여부</Label>
-                <div className="flex space-x-3">
-                  <Button
-                    type="button"
-                    variant={isVisible ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setIsVisible(true)}
-                    className={`flex-1 korean-text transition-colors ${
-                      isVisible 
-                        ? 'bg-green-600 hover:bg-green-700 text-white' 
-                        : 'border-green-600 text-green-600 hover:bg-green-50'
-                    }`}
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    공개
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={!isVisible ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setIsVisible(false)}
-                    className={`flex-1 korean-text transition-colors ${
-                      !isVisible 
-                        ? 'bg-red-600 hover:bg-red-700 text-white' 
-                        : 'border-red-600 text-red-600 hover:bg-red-50'
-                    }`}
-                  >
-                    <EyeOff className="w-4 h-4 mr-2" />
-                    비공개
-                  </Button>
-                </div>
+            {/* Visibility Status */}
+            <div className="space-y-3">
+              <Label className="korean-text font-medium">공개 여부</Label>
+              <div className="flex space-x-3">
+                <Button
+                  type="button"
+                  variant={isVisible ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsVisible(true)}
+                  className={`flex-1 korean-text transition-colors ${
+                    isVisible 
+                      ? 'bg-green-600 hover:bg-green-700 text-white' 
+                      : 'border-green-600 text-green-600 hover:bg-green-50'
+                  }`}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  공개
+                </Button>
+                <Button
+                  type="button"
+                  variant={!isVisible ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsVisible(false)}
+                  className={`flex-1 korean-text transition-colors ${
+                    !isVisible 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'border-red-600 text-red-600 hover:bg-red-50'
+                  }`}
+                >
+                  <EyeOff className="w-4 h-4 mr-2" />
+                  비공개
+                </Button>
               </div>
+            </div>
 
-              {/* Visibility Scope */}
+            {/* Visibility Scope - Only for Master Admin */}
+            {isMasterAdmin && (
               <div className="space-y-2">
                 <Label className="korean-text">공개 범위</Label>
                 <Select
@@ -212,29 +211,13 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
                   </SelectContent>
                 </Select>
               </div>
-            </form>
-          ) : (
-            // Agent Manager Interface - View only
-            <div className="space-y-6">
-              {/* Agent Organization Info */}
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 className="font-medium korean-text text-sm mb-3">에이전트 소속 조직</h3>
-                <div className="bg-white p-3 rounded border text-sm korean-text">
-                  {user?.upperCategory || "인문대학"} > {user?.lowerCategory || "국어국문학과"} > {user?.detailCategory || "현대 문학 전공"}
-                </div>
-              </div>
+            )}
 
-              {/* Current Visibility Settings */}
+            {/* Current Settings Display for Agent Managers */}
+            {!isMasterAdmin && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="font-medium korean-text text-sm mb-3">현재 공개 설정 상태</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 korean-text">공개 여부:</span>
-                    <span className={`text-sm font-medium korean-text flex items-center ${isVisible ? 'text-green-600' : 'text-red-600'}`}>
-                      {isVisible ? <Eye className="w-4 h-4 mr-1" /> : <EyeOff className="w-4 h-4 mr-1" />}
-                      {isVisible ? "공개" : "비공개"}
-                    </span>
-                  </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600 korean-text">공개 범위:</span>
                     <span className="text-sm font-medium korean-text">
@@ -253,109 +236,101 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
                   )}
                 </div>
               </div>
-              
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <p className="text-sm text-amber-800 korean-text">
-                  ℹ️ 에이전트 관리자는 공개 설정을 확인만 할 수 있습니다. 공개 범위 변경은 마스터 관리자만 가능합니다.
-                </p>
+            )}
+
+            {/* Group Category Selection - Only for Master Admin */}
+            {isMasterAdmin && visibility === 'group' && (
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-medium korean-text text-sm">공개 대상 조직 선택</h4>
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Upper Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">상위 조직 *</Label>
+                    <Select
+                      value={selectedUpperCategory}
+                      onValueChange={(value) => {
+                        setSelectedUpperCategory(value);
+                        setSelectedLowerCategory("");
+                        setSelectedDetailCategory("");
+                      }}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="상위 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        {getUpperCategories().map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Lower Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">하위 조직</Label>
+                    <Select
+                      value={selectedLowerCategory}
+                      onValueChange={(value) => {
+                        setSelectedLowerCategory(value);
+                        setSelectedDetailCategory("");
+                      }}
+                      disabled={!selectedUpperCategory}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="하위 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="" className="korean-text">전체</SelectItem>
+                        {getLowerCategories(selectedUpperCategory).map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Detail Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm">세부 조직</Label>
+                    <Select
+                      value={selectedDetailCategory}
+                      onValueChange={setSelectedDetailCategory}
+                      disabled={!selectedUpperCategory || !selectedLowerCategory}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="세부 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="" className="korean-text">전체</SelectItem>
+                        {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((category) => (
+                          <SelectItem key={category} value={category} className="korean-text">
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {selectedUpperCategory && (
+                  <div className="mt-4 p-3 bg-white rounded border">
+                    <p className="text-sm font-medium korean-text text-gray-700">공개 대상:</p>
+                    <p className="text-sm korean-text text-blue-600">
+                      {selectedUpperCategory}
+                      {selectedLowerCategory && ` > ${selectedLowerCategory}`}
+                      {selectedDetailCategory && ` > ${selectedDetailCategory}`}
+                      {!selectedLowerCategory && " (전체 하위 조직)"}
+                      {selectedLowerCategory && !selectedDetailCategory && " (전체 세부 조직)"}
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Group Category Selection - Only for Master Admin */}
-          {isMasterAdmin && visibility === 'group' && (
-            <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="font-medium korean-text text-sm">공개 대상 조직 선택</h4>
-              <div className="grid grid-cols-1 gap-4">
-                {/* Upper Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-sm">상위 조직 *</Label>
-                  <Select
-                    value={selectedUpperCategory}
-                    onValueChange={(value) => {
-                      setSelectedUpperCategory(value);
-                      setSelectedLowerCategory("");
-                      setSelectedDetailCategory("");
-                    }}
-                  >
-                    <SelectTrigger className="korean-text">
-                      <SelectValue placeholder="상위 조직을 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent className="z-[10000]">
-                      {getUpperCategories().map((category) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Lower Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-sm">하위 조직</Label>
-                  <Select
-                    value={selectedLowerCategory}
-                    onValueChange={(value) => {
-                      setSelectedLowerCategory(value);
-                      setSelectedDetailCategory("");
-                    }}
-                    disabled={!selectedUpperCategory}
-                  >
-                    <SelectTrigger className="korean-text">
-                      <SelectValue placeholder="하위 조직을 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent className="z-[10000]">
-                      <SelectItem value="" className="korean-text">전체</SelectItem>
-                      {getLowerCategories(selectedUpperCategory).map((category) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Detail Category */}
-                <div className="space-y-2">
-                  <Label className="korean-text text-sm">세부 조직</Label>
-                  <Select
-                    value={selectedDetailCategory}
-                    onValueChange={setSelectedDetailCategory}
-                    disabled={!selectedUpperCategory || !selectedLowerCategory}
-                  >
-                    <SelectTrigger className="korean-text">
-                      <SelectValue placeholder="세부 조직을 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent className="z-[10000]">
-                      <SelectItem value="" className="korean-text">전체</SelectItem>
-                      {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((category) => (
-                        <SelectItem key={category} value={category} className="korean-text">
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {selectedUpperCategory && (
-                <div className="mt-4 p-3 bg-white rounded border">
-                  <p className="text-sm font-medium korean-text text-gray-700">공개 대상:</p>
-                  <p className="text-sm korean-text text-blue-600">
-                    {selectedUpperCategory}
-                    {selectedLowerCategory && ` > ${selectedLowerCategory}`}
-                    {selectedDetailCategory && ` > ${selectedDetailCategory}`}
-                    {!selectedLowerCategory && " (전체 하위 조직)"}
-                    {selectedLowerCategory && !selectedDetailCategory && " (전체 세부 조직)"}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Action Buttons - Only for Master Admin */}
-          {isMasterAdmin && (
+            {/* Action Buttons */}
             <div className="flex space-x-3 pt-4 border-t">
               <Button
                 type="button"
@@ -367,7 +342,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
               </Button>
               <Button
                 type="submit"
-                disabled={updateVisibilityMutation.isPending || (visibility === "group" && !selectedUpperCategory)}
+                disabled={updateVisibilityMutation.isPending || (isMasterAdmin && visibility === "group" && !selectedUpperCategory)}
                 className="flex-1 korean-text"
               >
                 {updateVisibilityMutation.isPending ? (
@@ -383,21 +358,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
                 )}
               </Button>
             </div>
-          )}
-
-          {/* Close Button - For Agent Manager */}
-          {!isMasterAdmin && (
-            <div className="flex pt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                className="w-full korean-text"
-              >
-                닫기
-              </Button>
-            </div>
-          )}
+          </form>
         </div>
       </div>
     </div>

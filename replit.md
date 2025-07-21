@@ -977,12 +977,14 @@ Changelog:
   * Updated LanguageSelector component to show only Korean and English options
   * Implemented automatic Korean text to English translation when English mode is selected
 - July 21, 2025. Implemented role-based visibility settings for agent management:
-  * Created comprehensive VisibilitySettingsModal with separate interfaces for master admin and agent managers
+  * Created comprehensive VisibilitySettingsModal with role-based permissions for master admin and agent managers
   * Master admin: Full control over public/group visibility settings and organization hierarchy selection
-  * Agent manager: Read-only interface showing current visibility settings with informational message
+  * Agent manager: Can modify visibility status (공개/비공개) but cannot change scope settings
+  * Both roles can see agent's organization hierarchy information displayed as text format
   * Enhanced ChatInterface with "공개 설정" dropdown menu option in management mode
-  * Updated management mode welcome message to include visibility settings description and removed help command
-  * Complete Korean localization with proper role-based permissions and UI restrictions
+  * Updated management mode welcome message to include all management features including icon change and document management
+  * Complete Korean localization with proper role-based permissions and intuitive toggle interface
+  * Fixed JSX syntax errors and improved visual feedback with color-coded toggle buttons
 - July 17, 2025. Completed comprehensive document visibility control system:
   * Removed toggle functionality from document list visibility column
   * Document list shows only status icons (blue open eye for visible, red closed eye for hidden)
