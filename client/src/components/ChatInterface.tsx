@@ -41,7 +41,8 @@ import {
   Eye,
   EyeOff,
   Brain,
-  BrainCircuit
+  BrainCircuit,
+  Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +54,7 @@ import { ThemeSelector } from "./ThemeSelector";
 import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
+import VisibilitySettingsModal from "./VisibilitySettingsModal";
 import IconChangeModal from "./IconChangeModal";
 import { useIsTablet } from "@/hooks/use-tablet";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -91,6 +93,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showIconModal, setShowIconModal] = useState(false);
   const [showFileListModal, setShowFileListModal] = useState(false);
+  const [showVisibilityModal, setShowVisibilityModal] = useState(false);
 
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
@@ -1135,6 +1138,19 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
                               <BarChart3 className="w-4 h-4 mr-2" />
                               {t('agent.performance')}
                             </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start px-4 py-2 korean-text"
+                              onClick={() => {
+                                setShowVisibilityModal(true);
+                                setShowMenu(false);
+                                addSystemMessage("공개 설정 창을 열었습니다. 에이전트 사용자 그룹과 공개 범위를 설정할 수 있습니다.");
+                              }}
+                            >
+                              <Globe className="w-4 h-4 mr-2" />
+                              공개 설정
+                            </Button>
 
                           </div>
                         </div>
@@ -1754,6 +1770,36 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
         </div>
       )}
 
+      {/* Modals */}
+      <FileUploadModal
+        isOpen={showFileModal}
+        onClose={() => setShowFileModal(false)}
+        agentId={agent.id}
+      />
+
+      <PersonaEditModal
+        isOpen={showPersonaModal}
+        onClose={() => setShowPersonaModal(false)}
+        agent={agent}
+      />
+
+      <ChatbotSettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        agent={agent}
+      />
+
+      <IconChangeModal
+        isOpen={showIconModal}
+        onClose={() => setShowIconModal(false)}
+        agent={agent}
+      />
+
+      <VisibilitySettingsModal
+        isOpen={showVisibilityModal}
+        onClose={() => setShowVisibilityModal(false)}
+        agent={agent}
+      />
 
     </div>
   );

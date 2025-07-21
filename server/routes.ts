@@ -1249,6 +1249,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update agent visibility settings
+  app.patch('/api/agents/:id/visibility', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const { visibility, isActive, upperCategory, lowerCategory, detailCategory } = req.body;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Validate visibility value
+      if (!["public", "group"].includes(visibility)) {
+        return res.status(400).json({ message: "Invalid visibility value" });
+      }
+
+      // Check if user has permission to manage this agent
+      const agent = await storage.getAgent(agentId);
+      if (!agent) {
+        return res.status(404).json({ message: "Agent not found" });
+      }
+
+      // Update agent visibility settings
+      const updateData: any = {
+        visibility,
+        isActive
+      };
+
+      // Only set organization categories if visibility is "group"
+      if (visibility === "group") {
+        updateData.upperCategory = upperCategory || "";
+        updateData.lowerCategory = lowerCategory || "";
+        updateData.detailCategory = detailCategory || "";
+      } else {
+        // Clear organization categories for public agents
+        updateData.upperCategory = "";
+        updateData.lowerCategory = "";
+        updateData.detailCategory = "";
+      }
+
+      const updatedAgent = await storage.updateAgent(agentId, updateData);
+      
+      res.json({
+        message: "Agent visibility settings updated successfully",
+        agent: updatedAgent
+      });
+    } catch (error) {
+      console.error("Error updating agent visibility:", error);
+      res.status(500).json({ message: "Failed to update agent visibility settings" });
+    }
+  });
+
   // 조직 카테고리 조회
   app.get('/api/organization-categories', async (req, res) => {
     try {
