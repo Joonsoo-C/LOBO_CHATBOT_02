@@ -309,7 +309,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             <h3 className="font-medium korean-text text-sm">현재 설정</h3>
             <div className="text-sm text-gray-600 korean-text">
               <p>LLM 모델: {LLM_MODELS.find(m => m.value === settings.llmModel)?.label}</p>
-              <p>챗봇 유형: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
+              <p>답변 생성 방식: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
               <p>공유 범위: {VISIBILITY_OPTIONS.find(v => v.value === settings.visibility)?.label || "조직 전체"}</p>
             </div>
           </div>
