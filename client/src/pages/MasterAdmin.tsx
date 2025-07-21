@@ -1729,7 +1729,8 @@ function MasterAdmin() {
   const tokenEndIndex = tokenStartIndex + ITEMS_PER_PAGE;
   const paginatedTokenData = filteredTokenData.slice(tokenStartIndex, tokenEndIndex);
 
-  // 중복 제거됨 - filteredSortedUsers와 paginatedUsers 이미 위에서 정의됨
+  // filteredUsers 별칭 정의 (기존 코드 호환성을 위해)
+  const filteredUsers = filteredSortedUsers;
 
   // 관리자 선정용 사용자 필터링 (관리자 권한을 가진 사용자만)
   const filteredManagerUsers = useMemo(() => {
@@ -3914,6 +3915,35 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+
+  // 문서-에이전트 연결 업데이트 mutation
+  const updateDocumentAgentConnectionsMutation = useMutation({
+    mutationFn: async ({ documentId, connectedAgents }: { documentId: string, connectedAgents: number[] }) => {
+      const response = await fetch(`/api/admin/documents/${documentId}/agents`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ connectedAgents }),
+      });
+      if (!response.ok) throw new Error('Failed to update document connections');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/documents'] });
+      toast({
+        title: "성공",
+        description: "문서-에이전트 연결이 업데이트되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "오류", 
+        description: error.message || "연결 업데이트 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // 문서 삭제 뮤테이션
   const deleteDocumentMutation = useMutation({
