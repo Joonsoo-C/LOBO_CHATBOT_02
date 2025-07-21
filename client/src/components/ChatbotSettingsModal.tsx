@@ -295,7 +295,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center space-x-3">
             <Settings className="w-5 h-5 text-gray-900 dark:text-white" />
-            <h2 className="text-lg font-medium korean-text">챗봇 설정</h2>
+            <h2 className="text-lg font-medium korean-text">AI 답변 설정</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
