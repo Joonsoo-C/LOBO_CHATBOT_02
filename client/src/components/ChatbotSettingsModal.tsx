@@ -336,7 +336,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
           {/* Chatbot Type Selection */}
           <div className="space-y-2">
-            <Label htmlFor="chatbotType" className="korean-text">챗봇 유형 선택</Label>
+            <Label htmlFor="chatbotType" className="korean-text">답변 생성 방식 </Label>
             <Select
               value={settings.chatbotType}
               onValueChange={(value) => setSettings(prev => ({ ...prev, chatbotType: value }))}
