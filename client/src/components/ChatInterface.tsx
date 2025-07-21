@@ -895,7 +895,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   return (
     <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`}>
       {/* Mobile header removed - now using global navigation */}
-
       {/* Tablet Header - Simplified version without back button */}
       {isTablet && (
         <header className="relative bg-background border-b border-border">
@@ -1165,7 +1164,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           </div>
         </header>
       )}
-
       {/* Chat Messages */}
       <div 
         ref={messagesContainerRef}
@@ -1340,9 +1338,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           )}
         </div>
       </div>
-
-
-
       {/* Message Input */}
       <div className={`minimal-input-container ${isTablet ? "chat-input-area" : "fixed-chat-input"}`}>
         <textarea
@@ -1371,7 +1366,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           <Send className="w-4 h-4" />
         </button>
       </div>
-
       {/* File Upload Modal */}
       {showFileModal && (
         <FileUploadModal
@@ -1381,7 +1375,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           onSuccess={addSystemMessage}
         />
       )}
-
       {/* Persona Edit Modal */}
       {showPersonaModal && (
         <PersonaEditModal
@@ -1392,7 +1385,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           onCancel={addSystemMessage}
         />
       )}
-
       {/* Chatbot Settings Modal */}
       {showSettingsModal && (
         <ChatbotSettingsModal
@@ -1403,7 +1395,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           onCancel={addSystemMessage}
         />
       )}
-
       {/* Icon Change Modal */}
       {showIconModal && (
         <IconChangeModal
@@ -1413,7 +1404,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           onSuccess={addSystemMessage}
         />
       )}
-
       {/* File List Modal */}
       {showFileListModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]" onClick={() => setShowFileListModal(false)}>
@@ -1632,7 +1622,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           </div>
         </div>
       )}
-
       {/* Document Content Preview Modal */}
       {showDocumentPreview && selectedDocument && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]" onClick={() => { setShowDocumentPreview(false); setSelectedDocument(null); }}>
@@ -1722,7 +1711,6 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           </div>
         </div>
       )}
-
       {/* PDF Viewer Modal */}
       {showPDFViewer && selectedPDFDocument && (
         <PDFViewer
@@ -1738,18 +1726,15 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           }}
         />
       )}
-
-
-
       {/* Chat History Delete Confirmation Dialog */}
       {showChatHistoryDeleteDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowChatHistoryDeleteDialog(false)}>
           <div className="bg-background border border-border rounded-xl shadow-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               <h3 className="text-lg font-medium text-foreground mb-4 korean-text">채팅 기록 삭제</h3>
-              <p className="text-muted-foreground mb-6 korean-text">
-                현재 에이전트와의 모든 대화 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 정말로 삭제하시겠습니까?
-              </p>
+              <p className="text-muted-foreground mb-6 korean-text text-center">현재 에이전트와의 모든 대화 기록이 삭제됩니다. 
+              삭제된 대화내용은 다시 복구할 수 없습니다. 
+              에이전트와의 대화 내용을 삭제하시겠습니까?</p>
               <div className="flex items-center justify-end gap-3">
                 <Button
                   variant="outline"
@@ -1771,38 +1756,32 @@ ${data.insights.map(insight => `- ${insight}`).join('\n')}
           </div>
         </div>
       )}
-
       {/* Modals */}
       <FileUploadModal
         isOpen={showFileModal}
         onClose={() => setShowFileModal(false)}
         agentId={agent.id}
       />
-
       <PersonaEditModal
         isOpen={showPersonaModal}
         onClose={() => setShowPersonaModal(false)}
         agent={agent}
       />
-
       <ChatbotSettingsModal
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
         agent={agent}
       />
-
       <IconChangeModal
         isOpen={showIconModal}
         onClose={() => setShowIconModal(false)}
         agent={agent}
       />
-
       <VisibilitySettingsModal
         isOpen={showVisibilityModal}
         onClose={() => setShowVisibilityModal(false)}
         agent={agent}
       />
-
     </div>
   );
 });
