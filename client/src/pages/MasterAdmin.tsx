@@ -8297,7 +8297,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       }}
                     >
                       <SelectTrigger className="h-10">
-                        <SelectValue />
+                        <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8320,7 +8320,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       disabled={tokenUpperCategoryFilter === 'all'}
                     >
                       <SelectTrigger className={`h-10 ${tokenUpperCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue />
+                        <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8339,7 +8339,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       disabled={tokenLowerCategoryFilter === 'all'}
                     >
                       <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue />
+                        <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">전체</SelectItem>
@@ -8354,28 +8354,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 기간, 모델, 키워드 (하단) */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.period')}</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
                       <SelectTrigger className="h-10">
-                        <SelectValue />
+                        <SelectValue placeholder="최근 1개월" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="today">{t('admin.today')}</SelectItem>
-                        <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
-                        <SelectItem value="month">{t('admin.oneMonth')}</SelectItem>
-                        <SelectItem value="quarter">{t('admin.threeMonths')}</SelectItem>
+                        <SelectItem value="today">오늘</SelectItem>
+                        <SelectItem value="week">최근 1주일</SelectItem>
+                        <SelectItem value="month">최근 1개월</SelectItem>
+                        <SelectItem value="quarter">최근 3개월</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.model')}</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
                     <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
                       <SelectTrigger className="h-10">
-                        <SelectValue />
+                        <SelectValue placeholder="전체" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">{t('admin.all')}</SelectItem>
+                        <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="gpt-4o">GPT-4o</SelectItem>
                         <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
                         <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
@@ -8385,9 +8385,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">키워드</Label>
                     <Input
-                      placeholder={t('admin.agentNameOrKeyword')}
+                      placeholder="에이전트명 또는 질문 키워드"
                       value={tokenKeywordFilter}
                       onChange={(e) => setTokenKeywordFilter(e.target.value)}
                       className="h-10"
@@ -8396,7 +8396,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   
                   <div>
                     <Button className="h-10 w-full">
-                      {t('admin.searchButton')}
+                      검색
                     </Button>
                   </div>
                   
@@ -8409,7 +8409,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       setTokenKeywordFilter("");
                       setTokenModelFilter("all");
                     }} className="h-10 w-full">
-                      {t('admin.filterReset')}
+                      필터 초기화
                     </Button>
                   </div>
                 </div>
