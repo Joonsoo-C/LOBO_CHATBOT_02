@@ -6205,7 +6205,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 유형 및 상태 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.type')}</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">유형</Label>
                     <Select value={agentFilterType} onValueChange={(value) => {
                       setAgentFilterType(value);
                       setHasAgentSearched(true);
