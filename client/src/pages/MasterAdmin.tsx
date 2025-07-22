@@ -822,7 +822,6 @@ const orgCategoryEditSchema = z.object({
   detailCategory: z.string().optional(),
   description: z.string().optional(),
   status: z.enum(["활성", "비활성", "등록 승인 대기중"]),
-  manager: z.string().optional(),
 });
 
 type OrgCategoryEditFormData = z.infer<typeof orgCategoryEditSchema>;
@@ -1103,12 +1102,7 @@ function MasterAdmin() {
   const [isOrgCategoryEditDialogOpen, setIsOrgCategoryEditDialogOpen] = useState(false);
   const [editingOrgCategory, setEditingOrgCategory] = useState<any>(null);
   
-  // 카테고리 관리자 선택 다이얼로그 상태
-  const [isCategoryManagerDialogOpen, setIsCategoryManagerDialogOpen] = useState(false);
-  const [categoryManagerSearchQuery, setCategoryManagerSearchQuery] = useState('');
-  const [selectedManagerUniversity, setSelectedManagerUniversity] = useState('all');
-  const [selectedManagerCollege, setSelectedManagerCollege] = useState('all');
-  const [selectedManagerDepartment, setSelectedManagerDepartment] = useState('all');
+
   
   // 문서 상세 팝업 상태 - 중복 제거됨 (위에서 이미 선언됨)
   const [selectedDocumentAgents, setSelectedDocumentAgents] = useState<string[]>([]);
@@ -2164,7 +2158,6 @@ function MasterAdmin() {
       detailCategory: "",
       description: "",
       status: "활성",
-      manager: "",
     },
   });
 
@@ -2299,7 +2292,6 @@ function MasterAdmin() {
       detailCategory: category.detailCategory || "",
       description: category.description || "",
       status: category.status || "활성",
-      manager: category.manager || "",
     });
     setIsOrgCategoryEditDialogOpen(true);
   };
@@ -2314,7 +2306,6 @@ function MasterAdmin() {
         detailCategory: data.detailCategory || null,
         description: data.description || null,
         status: data.status,
-        manager: data.manager || null, // 관리자 정보 포함
       };
       const response = await apiRequest("PATCH", `/api/admin/organizations/${data.id}`, updatePayload);
       return response.json();
@@ -7441,33 +7432,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                       </div>
 
-                      {/* 카테고리 관리자 설정 */}
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">카테고리 관리자</Label>
-                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-                          <div className="space-y-3">
-                            {/* 현재 관리자 표시 */}
-                            <div>
-                              <span className="text-sm text-gray-600 dark:text-gray-400">현재 관리자</span>
-                              <div className="font-semibold text-purple-600 dark:text-purple-400 text-[20px]">
-                                {orgCategoryEditForm.watch('manager') || editingOrgCategory?.manager || "미지정"}
-                              </div>
-                            </div>
-                            
-                            {/* 관리자 변경 버튼 */}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setIsCategoryManagerDialogOpen(true)}
-                              className="w-full"
-                            >
-                              <Users className="w-4 h-4 mr-2" />
-                              관리자 변경
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
+
                     </div>
                   </div>
 
@@ -7493,18 +7458,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       )}
                     />
 
-                    {/* Hidden manager field for form handling */}
-                    <FormField
-                      control={orgCategoryEditForm.control}
-                      name="manager"
-                      render={({ field }) => (
-                        <FormItem className="hidden">
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+
                   </div>
 
                   <div className="flex justify-end space-x-2 pt-4 border-t">
@@ -7524,224 +7478,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </DialogContent>
           </Dialog>
 
-          {/* 카테고리 관리자 선택 다이얼로그 */}
-          <Dialog open={isCategoryManagerDialogOpen} onOpenChange={setIsCategoryManagerDialogOpen}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{t('org.categoryManagerSelect')}</DialogTitle>
-              </DialogHeader>
-              
-              <div className="space-y-6">
-                {/* 검색 및 필터 */}
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                      <Label>상위 조직</Label>
-                      <Select value={selectedManagerUniversity} onValueChange={(value) => {
-                        setSelectedManagerUniversity(value);
-                        setSelectedManagerCollege('all');
-                        setSelectedManagerDepartment('all');
-                      }}>
-                        <SelectTrigger className="mt-[8px] mb-[8px]">
-                          <SelectValue placeholder="상위 조직 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          {uniqueUpperCategories.map((category, index) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label>하위 조직</Label>
-                      <Select 
-                        value={selectedManagerCollege} 
-                        onValueChange={(value) => {
-                          setSelectedManagerCollege(value);
-                          setSelectedManagerDepartment('all');
-                        }}
-                        disabled={selectedManagerUniversity === 'all'}
-                      >
-                        <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                          <SelectValue placeholder="하위 조직 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          {selectedManagerUniversity === 'all' ? 
-                            [] :
-                            Array.from(new Set(
-                              organizations
-                                ?.filter(org => org.upperCategory === selectedManagerUniversity)
-                                .map(org => org.lowerCategory)
-                                .filter(Boolean)
-                            )).sort().map((category, index) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label>세부 조직</Label>
-                      <Select 
-                        value={selectedManagerDepartment} 
-                        onValueChange={setSelectedManagerDepartment}
-                        disabled={selectedManagerCollege === 'all' || selectedManagerUniversity === 'all'}
-                      >
-                        <SelectTrigger className={`mt-[8px] mb-[8px] ${selectedManagerCollege === 'all' || selectedManagerUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                          <SelectValue placeholder="세부 조직 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체</SelectItem>
-                          {selectedManagerUniversity === 'all' || selectedManagerCollege === 'all' ? 
-                            [] :
-                            Array.from(new Set(
-                              organizations
-                                ?.filter(org => 
-                                  org.upperCategory === selectedManagerUniversity && 
-                                  org.lowerCategory === selectedManagerCollege
-                                )
-                                .map(org => org.detailCategory)
-                                .filter(Boolean)
-                            )).sort().map((category, index) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label>사용자 검색</Label>
-                      <Input
-                        placeholder="이름 또는 ID로 검색"
-                        value={categoryManagerSearchQuery}
-                        onChange={(e) => setCategoryManagerSearchQuery(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                {/* 사용자 목록 */}
-                <div className="border rounded-lg">
-                  <div className="max-h-96 overflow-y-auto">
-                    <table className="w-full">
-                      <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            이름
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            사용자 ID
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            소속 조직
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            직책
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                            선택
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {sortedUsers?.filter((user: any) => {
-                          const matchesSearch = !categoryManagerSearchQuery || 
-                            user.fullName?.toLowerCase().includes(categoryManagerSearchQuery.toLowerCase()) ||
-                            user.username?.toLowerCase().includes(categoryManagerSearchQuery.toLowerCase());
-                          
-                          const matchesUniversity = selectedManagerUniversity === 'all' || 
-                            user.upperCategory === selectedManagerUniversity;
-                          
-                          const matchesCollege = selectedManagerCollege === 'all' || 
-                            user.lowerCategory === selectedManagerCollege;
-                          
-                          const matchesDepartment = selectedManagerDepartment === 'all' || 
-                            user.detailCategory === selectedManagerDepartment;
-                          
-                          return matchesSearch && matchesUniversity && matchesCollege && matchesDepartment;
-                        }).slice(0, 50).map((user: any) => (
-                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <td className="px-4 py-3">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {user.fullName || user.username}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3">
-                              <div className="text-sm text-gray-500">
-                                {user.username}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3">
-                              <div className="text-sm text-gray-500">
-                                {[user.upperCategory, user.lowerCategory, user.detailCategory]
-                                  .filter(Boolean).join(' > ') || '-'}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3">
-                              <div className="text-sm text-gray-500">
-                                {user.position || user.role || '-'}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3">
-                              <Button
-                                type="button"
-                                size="sm"
-                                onClick={() => {
-                                  const managerName = user.fullName || user.username;
-                                  
-                                  // Update form field first
-                                  orgCategoryEditForm.setValue('manager', managerName);
-                                  
-                                  // Update the editing organization category state
-                                  if (editingOrgCategory) {
-                                    const updatedCategory = {
-                                      ...editingOrgCategory,
-                                      manager: managerName
-                                    };
-                                    setEditingOrgCategory(updatedCategory);
-                                  }
-                                  
-                                  setIsCategoryManagerDialogOpen(false);
-                                  
-                                  toast({
-                                    title: "관리자 선택됨",
-                                    description: `${managerName}이(가) 카테고리 관리자로 선택되었습니다.`,
-                                  });
-                                }}
-                              >
-                                선택
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="flex justify-end space-x-2 pt-4 border-t">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => setIsCategoryManagerDialogOpen(false)}
-                  >
-                    취소
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
 
           {/* 문서 관리 */}
           <TabsContent value="documents" className="space-y-6">

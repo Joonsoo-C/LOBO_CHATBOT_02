@@ -3094,10 +3094,8 @@ export function setupAdminRoutes(app: Express) {
 
       console.log(`Updating organization category ${id} with data:`, updateData);
 
-      // Ensure manager field is properly handled
       const updateDataProcessed = {
         ...updateData,
-        manager: updateData.manager || null,
         updatedAt: new Date()
       };
 
