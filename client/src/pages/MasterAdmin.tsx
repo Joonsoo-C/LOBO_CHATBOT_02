@@ -4357,7 +4357,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </TabsTrigger>
             <TabsTrigger value="conversations" className="admin-tab-trigger">
               <MessageSquare className="admin-tab-icon" />
-              <span className="hidden sm:inline">{t('admin.conversations')}</span>
+              <span className="hidden sm:inline">질문 응답 로그</span>
               <span className="sm:hidden">{t('nav.qa')}</span>
             </TabsTrigger>
             <TabsTrigger value="tokens" className="admin-tab-trigger">
@@ -6482,7 +6482,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             )}
           </TabsContent>
 
-          {/* {t('admin.qaLogs')} */}
+          {/* 질문 응답 로그 */}
           <TabsContent value="conversations" className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">질문 응답 로그</h2>

@@ -211,7 +211,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.users': '사용자 관리',
     'admin.agents': '에이전트 관리',
     'admin.documents': '문서 관리',
-    'admin.conversations': '질문/응답 로그',
+    'admin.conversations': '질문 응답 로그',
     'admin.tokens': '토큰 관리',
     'admin.system': '시스템 설정',
     'admin.logout': '로그아웃',
