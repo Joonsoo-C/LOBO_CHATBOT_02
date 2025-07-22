@@ -7242,7 +7242,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
               <DialogHeader>
-                <DialogTitle className="font-semibold tracking-tight text-[20px]">{t('org.editDetailInfo')}</DialogTitle>
+                <DialogTitle className="font-semibold tracking-tight text-[20px]">조직 상세 정보 편집</DialogTitle>
                 <div id="org-edit-description" className="sr-only">조직의 상세 정보를 편집하고 관리할 수 있습니다.</div>
               </DialogHeader>
               <Form {...orgCategoryEditForm}>
@@ -8557,7 +8557,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{t('org.lmsIntegrationSettings')}</DialogTitle>
+              <DialogTitle>LMS 연동 설정</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -8665,7 +8665,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isDocumentDetailDialogOpen} onOpenChange={setIsDocumentDetailDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{t('admin.agentConnectionSettings')}</DialogTitle>
+              <DialogTitle>에이전트 연결 설정</DialogTitle>
             </DialogHeader>
             {selectedDocument && (
               <div className="space-y-6">
@@ -8985,7 +8985,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-md">
             <DialogHeader>
               <div className="flex items-center justify-between">
-                <DialogTitle>{t('org.createNewCategory')}</DialogTitle>
+                <DialogTitle>새 조직 카테고리 생성</DialogTitle>
                 <Button 
                   variant="ghost" 
                   size="sm" 

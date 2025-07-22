@@ -72,7 +72,7 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t('org.createNewCategory')}</DialogTitle>
+          <DialogTitle>새 조직 카테고리 생성</DialogTitle>
           <p className="text-sm text-muted-foreground">
             {t('org.createStepByStep')}
           </p>
