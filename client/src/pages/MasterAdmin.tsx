@@ -6263,7 +6263,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="col-span-3">
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('admin.searchKeyword')}</Label>
                     <Input
-                      placeholder={t('admin.agentKeywordPlaceholder')}
+                      placeholder={language === 'ko' ? '에이전트 이름 또는 설명 키워드를 입력하세요.' : t('admin.agentKeywordPlaceholder')}
                       value={agentSearchQuery}
                       onChange={(e) => setAgentSearchQuery(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAgentSearch()}
@@ -6639,7 +6639,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                   <Input 
-                    placeholder="질문 내용 검색..." 
+                    placeholder={language === 'ko' ? '질문 키워드로 검색하세요.' : 'Search by question content...'}
                     className="h-10" 
                     value={qaSearchQuery}
                     onChange={(e) => setQaSearchQuery(e.target.value)}
@@ -7636,7 +7636,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="col-span-3">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('common.searchKeyword')}</Label>
                   <Input
-                    placeholder={t('admin.searchByContent')}
+                    placeholder={language === 'ko' ? '문서명으로 검색하세요.' : t('admin.searchByContent')}
                     value={documentSearchQuery}
                     onChange={(e) => setDocumentSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && setHasDocumentSearched(true)}

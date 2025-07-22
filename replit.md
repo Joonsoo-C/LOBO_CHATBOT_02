@@ -1113,6 +1113,14 @@ Changelog:
   * Fixed login screen username field registration issue preventing form submission
   * Updated performance analysis message format with proper icons (📊, ▶, 🔍, 📈) and structured layout
   * Applied consistent line breaks and Korean terminology for system messages
+- July 22, 2025. Enhanced search input Korean localization and user satisfaction removal:
+  * Removed user satisfaction summary cards from dashboard and Q&A logs management sections
+  * Updated search input placeholders in Korean mode across all management sections:
+    - Agent management: "에이전트 이름 또는 설명 키워드를 입력하세요."
+    - Document management: "문서명으로 검색하세요."
+    - Q&A management: "질문 키워드로 검색하세요."
+  * Maintained multilingual support with appropriate fallbacks for other languages
+  * Completed Korean UI localization for all search interface elements
 ```
 
 ## User Preferences
