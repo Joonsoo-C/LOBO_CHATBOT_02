@@ -4504,7 +4504,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 ) : popularQuestions && popularQuestions.length > 0 ? (
                   <div className="space-y-2">
-                    {popularQuestions.slice(0, 3).map((question: any) => (
+                    {popularQuestions.slice(0, 5).map((question: any) => (
                       <div key={question.rank} className="flex items-center justify-between p-2 bg-white/60 dark:bg-gray-800/60 rounded">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2 mb-1">

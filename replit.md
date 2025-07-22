@@ -1141,6 +1141,11 @@ Changelog:
   * Modified document upload handler to use default 'all' type for simplified workflow
   * LMS integration settings now focus only on connection parameters without document categorization
   * Simplified document upload process across all management menu LMS integration dialogs
+- July 22, 2025. Updated dashboard popular questions display count:
+  * Changed popular questions summary card to display 5 questions instead of 3
+  * Modified popularQuestions.slice(0, 3) to popularQuestions.slice(0, 5) in dashboard
+  * Popular questions TOP 5 card now properly shows 5 question items as intended
+  * Enhanced dashboard summary with complete top 5 popular questions visibility
 ```
 
 ## User Preferences
