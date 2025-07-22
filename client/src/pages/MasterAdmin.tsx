@@ -3654,7 +3654,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         try {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('type', selectedDocumentType || 'all');
+          formData.append('type', 'all');
           formData.append('description', '관리자 업로드 문서');
 
           const response = await fetch('/api/admin/documents/upload', {
@@ -8318,32 +8318,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div>
-                <Label>문서 종류</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="카테고리 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="lecture">강의 자료</SelectItem>
-                    <SelectItem value="policy">정책 문서</SelectItem>
-                    <SelectItem value="manual">매뉴얼</SelectItem>
-                    <SelectItem value="form">양식</SelectItem>
-                    <SelectItem value="notice">공지사항</SelectItem>
-                    <SelectItem value="curriculum">교육과정</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
-
-
-              <div>
-                <Label>문서 설명</Label>
-                <Textarea 
-                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                  rows={3}
-                />
-              </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">연동 상태</h4>
@@ -8621,36 +8596,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               )}
 
-              <div>
-                <Label>문서 종류</Label>
-                <Select value={documentType} onValueChange={setDocumentType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="문서 종류를 선택해주세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="강의자료">강의자료</SelectItem>
-                    <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
-                    <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
-                    <SelectItem value="서식·양식">서식·양식</SelectItem>
-                    <SelectItem value="공지·안내">공지·안내</SelectItem>
-                    <SelectItem value="교육과정">교육과정</SelectItem>
-                    <SelectItem value="FAQ·Q&A">FAQ·Q&A</SelectItem>
-                    <SelectItem value="연구자료">연구자료</SelectItem>
-                    <SelectItem value="회의·내부자료">회의·내부자료</SelectItem>
-                    <SelectItem value="기타">기타</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
-
-
-              <div>
-                <Label>문서 설명</Label>
-                <Textarea 
-                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                  rows={3}
-                />
-              </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">문서 노출 설정</h4>
@@ -8677,7 +8623,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Button>
                 <Button 
                   onClick={handleDocumentUpload}
-                  disabled={selectedDocumentFiles.length === 0 || !documentType || isDocumentUploading}
+                  disabled={selectedDocumentFiles.length === 0 || isDocumentUploading}
                 >
                   {isDocumentUploading ? `업로드 중... (${Math.round(documentUploadProgress)}%)` : `업로드 시작`}
                 </Button>

@@ -1132,6 +1132,15 @@ Changelog:
   * Compressed popular questions to show only top 3 items with simplified display
   * Minimized system status items with compact badge styling
   * Overall space usage reduced by approximately 40% while maintaining readability
+- July 22, 2025. Streamlined LMS integration settings across all management sections:
+  * Removed document type selection field from organization category management LMS popup
+  * Removed document description textarea from organization category management LMS popup
+  * Removed document type selection field from user management LMS popup
+  * Removed document description textarea from user management LMS popup
+  * Updated file upload button dependencies to remove documentType requirement
+  * Modified document upload handler to use default 'all' type for simplified workflow
+  * LMS integration settings now focus only on connection parameters without document categorization
+  * Simplified document upload process across all management menu LMS integration dialogs
 ```
 
 ## User Preferences
