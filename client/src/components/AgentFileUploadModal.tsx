@@ -299,7 +299,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   <div>
                     <h4 className="text-lg font-medium text-foreground mb-2 korean-text">{t('agent.dragOrClick')}</h4>
                     <p className="text-sm text-muted-foreground korean-text mb-4">
-                      지원 형식: XLSX, CSV, PDF, DOC, DOCX, TXT, PPT, PPTX, HWP
+                      지원 형식: XLSX, CSV, HWP, JPG, PNG, GIF, BMP, PDF, DOC, DOCX, TXT, PPT, PPTX
                     </p>
                   </div>
                   <Button
@@ -316,7 +316,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             <input
               id="agent-file-upload"
               type="file"
-              accept=".csv,.xls,.xlsx"
+              accept=".csv,.xls,.xlsx,.hwp,.jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.txt,.ppt,.pptx"
               onChange={handleFileSelect}
               style={{ display: 'none' }}
               multiple={false}

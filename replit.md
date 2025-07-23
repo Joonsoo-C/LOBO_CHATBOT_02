@@ -970,6 +970,12 @@ Changelog:
   * Updated all filtering areas: user management, agent management, organization management, document management, token management
   * All dropdown menus now use consistent simplified naming without "카테고리" suffix
   * Completed full Korean localization of token management screen with proper organization filter labels
+- July 23, 2025. Enhanced agent management UI terminology and file upload interface:
+  * Updated agent management terminology: "AI 답변 설정" → "모델 및 응답 설정" and "답변 생성 방식" → "응답 생성 방식" in all language files
+  * Applied terminology changes consistently in ChatInterface.tsx, LanguageContext.tsx, and ChatbotSettingsModal.tsx
+  * Enhanced file upload modal with white text buttons and expanded file format support (XLSX, CSV, HWP, JPG, PNG, GIF, BMP)
+  * Removed duplicate UI elements from agent file upload popup for cleaner interface
+  * Fixed duplicate key warnings in LanguageContext.tsx translation files
 - July 9, 2025. Completed comprehensive filter reset button styling standardization:
   * Removed variant="outline" from all filter reset buttons across all management sections
   * Updated filter reset buttons in user management, agent management, organization category management, document management, Q&A management, and token management

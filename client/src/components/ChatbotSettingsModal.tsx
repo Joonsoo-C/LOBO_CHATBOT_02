@@ -295,7 +295,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center space-x-3">
             <Settings className="w-5 h-5 text-gray-900 dark:text-white" />
-            <h2 className="text-lg font-medium korean-text">AI 답변 설정</h2>
+            <h2 className="text-lg font-medium korean-text">모델 및 응답 설정</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
@@ -309,7 +309,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             <h3 className="font-medium korean-text text-sm">현재 설정</h3>
             <div className="text-sm text-gray-600 korean-text">
               <p>LLM 모델: {LLM_MODELS.find(m => m.value === settings.llmModel)?.label}</p>
-              <p>답변 생성 방식: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
+              <p>응답 생성 방식: {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.label}</p>
 
             </div>
           </div>
@@ -336,7 +336,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
 
           {/* Chatbot Type Selection */}
           <div className="space-y-2">
-            <Label htmlFor="chatbotType" className="korean-text">답변 생성 방식 </Label>
+            <Label htmlFor="chatbotType" className="korean-text">응답 생성 방식 </Label>
             <Select
               value={settings.chatbotType}
               onValueChange={(value) => setSettings(prev => ({ ...prev, chatbotType: value }))}
