@@ -4705,7 +4705,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               {/* 조직 필터 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.upperCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직</Label>
                   <Select value={selectedUniversity} onValueChange={handleUpperCategoryChange}>
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('org.selectOption')} />
