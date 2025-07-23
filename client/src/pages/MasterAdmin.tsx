@@ -36,6 +36,7 @@ interface AgentDocumentListProps {
 }
 
 const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
+  const { t } = useLanguage();
   const { data: documents, refetch } = useQuery({
     queryKey: [`/api/admin/documents`, agentId],
     enabled: !!agentId,
@@ -134,8 +135,6 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
         title: "에이전트 연결 완료",
         description: "선택한 에이전트들에 문서가 연결되었습니다."
       });
-      setIsDocumentDetailOpen(false);
-      setDocumentDetailData(null);
     },
     onError: () => {
       toast({
@@ -166,7 +165,7 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
         day: '2-digit'
       });
     } catch {
-      return t('admin.noQuestionData');
+      return "날짜 오류";
     }
   };
 
@@ -245,13 +244,13 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
       document.body.removeChild(a);
       
       toast({
-        title: t('admin.downloadSuccess'),
-        description: `${doc.originalName} ${t('admin.downloadDescription')}`,
+        title: "다운로드 완료",
+        description: `${doc.originalName} 파일이 다운로드되었습니다.`,
       });
     } catch (error: any) {
       toast({
-        title: t('admin.downloadFailed'),
-        description: error instanceof Error ? error.message : t('admin.downloadError'),
+        title: "다운로드 실패",
+        description: error instanceof Error ? error.message : "문서 다운로드 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
@@ -293,15 +292,15 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
   return (
     <div className="border-t pt-6">
       <div className="flex items-center justify-between mb-4">
-        <Label className="text-lg font-semibold">{t('admin.uploadedDocumentList')}</Label>
-        <Badge variant="outline">{t('admin.totalCount', { count: agentDocuments.length })}</Badge>
+        <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
+        <Badge variant="outline">총 {agentDocuments.length}개</Badge>
       </div>
       
       {agentDocuments.length === 0 ? (
         <div className="border rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
           <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-          <p className="text-sm">{t('admin.noUploadedDocuments')}</p>
-          <p className="text-xs mt-1">{t('admin.useUploadArea')}</p>
+          <p className="text-sm">업로드된 문서가 없습니다</p>
+          <p className="text-xs mt-1">위의 업로드 영역을 사용해서 문서를 추가하세요</p>
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
