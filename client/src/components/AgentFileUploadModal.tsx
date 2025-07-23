@@ -337,23 +337,25 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
           {/* Upload Options */}
           <div className="mb-6">
             <Label className="text-sm font-medium mb-3 block korean-text">업로드 옵션</Label>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
                 <Checkbox
                   id="validate-only"
                   checked={validateOnly}
                   onCheckedChange={(checked) => setValidateOnly(checked === true)}
+                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
-                <Label htmlFor="validate-only" className="text-sm korean-text">유효성 검증만</Label>
+                <Label htmlFor="validate-only" className="text-sm font-medium korean-text cursor-pointer">유효성 검증만</Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <Checkbox
                   id="clear-existing"
                   checked={clearExisting}
                   onCheckedChange={(checked) => setClearExisting(checked === true)}
                   disabled={validateOnly}
+                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
-                <Label htmlFor="clear-existing" className="text-sm korean-text">기존 데이터 삭제</Label>
+                <Label htmlFor="clear-existing" className={`text-sm font-medium korean-text cursor-pointer ${validateOnly ? 'opacity-50' : ''}`}>기존 데이터 삭제</Label>
               </div>
             </div>
           </div>
