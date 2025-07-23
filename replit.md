@@ -1008,6 +1008,12 @@ Changelog:
   * Identified root cause: URL routing conflict where `/chat/:agentId` was matching before `/management/:agentId`
   * Fixed App.tsx routing order to prioritize Management routes over Chat routes
   * Management pages now properly render Management.tsx component instead of Chat.tsx
+- July 23, 2025. Simplified file upload text descriptions across all management interfaces:
+  * Removed specific CSV/Excel file format mentions from all action card descriptions
+  * Updated Korean translations: "CSV/Excel 파일을 업로드하여" → "파일을 업로드하여"
+  * Updated English translations: "Upload CSV/Excel files to" → "Upload files to"
+  * Applied changes to agent management, organization management, and user management sections
+  * Enhanced user experience with simplified, non-technical file upload descriptions
   * Eliminated duplicate headers in mobile Management mode - only proper management interface appears
   * isManagementMode prop now correctly set to true for Management pages, removing unwanted Chat headers
 - July 21, 2025. Standardized organization category dropdown naming and fixed token management Korean localization:
