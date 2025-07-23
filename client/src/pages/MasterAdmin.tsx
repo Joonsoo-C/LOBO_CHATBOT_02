@@ -8801,17 +8801,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isNewCategoryDialogOpen} onOpenChange={setIsNewCategoryDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <div className="flex items-center justify-between">
-                <DialogTitle>새 조직 카테고리 생성</DialogTitle>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setIsNewCategoryDialogOpen(false)}
-                  className="h-6 w-6 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+              <DialogTitle>새 조직 카테고리 생성</DialogTitle>
             </DialogHeader>
             
             <div className="space-y-4 pt-4">
