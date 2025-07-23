@@ -8860,7 +8860,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     취소
                   </Button>
                   <Button 
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className="bg-blue-600 hover:bg-blue-700 text-[#ffffff]"
                     onClick={() => {
                       setIsNewCategoryDialogOpen(false);
                       toast({
