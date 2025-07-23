@@ -316,7 +316,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   <Button
                     type="button"
                     variant="default"
-                    className="korean-text bg-blue-600 hover:bg-blue-700 text-[#ffffff]"
+                    className="korean-text bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     {t('agent.selectFile')}
