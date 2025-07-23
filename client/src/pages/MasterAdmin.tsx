@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -11092,10 +11093,36 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
-                                      <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
-                                      <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
-                                      <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>가장 균형 잡힌 성능을 제공하는 최신 모델입니다. 텍스트, 이미지, 오디오를 처리할 수 있으며 대부분의 업무에 적합합니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>복잡한 추론과 분석이 필요한 작업에 최적화된 모델입니다. 높은 정확도를 제공하지만 응답 속도가 다소 느릴 수 있습니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (경제적)</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>빠른 응답과 경제적인 비용을 제공하는 모델입니다. 간단한 질문 답변이나 일반적인 대화에 적합합니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -11115,9 +11142,46 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
-                                      <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
-                                      <SelectItem value="general-llm">자유 대화형</SelectItem>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="strict-doc">문서 기반 (RAG)</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>업로드한 문서만을 기반으로 응답합니다. 문서에 없는 내용은 답변하지 않아 정확성이 높습니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="doc-fallback-llm">문서 + LLM 혼합형</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>문서를 우선 참조하되, 부족한 내용은 LLM이 보완하여 답변합니다. 정확성과 유연성을 함께 제공합니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="general-llm">LLM 단독</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>문서를 참조하지 않고, LLM만으로 응답합니다. 일반적 질문에 적합합니다.</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <SelectItem value="llm-web-search">LLM + 웹 검색</SelectItem>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>LLM이 외부 검색 결과를 참고하여 최신 정보를 포함한 답변을 생성합니다. 시의성 있는 질문에 적합합니다. (Bing 등 연동 필요)</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />

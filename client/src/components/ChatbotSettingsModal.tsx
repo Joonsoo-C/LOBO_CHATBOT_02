@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { X, Save, Settings } from "lucide-react";
+import { X, Save, Settings, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Agent } from "@/types/agent";
@@ -23,30 +26,49 @@ interface ChatbotSettings {
   upperCategory?: string;
   lowerCategory?: string;
   detailCategory?: string;
+  webSearchEnabled?: boolean;
+  webSearchEngine?: string;
+  customApiKey?: string;
 }
 
 const LLM_MODELS = [
-  { value: "gpt-4o", label: "GPT-4o (추천)" },
-  { value: "gpt-4o-mini", label: "GPT-4o Mini (빠름)" },
-  { value: "gpt-4-turbo", label: "GPT-4 Turbo" },
-  { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo (경제적)" }
+  { 
+    value: "gpt-4o", 
+    label: "GPT-4o",
+    tooltip: "GPT-4o는 텍스트, 음성, 이미지 입력을 모두 지원하는 최신 멀티모달 모델로, 응답 속도가 빠르고 비용 효율성이 높습니다."
+  },
+  { 
+    value: "gpt-4", 
+    label: "GPT-4",
+    tooltip: "GPT-4는 고품질 텍스트 생성에 최적화된 모델로, 복잡한 문제 해결과 분석 능력이 뛰어납니다."
+  },
+  { 
+    value: "gpt-3.5-turbo", 
+    label: "GPT-3.5-turbo",
+    tooltip: "GPT-3.5-turbo는 빠른 응답 속도와 낮은 비용이 특징인 경량 모델로, 실시간 챗봇에 적합합니다."
+  }
 ];
 
 const CHATBOT_TYPES = [
   { 
     value: "strict-doc", 
-    label: "문서 기반 전용",
-    description: "문서 기반 응답만 가능, 문서 외 질문은 부드럽게 거절"
+    label: "문서 기반 (RAG)",
+    tooltip: "업로드한 문서를 기반으로만 답변합니다. 문서에 없는 정보는 제공하지 않습니다."
   },
   { 
     value: "doc-fallback-llm", 
-    label: "문서 우선 + LLM",
-    description: "문서를 우선 사용하고 없으면 일반 LLM 결과 출력"
+    label: "문서 + LLM 혼합형",
+    tooltip: "문서를 우선 참고하되, 부족한 내용은 LLM이 보완하여 답변합니다. 정확성과 유연성을 함께 제공합니다."
   },
   { 
     value: "general-llm", 
-    label: "일반 챗봇",
-    description: "일반 LLM 챗봇처럼 자유 대화"
+    label: "LLM 단독",
+    tooltip: "문서를 참조하지 않고, LLM만으로 응답합니다. 일반적 질문에 적합합니다."
+  },
+  { 
+    value: "llm-web-search", 
+    label: "LLM + 웹 검색",
+    tooltip: "LLM이 외부 검색 결과를 참고하여 최신 정보를 포함한 답변을 생성합니다. 시의성 있는 질문에 적합합니다. (Bing 등 연동 필요)"
   }
 ];
 
@@ -80,7 +102,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     visibility: (agent as any).visibility || "public",
     upperCategory: (agent as any).upperCategory || "",
     lowerCategory: (agent as any).lowerCategory || "",
-    detailCategory: (agent as any).detailCategory || ""
+    detailCategory: (agent as any).detailCategory || "",
+    webSearchEnabled: (agent as any).webSearchEnabled || false,
+    webSearchEngine: (agent as any).webSearchEngine || "bing",
+    customApiKey: (agent as any).customApiKey || ""
   });
 
   // Fetch organization categories
@@ -315,47 +340,135 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
           </div>
 
           {/* LLM Model Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="llmModel" className="korean-text">LLM 모델 </Label>
-            <Select
-              value={settings.llmModel}
-              onValueChange={(value) => setSettings(prev => ({ ...prev, llmModel: value }))}
-            >
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="LLM 모델을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent className="z-[10000]">
-                {LLM_MODELS.map((model) => (
-                  <SelectItem key={model.value} value={model.value} className="korean-text">
-                    {model.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <TooltipProvider>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="llmModel" className="korean-text">LLM 모델</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs z-[10001]">
+                    <p className="korean-text">
+                      {LLM_MODELS.find(m => m.value === settings.llmModel)?.tooltip}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Select
+                value={settings.llmModel}
+                onValueChange={(value) => setSettings(prev => ({ ...prev, llmModel: value }))}
+              >
+                <SelectTrigger className="korean-text">
+                  <SelectValue placeholder="LLM 모델을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  {LLM_MODELS.map((model) => (
+                    <SelectItem key={model.value} value={model.value} className="korean-text">
+                      {model.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </TooltipProvider>
 
           {/* Chatbot Type Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="chatbotType" className="korean-text">답변 생성 방식 </Label>
-            <Select
-              value={settings.chatbotType}
-              onValueChange={(value) => setSettings(prev => ({ ...prev, chatbotType: value }))}
-            >
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="챗봇 유형을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent className="z-[10000]">
-                {CHATBOT_TYPES.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="korean-text">
-                    <div>
-                      <div className="font-medium">{type.label}</div>
-                      <div className="text-xs text-gray-500">{type.description}</div>
+          <TooltipProvider>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="chatbotType" className="korean-text">응답 방식</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs z-[10001]">
+                    <p className="korean-text">
+                      {CHATBOT_TYPES.find(t => t.value === settings.chatbotType)?.tooltip}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Select
+                value={settings.chatbotType}
+                onValueChange={(value) => {
+                  setSettings(prev => ({ 
+                    ...prev, 
+                    chatbotType: value,
+                    webSearchEnabled: value === "llm-web-search" ? true : prev.webSearchEnabled
+                  }));
+                }}
+              >
+                <SelectTrigger className="korean-text">
+                  <SelectValue placeholder="응답 방식을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  {CHATBOT_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value} className="korean-text">
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </TooltipProvider>
+
+          {/* Web Search Settings - Only show when LLM + Web Search is selected */}
+          {settings.chatbotType === "llm-web-search" && (
+            <div className="space-y-4 p-4 border rounded-lg bg-blue-50">
+              <h4 className="font-medium korean-text text-sm text-blue-900">웹 검색 엔진 연동</h4>
+              
+              {/* Web Search Toggle */}
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="korean-text text-sm">웹 검색 활성화</Label>
+                  <p className="text-xs text-gray-600 korean-text">외부 검색 결과를 활용하여 답변을 생성합니다</p>
+                </div>
+                <Switch
+                  checked={settings.webSearchEnabled || false}
+                  onCheckedChange={(checked) => 
+                    setSettings(prev => ({ ...prev, webSearchEnabled: checked }))
+                  }
+                />
+              </div>
+
+              {/* Search Engine Selection */}
+              {settings.webSearchEnabled && (
+                <div className="space-y-2">
+                  <Label className="korean-text text-sm">검색 엔진</Label>
+                  <Select
+                    value={settings.webSearchEngine || "bing"}
+                    onValueChange={(value) => setSettings(prev => ({ ...prev, webSearchEngine: value }))}
+                  >
+                    <SelectTrigger className="korean-text">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bing" className="korean-text">Bing (기본)</SelectItem>
+                      <SelectItem value="custom" className="korean-text">Custom API</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Custom API Key Input */}
+                  {settings.webSearchEngine === "custom" && (
+                    <div className="space-y-2 mt-3">
+                      <Label className="korean-text text-sm">Custom API 키</Label>
+                      <Input
+                        type="password"
+                        placeholder="API 키를 입력하세요"
+                        value={settings.customApiKey || ""}
+                        onChange={(e) => setSettings(prev => ({ ...prev, customApiKey: e.target.value }))}
+                        className="korean-text"
+                      />
+                      <p className="text-xs text-gray-500 korean-text">
+                        향후 다양한 검색 API 연동을 위한 설정입니다
+                      </p>
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
 
 
