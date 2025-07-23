@@ -573,7 +573,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.searchByName': '에이전트명 또는 설명 키워드를 입력하세요',
     'agent.agentList': '에이전트 목록',
     'agent.totalAgents': '전체 100개 중 1-15개 표시',
-    'agent.name': '에이전트명',
+    'agent.name': '에이전트 이름',
     'agent.manager': '관리자',
     'agent.affiliation': '소속',
     'agent.documents': '문서',

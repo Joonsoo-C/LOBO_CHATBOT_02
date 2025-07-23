@@ -5058,7 +5058,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="name"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.name')} *</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름*</FormLabel>
                                     <FormControl>
                                       <Input 
                                         placeholder={t('agent.maxTwentyChars')} 
