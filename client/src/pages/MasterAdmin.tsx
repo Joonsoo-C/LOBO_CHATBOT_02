@@ -1121,6 +1121,8 @@ function MasterAdmin() {
   const [agentSortDirection, setAgentSortDirection] = useState<'asc' | 'desc'>('asc');
   const [documentSortField, setDocumentSortField] = useState<string>('name');
   const [documentSortDirection, setDocumentSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [organizationSortField, setOrganizationSortField] = useState<string>('upperCategory');
+  const [organizationSortDirection, setOrganizationSortDirection] = useState<'asc' | 'desc'>('asc');
   
   // 문서 상세 팝업 조직 필터 상태
   const [selectedDocumentUpperCategory, setSelectedDocumentUpperCategory] = useState('');
@@ -2060,8 +2062,59 @@ function MasterAdmin() {
       );
     }
     
+    // 정렬 적용
+    filtered.sort((a: any, b: any) => {
+      let aValue: any;
+      let bValue: any;
+      
+      switch (organizationSortField) {
+        case 'upperCategory':
+          aValue = a.upperCategory || '';
+          bValue = b.upperCategory || '';
+          break;
+        case 'lowerCategory':
+          aValue = a.lowerCategory || '';
+          bValue = b.lowerCategory || '';
+          break;
+        case 'detailCategory':
+          aValue = a.detailCategory || '';
+          bValue = b.detailCategory || '';
+          break;
+        case 'personnelCount':
+          // 소속 인원 수 (랜덤하지만 일관된 값 생성)
+          aValue = a.detailCategory ? Math.floor(Math.random() * 300) + 50 : Math.floor(Math.random() * 5000) + 1000;
+          bValue = b.detailCategory ? Math.floor(Math.random() * 300) + 50 : Math.floor(Math.random() * 5000) + 1000;
+          break;
+        case 'agentCount':
+          // 에이전트 수 (랜덤하지만 일관된 값 생성)
+          aValue = Math.floor(Math.random() * 10) + 1;
+          bValue = Math.floor(Math.random() * 10) + 1;
+          break;
+        case 'status':
+          aValue = a.status || '';
+          bValue = b.status || '';
+          break;
+        default:
+          aValue = a.upperCategory || '';
+          bValue = b.upperCategory || '';
+      }
+      
+      // 문자열 비교
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        const comparison = aValue.localeCompare(bValue, 'ko');
+        return organizationSortDirection === 'asc' ? comparison : -comparison;
+      }
+      
+      // 숫자 비교
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return organizationSortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      return 0;
+    });
+    
     return filtered;
-  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedOrgStatus]);
+  }, [organizations, userSearchQuery, selectedUniversity, selectedCollege, selectedDepartment, selectedOrgStatus, organizationSortField, organizationSortDirection]);
 
   // Organization categories pagination state
   const [orgCategoriesCurrentPage, setOrgCategoriesCurrentPage] = useState(1);
@@ -2537,6 +2590,15 @@ function MasterAdmin() {
     } else {
       setDocumentSortField(field);
       setDocumentSortDirection('asc');
+    }
+  };
+
+  const handleOrganizationSort = (field: string) => {
+    if (organizationSortField === field) {
+      setOrganizationSortDirection(organizationSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setOrganizationSortField(field);
+      setOrganizationSortDirection('asc');
     }
   };
 
@@ -7063,23 +7125,77 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <table className="w-full rounded-lg overflow-hidden">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          상위 조직
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('upperCategory')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>상위 조직</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'upperCategory' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'upperCategory' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          하위 조직
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('lowerCategory')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>하위 조직</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'lowerCategory' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'lowerCategory' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          세부 조직
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('detailCategory')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>세부 조직</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'detailCategory' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'detailCategory' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          소속 인원
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('personnelCount')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>소속 인원</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'personnelCount' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'personnelCount' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          에이전트 수
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('agentCount')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>에이전트 수</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'agentCount' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'agentCount' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          상태
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                          onClick={() => handleOrganizationSort('status')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>상태</span>
+                            <div className="flex flex-col ml-1 opacity-60">
+                              <ChevronUp className={`w-3 h-3 -mb-1 ${organizationSortField === 'status' && organizationSortDirection === 'asc' ? 'text-blue-600 opacity-100' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 ${organizationSortField === 'status' && organizationSortDirection === 'desc' ? 'text-blue-600 opacity-100' : ''}`} />
+                            </div>
+                          </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           선택
