@@ -423,9 +423,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
                         placeholder="Bing Search API 키를 입력하세요"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 korean-text"
                       />
-                      <p className="text-xs text-gray-500 korean-text">
-                        Microsoft Azure Cognitive Services에서 Bing Search API 키를 발급받을 수 있습니다.
-                      </p>
+                      
                     </div>
                   )}
                 </>
