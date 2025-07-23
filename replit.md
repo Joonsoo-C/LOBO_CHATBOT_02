@@ -465,6 +465,13 @@ Changelog:
   * Fixed conversation lookup methods to use available storage interface methods
   * Message sending now works correctly with OpenAI API integration
   * System automatically falls back to memory storage with proper error handling
+- July 23, 2025. Completed comprehensive schema migration for agent persona system:
+  * Migrated "금칙어 반응 방식" to more intuitive "추가 프롬프트" throughout entire system
+  * Updated all field names for consistency: speakingStyle → speechStyle, personalityTraits → personality, personaName → personaNickname, rolePrompt → expertiseArea
+  * Enhanced schema with meaningful field names and examples for better user guidance
+  * Completed end-to-end migration: shared/schema.ts, server routes, OpenAI integration, client types, and UI components
+  * Added translation examples like "간단하고 정중한 말투로, 최대 5줄 이내 요약" for better UX
+  * All LSP diagnostics resolved with fully functional persona editing system
 - June 23, 2025. Implemented complete document management functionality in master admin system:
   * Added document download functionality with proper file streaming and headers
   * Implemented document delete functionality with file system cleanup

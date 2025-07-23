@@ -21,11 +21,11 @@ export interface Agent {
   maxResponseLength?: number; // 최대 응답 길이
   
   // 4. 역할 및 페르소나 설정
-  personaName?: string;      // 페르소나 닉네임
-  speakingStyle?: string;    // 말투 스타일
-  personalityTraits?: string; // 성격 설명
-  rolePrompt?: string;       // 역할 프롬프트
-  prohibitedWordResponse?: string; // 금칙어 응답
+  personaNickname?: string;  // 페르소나 닉네임
+  speechStyle?: string;      // 말투 스타일
+  personality?: string;      // 성격 설명
+  expertiseArea?: string;    // 전문 분야
+  additionalPrompt?: string; // 추가 프롬프트
   
   // 5. 문서 연결 및 업로드
   uploadFormats?: string[];  // 업로드 가능한 포맷

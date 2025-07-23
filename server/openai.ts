@@ -61,9 +61,9 @@ export async function generateManagementResponse(
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
   availableDocuments: Array<{ filename: string; content: string }>,
   chatbotType: string = "general-llm",
-  speakingStyle: string = "친근하고 도움이 되는 말투",
-  personalityTraits: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
-  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+  speechStyle: string = "친근하고 도움이 되는 말투",
+  personality: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
+  additionalPrompt: string = "",
   userLanguage: string = "ko"
 ): Promise<ChatResponse> {
   // Check if we need to translate Korean text to English
@@ -169,9 +169,9 @@ General conversation is also always possible!`
     conversationHistory,
     availableDocuments,
     chatbotType,
-    speakingStyle,
-    personalityTraits,
-    prohibitedWordResponse,
+    speechStyle,
+    personality,
+    additionalPrompt,
     userLanguage
   );
 }
@@ -215,16 +215,16 @@ export async function generateChatResponse(
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
   availableDocuments: Array<{ filename: string; content: string }> = [],
   chatbotType: string = "general-llm",
-  speakingStyle: string = "친근하고 도움이 되는 말투",
-  personalityTraits: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
-  prohibitedWordResponse: string = "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.",
+  speechStyle: string = "친근하고 도움이 되는 말투",
+  personality: string = "친절하고 전문적인 성격으로 정확한 정보를 제공",
+  additionalPrompt: string = "",
   userLanguage: string = "ko"
 ): Promise<ChatResponse> {
   try {
     // Debug log to check if persona parameters are received
     console.log("OpenAI persona parameters:", {
-      speakingStyle,
-      personalityTraits,
+      speechStyle,
+      personality,
       chatbotType
     });
 
@@ -243,11 +243,11 @@ export async function generateChatResponse(
       if (containsKorean(agentDescription)) {
         agentDescription = await translateKoreanToEnglish(agentDescription);
       }
-      if (containsKorean(speakingStyle)) {
-        speakingStyle = await translateKoreanToEnglish(speakingStyle);
+      if (containsKorean(speechStyle)) {
+        speechStyle = await translateKoreanToEnglish(speechStyle);
       }
-      if (containsKorean(personalityTraits)) {
-        personalityTraits = await translateKoreanToEnglish(personalityTraits);
+      if (containsKorean(personality)) {
+        personality = await translateKoreanToEnglish(personality);
       }
     }
 
@@ -308,16 +308,19 @@ export async function generateChatResponse(
     let systemPrompt = "";
     
     // Only add grumpy behavior if specifically mentioned in speaking style or personality traits
-    const isGrumpyPersonality = speakingStyle.includes("투덜이") || speakingStyle.includes("스머프") || 
-                                personalityTraits.includes("투덜이") || personalityTraits.includes("스머프");
+    const isGrumpyPersonality = speechStyle.includes("투덜이") || speechStyle.includes("스머프") || 
+                                personality.includes("투덜이") || personality.includes("스머프");
     
     const grumpyBehavior = isGrumpyPersonality ? 
       `CRITICAL: Always sound grumpy, annoyed, and bothered. Use short, irritated responses.
 
 ` : "";
     
-    const personalityInstruction = personalityTraits ? `
-Your personality: ${personalityTraits}` : "";
+    const personalityInstruction = personality ? `
+Your personality: ${personality}` : "";
+    
+    const additionalInstruction = additionalPrompt ? `
+Additional instructions: ${additionalPrompt}` : "";
     
     const languageInstruction = `
 🚨 CRITICAL LANGUAGE OVERRIDE 🚨
@@ -347,8 +350,8 @@ REPEAT: ${responseLanguage}`;
         
         systemPrompt = `${languageInstruction}
 
-You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${grumpyBehavior}${personalityInstruction}
+You are ${agentName}. You MUST speak in this exact style: "${speechStyle}".
+${grumpyBehavior}${personalityInstruction}${additionalInstruction}
 
 CRITICAL DOCUMENT ANALYSIS INSTRUCTIONS:
 - You have access to uploaded documents with their full content
@@ -367,8 +370,8 @@ Rules:
       case "doc-fallback-llm":
         systemPrompt = `${languageInstruction}
 
-You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${grumpyBehavior}${personalityInstruction}
+You are ${agentName}. You MUST speak in this exact style: "${speechStyle}".
+${grumpyBehavior}${personalityInstruction}${additionalInstruction}
 
 DOCUMENT ANALYSIS INSTRUCTIONS:
 - When documents are available, prioritize them for answers
@@ -388,8 +391,8 @@ Rules:
       default:
         systemPrompt = `${languageInstruction}
 
-You are ${agentName}. You MUST speak in this exact style: "${speakingStyle}".
-${grumpyBehavior}${personalityInstruction}
+You are ${agentName}. You MUST speak in this exact style: "${speechStyle}".
+${grumpyBehavior}${personalityInstruction}${additionalInstruction}
 
 DOCUMENT INTEGRATION INSTRUCTIONS:
 - When documents are available, use them to enhance your responses
@@ -425,7 +428,7 @@ REMINDER: Respond in ${responseLanguage}`;
     ];
 
     // Apply grumpy speaking style but still provide proper answers
-    if (speakingStyle && (speakingStyle.includes("투덜이") || speakingStyle.includes("스머프"))) {
+    if (speechStyle && (speechStyle.includes("투덜이") || speechStyle.includes("스머프"))) {
       console.log("APPLYING GRUMPY SMURF STYLE WITH PROPER ANSWERS");
       
       const grumpyExamples = {

@@ -262,15 +262,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
 
-      const { nickname, speakingStyle, knowledgeArea, personalityTraits, prohibitedWordResponse } = req.body;
+      const { nickname, speechStyle, knowledgeArea, personality, additionalPrompt } = req.body;
 
       // Update agent with complete persona data
       const updatedAgent = await storage.updateAgent(agentId, {
         name: nickname,
         description: knowledgeArea,
-        speakingStyle,
-        personalityTraits,
-        prohibitedWordResponse
+        speechStyle,
+        personality,
+        additionalPrompt
       });
 
       res.json(updatedAgent);
@@ -565,14 +565,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Extract persona parameters with detailed logging
       const chatbotType = refreshedAgent?.chatbotType || "general-llm";
-      const speakingStyle = refreshedAgent?.speakingStyle || "친근하고 도움이 되는 말투";
-      const personalityTraits = refreshedAgent?.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공";
-      const prohibitedWordResponse = refreshedAgent?.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다.";
+      const speechStyle = refreshedAgent?.speechStyle || "친근하고 도움이 되는 말투";
+      const personality = refreshedAgent?.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공";
+      const additionalPrompt = refreshedAgent?.additionalPrompt || "";
 
       console.log("REFRESHED AGENT PERSONA DATA:", {
         chatbotType,
-        speakingStyle,
-        personalityTraits,
+        speechStyle,
+        personality,
         agentName: refreshedAgent?.name
       });
 
@@ -589,9 +589,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           conversationHistory,
           documentContext,
           chatbotType,
-          speakingStyle,
-          personalityTraits,
-          prohibitedWordResponse,
+          speechStyle,
+          personality,
+          additionalPrompt,
           userLanguage
         );
       } else {
@@ -603,9 +603,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           conversationHistory,
           documentContext,
           chatbotType,
-          speakingStyle,
-          personalityTraits,
-          prohibitedWordResponse,
+          speechStyle,
+          personality,
+          additionalPrompt,
           userLanguage
         );
       }

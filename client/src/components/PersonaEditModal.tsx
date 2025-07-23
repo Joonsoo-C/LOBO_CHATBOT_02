@@ -19,10 +19,10 @@ interface PersonaEditModalProps {
 
 interface PersonaData {
   nickname: string;
-  speakingStyle: string;
+  speechStyle: string;
   knowledgeArea: string;
-  personalityTraits: string;
-  prohibitedWordResponse: string;
+  personality: string;
+  additionalPrompt: string;
 }
 
 export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, onCancel }: PersonaEditModalProps) {
@@ -31,20 +31,20 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
   
   const [personaData, setPersonaData] = useState<PersonaData>({
     nickname: agent.name || "",
-    speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
+    speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
     knowledgeArea: agent.description || "",
-    personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-    prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+    personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+    additionalPrompt: agent.additionalPrompt || ""
   });
 
   // Update form data when agent changes
   useEffect(() => {
     setPersonaData({
       nickname: agent.name || "",
-      speakingStyle: agent.speakingStyle || "친근하고 도움이 되는 말투",
+      speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
       knowledgeArea: agent.description || "",
-      personalityTraits: agent.personalityTraits || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-      prohibitedWordResponse: agent.prohibitedWordResponse || "죄송합니다. 해당 내용에 대해서는 답변드릴 수 없습니다."
+      personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+      additionalPrompt: agent.additionalPrompt || ""
     });
   }, [agent]);
 
@@ -64,7 +64,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
         const changes = [];
         if (personaData.nickname !== agent.name) changes.push(`닉네임: ${personaData.nickname}`);
         if (personaData.knowledgeArea !== agent.description) changes.push(`지식 분야: ${personaData.knowledgeArea}`);
-        if (personaData.speakingStyle !== agent.speakingStyle) changes.push(`말투 스타일: ${personaData.speakingStyle}`);
+        if (personaData.speechStyle !== agent.speechStyle) changes.push(`말투 스타일: ${personaData.speechStyle}`);
         
         const changeText = changes.length > 0 ? changes.join(', ') + ' 변경됨. ' : '';
         onSuccess(`${changeText}페르소나 설정이 저장되었습니다.`);
@@ -140,13 +140,13 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
             />
           </div>
 
-          {/* Speaking Style */}
+          {/* Speech Style */}
           <div className="space-y-2">
-            <Label htmlFor="speakingStyle" className="korean-text">말투 스타일</Label>
+            <Label htmlFor="speechStyle" className="korean-text">말투 스타일</Label>
             <Textarea
-              id="speakingStyle"
-              value={personaData.speakingStyle}
-              onChange={(e) => handleInputChange('speakingStyle', e.target.value)}
+              id="speechStyle"
+              value={personaData.speechStyle}
+              onChange={(e) => handleInputChange('speechStyle', e.target.value)}
               placeholder="말투와 대화 스타일을 설명하세요"
               className="korean-text resize-none"
               rows={3}
@@ -166,29 +166,29 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
             />
           </div>
 
-          {/* Personality Traits */}
+          {/* Personality */}
           <div className="space-y-2">
-            <Label htmlFor="personalityTraits" className="korean-text">성격 특성</Label>
+            <Label htmlFor="personality" className="korean-text">성격 특성</Label>
             <Textarea
-              id="personalityTraits"
-              value={personaData.personalityTraits}
-              onChange={(e) => handleInputChange('personalityTraits', e.target.value)}
+              id="personality"
+              value={personaData.personality}
+              onChange={(e) => handleInputChange('personality', e.target.value)}
               placeholder="성격과 의사 표현 방식을 설명하세요"
               className="korean-text resize-none"
               rows={3}
             />
           </div>
 
-          {/* Prohibited Word Response */}
+          {/* Additional Prompt */}
           <div className="space-y-2">
-            <Label htmlFor="prohibitedWordResponse" className="korean-text">금칙어 반응 방식</Label>
+            <Label htmlFor="additionalPrompt" className="korean-text">추가 프롬프트</Label>
             <Textarea
-              id="prohibitedWordResponse"
-              value={personaData.prohibitedWordResponse}
-              onChange={(e) => handleInputChange('prohibitedWordResponse', e.target.value)}
-              placeholder="금칙어 탐지 시 반응 방식을 설정하세요"
+              id="additionalPrompt"
+              value={personaData.additionalPrompt}
+              onChange={(e) => handleInputChange('additionalPrompt', e.target.value)}
+              placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약&#10;예: 숫자와 항목이 있는 리스트 형식으로 대답&#10;예: 감정적인 질문에는 공감 표현을 포함"
               className="korean-text resize-none"
-              rows={2}
+              rows={3}
             />
           </div>
 
