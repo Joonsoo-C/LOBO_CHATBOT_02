@@ -5107,7 +5107,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   name="upperCategory"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">{t('org.upperOrganization')} *</FormLabel>
+                                      <FormLabel className="text-xs text-gray-600">상위 조직 *</FormLabel>
                                       <Select 
                                         onValueChange={(value) => {
                                           field.onChange(value);
