@@ -5377,6 +5377,85 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </FormItem>
                                 )}
                               />
+
+                              {/* 웹 검색 설정 - LLM + 웹 검색 선택 시에만 표시 */}
+                              {agentForm.watch("chatbotType") === "llm-with-web-search" && (
+                                <div className="border-t pt-4 space-y-4">
+                                  <h3 className="text-sm font-medium text-gray-700">웹 검색 설정</h3>
+                                  
+                                  <FormField
+                                    control={agentForm.control}
+                                    name="webSearchEnabled"
+                                    render={({ field }) => (
+                                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                        <div className="space-y-0.5">
+                                          <FormLabel className="text-sm font-medium">웹 검색 사용</FormLabel>
+                                          <div className="text-xs text-gray-500">
+                                            실시간 웹 검색을 통해 최신 정보를 제공합니다
+                                          </div>
+                                        </div>
+                                        <FormControl>
+                                          <input
+                                            type="checkbox"
+                                            checked={field.value || false}
+                                            onChange={(e) => field.onChange(e.target.checked)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                          />
+                                        </FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                  {agentForm.watch("webSearchEnabled") && (
+                                    <>
+                                      <FormField
+                                        control={agentForm.control}
+                                        name="searchEngine"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-sm font-medium text-gray-700">검색 엔진</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value || "bing"}>
+                                              <FormControl>
+                                                <SelectTrigger>
+                                                  <SelectValue placeholder="검색 엔진을 선택하세요" />
+                                                </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent>
+                                                <SelectItem value="bing">Bing Search API</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+
+                                      {agentForm.watch("searchEngine") === "bing" && (
+                                        <FormField
+                                          control={agentForm.control}
+                                          name="bingApiKey"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-sm font-medium text-gray-700">Bing API 키</FormLabel>
+                                              <FormControl>
+                                                <Input 
+                                                  type="password"
+                                                  placeholder="Bing Search API 키를 입력하세요"
+                                                  {...field}
+                                                />
+                                              </FormControl>
+                                              <div className="text-xs text-gray-500">
+                                                Microsoft Azure Cognitive Services에서 Bing Search API 키를 발급받을 수 있습니다.
+                                              </div>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              )}
+
                               <FormField
                                 control={agentForm.control}
                                 name="maxInputLength"
@@ -11125,6 +11204,84 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               )}
                             />
                           </div>
+
+                          {/* 웹 검색 설정 - LLM + 웹 검색 선택 시에만 표시 */}
+                          {agentForm.watch("chatbotType") === "llm-with-web-search" && (
+                            <div className="border-t pt-4 space-y-4">
+                              <h3 className="text-sm font-medium text-gray-700">웹 검색 설정</h3>
+                              
+                              <FormField
+                                control={agentForm.control}
+                                name="webSearchEnabled"
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                    <div className="space-y-0.5">
+                                      <FormLabel className="text-sm font-medium">웹 검색 사용</FormLabel>
+                                      <div className="text-xs text-gray-500">
+                                        실시간 웹 검색을 통해 최신 정보를 제공합니다
+                                      </div>
+                                    </div>
+                                    <FormControl>
+                                      <input
+                                        type="checkbox"
+                                        checked={field.value || false}
+                                        onChange={(e) => field.onChange(e.target.checked)}
+                                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+
+                              {agentForm.watch("webSearchEnabled") && (
+                                <>
+                                  <FormField
+                                    control={agentForm.control}
+                                    name="searchEngine"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700">검색 엔진</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value || "bing"}>
+                                          <FormControl>
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="검색 엔진을 선택하세요" />
+                                            </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent>
+                                            <SelectItem value="bing">Bing Search API</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                  {agentForm.watch("searchEngine") === "bing" && (
+                                    <FormField
+                                      control={agentForm.control}
+                                      name="bingApiKey"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-sm font-medium text-gray-700">Bing API 키</FormLabel>
+                                          <FormControl>
+                                            <Input 
+                                              type="password"
+                                              placeholder="Bing Search API 키를 입력하세요"
+                                              {...field}
+                                            />
+                                          </FormControl>
+                                          <div className="text-xs text-gray-500">
+                                            Microsoft Azure Cognitive Services에서 Bing Search API 키를 발급받을 수 있습니다.
+                                          </div>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </TabsContent>
 
