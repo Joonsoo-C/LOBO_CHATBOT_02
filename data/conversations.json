@@ -326,6 +326,19 @@
         "isHidden": false,
         "createdAt": "2025-07-23T05:51:58.823Z"
       }
+    ],
+    [
+      175,
+      {
+        "id": 175,
+        "userId": "user1081",
+        "agentId": 162,
+        "type": "general",
+        "unreadCount": 0,
+        "lastMessageAt": "2025-07-23T06:20:13.285Z",
+        "isHidden": false,
+        "createdAt": "2025-07-23T06:20:13.285Z"
+      }
     ]
   ]
 }
