@@ -6180,9 +6180,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    CSV/Excel 파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.</p>
                 </CardContent>
               </Card>
             </div>
