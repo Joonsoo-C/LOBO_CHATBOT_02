@@ -216,27 +216,16 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         {/* Modal Content */}
         <div className="p-6 max-h-[75vh] overflow-y-auto">
           {/* Sample Download */}
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-green-600" />
-                <span className="text-sm font-medium text-green-800 dark:text-green-200 korean-text">
-                  {t('agent.fileUpload')}
-                </span>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownloadSample}
-                className="korean-text text-green-700 border-green-300 hover:bg-green-100"
-              >
-                <Download className="w-4 h-4 mr-1" />
-                샘플 파일 다운로드
-              </Button>
-            </div>
-            <p className="text-sm text-green-700 dark:text-green-300 mt-2 korean-text">
-              {t('agent.fileUploadDesc')}
-            </p>
+          <div className="mb-6 flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadSample}
+              className="korean-text text-green-700 border-green-300 hover:bg-green-100"
+            >
+              <Download className="w-4 h-4 mr-1" />
+              샘플 파일 다운로드
+            </Button>
           </div>
 
           {/* File Upload Section */}
