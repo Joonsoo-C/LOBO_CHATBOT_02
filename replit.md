@@ -976,6 +976,11 @@ Changelog:
   * Enhanced file upload modal with white text buttons and expanded file format support (XLSX, CSV, HWP, JPG, PNG, GIF, BMP)
   * Removed duplicate UI elements from agent file upload popup for cleaner interface
   * Fixed duplicate key warnings in LanguageContext.tsx translation files
+- July 23, 2025. Updated master admin system agent tab terminology:
+  * Changed "모델 설정" to "모델 및 응답 설정" in both agent creation and detail popup tabs
+  * Updated three locations in MasterAdmin.tsx: tab comments and tab trigger text
+  * Updated translation keys in LanguageContext.tsx for both Korean and English versions
+  * Applied consistent terminology across all agent management interfaces in master admin system
 - July 9, 2025. Completed comprehensive filter reset button styling standardization:
   * Removed variant="outline" from all filter reset buttons across all management sections
   * Updated filter reset buttons in user management, agent management, organization category management, document management, Q&A management, and token management

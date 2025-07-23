@@ -5327,7 +5327,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 모델 설정 탭 */}
+                        {/* 모델 및 응답 설정 탭 */}
                         <TabsContent value="model" className="space-y-6">
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -10816,7 +10816,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       페르소나
                     </TabsTrigger>
                     <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                      모델 설정
+                      모델 및 응답 설정
                     </TabsTrigger>
                     <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
                       파일 업로드
@@ -11073,7 +11073,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </div>
                       </TabsContent>
 
-                      {/* 모델 설정 탭 */}
+                      {/* 모델 및 응답 설정 탭 */}
                       <TabsContent value="model" className="space-y-6">
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
