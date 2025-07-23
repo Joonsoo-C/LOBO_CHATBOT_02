@@ -8420,9 +8420,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <DialogTitle>LMS 연동 설정</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="lms-type">LMS 유형</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="lms-type" className="text-sm font-medium">LMS 유형</Label>
                   <Select>
                     <SelectTrigger>
                       <SelectValue placeholder="LMS 선택" />
@@ -8437,8 +8437,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="lms-url">LMS 서버 URL</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="lms-url" className="text-sm font-medium">LMS 서버 URL</Label>
                   <Input 
                     id="lms-url" 
                     placeholder="https://lms.university.edu" 
@@ -8446,17 +8446,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="api-key">API 키</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="api-key" className="text-sm font-medium">API 키</Label>
                   <Input 
                     id="api-key" 
                     type="password"
                     placeholder="LMS API 키 입력" 
                   />
                 </div>
-                <div>
-                  <Label htmlFor="sync-interval">동기화 주기</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="sync-interval" className="text-sm font-medium">동기화 주기</Label>
                   <Select>
                     <SelectTrigger>
                       <SelectValue placeholder="동기화 주기 선택" />
