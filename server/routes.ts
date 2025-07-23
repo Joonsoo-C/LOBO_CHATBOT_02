@@ -280,6 +280,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent basic info update route
+  app.put('/api/agents/:id/basic-info', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Check if user is the manager of this agent or master admin
+      const agent = await storage.getAgent(agentId);
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
+        return res.status(403).json({ message: "You are not authorized to manage this agent" });
+      }
+
+      const { name, description, upperCategory, lowerCategory, detailCategory, type, status } = req.body;
+
+      // Update agent with basic info data
+      const updatedAgent = await storage.updateAgent(agentId, {
+        name,
+        description,
+        upperCategory,
+        lowerCategory,
+        detailCategory,
+        category: type,
+        status
+      });
+
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error("Error updating agent basic info:", error);
+      res.status(500).json({ message: "Failed to update agent basic info" });
+    }
+  });
+
   // Agent performance analysis route
   app.get('/api/agents/:id/performance', isAuthenticated, async (req: any, res) => {
     try {

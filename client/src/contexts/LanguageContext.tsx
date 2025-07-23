@@ -122,6 +122,7 @@ const translations: Record<Language, Record<string, string>> = {
     // 에이전트 관리
     'agent.management': '에이전트 관리',
     'agent.managementDesc': '관리 중인 에이전트를 선택하여 설정하세요',
+    'agent.basicInfo': '기본 정보',
     'agent.persona': '페르소나 변경',
     'agent.iconChange': '아이콘 변경',
     'agent.settings': '모델 및 응답 설정',
@@ -850,6 +851,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Agent management
     'agent.management': 'Agent Management',
     'agent.managementDesc': 'Select a managed agent to configure settings',
+    'agent.basicInfo': 'Basic Info',
     'agent.persona': 'Persona Change',
     'agent.iconChange': 'Change Icon',
     'agent.settings': 'Bot Settings',
