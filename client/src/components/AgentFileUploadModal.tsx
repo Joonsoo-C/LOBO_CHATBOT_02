@@ -336,7 +336,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
           {/* Upload Options */}
           <div className="mb-6">
-            <Label className="text-sm font-medium mb-3 block korean-text">{t('agent.uploadOptions')}</Label>
+            <Label className="text-sm font-medium mb-3 block korean-text">업로드 옵션</Label>
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -344,7 +344,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   checked={validateOnly}
                   onCheckedChange={(checked) => setValidateOnly(checked === true)}
                 />
-                <Label htmlFor="validate-only" className="text-sm korean-text">{t('agent.validateOnly')}</Label>
+                <Label htmlFor="validate-only" className="text-sm korean-text">유효성 검증만</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -353,7 +353,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   onCheckedChange={(checked) => setClearExisting(checked === true)}
                   disabled={validateOnly}
                 />
-                <Label htmlFor="clear-existing" className="text-sm korean-text">{t('agent.clearExisting')}</Label>
+                <Label htmlFor="clear-existing" className="text-sm korean-text">기존 데이터 삭제</Label>
               </div>
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               className="flex-1 korean-text h-12"
               disabled={uploadMutation.isPending}
             >
-              {t('common.cancel')}
+              취소
             </Button>
             <Button
               onClick={handleUpload}
@@ -421,12 +421,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               {uploadMutation.isPending ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  {validateOnly ? t('agent.validating') : t('agent.uploading')}
+                  {validateOnly ? '검증 중...' : '업로드 중...'}
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  {validateOnly ? t('agent.validateStart') : t('agent.uploadStart')}
+                  {validateOnly ? '검증 시작' : '업로드 시작'}
                 </>
               )}
             </Button>
