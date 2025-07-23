@@ -6211,7 +6211,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
                     <Plus className="w-5 h-5 mr-2 text-blue-600" />
-                    에이전트 수동 추가
+                    새 에이전트 수동 추가
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
