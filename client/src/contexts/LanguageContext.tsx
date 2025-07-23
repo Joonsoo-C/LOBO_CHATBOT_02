@@ -1340,7 +1340,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Agent File Upload translations
     'agent.fileUpload': 'Agent File Upload',
-    'agent.fileUploadDesc': 'Upload files to bulk register multiple users.',
+    'agent.fileUploadDesc': 'Upload files to bulk register multiple agents.',
     'agent.dragOrClick': 'Drag or click to upload file',
     'agent.uploadOptions': 'Upload Options',
     'agent.validateOnly': 'Validation only (do not actually upload)',
@@ -1498,7 +1498,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Agent File Upload translations
     'agent.fileUpload': '에이전트 파일 업로드',
-    'agent.fileUploadDesc': '파일을 업로드하여 다수의 사용자를 일괄 등록합니다.',
+    'agent.fileUploadDesc': '파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.',
 
     'agent.uploadOptions': '업로드 옵션',
     'agent.validateOnly': '검증만 수행 (실제 업로드하지 않음)',
