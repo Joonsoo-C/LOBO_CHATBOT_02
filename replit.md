@@ -976,6 +976,13 @@ Changelog:
     - Changed "세부 조직 카테고리" → "세부 조직"
   * Updated all filtering areas: user management, agent management, organization management, document management, token management
   * All dropdown menus now use consistent simplified naming without "카테고리" suffix
+- July 23, 2025. Synchronized agent management persona forms for UI consistency:
+  * Updated agent detail popup persona tab to match new agent creation popup structure
+  * Added missing fields: expertiseArea (지식/전문 분야) and additionalPrompt (추가 프롬프트)
+  * Unified field layout with proper translation keys for all persona fields
+  * Both forms now contain identical 5 persona fields: nickname, speechStyle, expertiseArea, personality, additionalPrompt
+  * Enhanced form consistency with proper placeholder examples and field organization
+  * Improved user experience with standardized persona editing across agent management interfaces
   * Completed full Korean localization of token management screen with proper organization filter labels
 - July 23, 2025. Enhanced agent management UI terminology and file upload interface:
   * Updated agent management terminology: "AI 답변 설정" → "모델 및 응답 설정" and "답변 생성 방식" → "응답 생성 방식" in all language files

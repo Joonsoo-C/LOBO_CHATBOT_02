@@ -11100,13 +11100,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="personaNickname"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">닉네임</FormLabel>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.nickname')}</FormLabel>
                                   <FormControl>
-                                    <Input 
-                                      placeholder="예: 민지, 교수님 어시스턴트"
-                                      className="focus:ring-2 focus:ring-blue-500"
-                                      {...field} 
-                                    />
+                                    <Input placeholder={t('agent.nicknamePlaceholder')} {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -11117,11 +11113,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="speechStyle"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.speechStyle')}</FormLabel>
                                   <FormControl>
-                                    <Input 
-                                      placeholder="예: 친근하고 정중한 말투"
-                                      className="focus:ring-2 focus:ring-blue-500"
+                                    <Textarea 
+                                      placeholder={t('agent.speechStylePlaceholder')}
+                                      className="min-h-[60px] focus:ring-2 focus:ring-blue-500"
                                       {...field} 
                                     />
                                   </FormControl>
@@ -11130,24 +11126,59 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               )}
                             />
                           </div>
-                          
-                          <FormField
-                            control={agentForm.control}
-                            name="personality"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700">성격/개성</FormLabel>
-                                <FormControl>
-                                  <Textarea 
-                                    placeholder="에이전트의 성격이나 개성을 설명해주세요"
-                                    className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div className="grid grid-cols-1 gap-4">
+                            <FormField
+                              control={agentForm.control}
+                              name="expertiseArea"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.expertiseArea')}</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder={t('agent.expertiseAreaPlaceholder')}
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="personality"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.personality')}</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder={t('agent.personalityPlaceholder')}
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={agentForm.control}
+                              name="additionalPrompt"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.additionalPrompt')}</FormLabel>
+                                  <FormControl>
+                                    <Textarea 
+                                      placeholder={t('agent.additionalPromptPlaceholder')}
+                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
                       </TabsContent>
 
