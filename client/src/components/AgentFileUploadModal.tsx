@@ -310,7 +310,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   <div>
                     <h4 className="text-lg font-medium text-foreground mb-2 korean-text">{t('agent.dragOrClick')}</h4>
                     <p className="text-sm text-muted-foreground korean-text mb-4">
-                      지원 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF, BMP
+                      지원 형식: XLSX, CSV, PDF, DOC, DOCX, TXT, PPT, PPTX, HWP
                     </p>
                   </div>
                   <Button
