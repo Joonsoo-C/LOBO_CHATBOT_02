@@ -125,9 +125,9 @@ export const agents = pgTable("agents", {
   // 4. 역할 및 페르소나 설정
   personaNickname: varchar("persona_nickname"), // 닉네임
   speechStyle: text("speech_style").default("공손하고 친절한 말투로 대화합니다"), // 말투 스타일
-  expertiseArea: text("expertise_area"), // 지식/전문 분야
+  expertiseArea: text("expertise_area"), // 역할/지식/전문 분야
   personality: text("personality").default("친절하고 도움이 되는 성격"), // 성격특성
-  forbiddenResponseStyle: text("forbidden_response_style").default("죄송하지만 해당 질문에 대해서는 답변드릴 수 없습니다. 다른 주제로 대화해주세요."), // 금칙어 반응 방식
+  additionalPrompt: text("additional_prompt"), // 추가 프롬프트
   
   // 파일 업로드 설정 추가
   documentType: varchar("document_type").default("manual"), // 문서 유형 (manual, faq, policy, etc.)

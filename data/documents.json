@@ -10,8 +10,11 @@
       "uploadedBy": "master_admin",
       "id": 41,
       "createdAt": "2025-06-25T03:19:15.091Z",
-      "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T05:30:27.153Z"
+      "isVisibleToUsers": true,
+      "updatedAt": "2025-07-23T18:17:10.890Z",
+      "status": "active",
+      "type": "Word",
+      "description": ""
     },
     {
       "agentId": 1,

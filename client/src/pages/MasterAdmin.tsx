@@ -758,7 +758,7 @@ const agentSchema = z.object({
   speechStyle: z.string().optional(),
   expertiseArea: z.string().optional(),
   personality: z.string().optional(),
-  forbiddenResponseStyle: z.string().optional(),
+  additionalPrompt: z.string().optional(),
   
   // 📌 파일 업로드 설정
   documentType: z.string().optional(),
@@ -2810,7 +2810,7 @@ function MasterAdmin() {
       personaNickname: "",
       speechStyle: "",
       personality: "",
-      forbiddenResponseStyle: "",
+      additionalPrompt: "",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -5308,13 +5308,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                               <FormField
                                 control={agentForm.control}
-                                name="forbiddenResponseStyle"
+                                name="additionalPrompt"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.forbiddenResponse')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.additionalPrompt')}</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder={t('agent.forbiddenResponsePlaceholder')}
+                                        placeholder={t('agent.additionalPromptPlaceholder')}
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
