@@ -5222,23 +5222,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </FormItem>
                               )}
                             />
-                            <FormField
-                              control={agentForm.control}
-                              name="personality"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.rolePrompt')}</FormLabel>
-                                  <FormControl>
-                                    <Textarea 
-                                      placeholder={t('agent.rolePromptPlaceholder')}
-                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+
                           </div>
                         </TabsContent>
 
