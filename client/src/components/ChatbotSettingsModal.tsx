@@ -23,6 +23,9 @@ interface ChatbotSettings {
   upperCategory?: string;
   lowerCategory?: string;
   detailCategory?: string;
+  webSearchEnabled?: boolean;
+  searchEngine?: string;
+  bingApiKey?: string;
 }
 
 const LLM_MODELS = [
@@ -47,6 +50,11 @@ const CHATBOT_TYPES = [
     value: "general-llm", 
     label: "일반 챗봇",
     description: "일반 LLM 챗봇처럼 자유 대화"
+  },
+  { 
+    value: "llm-with-web-search", 
+    label: "LLM + 웹 검색",
+    description: "LLM과 웹 검색을 결합하여 최신 정보 제공"
   }
 ];
 
@@ -80,7 +88,10 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     visibility: (agent as any).visibility || "public",
     upperCategory: (agent as any).upperCategory || "",
     lowerCategory: (agent as any).lowerCategory || "",
-    detailCategory: (agent as any).detailCategory || ""
+    detailCategory: (agent as any).detailCategory || "",
+    webSearchEnabled: (agent as any).webSearchEnabled || false,
+    searchEngine: (agent as any).searchEngine || "bing",
+    bingApiKey: (agent as any).bingApiKey || ""
   });
 
   // Fetch organization categories
@@ -224,7 +235,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         ...data,
         selectedUsers: settings.visibility === 'user' ? selectedUsers : undefined
       };
-      const response = await apiRequest("PUT", `/api/agents/${agent.id}/settings`, requestData);
+      const response = await apiRequest("PATCH", `/api/agents/${agent.id}/settings`, requestData);
       return response.json();
     },
     onSuccess: () => {
@@ -240,6 +251,14 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
         const visibilityLabel = VISIBILITY_OPTIONS.find(v => v.value === settings.visibility)?.label || settings.visibility;
         
         let message = `챗봇 설정이 저장되었습니다.\n\nLLM 모델: ${modelLabel}\n챗봇 유형: ${typeLabel}\n공유 범위: ${visibilityLabel}`;
+        
+        // 웹 검색 설정 정보 추가
+        if (settings.chatbotType === "llm-with-web-search") {
+          message += `\n웹 검색 사용: ${settings.webSearchEnabled ? '활성화' : '비활성화'}`;
+          if (settings.webSearchEnabled && settings.searchEngine) {
+            message += `\n검색 엔진: ${settings.searchEngine === 'bing' ? 'Bing Search API' : settings.searchEngine}`;
+          }
+        }
         
         if (settings.visibility === 'group' && settings.upperCategory) {
           message += `\n조직: ${settings.upperCategory}`;
@@ -357,7 +376,62 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             </Select>
           </div>
 
+          {/* Web Search Settings - 조건부 표시 */}
+          {settings.chatbotType === "llm-with-web-search" && (
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="text-sm font-medium korean-text">웹 검색 설정</h3>
+              
+              {/* Web Search Toggle */}
+              <div className="flex items-center justify-between">
+                <Label htmlFor="webSearchEnabled" className="korean-text">웹 검색 사용</Label>
+                <input
+                  type="checkbox"
+                  id="webSearchEnabled"
+                  checked={settings.webSearchEnabled}
+                  onChange={(e) => setSettings(prev => ({ ...prev, webSearchEnabled: e.target.checked }))}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+              </div>
 
+              {/* Search Engine Selection */}
+              {settings.webSearchEnabled && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="searchEngine" className="korean-text">검색 엔진</Label>
+                    <Select
+                      value={settings.searchEngine}
+                      onValueChange={(value) => setSettings(prev => ({ ...prev, searchEngine: value }))}
+                    >
+                      <SelectTrigger className="korean-text">
+                        <SelectValue placeholder="검색 엔진을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="bing" className="korean-text">Bing Search API</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Bing API Key Input */}
+                  {settings.searchEngine === "bing" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="bingApiKey" className="korean-text">Bing API 키</Label>
+                      <input
+                        type="password"
+                        id="bingApiKey"
+                        value={settings.bingApiKey}
+                        onChange={(e) => setSettings(prev => ({ ...prev, bingApiKey: e.target.value }))}
+                        placeholder="Bing Search API 키를 입력하세요"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 korean-text"
+                      />
+                      <p className="text-xs text-gray-500 korean-text">
+                        Microsoft Azure Cognitive Services에서 Bing Search API 키를 발급받을 수 있습니다.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4 border-t">

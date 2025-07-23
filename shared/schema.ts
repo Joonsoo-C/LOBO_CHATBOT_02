@@ -113,9 +113,14 @@ export const agents = pgTable("agents", {
   
   // 3. 모델 및 응답 설정
   llmModel: varchar("llm_model").notNull().default("gpt-4o"), // 사용 모델
-  chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // "strict-doc", "doc-fallback-llm", "general-llm"
+  chatbotType: varchar("chatbot_type").notNull().default("general-llm"), // "strict-doc", "doc-fallback-llm", "general-llm", "llm-with-web-search"
   maxInputLength: integer("max_input_length").default(2048), // 최대 입력 길이
   maxResponseLength: integer("max_response_length").default(1024), // 최대 응답 길이
+  
+  // 웹 검색 관련 설정
+  webSearchEnabled: boolean("web_search_enabled").default(false), // 웹 검색 사용 여부
+  searchEngine: varchar("search_engine").default("bing"), // 검색 엔진 종류
+  bingApiKey: text("bing_api_key"), // Bing 검색 API 키
   
   // 4. 역할 및 페르소나 설정
   personaNickname: varchar("persona_nickname"), // 닉네임

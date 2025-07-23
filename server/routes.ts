@@ -1477,6 +1477,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Agent settings update endpoint (for chatbot settings including web search)
+  app.patch('/api/agents/:id/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const agentId = parseInt(req.params.id);
+      const userId = req.user.id;
+      const { 
+        llmModel, 
+        chatbotType, 
+        visibility, 
+        upperCategory, 
+        lowerCategory, 
+        detailCategory,
+        webSearchEnabled,
+        searchEngine,
+        bingApiKey 
+      } = req.body;
+
+      if (isNaN(agentId)) {
+        return res.status(400).json({ message: "Invalid agent ID" });
+      }
+
+      // Check if user has permission to manage this agent
+      const agent = await storage.getAgent(agentId);
+      const userType = req.user.userType;
+      if (!agent || (agent.managerId !== userId && userType !== 'admin' && userId !== 'master_admin')) {
+        return res.status(403).json({ message: "Unauthorized to modify this agent" });
+      }
+
+      const updateData: any = {};
+      if (llmModel !== undefined) updateData.llmModel = llmModel;
+      if (chatbotType !== undefined) updateData.chatbotType = chatbotType;
+      if (visibility !== undefined) updateData.visibility = visibility;
+      if (upperCategory !== undefined) updateData.upperCategory = upperCategory;
+      if (lowerCategory !== undefined) updateData.lowerCategory = lowerCategory;
+      if (detailCategory !== undefined) updateData.detailCategory = detailCategory;
+      if (webSearchEnabled !== undefined) updateData.webSearchEnabled = webSearchEnabled;
+      if (searchEngine !== undefined) updateData.searchEngine = searchEngine;
+      if (bingApiKey !== undefined) updateData.bingApiKey = bingApiKey;
+
+      const updatedAgent = await storage.updateAgent(agentId, updateData);
+
+      res.json({
+        success: true,
+        message: "Agent settings updated successfully",
+        agent: updatedAgent
+      });
+    } catch (error) {
+      console.error("Error updating agent settings:", error);
+      res.status(500).json({ message: "Failed to update agent settings" });
+    }
+  });
+
   return httpServer;
 }
 

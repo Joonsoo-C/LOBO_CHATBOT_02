@@ -5370,6 +5370,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectItem value="doc-fallback-llm">{t('agent.docPriorityLLM')}</SelectItem>
                                         <SelectItem value="general-llm">{t('agent.llmPriority')}</SelectItem>
                                         <SelectItem value="strict-doc">{t('agent.docOnly')}</SelectItem>
+                                        <SelectItem value="llm-with-web-search">LLM + 웹 검색</SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -11116,6 +11117,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
                                       <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
                                       <SelectItem value="general-llm">자유 대화형</SelectItem>
+                                      <SelectItem value="llm-with-web-search">LLM + 웹 검색</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
