@@ -130,12 +130,12 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Nickname */}
           <div className="space-y-2">
-            <Label htmlFor="nickname" className="korean-text">닉네임</Label>
+            <Label htmlFor="nickname" className="korean-text">에이전트 이름</Label>
             <Input
               id="nickname"
               value={personaData.nickname}
               onChange={(e) => handleInputChange('nickname', e.target.value)}
-              placeholder="에이전트 닉네임을 입력하세요"
+              placeholder="예: 민지, 도우미, 상담봇"
               className="korean-text"
             />
           </div>
@@ -147,7 +147,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               id="speechStyle"
               value={personaData.speechStyle}
               onChange={(e) => handleInputChange('speechStyle', e.target.value)}
-              placeholder="말투와 대화 스타일을 설명하세요"
+              placeholder="예: 친구처럼 편안한 말투로 말해주세요."
               className="korean-text resize-none"
               rows={3}
             />
@@ -160,7 +160,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               id="knowledgeArea"
               value={personaData.knowledgeArea}
               onChange={(e) => handleInputChange('knowledgeArea', e.target.value)}
-              placeholder="전문 지식 분야를 설명하세요"
+              placeholder="예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
               className="korean-text resize-none"
               rows={3}
             />
@@ -173,7 +173,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               id="personality"
               value={personaData.personality}
               onChange={(e) => handleInputChange('personality', e.target.value)}
-              placeholder="성격과 의사 표현 방식을 설명하세요"
+              placeholder="예: 친절하고 인내심 있는 성격, 논리적인 사고, 유머감각 있음 등"
               className="korean-text resize-none"
               rows={3}
             />

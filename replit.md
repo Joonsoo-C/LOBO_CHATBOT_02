@@ -472,6 +472,16 @@ Changelog:
   * Completed end-to-end migration: shared/schema.ts, server routes, OpenAI integration, client types, and UI components
   * Added translation examples like "간단하고 정중한 말투로, 최대 5줄 이내 요약" for better UX
   * All LSP diagnostics resolved with fully functional persona editing system
+- July 23, 2025. Enhanced persona tab placeholders with Korean examples:
+  * Completely removed '역할 프롬프트' (role prompt) field from new agent creation popup's basic information tab
+  * Fixed AgentDocumentList component LSP errors by resolving missing functions and undefined state variables
+  * Enhanced persona configuration with specific Korean placeholder examples:
+    - 에이전트 이름: "예: 민지, 도우미, 상담봇"
+    - 말투 스타일: "예: 친구처럼 편안한 말투로 말해주세요."
+    - 지식/전문 분야: "예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
+    - 성격 특성: "예: 친절하고 인내심 있는 성격, 논리적인 사고, 유머감각 있음 등"
+  * Updated both new agent creation popup and agent detail popup persona tabs with consistent Korean placeholders
+  * Fixed gray screen issue in agent detail popup's file upload screen with proper error resolution
 - June 23, 2025. Implemented complete document management functionality in master admin system:
   * Added document download functionality with proper file streaming and headers
   * Implemented document delete functionality with file system cleanup

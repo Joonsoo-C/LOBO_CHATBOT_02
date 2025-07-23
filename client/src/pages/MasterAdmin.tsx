@@ -5234,9 +5234,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="personaNickname"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.nickname')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름</FormLabel>
                                     <FormControl>
-                                      <Input placeholder={t('agent.nicknamePlaceholder')} {...field} />
+                                      <Input placeholder="예: 민지, 도우미, 상담봇" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -5247,10 +5247,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="speechStyle"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.speechStyle')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder={t('agent.speechStylePlaceholder')}
+                                        placeholder="예: 친구처럼 편안한 말투로 말해주세요."
                                         className="min-h-[60px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5266,10 +5266,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="personality"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.personality')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">성격 특성</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder={t('agent.personalityPlaceholder')}
+                                        placeholder="예: 친절하고 인내심 있는 성격, 논리적인 사고, 유머감각 있음 등"
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
@@ -5283,10 +5283,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="additionalPrompt"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.additionalPrompt')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">지식/전문 분야</FormLabel>
                                     <FormControl>
                                       <Textarea 
-                                        placeholder={t('agent.additionalPromptPlaceholder')}
+                                        placeholder="예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
