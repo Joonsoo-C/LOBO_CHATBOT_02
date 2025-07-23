@@ -756,7 +756,7 @@ const agentSchema = z.object({
   // 📌 페르소나 설정 (새로운 필드들)
   personaNickname: z.string().optional(),
   speechStyle: z.string().optional(),
-  expertiseArea: z.string().optional(),
+
   personality: z.string().optional(),
   additionalPrompt: z.string().optional(),
   
@@ -5278,23 +5278,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                             </div>
                             <div className="grid grid-cols-1 gap-4">
-                              <FormField
-                                control={agentForm.control}
-                                name="expertiseArea"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.expertiseArea')}</FormLabel>
-                                    <FormControl>
-                                      <Textarea 
-                                        placeholder={t('agent.expertiseAreaPlaceholder')}
-                                        className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
-                                        {...field} 
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
                               <FormField
                                 control={agentForm.control}
                                 name="personality"
@@ -11166,23 +11149,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             />
                           </div>
                           <div className="grid grid-cols-1 gap-4">
-                            <FormField
-                              control={agentForm.control}
-                              name="expertiseArea"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">{t('agent.expertiseArea')}</FormLabel>
-                                  <FormControl>
-                                    <Textarea 
-                                      placeholder={t('agent.expertiseAreaPlaceholder')}
-                                      className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
                             <FormField
                               control={agentForm.control}
                               name="personality"

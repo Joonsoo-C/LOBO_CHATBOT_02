@@ -24,7 +24,6 @@ export interface Agent {
   personaNickname?: string;  // 페르소나 닉네임
   speechStyle?: string;      // 말투 스타일
   personality?: string;      // 성격 설명
-  expertiseArea?: string;    // 전문 분야
   additionalPrompt?: string; // 추가 프롬프트
   
   // 5. 문서 연결 및 업로드
