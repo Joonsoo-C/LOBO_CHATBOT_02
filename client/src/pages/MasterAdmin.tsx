@@ -1137,6 +1137,8 @@ function MasterAdmin() {
   const [documentUploadProgress, setDocumentUploadProgress] = useState(0);
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   const [documentVisibility, setDocumentVisibility] = useState(true);
+  const [documentUploadType, setDocumentUploadType] = useState<string>('기타');
+  const [documentUploadDescription, setDocumentUploadDescription] = useState<string>('');
   
   // 사용자 파일 업로드 관련 상태
   const [selectedUserFiles, setSelectedUserFiles] = useState<File[]>([]);
@@ -3716,8 +3718,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         try {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('type', 'all');
-          formData.append('description', '관리자 업로드 문서');
+          formData.append('type', documentUploadType);
+          formData.append('description', documentUploadDescription || '관리자 업로드 문서');
+          formData.append('isVisibleToUsers', documentVisibility.toString());
 
           const response = await fetch('/api/admin/documents/upload', {
             method: 'POST',
@@ -3764,6 +3767,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
       // 성공 시에만 파일 목록과 다이얼로그 닫기
       if (successCount > 0) {
         setSelectedDocumentFiles([]);
+        setDocumentUploadType('기타');
+        setDocumentUploadDescription('');
+        setDocumentVisibility(true);
         setIsDocumentUploadDialogOpen(false);
       }
       
@@ -8687,7 +8693,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xlsx,.csv,.hwp,.jpg,.jpeg,.png,.gif"
                 multiple
                 onChange={handleFileInputChange}
                 style={{ display: 'none' }}
@@ -8703,7 +8709,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 8개, 각각 50MB)
+                  지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF<br />
+                  업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
                 </p>
                 <Button 
                   variant="outline" 
@@ -8761,7 +8768,43 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               )}
 
+              {/* 문서 종류 선택 */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">문서 종류</Label>
+                <Select value={documentUploadType} onValueChange={setDocumentUploadType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="강의 자료">강의 자료</SelectItem>
+                    <SelectItem value="교육과정">교육과정</SelectItem>
+                    <SelectItem value="정책 문서">정책 문서</SelectItem>
+                    <SelectItem value="매뉴얼">매뉴얼</SelectItem>
+                    <SelectItem value="양식">양식</SelectItem>
+                    <SelectItem value="공지사항">공지사항</SelectItem>
+                    <SelectItem value="기타">기타</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
+              {/* 문서 설명 */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">문서 설명</Label>
+                <Textarea 
+                  placeholder="업로드하는 문서에 대한 설명을 입력하세요"
+                  value={documentUploadDescription}
+                  onChange={(e) => setDocumentUploadDescription(e.target.value)}
+                  rows={3}
+                  className="resize-none"
+                />
+              </div>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 지원</h4>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF / 업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
+                </p>
+              </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">문서 노출 설정</h4>
@@ -8783,7 +8826,13 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </div>
 
               <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsDocumentUploadDialogOpen(false)}>
+                <Button variant="outline" onClick={() => {
+                  setSelectedDocumentFiles([]);
+                  setDocumentUploadType('기타');
+                  setDocumentUploadDescription('');
+                  setDocumentVisibility(true);
+                  setIsDocumentUploadDialogOpen(false);
+                }}>
                   취소
                 </Button>
                 <Button 

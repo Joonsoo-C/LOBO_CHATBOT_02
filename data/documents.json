@@ -149,7 +149,7 @@
       "id": 111,
       "createdAt": "2025-07-01T05:38:00.262Z",
       "isVisibleToUsers": true,
-      "updatedAt": "2025-07-18T05:07:12.784Z",
+      "updatedAt": "2025-07-23T20:09:32.927Z",
       "isUsedForTraining": false
     },
     {
@@ -163,7 +163,7 @@
       "id": 112,
       "createdAt": "2025-07-01T05:55:59.607Z",
       "isVisibleToUsers": false,
-      "updatedAt": "2025-07-17T06:27:52.047Z",
+      "updatedAt": "2025-07-23T20:09:06.883Z",
       "status": "active",
       "type": "PDF",
       "description": ""
@@ -191,8 +191,8 @@
       "uploadedBy": "user1081",
       "id": 114,
       "createdAt": "2025-07-01T06:21:35.091Z",
-      "isVisibleToUsers": true,
-      "updatedAt": "2025-07-17T05:38:24.019Z"
+      "isVisibleToUsers": false,
+      "updatedAt": "2025-07-23T20:09:36.742Z"
     },
     {
       "agentId": 146,
@@ -368,11 +368,12 @@
       "uploadedBy": "user1081",
       "id": 168,
       "createdAt": "2025-07-17T22:52:01.061Z",
-      "updatedAt": "2025-07-17T22:52:01.061Z",
+      "updatedAt": "2025-07-23T20:09:13.790Z",
       "status": "active",
       "type": null,
       "description": null,
-      "connectedAgents": []
+      "connectedAgents": [],
+      "isVisibleToUsers": false
     },
     {
       "agentId": 146,
@@ -384,11 +385,12 @@
       "uploadedBy": "user1081",
       "id": 169,
       "createdAt": "2025-07-17T22:52:07.064Z",
-      "updatedAt": "2025-07-17T22:52:07.064Z",
+      "updatedAt": "2025-07-23T20:09:29.593Z",
       "status": "active",
       "type": null,
       "description": null,
-      "connectedAgents": []
+      "connectedAgents": [],
+      "isVisibleToUsers": true
     },
     {
       "agentId": 146,
@@ -400,11 +402,12 @@
       "uploadedBy": "user1081",
       "id": 170,
       "createdAt": "2025-07-17T22:52:16.365Z",
-      "updatedAt": "2025-07-17T22:52:16.365Z",
+      "updatedAt": "2025-07-23T20:09:18.623Z",
       "status": "active",
       "type": null,
       "description": null,
-      "connectedAgents": []
+      "connectedAgents": [],
+      "isVisibleToUsers": false
     },
     {
       "agentId": 146,
@@ -416,11 +419,12 @@
       "uploadedBy": "user1081",
       "id": 171,
       "createdAt": "2025-07-17T22:52:22.599Z",
-      "updatedAt": "2025-07-17T22:52:22.599Z",
+      "updatedAt": "2025-07-23T20:09:21.104Z",
       "status": "active",
       "type": null,
       "description": null,
-      "connectedAgents": []
+      "connectedAgents": [],
+      "isVisibleToUsers": false
     }
   ],
   "organizationCategories": [
