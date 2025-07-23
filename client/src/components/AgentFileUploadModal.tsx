@@ -231,7 +231,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 className="korean-text text-green-700 border-green-300 hover:bg-green-100"
               >
                 <Download className="w-4 h-4 mr-1" />
-                {t('agent.sampleDownload')}
+                샘플 파일 다운로드
               </Button>
             </div>
             <p className="text-sm text-green-700 dark:text-green-300 mt-2 korean-text">

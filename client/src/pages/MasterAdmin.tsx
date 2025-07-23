@@ -4721,7 +4721,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.lowerCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직</Label>
                   <Select 
                     value={selectedCollege} 
                     onValueChange={handleLowerCategoryChange}
@@ -4741,7 +4741,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('org.detailCategory')}</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직</Label>
                   <Select 
                     value={selectedDepartment} 
                     onValueChange={handleDetailCategoryChange}
