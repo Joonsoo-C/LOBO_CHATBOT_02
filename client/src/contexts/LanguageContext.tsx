@@ -601,7 +601,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.nicknamePlaceholder': '예: 민지, 교수님 어시스턴트',
     'agent.speechStyle': '말투 스타일',
     'agent.speechStylePlaceholder': '예: 공손하고 친절한 말투로 대화합니다',
-    'agent.expertiseArea': '지식/전문 분야',
+    'agent.expertiseArea': '역할/지식/전문 분야',
     'agent.expertiseAreaPlaceholder': '예: 컴퓨터공학, 프로그래밍, 학사업무, 입학상담 등',
     'agent.personality': '성격특성',
     'agent.personalityPlaceholder': '예: 친절하고 도움이 되는 성격, 논리적 사고, 인내심 있음',
