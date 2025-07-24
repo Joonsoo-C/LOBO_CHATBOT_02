@@ -155,7 +155,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
 
           {/* Knowledge Area */}
           <div className="space-y-2">
-            <Label htmlFor="knowledgeArea" className="korean-text">지식/전문 분야</Label>
+            <Label htmlFor="knowledgeArea" className="korean-text">역할/ 지식/ 전문 분야</Label>
             <Textarea
               id="knowledgeArea"
               value={personaData.knowledgeArea}
