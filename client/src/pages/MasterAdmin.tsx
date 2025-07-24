@@ -6669,7 +6669,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="전체" />
@@ -6685,7 +6685,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직</Label>
                   <Select value={qaSelectedLowerCategory} onValueChange={handleQALowerCategoryChange} disabled={qaSelectedUpperCategory === 'all'}>
                     <SelectTrigger className={`h-10 ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="전체" />
@@ -6701,7 +6701,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부조직</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직</Label>
                   <Select 
                     value={qaSelectedDetailCategory} 
                     onValueChange={handleQADetailCategoryChange}
