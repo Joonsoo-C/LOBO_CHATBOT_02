@@ -25,6 +25,7 @@ export interface Agent {
   speechStyle?: string;      // 말투 스타일
   personality?: string;      // 성격 설명
   additionalPrompt?: string; // 추가 프롬프트
+  extraPrompt?: string;      // 추가 프롬프트 영역
   
   // 5. 문서 연결 및 업로드
   uploadFormats?: string[];  // 업로드 가능한 포맷

@@ -262,7 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You are not authorized to manage this agent" });
       }
 
-      const { nickname, speechStyle, knowledgeArea, personality, additionalPrompt } = req.body;
+      const { nickname, speechStyle, knowledgeArea, personality, additionalPrompt, extraPrompt } = req.body;
 
       // Update agent with complete persona data
       const updatedAgent = await storage.updateAgent(agentId, {
@@ -270,7 +270,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: knowledgeArea,
         speechStyle,
         personality,
-        additionalPrompt
+        additionalPrompt,
+        extraPrompt
       });
 
       res.json(updatedAgent);

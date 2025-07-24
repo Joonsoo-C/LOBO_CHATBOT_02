@@ -127,6 +127,7 @@ export const agents = pgTable("agents", {
   speechStyle: text("speech_style").default("공손하고 친절한 말투로 대화합니다"), // 말투 스타일
   personality: text("personality").default("친절하고 도움이 되는 성격"), // 성격특성
   additionalPrompt: text("additional_prompt"), // 추가 프롬프트
+  extraPrompt: text("extra_prompt"), // 추가 프롬프트 영역
   
   // 파일 업로드 설정 추가
   documentType: varchar("document_type").default("manual"), // 문서 유형 (manual, faq, policy, etc.)

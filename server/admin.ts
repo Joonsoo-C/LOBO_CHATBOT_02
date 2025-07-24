@@ -446,7 +446,24 @@ export function setupAdminRoutes(app: Express) {
   // Agent creation
   app.post("/api/admin/agents", requireMasterAdmin, async (req, res) => {
     try {
-      const { name, description, category, managerId, organizationId } = req.body;
+      const { 
+        name, 
+        description, 
+        category, 
+        managerId, 
+        organizationId, 
+        upperCategory, 
+        lowerCategory, 
+        detailCategory,
+        personaNickname,
+        speechStyle,
+        personality,
+        additionalPrompt,
+        extraPrompt,
+        llmModel,
+        chatbotType,
+        status
+      } = req.body;
 
       const newAgent = await storage.createAgent({
         name,
@@ -456,7 +473,18 @@ export function setupAdminRoutes(app: Express) {
         icon: 'user',
         backgroundColor: '#3B82F6',
         managerId: managerId || null,
-        organizationId: organizationId ? parseInt(organizationId) : null
+        organizationId: organizationId ? parseInt(organizationId) : null,
+        upperCategory: upperCategory || null,
+        lowerCategory: lowerCategory || null,
+        detailCategory: detailCategory || null,
+        personaNickname: personaNickname || null,
+        speechStyle: speechStyle || '친근하고 도움이 되는 말투',
+        personality: personality || '친절하고 전문적인 성격',
+        additionalPrompt: additionalPrompt || null,
+        extraPrompt: extraPrompt || null,
+        llmModel: llmModel || 'gpt-4o',
+        chatbotType: chatbotType || 'doc-fallback-llm',
+        status: status || 'active'
       });
 
       res.json(newAgent);

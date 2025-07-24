@@ -2812,6 +2812,7 @@ function MasterAdmin() {
       speechStyle: "",
       personality: "",
       additionalPrompt: "",
+      extraPrompt: "",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -5217,6 +5218,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     />
                                   </FormControl>
                                   <div className="text-xs text-gray-500">{field.value?.length || 0}/200{t('common.characters')}</div>
+                                  <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                                    소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.
+                                  </div>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -5288,6 +5292,27 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <Textarea 
                                         placeholder="예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
                                         className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            {/* 추가 프롬프트 영역 */}
+                            <div className="grid grid-cols-1 gap-4">
+                              <FormField
+                                control={agentForm.control}
+                                name="extraPrompt"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm font-medium text-gray-700">추가 프롬프트</FormLabel>
+                                    <FormControl>
+                                      <Textarea 
+                                        placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약&#10;예: 숫자와 항목이 있는 리스트 형식으로 대답&#10;예: 감정적인 질문에는 공감 표현을 포함"
+                                        className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
                                         {...field} 
                                       />
                                     </FormControl>

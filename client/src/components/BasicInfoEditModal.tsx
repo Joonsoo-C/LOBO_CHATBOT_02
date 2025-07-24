@@ -144,10 +144,10 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   const lowerCategories = Array.from(new Set(
     (organizationCategories || [])
-      .filter(org => 
-        basicInfoData.upperCategory === "전체" || 
-        org.upperCategory === basicInfoData.upperCategory
-      )
+      .filter(org => {
+        if (basicInfoData.upperCategory === "전체") return true;
+        return org.upperCategory === basicInfoData.upperCategory;
+      })
       .map(org => org.lowerCategory)
       .filter(Boolean)
   )).sort();

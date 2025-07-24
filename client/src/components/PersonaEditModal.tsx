@@ -23,6 +23,7 @@ interface PersonaData {
   knowledgeArea: string;
   personality: string;
   additionalPrompt: string;
+  extraPrompt: string;
 }
 
 export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, onCancel }: PersonaEditModalProps) {
@@ -34,7 +35,8 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
     speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
     knowledgeArea: agent.description || "",
     personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-    additionalPrompt: agent.additionalPrompt || ""
+    additionalPrompt: agent.additionalPrompt || "",
+    extraPrompt: agent.extraPrompt || ""
   });
 
   // Update form data when agent changes
@@ -44,7 +46,8 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
       speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
       knowledgeArea: agent.description || "",
       personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
-      additionalPrompt: agent.additionalPrompt || ""
+      additionalPrompt: agent.additionalPrompt || "",
+      extraPrompt: agent.extraPrompt || ""
     });
   }, [agent]);
 
@@ -189,6 +192,19 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약&#10;예: 숫자와 항목이 있는 리스트 형식으로 대답&#10;예: 감정적인 질문에는 공감 표현을 포함"
               className="korean-text resize-none"
               rows={3}
+            />
+          </div>
+
+          {/* Extra Prompt */}
+          <div className="space-y-2">
+            <Label htmlFor="extraPrompt" className="korean-text">추가 프롬프트</Label>
+            <Textarea
+              id="extraPrompt"
+              value={personaData.extraPrompt}
+              onChange={(e) => handleInputChange('extraPrompt', e.target.value)}
+              placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약&#10;예: 숫자와 항목이 있는 리스트 형식으로 대답&#10;예: 감정적인 질문에는 공감 표현을 포함"
+              className="korean-text resize-none"
+              rows={4}
             />
           </div>
 
