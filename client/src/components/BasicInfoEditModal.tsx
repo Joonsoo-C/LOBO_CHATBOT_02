@@ -128,13 +128,13 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   if (!isOpen) return null;
 
   // Get unique categories
-  const upperCategories = [...new Set(organizationCategories.map((org: any) => org.upperCategory))].filter(Boolean);
-  const lowerCategories = [...new Set(organizationCategories
+  const upperCategories = Array.from(new Set((organizationCategories as any[]).map((org: any) => org.upperCategory))).filter(Boolean);
+  const lowerCategories = Array.from(new Set((organizationCategories as any[])
     .filter((org: any) => org.upperCategory === basicInfoData.upperCategory)
-    .map((org: any) => org.lowerCategory))].filter(Boolean);
-  const detailCategories = [...new Set(organizationCategories
+    .map((org: any) => org.lowerCategory))).filter(Boolean);
+  const detailCategories = Array.from(new Set((organizationCategories as any[])
     .filter((org: any) => org.upperCategory === basicInfoData.upperCategory && org.lowerCategory === basicInfoData.lowerCategory)
-    .map((org: any) => org.detailCategory))].filter(Boolean);
+    .map((org: any) => org.detailCategory))).filter(Boolean);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
@@ -164,7 +164,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description" className="korean-text">에이전트 설명 *</Label>
+            <Label htmlFor="description" className="korean-text">에이전트 소개</Label>
             <Textarea
               id="description"
               value={basicInfoData.description}
@@ -173,13 +173,12 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               className="korean-text resize-none"
               rows={3}
               maxLength={200}
-              required
             />
           </div>
 
           {/* Agent Type */}
           <div className="space-y-2">
-            <Label className="korean-text">유형 선택 *</Label>
+            <Label className="korean-text">에이전트 유형 *</Label>
             <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
               <SelectTrigger className="korean-text">
                 <SelectValue placeholder="유형을 선택하세요" />
@@ -198,7 +197,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
           <div className="grid grid-cols-1 gap-4">
             {/* Upper Category */}
             <div className="space-y-2">
-              <Label className="korean-text">상위 조직 *</Label>
+              <Label className="korean-text">소속 상위 조직 *</Label>
               <Select 
                 value={basicInfoData.upperCategory} 
                 onValueChange={(value) => {
