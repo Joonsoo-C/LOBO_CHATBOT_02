@@ -5356,7 +5356,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="chatbotType"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">{t('agent.responseMethod')}</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">응답 생성 방식</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value || "doc-fallback-llm"}>
                                       <FormControl>
                                         <SelectTrigger>
@@ -5364,10 +5364,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         </SelectTrigger>
                                       </FormControl>
                                       <SelectContent>
-                                        <SelectItem value="doc-fallback-llm">{t('agent.docPriorityLLM')}</SelectItem>
-                                        <SelectItem value="general-llm">{t('agent.llmPriority')}</SelectItem>
-                                        <SelectItem value="strict-doc">{t('agent.docOnly')}</SelectItem>
-                                        <SelectItem value="llm-with-web-search">LLM + 웹 검색</SelectItem>
+                                        <SelectItem value="strict-doc">
+                                          <div className="flex flex-col">
+                                            <div className="font-medium">문서 기반 전용</div>
+                                            <div className="text-xs text-gray-500">문서 기반 응답만 가능, 문서 외 질문은 부드럽게 거절</div>
+                                          </div>
+                                        </SelectItem>
+                                        <SelectItem value="doc-fallback-llm">
+                                          <div className="flex flex-col">
+                                            <div className="font-medium">문서 우선 + LLM</div>
+                                            <div className="text-xs text-gray-500">문서를 우선 사용하고 없으면 일반 LLM 결과 출력</div>
+                                          </div>
+                                        </SelectItem>
+                                        <SelectItem value="general-llm">
+                                          <div className="flex flex-col">
+                                            <div className="font-medium">LLM 전용</div>
+                                            <div className="text-xs text-gray-500">일반 LLM 챗봇처럼 자유 대화</div>
+                                          </div>
+                                        </SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <FormMessage />
