@@ -10966,7 +10966,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           
                           {/* 소속 조직 선택 (순차적) */}
                           <div className="space-y-4">
-                            <Label className="text-sm font-medium text-gray-700">소속</Label>
+                            <Label className="text-sm font-medium text-gray-700">소속 조직</Label>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <FormField
                                 control={agentForm.control}
