@@ -1091,6 +1091,11 @@ Changelog:
    * Updated home.searchPlaceholder translation key in LanguageContext.tsx
    * Change applies to both mobile (Home.tsx) and tablet (TabletLayout.tsx) layouts
    * Provides clearer guidance on what users can search for in agent discovery interface
+- July 24, 2025. Updated basic information modal guidance texts:
+   * Removed admin restriction notice: "에이전트 이름은 관리자 시스템에서만 변경 가능합니다." from agent name field
+   * Added usage guidance for agent description: "소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다."
+   * Enhanced user understanding of how agent introduction content affects user experience
+   * Simplified agent name field display by removing unnecessary administrative notices
   * Removed duplicate result modal from FileUploadModal component for cleaner user experience
   * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:

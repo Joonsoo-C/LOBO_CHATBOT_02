@@ -156,7 +156,6 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
               {basicInfoData.name}
             </div>
-            <p className="text-xs text-gray-500">* 에이전트 이름은 관리자 시스템에서만 변경 가능합니다.</p>
           </div>
 
           {/* Description */}
@@ -171,6 +170,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               rows={3}
               maxLength={200}
             />
+            <p className="text-xs text-gray-500">* 소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.</p>
           </div>
 
           {/* Agent Type */}
