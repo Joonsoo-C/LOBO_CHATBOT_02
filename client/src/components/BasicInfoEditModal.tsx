@@ -107,9 +107,16 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Exclude name field from update as it's read-only for chat users
-    const { name, ...updateData } = basicInfoData;
-    updateBasicInfoMutation.mutate(updateData);
+    // Include name field but mark it as read-only from frontend perspective
+    updateBasicInfoMutation.mutate({
+      name: basicInfoData.name,
+      description: basicInfoData.description,
+      upperCategory: basicInfoData.upperCategory,
+      lowerCategory: basicInfoData.lowerCategory,
+      detailCategory: basicInfoData.detailCategory,
+      type: basicInfoData.type,
+      status: basicInfoData.status
+    });
   };
 
   const handleInputChange = (field: keyof BasicInfoData, value: string) => {
@@ -128,14 +135,36 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   if (!isOpen) return null;
 
-  // Get unique categories
-  const upperCategories = Array.from(new Set((organizationCategories as any[]).map((org: any) => org.upperCategory))).filter(Boolean);
-  const lowerCategories = Array.from(new Set((organizationCategories as any[])
-    .filter((org: any) => org.upperCategory === basicInfoData.upperCategory)
-    .map((org: any) => org.lowerCategory))).filter(Boolean);
-  const detailCategories = Array.from(new Set((organizationCategories as any[])
-    .filter((org: any) => org.upperCategory === basicInfoData.upperCategory && org.lowerCategory === basicInfoData.lowerCategory)
-    .map((org: any) => org.detailCategory))).filter(Boolean);
+  // Get unique categories with proper filtering
+  const upperCategories = Array.from(new Set(
+    organizationCategories
+      .map((org: any) => org.upperCategory)
+      .filter(Boolean)
+  )).sort();
+
+  const lowerCategories = Array.from(new Set(
+    organizationCategories
+      .filter((org: any) => 
+        basicInfoData.upperCategory === "전체" || 
+        org.upperCategory === basicInfoData.upperCategory
+      )
+      .map((org: any) => org.lowerCategory)
+      .filter(Boolean)
+  )).sort();
+
+  const detailCategories = Array.from(new Set(
+    organizationCategories
+      .filter((org: any) => {
+        if (basicInfoData.upperCategory === "전체") return true;
+        if (basicInfoData.lowerCategory === "전체") {
+          return org.upperCategory === basicInfoData.upperCategory;
+        }
+        return org.upperCategory === basicInfoData.upperCategory && 
+               org.lowerCategory === basicInfoData.lowerCategory;
+      })
+      .map((org: any) => org.detailCategory)
+      .filter(Boolean)
+  )).sort();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
