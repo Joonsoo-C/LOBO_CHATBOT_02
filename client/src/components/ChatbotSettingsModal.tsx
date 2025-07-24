@@ -48,13 +48,8 @@ const CHATBOT_TYPES = [
   },
   { 
     value: "general-llm", 
-    label: "일반 챗봇",
+    label: "LLM 전용",
     description: "일반 LLM 챗봇처럼 자유 대화"
-  },
-  { 
-    value: "llm-with-web-search", 
-    label: "LLM + 웹 검색",
-    description: "LLM과 웹 검색을 결합하여 최신 정보 제공"
   }
 ];
 

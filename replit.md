@@ -1096,6 +1096,11 @@ Changelog:
    * Added usage guidance for agent description: "소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다."
    * Enhanced user understanding of how agent introduction content affects user experience
    * Simplified agent name field display by removing unnecessary administrative notices
+- July 24, 2025. Updated chatbot settings response generation dropdown options:
+   * Changed "일반 챗봇" label to "LLM 전용" for clearer terminology
+   * Removed "LLM + 웹검색" option from response generation methods
+   * Simplified chatbot type selection to 3 options: 문서 기반 전용, 문서 우선 + LLM, LLM 전용
+   * Enhanced clarity in model and response settings configuration
   * Removed duplicate result modal from FileUploadModal component for cleaner user experience
   * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:
