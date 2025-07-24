@@ -43,7 +43,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   });
 
   // Fetch organization categories
-  const { data: organizationCategories = [] } = useQuery({
+  const { data: organizationCategories = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/organization-categories"],
   });
 
@@ -137,24 +137,24 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   // Get unique categories with proper filtering
   const upperCategories = Array.from(new Set(
-    organizationCategories
-      .map((org: any) => org.upperCategory)
+    (organizationCategories || [])
+      .map(org => org.upperCategory)
       .filter(Boolean)
   )).sort();
 
   const lowerCategories = Array.from(new Set(
-    organizationCategories
-      .filter((org: any) => 
+    (organizationCategories || [])
+      .filter(org => 
         basicInfoData.upperCategory === "전체" || 
         org.upperCategory === basicInfoData.upperCategory
       )
-      .map((org: any) => org.lowerCategory)
+      .map(org => org.lowerCategory)
       .filter(Boolean)
   )).sort();
 
   const detailCategories = Array.from(new Set(
-    organizationCategories
-      .filter((org: any) => {
+    (organizationCategories || [])
+      .filter(org => {
         if (basicInfoData.upperCategory === "전체") return true;
         if (basicInfoData.lowerCategory === "전체") {
           return org.upperCategory === basicInfoData.upperCategory;
@@ -162,7 +162,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
         return org.upperCategory === basicInfoData.upperCategory && 
                org.lowerCategory === basicInfoData.lowerCategory;
       })
-      .map((org: any) => org.detailCategory)
+      .map(org => org.detailCategory)
       .filter(Boolean)
   )).sort();
 
@@ -227,6 +227,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 value={basicInfoData.upperCategory} 
                 onValueChange={(value) => {
                   handleInputChange('upperCategory', value);
+                  // Reset lower and detail categories when upper category changes
                   handleInputChange('lowerCategory', '전체');
                   handleInputChange('detailCategory', '전체');
                 }}
@@ -236,7 +237,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="전체">전체</SelectItem>
-                  {upperCategories.map((category) => (
+                  {upperCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
@@ -250,6 +251,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 value={basicInfoData.lowerCategory} 
                 onValueChange={(value) => {
                   handleInputChange('lowerCategory', value);
+                  // Reset detail category when lower category changes
                   handleInputChange('detailCategory', '전체');
                 }}
               >
@@ -258,7 +260,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="전체">전체</SelectItem>
-                  {lowerCategories.map((category) => (
+                  {lowerCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
@@ -277,7 +279,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="전체">전체</SelectItem>
-                  {detailCategories.map((category) => (
+                  {detailCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
