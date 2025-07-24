@@ -25,7 +25,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [documentType, setDocumentType] = useState<string>("");
   const [documentDescription, setDocumentDescription] = useState<string>("");
   const [documentVisibility, setDocumentVisibility] = useState(true);
-  const [documentStatus, setDocumentStatus] = useState<string>("사용 중");
+
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -59,7 +59,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         formData.append("documentType", documentType);
         formData.append("description", documentDescription);
         formData.append("isVisible", documentVisibility.toString());
-        formData.append("status", documentStatus);
+        formData.append("status", "사용 중");
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
@@ -366,18 +366,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                               >
                                 {documentVisibility ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setDocumentStatus(documentStatus === "사용 중" ? "미사용" : "사용 중")}
-                                className={`px-2 py-1 text-xs rounded-full h-6 ${
-                                  documentStatus === "사용 중" 
-                                    ? "bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-700"
-                                    : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                }`}
-                              >
-                                {documentStatus}
-                              </Button>
+
                             </div>
                           </div>
                         </div>
@@ -397,7 +386,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
               {/* Document Details Form */}
               <div className="space-y-4">
-                <h4 className="font-medium text-foreground korean-text">문서 종류</h4>
+                <Label htmlFor="document-type" className="korean-text">문서 종류</Label>
                 <Select value={documentType} onValueChange={setDocumentType}>
                   <SelectTrigger className="korean-text">
                     <SelectValue placeholder="문서 종류를 선택하세요" />
@@ -450,19 +439,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   </p>
                 </div>
 
-                {/* Document Status Setting */}
-                <div className="space-y-2">
-                  <Label className="korean-text">문서 상태</Label>
-                  <Select value={documentStatus} onValueChange={setDocumentStatus}>
-                    <SelectTrigger className="korean-text">
-                      <SelectValue placeholder="문서 상태를 선택하세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="사용 중">사용 중</SelectItem>
-                      <SelectItem value="미사용">미사용</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
               </div>
 
               {/* Action Buttons */}
