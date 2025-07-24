@@ -5197,9 +5197,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       {...field} 
                                     />
                                   </FormControl>
-                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/200{t('common.characters')}</div>
-                                  <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                                    소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.
+                                  <div className="flex justify-between items-center text-xs">
+                                    <div className="text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                      소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.
+                                    </div>
+                                    <div className="text-gray-500">{field.value?.length || 0}/200{t('common.characters')}</div>
                                   </div>
                                   <FormMessage />
                                 </FormItem>
