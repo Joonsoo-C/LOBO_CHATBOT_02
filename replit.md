@@ -1080,6 +1080,12 @@ Changelog:
    * File upload tab restructuring: moved document type dropdown below drag-and-drop area, removed "절차/프로세스" option
    * Applied same terminology changes to agent edit dialog for system-wide consistency
    * Enhanced user experience with Korean localization throughout agent management interface
+- July 24, 2025. Implemented read-only agent name in basic info edit modal:
+   * Changed agent name field from editable input to read-only text display in BasicInfoEditModal.tsx
+   * Added explanatory text: "에이전트 이름은 관리자 시스템에서만 변경 가능합니다."
+   * Updated server API endpoint to exclude name field from basic-info updates
+   * Modified client form submission to omit name field from update requests
+   * Enhanced user experience by clearly indicating permission restrictions for agent name changes
   * Removed duplicate result modal from FileUploadModal component for cleaner user experience
   * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:

@@ -74,7 +74,6 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
       // Send completion message to chat
       if (onSuccess) {
         const changes = [];
-        if (basicInfoData.name !== agent.name) changes.push(`이름: ${basicInfoData.name}`);
         if (basicInfoData.description !== agent.description) changes.push(`설명: ${basicInfoData.description}`);
         if (basicInfoData.type !== agent.category) changes.push(`유형: ${basicInfoData.type}`);
         
@@ -108,7 +107,9 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateBasicInfoMutation.mutate(basicInfoData);
+    // Exclude name field from update as it's read-only for chat users
+    const { name, ...updateData } = basicInfoData;
+    updateBasicInfoMutation.mutate(updateData);
   };
 
   const handleInputChange = (field: keyof BasicInfoData, value: string) => {
@@ -149,17 +150,13 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Agent Name */}
+          {/* Agent Name - Read Only */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="korean-text">에이전트 이름 *</Label>
-            <Input
-              id="name"
-              value={basicInfoData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="에이전트 이름을 입력하세요"
-              className="korean-text"
-              required
-            />
+            <Label className="korean-text">에이전트 이름</Label>
+            <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
+              {basicInfoData.name}
+            </div>
+            <p className="text-xs text-gray-500">* 에이전트 이름은 관리자 시스템에서만 변경 가능합니다.</p>
           </div>
 
           {/* Description */}
