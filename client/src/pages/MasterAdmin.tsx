@@ -9075,7 +9075,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <p>• 첫 번째 행: 헤더 (조직명, 상위조직, 하위조직, 세부조직)</p>
+                  <p>• 첫 번째 행: 헤더 (조직명, 상위 조직, 하위조직, 세부조직)</p>
                   <p>• 조직명: 조직의 정식 명칭 (필수)</p>
                   <p>• {t('org.upperOrganization')}: 대학/본부 등 최상위 조직</p>
                   <p>• {t('org.lowerOrganization')}: 단과대학/처/부 등</p>
@@ -9109,29 +9109,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              <div className="flex justify-between">
-                <Button 
-                  variant="destructive" 
-                  onClick={() => {
-                    if (confirm("로보대학교 관련 조직을 모두 삭제하시겠습니까?")) {
-                      deleteRoboUniversityMutation.mutate();
-                    }
-                  }}
-                  disabled={deleteRoboUniversityMutation.isPending}
-                >
-                  {deleteRoboUniversityMutation.isPending ? "삭제 중..." : "로보대학교 조직 삭제"}
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
+                  취소
                 </Button>
-                <div className="flex space-x-2">
-                  <Button variant="outline" onClick={() => setIsOrgCategoryUploadDialogOpen(false)}>
-                    취소
-                  </Button>
-                  <Button 
-                    onClick={handleOrgCategoryUpload}
-                    disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
-                  >
-                    {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작`}
-                  </Button>
-                </div>
+                <Button 
+                  onClick={handleOrgCategoryUpload}
+                  disabled={selectedOrgCategoryFiles.length === 0 || isOrgCategoryUploading}
+                >
+                  {isOrgCategoryUploading ? `업로드 중... (${Math.round(orgCategoryUploadProgress)}%)` : `업로드 시작`}
+                </Button>
               </div>
             </div>
           </DialogContent>
