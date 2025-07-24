@@ -2276,27 +2276,7 @@ function MasterAdmin() {
     },
   });
 
-  // 로보대학교 조직 삭제 뮤테이션
-  const deleteRoboUniversityMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("DELETE", "/api/admin/organizations/robo-university");
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/organizations'] });
-      toast({
-        title: "삭제 완료",
-        description: data.message,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "삭제 실패",
-        description: "로보대학교 조직 삭제 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
+  
 
   // 새 사용자 생성 뮤테이션
   const createUserMutation = useMutation({
