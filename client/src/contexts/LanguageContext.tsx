@@ -1646,7 +1646,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managerSelection': 'Manager Selection',
     'agent.sharingSettings': 'Sharing Settings',
     'agent.description': 'Agent Description',
-    'agent.descriptionPlaceholder': 'Describe the agent\'s role and functions (max 200 characters)',
+    'agent.descriptionPlaceholder': 'Briefly introduce the agent\'s role or functions.',
     'agent.rolePrompt': 'Role/Prompt',
     'agent.rolePromptPlaceholder': 'E.g., Graduate thesis editing assistant, department information guide bot',
     'agent.selectType': 'Select Type',

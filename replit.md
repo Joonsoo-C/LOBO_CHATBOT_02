@@ -482,6 +482,11 @@ Changelog:
     - 성격 특성: "예: 친절하고 인내심 있는 성격, 논리적인 사고, 유머감각 있음 등"
   * Updated both new agent creation popup and agent detail popup persona tabs with consistent Korean placeholders
   * Fixed gray screen issue in agent detail popup's file upload screen with proper error resolution
+- July 24, 2025. Completed Korean localization for agent description placeholders:
+  * Updated agent description placeholder text system-wide: "에이전트의 역할과 기능을 설명해주세요 (최대 200자)" → "에이전트의 역할이나 기능을 간단히 소개해 주세요."
+  * Applied changes to all agent management components: BasicInfoEditModal.tsx, MasterAdmin.tsx (both edit and creation modes), LanguageContext.tsx
+  * Removed character limit text "(최대 200자)" from placeholders for cleaner, more natural Korean interface
+  * Enhanced user experience with simplified, friendly Korean language throughout agent management system
 - June 23, 2025. Implemented complete document management functionality in master admin system:
   * Added document download functionality with proper file streaming and headers
   * Implemented document delete functionality with file system cleanup

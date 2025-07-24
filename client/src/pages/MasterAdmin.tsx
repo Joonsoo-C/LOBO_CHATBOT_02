@@ -11069,7 +11069,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <FormLabel className="text-sm font-medium text-gray-700">설명</FormLabel>
                                 <FormControl>
                                   <Textarea 
-                                    placeholder="에이전트의 목적과 역할을 설명해주세요 (최대 200자)" 
+                                    placeholder="에이전트의 역할이나 기능을 간단히 소개해 주세요." 
                                     maxLength={200}
                                     className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
                                     {...field} 

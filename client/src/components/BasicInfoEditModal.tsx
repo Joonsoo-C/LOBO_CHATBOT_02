@@ -169,7 +169,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               id="description"
               value={basicInfoData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="에이전트의 역할과 기능을 설명해주세요 (최대 200자)"
+              placeholder="에이전트의 역할이나 기능을 간단히 소개해 주세요."
               className="korean-text resize-none"
               rows={3}
               maxLength={200}
