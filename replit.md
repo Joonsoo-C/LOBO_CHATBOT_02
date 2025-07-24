@@ -1086,6 +1086,11 @@ Changelog:
    * Updated server API endpoint to exclude name field from basic-info updates
    * Modified client form submission to omit name field from update requests
    * Enhanced user experience by clearly indicating permission restrictions for agent name changes
+- July 24, 2025. Updated search placeholder text in agent list:
+   * Changed search input placeholder from "에이전트 검색..." to "에이전트 이름 또는 설명 키워드로 검색하세요."
+   * Updated home.searchPlaceholder translation key in LanguageContext.tsx
+   * Change applies to both mobile (Home.tsx) and tablet (TabletLayout.tsx) layouts
+   * Provides clearer guidance on what users can search for in agent discovery interface
   * Removed duplicate result modal from FileUploadModal component for cleaner user experience
   * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:

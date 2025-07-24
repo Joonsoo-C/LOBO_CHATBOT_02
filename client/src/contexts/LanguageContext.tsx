@@ -77,7 +77,7 @@ const translations: Record<Language, Record<string, string>> = {
     'common.searchKeyword': '검색어',
     
     // 홈페이지
-    'home.searchPlaceholder': '에이전트 검색...',
+    'home.searchPlaceholder': '에이전트 이름 또는 설명 키워드로 검색하세요.',
     'home.categories.all': '전체',
     'home.categories.school': '학교',
     'home.categories.professor': '교수',
