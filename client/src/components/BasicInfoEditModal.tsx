@@ -142,7 +142,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-lg font-medium korean-text">기본 정보 편집</h2>
+          <h2 className="text-lg font-medium korean-text">기본 정보</h2>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
           </Button>
@@ -183,7 +183,6 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               <SelectContent>
                 <SelectItem value="학교">학교</SelectItem>
                 <SelectItem value="교수">교수</SelectItem>
-                <SelectItem value="학생">학생</SelectItem>
                 <SelectItem value="그룹">그룹</SelectItem>
                 <SelectItem value="기능형">기능형</SelectItem>
               </SelectContent>
