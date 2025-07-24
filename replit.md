@@ -1073,6 +1073,13 @@ Changelog:
   * Fixed document detail popup to properly show connected agent names using agentId field
   * Connected agents now display correctly in "현재 연결된 에이전트" section of document detail popup
   * Simplified agent chatbot file upload completion message from popup-over-popup to simple toast notification
+- July 24, 2025. Enhanced new agent creation form with improved Korean terminology and restructured file upload:
+   * Updated new agent creation popup in MasterAdmin.tsx with consistent Korean terminology
+   * Basic info tab changes: "유형" → "에이전트 유형", "소속" → "소속 조직", "에이전트 설명" → "에이전트 소개"
+   * Persona tab changes: "에이전트 이름" → "닉네임" for consistency with persona configuration
+   * File upload tab restructuring: moved document type dropdown below drag-and-drop area, removed "절차/프로세스" option
+   * Applied same terminology changes to agent edit dialog for system-wide consistency
+   * Enhanced user experience with Korean localization throughout agent management interface
   * Removed duplicate result modal from FileUploadModal component for cleaner user experience
   * File upload now shows toast message and closes modal automatically after successful upload
 - July 17, 2025. Implemented document upload options removal and visibility control system:
