@@ -123,7 +123,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       setDocumentType("");
       setDocumentDescription("");
       setDocumentVisibility(true);
-      setDocumentStatus("사용 중");
+
       onClose();
     },
     onError: (error: Error) => {
@@ -149,13 +149,18 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'application/vnd.ms-powerpoint',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'text/plain'
+      'text/plain',
+      'text/csv',
+      'application/vnd.hancom.hwp',
+      'image/jpeg',
+      'image/png',
+      'image/gif'
     ];
 
     const maxSize = 50 * 1024 * 1024; // 50MB
 
     if (!allowedTypes.includes(file.type)) {
-      setErrorMessage("지원하지 않는 파일 형식입니다. PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT 파일만 업로드 가능합니다.");
+      setErrorMessage("지원하지 않는 파일 형식입니다. PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF 파일만 업로드 가능합니다.");
       setShowErrorModal(true);
       return false;
     }
@@ -175,11 +180,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       const newValidFiles: File[] = [];
       
       for (const file of files) {
-        // 최대 5개까지만 허용
-        if (selectedFiles.length + newValidFiles.length >= 5) {
+        // 최대 8개까지만 허용
+        if (selectedFiles.length + newValidFiles.length >= 8) {
           toast({
             title: "파일 개수 제한",
-            description: "최대 5개까지만 선택할 수 있습니다.",
+            description: "최대 8개까지만 선택할 수 있습니다.",
             variant: "destructive",
           });
           break;
@@ -221,11 +226,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       const newValidFiles: File[] = [];
       
       for (const file of files) {
-        // 최대 5개까지만 허용
-        if (selectedFiles.length + newValidFiles.length >= 5) {
+        // 최대 8개까지만 허용
+        if (selectedFiles.length + newValidFiles.length >= 8) {
           toast({
             title: "파일 개수 제한",
-            description: "최대 5개까지만 선택할 수 있습니다.",
+            description: "최대 8개까지만 선택할 수 있습니다.",
             variant: "destructive",
           });
           break;
@@ -305,7 +310,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   <div>
                     <p className="text-lg font-medium text-foreground korean-text">업로드할 문서 파일을 드래그하거나 파일 선택 버튼을 클릭하세요. </p>
                     <p className="text-sm text-muted-foreground mt-2">
-                      PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 5개, 각각 50MB)
+                      지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
                     </p>
                   </div>
                   <Button variant="outline" type="button" className="korean-text">
@@ -317,7 +325,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   type="file"
                   multiple
                   className="hidden"
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                  accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xlsx,.csv,.hwp,.jpg,.jpeg,.png,.gif"
                   onChange={handleFileSelect}
                 />
               </div>
