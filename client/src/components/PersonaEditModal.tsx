@@ -130,7 +130,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Nickname */}
           <div className="space-y-2">
-            <Label htmlFor="nickname" className="korean-text">에이전트 이름</Label>
+            <Label htmlFor="nickname" className="korean-text">닉네임</Label>
             <Input
               id="nickname"
               value={personaData.nickname}
