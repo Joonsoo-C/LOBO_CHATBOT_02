@@ -78,7 +78,7 @@ export default function Chat() {
 
   if (!agent) {
     return (
-      <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
+      <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center korean-text">
             <p className="text-muted-foreground">에이전트를 찾을 수 없습니다.</p>
@@ -89,7 +89,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--neu-bg)' }}>
+    <div className="min-h-screen bg-white">
       {/* ChatInterface will handle its own header - remove Chat.tsx header to prevent duplication */}
       <ChatInterface agent={agent} isManagementMode={isManagementMode || false} />
 

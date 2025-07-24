@@ -96,8 +96,8 @@
     @apply font-sans antialiased;
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overscroll-behavior: none;
-    background: var(--neu-bg);
-    color: var(--neu-text);
+    background: #ffffff;
+    color: #374151;
   }
 
   .korean-text {

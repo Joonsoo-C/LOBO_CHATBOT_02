@@ -163,7 +163,7 @@ function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen md:w-full" style={{ background: 'var(--neu-bg)' }}>
+    <div className="min-h-screen md:w-full bg-white">
       {/* Minimal Flat UI Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 md:static md:border-none">
         <div className="px-4 py-3 md:px-6 md:py-4">

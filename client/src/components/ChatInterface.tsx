@@ -897,7 +897,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   // This prevents the loading spinner flash before welcome message appears
 
   return (
-    <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-transparent overflow-hidden`} style={{ background: 'var(--neu-bg)' }}>
+    <div className={`${!isTablet ? "chat-page-container" : "chat-interface-container"} flex flex-col h-full bg-white overflow-hidden`}>
       {/* Header for both mobile and tablet - shown in both general and management modes */}
       <header className={`relative bg-background border-b border-border ${!isTablet ? "fixed top-0 left-0 right-0 z-50" : ""}`}>
         <div className={`${isTablet ? "px-6 py-4" : "px-4 py-3"}`}>
