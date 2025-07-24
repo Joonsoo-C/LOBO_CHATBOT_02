@@ -5287,7 +5287,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="additionalPrompt"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">지식/전문 분야</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">역할/지식/전문 분야</FormLabel>
                                     <FormControl>
                                       <Textarea 
                                         placeholder="예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
