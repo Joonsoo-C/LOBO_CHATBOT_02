@@ -12177,11 +12177,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 질문응답 상세보기 모달 */}
+        {/* 질문응답 상세정보 모달 */}
         <Dialog open={showQADetailModal} onOpenChange={setShowQADetailModal}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>질문응답 상세보기</DialogTitle>
+              <DialogTitle>질문응답 상세정보</DialogTitle>
               <DialogDescription>
                 질문응답의 상세 내용을 확인할 수 있습니다.
               </DialogDescription>
