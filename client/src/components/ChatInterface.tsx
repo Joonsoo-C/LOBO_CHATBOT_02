@@ -57,7 +57,7 @@ import FileUploadModal from "./FileUploadModal";
 import PersonaEditModal from "./PersonaEditModal";
 import ChatbotSettingsModal from "./ChatbotSettingsModal";
 import VisibilitySettingsModal from "./VisibilitySettingsModal";
-import IconChangeModal from "./IconChangeModal";
+
 import BasicInfoEditModal from "./BasicInfoEditModal";
 import { useIsTablet } from "@/hooks/use-tablet";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -94,7 +94,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showFileModal, setShowFileModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showIconModal, setShowIconModal] = useState(false);
+
   const [showFileListModal, setShowFileListModal] = useState(false);
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
   const [showBasicInfoModal, setShowBasicInfoModal] = useState(false);
@@ -1053,19 +1053,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                               <User className="w-4 h-4 mr-2" />
                               {t('agent.persona')}
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="w-full justify-start px-4 py-2 korean-text"
-                              onClick={() => {
-                                setShowIconModal(true);
-                                setShowMenu(false);
-                                addSystemMessage("아이콘 변경 창을 열었습니다. 에이전트의 아이콘과 배경색을 변경할 수 있습니다.");
-                              }}
-                            >
-                              <Edit className="w-4 h-4 mr-2" />
-                              {t('agent.iconChange')}
-                            </Button>
+
                             <Button 
                               variant="ghost" 
                               size="sm" 
@@ -1421,15 +1409,7 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
           onCancel={addSystemMessage}
         />
       )}
-      {/* Icon Change Modal */}
-      {showIconModal && (
-        <IconChangeModal
-          agent={agent}
-          isOpen={showIconModal}
-          onClose={() => setShowIconModal(false)}
-          onSuccess={addSystemMessage}
-        />
-      )}
+
       {/* File List Modal */}
       {showFileListModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]" onClick={() => setShowFileListModal(false)}>
