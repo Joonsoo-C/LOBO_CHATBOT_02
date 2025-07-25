@@ -251,7 +251,6 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   // Expose functions and state to parent component
   useImperativeHandle(ref, () => ({
     setShowPersonaModal,
-    setShowIconModal,
     setShowSettingsModal,
     setShowFileModal,
     setShowFileListModal,
@@ -1778,11 +1777,7 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
         onClose={() => setShowSettingsModal(false)}
         agent={agent}
       />
-      <IconChangeModal
-        isOpen={showIconModal}
-        onClose={() => setShowIconModal(false)}
-        agent={agent}
-      />
+
       <VisibilitySettingsModal
         isOpen={showVisibilityModal}
         onClose={() => setShowVisibilityModal(false)}
