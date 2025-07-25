@@ -56,18 +56,19 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [selectedColor, setSelectedColor] = useState(agent.backgroundColor || "#3b82f6");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUsingCustomImage, setIsUsingCustomImage] = useState(agent.isCustomIcon || false);
+  const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
 
   // Reset state when modal opens/closes or agent changes
   useEffect(() => {
     if (isOpen) {
       setSelectedIcon(agent.icon || "User");
       setSelectedColor(agent.backgroundColor || "#3b82f6");
-      setIsUsingCustomImage(agent.isCustomIcon || false);
+      // Always start with basic icon tab
+      setIsUsingCustomImage(false);
       setCustomImage(null);
       setImageFile(null);
       
-      // If agent has custom icon, show the current image
+      // If agent has custom icon, store the current image but don't show it initially
       if (agent.isCustomIcon && agent.icon) {
         setCustomImage(agent.icon);
       }

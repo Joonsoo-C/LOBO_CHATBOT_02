@@ -972,6 +972,12 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 25, 2025. Enhanced icon change modal user experience:
+  * Fixed "이미지 업로드" button to show drag-and-drop area instead of immediately opening file dialog
+  * Moved "파일 선택" button inside the drag box for better user guidance
+  * Updated help text: "파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요. 지원 형식: jpg, png, gif, webp (최대 5MB)"
+  * Implemented complete drag-and-drop functionality for image uploads
+  * Set default tab to "기본 아이콘" when opening icon change modal for consistent user experience
   * Updated all "필터 초기화" buttons to match search button appearance
   * Added missing filter reset button to token management section with proper functionality
   * All filter reset buttons now have consistent padding and outline styling
