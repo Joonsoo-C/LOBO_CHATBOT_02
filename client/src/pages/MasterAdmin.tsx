@@ -8321,7 +8321,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                     <Input
-                      placeholder="에이전트명 또는 질문 키워드"
+                      placeholder="에이전트명 또는 질문 키워드로 검색하세요"
                       value={tokenKeywordFilter}
                       onChange={(e) => setTokenKeywordFilter(e.target.value)}
                       className="h-10"
