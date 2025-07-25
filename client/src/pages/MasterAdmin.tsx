@@ -9038,7 +9038,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">업로드된 파일 ({uploadedOrgFiles.length}개)</Label>
-                    <span className="text-xs text-gray-500">조직 데이터 관련 파일들</span>
                   </div>
                   <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <div className="space-y-2">
