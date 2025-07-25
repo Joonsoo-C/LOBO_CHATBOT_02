@@ -274,9 +274,14 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b">
-              <h3 className="text-lg font-medium text-foreground korean-text">
-                문서 파일 업로드
-              </h3>
+              <div>
+                <h3 className="text-lg font-medium text-foreground korean-text">
+                  문서 파일 업로드
+                </h3>
+                <div className="text-sm text-gray-600 mt-2">
+                  파일을 업로드하여 에이전트의 지식을 확장할 수 있습니다.
+                </div>
+              </div>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
                 <X className="w-5 h-5" />
               </Button>
@@ -286,10 +291,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             <div className="p-6 space-y-6">
               {/* File Upload Section */}
               <div 
-                className={`p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer ${
+                className={`p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
                   isDragOver 
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                    : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-gray-400'
+                    : ''
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -304,19 +309,16 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 }}
               >
                 <div className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-gray-400" />
+                  <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-foreground korean-text">업로드할 문서 파일을 드래그하거나 파일 선택 버튼을 클릭하세요. </p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
+                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      지원 파일 : PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF(최대 8개 파일, 각 50MB)
                     </p>
                   </div>
-                  <Button variant="outline" type="button" className="korean-text">
+                  <Button variant="default" type="button" className="korean-text bg-blue-600 hover:bg-blue-700 text-white">
                     파일 선택
                   </Button>
                 </div>

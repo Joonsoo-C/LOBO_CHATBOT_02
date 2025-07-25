@@ -8957,6 +8957,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>조직 파일 업로드</DialogTitle>
+              <div className="text-sm text-gray-600 mt-2">
+                파일을 업로드하여 다수의 조직을 일괄 등록할 수 있습니다.
+              </div>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -8969,13 +8972,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 style={{ display: 'none' }}
               />
               <div 
-                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 onClick={handleOrgCategoryFileSelect}
               >
-                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드하세요. </p>
+                <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-lg font-medium mb-2 text-gray-900 dark:text-gray-100">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 50MB)
+                  지원 파일 : csv, xls, xlsx(최대 50MB)
                 </p>
                 <Button 
                   variant="outline"
@@ -9170,6 +9175,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>사용자 파일 업로드</DialogTitle>
+              <div className="text-sm text-gray-600 mt-2">
+                파일을 업로드하여 다수의 사용자를 일괄 등록할 수 있습니다.
+              </div>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -9182,17 +9190,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 style={{ display: 'none' }}
               />
               <div 
-                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 onDragOver={handleDragOver}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDrop={handleUserFileDrop}
                 onClick={handleUserFileSelect}
               >
-                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-lg font-medium mb-2 text-gray-900 dark:text-gray-100">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
                 <p className="text-sm text-gray-500 mb-4">
-                  CSV, Excel 파일 지원 (최대 50MB)
+                  지원 파일 : csv, xls, xlsx(최대 50MB)
                 </p>
                 <Button 
                   variant="outline"
@@ -9289,16 +9299,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                     <Label htmlFor="overwrite-existing">기존 사용자 정보 덮어쓰기</Label>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="send-welcome" 
-                      className="rounded"
-                      checked={sendWelcome}
-                      onChange={(e) => setSendWelcome(e.target.checked)}
-                    />
-                    <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
-                  </div>
+
                 </div>
               </div>
 

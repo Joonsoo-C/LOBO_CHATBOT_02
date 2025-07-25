@@ -197,7 +197,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               에이전트 파일 업로드
             </h3>
             <p className="text-sm text-muted-foreground korean-text mt-1">
-              {t('agent.fileUploadDesc')}
+              파일을 업로드하여 다수의 에이전트를 일괄 등록할 수 있습니다.
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">
@@ -207,22 +207,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
         {/* Modal Content */}
         <div className="p-6 max-h-[75vh] overflow-y-auto">
-          {/* Sample Download */}
-          <div className="mb-6 flex justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownloadSample}
-              className="korean-text text-green-700 border-green-300 hover:bg-green-100"
-            >
-              <Download className="w-4 h-4 mr-1" />
-              샘플 파일 다운로드
-            </Button>
-          </div>
-
           {/* File Upload Section */}
           <div 
-            className={`mb-6 p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer ${
+            className={`mb-6 p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
               isDragOver 
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02]' 
                 : selectedFile
@@ -289,9 +276,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                     <FileText className="w-8 h-8 text-gray-400" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">{t('agent.dragOrClick')}</h4>
+                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</h4>
                     <p className="text-sm text-muted-foreground korean-text mb-4">
-                      지원 형식: XLSX, CSV, HWP, JPG, PNG, GIF, BMP, PDF, DOC, DOCX, TXT, PPT, PPTX
+                      지원 파일 : csv, xls, xlsx(최대 10MB)
                     </p>
                   </div>
                   <Button
@@ -313,6 +300,31 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               style={{ display: 'none' }}
               multiple={false}
             />
+          </div>
+
+          {/* File Format Requirements */}
+          <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-medium text-yellow-900 dark:text-yellow-100">파일 형식 요구사항</h4>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadSample}
+                className="korean-text text-green-700 border-green-300 hover:bg-green-100"
+              >
+                <Download className="w-4 h-4 mr-1" />
+                샘플 파일 다운로드
+              </Button>
+            </div>
+            <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+              <p>• 첫 번째 행: 헤더 (에이전트명, 설명, 카테고리, 상위카테고리, 하위카테고리, 세부카테고리, 관리자ID, 말투, 성격)</p>
+              <p>• 에이전트명: 에이전트의 이름 (필수)</p>
+              <p>• 설명: 에이전트의 역할 설명 (필수)</p>
+              <p>• 카테고리: 학교, 교수, 학생, 그룹, 기능형 중 선택 (필수)</p>
+              <p>• 조직 정보: 에이전트가 소속된 조직 계층 구조</p>
+              <p>• 관리자ID: 에이전트를 관리할 사용자 ID</p>
+              <p>• 말투, 성격: 에이전트의 개성 설정 (선택)</p>
+            </div>
           </div>
 
           {/* Upload Options */}
