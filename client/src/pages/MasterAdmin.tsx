@@ -12260,6 +12260,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="text-sm">
                       {(() => {
+                        // 데이터 안전성 검사
+                        if (!conversations || !messages || !selectedQALog) {
+                          return '응답 내용이 없습니다.';
+                        }
+                        
                         // 실제 대화 내용에서 AI 응답 찾기
                         const conversation = conversations.find(c => c.id === selectedQALog.id);
                         if (!conversation) return '응답 내용이 없습니다.';
@@ -12323,6 +12328,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <div className="text-sm text-gray-600">
                       {(() => {
+                        // 데이터 안전성 검사
+                        if (!messages || !selectedImprovementLog) {
+                          return '응답 내용이 없습니다.';
+                        }
+                        
                         // 실제 대화 내용에서 AI 응답 찾기
                         const conversationMessages = messages.filter(m => m.conversationId === selectedImprovementLog.id);
                         const aiMessage = conversationMessages.find(m => m.role === 'assistant');
@@ -12332,7 +12342,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             ? aiMessage.content.substring(0, 100) + '...' 
                             : aiMessage.content;
                         }
-                        return '특별한 사유가 있을 경우 학기 중간에 룸메이트 변경이 가능합니다.';
+                        return '응답 내용이 없습니다.';
                       })()}
                     </div>
                   </div>
