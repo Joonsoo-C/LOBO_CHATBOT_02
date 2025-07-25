@@ -1,7 +1,7 @@
 
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X, Upload, FileText, Download, AlertCircle, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { X, Upload, FileText, Download, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,8 +18,9 @@ interface AgentFileUploadModalProps {
 
 export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploadModalProps) {
   const { t } = useLanguage();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
   const [clearExisting, setClearExisting] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -27,6 +28,21 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  // Fetch uploaded agent files
+  const { data: agentFiles = [], refetch: refetchFiles } = useQuery({
+    queryKey: ['/api/admin/agent-files'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/agent-files', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch agent files');
+      }
+      return response.json();
+    },
+    enabled: isOpen
+  });
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -60,6 +76,11 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       queryClient.invalidateQueries({
         queryKey: ["/api/admin/agents"]
       });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/agent-files"]
+      });
+      
+      refetchFiles();
       
       toast({
         title: t('agent.uploadComplete'),
@@ -84,6 +105,40 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         });
       }
     },
+  });
+
+  // Delete agent file mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (fileId: string) => {
+      const response = await fetch(`/api/admin/agent-files/${fileId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete file');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/agent-files"]
+      });
+      refetchFiles();
+      
+      toast({
+        title: "파일 삭제 완료",
+        description: "업로드된 파일이 성공적으로 삭제되었습니다.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "파일 삭제 실패",
+        description: error.message || "파일 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
   });
 
   const validateFile = (file: File) => {
@@ -331,6 +386,85 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                       제거
                     </Button>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Uploaded Files List */}
+          {agentFiles.length > 0 && (
+            <div className="mb-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">업로드된 파일 ({agentFiles.length}개)</Label>
+              </div>
+              <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                <div className="space-y-2">
+                  {agentFiles.map((file: any, index: number) => (
+                    <div 
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                    >
+                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                        <FileText className={`w-4 h-4 flex-shrink-0 ${
+                          file.type === 'agent' ? 'text-blue-500' : 
+                          file.originalName?.endsWith('.xlsx') || file.originalName?.endsWith('.xls') || file.originalName?.endsWith('.csv') ? 'text-blue-500' : 
+                          'text-gray-500'
+                        }`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <p className="text-sm font-medium truncate">{file.originalName || file.fileName}</p>
+                            <div className="flex items-center space-x-1">
+                              {file.type === 'agent' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                  에이전트 파일
+                                </span>
+                              )}
+                              {file.status === 'applied' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                  최종 반영됨
+                                </span>
+                              )}
+                              {file.status === 'partially_applied' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                  부분 반영됨
+                                </span>
+                              )}
+                              {file.status === 'failed' && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                  실패
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs text-gray-500">
+                              {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              }) : '날짜 없음'} • {((file.size || 0) / 1024).toFixed(1)} KB
+                            </p>
+                            {file.agentCount && (
+                              <p className="text-xs text-gray-600 font-medium">
+                                {file.agentCount}개 에이전트 생성
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteMutation.mutate(file.id)}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

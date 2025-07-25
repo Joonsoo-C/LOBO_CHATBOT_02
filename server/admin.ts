@@ -2366,6 +2366,30 @@ export function setupAdminRoutes(app: Express) {
         }
       }
 
+      // Save agent file record for tracking  
+      const agentFileInfo = {
+        id: req.file.filename,
+        originalName: req.file.originalname,
+        fileName: req.file.filename,
+        size: req.file.size,
+        mimetype: req.file.mimetype,
+        uploadedAt: new Date(),
+        uploadedBy: req.user?.id || 'unknown',
+        type: 'agent',
+        status: createdCount === agents.length ? 'applied' : 
+                createdCount > 0 ? 'partially_applied' : 'failed',
+        agentCount: createdCount,
+        errorCount: errorCount,
+        totalCount: agents.length
+      };
+
+      try {
+        await storage.saveAgentFile(agentFileInfo);
+        console.log('Agent file record saved:', agentFileInfo.originalName);
+      } catch (saveError) {
+        console.error('Failed to save agent file record:', saveError);
+      }
+
       // Clean up temporary file after processing
       try {
         fs.unlinkSync(filePath);
@@ -2670,6 +2694,40 @@ export function setupAdminRoutes(app: Express) {
         message: "조직별 에이전트 삭제에 실패했습니다.",
         error: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Agent file list endpoint
+  app.get("/api/admin/agent-files", requireMasterAdmin, async (req, res) => {
+    try {
+      const agentFiles = await storage.getAgentFiles();
+      res.json(agentFiles);
+    } catch (error) {
+      console.error("Error fetching agent files:", error);
+      res.status(500).json({ message: "Failed to fetch agent files" });
+    }
+  });
+
+  // Agent file deletion endpoint
+  app.delete("/api/admin/agent-files/:filename", requireMasterAdmin, async (req, res) => {
+    try {
+      const { filename } = req.params;
+      await storage.deleteAgentFile(filename);
+      
+      // Also try to delete the actual file
+      const filePath = path.join(adminUploadDir, filename);
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileError) {
+        console.error("Error deleting physical file:", fileError);
+      }
+      
+      res.json({ success: true, message: "에이전트 파일이 삭제되었습니다." });
+    } catch (error) {
+      console.error("Error deleting agent file:", error);
+      res.status(500).json({ message: "에이전트 파일 삭제에 실패했습니다." });
     }
   });
 

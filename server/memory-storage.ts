@@ -32,6 +32,7 @@ export class MemoryStorage implements IStorage {
   private organizationCategories: Map<number, any> = new Map();
   private organizationFiles: Map<string, any> = new Map();
   private userFiles: Map<string, any> = new Map();
+  private agentFiles: Map<string, any> = new Map();
   
   private nextId = 1;
   private nextUserId = 1;
@@ -45,6 +46,7 @@ export class MemoryStorage implements IStorage {
   private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
   private readonly organizationFilesFile = path.join(this.persistenceDir, 'organization-files.json');
   private readonly userFilesFile = path.join(this.persistenceDir, 'user-files.json');
+  private readonly agentFilesFile = path.join(this.persistenceDir, 'agent-files.json');
   private readonly usersFile = path.join(this.persistenceDir, 'memory-storage.json');
   private readonly agentsFile = path.join(this.persistenceDir, 'memory-storage-agents.json');
   private readonly conversationsFile = path.join(this.persistenceDir, 'conversations.json');
@@ -69,6 +71,7 @@ export class MemoryStorage implements IStorage {
     this.loadPersistedMessages();
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
+    this.loadPersistedAgentFiles();
 
     console.log(`Memory storage initialized with ${this.users.size} users, ${this.agents.size} agents, and ${this.organizationCategories.size} organization categories`);
     // Skip default data initialization - use admin center data only
@@ -1564,6 +1567,61 @@ export class MemoryStorage implements IStorage {
       }
     } catch (error) {
       console.error('Failed to load user files from persistence:', error);
+    }
+  }
+
+  // Agent file management methods
+  async saveAgentFile(fileInfo: any): Promise<void> {
+    this.agentFiles.set(fileInfo.id, {
+      ...fileInfo,
+      uploadedAt: new Date(fileInfo.uploadedAt)
+    });
+    this.savePersistedAgentFiles();
+  }
+
+  async getAgentFiles(): Promise<any[]> {
+    return Array.from(this.agentFiles.values());
+  }
+
+  async deleteAgentFile(fileId: string): Promise<void> {
+    this.agentFiles.delete(fileId);
+    this.savePersistedAgentFiles();
+  }
+
+  private savePersistedAgentFiles(): void {
+    try {
+      const agentFilesArray = Array.from(this.agentFiles.values()).map(file => ({
+        ...file,
+        uploadedAt: file.uploadedAt?.toISOString()
+      }));
+
+      fs.writeFileSync(this.agentFilesFile, JSON.stringify(agentFilesArray, null, 2));
+      console.log(`Saved ${agentFilesArray.length} agent files to persistence`);
+    } catch (error) {
+      console.error('Failed to save agent files to file:', error);
+    }
+  }
+
+  private loadPersistedAgentFiles(): void {
+    try {
+      if (fs.existsSync(this.agentFilesFile)) {
+        const data = fs.readFileSync(this.agentFilesFile, 'utf8');
+        const filesArray = JSON.parse(data);
+
+        for (const file of filesArray) {
+          const fileRecord = {
+            ...file,
+            uploadedAt: file.uploadedAt ? new Date(file.uploadedAt) : new Date()
+          };
+          this.agentFiles.set(file.id, fileRecord);
+        }
+
+        console.log(`Loaded ${this.agentFiles.size} agent files from persistence`);
+      } else {
+        console.log('No agent files found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Failed to load agent files from persistence:', error);
     }
   }
 

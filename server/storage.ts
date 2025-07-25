@@ -95,6 +95,11 @@ export interface IStorage {
 
   // User status operations
   getUniqueUserStatuses(): string[];
+
+  // Agent file operations
+  getAgentFiles(): Promise<any[]>;
+  saveAgentFile(fileInfo: any): Promise<void>;
+  deleteAgentFile(fileId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
