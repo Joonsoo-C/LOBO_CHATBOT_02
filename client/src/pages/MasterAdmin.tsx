@@ -454,6 +454,7 @@ interface UserActiveAgentsProps {
 }
 
 const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRoleForAgent, getUserRoleDisplayForAgent, onAgentClick }) => {
+  const { t } = useLanguage();
   const { data: userConversations, isLoading, error } = useQuery({
     queryKey: [`/api/admin/users/${userId}/conversations`],
     enabled: !!userId,
