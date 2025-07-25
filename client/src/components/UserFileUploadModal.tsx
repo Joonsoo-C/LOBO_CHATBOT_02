@@ -359,27 +359,23 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
           </div>
 
           {/* File Format Requirements */}
-          <div className="mb-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                <h4 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2 korean-text">파일 형식 지원</h4>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300 korean-text">
-                  지원 파일 형식: XLSX, XLS, CSV<br />
-                  업로드 제한: 파일당 최대 50MB까지 업로드 가능
-                </p>
-              </div>
-              
-              <div className="flex justify-center items-center">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleDownloadSample}
-                  className="korean-text h-12 px-6"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  샘플 파일 다운로드
-                </Button>
-              </div>
+          <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-medium text-yellow-900 dark:text-yellow-100">파일 형식 요구사항</h4>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadSample}
+                className="korean-text text-green-700 border-green-300 hover:bg-green-100"
+              >
+                <Download className="w-4 h-4 mr-1" />
+                샘플 파일 다운로드
+              </Button>
+            </div>
+            <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+              <p>• 첫 번째 행: 헤더 (사용자 ID, 이름, 이메일, 조직 등)</p>
+              <p>• 지원 파일 형식: XLSX, XLS, CSV</p>
+              <p>• 업로드 제한: 파일당 최대 50MB까지 업로드 가능</p>
             </div>
           </div>
 

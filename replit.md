@@ -981,6 +981,11 @@ Changelog:
   * Complete supported formats: "pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif"
   * Clear upload limits: "(최대 8개 / 파일당 최대 50MB)"
   * Improved user experience with clear file format and size constraints
+- July 25, 2025. Unified user file upload modal layout with organization file upload design:
+  * Moved sample download button to same row as "파일 형식 요구사항" header
+  * Changed from 2-column grid to single-row flex layout for consistency
+  * Applied same styling as organization category file upload modal
+  * Enhanced file format requirements with bullet-point format for better readability
 - July 25, 2025. Completed comprehensive Apple-style file upload modal redesign:
   * Updated all 4 file upload modals (organization, user, agent, document) with consistent Apple design language
   * Enhanced drag-and-drop areas with rounded corners, hover effects, and blue accent colors
