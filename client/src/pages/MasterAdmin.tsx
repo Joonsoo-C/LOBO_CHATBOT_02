@@ -8727,6 +8727,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
                 <DialogTitle>문서 파일 업로드</DialogTitle>
               </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.
+              </div>
               <div className="border-b mt-3"></div>
             </DialogHeader>
             <div className="space-y-6">

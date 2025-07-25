@@ -972,6 +972,10 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 25, 2025. Enhanced document management with guidance text:
+  * Added comprehensive guidance text to document file upload modal in master admin system
+  * Added informative description: "공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요."
+  * Improved user experience with clear instructions for document management workflow
 - July 25, 2025. Updated file upload button descriptions in admin interface:
   * Organization category management file upload: "파일을 업로드해 조직구조를 일괄 등록합니다."
   * User management file upload: "파일을 업로드해 여러 사용자를 일괄 등록합니다."
