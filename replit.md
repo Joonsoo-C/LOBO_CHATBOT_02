@@ -2,7 +2,7 @@
 
 ## Overview
 
-LoBo is a Korean university AI chatbot system that provides students and faculty with intelligent assistance through category-based agents. The system features a modern React frontend with real-time chat capabilities, document upload/analysis, and agent management functionality. It's built as a full-stack TypeScript application optimized for mobile-first usage.
+LoBo is a Korean university AI chatbot system that provides students and faculty with intelligent assistance through category-based agents. The system features a modern React frontend with real-time chat capabilities, document upload/analysis, and comprehensive agent management functionality. It's built as a full-stack TypeScript application optimized for mobile-first usage with complete multilingual support and advanced document management features.
 
 ## System Architecture
 
@@ -1009,6 +1009,15 @@ Changelog:
   * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
   * All search buttons now use consistent basic styling with h-10 w-full classes
   * Complete UI consistency achieved with agent management section as the reference standard
+- July 25, 2025. Completed comprehensive multi-file upload system unification:
+  * Successfully unified all upload modals (UserFileUploadModal, AgentFileUploadModal, DocumentUploadModal, OrganizationFileUpload) with consistent UI design
+  * Implemented selectedFiles array state management across all upload interfaces for multi-file handling
+  * Applied unified blue color box design with "선택된 파일" title and "전체 삭제" button positioned on same row
+  * All upload modals now support multiple file selection, display, individual deletion, and batch upload functionality
+  * Enhanced file validation and error handling with consistent user feedback across all upload interfaces
+  * Document management system now includes comprehensive file type tagging, visibility toggles (노출/비노출), and training toggles (학습/미학습)
+  * Added proper API endpoints for document visibility (/api/documents/:id/visibility) and training settings (/api/documents/:id/training)
+  * MasterAdmin interface provides complete document management capabilities with real-time toggle functionality
 - July 9, 2025. Fixed critical multilingual translation system for master admin dashboard:
   * Identified and resolved hardcoded Korean text in Q&A management cards preventing language switching
   * Added comprehensive translation keys for dashboard metrics: todayQuestionsTitle, avgResponseTimeTitle, responseFailureTitle, userSatisfactionTitle

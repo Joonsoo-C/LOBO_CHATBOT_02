@@ -18,7 +18,7 @@ interface AgentFileUploadModalProps {
 
 export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploadModalProps) {
   const { t } = useLanguage();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [clearExisting, setClearExisting] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
@@ -45,24 +45,30 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   });
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("clearExisting", clearExisting.toString());
+    mutationFn: async (files: File[]) => {
+      const results = [];
+      
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("clearExisting", clearExisting.toString());
 
+        const response = await fetch("/api/agents/upload", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
 
-      const response = await fetch("/api/agents/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`${response.status}: ${errorText}`);
+        }
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`${response.status}: ${errorText}`);
+        const result = await response.json();
+        results.push({ file: file.name, ...result });
       }
-
-      return response.json();
+      
+      return results;
     },
     onSuccess: (data) => {
       setUploadResult(data);
@@ -81,10 +87,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       });
       
       refetchFiles();
+      setSelectedFiles([]);
       
+      const totalUploaded = Array.isArray(data) ? data.length : data.createdCount || data.agentCount || 0;
       toast({
         title: t('agent.uploadComplete'),
-        description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 업로드되었습니다.`,
+        description: `${totalUploaded}개의 파일이 업로드되었습니다.`,
       });
     },
     onError: (error: Error) => {
@@ -173,9 +181,15 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0];
-    if (validateFile(file)) {
-      setSelectedFile(file);
+    const validFiles: File[] = [];
+    Array.from(files).forEach(file => {
+      if (validateFile(file)) {
+        validFiles.push(file);
+      }
+    });
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(prev => [...prev, ...validFiles]);
       setUploadResult(null);
     }
     event.target.value = '';
@@ -201,16 +215,30 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
     const files = Array.from(event.dataTransfer.files);
     if (files.length === 0) return;
 
-    const file = files[0];
-    if (validateFile(file)) {
-      setSelectedFile(file);
+    const validFiles: File[] = [];
+    files.forEach(file => {
+      if (validateFile(file)) {
+        validFiles.push(file);
+      }
+    });
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(prev => [...prev, ...validFiles]);
       setUploadResult(null);
     }
   };
 
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleClearAllFiles = () => {
+    setSelectedFiles([]);
+  };
+
   const handleUpload = () => {
-    if (selectedFile) {
-      uploadMutation.mutate(selectedFile);
+    if (selectedFiles.length > 0) {
+      uploadMutation.mutate(selectedFiles);
     }
   };
 
@@ -249,7 +277,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   };
 
   const resetForm = () => {
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setClearExisting(false);
     setUploadProgress(0);
     setUploadResult(null);
@@ -285,7 +313,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             className={`mb-6 p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
               isDragOver 
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02]' 
-                : selectedFile
+                : selectedFiles.length > 0
                 ? 'border-green-400 bg-green-50 dark:bg-green-900/20'
                 : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-gray-400'
             }`}
@@ -325,68 +353,49 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               accept=".csv,.xls,.xlsx,.hwp,.jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.txt,.ppt,.pptx"
               onChange={handleFileSelect}
               style={{ display: 'none' }}
-              multiple={false}
+              multiple
             />
           </div>
 
-          {/* Selected File List */}
-          {selectedFile && (
-            <div className="mb-6 border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
+          {/* 선택된 파일 목록 */}
+          {selectedFiles.length > 0 && (
+            <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
-                  선택된 파일 (1개)
-                </h3>
-                <span className="text-xs text-blue-700 dark:text-blue-300 korean-text">
-                  에이전트 데이터 파일
-                </span>
+                <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">선택된 파일 ({selectedFiles.length}개)</h3>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleClearAllFiles}
+                  className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
+                  전체 삭제
+                </Button>
               </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border">
-                  <div className="flex items-center space-x-3">
-                    <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate korean-text">
-                        {selectedFile.name}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {(selectedFile.size / 1024).toFixed(1)} KB • 업로드 대기 중
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {selectedFiles.map((file, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md"
+                  >
+                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">{file.name}</p>
+                        <p className="text-xs text-blue-600 dark:text-blue-400">
+                          {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase() || 'CSV'}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
                     <Button
-                      type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const fileInput = document.getElementById('agent-file-upload') as HTMLInputElement;
-                        if (fileInput) {
-                          fileInput.click();
-                        }
-                      }}
-                      className="korean-text text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      onClick={() => handleRemoveFile(index)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1"
                     >
-                      <Upload className="w-3 h-3 mr-1" />
-                      다른 파일 선택
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFile(null);
-                        setUploadResult(null);
-                      }}
-                      className="korean-text text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <X className="w-3 h-3 mr-1" />
-                      제거
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           )}
@@ -562,7 +571,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             </Button>
             <Button 
               onClick={handleUpload}
-              disabled={!selectedFile || uploadMutation.isPending}
+              disabled={selectedFiles.length === 0 || uploadMutation.isPending}
             >
               {uploadMutation.isPending ? `업로드 중... (${uploadProgress}%)` : `업로드 시작`}
             </Button>
