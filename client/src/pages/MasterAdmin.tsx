@@ -6907,15 +6907,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.time')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          개선 요청
-                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {conversationLogsLoading ? (
                         <tr>
-                          <td colSpan={7} className="px-6 py-8 text-center">
+                          <td colSpan={6} className="px-6 py-8 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <RefreshCw className="w-6 h-6 mx-auto mb-2 animate-spin" />
                               <p>대화 기록을 불러오는 중...</p>
@@ -6924,7 +6921,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       ) : conversationLogsError ? (
                         <tr>
-                          <td colSpan={7} className="px-6 py-8 text-center">
+                          <td colSpan={6} className="px-6 py-8 text-center">
                             <div className="text-red-500">
                               <XCircle className="w-6 h-6 mx-auto mb-2" />
                               <p>대화 기록을 불러오는데 실패했습니다</p>
@@ -6991,29 +6988,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 minute: '2-digit'
                               })}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-1">
-                                {/* 개선 요청이 있는 경우에만 "요청" 텍스트 표시 */}
-                                {(() => {
-                                  // TODO: 실제 개선 요청 데이터가 있는지 확인하는 로직
-                                  // 현재는 샘플로 일부 항목에만 표시
-                                  const hasImprovementRequest = log.id % 5 === 0; // 샘플: ID가 5의 배수인 경우
-                                  
-                                  return hasImprovementRequest ? (
-                                    <Badge variant="destructive" className="bg-orange-100 text-orange-800">
-                                      요청
-                                    </Badge>
-                                  ) : (
-                                    <span className="text-gray-400">-</span>
-                                  );
-                                })()}
-                              </div>
-                            </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={7} className="px-6 py-8 text-center">
+                          <td colSpan={6} className="px-6 py-8 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">대화 기록이 없습니다</p>
