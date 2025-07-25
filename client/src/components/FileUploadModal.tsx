@@ -278,8 +278,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
-                <div className="text-sm text-gray-600 mt-2">
-                  파일을 업로드하여 에이전트의 지식을 확장할 수 있습니다.
+                <div className="text-sm text-gray-600 mt-2 korean-text">
+                  공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.
                 </div>
               </div>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
@@ -313,9 +313,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
-                    <p className="text-sm text-gray-500 mt-2">
-                      지원 파일 : PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF(최대 8개 파일, 각 50MB)
+                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요.</p>
+                    <p className="text-sm text-gray-500 mt-2 korean-text">
+                      지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif<br />
+                      (최대 8개 / 파일당 최대 50MB)
                     </p>
                   </div>
                   <Button variant="default" type="button" className="korean-text bg-blue-600 hover:bg-blue-700 text-white">

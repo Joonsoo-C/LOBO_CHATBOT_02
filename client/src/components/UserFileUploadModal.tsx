@@ -358,6 +358,31 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
             )}
           </div>
 
+          {/* File Format Requirements */}
+          <div className="mb-6">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                <h4 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2 korean-text">파일 형식 지원</h4>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300 korean-text">
+                  지원 파일 형식: XLSX, XLS, CSV<br />
+                  업로드 제한: 파일당 최대 50MB까지 업로드 가능
+                </p>
+              </div>
+              
+              <div className="flex justify-center items-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDownloadSample}
+                  className="korean-text h-12 px-6"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  샘플 파일 다운로드
+                </Button>
+              </div>
+            </div>
+          </div>
+
           {/* File Upload Section */}
           <div 
             className={`mb-6 p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer ${
@@ -427,11 +452,8 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                   </div>
                   <div>
                     <h4 className="text-lg font-medium text-foreground mb-2 korean-text">Excel 또는 CSV 파일을 드래그하거나 클릭하여 업로드</h4>
-                    <p className="text-sm text-muted-foreground korean-text mb-4">
-                      Excel(.xlsx, .xls) 또는 CSV(.csv) 파일 지원 (최대 50MB)
-                    </p>
                   </div>
-                  <div className="flex gap-3 justify-center">
+                  <div className="flex justify-center">
                     <Button
                       type="button"
                       variant="default"
@@ -439,15 +461,6 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       파일 선택
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleDownloadSample}
-                      className="korean-text"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      샘플 파일 다운로드
                     </Button>
                   </div>
                 </div>

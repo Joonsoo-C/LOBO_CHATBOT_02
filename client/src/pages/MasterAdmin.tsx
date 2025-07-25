@@ -8734,10 +8734,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
-                <p className="text-sm text-gray-500 mb-4">
-                  지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF<br />
-                  업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
-                </p>
                 <Button 
                   variant="outline" 
                   onClick={(e) => {
@@ -8825,12 +8821,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 />
               </div>
 
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 지원</h4>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                  지원 파일 형식: PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF / 업로드 제한: 최대 8개 파일 / 각 파일당 최대 50MB까지 업로드 가능
-                </p>
-              </div>
+
 
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">문서 노출 설정</h4>
