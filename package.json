@@ -60,6 +60,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "framer-motion": "^11.13.1",
+    "get-tsconfig": "^4.10.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.453.0",
     "mammoth": "^1.9.1",
@@ -110,7 +111,7 @@
     "esbuild": "^0.25.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.19.1",
+    "tsx": "^4.20.3",
     "typescript": "5.6.3",
     "vite": "^5.4.14"
   },
