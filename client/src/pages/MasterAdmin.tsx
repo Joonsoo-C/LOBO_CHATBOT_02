@@ -3674,6 +3674,25 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     document.body.removeChild(link);
   };
 
+  // 샘플 조직 카테고리 파일 다운로드 핸들러
+  const handleDownloadOrgSampleFile = () => {
+    const csvContent = `조직명,상위 조직,하위 조직,세부 조직
+컴퓨터공학과,공과대학,공학부,컴퓨터공학과
+기계공학과,공과대학,공학부,기계공학과
+국어국문학과,인문대학,문학부,국어국문학과
+경영학과,경영대학,경영학부,경영학과`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'sample_organizations.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // 문서 업로드 핸들러 (다중 파일 지원)
   const handleDocumentUpload = async () => {
     if (selectedDocumentFiles.length === 0) {
@@ -9094,13 +9113,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               )}
 
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-yellow-900 dark:text-yellow-100">파일 형식 요구사항</h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadOrgSampleFile}
+                    className="korean-text text-green-700 border-green-300 hover:bg-green-100"
+                  >
+                    <Download className="w-4 h-4 mr-1" />
+                    샘플 파일 다운로드
+                  </Button>
+                </div>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
                   <p>• 첫 번째 행: 헤더 (조직명, 상위 조직, 하위 조직, 세부 조직)</p>
                   <p>• 조직명: 조직의 정식 명칭 (필수)</p>
-                  <p>• {t('org.upperOrganization')}: 대학/본부 등 최상위 조직</p>
-                  <p>• {t('org.lowerOrganization')}: 단과대학/처/부 등</p>
-                  <p>• {t('org.detailOrganization')}: 학과/팀/과 등</p>
+                  <p>• 상위 조직: 단과대학/본부 등 최상위 조직</p>
+                  <p>• 하위 조직: 학과/처/부 등</p>
+                  <p>• 세부 조직: 세부전공/팀/과 등</p>
                 </div>
               </div>
 
@@ -9223,11 +9253,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <p>• 첫 번째 행: 헤더 (username, firstName, lastName, email, userType)</p>
-                  <p>• username: 학번/교번 (필수)</p>
-                  <p>• userType: "student" 또는 "faculty" (필수)</p>
-                  <p>• email: 이메일 주소 (선택)</p>
-                  <p>• upperCategory, lowerCategory, detailCategory, position (선택)</p>
+                  <p>• 첫 번째 행: 헤더 (사용자명, 성, 이름, 이메일, 사용자유형)</p>
+                  <p>• 사용자명: 학번/교번 (필수)</p>
+                  <p>• 사용자유형: "학생" 또는 "교직원" (필수)</p>
+                  <p>• 이메일: 이메일 주소 (선택)</p>
+                  <p>• 상위조직, 하위조직, 세부조직, 직책 (선택)</p>
                   <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다</p>
                 </div>
               </div>
