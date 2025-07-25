@@ -1147,7 +1147,7 @@ function MasterAdmin() {
   const [userFileUploadProgress, setUserFileUploadProgress] = useState(0);
   const [overwriteExisting, setOverwriteExisting] = useState(false);
   const [sendWelcome, setSendWelcome] = useState(false);
-  const [validateOnly, setValidateOnly] = useState(false);
+
   const userFileInputRef = useRef<HTMLInputElement>(null);
   
   // 에이전트 파일 업로드 관련 상태
@@ -1159,7 +1159,7 @@ function MasterAdmin() {
   const [isOrgCategoryUploading, setIsOrgCategoryUploading] = useState(false);
   const [orgCategoryUploadProgress, setOrgCategoryUploadProgress] = useState(0);
   const [orgOverwriteExisting, setOrgOverwriteExisting] = useState(false);
-  const [orgValidateOnly, setOrgValidateOnly] = useState(false);
+
   const orgCategoryFileInputRef = useRef<HTMLInputElement>(null);
   
   // 파일 입력 참조
@@ -3350,7 +3350,7 @@ function MasterAdmin() {
       
       // Add options
       formData.append('overwriteExisting', orgOverwriteExisting.toString());
-      formData.append('validateOnly', orgValidateOnly.toString());
+
 
       const response = await fetch('/api/admin/upload-org-categories', {
         method: 'POST',
@@ -3597,7 +3597,7 @@ function MasterAdmin() {
           formData.append('file', file);
           formData.append('overwriteExisting', overwriteExisting.toString());
           formData.append('sendWelcome', sendWelcome.toString());
-          formData.append('validateOnly', validateOnly.toString());
+
 
           const response = await fetch('/api/admin/users/upload', {
             method: 'POST',
@@ -9117,16 +9117,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                     <Label htmlFor="org-overwrite-existing">기존 조직 정보 덮어쓰기</Label>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="org-validate-only" 
-                      className="rounded"
-                      checked={orgValidateOnly}
-                      onChange={(e) => setOrgValidateOnly(e.target.checked)}
-                    />
-                    <Label htmlFor="org-validate-only">검증만 수행 (실제 업로드 안함)</Label>
-                  </div>
                 </div>
               </div>
 
@@ -9242,6 +9232,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
+              {/* 샘플 파일 다운로드 */}
+              <div className="mb-6 flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadSampleFile}
+                  className="korean-text text-green-700 border-green-300 hover:bg-green-100"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  샘플 파일 다운로드
+                </Button>
+              </div>
+
               <div>
                 <Label>업로드 옵션</Label>
                 <div className="mt-2 space-y-2">
@@ -9265,25 +9268,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                     <Label htmlFor="send-welcome">신규 사용자에게 환영 이메일 발송</Label>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="validate-only" 
-                      className="rounded"
-                      checked={validateOnly}
-                      onChange={(e) => setValidateOnly(e.target.checked)}
-                    />
-                    <Label htmlFor="validate-only">검증만 수행 (실제 업로드 안함)</Label>
-                  </div>
                 </div>
               </div>
 
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setIsFileUploadDialogOpen(false)}>
                   취소
-                </Button>
-                <Button variant="outline" onClick={handleDownloadSampleFile}>
-                  샘플 파일 다운로드
                 </Button>
                 <Button 
                   onClick={handleUserFileUpload}

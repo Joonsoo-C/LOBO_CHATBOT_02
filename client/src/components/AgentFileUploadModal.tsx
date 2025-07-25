@@ -19,7 +19,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   const { t } = useLanguage();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [clearExisting, setClearExisting] = useState(false);
-  const [validateOnly, setValidateOnly] = useState(false);
+
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadResult, setUploadResult] = useState<any>(null);
@@ -32,7 +32,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       const formData = new FormData();
       formData.append("file", file);
       formData.append("clearExisting", clearExisting.toString());
-      formData.append("validateOnly", validateOnly.toString());
+
 
       const response = await fetch("/api/agents/upload", {
         method: "POST",
@@ -50,27 +50,20 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
     onSuccess: (data) => {
       setUploadResult(data);
       
-      if (!validateOnly) {
-        queryClient.invalidateQueries({
-          queryKey: ["/api/agents/managed"]
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["/api/agents"]
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["/api/admin/agents"]
-        });
-        
-        toast({
-          title: t('agent.uploadComplete'),
-          description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 ${validateOnly ? t('agent.validationComplete') : t('agent.uploadComplete')}되었습니다.`,
-        });
-      } else {
-        toast({
-          title: t('agent.validationComplete'),
-          description: `${data.agentCount}개의 에이전트 레코드가 유효합니다.`,
-        });
-      }
+      queryClient.invalidateQueries({
+        queryKey: ["/api/agents/managed"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/agents"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/agents"]
+      });
+      
+      toast({
+        title: t('agent.uploadComplete'),
+        description: `${data.createdCount || data.agentCount || 0}개의 에이전트가 업로드되었습니다.`,
+      });
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
@@ -183,7 +176,6 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   const resetForm = () => {
     setSelectedFile(null);
     setClearExisting(false);
-    setValidateOnly(false);
     setUploadProgress(0);
     setUploadResult(null);
   };
@@ -329,22 +321,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Checkbox
-                  id="validate-only"
-                  checked={validateOnly}
-                  onCheckedChange={(checked) => setValidateOnly(checked === true)}
-                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                />
-                <Label htmlFor="validate-only" className="text-sm font-medium korean-text cursor-pointer">유효성 검증만</Label>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Checkbox
                   id="clear-existing"
                   checked={clearExisting}
                   onCheckedChange={(checked) => setClearExisting(checked === true)}
-                  disabled={validateOnly}
-                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
-                <Label htmlFor="clear-existing" className={`text-sm font-medium korean-text cursor-pointer ${validateOnly ? 'opacity-50' : ''}`}>기존 데이터 삭제</Label>
+                <Label htmlFor="clear-existing" className="text-sm font-medium korean-text cursor-pointer">기존 에이전트 정보 덮어쓰기</Label>
               </div>
             </div>
           </div>
@@ -412,12 +394,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               {uploadMutation.isPending ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  {validateOnly ? '검증 중...' : '업로드 중...'}
+                  업로드 중...
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4 mr-2" />
-                  {validateOnly ? '검증 시작' : '업로드 시작'}
+                  업로드 시작
                 </>
               )}
             </Button>
