@@ -212,9 +212,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       <div className="bg-background border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-lg" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
-          <h3 className="text-lg font-medium text-foreground korean-text">
-            에이전트 파일 업로드
-          </h3>
+          <div>
+            <h3 className="text-lg font-medium text-foreground korean-text">
+              에이전트 파일 업로드
+            </h3>
+            <div className="text-sm text-gray-600 mt-2">파일을 업로드해 여러 에이전트를 일괄 등록할 수 있습니다.</div>
+          </div>
           <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">
             <X className="w-5 h-5" />
           </Button>
