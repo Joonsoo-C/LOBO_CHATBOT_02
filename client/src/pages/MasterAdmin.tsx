@@ -9038,6 +9038,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">업로드된 파일 ({uploadedOrgFiles.length}개)</Label>
+                    <span className="text-xs text-gray-500">조직 데이터 관련 파일들</span>
                   </div>
                   <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <div className="space-y-2">
@@ -9126,13 +9127,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Button>
                 </div>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <p>• 첫 번째 행: 헤더 (사용자명, 사용자 ID, 이메일, 유형, 상위 조직, 하위 조직, 세부 조직, 직책)</p>
-                  <p>• ID : 학번, 교번 등 사용자 ID(필수)</p>
-                  <p>• 유형: 학생, 교직원 등 사용자 유형(필수)</p>
-                  <p>• 이메일: 사용자의 학교 이메일 주소(선택)</p>
-                  <p>• 상위조직: 사용자가 소속된 최상위 조직(필수)</p>
-                  <p>• 하위조직, 세부조직, 직책 : 사용자가 소속된 하위 조직 및 조직내 역할 (선택)</p>
-                  <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다.</p>
+                  <p>• 첫 번째 행: 헤더 (조직명, 상위 조직, 하위 조직, 세부 조직)</p>
+                  <p>• 조직명: 조직의 정식 명칭 (필수)</p>
+                  <p>• 상위 조직: 단과대학/본부 등 최상위 조직</p>
+                  <p>• 하위 조직: 학과/처/부 등</p>
+                  <p>• 세부 조직: 세부전공/팀/과 등</p>
                 </div>
               </div>
 
