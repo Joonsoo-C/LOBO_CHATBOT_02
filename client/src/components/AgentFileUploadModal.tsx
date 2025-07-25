@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import * as XLSX from 'xlsx';
 
 interface AgentFileUploadModalProps {
   isOpen: boolean;
@@ -159,18 +160,37 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
   };
 
   const handleDownloadSample = () => {
-    const csvContent = `에이전트명,설명,카테고리,상위카테고리,하위카테고리,세부카테고리,관리자ID,말투,성격
-학생 상담 AI,학생들의 고민과 상담을 도와주는 AI입니다,학생,인문대학,국어국문학과,국어국문학과,admin,친근하고 편안한 말투,공감능력이 뛰어나고 따뜻한 성격
-컴퓨터공학과 AI,컴퓨터공학과 관련 정보를 제공하는 AI입니다,학과,공과대학,컴퓨터공학과,컴퓨터공학과,admin,전문적이고 정확한 말투,논리적이고 체계적인 성격
-입학 상담 AI,대학 입학 관련 정보를 제공하는 AI입니다,학교,대학본부,입학처,입학관리팀,admin,정확하고 친절한 말투,정보 제공에 능숙한 전문적인 성격`;
+    // 엑셀 데이터 생성
+    const headers = ['에이전트명', '소개', '유형', '상위 조직', '하위 조직', '세부 조직', '관리자 ID'];
+    const sampleData = [
+      ['학생 상담 AI', '학생들의 고민과 상담을 도와주는 AI입니다', '학생', '인문대학', '국어국문학과', '국어국문학과', 'user1081'],
+      ['컴퓨터공학과 AI', '컴퓨터공학과 관련 정보를 제공하는 AI입니다', '학교', '공과대학', '컴퓨터공학과', '컴퓨터공학과', 'user1081'],
+      ['입학 상담 AI', '대학 입학 관련 정보를 제공하는 AI입니다', '학교', '대학본부', '입학처', '입학관리팀', 'master_admin'],
+      ['도서관 안내 AI', '도서관 이용 및 서비스 안내를 제공합니다', '기능형', '대학본부', '도서관', '정보서비스팀', 'user1081'],
+      ['진로 상담 AI', '학생들의 진로 상담과 취업 지원을 담당합니다', '그룹', '학생지원처', '진로취업팀', '', 'master_admin']
+    ];
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = t('agent.downloadSample');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // XLSX 워크시트 생성
+    const worksheetData = [headers, ...sampleData];
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // 열 너비 설정
+    worksheet['!cols'] = [
+      { width: 20 }, // 에이전트명
+      { width: 40 }, // 소개
+      { width: 12 }, // 유형
+      { width: 15 }, // 상위 조직
+      { width: 15 }, // 하위 조직
+      { width: 15 }, // 세부 조직
+      { width: 15 }  // 관리자 ID
+    ];
+
+    // 워크북 생성
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "에이전트 목록");
+
+    // 파일 다운로드
+    XLSX.writeFile(workbook, "에이전트_업로드_샘플.xlsx");
   };
 
   const resetForm = () => {
@@ -317,13 +337,12 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               </Button>
             </div>
             <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-              <p>• 첫 번째 행: 헤더 (에이전트명, 설명, 카테고리, 상위카테고리, 하위카테고리, 세부카테고리, 관리자ID, 말투, 성격)</p>
+              <p>• 첫 번째 행: 헤더 (에이전트명, 소개, 유형, 상위 조직, 하위 조직, 세부 조직, 관리자 ID)</p>
               <p>• 에이전트명: 에이전트의 이름 (필수)</p>
-              <p>• 설명: 에이전트의 역할 설명 (필수)</p>
-              <p>• 카테고리: 학교, 교수, 학생, 그룹, 기능형 중 선택 (필수)</p>
-              <p>• 조직 정보: 에이전트가 소속된 조직 계층 구조</p>
-              <p>• 관리자ID: 에이전트를 관리할 사용자 ID</p>
-              <p>• 말투, 성격: 에이전트의 개성 설정 (선택)</p>
+              <p>• 소개: 에이전트 기능이나 역할에 대한 소개 (선택)</p>
+              <p>• 유형: 학교, 교수, 학생, 그룹, 기능형 중 선택 (필수)</p>
+              <p>• 조직 정보: 에이전트가 소속된 조직 계층 구조 (상위 조직은 필수, 하위/세부 조직은 선택)</p>
+              <p>• 관리자 ID: 에이전트를 관리할 사용자 ID</p>
             </div>
           </div>
 

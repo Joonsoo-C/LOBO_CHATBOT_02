@@ -972,6 +972,14 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 25, 2025. Completed comprehensive Apple-style file upload modal redesign:
+  * Updated all 4 file upload modals (organization, user, agent, document) with consistent Apple design language
+  * Enhanced drag-and-drop areas with rounded corners, hover effects, and blue accent colors
+  * Improved file format requirements display with structured information boxes
+  * Added proper modal headers with descriptions for better user guidance
+  * AgentFileUploadModal: Updated file format requirements with new header structure (에이전트명, 소개, 유형, 상위 조직, 하위 조직, 세부 조직, 관리자 ID)
+  * Implemented Excel sample file download using XLSX library with proper column formatting and realistic sample data
+  * All file upload interfaces now provide consistent user experience with Apple's design principles
 - July 25, 2025. Enhanced icon change modal user experience:
   * Fixed "이미지 업로드" button to show drag-and-drop area instead of immediately opening file dialog
   * Moved "파일 선택" button inside the drag box for better user guidance
