@@ -217,7 +217,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               에이전트 파일 업로드
             </h3>
             <p className="text-sm text-muted-foreground korean-text mt-1">
-              파일을 업로드하여 다수의 에이전트를 일괄 등록할 수 있습니다.
+              파일을 업로드해 여러 에이전트를 일괄 등록할 수 있습니다
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">

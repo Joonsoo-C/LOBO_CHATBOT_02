@@ -4682,7 +4682,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('user.fileUploadDesc')}
+                    파일을 업로드해 여러 사용자를 일괄 등록합니다
                   </p>
                 </CardContent>
               </Card>
@@ -6276,7 +6276,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">파일을 업로드하여 다수의 에이전트를 일괄 등록합니다.</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">파일을 업로드해 여러 에이전트를 일괄 등록할 수 있습니다</p>
                 </CardContent>
               </Card>
             </div>
@@ -7063,7 +7063,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('org.lmsIntegrationDesc')}
+                    대학 LMS 시스템과 연동하여 조직 정보를 자동으로 동기화합니다
                   </p>
                 </CardContent>
               </Card>
