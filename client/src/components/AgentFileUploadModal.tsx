@@ -202,7 +202,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
             <h3 className="text-lg font-medium text-foreground korean-text">
-              {t('agent.fileUpload')}
+              에이전트 파일 업로드
             </h3>
             <p className="text-sm text-muted-foreground korean-text mt-1">
               {t('agent.fileUploadDesc')}

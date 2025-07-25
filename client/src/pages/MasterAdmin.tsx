@@ -8936,7 +8936,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isOrgCategoryUploadDialogOpen} onOpenChange={setIsOrgCategoryUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>{t('org.categorySearchManagement')}</DialogTitle>
+              <DialogTitle>조직 파일 업로드</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
