@@ -8713,6 +8713,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>문서 파일 업로드</DialogTitle>
+              <div className="text-sm text-gray-600 mt-2">공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.</div>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
@@ -8732,8 +8733,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 onDrop={handleDrop}
                 onClick={handleDocumentFileSelect}
               >
-                <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-lg font-medium mb-2 text-gray-900 dark:text-gray-100">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif<br />
+                  (최대 8개 / 파일당 최대 50MB)
+                </p>
                 <Button 
                   variant="outline" 
                   onClick={(e) => {
