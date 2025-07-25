@@ -3468,6 +3468,68 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // QA Improvement Comment endpoints
+  app.post('/api/admin/qa-comments', requireMasterAdmin, async (req, res) => {
+    try {
+      const { conversationId, comment } = req.body;
+      
+      if (!conversationId || !comment) {
+        return res.status(400).json({ message: "대화 ID와 개선 코멘트가 필요합니다." });
+      }
+
+      const user = req.user;
+      const result = await storage.createQAImprovementComment({
+        conversationId: parseInt(conversationId),
+        comment,
+        createdBy: user.username || 'admin',
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error creating QA improvement comment:", error);
+      res.status(500).json({ message: "개선 코멘트 저장에 실패했습니다." });
+    }
+  });
+
+  app.get('/api/admin/qa-comments/:conversationId', requireMasterAdmin, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.conversationId);
+      const comment = await storage.getQAImprovementComment(conversationId);
+      
+      if (!comment) {
+        return res.status(404).json({ message: "개선 코멘트를 찾을 수 없습니다." });
+      }
+
+      res.json(comment);
+    } catch (error) {
+      console.error("Error getting QA improvement comment:", error);
+      res.status(500).json({ message: "개선 코멘트 조회에 실패했습니다." });
+    }
+  });
+
+  app.put('/api/admin/qa-comments/:conversationId', requireMasterAdmin, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.conversationId);
+      const { comment } = req.body;
+      
+      if (!comment) {
+        return res.status(400).json({ message: "개선 코멘트가 필요합니다." });
+      }
+
+      const user = req.user;
+      const result = await storage.updateQAImprovementComment(
+        conversationId,
+        comment,
+        user.username || 'admin'
+      );
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error updating QA improvement comment:", error);
+      res.status(500).json({ message: "개선 코멘트 수정에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';

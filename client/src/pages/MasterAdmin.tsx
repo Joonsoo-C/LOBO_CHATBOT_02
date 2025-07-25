@@ -973,16 +973,69 @@ function MasterAdmin() {
   React.useEffect(() => {
     console.log('QA Modal State Changed:', { showQADetailModal, selectedQALog: !!selectedQALog });
     
-    // 모달이 열리고 selectedQALog가 있을 때 메시지 가져오기
+    // 모달이 열리고 selectedQALog가 있을 때 메시지와 코멘트 가져오기
     if (showQADetailModal && selectedQALog?.id) {
       fetchConversationMessages(selectedQALog.id);
+      loadQACommentMutation.mutate(selectedQALog.id);
     } else {
       setConversationMessages([]);
+      setImprovementComment('');
     }
   }, [showQADetailModal, selectedQALog]);
   
   // 개선요청 및 코멘트 모달 상태
   const [improvementComment, setImprovementComment] = useState('');
+  const [isLoadingComment, setIsLoadingComment] = useState(false);
+
+  // QA 개선 코멘트 관련 뮤테이션
+  const saveQACommentMutation = useMutation({
+    mutationFn: async ({ conversationId, comment }: { conversationId: number; comment: string }) => {
+      const response = await apiRequest('/api/admin/qa-comments', {
+        method: 'POST',
+        body: JSON.stringify({ conversationId, comment }),
+      });
+      return response;
+    },
+    onSuccess: () => {
+      toast({
+        title: "저장 완료",
+        description: "개선 요청 코멘트가 저장되었습니다.",
+      });
+      setImprovementComment('');
+    },
+    onError: (error) => {
+      console.error('QA comment save error:', error);
+      toast({
+        title: "저장 실패",
+        description: "개선 요청 코멘트 저장에 실패했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const loadQACommentMutation = useMutation({
+    mutationFn: async (conversationId: number) => {
+      const response = await fetch(`/api/admin/qa-comments/${conversationId}`, {
+        credentials: 'include',
+      });
+      if (response.status === 404) {
+        return null; // 코멘트가 없는 경우
+      }
+      if (!response.ok) throw new Error('Failed to load comment');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data && data.comment) {
+        setImprovementComment(data.comment);
+      } else {
+        setImprovementComment('');
+      }
+    },
+    onError: (error) => {
+      console.error('QA comment load error:', error);
+      setImprovementComment('');
+    },
+  });
 
   // Missing state variables for QA modal functionality
   const [isDocumentDetailOpen, setIsDocumentDetailOpen] = useState(false);
@@ -12385,12 +12438,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 {/* 개선 요청 코멘트 */}
                 <div>
                   <div className="text-sm font-medium text-gray-700 mb-3">개선 요청 코멘트</div>
-                  <textarea
-                    value={improvementComment}
-                    onChange={(e) => setImprovementComment(e.target.value)}
-                    className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="개선이 필요한 내용을 입력해주세요."
-                  />
+                  {loadQACommentMutation.isPending ? (
+                    <div className="w-full h-32 border border-gray-300 rounded-lg flex items-center justify-center">
+                      <div className="flex items-center space-x-2 text-gray-500">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                        <span className="text-sm">저장된 코멘트를 불러오는 중...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <textarea
+                      value={improvementComment}
+                      onChange={(e) => setImprovementComment(e.target.value)}
+                      className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="개선이 필요한 내용을 입력해주세요."
+                      disabled={loadQACommentMutation.isPending}
+                    />
+                  )}
                   <div className="flex justify-end mt-3 space-x-2">
                     <Button
                       variant="outline"
@@ -12402,16 +12465,16 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Button
                       size="sm"
                       onClick={() => {
-                        // 개선요청 저장 로직 (현재는 단순히 입력창 초기화)
-                        if (improvementComment.trim()) {
-                          // TODO: 실제 저장 로직 구현
-                          setImprovementComment('');
-                          // Toast 메시지나 성공 알림 추가 가능
+                        if (improvementComment.trim() && selectedQALog?.id) {
+                          saveQACommentMutation.mutate({
+                            conversationId: selectedQALog.id,
+                            comment: improvementComment.trim()
+                          });
                         }
                       }}
-                      disabled={!improvementComment.trim()}
+                      disabled={!improvementComment.trim() || saveQACommentMutation.isPending}
                     >
-                      저장
+                      {saveQACommentMutation.isPending ? '저장 중...' : '저장'}
                     </Button>
                   </div>
                 </div>

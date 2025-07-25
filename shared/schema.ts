@@ -229,6 +229,16 @@ export const organizationCategories = pgTable("organization_categories", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// QA Improvement Comments table for storing improvement comments
+export const qaImprovementComments = pgTable("qa_improvement_comments", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id").references(() => conversations.id).notNull(),
+  comment: text("comment").notNull(),
+  createdBy: text("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
@@ -314,6 +324,17 @@ export const messageReactionsRelations = relations(messageReactions, ({ one }) =
   }),
 }));
 
+export const qaImprovementCommentsRelations = relations(qaImprovementComments, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [qaImprovementComments.conversationId],
+    references: [conversations.id],
+  }),
+  createdBy: one(users, {
+    fields: [qaImprovementComments.createdBy],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertAgentSchema = createInsertSchema(agents).omit({
   id: true,
@@ -370,6 +391,12 @@ export const insertConversationSchema = createInsertSchema(conversations).omit({
 export const insertMessageSchema = createInsertSchema(messages).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertQAImprovementCommentSchema = createInsertSchema(qaImprovementComments).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
@@ -462,6 +489,8 @@ export type MessageReaction = typeof messageReactions.$inferSelect;
 export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
 export type OrganizationCategory = typeof organizationCategories.$inferSelect;
 export type InsertOrganizationCategory = z.infer<typeof insertOrganizationCategorySchema>;
+export type QAImprovementComment = typeof qaImprovementComments.$inferSelect;
+export type InsertQAImprovementComment = z.infer<typeof insertQAImprovementCommentSchema>;
 
 // User edit schema for admin interface
 export const userEditSchema = z.object({

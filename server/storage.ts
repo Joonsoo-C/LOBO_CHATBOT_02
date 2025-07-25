@@ -6,6 +6,7 @@ import {
   documents,
   agentStats,
   messageReactions,
+  qaImprovementComments,
   type User,
   type UpsertUser,
   type Agent,
@@ -21,6 +22,8 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
+  type QAImprovementComment,
+  type InsertQAImprovementComment,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql, inArray } from "drizzle-orm";
@@ -101,6 +104,11 @@ export interface IStorage {
   getAgentFiles(): Promise<any[]>;
   saveAgentFile(fileInfo: any): Promise<void>;
   deleteAgentFile(fileId: string): Promise<void>;
+
+  // QA Improvement Comment operations
+  createQAImprovementComment(comment: InsertQAImprovementComment): Promise<QAImprovementComment>;
+  getQAImprovementComment(conversationId: number): Promise<QAImprovementComment | undefined>;
+  updateQAImprovementComment(conversationId: number, comment: string, updatedBy: string): Promise<QAImprovementComment | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {

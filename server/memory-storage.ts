@@ -14,6 +14,8 @@ import {
   type InsertMessageReaction,
   type OrganizationCategory,
   type InsertOrganizationCategory,
+  type QAImprovementComment,
+  type InsertQAImprovementComment,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 import { cache } from "./cache";
@@ -33,6 +35,7 @@ export class MemoryStorage implements IStorage {
   private organizationFiles: Map<string, any> = new Map();
   private userFiles: Map<string, any> = new Map();
   private agentFiles: Map<string, any> = new Map();
+  private qaImprovementComments: Map<number, QAImprovementComment> = new Map();
   
   private nextId = 1;
   private nextUserId = 1;
@@ -41,6 +44,7 @@ export class MemoryStorage implements IStorage {
   private nextMessageId = 1;
   private nextDocumentId = 1;
   private nextOrganizationId = 1;
+  private nextQACommentId = 1;
   
   private readonly persistenceDir = path.join(process.cwd(), 'data');
   private readonly documentsFile = path.join(this.persistenceDir, 'documents.json');
@@ -52,6 +56,7 @@ export class MemoryStorage implements IStorage {
   private readonly conversationsFile = path.join(this.persistenceDir, 'conversations.json');
   private readonly messagesFile = path.join(this.persistenceDir, 'messages.json');
   private readonly organizationCategoriesFile = path.join(this.persistenceDir, 'organization-categories.json');
+  private readonly qaCommentsFile = path.join(this.persistenceDir, 'qa-comments.json');
 
   constructor() {
     // Initialize maps (already declared above)
@@ -72,6 +77,7 @@ export class MemoryStorage implements IStorage {
     this.loadPersistedOrganizationFiles();
     this.loadPersistedUserFiles();
     this.loadPersistedAgentFiles();
+    this.loadPersistedQAComments();
 
     console.log(`Memory storage initialized with ${this.users.size} users, ${this.agents.size} agents, and ${this.organizationCategories.size} organization categories`);
     // Skip default data initialization - use admin center data only
@@ -1974,5 +1980,89 @@ export class MemoryStorage implements IStorage {
       cache.delete('all_organizations');
       cache.delete('organization_categories');
     }
+  }
+
+  // QA Improvement Comment operations
+  async createQAImprovementComment(commentData: InsertQAImprovementComment): Promise<QAImprovementComment> {
+    const comment: QAImprovementComment = {
+      id: this.nextQACommentId++,
+      conversationId: commentData.conversationId,
+      comment: commentData.comment,
+      createdBy: commentData.createdBy,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    this.qaImprovementComments.set(comment.conversationId, comment);
+    this.savePersistedQAComments();
+    return comment;
+  }
+
+  async getQAImprovementComment(conversationId: number): Promise<QAImprovementComment | undefined> {
+    return this.qaImprovementComments.get(conversationId);
+  }
+
+  async updateQAImprovementComment(conversationId: number, commentText: string, updatedBy: string): Promise<QAImprovementComment | undefined> {
+    const existingComment = this.qaImprovementComments.get(conversationId);
+    
+    if (existingComment) {
+      const updatedComment: QAImprovementComment = {
+        ...existingComment,
+        comment: commentText,
+        createdBy: updatedBy,
+        updatedAt: new Date(),
+      };
+      
+      this.qaImprovementComments.set(conversationId, updatedComment);
+      this.savePersistedQAComments();
+      return updatedComment;
+    }
+    
+    // If comment doesn't exist, create new one
+    return this.createQAImprovementComment({
+      conversationId,
+      comment: commentText,
+      createdBy: updatedBy,
+    });
+  }
+
+  private loadPersistedQAComments() {
+    try {
+      if (fs.existsSync(this.qaCommentsFile)) {
+        const data = fs.readFileSync(this.qaCommentsFile, 'utf8');
+        const comments = JSON.parse(data);
+        
+        // Convert date strings back to Date objects
+        comments.forEach((comment: any) => {
+          comment.createdAt = new Date(comment.createdAt);
+          comment.updatedAt = new Date(comment.updatedAt);
+          this.qaImprovementComments.set(comment.conversationId, comment);
+          
+          // Update next ID to avoid conflicts
+          if (comment.id >= this.nextQACommentId) {
+            this.nextQACommentId = comment.id + 1;
+          }
+        });
+        
+        console.log(`Loaded ${comments.length} QA improvement comments from persistence`);
+      } else {
+        console.log('No QA comments found, starting with empty data');
+      }
+    } catch (error) {
+      console.error('Error loading persisted QA comments:', error);
+    }
+  }
+
+  private savePersistedQAComments() {
+    try {
+      const comments = Array.from(this.qaImprovementComments.values());
+      fs.writeFileSync(this.qaCommentsFile, JSON.stringify(comments, null, 2));
+    } catch (error) {
+      console.error('Error saving QA comments:', error);
+    }
+  }
+
+  clearCache() {
+    cache.clear();
   }
 }
