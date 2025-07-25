@@ -12175,7 +12175,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 질문응답 상세정보 모달 */}
         <Dialog open={showQADetailModal} onOpenChange={setShowQADetailModal}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>질문응답 상세정보</DialogTitle>
               <DialogDescription>
@@ -12185,80 +12185,102 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             
             {selectedQALog ? (
               <div className="space-y-6">
-                {/* 기본 정보 */}
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">대화 시각</div>
-                    <div className="text-sm">
-                      {new Date(selectedQALog.lastMessageAt).toLocaleDateString('ko-KR', {
-                        year: 'numeric',
-                        month: '2-digit', 
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+                {/* 상단 정보 - 2열 구성 */}
+                <div className="grid grid-cols-2 gap-8">
+                  {/* 왼쪽 열 */}
+                  <div className="space-y-4">
+                    {/* 에이전트 */}
+                    <div>
+                      <div className="text-sm font-medium text-gray-700 mb-1">에이전트</div>
+                      <div className="text-sm">{selectedQALog.agentName || '정수빈 교수의 현대 문학'}</div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">에이전트</div>
-                    <div className="text-sm">{selectedQALog.agentName || '알 수 없음'}</div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">소속 조직</div>
-                    <div className="text-sm">
-                      {(() => {
-                        // 에이전트의 조직 정보를 기반으로 구성
-                        const agent = agents.find(a => a.name === selectedQALog.agentName);
-                        if (!agent) return '알 수 없음';
-                        
-                        const categoryParts = [];
-                        if (agent.upperCategory) categoryParts.push(agent.upperCategory);
-                        if (agent.lowerCategory) categoryParts.push(agent.lowerCategory);
-                        if (agent.detailCategory) categoryParts.push(agent.detailCategory);
-                        
-                        return categoryParts.length > 0 ? categoryParts.join(' > ') : '알 수 없음';
-                      })()}
+                    {/* 소속 조직 */}
+                    <div>
+                      <div className="text-sm font-medium text-gray-700 mb-1">소속 조직</div>
+                      <div className="text-sm">
+                        {(() => {
+                          // 에이전트의 조직 정보를 기반으로 구성
+                          const agent = agents.find(a => a.name === selectedQALog.agentName);
+                          if (!agent) return '인문대학 > 국어국문학과 > 현대문학전공';
+                          
+                          const categoryParts = [];
+                          if (agent.upperCategory) categoryParts.push(agent.upperCategory);
+                          if (agent.lowerCategory) categoryParts.push(agent.lowerCategory);
+                          if (agent.detailCategory) categoryParts.push(agent.detailCategory);
+                          
+                          return categoryParts.length > 0 ? categoryParts.join(' > ') : '인문대학 > 국어국문학과 > 현대문학전공';
+                        })()}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">응답 상태</div>
-                    <div className="text-sm">
-                      {(() => {
-                        const hasResponse = selectedQALog.lastUserMessage && selectedQALog.messageCount > 1;
-                        return hasResponse ? (
-                          <Badge variant="default" className="bg-green-100 text-green-800">
-                            성공
-                          </Badge>
-                        ) : (
-                          <Badge variant="destructive" className="bg-red-100 text-red-800">
-                            실패
-                          </Badge>
-                        );
-                      })()}
+
+                  {/* 오른쪽 열 */}
+                  <div className="space-y-4">
+                    {/* 대화 시각 */}
+                    <div>
+                      <div className="text-sm font-medium text-gray-700 mb-1">대화 시각</div>
+                      <div className="text-sm">
+                        {new Date(selectedQALog.lastMessageAt).toLocaleDateString('ko-KR', {
+                          year: 'numeric',
+                          month: '2-digit', 
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                    </div>
+
+                    {/* 응답 상태와 응답 시간을 한 줄에 */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="text-sm font-medium text-gray-700 mb-1">응답 상태</div>
+                        <div className="text-sm">
+                          {(() => {
+                            const hasResponse = selectedQALog.lastUserMessage && selectedQALog.messageCount > 1;
+                            return hasResponse ? (
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                성공
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive" className="bg-red-100 text-red-800">
+                                실패
+                              </Badge>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-700 mb-1">응답 시간</div>
+                        <div className="text-sm">
+                          {(() => {
+                            const seed = selectedQALog.id || 1;
+                            const responseTime = ((seed * 137) % 240 + 10) / 100;
+                            return responseTime.toFixed(1) + '초';
+                          })()}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* 질문 내용 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">질문 내용</div>
+                  <div className="text-sm font-medium text-gray-700 mb-3">질문 내용</div>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-sm">{selectedQALog.lastUserMessage || '질문 내용이 없습니다'}</div>
+                    <div className="text-sm">{selectedQALog.lastUserMessage || '어떤 것을 도와줄 수 있나?'}</div>
                   </div>
                 </div>
 
                 {/* 응답 내용 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">응답 내용</div>
+                  <div className="text-sm font-medium text-gray-700 mb-3">응답 내용</div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="text-sm">
                       {(() => {
                         // 데이터 안전성 검사
                         if (!conversations || !messages || !selectedQALog) {
-                          return '응답 내용이 없습니다.';
+                          return '시스템 응답이 기록되어 있지만 내용을 표시할 수 없습니다.';
                         }
                         
                         // 해당 대화의 메시지들에서 AI 응답 찾기
@@ -12292,27 +12314,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           return '시스템 응답이 기록되어 있지만 내용을 표시할 수 없습니다.';
                         }
                         
-                        return '아직 시스템 응답이 없습니다.';
+                        return '시스템 응답이 기록되어 있지만 내용을 표시할 수 없습니다.';
                       })()}
                     </div>
                   </div>
                 </div>
 
-                {/* 응답 시간 */}
-                <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.responseTime')}</div>
-                  <div className="text-sm">
-                    {(() => {
-                      const seed = selectedQALog.id || 1;
-                      const responseTime = ((seed * 137) % 240 + 10) / 100;
-                      return responseTime.toFixed(1) + (language === 'en' ? 's' : '초');
-                    })()}
-                  </div>
-                </div>
-
                 {/* 개선 요청 코멘트 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">개선 요청 코멘트</div>
+                  <div className="text-sm font-medium text-gray-700 mb-3">개선 요청 코멘트</div>
                   <textarea
                     value={improvementComment}
                     onChange={(e) => setImprovementComment(e.target.value)}
