@@ -345,16 +345,17 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
           {/* Upload Options */}
           <div className="mb-6">
-            <Label className="text-sm font-medium mb-3 block korean-text">업로드 옵션</Label>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="clear-existing"
+            <Label>업로드 옵션</Label>
+            <div className="mt-2 space-y-2">
+              <div className="flex items-center space-x-2">
+                <input 
+                  type="checkbox" 
+                  id="clear-existing" 
+                  className="rounded" 
                   checked={clearExisting}
-                  onCheckedChange={(checked) => setClearExisting(checked === true)}
-                  className="w-5 h-5 border-2 border-gray-400 bg-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                  onChange={(e) => setClearExisting(e.target.checked)}
                 />
-                <Label htmlFor="clear-existing" className="text-sm font-medium korean-text cursor-pointer">기존 에이전트 정보 덮어쓰기</Label>
+                <Label htmlFor="clear-existing">기존 에이전트 정보 덮어쓰기</Label>
               </div>
             </div>
           </div>
@@ -404,32 +405,15 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3 pt-4 border-t border-border">
-            <Button 
-              variant="outline" 
-              onClick={handleClose} 
-              className="flex-1 korean-text h-12"
-              disabled={uploadMutation.isPending}
-            >
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={handleClose}>
               취소
             </Button>
-            <Button
+            <Button 
               onClick={handleUpload}
               disabled={!selectedFile || uploadMutation.isPending}
-              className="flex-1 korean-text relative h-12 bg-red-600 hover:bg-red-700 text-white font-medium"
             >
-              {uploadMutation.isPending ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  업로드 중...
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  업로드 시작
-                </>
-              )}
+              {uploadMutation.isPending ? `업로드 중... (${uploadProgress}%)` : `업로드 시작`}
             </Button>
           </div>
         </div>
