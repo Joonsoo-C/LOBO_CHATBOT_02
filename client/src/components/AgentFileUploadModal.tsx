@@ -165,7 +165,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       return false;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 50 * 1024 * 1024) {
       toast({
         title: t('agent.fileSizeExceed'),
         description: t('agent.fileSizeLimit'),
@@ -335,7 +335,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 <div>
                   <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</h4>
                   <p className="text-sm text-muted-foreground korean-text mb-4">
-                    지원 파일 : csv, xls, xlsx(최대 10MB)
+                    지원 파일 : csv, xls, xlsx(최대 50MB)
                   </p>
                 </div>
                 <Button

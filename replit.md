@@ -1009,7 +1009,7 @@ Changelog:
   * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
   * All search buttons now use consistent basic styling with h-10 w-full classes
   * Complete UI consistency achieved with agent management section as the reference standard
-- July 25, 2025. Completed comprehensive multi-file upload system unification:
+- July 25, 2025. Completed comprehensive multi-file upload system unification and agent file size optimization:
   * Successfully unified all upload modals (UserFileUploadModal, AgentFileUploadModal, DocumentUploadModal, OrganizationFileUpload) with consistent UI design
   * Implemented selectedFiles array state management across all upload interfaces for multi-file handling
   * Applied unified blue color box design with "선택된 파일" title and "전체 삭제" button positioned on same row
@@ -1018,6 +1018,9 @@ Changelog:
   * Document management system now includes comprehensive file type tagging, visibility toggles (노출/비노출), and training toggles (학습/미학습)
   * Added proper API endpoints for document visibility (/api/documents/:id/visibility) and training settings (/api/documents/:id/training)
   * MasterAdmin interface provides complete document management capabilities with real-time toggle functionality
+  * Removed file extension information from selected file display areas across all upload modals for cleaner UI
+  * Updated agent file upload maximum size limit from 10MB to 50MB across frontend validation, UI text, and multilingual translations
+  * Enhanced agent file upload capacity for larger CSV, XLS, XLSX files supporting comprehensive agent data management
 - July 9, 2025. Fixed critical multilingual translation system for master admin dashboard:
   * Identified and resolved hardcoded Korean text in Q&A management cards preventing language switching
   * Added comprehensive translation keys for dashboard metrics: todayQuestionsTitle, avgResponseTimeTitle, responseFailureTitle, userSatisfactionTitle
