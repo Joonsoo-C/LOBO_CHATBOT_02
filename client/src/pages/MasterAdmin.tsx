@@ -4682,7 +4682,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    파일을 업로드해 여러 사용자를 일괄 등록합니다
+                    파일을 업로드해 여러 사용자를 일괄 등록합니다.
                   </p>
                 </CardContent>
               </Card>
@@ -8949,7 +8949,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <DialogHeader>
               <DialogTitle>조직 파일 업로드</DialogTitle>
               <div className="text-sm text-gray-600 mt-2">
-                파일을 업로드하여 다수의 조직을 일괄 등록할 수 있습니다.
+                파일을 업로드해 조직구조를 일괄 등록합니다.
               </div>
             </DialogHeader>
             <div className="space-y-6">

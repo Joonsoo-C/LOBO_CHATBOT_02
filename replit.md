@@ -972,6 +972,10 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 25, 2025. Updated file upload button descriptions in admin interface:
+  * Organization category management file upload: "파일을 업로드해 조직구조를 일괄 등록합니다."
+  * User management file upload: "파일을 업로드해 여러 사용자를 일괄 등록합니다."
+  * Standardized terminology for consistent user experience across management sections
 - July 25, 2025. Completed comprehensive Apple-style file upload modal redesign:
   * Updated all 4 file upload modals (organization, user, agent, document) with consistent Apple design language
   * Enhanced drag-and-drop areas with rounded corners, hover effects, and blue accent colors
