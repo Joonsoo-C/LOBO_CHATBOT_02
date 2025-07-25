@@ -399,7 +399,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               
               {/* File drop area */}
               <div 
-                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-400 transition-colors"
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -426,7 +426,6 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                     }
                   }
                 }}
-                onClick={() => document.getElementById('image-upload-drop')?.click()}
               >
                 <div className="space-y-2">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
