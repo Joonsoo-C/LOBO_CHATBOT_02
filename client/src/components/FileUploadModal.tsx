@@ -365,7 +365,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                             </div>
                             <div className="flex items-center gap-2">
                               <p className="text-xs text-blue-600 dark:text-blue-400">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                                {(file.size / 1024 / 1024).toFixed(2)} MB
                               </p>
                               <Button
                                 variant="ghost"

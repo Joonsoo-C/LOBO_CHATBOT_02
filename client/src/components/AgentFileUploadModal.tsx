@@ -382,7 +382,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">{file.name}</p>
                         <p className="text-xs text-blue-600 dark:text-blue-400">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase() || 'CSV'}
+                          {(file.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
                     </div>
