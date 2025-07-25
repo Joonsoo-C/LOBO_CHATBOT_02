@@ -358,34 +358,32 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           <div className="space-y-3">
             <Label className="text-sm font-medium">아이콘 유형</Label>
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={!isUsingCustomImage ? "default" : "outline"}
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+              <div
+                className={`flex-1 px-4 py-2 text-center text-sm font-medium rounded-md cursor-pointer transition-colors ${
+                  !isUsingCustomImage 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-background border border-input hover:bg-accent hover:text-accent-foreground"
+                }`}
+                onClick={() => {
                   setIsUsingCustomImage(false);
                   setCustomImage(null);
                   setImageFile(null);
                 }}
-                className="flex-1"
               >
                 기본 아이콘
-              </Button>
-              <Button
-                type="button"
-                variant={isUsingCustomImage ? "default" : "outline"}
-                size="sm"
-                className="flex-1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+              </div>
+              <div
+                className={`flex-1 px-4 py-2 text-center text-sm font-medium rounded-md cursor-pointer transition-colors ${
+                  isUsingCustomImage 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-background border border-input hover:bg-accent hover:text-accent-foreground"
+                }`}
+                onClick={() => {
                   setIsUsingCustomImage(true);
                 }}
               >
                 이미지 업로드
-              </Button>
+              </div>
             </div>
           </div>
 
