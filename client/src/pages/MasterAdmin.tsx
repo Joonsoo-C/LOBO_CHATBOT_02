@@ -9077,7 +9077,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                 <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <p>• 첫 번째 행: 헤더 (조직명, 상위 조직, 하위조직, 세부조직)</p>
+                  <p>• 첫 번째 행: 헤더 (조직명, 상위 조직, 하위 조직, 세부 조직)</p>
                   <p>• 조직명: 조직의 정식 명칭 (필수)</p>
                   <p>• {t('org.upperOrganization')}: 대학/본부 등 최상위 조직</p>
                   <p>• {t('org.lowerOrganization')}: 단과대학/처/부 등</p>
