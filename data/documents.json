@@ -11,7 +11,7 @@
       "id": 41,
       "createdAt": "2025-06-25T03:19:15.091Z",
       "isVisibleToUsers": true,
-      "updatedAt": "2025-07-23T18:17:10.890Z",
+      "updatedAt": "2025-07-25T02:11:27.907Z",
       "status": "active",
       "type": "Word",
       "description": ""
@@ -132,7 +132,7 @@
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z",
       "isVisibleToUsers": true,
-      "updatedAt": "2025-07-18T05:06:45.671Z",
+      "updatedAt": "2025-07-25T02:16:22.554Z",
       "status": "active",
       "type": "Word",
       "description": "",
@@ -2041,6 +2041,6 @@
       "updatedAt": "2025-06-29T10:11:14.570Z"
     }
   ],
-  "nextId": 172,
+  "nextId": 174,
   "nextOrganizationId": 125
 }

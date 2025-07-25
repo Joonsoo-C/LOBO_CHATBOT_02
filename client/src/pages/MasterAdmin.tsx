@@ -1111,6 +1111,7 @@ function MasterAdmin() {
   const [editingDocumentStatus, setEditingDocumentStatus] = useState<string>('active');
   const [editingDocumentType, setEditingDocumentType] = useState<string>('기타');
   const [editingDocumentDescription, setEditingDocumentDescription] = useState<string>('');
+  const [editingDocumentVisibility, setEditingDocumentVisibility] = useState<boolean>(true);
   
   // 문서 상세 팝업 필터 상태
   const [selectedAgentManager, setSelectedAgentManager] = useState('');
@@ -4042,7 +4043,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
   // 문서 정보 업데이트 mutation
   const updateDocumentMutation = useMutation({
-    mutationFn: async (data: { id: string; status: string; type: string; description: string }) => {
+    mutationFn: async (data: { id: string; status: string; type: string; description: string; connectedAgents: number[]; isVisibleToUsers?: boolean }) => {
       const response = await fetch(`/api/admin/documents/${data.id}`, {
         method: 'PATCH',
         headers: {
@@ -4053,6 +4054,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           status: data.status,
           type: data.type,
           description: data.description,
+          connectedAgents: data.connectedAgents,
+          isVisibleToUsers: data.isVisibleToUsers,
         }),
       });
       
@@ -7916,8 +7919,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             onClick={() => {
                               setDocumentDetailData(doc);
                               setSelectedDocument(doc);
-                              // 연결된 에이전트 정보 가져오기
-                              if (doc.agentId) {
+                              // 연결된 에이전트 정보 가져오기 (connectedAgents 배열 사용)
+                              if (doc.connectedAgents && doc.connectedAgents.length > 0) {
+                                const connectedAgentNames = doc.connectedAgents.map((agentId: number) => {
+                                  const agent = agents?.find((a: any) => a.id === agentId);
+                                  return agent ? agent.name : null;
+                                }).filter(name => name !== null);
+                                setSelectedDocumentAgents(connectedAgentNames);
+                              } else if (doc.agentId) {
+                                // 백업: 기존 agentId 사용
                                 const agent = agents?.find((a: any) => a.id === doc.agentId);
                                 if (agent) {
                                   setSelectedDocumentAgents([agent.name]);
@@ -7931,6 +7941,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               setEditingDocumentStatus(doc.status || 'active');
                               setEditingDocumentType(doc.type || '기타');
                               setEditingDocumentDescription(doc.description || '');
+                              setEditingDocumentVisibility(doc.isVisibleToUsers !== undefined ? doc.isVisibleToUsers : true);
                               setIsDocumentDetailOpen(true);
                             }}
                           >
@@ -8058,8 +8069,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 e.stopPropagation();
                                 setDocumentDetailData(doc);
                                 setSelectedDocument(doc);
-                                // 연결된 에이전트 정보 가져오기
-                                if (doc.agentId) {
+                                // 연결된 에이전트 정보 가져오기 (connectedAgents 배열 사용)
+                                if (doc.connectedAgents && doc.connectedAgents.length > 0) {
+                                  const connectedAgentNames = doc.connectedAgents.map((agentId: number) => {
+                                    const agent = agents?.find((a: any) => a.id === agentId);
+                                    return agent ? agent.name : null;
+                                  }).filter(name => name !== null);
+                                  setSelectedDocumentAgents(connectedAgentNames);
+                                } else if (doc.agentId) {
+                                  // 백업: 기존 agentId 사용
                                   const agent = agents?.find((a: any) => a.id === doc.agentId);
                                   if (agent) {
                                     setSelectedDocumentAgents([agent.name]);
@@ -8073,6 +8091,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 setEditingDocumentStatus(doc.status || 'active');
                                 setEditingDocumentType(doc.type || '기타');
                                 setEditingDocumentDescription(doc.description || '');
+                                setEditingDocumentVisibility(doc.isVisibleToUsers !== undefined ? doc.isVisibleToUsers : true);
                                 setIsDocumentDetailOpen(true);
                               }}
                             >
@@ -9441,14 +9460,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <div>
                       <Label className="text-sm font-medium">노출 여부</Label>
                       <Select 
-                        value={selectedDocument?.isVisibleToUsers === true ? "visible" : "hidden"} 
+                        value={editingDocumentVisibility ? "visible" : "hidden"} 
                         onValueChange={(value) => {
-                          if (selectedDocument) {
-                            updateDocumentVisibilityMutation.mutate({
-                              documentId: selectedDocument.id,
-                              isVisible: value === "visible"
-                            });
-                          }
+                          setEditingDocumentVisibility(value === "visible");
                         }}
                       >
                         <SelectTrigger className="mt-1">
@@ -10037,7 +10051,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </Button>
                     <Button 
                       onClick={() => {
-                        if (documentDetailData) {
+                        if (documentDetailData && selectedDocument) {
                           // 에이전트 이름을 ID로 변환
                           const connectedAgentIds = selectedDocumentAgents.map(agentName => {
                             const agent = agents?.find((a: any) => a.name === agentName);
@@ -10050,6 +10064,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             type: editingDocumentType,
                             description: editingDocumentDescription,
                             connectedAgents: connectedAgentIds,
+                            isVisibleToUsers: editingDocumentVisibility,
                           });
                         }
                       }}

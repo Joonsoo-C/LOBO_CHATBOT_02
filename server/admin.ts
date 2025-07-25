@@ -1624,13 +1624,17 @@ export function setupAdminRoutes(app: Express) {
         name: doc.originalName,
         filename: doc.filename,
         size: `${(doc.size / 1024 / 1024).toFixed(2)} MB`,
-        type: doc.mimeType.includes('pdf') ? 'PDF' : 
+        type: doc.type || (doc.mimeType.includes('pdf') ? 'PDF' : 
               doc.mimeType.includes('word') ? 'Word' :
               doc.mimeType.includes('excel') ? 'Excel' :
-              doc.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document',
+              doc.mimeType.includes('powerpoint') ? 'PowerPoint' : 'Document'),
         uploader: doc.uploadedBy,
         date: doc.createdAt ? new Date(doc.createdAt).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
-        agentId: doc.agentId
+        agentId: doc.agentId,
+        status: doc.status || 'active',
+        description: doc.description || '',
+        connectedAgents: doc.connectedAgents || (doc.agentId ? [doc.agentId] : []),
+        isVisibleToUsers: doc.isVisibleToUsers !== undefined ? doc.isVisibleToUsers : true
       }));
 
       console.log(`Formatted documents: ${formattedDocuments.length} documents`);
@@ -1987,10 +1991,10 @@ export function setupAdminRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid document ID" });
       }
 
-      const { status, type, description, connectedAgents } = req.body;
+      const { status, type, description, connectedAgents, isVisibleToUsers } = req.body;
 
       // Validate request body
-      if (!status && !type && description === undefined && !connectedAgents) {
+      if (!status && !type && description === undefined && !connectedAgents && isVisibleToUsers === undefined) {
         return res.status(400).json({ message: "At least one field must be provided for update" });
       }
 
@@ -2007,6 +2011,7 @@ export function setupAdminRoutes(app: Express) {
         ...(type && { type }),
         ...(description !== undefined && { description }),
         ...(connectedAgents !== undefined && { connectedAgents }),
+        ...(isVisibleToUsers !== undefined && { isVisibleToUsers }),
         updatedAt: new Date()
       };
 
