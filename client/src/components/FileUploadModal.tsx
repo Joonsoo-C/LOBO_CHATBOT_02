@@ -278,7 +278,6 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
-                
               </div>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
                 <X className="w-5 h-5" />

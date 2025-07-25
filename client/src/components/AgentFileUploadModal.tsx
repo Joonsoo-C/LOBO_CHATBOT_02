@@ -292,8 +292,8 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-gray-400" />
+                  <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
                     <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</h4>
@@ -303,10 +303,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                   </div>
                   <Button
                     type="button"
-                    variant="default"
-                    className="korean-text bg-blue-600 hover:bg-blue-700 text-white"
+                    variant="outline"
+                    className="korean-text"
                   >
-                    <Upload className="w-4 h-4 mr-2" />
                     {t('agent.selectFile')}
                   </Button>
                 </div>
@@ -420,7 +419,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || uploadMutation.isPending}
-              className="flex-1 korean-text relative h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium"
+              className="flex-1 korean-text relative h-12 bg-red-600 hover:bg-red-700 text-white font-medium"
             >
               {uploadMutation.isPending ? (
                 <>
