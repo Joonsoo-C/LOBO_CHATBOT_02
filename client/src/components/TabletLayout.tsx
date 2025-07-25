@@ -13,6 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import { useLanguage } from "@/contexts/LanguageContext";
+import IconChangeModal from "@/components/IconChangeModal";
 import { Search, ChevronDown, LogOut, Settings, GraduationCap, Code, Bot, User, FlaskRound, Map, Languages, Dumbbell, Database, Lightbulb, Heart, Calendar, Pen, FileText, Files, Edit, Bell, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -87,23 +88,24 @@ function getCategoryBadgeStyle(category: string) {
 interface TabletChatHeaderProps {
   agent: any;
   isManagementMode: boolean;
+  addSystemMessage?: (content: string) => void;
 }
 
-function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
+function TabletChatHeader({ agent, isManagementMode, addSystemMessage }: TabletChatHeaderProps) {
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
   const [showFileListModal, setShowFileListModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
+  const [showIconModal, setShowIconModal] = useState(false);
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
 
-  // Add system message function (simplified version)
-  const addSystemMessage = (message: string) => {
-    // This will be handled by the ChatInterface component
+  // Use the passed addSystemMessage function or provide a fallback
+  const handleSystemMessage = addSystemMessage || ((message: string) => {
     console.log("System message:", message);
-  };
+  });
 
   return (
     <>
@@ -181,13 +183,25 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           onClick={() => {
                             setShowPersonaModal(true);
                             setShowMenu(false);
-                            addSystemMessage("페르소나 편집 창을 열었습니다.");
+                            handleSystemMessage("페르소나 편집 창을 열었습니다.");
                           }}
                         >
                           <User className="w-4 h-4 mr-2" />
                           {t('agent.persona')}
                         </Button>
-
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start px-4 py-2 korean-text"
+                          onClick={() => {
+                            setShowIconModal(true);
+                            setShowMenu(false);
+                            handleSystemMessage("아이콘 변경 창을 열었습니다.");
+                          }}
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          {t('agent.iconChange')}
+                        </Button>
                         <Button 
                           variant="ghost" 
                           size="sm" 
@@ -195,7 +209,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           onClick={() => {
                             setShowSettingsModal(true);
                             setShowMenu(false);
-                            addSystemMessage("챗봇 설정 창을 열었습니다.");
+                            handleSystemMessage("챗봇 설정 창을 열었습니다.");
                           }}
                         >
                           <Settings className="w-4 h-4 mr-2" />
@@ -208,7 +222,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           onClick={() => {
                             setShowMenu(false);
                             setNotificationState("waiting_input");
-                            addSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
+                            handleSystemMessage("알림 내용을 입력하세요. 모든 사용자에게 전송됩니다.");
                           }}
                         >
                           <Bell className="w-4 h-4 mr-2" />
@@ -221,7 +235,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           onClick={() => {
                             setShowFileModal(true);
                             setShowMenu(false);
-                            addSystemMessage("문서 업로드 창을 열었습니다.");
+                            handleSystemMessage("문서 업로드 창을 열었습니다.");
                           }}
                         >
                           <FileText className="w-4 h-4 mr-2" />
@@ -233,7 +247,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           className="w-full justify-start px-4 py-2 korean-text"
                           onClick={async () => {
                             setShowMenu(false);
-                            addSystemMessage("에이전트 성과 분석을 실행합니다...");
+                            handleSystemMessage("에이전트 성과 분석을 실행합니다...");
                             
                             try {
                               const response = await fetch(`/api/agents/${agent.id}/performance`, {
@@ -259,12 +273,12 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
 • 사용자 증가율: ${data.trends.userGrowth}
 • 참여율: ${data.trends.engagementRate}`;
                                 
-                                addSystemMessage(performanceMessage);
+                                handleSystemMessage(performanceMessage);
                               } else {
-                                addSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다. 다시 시도해주세요.");
+                                handleSystemMessage("성과 분석 데이터를 가져오는데 실패했습니다. 다시 시도해주세요.");
                               }
                             } catch (error) {
-                              addSystemMessage("성과 분석 실행 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                              handleSystemMessage("성과 분석 실행 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                             }
                           }}
                         >
@@ -281,7 +295,12 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
         </div>
       </div>
 
-      {/* Note: Modals would need to be properly imported and implemented */}
+      <IconChangeModal
+        isOpen={showIconModal}
+        onClose={() => setShowIconModal(false)}
+        agent={agent}
+        onSuccess={handleSystemMessage}
+      />
     </>
   );
 }
