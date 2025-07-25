@@ -976,6 +976,11 @@ Changelog:
   * Organization category management file upload: "파일을 업로드해 조직구조를 일괄 등록합니다."
   * User management file upload: "파일을 업로드해 여러 사용자를 일괄 등록합니다."
   * Standardized terminology for consistent user experience across management sections
+- July 25, 2025. Enhanced document file upload modal with comprehensive file format guidance:
+  * Updated drag box text: "파일을 여기로 드래그하거나 클릭하여 업로드하세요"
+  * Complete supported formats: "pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif"
+  * Clear upload limits: "(최대 8개 / 파일당 최대 50MB)"
+  * Improved user experience with clear file format and size constraints
 - July 25, 2025. Completed comprehensive Apple-style file upload modal redesign:
   * Updated all 4 file upload modals (organization, user, agent, document) with consistent Apple design language
   * Enhanced drag-and-drop areas with rounded corners, hover effects, and blue accent colors
