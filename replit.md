@@ -1073,6 +1073,13 @@ Changelog:
   * Eliminated duplicate headers in mobile Management mode - only proper management interface appears
   * isManagementMode prop now correctly set to true for Management pages, removing unwanted Chat headers
 - July 21, 2025. Standardized organization category dropdown naming and fixed token management Korean localization:
+- July 25, 2025. Completed unified UI design for all file upload modals:
+  * Standardized all 4 upload modals to use consistent blue-colored "선택된 파일" box design matching reference image
+  * Applied uniform styling to: organization file upload modal, agent file upload modal, document file upload modal
+  * Maintained single-file selection interface for user file upload modal as requested
+  * Enhanced "전체 삭제" button positioning and styling across multi-file upload modals
+  * Implemented consistent title headers (h3 with text-sm font-medium) and blue color scheme throughout
+  * All upload interfaces now follow unified design pattern for improved user experience consistency
   * Simplified organization category dropdown labels across ALL management sections (users, agents, organizations, documents, Q&A, tokens):
     - "상위 조직 카테고리" → "상위 조직"
     - "하위 조직 카테고리" → "하위 조직"  

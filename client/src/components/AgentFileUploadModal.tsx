@@ -331,11 +331,11 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
           {/* Selected File List */}
           {selectedFile && (
-            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="mb-6 border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="font-semibold text-blue-900 dark:text-blue-100 korean-text">
+                <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
                   선택된 파일 (1개)
-                </h4>
+                </h3>
                 <span className="text-xs text-blue-700 dark:text-blue-300 korean-text">
                   에이전트 데이터 파일
                 </span>

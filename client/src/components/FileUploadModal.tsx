@@ -333,18 +333,18 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
               {/* Selected Files Display */}
               {selectedFiles.length > 0 && (
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-blue-900 dark:text-blue-100 korean-text">
+                    <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
                       선택된 파일 ({selectedFiles.length}개)
-                    </h4>
+                    </h3>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={clearAllFiles}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                      전체 파일 삭제
+                      전체 삭제
                     </Button>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
