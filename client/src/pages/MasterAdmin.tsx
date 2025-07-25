@@ -9166,9 +9166,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>사용자 파일 업로드</DialogTitle>
-              <div className="text-sm text-gray-600 mt-2">
-                파일을 업로드하여 다수의 사용자를 일괄 등록할 수 있습니다.
-              </div>
+              <div className="text-sm text-gray-600 mt-2">파일을 업로드해 여러 사용자를 일괄 등록할 수 있습니다.</div>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}
