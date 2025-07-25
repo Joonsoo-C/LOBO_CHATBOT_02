@@ -9248,19 +9248,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               )}
 
               <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                <h4 className="font-medium text-yellow-900 dark:text-yellow-100 mb-2">파일 형식 요구사항</h4>
-                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <p>• 첫 번째 행: 헤더 (사용자명, 사용자 ID, 이메일, 유형, 상위 조직, 하위 조직, 세부 조직, 직책)</p>
-                  <p>• ID : 학번, 교번 등 사용자 ID(필수)</p>
-                  <p>• 유형: 학생, 교직원 등 사용자 유형(필수)</p>
-                  <p>• 이메일: 사용자의 학교 이메일 주소(선택)</p>
-                  <p>• 상위조직: 사용자가 소속된 최상위 조직(필수)</p>
-                  <p>• 하위조직, 세부조직, 직책 : 사용자가 소속된 하위 조직 및 조직내 역할 (선택)</p>
-                  <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다.</p>
-                </div>
-                
-                {/* 샘플 파일 다운로드 버튼을 파일 형식 요구사항 박스 안으로 이동 */}
-                <div className="mt-3 flex justify-end">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-yellow-900 dark:text-yellow-100">파일 형식 요구사항</h4>
                   <Button
                     variant="outline"
                     size="sm"
@@ -9270,6 +9259,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <Download className="w-4 h-4 mr-1" />
                     샘플 파일 다운로드
                   </Button>
+                </div>
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                  <p>• 첫 번째 행: 헤더 (사용자명, 사용자 ID, 이메일, 유형, 상위 조직, 하위 조직, 세부 조직, 직책)</p>
+                  <p>• ID : 학번, 교번 등 사용자 ID(필수)</p>
+                  <p>• 유형: 학생, 교직원 등 사용자 유형(필수)</p>
+                  <p>• 이메일: 사용자의 학교 이메일 주소(선택)</p>
+                  <p>• 상위조직: 사용자가 소속된 최상위 조직(필수)</p>
+                  <p>• 하위조직, 세부조직, 직책 : 사용자가 소속된 하위 조직 및 조직내 역할 (선택)</p>
+                  <p>• 엑셀 파일의 경우 첫 번째 시트만 처리됩니다.</p>
                 </div>
               </div>
 
