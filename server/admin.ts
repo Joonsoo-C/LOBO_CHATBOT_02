@@ -3440,6 +3440,34 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Get messages for a specific conversation
+  app.get("/api/admin/conversations/:conversationId/messages", requireMasterAdmin, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.conversationId);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "잘못된 대화 ID입니다." });
+      }
+      
+      console.log(`Admin fetching messages for conversation: ${conversationId}`);
+      
+      const messages = await storage.getConversationMessages(conversationId);
+      
+      console.log(`Found ${messages.length} messages for conversation ${conversationId}`);
+      console.log('Conversation messages:', messages.map(m => ({
+        id: m.id,
+        role: m.role,
+        contentPreview: m.content?.substring(0, 100),
+        createdAt: m.createdAt
+      })));
+      
+      res.json(messages);
+    } catch (error) {
+      console.error("Error getting conversation messages:", error);
+      res.status(500).json({ message: "대화 메시지 조회에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';
