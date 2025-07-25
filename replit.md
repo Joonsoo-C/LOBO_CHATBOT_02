@@ -982,6 +982,13 @@ Changelog:
   * Changed organization file upload modal delete buttons from text "삭제" to X icon
   * Enhanced visual consistency across all file management interfaces
   * Added proper padding adjustments for icon-based delete buttons
+- July 25, 2025. Fixed QA log response content display system:
+  * Added /api/admin/messages endpoint to server/admin.ts for QA log message retrieval
+  * Implemented getAllMessages() method in IStorage interface and MemoryStorage class
+  * Enhanced QA detail modal response content logic to properly find AI responses
+  * Added support for multiple message roles (assistant, ai, system) in response detection
+  * QA log detail modal now displays actual system response content instead of placeholder text
+  * Improved message sorting and filtering to show most recent AI responses
 - July 25, 2025. Updated file upload button descriptions in admin interface:
   * Organization category management file upload: "파일을 업로드해 조직구조를 일괄 등록합니다."
   * User management file upload: "파일을 업로드해 여러 사용자를 일괄 등록합니다."

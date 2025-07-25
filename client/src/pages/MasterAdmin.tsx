@@ -12265,15 +12265,38 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           return '응답 내용이 없습니다.';
                         }
                         
-                        // 실제 대화 내용에서 AI 응답 찾기
-                        const conversation = conversations.find(c => c.id === selectedQALog.id);
-                        if (!conversation) return '응답 내용이 없습니다.';
-                        
                         // 해당 대화의 메시지들에서 AI 응답 찾기
                         const conversationMessages = messages.filter(m => m.conversationId === selectedQALog.id);
-                        const aiMessage = conversationMessages.find(m => m.role === 'assistant');
                         
-                        return aiMessage ? aiMessage.content : '응답 내용이 없습니다.';
+                        // 가장 최근의 assistant 메시지 찾기 (AI가 'assistant' 역할로 응답)
+                        const aiMessages = conversationMessages
+                          .filter(m => m.role === 'assistant' || m.role === 'ai')
+                          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                        
+                        if (aiMessages.length > 0 && aiMessages[0].content) {
+                          return aiMessages[0].content;
+                        }
+                        
+                        // 시스템 메시지도 확인 (시스템 응답이 있을 수 있음)
+                        const systemMessages = conversationMessages
+                          .filter(m => m.role === 'system')
+                          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                        
+                        if (systemMessages.length > 0 && systemMessages[0].content) {
+                          return systemMessages[0].content;
+                        }
+                        
+                        // selectedQALog의 lastAssistantMessage 속성 확인
+                        if (selectedQALog.lastAssistantMessage) {
+                          return selectedQALog.lastAssistantMessage;
+                        }
+                        
+                        // 대화에서 실제 응답이 있는지 확인
+                        if (selectedQALog.messageCount > 1) {
+                          return '시스템 응답이 기록되어 있지만 내용을 표시할 수 없습니다.';
+                        }
+                        
+                        return '아직 시스템 응답이 없습니다.';
                       })()}
                     </div>
                   </div>

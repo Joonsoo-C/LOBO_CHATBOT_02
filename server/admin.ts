@@ -3417,6 +3417,29 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Get all messages for admin QA logs
+  app.get("/api/admin/messages", requireMasterAdmin, async (req, res) => {
+    try {
+      console.log('Admin fetching all messages for QA logs');
+      
+      const messages = await storage.getAllMessages();
+      
+      console.log(`Found ${messages.length} total messages for admin`);
+      console.log('Sample messages:', messages.slice(0, 3).map(m => ({
+        id: m.id,
+        conversationId: m.conversationId,
+        role: m.role,
+        contentPreview: m.content?.substring(0, 50),
+        createdAt: m.createdAt
+      })));
+      
+      res.json(messages);
+    } catch (error) {
+      console.error("Error getting admin messages:", error);
+      res.status(500).json({ message: "메시지 조회에 실패했습니다." });
+    }
+  });
+
   function getStatusText(status: string): string {
     switch (status) {
       case 'applied': return '최종 반영됨';

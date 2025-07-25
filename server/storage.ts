@@ -55,6 +55,7 @@ export interface IStorage {
 
   // Message operations
   getConversationMessages(conversationId: number): Promise<Message[]>;
+  getAllMessages(): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   markConversationAsRead(conversationId: number): Promise<void>;
   deleteConversationMessages(conversationId: number): Promise<void>;

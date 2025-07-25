@@ -821,6 +821,14 @@ export class MemoryStorage implements IStorage {
     return messages;
   }
 
+  async getAllMessages(): Promise<Message[]> {
+    const allMessages = Array.from(this.messages.values())
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    
+    console.log(`getAllMessages: returning ${allMessages.length} total messages`);
+    return allMessages;
+  }
+
   async createMessage(message: InsertMessage): Promise<Message> {
     const id = this.nextId++;
     const newMessage: Message = {
