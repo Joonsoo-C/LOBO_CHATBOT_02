@@ -951,6 +951,11 @@ function MasterAdmin() {
   const [showQADetailModal, setShowQADetailModal] = useState(false);
   const [selectedQALog, setSelectedQALog] = useState<any>(null);
   
+  // 디버깅을 위한 모달 상태 추적
+  React.useEffect(() => {
+    console.log('QA Modal State Changed:', { showQADetailModal, selectedQALog: !!selectedQALog });
+  }, [showQADetailModal, selectedQALog]);
+  
   // 개선요청 및 코멘트 모달 상태
   const [showImprovementModal, setShowImprovementModal] = useState(false);
   const [selectedImprovementLog, setSelectedImprovementLog] = useState<any>(null);
@@ -1994,6 +1999,7 @@ function MasterAdmin() {
   const filteredConversationLogs = useMemo(() => {
     if (!conversationLogs) return [];
     
+    console.log('Total conversationLogs:', conversationLogs.length);
     let filtered = [...conversationLogs];
     
     // "메시지 없음" 항목들 필터링 - 실제 질문-응답 인터랙션이 있는 대화만 표시
@@ -2457,6 +2463,7 @@ function MasterAdmin() {
 
   // 질의응답 상세보기 모달 열기 함수
   const openQADetailModal = (log: any) => {
+    console.log('QA Detail Modal opened with log:', log);
     setSelectedQALog(log);
     setShowQADetailModal(true);
   };
@@ -6856,7 +6863,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </tr>
                       ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
                         filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
-                          <tr key={log.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => openQADetailModal(log)}>
+                          <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openQADetailModal(log);
+                          }}>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
                                 {log.agentName || '알 수 없는 에이전트'}
@@ -12173,7 +12184,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               </DialogDescription>
             </DialogHeader>
             
-            {selectedQALog && (
+            {selectedQALog ? (
               <div className="space-y-6">
                 {/* 기본 정보 */}
                 <div className="grid grid-cols-2 gap-6">
@@ -12271,6 +12282,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     })()}
                   </div>
                 </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">선택된 질문응답 로그가 없습니다.</p>
               </div>
             )}
           </DialogContent>
