@@ -7394,7 +7394,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           <Dialog open={isOrgCategoryEditDialogOpen} onOpenChange={setIsOrgCategoryEditDialogOpen}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" aria-describedby="org-edit-description">
               <DialogHeader>
-                <DialogTitle className="font-semibold tracking-tight text-[20px]">조직 상세 정보 편집</DialogTitle>
+                <DialogTitle className="font-semibold tracking-tight text-[20px]">조직 상세 정보</DialogTitle>
                 <div id="org-edit-description" className="sr-only">조직의 상세 정보를 편집하고 관리할 수 있습니다.</div>
               </DialogHeader>
               <Form {...orgCategoryEditForm}>
