@@ -9342,9 +9342,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              {/* {t('admin.iconTypeSelection')} */}
+              {/* 아이콘 유형 선택 */}
               <div>
-                <h3 className="text-sm font-medium mb-3">{t('admin.iconType')}</h3>
+                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
                 <div className="flex space-x-2">
                   <Button 
                     variant={!isUsingCustomImage ? "default" : "outline"} 
@@ -9359,19 +9359,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   >
                     기본 아이콘
                   </Button>
-                  <input
-                    type="file"
-                    id="custom-image-upload"
-                    accept="image/jpeg,image/png,image/gif,image/webp"
-                    onChange={handleCustomImageChange}
-                    style={{ display: 'none' }}
-                  />
                   <Button 
                     variant={isUsingCustomImage ? "default" : "outline"}
                     size="sm" 
                     className="flex-1"
                     onClick={() => {
-                      document.getElementById('custom-image-upload')?.click();
+                      setIsUsingCustomImage(true);
                     }}
                   >
                     이미지 업로드
@@ -9379,10 +9372,64 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              {/* 아이콘 선택 */}
-              <div>
-                <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
-                <div className="grid grid-cols-5 gap-2">
+              {/* 이미지 업로드 영역 */}
+              {isUsingCustomImage && (
+                <div>
+                  <input
+                    type="file"
+                    id="custom-image-upload"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleCustomImageChange}
+                    style={{ display: 'none' }}
+                  />
+                  <div 
+                    className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const files = Array.from(e.dataTransfer.files);
+                      if (files.length > 0) {
+                        const file = files[0];
+                        if (file.type.startsWith('image/')) {
+                          const event = {
+                            target: { files: [file] }
+                          } as any;
+                          handleCustomImageChange(event);
+                        }
+                      }
+                    }}
+                    onClick={() => document.getElementById('custom-image-upload')?.click()}
+                  >
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        지원 형식: jpg, png, gif, webp (최대 5MB)
+                      </p>
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          document.getElementById('custom-image-upload')?.click();
+                        }}
+                      >
+                        파일 선택
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 아이콘 선택 - 기본 아이콘이 선택된 경우에만 표시 */}
+              {!isUsingCustomImage && (
+                <div>
+                  <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
+                  <div className="grid grid-cols-5 gap-2">
                   {[
                     { icon: "User" },
                     { icon: "GraduationCap" },
@@ -9409,7 +9456,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     );
                   })}
                 </div>
-              </div>
+                </div>
+              )}
 
               {/* 배경색 선택 */}
               <div>
