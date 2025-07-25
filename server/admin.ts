@@ -2756,7 +2756,7 @@ export function setupAdminRoutes(app: Express) {
   const orgCategoryUpload = multer({
     storage: multer.memoryStorage(),
     limits: {
-      fileSize: 10 * 1024 * 1024, // 10MB
+      fileSize: 50 * 1024 * 1024, // 50MB
     },
     fileFilter: (req, file, cb) => {
       console.log(`Checking file: ${file.originalname}, MIME: ${file.mimetype}`);

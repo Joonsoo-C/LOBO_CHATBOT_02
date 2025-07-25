@@ -3288,8 +3288,8 @@ function MasterAdmin() {
       const invalidFiles: string[] = [];
       
       for (const file of files) {
-        if (file.size > 10 * 1024 * 1024) {
-          invalidFiles.push(`${file.name} (파일 크기가 10MB를 초과함)`);
+        if (file.size > 50 * 1024 * 1024) {
+          invalidFiles.push(`${file.name} (파일 크기가 50MB를 초과함)`);
           continue;
         }
         
@@ -11423,7 +11423,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   파일을 드래그하거나 클릭하여 업로드
                                 </div>
                                 <div className="mt-1 text-xs text-gray-500">
-                                  지원 형식: TXT, DOC, DOCX, PPT, PPTX (최대 10MB)
+                                  지원 형식: TXT, DOC, DOCX, PPT, PPTX (최대 50MB)
                                 </div>
                                 <Input
                                   type="file"
