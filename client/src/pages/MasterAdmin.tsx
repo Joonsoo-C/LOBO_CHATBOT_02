@@ -8757,45 +8757,43 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               {/* 선택된 파일 목록 */}
               {selectedDocumentFiles.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">선택된 파일 ({selectedDocumentFiles.length}개)</Label>
+                <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">선택된 파일 ({selectedDocumentFiles.length}개)</h3>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={handleClearAllFiles}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                      전체 파일 삭제
+                      전체 삭제
                     </Button>
                   </div>
-                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-                    <div className="space-y-2">
-                      {selectedDocumentFiles.map((file, index) => (
-                        <div 
-                          key={index}
-                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
-                        >
-                          <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">{file.name}</p>
-                              <p className="text-xs text-gray-500">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
-                              </p>
-                            </div>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {selectedDocumentFiles.map((file, index) => (
+                      <div 
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md"
+                      >
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">{file.name}</p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
+                            </p>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveFile(index)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
-                          >
-                            ×
-                          </Button>
                         </div>
-                      ))}
-                    </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveFile(index)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -9214,30 +9212,30 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
               {/* 선택된 파일 목록 */}
               {selectedUserFiles.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">선택된 파일 ({selectedUserFiles.length}개)</Label>
+                <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">선택된 파일 ({selectedUserFiles.length}개)</h3>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => setSelectedUserFiles([])}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                      모두 제거
+                      전체 삭제
                     </Button>
                   </div>
-                  <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
                     <div className="space-y-2">
                       {selectedUserFiles.map((file, index) => (
                         <div 
                           key={index}
-                          className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border"
+                          className="flex items-center justify-between p-3 bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md"
                         >
                           <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">{file.name}</p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">{file.name}</p>
+                              <p className="text-xs text-blue-600 dark:text-blue-400">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.split('/')[1]?.toUpperCase()}
                               </p>
                             </div>
@@ -9246,9 +9244,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             variant="ghost"
                             size="sm"
                             onClick={() => setSelectedUserFiles(prev => prev.filter((_, i) => i !== index))}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1"
                           >
-                            ×
+                            <X className="w-4 h-4" />
                           </Button>
                         </div>
                       ))}
