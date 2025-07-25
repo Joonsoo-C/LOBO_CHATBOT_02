@@ -218,6 +218,9 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
               에이전트 파일 업로드
             </h3>
           </div>
+          <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">
+            <X className="w-5 h-5" />
+          </Button>
         </div>
 
         {/* Modal Content */}
