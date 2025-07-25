@@ -280,12 +280,12 @@
       {
         "id": 172,
         "userId": "master_admin",
-        "agentId": 116,
-        "type": "general",
+        "agentId": 115,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-23T05:51:40.243Z",
+        "lastMessageAt": "2025-07-25T02:05:40.562Z",
         "isHidden": false,
-        "createdAt": "2025-07-23T05:51:40.243Z"
+        "createdAt": "2025-07-25T02:05:40.562Z"
       }
     ],
     [
@@ -306,12 +306,12 @@
       {
         "id": 173,
         "userId": "master_admin",
-        "agentId": 146,
-        "type": "general",
+        "agentId": 123,
+        "type": "management",
         "unreadCount": 0,
-        "lastMessageAt": "2025-07-23T05:51:55.066Z",
+        "lastMessageAt": "2025-07-25T02:05:47.586Z",
         "isHidden": false,
-        "createdAt": "2025-07-23T05:51:55.066Z"
+        "createdAt": "2025-07-25T02:05:47.586Z"
       }
     ],
     [

@@ -8934,7 +8934,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 onClick={handleOrgCategoryFileSelect}
               >
                 <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드</p>
+                <p className="text-lg font-medium mb-2">파일을 드래그하거나 클릭하여 업로드하세요. </p>
                 <p className="text-sm text-gray-500 mb-4">
                   CSV, Excel 파일(.csv, .xls, .xlsx) 지원 (최대 50MB)
                 </p>
