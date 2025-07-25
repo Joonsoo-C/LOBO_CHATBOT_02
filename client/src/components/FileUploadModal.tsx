@@ -278,9 +278,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
-                <div className="text-sm text-gray-600 mt-2 korean-text">
-                  공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.
-                </div>
+                
               </div>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
                 <X className="w-5 h-5" />
