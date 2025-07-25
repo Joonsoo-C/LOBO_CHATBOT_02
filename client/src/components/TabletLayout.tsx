@@ -94,7 +94,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [showFileListModal, setShowFileListModal] = useState(false);
   const [showPersonaModal, setShowPersonaModal] = useState(false);
-  const [showIconModal, setShowIconModal] = useState(false);
+
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [notificationState, setNotificationState] = useState<"idle" | "waiting_input" | "waiting_approval">("idle");
@@ -187,19 +187,7 @@ function TabletChatHeader({ agent, isManagementMode }: TabletChatHeaderProps) {
                           <User className="w-4 h-4 mr-2" />
                           {t('agent.persona')}
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="w-full justify-start px-4 py-2 korean-text"
-                          onClick={() => {
-                            setShowIconModal(true);
-                            setShowMenu(false);
-                            addSystemMessage("아이콘 변경 창을 열었습니다.");
-                          }}
-                        >
-                          <Edit className="w-4 h-4 mr-2" />
-                          {t('agent.iconChange')}
-                        </Button>
+
                         <Button 
                           variant="ghost" 
                           size="sm" 
@@ -361,7 +349,7 @@ export default function TabletLayout() {
     refetchIntervalInBackground: true,
   });
 
-  // Listen for agent update events from IconChangeModal
+  // Listen for agent update events
   useEffect(() => {
     console.log("TabletLayout: Setting up eventBus listeners...");
     
