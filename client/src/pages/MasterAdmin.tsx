@@ -7667,7 +7667,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-{t('admin.directUploadDesc')}
+공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.
                   </p>
                 </CardContent>
               </Card>
@@ -8712,8 +8712,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isDocumentUploadDialogOpen} onOpenChange={setIsDocumentUploadDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>문서 파일 업로드</DialogTitle>
-              <div className="text-sm text-gray-600 mt-2">공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요.</div>
+              <div className="flex items-center space-x-3">
+                <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
+                <DialogTitle>문서 파일 업로드</DialogTitle>
+              </div>
+              <div className="border-b mt-3"></div>
             </DialogHeader>
             <div className="space-y-6">
               {/* 숨겨진 파일 입력 */}

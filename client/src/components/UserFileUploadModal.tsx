@@ -274,9 +274,12 @@ export default function UserFileUploadModal({ isOpen, onClose, onSuccess }: User
       <div className="bg-background border border-border rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-lg" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
-          <h3 className="text-lg font-medium text-foreground korean-text">
-            사용자 파일 업로드
-          </h3>
+          <div className="flex items-center space-x-3">
+            <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
+            <h3 className="text-lg font-medium text-foreground korean-text">
+              사용자 파일 업로드
+            </h3>
+          </div>
           <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
             <X className="w-5 h-5" />
           </Button>

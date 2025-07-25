@@ -274,7 +274,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b">
-              <div>
+              <div className="flex items-center space-x-3">
+                <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
