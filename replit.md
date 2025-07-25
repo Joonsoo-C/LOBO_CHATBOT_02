@@ -976,6 +976,12 @@ Changelog:
   * Added comprehensive guidance text to document file upload modal in master admin system
   * Added informative description: "공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요."
   * Improved user experience with clear instructions for document management workflow
+- July 25, 2025. Improved file management UI consistency:
+  * Fixed QA modal data safety issues by adding null checks for conversations and messages arrays
+  * Prevented TypeError when calling filter method on undefined objects
+  * Changed organization file upload modal delete buttons from text "삭제" to X icon
+  * Enhanced visual consistency across all file management interfaces
+  * Added proper padding adjustments for icon-based delete buttons
 - July 25, 2025. Updated file upload button descriptions in admin interface:
   * Organization category management file upload: "파일을 업로드해 조직구조를 일괄 등록합니다."
   * User management file upload: "파일을 업로드해 여러 사용자를 일괄 등록합니다."

@@ -9115,9 +9115,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             size="sm"
                             onClick={() => deleteOrgFileMutation.mutate(file.originalName || file.fileName)}
                             disabled={deleteOrgFileMutation.isPending}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2 p-1"
                           >
-                            {deleteOrgFileMutation.isPending ? '...' : '삭제'}
+                            {deleteOrgFileMutation.isPending ? '...' : <X className="w-4 h-4" />}
                           </Button>
                         </div>
                       ))}
