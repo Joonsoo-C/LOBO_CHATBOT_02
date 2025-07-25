@@ -369,37 +369,17 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               >
                 기본 아이콘
               </Button>
-              <div className="flex-1">
-                <input
-                  type="file"
-                  id="image-upload-input"
-                  accept="image/jpeg,image/png,image/gif,image/webp"
-                  onChange={(e) => {
-                    console.log("File input changed!", e.target.files);
-                    setIsUsingCustomImage(true);
-                    handleFileChange(e);
-                  }}
-                  style={{ display: 'none' }}
-                />
-                <Button
-                  variant={isUsingCustomImage ? "default" : "outline"}
-                  size="sm"
-                  className="w-full"
-                  type="button"
-                  onClick={() => {
-                    console.log("Image upload button clicked!");
-                    const input = document.getElementById('image-upload-input') as HTMLInputElement;
-                    if (input) {
-                      console.log("Found input, clicking it");
-                      input.click();
-                    } else {
-                      console.error("Input not found!");
-                    }
-                  }}
-                >
-                  이미지 업로드
-                </Button>
-              </div>
+              <Button
+                variant={isUsingCustomImage ? "default" : "outline"}
+                size="sm"
+                className="flex-1"
+                type="button"
+                onClick={() => {
+                  setIsUsingCustomImage(true);
+                }}
+              >
+                이미지 업로드
+              </Button>
             </div>
           </div>
 
@@ -408,45 +388,64 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           {/* Custom Image Upload Section */}
           {isUsingCustomImage && (
             <div className="space-y-3">
-              <Label className="text-sm font-medium">이미지 파일 선택</Label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={handleFileChange}
+                className="hidden"
+                id="image-upload-drop"
+              />
               
               {/* File drop area */}
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/gif,image/webp"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="image-upload-drop"
-                />
-                <label 
-                  htmlFor="image-upload-drop" 
-                  className="cursor-pointer flex flex-col items-center space-y-2 hover:text-primary transition-colors"
-                >
-                  <Camera className="w-8 h-8 text-muted-foreground" />
-                  <div className="text-sm text-muted-foreground">
-                    {imageFile ? imageFile.name : "클릭하여 이미지 선택"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    JPG, PNG, GIF, WEBP (최대 5MB)
-                  </div>
-                </label>
+              <div 
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const files = Array.from(e.dataTransfer.files);
+                  if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                      const event = {
+                        target: { files: [file] }
+                      } as any;
+                      handleFileChange(event);
+                    }
+                  }
+                }}
+                onClick={() => document.getElementById('image-upload-drop')?.click()}
+              >
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    지원 형식: jpg, png, gif, webp (최대 5MB)
+                  </p>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      document.getElementById('image-upload-drop')?.click();
+                    }}
+                  >
+                    파일 선택
+                  </Button>
+                </div>
               </div>
-              
-              {/* Additional upload button for better UX */}
-              <label htmlFor="image-upload-drop" className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  type="button"
-                  asChild
-                >
-                  <span>
-                    <Camera className="w-4 h-4 mr-2" />
-                    이미지 파일 선택
-                  </span>
-                </Button>
-              </label>
             </div>
           )}
 
