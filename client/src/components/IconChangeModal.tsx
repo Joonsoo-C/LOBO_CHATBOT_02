@@ -359,9 +359,12 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             <Label className="text-sm font-medium">아이콘 유형</Label>
             <div className="flex gap-2">
               <Button
+                type="button"
                 variant={!isUsingCustomImage ? "default" : "outline"}
                 size="sm"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setIsUsingCustomImage(false);
                   setCustomImage(null);
                   setImageFile(null);
@@ -371,11 +374,13 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 기본 아이콘
               </Button>
               <Button
+                type="button"
                 variant={isUsingCustomImage ? "default" : "outline"}
                 size="sm"
                 className="flex-1"
-                type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setIsUsingCustomImage(true);
                 }}
               >
@@ -435,9 +440,11 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                     지원 형식: jpg, png, gif, webp (최대 5MB)
                   </p>
                   <Button 
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       document.getElementById('image-upload-drop')?.click();
                     }}
@@ -458,6 +465,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                   const IconComponent = iconOption.icon;
                   return (
                     <Button
+                      type="button"
                       key={iconOption.value}
                       variant={selectedIcon === iconOption.value ? "default" : "outline"}
                       size="sm"
@@ -479,6 +487,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               <div className="grid grid-cols-5 gap-2">
                 {colorOptions.map((colorOption) => (
                   <Button
+                    type="button"
                     key={colorOption.value}
                     variant="outline"
                     size="sm"
@@ -498,10 +507,11 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3">
-            <Button variant="outline" onClick={onClose} disabled={updateIconMutation.isPending}>
+            <Button type="button" variant="outline" onClick={onClose} disabled={updateIconMutation.isPending}>
               취소
             </Button>
             <Button 
+              type="button"
               onClick={handleSubmit} 
               disabled={updateIconMutation.isPending}
             >
