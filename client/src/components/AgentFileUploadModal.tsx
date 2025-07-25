@@ -245,17 +245,61 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             }}
           >
             <div className="text-center">
-              {selectedFile ? (
-                <div className="space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-green-600 dark:text-green-400" />
+              <div className="space-y-4">
+                <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</h4>
+                  <p className="text-sm text-muted-foreground korean-text mb-4">
+                    지원 파일 : csv, xls, xlsx(최대 10MB)
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="korean-text"
+                >
+                  {t('agent.selectFile')}
+                </Button>
+              </div>
+            </div>
+            <input
+              id="agent-file-upload"
+              type="file"
+              accept=".csv,.xls,.xlsx,.hwp,.jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.txt,.ppt,.pptx"
+              onChange={handleFileSelect}
+              style={{ display: 'none' }}
+              multiple={false}
+            />
+          </div>
+
+          {/* Selected File List */}
+          {selectedFile && (
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 korean-text">
+                  선택된 파일 (1개)
+                </h4>
+                <span className="text-xs text-blue-700 dark:text-blue-300 korean-text">
+                  에이전트 데이터 파일
+                </span>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate korean-text">
+                        {selectedFile.name}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {(selectedFile.size / 1024).toFixed(1)} KB • 업로드 대기 중
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-lg font-medium text-foreground mb-1 korean-text">{t('agent.selectedFile')}</h4>
-                    <p className="text-sm font-medium text-green-600 dark:text-green-400 korean-text">{selectedFile.name}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{Math.round(selectedFile.size / 1024)} KB</p>
-                  </div>
-                  <div className="flex gap-2 justify-center">
+                  <div className="flex items-center space-x-2">
                     <Button
                       type="button"
                       variant="outline"
@@ -267,10 +311,10 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                           fileInput.click();
                         }
                       }}
-                      className="korean-text"
+                      className="korean-text text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                     >
-                      <Upload className="w-4 h-4 mr-1" />
-                      {t('agent.selectOtherFile')}
+                      <Upload className="w-3 h-3 mr-1" />
+                      다른 파일 선택
                     </Button>
                     <Button
                       type="button"
@@ -283,41 +327,14 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
                       }}
                       className="korean-text text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
-                      <X className="w-4 h-4 mr-1" />
-                      {t('common.remove')}
+                      <X className="w-3 h-3 mr-1" />
+                      제거
                     </Button>
                   </div>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-medium text-foreground mb-2 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</h4>
-                    <p className="text-sm text-muted-foreground korean-text mb-4">
-                      지원 파일 : csv, xls, xlsx(최대 10MB)
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="korean-text"
-                  >
-                    {t('agent.selectFile')}
-                  </Button>
-                </div>
-              )}
+              </div>
             </div>
-            <input
-              id="agent-file-upload"
-              type="file"
-              accept=".csv,.xls,.xlsx,.hwp,.jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.txt,.ppt,.pptx"
-              onChange={handleFileSelect}
-              style={{ display: 'none' }}
-              multiple={false}
-            />
-          </div>
+          )}
 
           {/* File Format Requirements */}
           <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
