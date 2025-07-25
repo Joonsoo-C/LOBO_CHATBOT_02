@@ -957,8 +957,6 @@ function MasterAdmin() {
   }, [showQADetailModal, selectedQALog]);
   
   // 개선요청 및 코멘트 모달 상태
-  const [showImprovementModal, setShowImprovementModal] = useState(false);
-  const [selectedImprovementLog, setSelectedImprovementLog] = useState<any>(null);
   const [improvementComment, setImprovementComment] = useState('');
 
   // Missing state variables for QA modal functionality
@@ -2468,12 +2466,7 @@ function MasterAdmin() {
     setShowQADetailModal(true);
   };
 
-  // 개선요청 및 코멘트 모달 열기 함수
-  const openImprovementModal = (log: any) => {
-    setSelectedImprovementLog(log);
-    setImprovementComment('');
-    setShowImprovementModal(true);
-  };
+
 
   // 에이전트 전용 상태 (사용자 검색과 분리)
   const [agentSearchQuery, setAgentSearchQuery] = useState('');
@@ -6922,17 +6915,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-1">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  title="개선요청"
-                                  onClick={(e) => {
-                                    e.stopPropagation(); // 행 클릭 이벤트 방지
-                                    openImprovementModal(log);
-                                  }}
-                                >
-                                  <MessageSquare className="w-4 h-4" />
-                                </Button>
+                                {/* 개선 요청이 있는 경우에만 "요청" 텍스트 표시 */}
+                                {(() => {
+                                  // TODO: 실제 개선 요청 데이터가 있는지 확인하는 로직
+                                  // 현재는 샘플로 일부 항목에만 표시
+                                  const hasImprovementRequest = log.id % 5 === 0; // 샘플: ID가 5의 배수인 경우
+                                  
+                                  return hasImprovementRequest ? (
+                                    <Badge variant="destructive" className="bg-orange-100 text-orange-800">
+                                      요청
+                                    </Badge>
+                                  ) : (
+                                    <span className="text-gray-400">-</span>
+                                  );
+                                })()}
                               </div>
                             </td>
                           </tr>
@@ -12313,6 +12309,40 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     })()}
                   </div>
                 </div>
+
+                {/* 개선 요청 코멘트 */}
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">개선 요청 코멘트</div>
+                  <textarea
+                    value={improvementComment}
+                    onChange={(e) => setImprovementComment(e.target.value)}
+                    className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="개선이 필요한 내용을 입력해주세요."
+                  />
+                  <div className="flex justify-end mt-3 space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setImprovementComment('')}
+                    >
+                      취소
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        // 개선요청 저장 로직 (현재는 단순히 입력창 초기화)
+                        if (improvementComment.trim()) {
+                          // TODO: 실제 저장 로직 구현
+                          setImprovementComment('');
+                          // Toast 메시지나 성공 알림 추가 가능
+                        }
+                      }}
+                      disabled={!improvementComment.trim()}
+                    >
+                      저장
+                    </Button>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -12322,88 +12352,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 개선요청 및 코멘트 모달 */}
-        <Dialog open={showImprovementModal} onOpenChange={setShowImprovementModal}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{t('admin.improveRequestTitle')}</DialogTitle>
-              <DialogDescription>
-                {t('admin.improveRequestDesc')}
-              </DialogDescription>
-            </DialogHeader>
-            
-            {selectedImprovementLog && (
-              <div className="space-y-6">
-                {/* 질문 정보 */}
-                <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.question')}</div>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">
-                      {selectedImprovementLog.lastUserMessage || t('admin.noQuestionContent')} 
-                      <span className="text-gray-400 ml-2">({selectedImprovementLog.messageCount || 0})</span>
-                    </div>
-                  </div>
-                </div>
 
-                {/* 답변 정보 */}
-                <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.answer')}</div>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <div className="text-sm text-gray-600">
-                      {(() => {
-                        // 데이터 안전성 검사
-                        if (!messages || !selectedImprovementLog) {
-                          return '응답 내용이 없습니다.';
-                        }
-                        
-                        // 실제 대화 내용에서 AI 응답 찾기
-                        const conversationMessages = messages.filter(m => m.conversationId === selectedImprovementLog.id);
-                        const aiMessage = conversationMessages.find(m => m.role === 'assistant');
-                        
-                        if (aiMessage) {
-                          return aiMessage.content.length > 100 
-                            ? aiMessage.content.substring(0, 100) + '...' 
-                            : aiMessage.content;
-                        }
-                        return '응답 내용이 없습니다.';
-                      })()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 개선요청 코멘트 */}
-                <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">{t('admin.improveComment')}</div>
-                  <textarea
-                    value={improvementComment}
-                    onChange={(e) => setImprovementComment(e.target.value)}
-                    className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={t('admin.improveCommentPlaceholder')}
-                  />
-                </div>
-
-                {/* 버튼 */}
-                <div className="flex justify-end space-x-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowImprovementModal(false)}
-                  >
-                    {t('common.cancel')}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      // 개선요청 저장 로직 (현재는 단순히 모달 닫기)
-                      setShowImprovementModal(false);
-                      setImprovementComment('');
-                    }}
-                  >
-                    {t('common.save')}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
 
         {/* 에이전트 파일 업로드 모달 */}
         <AgentFileUploadModal
