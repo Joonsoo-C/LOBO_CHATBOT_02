@@ -2077,17 +2077,20 @@ function MasterAdmin() {
 
   // Q&A 로그 완전한 필터링 로직
   const filteredConversationLogs = useMemo(() => {
-    if (!conversationLogs) return [];
+    if (!conversationLogs) {
+      console.log('No conversationLogs data');
+      return [];
+    }
     
     console.log('Total conversationLogs:', conversationLogs.length);
+    console.log('Sample conversation log:', conversationLogs[0]);
     let filtered = [...conversationLogs];
     
-    // "메시지 없음" 항목들 필터링 - 실제 질문-응답 인터랙션이 있는 대화만 표시
-    filtered = filtered.filter(log => 
-      log.lastUserMessage && 
-      log.lastUserMessage.trim() !== '' && 
-      log.lastUserMessage !== '메시지 없음'
-    );
+    // 임시로 모든 대화 표시 (디버그용)
+    console.log('All conversations loaded, no initial filtering');
+    // filtered = filtered.filter(log => 
+    //   log.messageCount && log.messageCount > 0
+    // );
     
     // 검색어 필터링
     if (qaSearchQuery.trim()) {
