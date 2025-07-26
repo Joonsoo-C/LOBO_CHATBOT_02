@@ -10902,21 +10902,25 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     />
                   </div>
                   
-                  <div className="flex justify-end mt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={addNewUserAffiliation}
-                      disabled={newUserAffiliations.length >= 3}
-                      className="text-sm"
-                    >
-                      + 소속된 카테고리 추가
-                    </Button>
-                  </div>
-                  
-                  {/* 동적 소속 정보 목록 */}
-                  {newUserAffiliations.map((affiliation, index) => (
-                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 space-y-4">
+                  {/* 소속 정보 */}
+                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">소속 정보</Label>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs"
+                        onClick={addNewUserAffiliation}
+                        disabled={newUserAffiliations.length >= 3}
+                      >
+                        + 소속된 카테고리 추가
+                      </Button>
+                    </div>
+                    
+                    {/* 동적 소속 정보 목록 */}
+                    {newUserAffiliations.map((affiliation, index) => (
+                      <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 space-y-4">
                       <div className="flex items-center justify-between">
                         <Label className="text-sm font-medium">소속 정보 {index + 1}</Label>
                         {newUserAffiliations.length > 1 && (
