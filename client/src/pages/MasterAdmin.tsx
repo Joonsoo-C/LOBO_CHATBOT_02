@@ -6996,80 +6996,92 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
                           </td>
                         </tr>
-                      ) : filteredConversationLogs && filteredConversationLogs.length > 0 ? (
-                        filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
-                          <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            openQADetailModal(log);
-                          }}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {log.agentName || '알 수 없는 에이전트'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
-                                {log.lastUserMessage || '메시지 없음'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge variant="default" className="bg-blue-100 text-blue-800">
+                      ) : (() => {
+                        console.log('DEBUGGING Q&A LIST:');
+                        console.log('conversationLogs:', conversationLogs);
+                        console.log('filteredConversationLogs:', filteredConversationLogs);
+                        console.log('filteredConversationLogs.length:', filteredConversationLogs?.length);
+                        
+                        // 일단 조건을 완전히 제거하고 모든 대화 표시
+                        if (conversationLogs && conversationLogs.length > 0) {
+                          console.log('Showing all conversations:', conversationLogs.length);
+                          return conversationLogs.slice(0, ITEMS_PER_PAGE).map((log: any) => (
+                            <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              openQADetailModal(log);
+                            }}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {log.agentName || '알 수 없는 에이전트'}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900 dark:text-white max-w-xs truncate">
+                                  {log.lastUserMessage || '메시지 없음'}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge variant="default" className="bg-blue-100 text-blue-800">
+                                  {(() => {
+                                    // 대화 ID를 기반으로 응답 방식 결정
+                                    const seed = log.id || 1;
+                                    const responseTypes = ['문서 우선 + LLM', 'LLM 우선', '문서만'];
+                                    return responseTypes[seed % 3];
+                                  })()}
+                                </Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm">
                                 {(() => {
-                                  // 대화 ID를 기반으로 응답 방식 결정
-                                  const seed = log.id || 1;
-                                  const responseTypes = ['문서 우선 + LLM', 'LLM 우선', '문서만'];
-                                  return responseTypes[seed % 3];
+                                  // 대화에 메시지가 있고, lastUserMessage가 있으면 AI 응답도 있다고 가정
+                                  const hasResponse = log.lastUserMessage && log.messageCount > 1;
+                                  return hasResponse ? (
+                                    <Badge variant="default" className="bg-green-100 text-green-800">
+                                      성공
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="destructive" className="bg-red-100 text-red-800">
+                                      실패
+                                    </Badge>
+                                  );
                                 })()}
-                              </Badge>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {(() => {
-                                // 대화에 메시지가 있고, lastUserMessage가 있으면 AI 응답도 있다고 가정
-                                const hasResponse = log.lastUserMessage && log.messageCount > 1;
-                                return hasResponse ? (
-                                  <Badge variant="default" className="bg-green-100 text-green-800">
-                                    성공
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="destructive" className="bg-red-100 text-red-800">
-                                    실패
-                                  </Badge>
-                                );
-                              })()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(() => {
-                                // 대화 ID를 기반으로 일관된 응답 시간 생성 (0.1초 ~ 2.5초)
-                                const seed = log.id || 1;
-                                const responseTime = ((seed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
-                                return responseTime.toFixed(1) + '초';
-                              })()}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit', 
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {(() => {
+                                  // 대화 ID를 기반으로 일관된 응답 시간 생성 (0.1초 ~ 2.5초)
+                                  const seed = log.id || 1;
+                                  const responseTime = ((seed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
+                                  return responseTime.toFixed(1) + '초';
+                                })()}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {new Date(log.lastMessageAt).toLocaleDateString('ko-KR', {
+                                  year: 'numeric',
+                                  month: '2-digit', 
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </td>
+                            </tr>
+                          ));
+                        }
+                        
+                        // 데이터가 없으면 기본 메시지 표시
+                        return (
+                          <tr>
+                            <td colSpan={6} className="px-6 py-8 text-center">
+                              <div className="text-gray-500 dark:text-gray-400">
+                                <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                                <p className="text-lg font-medium mb-2">대화 기록이 없습니다</p>
+                                <p className="text-sm">
+                                  사용자가 에이전트와 대화를 시작하면 여기에 기록이 표시됩니다.
+                                </p>
+                              </div>
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="px-6 py-8 text-center">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                              <p className="text-lg font-medium mb-2">대화 기록이 없습니다</p>
-                              <p className="text-sm">
-                                사용자가 에이전트와 대화를 시작하면 여기에 기록이 표시됩니다.
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
+                        );
+                      })()}
                     </tbody>
                   </table>
                 </div>
