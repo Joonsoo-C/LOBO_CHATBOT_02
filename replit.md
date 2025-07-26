@@ -1022,6 +1022,10 @@ Changelog:
   * Added document visibility toggle with explanation text for user access control
   * Enhanced file format support (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX) with 50MB limit
   * File upload tab now provides identical functionality to standalone document upload modal
+  * Updated drag box design with blue circular icon background and comprehensive file format list
+  * Implemented blue-themed selected files section matching document upload modal appearance
+  * Enhanced file format support: pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif
+  * File selection area appears only when files are selected with proper blue background styling
   * Moved "파일 선택" button inside the drag box for better user guidance
   * Updated help text: "파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요. 지원 형식: jpg, png, gif, webp (최대 5MB)"
   * Implemented complete drag-and-drop functionality for image uploads

@@ -5719,7 +5719,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <input
                               ref={agentFileInputRef}
                               type="file"
-                              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                              accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.csv,.hwp,.jpg,.png,.gif"
                               multiple
                               onChange={handleAgentFileInputChange}
                               style={{ display: 'none' }}
@@ -5727,7 +5727,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             
                             {/* 파일 드래그 앤 드롭 영역 */}
                             <div 
-                              className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                              className="border-2 border-dashed border-gray-300 rounded-lg p-16 text-center bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                               onClick={handleAgentFileSelect}
                               onDragOver={(e) => {
                                 e.preventDefault();
@@ -5746,15 +5746,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 }
                               }}
                             >
-                              <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                              <div className="space-y-3">
-                                <p className="text-lg font-medium text-gray-700">업로드할 문서 파일을 드래그하거나 파일 선택 버튼을 클릭하세요.</p>
-                                <p className="text-sm text-gray-500">PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 5개, 각각 50MB)</p>
+                              <div className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                <FileText className="w-10 h-10 text-blue-600" />
+                              </div>
+                              <div className="space-y-4">
+                                <p className="text-xl font-medium text-gray-900">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
+                                <p className="text-sm text-gray-500">지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif</p>
+                                <p className="text-sm text-gray-500">(최대 8개 / 파일당 최대 50MB)</p>
                                 <Button 
                                   type="button" 
                                   variant="outline" 
                                   size="lg" 
-                                  className="bg-white hover:bg-gray-50"
+                                  className="bg-white hover:bg-gray-50 border-gray-300"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleAgentFileSelect();
@@ -5766,63 +5769,55 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
                             
                             {/* 선택된 파일 목록 */}
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <Label className="text-base font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
-                                {selectedFiles.length > 0 && (
+                            {selectedFiles.length > 0 && (
+                              <div className="bg-blue-50 rounded-lg p-4 space-y-4">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-base font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
                                   <Button
                                     type="button"
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setSelectedFiles([])}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300"
                                   >
-                                    전체 파일 삭제
+                                    전체 삭제
                                   </Button>
-                                )}
-                              </div>
-                              
-                              <div className="border rounded-lg bg-white min-h-[120px]">
-                                {selectedFiles.length === 0 ? (
-                                  <div className="p-6 text-center text-gray-500">
-                                    선택된 파일이 없습니다
-                                  </div>
-                                ) : (
-                                  <div className="divide-y divide-gray-100">
-                                    {selectedFiles.map((file, index) => (
-                                      <div key={index} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                                        <div className="flex items-center space-x-3">
-                                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                                            <FileText className="w-4 h-4 text-blue-600" />
-                                          </div>
-                                          <div>
-                                            <p className="font-medium text-gray-900 text-sm">{file.name}</p>
-                                            <p className="text-xs text-gray-500">
-                                              {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.includes('pdf') ? 'PDF' : 
-                                               file.type.includes('word') || file.name.includes('.doc') ? 'WORD DOCUMENT' : 
-                                               file.type.includes('sheet') || file.name.includes('.xls') ? 'EXCEL DOCUMENT' : 
-                                               file.type.includes('presentation') || file.name.includes('.ppt') ? 'POWERPOINT DOCUMENT' : 
-                                               'DOCUMENT'}
-                                            </p>
-                                          </div>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  {selectedFiles.map((file, index) => (
+                                    <div key={index} className="bg-white rounded-lg p-4 flex items-center justify-between border border-gray-200">
+                                      <div className="flex items-center space-x-3">
+                                        <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                          <FileText className="w-4 h-4 text-blue-600" />
                                         </div>
-                                        <Button
-                                          type="button"
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => {
-                                            setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-                                          }}
-                                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                        >
-                                          <X className="w-4 h-4" />
-                                        </Button>
+                                        <div>
+                                          <p className="font-medium text-gray-900 text-sm">{file.name}</p>
+                                          <p className="text-xs text-blue-600">
+                                            {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.includes('pdf') ? 'PDF' : 
+                                             file.type.includes('word') || file.name.includes('.doc') ? 'WORD DOCUMENT' : 
+                                             file.type.includes('sheet') || file.name.includes('.xls') ? 'EXCEL DOCUMENT' : 
+                                             file.type.includes('presentation') || file.name.includes('.ppt') ? 'POWERPOINT DOCUMENT' : 
+                                             'DOCUMENT'}
+                                          </p>
+                                        </div>
                                       </div>
-                                    ))}
-                                  </div>
-                                )}
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+                                        }}
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-50 w-8 h-8 p-0 flex items-center justify-center"
+                                      >
+                                        <X className="w-4 h-4" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
+                            )}
                             
                             {/* 문서 종류 */}
                             <div className="space-y-2">
