@@ -10702,11 +10702,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="userType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">사용자 타입 *</FormLabel>
+                          <FormLabel className="text-sm">사용자 유형 *</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="타입 선택" />
+                                <SelectValue placeholder="유형 선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
