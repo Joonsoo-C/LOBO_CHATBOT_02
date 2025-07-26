@@ -863,6 +863,9 @@ function MasterAdmin() {
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
   
+  // 에이전트 검색 모달 상태
+  const [isAgentSearchDialogOpen, setIsAgentSearchDialogOpen] = useState(false);
+  
   // 페이지네이션 상태들 - 모든 관리 목록에 동일하게 적용
   const [organizationCurrentPage, setOrganizationCurrentPage] = useState(1);
   const [userCurrentPage, setUserCurrentPage] = useState(1);
@@ -7667,13 +7670,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <button
                             type="button"
                             onClick={() => {
-                              // 에이전트 관리 탭으로 이동하고 해당 조직으로 필터링
-                              setActiveTab("agents");
+                              // 에이전트 검색 모달을 열고 해당 조직으로 필터링
                               setSelectedUniversity(editingOrgCategory?.upperCategory || 'all');
                               setSelectedCollege(editingOrgCategory?.lowerCategory || 'all');
                               setSelectedDepartment(editingOrgCategory?.detailCategory || 'all');
                               setHasSearched(true);
+                              
+                              // 조직 상세 정보 모달 닫기
                               setIsOrgCategoryEditDialogOpen(false);
+                              setEditingOrgCategory(null);
+                              
+                              // 에이전트 검색 모달 열기
+                              setIsAgentSearchDialogOpen(true);
                             }}
                             className="text-left w-full hover:bg-blue-100 dark:hover:bg-blue-800/30 p-2 rounded transition-colors"
                           >
@@ -12546,6 +12554,216 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         </Dialog>
 
 
+
+        {/* 에이전트 검색 모달 */}
+        <Dialog open={isAgentSearchDialogOpen} onOpenChange={setIsAgentSearchDialogOpen}>
+          <DialogContent className="max-w-6xl h-[80vh] flex flex-col">
+            <DialogHeader>
+              <DialogTitle>에이전트 검색</DialogTitle>
+              <DialogDescription>조직별 에이전트를 검색하고 관리할 수 있습니다.</DialogDescription>
+            </DialogHeader>
+            
+            <div className="flex-1 flex flex-col space-y-4">
+              {/* 검색 필터 영역 */}
+              <div className="grid grid-cols-3 gap-4">
+                {/* 상위 조직 */}
+                <div>
+                  <Label>상위 조직</Label>
+                  <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {organizationCategories?.data && Array.from(new Set(
+                        organizationCategories.data.map((org: any) => org.upperCategory)
+                      )).map((upperCategory: string) => (
+                        <SelectItem key={upperCategory} value={upperCategory}>
+                          {upperCategory}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* 하위 조직 */}
+                <div>
+                  <Label>하위 조직</Label>
+                  <Select value={selectedCollege} onValueChange={setSelectedCollege}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {selectedUniversity !== 'all' && organizationCategories?.data && Array.from(new Set(
+                        organizationCategories.data
+                          .filter((org: any) => org.upperCategory === selectedUniversity)
+                          .map((org: any) => org.lowerCategory)
+                      )).map((lowerCategory: string) => (
+                        <SelectItem key={lowerCategory} value={lowerCategory}>
+                          {lowerCategory}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* 세부 조직 */}
+                <div>
+                  <Label>세부 조직</Label>
+                  <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      {selectedCollege !== 'all' && organizationCategories?.data && Array.from(new Set(
+                        organizationCategories.data
+                          .filter((org: any) => 
+                            org.upperCategory === selectedUniversity && 
+                            org.lowerCategory === selectedCollege
+                          )
+                          .map((org: any) => org.detailCategory)
+                      )).map((detailCategory: string) => (
+                        <SelectItem key={detailCategory} value={detailCategory}>
+                          {detailCategory}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* 유형 및 상태 필터 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>유형</Label>
+                  <Select value={selectedAgentType} onValueChange={setSelectedAgentType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="학교">학교</SelectItem>
+                      <SelectItem value="교수">교수</SelectItem>
+                      <SelectItem value="학생">학생</SelectItem>
+                      <SelectItem value="그룹">그룹</SelectItem>
+                      <SelectItem value="기능형">기능형</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label>상태</Label>
+                  <Select value={selectedAgentStatus} onValueChange={setSelectedAgentStatus}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="활성">활성</SelectItem>
+                      <SelectItem value="비활성">비활성</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {/* 검색어 */}
+              <div>
+                <Label>검색어</Label>
+                <Input
+                  value={agentSearchQuery}
+                  onChange={(e) => setAgentSearchQuery(e.target.value)}
+                  placeholder="에이전트 이름 또는 설명 키워드를 입력하세요."
+                />
+              </div>
+              
+              {/* 필터 초기화 버튼 */}
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSelectedUniversity('all');
+                    setSelectedCollege('all');
+                    setSelectedDepartment('all');
+                    setSelectedAgentType('all');
+                    setSelectedAgentStatus('all');
+                    setAgentSearchQuery('');
+                    setHasSearched(false);
+                  }}
+                >
+                  필터 초기화
+                </Button>
+              </div>
+              
+              {/* 에이전트 목록 */}
+              <div className="flex-1 min-h-0">
+                <div className="h-full border rounded-lg">
+                  <div className="h-full overflow-auto p-4">
+                    {filteredAgents.length > 0 ? (
+                      <div className="space-y-3">
+                        {paginatedAgents.map((agent: any) => (
+                          <div 
+                            key={agent.id} 
+                            className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                            onClick={() => {
+                              setSelectedAgent(agent);
+                              setIsAgentDetailDialogOpen(true);
+                              setIsAgentSearchDialogOpen(false);
+                            }}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start space-x-3">
+                                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600 text-xl">
+                                  {agent.icon || '🤖'}
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                                    {agent.name}
+                                  </h3>
+                                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                    {agent.description}
+                                  </p>
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Badge variant={agent.isActive ? "default" : "secondary"}>
+                                      {agent.isActive ? "활성" : "비활성"}
+                                    </Badge>
+                                    <Badge variant="outline">
+                                      {agent.category}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right text-sm text-gray-500 dark:text-gray-400">
+                                <div>관리자: {agent.managerName || "미설정"}</div>
+                                <div>조직: {agent.upperCategory} / {agent.lowerCategory}</div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-32">
+                        <p className="text-gray-500">검색 조건에 맞는 에이전트가 없습니다.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* 페이지네이션 */}
+              {filteredAgents.length > AGENTS_PER_PAGE && (
+                <div className="flex justify-center">
+                  <PaginationComponent
+                    currentPage={agentCurrentPage}
+                    totalPages={Math.ceil(filteredAgents.length / AGENTS_PER_PAGE)}
+                    onPageChange={setAgentCurrentPage}
+                  />
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* 에이전트 파일 업로드 모달 */}
         <AgentFileUploadModal
