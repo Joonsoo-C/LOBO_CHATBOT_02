@@ -10298,7 +10298,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isUserDetailDialogOpen} onOpenChange={setIsUserDetailDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>사용자 정보 편집</DialogTitle>
+              <DialogTitle>사용자 상세 정보</DialogTitle>
               <DialogDescription>사용자 정보를 수정합니다.</DialogDescription>
             </DialogHeader>
             
