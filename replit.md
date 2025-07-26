@@ -1032,6 +1032,12 @@ Changelog:
   * Changed placeholder text from "일반 사용자" to "역할 선택" for better UX
   * Standardized role options across all forms: 일반 사용자, 마스터 관리자, 운영 관리자, 조직 관리자, 에이전트 관리자, QA 관리자, 문서 관리자, 외부 사용자
   * System role is now mandatory in all user management contexts
+- July 26, 2025. Standardized modal button positioning for consistent UI experience:
+  * Fixed user edit modal button layout from justify-between to justify-end with proper spacing
+  * Ensured all modal dialogs follow consistent button order: Cancel button (left) → Action button (right)
+  * Verified button positioning across all modals: user edit, user creation, agent detail, agent creation, organization edit
+  * Applied consistent space-x-2 spacing between cancel and action buttons throughout interface
+  * Enhanced UI consistency matching standard dialog patterns with left-aligned cancel and right-aligned primary actions
 - July 25, 2025. Completed comprehensive multi-file upload system unification and agent file size optimization:
   * Successfully unified all upload modals (UserFileUploadModal, AgentFileUploadModal, DocumentUploadModal, OrganizationFileUpload) with consistent UI design
   * Implemented selectedFiles array state management across all upload interfaces for multi-file handling

@@ -10620,7 +10620,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 />
 
                 {/* 버튼 */}
-                <div className="flex justify-between pt-4">
+                <div className="flex justify-end space-x-2 pt-4">
                   <Button 
                     type="button"
                     variant="outline"
