@@ -2279,20 +2279,26 @@ function MasterAdmin() {
         
         switch (qaSortField) {
           case 'responseMethod':
-            // 응답 방식: 문서 우선 + LLM, LLM 우선, 문서만
+            // 응답 방식 그룹별 정렬: 문서만(우선) -> 문서 우선 + LLM -> LLM 우선
             const responseTypes = ['문서 우선 + LLM', 'LLM 우선', '문서만'];
-            aValue = responseTypes[(a.id || 1) % 3];
-            bValue = responseTypes[(b.id || 1) % 3];
+            const aMethodIndex = (a.id || 1) % 3;
+            const bMethodIndex = (b.id || 1) % 3;
+            aValue = responseTypes[aMethodIndex];
+            bValue = responseTypes[bMethodIndex];
+            // 같은 그룹끼리 정렬하기 위해 우선순위 부여
+            const methodPriority = { '문서만': 0, '문서 우선 + LLM': 1, 'LLM 우선': 2 };
+            aValue = methodPriority[aValue as keyof typeof methodPriority];
+            bValue = methodPriority[bValue as keyof typeof methodPriority];
             break;
           case 'responseStatus':
-            // 응답 상태: 성공/실패
+            // 응답 상태 그룹별 정렬: 성공(우선) -> 실패
             const aHasResponse = a.lastUserMessage && a.messageCount > 1;
             const bHasResponse = b.lastUserMessage && b.messageCount > 1;
-            aValue = aHasResponse ? '성공' : '실패';
-            bValue = bHasResponse ? '성공' : '실패';
+            aValue = aHasResponse ? 0 : 1; // 성공=0 (우선), 실패=1
+            bValue = bHasResponse ? 0 : 1;
             break;
           case 'responseTime':
-            // 응답시간 (숫자값으로 정렬)
+            // 응답시간 수치별 정렬 (0.1초 ~ 2.5초)
             const aSeed = a.id || 1;
             const bSeed = b.id || 1;
             aValue = ((aSeed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
@@ -7313,10 +7319,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         console.log('filteredConversationLogs:', filteredConversationLogs);
                         console.log('filteredConversationLogs.length:', filteredConversationLogs?.length);
                         
-                        // 일단 조건을 완전히 제거하고 모든 대화 표시
-                        if (conversationLogs && conversationLogs.length > 0) {
-                          console.log('Showing all conversations:', conversationLogs.length);
-                          return conversationLogs.slice(0, ITEMS_PER_PAGE).map((log: any) => (
+                        // 필터링 및 정렬된 대화 목록 사용
+                        if (filteredConversationLogs && filteredConversationLogs.length > 0) {
+                          console.log('Showing filtered/sorted conversations:', filteredConversationLogs.length);
+                          return filteredConversationLogs.slice((qaLogCurrentPage - 1) * ITEMS_PER_PAGE, qaLogCurrentPage * ITEMS_PER_PAGE).map((log: any) => (
                             <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
