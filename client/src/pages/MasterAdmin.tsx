@@ -993,6 +993,20 @@ function MasterAdmin() {
   const [qaPeriodFilter, setQaPeriodFilter] = useState('today');
   const [qaSearchQuery, setQaSearchQuery] = useState('');
   
+  // Q&A 로그 정렬 상태
+  const [qaSortField, setQaSortField] = useState<string>('');
+  const [qaSortDirection, setQaSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Q&A 로그 정렬 함수
+  const handleQASort = (field: string) => {
+    if (qaSortField === field) {
+      setQaSortDirection(qaSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setQaSortField(field);
+      setQaSortDirection('desc');
+    }
+  };
+  
   // 질의응답 상세보기 모달 상태
   const [showQADetailModal, setShowQADetailModal] = useState(false);
   const [selectedQALog, setSelectedQALog] = useState<any>(null);
@@ -2257,9 +2271,58 @@ function MasterAdmin() {
       filtered = filtered.filter(log => log.userDetailCategory === qaSelectedDetailCategory);
     }
     
+    // Q&A 로그 정렬 적용
+    if (qaSortField) {
+      filtered.sort((a: any, b: any) => {
+        let aValue: any;
+        let bValue: any;
+        
+        switch (qaSortField) {
+          case 'responseMethod':
+            // 응답 방식: 문서 우선 + LLM, LLM 우선, 문서만
+            const responseTypes = ['문서 우선 + LLM', 'LLM 우선', '문서만'];
+            aValue = responseTypes[(a.id || 1) % 3];
+            bValue = responseTypes[(b.id || 1) % 3];
+            break;
+          case 'responseStatus':
+            // 응답 상태: 성공/실패
+            const aHasResponse = a.lastUserMessage && a.messageCount > 1;
+            const bHasResponse = b.lastUserMessage && b.messageCount > 1;
+            aValue = aHasResponse ? '성공' : '실패';
+            bValue = bHasResponse ? '성공' : '실패';
+            break;
+          case 'responseTime':
+            // 응답시간 (숫자값으로 정렬)
+            const aSeed = a.id || 1;
+            const bSeed = b.id || 1;
+            aValue = ((aSeed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
+            bValue = ((bSeed * 137) % 240 + 10) / 100;
+            break;
+          default:
+            return 0;
+        }
+        
+        // 문자열 정렬
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          if (qaSortDirection === 'asc') {
+            return aValue.localeCompare(bValue);
+          } else {
+            return bValue.localeCompare(aValue);
+          }
+        }
+        
+        // 숫자 정렬
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return qaSortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        return 0;
+      });
+    }
+    
     console.log('Filtered conversationLogs:', filtered.length);
     return filtered;
-  }, [conversationLogs, qaSearchQuery, qaPeriodFilter, qaUserTypeFilter, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory]);
+  }, [conversationLogs, qaSearchQuery, qaPeriodFilter, qaUserTypeFilter, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory, qaSortField, qaSortDirection]);
 
   // 필터된 조직 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
@@ -7207,14 +7270,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.question')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 방식
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => handleQASort('responseMethod')}>
+                          응답 방식 {qaSortField === 'responseMethod' && (qaSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          응답 상태
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => handleQASort('responseStatus')}>
+                          응답 상태 {qaSortField === 'responseStatus' && (qaSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.responseTime')}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => handleQASort('responseTime')}>
+                          {t('admin.responseTime')} {qaSortField === 'responseTime' && (qaSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           대화 시각
