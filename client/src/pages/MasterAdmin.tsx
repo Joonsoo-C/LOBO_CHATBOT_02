@@ -7749,7 +7749,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <FormLabel>조직 설명 / 메모</FormLabel>
                           <FormControl>
                             <Textarea 
-                              placeholder="조직에 대한 설명이나 메모를 입력하세요."
+                              placeholder="조직에 대한 추가 설명이나 메모를 입력하세요."
                               className="min-h-[100px]"
                               {...field} 
                             />
