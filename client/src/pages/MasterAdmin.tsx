@@ -993,11 +993,16 @@ function MasterAdmin() {
   // QA 개선 코멘트 관련 뮤테이션
   const saveQACommentMutation = useMutation({
     mutationFn: async ({ conversationId, comment }: { conversationId: number; comment: string }) => {
-      const response = await apiRequest('/api/admin/qa-comments', {
+      const response = await fetch('/api/admin/qa-comments', {
         method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ conversationId, comment }),
       });
-      return response;
+      if (!response.ok) throw new Error('Failed to save comment');
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -1120,6 +1125,24 @@ function MasterAdmin() {
 
   // Rename conversationLogs to conversations for consistency with QA modal
   const conversations = conversationLogs;
+
+  // 조직 카테고리 데이터 조회
+  const { data: organizationCategories } = useQuery({
+    queryKey: ['/api/admin/organization-categories'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/organization-categories', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch organization categories');
+      }
+      return response.json();
+    }
+  });
 
   // 인기 질문 TOP 5 데이터 조회
   const { data: popularQuestions, isLoading: popularQuestionsLoading, error: popularQuestionsError } = useQuery({
@@ -2942,7 +2965,6 @@ function MasterAdmin() {
       speechStyle: "",
       personality: "",
       additionalPrompt: "",
-      extraPrompt: "",
       
       // 📌 권한 및 접근 설정
       visibility: "organization",
@@ -5454,26 +5476,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               />
                             </div>
 
-                            {/* 추가 프롬프트 영역 */}
-                            <div className="grid grid-cols-1 gap-4">
-                              <FormField
-                                control={agentForm.control}
-                                name="extraPrompt"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">추가 프롬프트</FormLabel>
-                                    <FormControl>
-                                      <Textarea 
-                                        placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약&#10;예: 숫자와 항목이 있는 리스트 형식으로 대답&#10;예: 감정적인 질문에는 공감 표현을 포함"
-                                        className="min-h-[100px] focus:ring-2 focus:ring-blue-500"
-                                        {...field} 
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
+
                           </div>
                         </TabsContent>
 
