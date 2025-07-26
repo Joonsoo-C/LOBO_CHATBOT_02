@@ -4977,14 +4977,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('org.all')}</SelectItem>
-                      <SelectItem value="master_admin">{t('admin.systemRole.masterAdmin')}</SelectItem>
-                      <SelectItem value="operation_admin">{t('admin.systemRole.operationAdmin')}</SelectItem>
-                      <SelectItem value="category_admin">{t('admin.systemRole.categoryAdmin')}</SelectItem>
-                      <SelectItem value="agent_admin">{t('admin.systemRole.agentAdmin')}</SelectItem>
-                      <SelectItem value="qa_admin">{t('admin.systemRole.qaAdmin')}</SelectItem>
-                      <SelectItem value="doc_admin">{t('admin.systemRole.docAdmin')}</SelectItem>
-                      <SelectItem value="user">{t('admin.systemRole.user')}</SelectItem>
-                      <SelectItem value="external">{t('admin.systemRole.external')}</SelectItem>
+                      <SelectItem value="user">일반 사용자</SelectItem>
+                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                      <SelectItem value="operation_admin">운영관리자</SelectItem>
+                      <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                      <SelectItem value="external">외부 사용자</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -10537,9 +10534,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     </FormControl>
                                     <SelectContent>
                                       <SelectItem value="user">일반 사용자</SelectItem>
+                                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                                      <SelectItem value="operation_admin">운영관리자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
-                                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                                      <SelectItem value="category_admin">조직 관리자</SelectItem>
+                                      <SelectItem value="external">외부 사용자</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -11038,9 +11036,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     </FormControl>
                                     <SelectContent>
                                       <SelectItem value="user">일반 사용자</SelectItem>
+                                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                                      <SelectItem value="operation_admin">운영관리자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
-                                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
-                                      <SelectItem value="category_admin">조직 관리자</SelectItem>
+                                      <SelectItem value="external">외부 사용자</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
