@@ -11027,7 +11027,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     disabled={createUserMutation.isPending}
                     className="min-w-[120px]"
                   >
-                    {createUserMutation.isPending ? '생성 중...' : '사용자 생성'}
+                    {createUserMutation.isPending ? '추가 중...' : '사용자 추가'}
                   </Button>
                 </div>
               </form>
