@@ -354,15 +354,22 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   
   // 모델 및 응답 설정
   llmModel: z.string().optional(),
-  chatbotType: z.enum(["strict-doc", "doc-fallback-llm", "general-llm"]).optional(),
+  chatbotType: z.enum(["strict-doc", "doc-fallback-llm", "general-llm", "llm-with-web-search"]).optional(),
   maxInputLength: z.number().min(1).max(10000).optional(),
   maxResponseLength: z.number().min(1).max(10000).optional(),
+  
+  // 웹 검색 관련 설정
+  webSearchEnabled: z.boolean().optional(),
+  searchEngine: z.string().optional(),
+  bingApiKey: z.string().optional(),
   
   // 페르소나 설정
   personaNickname: z.string().optional(),
   speechStyle: z.string().optional(),
   personality: z.string().optional(),
   forbiddenResponseStyle: z.string().optional(),
+  additionalPrompt: z.string().optional(),
+  extraPrompt: z.string().optional(),
   
   // 파일 업로드 설정
   documentType: z.string().optional(),
@@ -380,6 +387,19 @@ export const insertAgentSchema = createInsertSchema(agents).omit({
   allowedGroups: z.array(z.string()).optional(),
   agentManagerIds: z.array(z.string()).optional(),
   agentEditorIds: z.array(z.string()).optional(),
+  
+  // 기존 UI 관련 필드들
+  icon: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  isCustomIcon: z.boolean().optional(),
+  
+  // 에이전트 유형 정보
+  type: z.string().optional(),
+  
+  // 레거시 필드들 (호환성 유지)
+  category: z.string().optional(),
+  organizationId: z.number().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
@@ -465,7 +485,11 @@ export const insertUserSchema = createInsertSchema(users).omit({
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
-export type User = typeof users.$inferSelect;
+export type User = typeof users.$inferSelect & {
+  upperCategory?: string;
+  lowerCategory?: string;
+  detailCategory?: string;
+};
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Agent = typeof agents.$inferSelect & {
   managerFirstName?: string | null;
@@ -473,6 +497,8 @@ export type Agent = typeof agents.$inferSelect & {
   managerUsername?: string | null;
   organizationName?: string | null;
   organizationType?: string | null;
+  documentCount?: number;
+  userCount?: number;
   messageCount?: number;
 };
 export type InsertAgent = z.infer<typeof insertAgentSchema>;

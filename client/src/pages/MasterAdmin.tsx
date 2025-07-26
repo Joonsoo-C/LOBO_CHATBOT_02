@@ -10901,9 +10901,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       )}
                     />
                   </div>
+                </div>
                   
-                  {/* 소속 정보 */}
-                  <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
+                {/* 소속 정보 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-4">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-medium">소속 정보</Label>
                       <Button 
@@ -12598,8 +12599,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {organizationCategories?.data && Array.from(new Set(
-                        organizationCategories.data.map((org: any) => org.upperCategory)
+                      {organizationCategories && Array.from(new Set(
+                        organizationCategories.map((org: any) => org.upperCategory)
                       )).map((upperCategory: string) => (
                         <SelectItem key={upperCategory} value={upperCategory}>
                           {upperCategory}
@@ -12618,8 +12619,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {selectedUniversity !== 'all' && organizationCategories?.data && Array.from(new Set(
-                        organizationCategories.data
+                      {selectedUniversity !== 'all' && organizationCategories && Array.from(new Set(
+                        organizationCategories
                           .filter((org: any) => org.upperCategory === selectedUniversity)
                           .map((org: any) => org.lowerCategory)
                       )).map((lowerCategory: string) => (
@@ -12640,8 +12641,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      {selectedCollege !== 'all' && organizationCategories?.data && Array.from(new Set(
-                        organizationCategories.data
+                      {selectedCollege !== 'all' && organizationCategories && Array.from(new Set(
+                        organizationCategories
                           .filter((org: any) => 
                             org.upperCategory === selectedUniversity && 
                             org.lowerCategory === selectedCollege
