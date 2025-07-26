@@ -10340,25 +10340,26 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                {/* 계정 상태와 사용자 ID 정보를 수평 배치 */}
+                {/* 사용자 유형과 사용자 ID 정보를 수평 배치 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* 계정 상태 */}
+                  {/* 사용자 유형 */}
                   <div className="space-y-3">
                     <FormField
                       control={userEditForm.control}
-                      name="status"
+                      name="userType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">계정 상태</FormLabel>
+                          <FormLabel className="text-sm font-medium">사용자 유형</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger className="w-full">
-                                <SelectValue />
+                                <SelectValue placeholder="유형 선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="active">활성</SelectItem>
-                              <SelectItem value="inactive">비활성</SelectItem>
+                              <SelectItem value="student">학생</SelectItem>
+                              <SelectItem value="faculty">교직원</SelectItem>
+                              <SelectItem value="other">기타</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -10567,11 +10568,38 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 계정 정보 */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">계정 정보</Label>
-                  <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                    <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
-                    <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">계정 정보</Label>
+                    <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                      <div>계정 등록일: 10/4/2024, 6:22:27 PM</div>
+                      <div>최종 접속일: 5/31/2025, 9:41:31 AM</div>
+                    </div>
+                  </div>
+                  
+                  {/* 계정 상태 */}
+                  <div className="space-y-3">
+                    <FormField
+                      control={userEditForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">계정 상태</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="active">활성</SelectItem>
+                              <SelectItem value="inactive">비활성</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
 
