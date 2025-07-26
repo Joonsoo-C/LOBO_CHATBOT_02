@@ -10343,8 +10343,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   />
                 </div>
 
-                {/* 사용자 유형과 사용자 ID 정보를 수평 배치 */}
+                {/* 사용자 ID와 사용자 유형 정보를 수평 배치 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* 사용자 ID 정보 */}
+                  <div className="space-y-1">
+                    <div className="text-sm font-medium">사용자 ID</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
+                  </div>
+
                   {/* 사용자 유형 */}
                   <div className="space-y-3">
                     <FormField
@@ -10352,7 +10358,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="userType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">사용자 유형</FormLabel>
+                          <FormLabel className="text-sm font-medium">유형</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger className="w-full">
@@ -10369,12 +10375,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  {/* 사용자 ID 정보 */}
-                  <div className="space-y-1">
-                    <div className="text-sm font-medium">사용자 ID</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300">{selectedUser?.id || selectedUser?.username}</div>
                   </div>
                 </div>
 
