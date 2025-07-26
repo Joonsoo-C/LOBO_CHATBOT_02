@@ -1547,8 +1547,9 @@ function MasterAdmin() {
   const [documentType, setDocumentType] = useState<string>('');
   
   // 에이전트 파일 업로드 상태
-  const [agentDocumentType, setAgentDocumentType] = useState<string>('other');
+  const [agentDocumentType, setAgentDocumentType] = useState<string>('기타');
   const [agentDocumentDescription, setAgentDocumentDescription] = useState<string>('');
+  const [agentDocumentVisible, setAgentDocumentVisible] = useState<boolean>(true);
   const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
   const [agentFileUploadProgress, setAgentFileUploadProgress] = useState(0);
   
@@ -5713,63 +5714,97 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                         {/* 파일 업로드 탭 */}
                         <TabsContent value="upload" className="space-y-6">
-                          <div className="space-y-4">
+                          <div className="space-y-6">
                             {/* 숨겨진 파일 입력 */}
                             <input
                               ref={agentFileInputRef}
                               type="file"
-                              accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
+                              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                               multiple
                               onChange={handleAgentFileInputChange}
                               style={{ display: 'none' }}
                             />
                             
-                            {/* 드래그 앤 드롭 영역 */}
+                            {/* 파일 드래그 앤 드롭 영역 */}
                             <div 
-                              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                              className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
                               onClick={handleAgentFileSelect}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                e.currentTarget.classList.add('border-blue-400', 'bg-blue-50');
+                              }}
+                              onDragLeave={(e) => {
+                                e.preventDefault();
+                                e.currentTarget.classList.remove('border-blue-400', 'bg-blue-50');
+                              }}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                e.currentTarget.classList.remove('border-blue-400', 'bg-blue-50');
+                                const files = Array.from(e.dataTransfer.files);
+                                if (files.length > 0) {
+                                  setSelectedFiles(prev => [...prev, ...files]);
+                                }
+                              }}
                             >
-                              <FileText className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                              <div className="space-y-2">
-                                <p className="text-lg font-medium text-gray-700">{t('agent.dragOrClick')}</p>
+                              <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                              <div className="space-y-3">
+                                <p className="text-lg font-medium text-gray-700">업로드할 문서 파일을 드래그하거나 파일 선택 버튼을 클릭하세요.</p>
+                                <p className="text-sm text-gray-500">PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX 파일 지원 (최대 5개, 각각 50MB)</p>
                                 <Button 
                                   type="button" 
                                   variant="outline" 
                                   size="lg" 
-                                  className="bg-white"
+                                  className="bg-white hover:bg-gray-50"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleAgentFileSelect();
                                   }}
                                 >
-                                  <Upload className="w-4 h-4 mr-2" />
-                                  {t('agent.selectFile')}
+                                  파일 선택
                                 </Button>
-                              </div>
-                              <div className="mt-4 text-sm text-gray-500">
-                                <p>{t('agent.supportedFormats')}</p>
-                                <p>{t('agent.maxSize')}</p>
                               </div>
                             </div>
                             
-                            {/* 업로드된 파일 목록 */}
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium text-gray-700">{t('agent.selectedFiles')}</Label>
-                              <div className="border rounded-lg p-3 bg-white min-h-[100px]">
+                            {/* 선택된 파일 목록 */}
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-base font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
+                                {selectedFiles.length > 0 && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setSelectedFiles([])}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    전체 파일 삭제
+                                  </Button>
+                                )}
+                              </div>
+                              
+                              <div className="border rounded-lg bg-white min-h-[120px]">
                                 {selectedFiles.length === 0 ? (
-                                  <div className="text-center text-sm text-gray-500 py-4">
-                                    {t('agent.noFilesSelected')}
+                                  <div className="p-6 text-center text-gray-500">
+                                    선택된 파일이 없습니다
                                   </div>
                                 ) : (
-                                  <div className="space-y-2">
+                                  <div className="divide-y divide-gray-100">
                                     {selectedFiles.map((file, index) => (
-                                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                        <div className="flex items-center space-x-2">
-                                          <FileText className="w-4 h-4 text-blue-500" />
-                                          <span className="text-sm font-medium">{file.name}</span>
-                                          <span className="text-xs text-gray-500">
-                                            ({(file.size / 1024 / 1024).toFixed(2)} MB)
-                                          </span>
+                                      <div key={index} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                        <div className="flex items-center space-x-3">
+                                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                            <FileText className="w-4 h-4 text-blue-600" />
+                                          </div>
+                                          <div>
+                                            <p className="font-medium text-gray-900 text-sm">{file.name}</p>
+                                            <p className="text-xs text-gray-500">
+                                              {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.includes('pdf') ? 'PDF' : 
+                                               file.type.includes('word') || file.name.includes('.doc') ? 'WORD DOCUMENT' : 
+                                               file.type.includes('sheet') || file.name.includes('.xls') ? 'EXCEL DOCUMENT' : 
+                                               file.type.includes('presentation') || file.name.includes('.ppt') ? 'POWERPOINT DOCUMENT' : 
+                                               'DOCUMENT'}
+                                            </p>
+                                          </div>
                                         </div>
                                         <Button
                                           type="button"
@@ -5778,6 +5813,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           onClick={() => {
                                             setSelectedFiles(prev => prev.filter((_, i) => i !== index));
                                           }}
+                                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
                                         >
                                           <X className="w-4 h-4" />
                                         </Button>
@@ -5788,34 +5824,54 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             </div>
                             
-                            {/* 문서 유형 선택 */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={agentForm.control}
-                                name="documentType"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">문서 유형</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value || "manual"}>
-                                      <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        <SelectItem value="manual">매뉴얼</SelectItem>
-                                        <SelectItem value="faq">FAQ</SelectItem>
-                                        <SelectItem value="policy">정책 문서</SelectItem>
-                                        <SelectItem value="reference">참고 자료</SelectItem>
-                                        <SelectItem value="course">강의 자료</SelectItem>
-                                        <SelectItem value="research">연구 자료</SelectItem>
-                                        <SelectItem value="other">기타</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
+                            {/* 문서 종류 */}
+                            <div className="space-y-2">
+                              <Label className="text-base font-medium text-gray-900">문서 종류</Label>
+                              <Select value={agentDocumentType || "기타"} onValueChange={setAgentDocumentType}>
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="선택" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="강의 자료">강의 자료</SelectItem>
+                                  <SelectItem value="교육과정">교육과정</SelectItem>
+                                  <SelectItem value="정책 문서">정책 문서</SelectItem>
+                                  <SelectItem value="매뉴얼">매뉴얼</SelectItem>
+                                  <SelectItem value="양식">양식</SelectItem>
+                                  <SelectItem value="공지사항">공지사항</SelectItem>
+                                  <SelectItem value="기타">기타</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            {/* 문서 설명 */}
+                            <div className="space-y-2">
+                              <Label className="text-base font-medium text-gray-900">문서 설명</Label>
+                              <Textarea 
+                                placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                                value={agentDocumentDescription}
+                                onChange={(e) => setAgentDocumentDescription(e.target.value)}
+                                className="min-h-[100px] resize-none"
                               />
+                            </div>
+                            
+                            {/* 문서 노출 설정 */}
+                            <div className="space-y-3">
+                              <Label className="text-base font-medium text-gray-900">문서 노출 설정</Label>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id="agentDocumentVisible"
+                                  checked={agentDocumentVisible}
+                                  onChange={(e) => setAgentDocumentVisible(e.target.checked)}
+                                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                <Label htmlFor="agentDocumentVisible" className="text-sm font-medium cursor-pointer">
+                                  일반 사용자에게 이 문서를 표시
+                                </Label>
+                              </div>
+                              <p className="text-xs text-gray-500 ml-6">
+                                체크 해제 시 관리자만 해당 문서 존재를 인지할 수 있습니다.
+                              </p>
                             </div>
                           </div>
                         </TabsContent>

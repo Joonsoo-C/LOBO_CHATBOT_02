@@ -1013,6 +1013,15 @@ Changelog:
   * All file upload interfaces now provide consistent user experience with Apple's design principles
 - July 25, 2025. Enhanced icon change modal user experience:
   * Fixed "이미지 업로드" button to show drag-and-drop area instead of immediately opening file dialog
+- July 26, 2025. Completed comprehensive file upload tab implementation for new agent creation modal:
+  * Redesigned file upload tab UI to match existing document upload modal design exactly
+  * Added drag-and-drop functionality with visual feedback and file type validation
+  * Implemented comprehensive file list display with file type badges and individual deletion
+  * Added document type dropdown with 7 categories (강의 자료, 교육과정, 정책 문서, 매뉴얼, 양식, 공지사항, 기타)
+  * Included document description textarea for detailed file information
+  * Added document visibility toggle with explanation text for user access control
+  * Enhanced file format support (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX) with 50MB limit
+  * File upload tab now provides identical functionality to standalone document upload modal
   * Moved "파일 선택" button inside the drag box for better user guidance
   * Updated help text: "파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요. 지원 형식: jpg, png, gif, webp (최대 5MB)"
   * Implemented complete drag-and-drop functionality for image uploads
