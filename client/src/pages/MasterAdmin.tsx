@@ -1345,7 +1345,7 @@ function MasterAdmin() {
   const [selectedQaManagers, setSelectedQaManagers] = useState<ManagerInfo[]>([]);
   
   // 관리자 탭 상태 추적
-  const [currentManagerTab, setCurrentManagerTab] = useState<'agent' | 'document' | 'qa'>('agent');
+
   
   // 새 사용자 생성 폼의 동적 소속 정보 상태
   const [newUserAffiliations, setNewUserAffiliations] = useState([
@@ -1422,13 +1422,7 @@ function MasterAdmin() {
     setManagerCurrentPage(1);
   };
 
-  // 관리자 탭 변경 핸들러
-  const handleManagerTabChange = (newTab: 'agent' | 'document' | 'qa') => {
-    if (currentManagerTab !== newTab) {
-      resetManagerSearchState();
-      setCurrentManagerTab(newTab);
-    }
-  };
+
 
   // ManagerSelector 컴포넌트
   function ManagerSelector({ 
@@ -5936,119 +5930,36 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <div className="space-y-4">
                             {/* 간단한 설명 */}
                             <div className="text-sm text-gray-600 px-1">
-                              각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
+                              에이전트 관리자는 최대 3명까지 공동 관리자를 선정할 수 있습니다.
                             </div>
 
-                            {/* 선정된 관리자 영역 - 상단으로 이동 */}
-                            <Tabs value={currentManagerTab} onValueChange={(value) => handleManagerTabChange(value as 'agent' | 'document' | 'qa')} className="w-full">
-                              <TabsList className="grid w-full grid-cols-3">
-                                <TabsTrigger value="agent" className="relative">
-                                  에이전트 관리자
-                                  {selectedAgentManagers.length > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                      {selectedAgentManagers.length}
-                                    </span>
-                                  )}
-                                </TabsTrigger>
-                                <TabsTrigger value="document" className="relative">
-                                  문서 관리자
-                                  {selectedDocumentManagers.length > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                      {selectedDocumentManagers.length}
-                                    </span>
-                                  )}
-                                </TabsTrigger>
-                                <TabsTrigger value="qa" className="relative">
-                                  QA 관리자
-                                  {selectedQaManagers.length > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                      {selectedQaManagers.length}
-                                    </span>
-                                  )}
-                                </TabsTrigger>
-                              </TabsList>
-
-                              {/* 에이전트 관리자 */}
-                              <TabsContent value="agent" className="space-y-3">
-                                <div className="min-h-[80px] p-3 border-2 border-dashed border-blue-200 rounded-lg bg-blue-50/30">
-                                  {selectedAgentManagers.length === 0 ? (
-                                    <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
-                                    </div>
-                                  ) : (
-                                    <div className="flex flex-wrap gap-2">
-                                      {selectedAgentManagers.map((manager, index) => (
-                                        <div key={index} className="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-2 rounded-lg border border-blue-200">
-                                          <span className="font-medium">{(manager as any).name || manager.id}</span>
-                                          <span className="ml-1 text-blue-600">({manager.id})</span>
-                                          <button
-                                            type="button"
-                                            onClick={() => setSelectedAgentManagers(prev => prev.filter((_, i) => i !== index))}
-                                            className="ml-2 text-blue-600 hover:text-blue-800 hover:bg-blue-200 rounded-full w-5 h-5 flex items-center justify-center"
-                                          >
-                                            ×
-                                          </button>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              </TabsContent>
-
-                              {/* 문서 관리자 */}
-                              <TabsContent value="document" className="space-y-3">
-                                <div className="min-h-[80px] p-3 border-2 border-dashed border-green-200 rounded-lg bg-green-50/30">
-                                  {selectedDocumentManagers.length === 0 ? (
-                                    <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
-                                    </div>
-                                  ) : (
-                                    <div className="flex flex-wrap gap-2">
-                                      {selectedDocumentManagers.map((manager, index) => (
-                                        <div key={index} className="inline-flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-lg border border-green-200">
-                                          <span className="font-medium">{(manager as any).name || manager.id}</span>
-                                          <span className="ml-1 text-green-600">({manager.id})</span>
-                                          <button
-                                            type="button"
-                                            onClick={() => setSelectedDocumentManagers(prev => prev.filter((_, i) => i !== index))}
-                                            className="ml-2 text-green-600 hover:text-green-800 hover:bg-green-200 rounded-full w-5 h-5 flex items-center justify-center"
-                                          >
-                                            ×
-                                          </button>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              </TabsContent>
-
-                              {/* QA 관리자 */}
-                              <TabsContent value="qa" className="space-y-3">
-                                <div className="min-h-[80px] p-3 border-2 border-dashed border-purple-200 rounded-lg bg-purple-50/30">
-                                  {selectedQaManagers.length === 0 ? (
-                                    <div className="flex items-center justify-center h-12">
-                                      <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
-                                    </div>
-                                  ) : (
-                                    <div className="flex flex-wrap gap-2">
-                                      {selectedQaManagers.map((manager, index) => (
-                                        <div key={index} className="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-2 rounded-lg border border-purple-200">
-                                          <span className="font-medium">{(manager as any).name || manager.id}</span>
-                                          <span className="ml-1 text-purple-600">({manager.id})</span>
-                                          <button
-                                            type="button"
-                                            onClick={() => setSelectedQaManagers(prev => prev.filter((_, i) => i !== index))}
-                                            className="ml-2 text-purple-600 hover:text-purple-800 hover:bg-purple-200 rounded-full w-5 h-5 flex items-center justify-center"
-                                          >
-                                            ×
-                                          </button>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              </TabsContent>
-                            </Tabs>
+                            {/* 선정된 관리자 영역 */}
+                            <div className="space-y-3">
+                              <h4 className="text-base font-medium text-gray-900">선정된 에이전트 관리자</h4>
+                              <div className="min-h-[80px] p-3 border-2 border-dashed border-blue-200 rounded-lg bg-blue-50/30">
+                                {selectedAgentManagers.length === 0 ? (
+                                  <div className="flex items-center justify-center h-12">
+                                    <p className="text-sm text-gray-500">하단 검색 결과에서 사용자를 클릭하여 선정하세요</p>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-wrap gap-2">
+                                    {selectedAgentManagers.map((manager, index) => (
+                                      <div key={index} className="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-2 rounded-lg border border-blue-200">
+                                        <span className="font-medium">{(manager as any).name || manager.id}</span>
+                                        <span className="ml-1 text-blue-600">({manager.id})</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setSelectedAgentManagers(prev => prev.filter((_, i) => i !== index))}
+                                          className="ml-2 text-blue-600 hover:text-blue-800 hover:bg-blue-200 rounded-full w-5 h-5 flex items-center justify-center"
+                                        >
+                                          ×
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
 
                             {/* 검색 시스템 - 하단으로 이동 */}
                             <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
@@ -6140,31 +6051,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                               onChange={(e) => {
                                                 if (e.target.checked) {
-                                                  handleUserSelect(user, currentManagerTab);
+                                                  handleUserSelect(user, 'agent');
                                                 } else {
-                                                  // 체크해제 시 현재 탭에 해당하는 선택에서 제거
-                                                  if (currentManagerTab === 'agent') {
-                                                    setSelectedAgentManagers(prev => 
-                                                      prev.filter(m => m.id !== user.id)
-                                                    );
-                                                  } else if (currentManagerTab === 'document') {
-                                                    setSelectedDocumentManagers(prev => 
-                                                      prev.filter(m => m.id !== user.id)
-                                                    );
-                                                  } else if (currentManagerTab === 'qa') {
-                                                    setSelectedQaManagers(prev => 
-                                                      prev.filter(m => m.id !== user.id)
-                                                    );
-                                                  }
+                                                  // 체크해제 시 에이전트 관리자 선택에서 제거
+                                                  setSelectedAgentManagers(prev => 
+                                                    prev.filter(m => m.id !== user.id)
+                                                  );
                                                 }
                                               }}
-                                              checked={
-                                                currentManagerTab === 'agent' 
-                                                  ? selectedAgentManagers.some(m => m.id === user.id)
-                                                  : currentManagerTab === 'document'
-                                                  ? selectedDocumentManagers.some(m => m.id === user.id)
-                                                  : selectedQaManagers.some(m => m.id === user.id)
-                                              }
+                                              checked={selectedAgentManagers.some(m => m.id === user.id)}
                                             />
                                             <div className="flex-1 min-w-0">
                                               <div className="flex items-center space-x-2">
@@ -11683,7 +11578,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <div className="space-y-4">
                           {/* 간단한 설명 */}
                           <div className="text-sm text-gray-600 px-1">
-                            각 역할별로 최대 3명까지 공동 관리자를 선정할 수 있습니다. 한 사용자가 여러 역할을 동시에 수행할 수 있습니다.
+                            에이전트 관리자는 최대 3명까지 공동 관리자를 선정할 수 있습니다.
                           </div>
 
                           {/* 선정된 관리자 영역 - 상단으로 이동 */}
