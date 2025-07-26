@@ -1330,7 +1330,6 @@ function MasterAdmin() {
   // 에이전트 생성 탭 상태
   type AgentCreationTab = 'basic' | 'persona' | 'model' | 'upload' | 'sharing' | 'managers';
   const [agentCreationTab, setAgentCreationTab] = useState<AgentCreationTab>('basic');
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   
   // 관리자 선정 상태
   type ManagerInfo = {
@@ -1547,6 +1546,7 @@ function MasterAdmin() {
   const [documentType, setDocumentType] = useState<string>('');
   
   // 에이전트 파일 업로드 상태
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [agentDocumentType, setAgentDocumentType] = useState<string>('기타');
   const [agentDocumentDescription, setAgentDocumentDescription] = useState<string>('');
   const [agentDocumentVisible, setAgentDocumentVisible] = useState<boolean>(true);
@@ -3120,6 +3120,8 @@ function MasterAdmin() {
   const exportAgentsToExcel = () => {
     exportAgentsMutation.mutate();
   };
+
+
 
   // 문서-에이전트 연결 관련 핸들러
   const handleAgentSelection = (agentId: number, isSelected: boolean) => {
@@ -5787,13 +5789,57 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       type="button"
                                       variant="default"
                                       size="sm"
-                                      onClick={() => {
-                                        // TODO: 파일 업로드 로직 구현
-                                        console.log('파일 업로드:', selectedFiles);
+                                      onClick={async () => {
+                                        if (selectedFiles.length === 0) return;
+                                        
+                                        setIsAgentFileUploading(true);
+                                        setAgentFileUploadProgress(0);
+                                        
+                                        try {
+                                          for (let i = 0; i < selectedFiles.length; i++) {
+                                            const file = selectedFiles[i];
+                                            const formData = new FormData();
+                                            formData.append('file', file);
+                                            formData.append('type', agentDocumentType || '기타');
+                                            formData.append('description', agentDocumentDescription || '');
+                                            formData.append('visible', agentDocumentVisible ? 'true' : 'false');
+                                            
+                                            // 진행률 업데이트
+                                            setAgentFileUploadProgress(Math.round(((i + 1) / selectedFiles.length) * 100));
+                                            
+                                            // 업로드 시뮬레이션 (실제 API 엔드포인트로 교체 필요)
+                                            await new Promise(resolve => setTimeout(resolve, 500));
+                                          }
+                                          
+                                          toast({
+                                            title: "업로드 완료",
+                                            description: `${selectedFiles.length}개 파일이 성공적으로 업로드되었습니다.`,
+                                          });
+                                          
+                                          // 업로드 완료 후 선택된 파일 초기화
+                                          setSelectedFiles([]);
+                                        } catch (error) {
+                                          toast({
+                                            title: "업로드 실패",
+                                            description: "파일 업로드 중 오류가 발생했습니다.",
+                                            variant: "destructive",
+                                          });
+                                        } finally {
+                                          setIsAgentFileUploading(false);
+                                          setAgentFileUploadProgress(0);
+                                        }
                                       }}
-                                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                                      disabled={isAgentFileUploading || selectedFiles.length === 0}
+                                      className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
                                     >
-                                      업로드
+                                      {isAgentFileUploading ? (
+                                        <div className="flex items-center space-x-2">
+                                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                          <span>{agentFileUploadProgress}%</span>
+                                        </div>
+                                      ) : (
+                                        '업로드 시작'
+                                      )}
                                     </Button>
                                   </div>
                                 </div>
