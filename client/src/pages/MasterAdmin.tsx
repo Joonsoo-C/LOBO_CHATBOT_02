@@ -6905,7 +6905,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           {t('admin.responseTime')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.time')}
+                          대화 시각
                         </th>
                       </tr>
                     </thead>
