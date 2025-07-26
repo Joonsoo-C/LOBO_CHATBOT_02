@@ -634,6 +634,54 @@ const UserActiveAgents: React.FC<UserActiveAgentsProps> = ({ userId, getUserRole
   );
 };
 
+// UserActiveAgentsSection component with count
+interface UserActiveAgentsSectionProps {
+  userId?: string;
+  getUserRoleForAgent: (userData: any, agent: any) => string;
+  getUserRoleDisplayForAgent: (userData: any, agent: any) => string;
+  onAgentClick?: (agent: any) => void;
+}
+
+const UserActiveAgentsSection: React.FC<UserActiveAgentsSectionProps> = ({ userId, getUserRoleForAgent, getUserRoleDisplayForAgent, onAgentClick }) => {
+  const { data: userConversations } = useQuery({
+    queryKey: [`/api/admin/users/${userId}/conversations`],
+    enabled: !!userId,
+  });
+
+  // 중복 에이전트 제거하여 개수 계산
+  const uniqueAgentCount = useMemo(() => {
+    if (!userConversations || !Array.isArray(userConversations)) return 0;
+    
+    const uniqueAgents = userConversations.reduce((acc: any[], conversation: any) => {
+      const agent = conversation.agent;
+      if (!agent) return acc;
+      
+      // 이미 같은 에이전트가 있는지 확인
+      const existingIndex = acc.findIndex(item => item.id === agent.id);
+      if (existingIndex === -1) {
+        acc.push(agent);
+      }
+      return acc;
+    }, []);
+    
+    return uniqueAgents.length;
+  }, [userConversations]);
+
+  return (
+    <>
+      <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-[14px]">
+        사용 중인 에이전트 목록 ({uniqueAgentCount}개)
+      </Label>
+      <UserActiveAgents 
+        userId={userId} 
+        getUserRoleForAgent={getUserRoleForAgent}
+        getUserRoleDisplayForAgent={getUserRoleDisplayForAgent}
+        onAgentClick={onAgentClick}
+      />
+    </>
+  );
+};
+
 import { 
   Users, 
   MessageSquare, 
@@ -10555,9 +10603,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                 {/* 사용 중인 에이전트 목록 */}
                 <div className="space-y-3">
-                  <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-[14px]">사용 중인 에이전트 목록</Label>
-                  <UserActiveAgents 
-                    userId={selectedUser?.id} 
+                  <UserActiveAgentsSection
+                    userId={selectedUser?.id}
                     getUserRoleForAgent={getUserRoleForAgent}
                     getUserRoleDisplayForAgent={getUserRoleDisplayForAgent}
                     onAgentClick={openAgentDetailDialog}
