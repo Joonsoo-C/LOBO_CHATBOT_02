@@ -1248,6 +1248,8 @@ function MasterAdmin() {
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+  const [isTokenDetailDialogOpen, setIsTokenDetailDialogOpen] = useState(false);
+  const [selectedTokenDetail, setSelectedTokenDetail] = useState<any>(null);
 
   const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
   const [selectedIcon, setSelectedIcon] = useState("User");
@@ -8806,7 +8808,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </thead>
                     <tbody>
                       {paginatedTokenData.map((token) => (
-                        <tr key={token.id} className="border-b hover:bg-muted/50">
+                        <tr 
+                          key={token.id} 
+                          className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
+                          onClick={() => {
+                            setSelectedTokenDetail(token);
+                            setIsTokenDetailDialogOpen(true);
+                          }}
+                        >
                           <td className="p-3 text-xs">
                             {new Date(token.timestamp).toLocaleString('ko-KR', {
                               month: 'short',
@@ -12873,6 +12882,154 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               )}
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 토큰 사용량 상세 정보 모달 */}
+        <Dialog open={isTokenDetailDialogOpen} onOpenChange={setIsTokenDetailDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold">토큰 사용량 상세 정보</DialogTitle>
+            </DialogHeader>
+            
+            {selectedTokenDetail && (
+              <div className="space-y-6">
+                {/* 기본 정보 섹션 */}
+                <div className="grid grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">기본 정보</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">시간:</span>
+                        <span className="text-sm font-medium">
+                          {new Date(selectedTokenDetail.timestamp).toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">에이전트:</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.agentName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">에이전트 유형:</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.agentType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">LLM 모델:</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.model}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">사용자:</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.userName}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">토큰 사용량 분석</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-blue-600">입력 토큰:</span>
+                        <span className="text-sm font-semibold text-blue-600">
+                          {selectedTokenDetail.inputTokens.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-green-600">출력 토큰:</span>
+                        <span className="text-sm font-semibold text-green-600">
+                          {selectedTokenDetail.outputTokens.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-yellow-600">인덱스 토큰:</span>
+                        <span className="text-sm font-semibold text-yellow-600">
+                          {selectedTokenDetail.indexTokens.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-red-600">읽기 토큰:</span>
+                        <span className="text-sm font-semibold text-red-600">
+                          {selectedTokenDetail.preprocessingTokens.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="border-t pt-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm font-medium text-gray-900">총 토큰:</span>
+                          <span className="text-sm font-bold text-gray-900">
+                            {selectedTokenDetail.totalTokens.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* 질문 및 답변 섹션 */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">대화 내용</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 질문</Label>
+                      <div className="bg-gray-50 p-3 rounded-lg border">
+                        <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                          {selectedTokenDetail.question}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-2 block">AI 응답</Label>
+                      <div className="bg-blue-50 p-3 rounded-lg border">
+                        <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                          {selectedTokenDetail.response}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 성능 지표 섹션 */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">성능 지표</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {selectedTokenDetail.responseTime}초
+                        </div>
+                        <div className="text-xs text-gray-600">응답 시간</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          ₩{Math.round(selectedTokenDetail.totalTokens * 0.087)}
+                        </div>
+                        <div className="text-xs text-gray-600">예상 비용</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          {selectedTokenDetail.efficiency}%
+                        </div>
+                        <div className="text-xs text-gray-600">토큰 효율성</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
