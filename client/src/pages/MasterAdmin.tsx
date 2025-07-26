@@ -10712,6 +10712,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectContent>
                               <SelectItem value="student">학생</SelectItem>
                               <SelectItem value="faculty">교직원</SelectItem>
+                              <SelectItem value="other">기타</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
