@@ -10610,7 +10610,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <FormControl>
                         <Textarea 
                           {...field} 
-                          placeholder="사용자에 대한 추가 정보나 메모를 입력하세요..."
+                          placeholder="사용자에 대한 추가 설명이나 메모를 입력하세요."
                           className="min-h-20"
                         />
                       </FormControl>
