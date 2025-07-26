@@ -2071,7 +2071,7 @@ function MasterAdmin() {
     return categories.sort();
   }, [qaSelectedUpperCategory, qaSelectedLowerCategory, organizations]);
 
-  // Q&A 로그 조직별 필터링 로직
+  // Q&A 로그 완전한 필터링 로직
   const filteredConversationLogs = useMemo(() => {
     if (!conversationLogs) return [];
     
@@ -2085,23 +2085,83 @@ function MasterAdmin() {
       log.lastUserMessage !== '메시지 없음'
     );
     
+    // 검색어 필터링
+    if (qaSearchQuery.trim()) {
+      const query = qaSearchQuery.toLowerCase();
+      filtered = filtered.filter(log => 
+        (log.lastUserMessage && log.lastUserMessage.toLowerCase().includes(query)) ||
+        (log.agentName && log.agentName.toLowerCase().includes(query)) ||
+        (log.userName && log.userName.toLowerCase().includes(query))
+      );
+    }
+    
+    // 기간 필터링
+    const now = new Date();
+    switch (qaPeriodFilter) {
+      case 'today':
+        filtered = filtered.filter(log => {
+          const logDate = new Date(log.lastMessageAt || log.updatedAt);
+          return logDate.toDateString() === now.toDateString();
+        });
+        break;
+      case 'week':
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(log => {
+          const logDate = new Date(log.lastMessageAt || log.updatedAt);
+          return logDate >= weekAgo;
+        });
+        break;
+      case 'month':
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(log => {
+          const logDate = new Date(log.lastMessageAt || log.updatedAt);
+          return logDate >= monthAgo;
+        });
+        break;
+      case 'quarter':
+        const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(log => {
+          const logDate = new Date(log.lastMessageAt || log.updatedAt);
+          return logDate >= quarterAgo;
+        });
+        break;
+    }
+    
+    // 사용자 유형 필터링
+    if (qaUserTypeFilter !== 'all') {
+      filtered = filtered.filter(log => {
+        const position = log.userPosition?.toLowerCase() || '';
+        switch (qaUserTypeFilter) {
+          case 'student':
+            return position.includes('학생') || position.includes('대학원생') || position.includes('학부생');
+          case 'faculty':
+            return position.includes('교수') || position.includes('직원') || position.includes('연구원');
+          case 'admin':
+            return position.includes('관리자') || position.includes('마스터');
+          default:
+            return true;
+        }
+      });
+    }
+    
     // 상위 조직 필터링
     if (qaSelectedUpperCategory !== 'all') {
-      filtered = filtered.filter(log => log.upperCategory === qaSelectedUpperCategory);
+      filtered = filtered.filter(log => log.userUpperCategory === qaSelectedUpperCategory);
     }
     
     // 하위 조직 필터링
     if (qaSelectedLowerCategory !== 'all') {
-      filtered = filtered.filter(log => log.lowerCategory === qaSelectedLowerCategory);
+      filtered = filtered.filter(log => log.userLowerCategory === qaSelectedLowerCategory);
     }
     
     // 세부 조직 필터링
     if (qaSelectedDetailCategory !== 'all') {
-      filtered = filtered.filter(log => log.detailCategory === qaSelectedDetailCategory);
+      filtered = filtered.filter(log => log.userDetailCategory === qaSelectedDetailCategory);
     }
     
+    console.log('Filtered conversationLogs:', filtered.length);
     return filtered;
-  }, [conversationLogs, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory]);
+  }, [conversationLogs, qaSearchQuery, qaPeriodFilter, qaUserTypeFilter, qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory]);
 
   // 필터된 조직 목록 (실시간 필터링) - API 데이터 사용
   const filteredOrganizationCategories = useMemo(() => {
