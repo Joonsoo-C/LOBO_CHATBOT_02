@@ -1410,6 +1410,8 @@ function MasterAdmin() {
   const [managerFilterUpperCategory, setManagerFilterUpperCategory] = useState('all');
   const [managerFilterLowerCategory, setManagerFilterLowerCategory] = useState('all');
   const [managerFilterDetailCategory, setManagerFilterDetailCategory] = useState('all');
+  const [managerFilterStatus, setManagerFilterStatus] = useState('all');
+  const [managerFilterSystemRole, setManagerFilterSystemRole] = useState('all');
   const [managerCurrentPage, setManagerCurrentPage] = useState(1);
   const [managerItemsPerPage] = useState(10);
 
@@ -1419,6 +1421,8 @@ function MasterAdmin() {
     setManagerFilterUpperCategory('all');
     setManagerFilterLowerCategory('all');
     setManagerFilterDetailCategory('all');
+    setManagerFilterStatus('all');
+    setManagerFilterSystemRole('all');
     setManagerCurrentPage(1);
   };
 
@@ -1915,9 +1919,18 @@ function MasterAdmin() {
       const matchesDetail = !managerFilterDetailCategory || managerFilterDetailCategory === "all" || 
         (user as any).detailCategory === managerFilterDetailCategory;
       
-      return matchesSearch && matchesUpper && matchesLower && matchesDetail;
+      // 상태 필터링
+      const matchesStatus = managerFilterStatus === "all" || 
+        (managerFilterStatus === "active" && (user as any).status === "활성") ||
+        (managerFilterStatus === "inactive" && (user as any).status === "비활성");
+      
+      // 시스템 역할 필터링
+      const matchesSystemRole = managerFilterSystemRole === "all" || 
+        (user as any).systemRole === managerFilterSystemRole;
+      
+      return matchesSearch && matchesUpper && matchesLower && matchesDetail && matchesStatus && matchesSystemRole;
     });
-  }, [allManagers, managerSearchQuery, managerFilterUpperCategory, managerFilterLowerCategory, managerFilterDetailCategory]);
+  }, [allManagers, managerSearchQuery, managerFilterUpperCategory, managerFilterLowerCategory, managerFilterDetailCategory, managerFilterStatus, managerFilterSystemRole]);
 
   // 관리자 사용자 페이지네이션
   const paginatedManagerUsers = useMemo(() => {
@@ -6060,69 +6073,142 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               </div>
                             </div>
 
-                            {/* 검색 시스템 - 하단으로 이동 */}
+                            {/* 사용자 검색 영역 */}
                             <div className="bg-white border border-gray-100 rounded-lg shadow-sm">
                               <div className="p-4 space-y-4">
                                 <h4 className="text-base font-medium text-gray-900">사용자 검색</h4>
                                 
-                                {/* 검색 입력창 */}
-                                <div className="relative">
-                                  <Input
-                                    type="text"
-                                    placeholder="이름 또는 사용자 ID로 검색..."
-                                    value={managerSearchQuery}
-                                    onChange={(e) => setManagerSearchQuery(e.target.value)}
-                                    className="h-9 text-sm"
-                                  />
+                                {/* 조직 필터 - 첫 번째 행 */}
+                                <div className="grid grid-cols-3 gap-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">상위 조직</Label>
+                                    <Select value={managerFilterUpperCategory} onValueChange={(value) => {
+                                      setManagerFilterUpperCategory(value);
+                                      setManagerFilterLowerCategory('all');
+                                      setManagerFilterDetailCategory('all');
+                                      setManagerCurrentPage(1);
+                                    }}>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="전체" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="all">전체</SelectItem>
+                                        {getUpperCategories().map((cat) => (
+                                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">하위 조직</Label>
+                                    <Select value={managerFilterLowerCategory} onValueChange={(value) => {
+                                      setManagerFilterLowerCategory(value);
+                                      setManagerFilterDetailCategory('all');
+                                      setManagerCurrentPage(1);
+                                    }} disabled={managerFilterUpperCategory === 'all'}>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="전체" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="all">전체</SelectItem>
+                                        {getLowerCategories(managerFilterUpperCategory).map((cat) => (
+                                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">세부 조직</Label>
+                                    <Select value={managerFilterDetailCategory} onValueChange={(value) => {
+                                      setManagerFilterDetailCategory(value);
+                                      setManagerCurrentPage(1);
+                                    }} disabled={managerFilterLowerCategory === 'all'}>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="전체" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="all">전체</SelectItem>
+                                        {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
+                                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
                                 </div>
 
-                                {/* 조직 필터 */}
-                                <div className="grid grid-cols-3 gap-2">
-                                  <Select value={managerFilterUpperCategory} onValueChange={(value) => {
-                                    setManagerFilterUpperCategory(value);
-                                    setManagerFilterLowerCategory('all');
-                                    setManagerFilterDetailCategory('all');
-                                    setManagerCurrentPage(1);
-                                  }}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="상위 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getUpperCategories().map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <Select value={managerFilterLowerCategory} onValueChange={(value) => {
-                                    setManagerFilterLowerCategory(value);
-                                    setManagerFilterDetailCategory('all');
-                                    setManagerCurrentPage(1);
-                                  }} disabled={managerFilterUpperCategory === 'all'}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="하위 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getLowerCategories(managerFilterUpperCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <Select value={managerFilterDetailCategory} onValueChange={(value) => {
-                                    setManagerFilterDetailCategory(value);
-                                    setManagerCurrentPage(1);
-                                  }} disabled={managerFilterLowerCategory === 'all'}>
-                                    <SelectTrigger className="h-8 text-xs">
-                                      <SelectValue placeholder="세부 조직" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="all">전체</SelectItem>
-                                      {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                                {/* 상태 및 역할 필터 - 두 번째 행 */}
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">상태</Label>
+                                    <Select value={managerFilterStatus} onValueChange={(value) => {
+                                      setManagerFilterStatus(value);
+                                      setManagerCurrentPage(1);
+                                    }}>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="전체" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="all">전체</SelectItem>
+                                        <SelectItem value="active">활성</SelectItem>
+                                        <SelectItem value="inactive">비활성</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">시스템 역할</Label>
+                                    <Select value={managerFilterSystemRole} onValueChange={(value) => {
+                                      setManagerFilterSystemRole(value);
+                                      setManagerCurrentPage(1);
+                                    }}>
+                                      <SelectTrigger className="h-10">
+                                        <SelectValue placeholder="전체" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="all">전체</SelectItem>
+                                        <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                                        <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                                        <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                                        <SelectItem value="category_admin">카테고리 관리자</SelectItem>
+                                        <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                                        <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                                        <SelectItem value="user">일반 사용자</SelectItem>
+                                        <SelectItem value="external">외부 사용자</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+
+                                {/* 검색어 입력 및 버튼 - 세 번째 행 */}
+                                <div className="grid grid-cols-4 gap-4 items-end">
+                                  <div className="col-span-2 space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">검색어</Label>
+                                    <Input
+                                      type="text"
+                                      placeholder="사용자명 또는 이메일 주소를 입력하세요"
+                                      value={managerSearchQuery}
+                                      onChange={(e) => setManagerSearchQuery(e.target.value)}
+                                      className="h-10"
+                                    />
+                                  </div>
+                                  
+                                  <Button
+                                    variant="outline"
+                                    onClick={resetManagerSearchState}
+                                    className="h-10"
+                                  >
+                                    필터 초기화
+                                  </Button>
+                                  
+                                  <Button
+                                    variant="default"
+                                    onClick={() => setManagerCurrentPage(1)}
+                                    className="h-10"
+                                  >
+                                    검색
+                                  </Button>
                                 </div>
 
                                 {/* 검색 결과 사용자 목록 */}
