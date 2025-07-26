@@ -4959,10 +4959,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('org.all')}</SelectItem>
-                      <SelectItem value="active">{t('account.active')}</SelectItem>
-                      <SelectItem value="inactive">{t('account.inactive')}</SelectItem>
-                      <SelectItem value="locked">{t('account.locked')}</SelectItem>
-                      <SelectItem value="pending">{t('account.pending')}</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -10361,8 +10359,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectContent>
                               <SelectItem value="active">활성</SelectItem>
                               <SelectItem value="inactive">비활성</SelectItem>
-                              <SelectItem value="locked">잠금</SelectItem>
-                              <SelectItem value="pending">대기</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -11080,8 +11076,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectContent>
                               <SelectItem value="active">활성</SelectItem>
                               <SelectItem value="inactive">비활성</SelectItem>
-                              <SelectItem value="locked">잠금</SelectItem>
-                              <SelectItem value="pending">대기</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
