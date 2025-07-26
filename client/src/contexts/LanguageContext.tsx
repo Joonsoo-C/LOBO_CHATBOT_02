@@ -588,7 +588,7 @@ const translations: Record<Language, Record<string, string>> = {
     'agent.managerSelection': '관리자 선정',
     'agent.sharingSettings': '공유 설정',
     'agent.description': '에이전트 설명',
-    'agent.descriptionPlaceholder': '에이전트의 역할과 기능을 설명해주세요 (최대 200자)',
+    'agent.descriptionPlaceholder': '에이전트의 역할이나 기능을 간단히 소개해 주세요.',
     'agent.rolePrompt': '역할/프롬프트',
     'agent.rolePromptPlaceholder': '예: 대학원 논문 첨삭 도우미, 학과 정보 안내 봇',
     'agent.selectType': '유형 선택',
