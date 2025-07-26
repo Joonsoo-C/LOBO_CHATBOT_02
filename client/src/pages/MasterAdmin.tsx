@@ -1546,6 +1546,15 @@ function MasterAdmin() {
   const [agentDocumentVisible, setAgentDocumentVisible] = useState<boolean>(true);
   const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
   const [agentFileUploadProgress, setAgentFileUploadProgress] = useState(0);
+  const [uploadedAgentDocuments, setUploadedAgentDocuments] = useState<{
+    id: number;
+    originalName: string;
+    type: string;
+    description: string;
+    visible: boolean;
+    uploadDate: string;
+    size: number;
+  }[]>([]);
   
   // 공유 설정 상태
   const [sharingMode, setSharingMode] = useState<'organization' | 'group' | 'user' | 'private'>('organization');
@@ -3057,6 +3066,10 @@ function MasterAdmin() {
       setSelectedFiles([]);
       setManagerSearchQuery('');
       setAgentCreationTab('basic');
+      setUploadedAgentDocuments([]);
+      setAgentDocumentType('기타');
+      setAgentDocumentDescription('');
+      setAgentDocumentVisible(true);
     },
     onError: (error: Error) => {
       toast({
@@ -4544,9 +4557,24 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         // 추가 대기 시간으로 캐시 동기화 보장
         await new Promise(resolve => setTimeout(resolve, 200));
         
+        // 업로드된 문서를 목록에 추가
+        const newUploadedDocs = selectedFiles
+          .slice(0, successCount)
+          .map((file, index) => ({
+            id: Date.now() + index,
+            originalName: file.name,
+            type: agentDocumentType,
+            description: agentDocumentDescription || '설명 없음',
+            visible: agentDocumentVisible,
+            uploadDate: new Date().toLocaleDateString('ko-KR'),
+            size: file.size
+          }));
+        
+        setUploadedAgentDocuments(prev => [...prev, ...newUploadedDocs]);
+        
         // 선택된 파일과 입력값 초기화
         setSelectedFiles([]);
-        setAgentDocumentType('');
+        setAgentDocumentType('기타');
         setAgentDocumentDescription('');
         
         // 파일 입력 필드 초기화
@@ -5922,6 +5950,72 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 체크 해제 시 관리자만 해당 문서 존재를 인지할 수 있습니다.
                               </p>
                             </div>
+
+                            {/* 업로드된 문서 목록 */}
+                            {uploadedAgentDocuments.length > 0 && (
+                              <div className="border-t pt-6">
+                                <div className="flex items-center justify-between mb-4">
+                                  <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
+                                  <Badge variant="outline">총 {uploadedAgentDocuments.length}개</Badge>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                  {uploadedAgentDocuments.map((doc) => (
+                                    <div key={doc.id} className="bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 transition-colors">
+                                      <div className="flex items-start justify-between">
+                                        <div className="flex items-start space-x-3 flex-1">
+                                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <FileText className="w-5 h-5 text-blue-600" />
+                                          </div>
+                                          
+                                          <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-medium text-gray-900 truncate mb-1">
+                                              {doc.originalName}
+                                            </h4>
+                                            
+                                            <div className="flex items-center space-x-4 text-xs text-gray-500 mb-2">
+                                              <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                                                {doc.type}
+                                              </span>
+                                              <span>{(doc.size / 1024 / 1024).toFixed(2)} MB</span>
+                                              <span>{doc.uploadDate}</span>
+                                            </div>
+                                            
+                                            {doc.description && doc.description !== '설명 없음' && (
+                                              <p className="text-xs text-gray-600 line-clamp-2">
+                                                {doc.description}
+                                              </p>
+                                            )}
+                                            
+                                            <div className="flex items-center space-x-2 mt-2">
+                                              {doc.visible ? (
+                                                <Badge variant="secondary" className="text-xs">공개</Badge>
+                                              ) : (
+                                                <Badge variant="outline" className="text-xs">비공개</Badge>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center space-x-2 ml-4">
+                                          <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => {
+                                              setUploadedAgentDocuments(prev => prev.filter(d => d.id !== doc.id));
+                                            }}
+                                            className="text-red-500 hover:text-red-700 hover:bg-red-50 w-8 h-8 p-0 flex items-center justify-center"
+                                          >
+                                            <X className="w-4 h-4" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </TabsContent>
 
@@ -6416,6 +6510,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 setSelectedFiles([]);
                                 setManagerSearchQuery('');
                                 setAgentCreationTab('basic');
+                                setUploadedAgentDocuments([]);
+                                setAgentDocumentType('기타');
+                                setAgentDocumentDescription('');
+                                setAgentDocumentVisible(true);
                                 setIsAgentDialogOpen(false);
                               }}
                             >
