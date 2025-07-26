@@ -777,6 +777,7 @@ type AgentFormData = z.infer<typeof agentSchema>;
 const userEditSchema = z.object({
   name: z.string().min(1, "이름은 필수입니다"),
   email: z.string().email("올바른 이메일 형식이어야 합니다").optional().or(z.literal("")),
+  userType: z.enum(["student", "faculty", "other"]).optional(),
   upperCategory: z.string().optional(),
   lowerCategory: z.string().optional(),
   detailCategory: z.string().optional(),
@@ -2399,6 +2400,7 @@ function MasterAdmin() {
     userEditForm.reset({
       name: (user as any).name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
       email: user.email || "",
+      userType: (user as any).userType || "student",
       upperCategory: (user as any).upperCategory || "none",
       lowerCategory: (user as any).lowerCategory || "",
       detailCategory: (user as any).detailCategory || "",
@@ -2425,6 +2427,7 @@ function MasterAdmin() {
       const payload = {
         name: data.name,
         email: data.email || null,
+        userType: data.userType,
         upperCategory: data.upperCategory === "none" ? null : data.upperCategory,
         lowerCategory: data.lowerCategory || null,
         detailCategory: data.detailCategory || null,
