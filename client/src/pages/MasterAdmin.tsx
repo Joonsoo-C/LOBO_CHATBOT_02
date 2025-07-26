@@ -11100,7 +11100,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
 
                 {/* 버튼 */}
-                <div className="flex justify-between pt-6 border-t">
+                <div className="flex justify-end gap-3 pt-6 border-t">
                   <Button 
                     type="button"
                     variant="outline"
