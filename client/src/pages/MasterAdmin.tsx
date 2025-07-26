@@ -892,22 +892,6 @@ interface TokenUsage {
   detailCategory?: string;
 }
 
-interface TokenUsage {
-  id: string;
-  timestamp: string;
-  agentName: string;
-  question: string;
-  model: string;
-  inputTokens: number;
-  outputTokens: number;
-  indexTokens: number;
-  preprocessingTokens: number;
-  totalTokens: number;
-  upperCategory?: string;
-  lowerCategory?: string;
-  detailCategory?: string;
-}
-
 function MasterAdmin() {
   const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -987,7 +971,17 @@ function MasterAdmin() {
   const [tokenKeywordFilter, setTokenKeywordFilter] = useState("");
   const [tokenModelFilter, setTokenModelFilter] = useState("all");
   const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
-  const [tokenSortOrder, setTokenSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [tokenSortDirection, setTokenSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // 토큰 정렬 함수
+  const handleTokenSort = (field: string) => {
+    if (tokenSortField === field) {
+      setTokenSortDirection(tokenSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setTokenSortField(field as keyof TokenUsage);
+      setTokenSortDirection('desc');
+    }
+  };
 
   // Q&A 로그 조직 상태
   const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
@@ -1862,23 +1856,25 @@ function MasterAdmin() {
     }
 
     // 정렬
-    filtered.sort((a, b) => {
-      let aValue: any = a[tokenSortField];
-      let bValue: any = b[tokenSortField];
-      
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return tokenSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-      
-      // 문자열이나 다른 타입의 경우
-      if (tokenSortOrder === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      }
-      return aValue < bValue ? 1 : -1;
-    });
+    if (tokenSortField) {
+      filtered.sort((a, b) => {
+        let aValue: any = a[tokenSortField as keyof TokenUsage];
+        let bValue: any = b[tokenSortField as keyof TokenUsage];
+        
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return tokenSortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        // 문자열이나 다른 타입의 경우
+        if (tokenSortDirection === 'asc') {
+          return aValue > bValue ? 1 : -1;
+        }
+        return aValue < bValue ? 1 : -1;
+      });
+    }
 
     return filtered;
-  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortOrder]);
+  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
 
   // 토큰 사용량 통계 계산
   const tokenStats = useMemo(() => {
@@ -8753,57 +8749,34 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <th className="text-left p-3 font-medium">질문</th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => {
-                            if (tokenSortField === 'inputTokens') {
-                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setTokenSortField('inputTokens');
-                              setTokenSortOrder('desc');
-                            }
-                          }}
+                          onClick={() => handleTokenSort('inputTokens')}
                         >
-                          입력 {tokenSortField === 'inputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          입력 {tokenSortField === 'inputTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => {
-                            if (tokenSortField === 'outputTokens') {
-                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setTokenSortField('outputTokens');
-                              setTokenSortOrder('desc');
-                            }
-                          }}
+                          onClick={() => handleTokenSort('outputTokens')}
                         >
-                          출력 {tokenSortField === 'outputTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          출력 {tokenSortField === 'outputTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => {
-                            if (tokenSortField === 'indexTokens') {
-                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setTokenSortField('indexTokens');
-                              setTokenSortOrder('desc');
-                            }
-                          }}
+                          onClick={() => handleTokenSort('indexTokens')}
                         >
-                          인덱스 {tokenSortField === 'indexTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          인덱스 {tokenSortField === 'indexTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
                         <th 
                           className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => {
-                            if (tokenSortField === 'preprocessingTokens') {
-                              setTokenSortOrder(tokenSortOrder === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setTokenSortField('preprocessingTokens');
-                              setTokenSortOrder('desc');
-                            }
-                          }}
+                          onClick={() => handleTokenSort('preprocessingTokens')}
                         >
-                          읽기 {tokenSortField === 'preprocessingTokens' && (tokenSortOrder === 'asc' ? '↑' : '↓')}
+                          읽기 {tokenSortField === 'preprocessingTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
                         </th>
-                        <th className="text-left p-3 font-medium">합계</th>
+                        <th 
+                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
+                          onClick={() => handleTokenSort('totalTokens')}
+                        >
+                          합계 {tokenSortField === 'totalTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
