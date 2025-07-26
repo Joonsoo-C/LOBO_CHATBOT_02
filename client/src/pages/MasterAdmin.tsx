@@ -1547,13 +1547,14 @@ function MasterAdmin() {
   const [isAgentFileUploading, setIsAgentFileUploading] = useState(false);
   const [agentFileUploadProgress, setAgentFileUploadProgress] = useState(0);
   const [uploadedAgentDocuments, setUploadedAgentDocuments] = useState<{
-    id: number;
+    id: string | number;
     originalName: string;
     type: string;
     description: string;
     visible: boolean;
     uploadDate: string;
     size: number;
+    status?: string;
   }[]>([]);
   
   // 공유 설정 상태
@@ -5831,6 +5832,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                             
                                             // 업로드 시뮬레이션 (실제 API 엔드포인트로 교체 필요)
                                             await new Promise(resolve => setTimeout(resolve, 500));
+                                            
+                                            // 업로드된 문서 목록에 추가
+                                            const newDocument = {
+                                              id: `temp-${Date.now()}-${i}`,
+                                              originalName: file.name,
+                                              type: agentDocumentType || '기타',
+                                              size: file.size,
+                                              uploadDate: new Date().toLocaleDateString('ko-KR'),
+                                              visible: agentDocumentVisible,
+                                              description: agentDocumentDescription || '',
+                                              status: '최종 반영됨'
+                                            };
+                                            
+                                            setUploadedAgentDocuments(prev => [...prev, newDocument]);
                                           }
                                           
                                           toast({
@@ -5955,44 +5970,33 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             {uploadedAgentDocuments.length > 0 && (
                               <div className="border-t pt-6">
                                 <div className="flex items-center justify-between mb-4">
-                                  <Label className="text-lg font-semibold">업로드된 문서 목록</Label>
-                                  <Badge variant="outline">총 {uploadedAgentDocuments.length}개</Badge>
+                                  <Label className="text-base font-medium text-gray-900">업로드된 파일 ({uploadedAgentDocuments.length}개)</Label>
                                 </div>
                                 
                                 <div className="space-y-3">
                                   {uploadedAgentDocuments.map((doc) => (
-                                    <div key={doc.id} className="bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 transition-colors">
-                                      <div className="flex items-start justify-between">
-                                        <div className="flex items-start space-x-3 flex-1">
-                                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                            <FileText className="w-5 h-5 text-blue-600" />
+                                    <div key={doc.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-3 flex-1">
+                                          <div className="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                                            <FileText className="w-4 h-4 text-green-600" />
                                           </div>
                                           
                                           <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm font-medium text-gray-900 truncate mb-1">
-                                              {doc.originalName}
-                                            </h4>
-                                            
-                                            <div className="flex items-center space-x-4 text-xs text-gray-500 mb-2">
-                                              <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                                            <div className="flex items-center space-x-2">
+                                              <h4 className="text-sm font-medium text-gray-900 truncate">
+                                                {doc.originalName}
+                                              </h4>
+                                              <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">
                                                 {doc.type}
                                               </span>
-                                              <span>{(doc.size / 1024 / 1024).toFixed(2)} MB</span>
-                                              <span>{doc.uploadDate}</span>
                                             </div>
                                             
-                                            {doc.description && doc.description !== '설명 없음' && (
-                                              <p className="text-xs text-gray-600 line-clamp-2">
-                                                {doc.description}
-                                              </p>
-                                            )}
-                                            
-                                            <div className="flex items-center space-x-2 mt-2">
-                                              {doc.visible ? (
-                                                <Badge variant="secondary" className="text-xs">공개</Badge>
-                                              ) : (
-                                                <Badge variant="outline" className="text-xs">비공개</Badge>
-                                              )}
+                                            <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
+                                              <span>{doc.uploadDate}</span>
+                                              <span>•</span>
+                                              <span>{(doc.size / 1024 / 1024).toFixed(2)} MB</span>
+                                              <span className="text-blue-600 font-medium">{uploadedAgentDocuments.length}개 조직 반영</span>
                                             </div>
                                           </div>
                                         </div>
@@ -6009,6 +6013,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           >
                                             <X className="w-4 h-4" />
                                           </Button>
+                                          <div className="text-red-500 text-sm font-medium">삭제</div>
                                         </div>
                                       </div>
                                     </div>
