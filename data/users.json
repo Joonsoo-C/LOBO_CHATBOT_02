@@ -26,7 +26,7 @@
     "id": "user1081",
     "username": "user1081",
     "password": "$2b$10$XvLFWXCS3snblsiYBRhRweQ5hrcOoErUmCiW9FjIQIj1GqHjgSavO",
-    "role": "category_admin",
+    "role": "agent_admin",
     "firstName": "정",
     "lastName": "수빈",
     "name": "정수빈",
@@ -43,13 +43,13 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "인문대학 국어국문학과 현대문학전공 교수",
-    "updatedAt": "2025-07-06T21:38:26.342Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   },
   {
     "id": "user1082",
     "username": "user1082",
     "password": "$2b$10$aXsDNokW66v1jl0NGmhsE.W9UA/zD6nmvoQ0ffntsA0eM4MPpEGuq",
-    "role": "user",
+    "role": "agent_admin",
     "firstName": "장",
     "lastName": "지훈",
     "name": "장지훈",
@@ -66,7 +66,7 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "인문대학 국어국문학과 현대문학전공 학생",
-    "updatedAt": "2025-07-06T21:38:52.276Z"
+    "updatedAt": "2025-07-26T04:01:20.460Z"
   },
   {
     "id": "agent_admin_001",
@@ -83,11 +83,11 @@
     "status": "active",
     "upperCategory": "대학본부",
     "lowerCategory": "기획처",
-    "detailCategory": "마스터 에이전트 관리자  ",
+    "detailCategory": "기획예산팀",
     "position": "직원",
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "에이전트 관리 전담 사용자",
-    "updatedAt": "2025-07-06T21:40:19.641Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   }
 ]
