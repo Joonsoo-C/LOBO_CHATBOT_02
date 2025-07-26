@@ -1074,6 +1074,7 @@ function MasterAdmin() {
   const { data: conversationLogs, error: conversationLogsError, isLoading: conversationLogsLoading } = useQuery({
     queryKey: ['/api/admin/conversations'],
     queryFn: async () => {
+      console.log('Fetching conversation logs...');
       const response = await fetch('/api/admin/conversations', {
         method: 'GET',
         credentials: 'include',
@@ -1081,12 +1082,15 @@ function MasterAdmin() {
           'Content-Type': 'application/json',
         }
       });
+      console.log('Conversation logs response status:', response.status);
       if (!response.ok) {
-        console.error('Conversation logs fetch failed:', response.status, response.statusText);
-        throw new Error(`Failed to fetch conversation logs: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Conversation logs fetch failed:', response.status, response.statusText, errorText);
+        throw new Error(`Failed to fetch conversation logs: ${response.status} - ${errorText}`);
       }
       const data = await response.json();
-      console.log('Conversation logs loaded:', data?.length || 0, 'conversations');
+      console.log('Conversation logs loaded successfully:', data?.length || 0, 'conversations');
+      console.log('Sample conversation log:', data?.[0]);
       return data;
     },
     retry: 3,
