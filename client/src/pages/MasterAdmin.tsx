@@ -10521,16 +10521,19 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <div>
                           {index === 0 ? (
                             <div>
-                              <Label className="text-sm">시스템 역할</Label>
+                              <Label className="text-sm">시스템 역할 *</Label>
                               <Select onValueChange={(value) => userEditForm.setValue('role', value)} value={userEditForm.watch('role') || ""}>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="일반 사용자" />
+                                  <SelectValue placeholder="역할 선택" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="user">일반 사용자</SelectItem>
-                                  <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                                  <SelectItem value="operation_admin">운영관리자</SelectItem>
                                   <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                                  <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                                  <SelectItem value="category_admin">조직 관리자</SelectItem>
+                                  <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                                  <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                                  <SelectItem value="doc_admin">문서 관리자</SelectItem>
                                   <SelectItem value="external">외부 사용자</SelectItem>
                                 </SelectContent>
                               </Select>
@@ -10882,11 +10885,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       name="role"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm">시스템 역할</FormLabel>
+                          <FormLabel className="text-sm">시스템 역할 *</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || ""}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="일반 사용자" />
+                                <SelectValue placeholder="역할 선택" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -10894,6 +10897,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectItem value="master_admin">마스터 관리자</SelectItem>
                               <SelectItem value="operation_admin">운영 관리자</SelectItem>
                               <SelectItem value="category_admin">조직 관리자</SelectItem>
+                              <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                              <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                              <SelectItem value="doc_admin">문서 관리자</SelectItem>
+                              <SelectItem value="external">외부 사용자</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -11050,18 +11057,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               name="role"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-sm">시스템 역할</FormLabel>
+                                  <FormLabel className="text-sm">시스템 역할 *</FormLabel>
                                   <Select onValueChange={field.onChange} value={field.value || ""}>
                                     <FormControl>
                                       <SelectTrigger>
-                                        <SelectValue placeholder="일반 사용자" />
+                                        <SelectValue placeholder="역할 선택" />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                       <SelectItem value="user">일반 사용자</SelectItem>
-                                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
-                                      <SelectItem value="operation_admin">운영관리자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
+                                      <SelectItem value="operation_admin">운영 관리자</SelectItem>
+                                      <SelectItem value="category_admin">조직 관리자</SelectItem>
+                                      <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
+                                      <SelectItem value="qa_admin">QA 관리자</SelectItem>
+                                      <SelectItem value="doc_admin">문서 관리자</SelectItem>
                                       <SelectItem value="external">외부 사용자</SelectItem>
                                     </SelectContent>
                                   </Select>

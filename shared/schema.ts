@@ -469,7 +469,10 @@ export const insertUserSchema = createInsertSchema(users).omit({
     "doc_admin", 
     "user", 
     "external"
-  ]).optional(),
+  ], {
+    required_error: "시스템 역할은 필수입니다",
+    invalid_type_error: "올바른 시스템 역할을 선택해주세요"
+  }),
   position: z.string().optional(), // 조직 내 직책 (예: 학과장, 조교, 연구원, 매니저 등)
   permissions: z.record(z.boolean()).optional(),
   

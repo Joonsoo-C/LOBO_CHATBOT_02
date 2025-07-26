@@ -1026,6 +1026,12 @@ Changelog:
   * Updated search buttons in user management, organization category management, document management, Q&A management, and token management
   * All search buttons now use consistent basic styling with h-10 w-full classes
   * Complete UI consistency achieved with agent management section as the reference standard
+- July 26, 2025. Made system role dropdown required in all user management interfaces:
+  * Added required field indicator (*) to system role labels in both new user creation and user edit modals
+  * Updated schema validation to make role field required with Korean error messages
+  * Changed placeholder text from "일반 사용자" to "역할 선택" for better UX
+  * Standardized role options across all forms: 일반 사용자, 마스터 관리자, 운영 관리자, 조직 관리자, 에이전트 관리자, QA 관리자, 문서 관리자, 외부 사용자
+  * System role is now mandatory in all user management contexts
 - July 25, 2025. Completed comprehensive multi-file upload system unification and agent file size optimization:
   * Successfully unified all upload modals (UserFileUploadModal, AgentFileUploadModal, DocumentUploadModal, OrganizationFileUpload) with consistent UI design
   * Implemented selectedFiles array state management across all upload interfaces for multi-file handling
