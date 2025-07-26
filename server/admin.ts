@@ -3401,6 +3401,55 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Get all conversations for admin QA logs
+  app.get("/api/admin/conversations", requireMasterAdmin, async (req, res) => {
+    try {
+      console.log('Admin fetching all conversations for QA logs');
+      
+      const conversations = await storage.getAllConversations();
+      const agents = await storage.getAllAgents();
+      const users = await storage.getAllUsers();
+      
+      // Create agent and user lookup maps for performance
+      const agentMap = new Map(agents.map(agent => [agent.id, agent]));
+      const userMap = new Map(users.map(user => [user.id, user]));
+      
+      // Enrich conversations with agent and user information
+      const enrichedConversations = await Promise.all(conversations.map(async (conversation) => {
+        const agent = agentMap.get(conversation.agentId);
+        const user = userMap.get(conversation.userId);
+        
+        // Get last message to show as preview
+        const messages = await storage.getConversationMessages(conversation.id);
+        const userMessages = messages.filter(m => m.role === 'user');
+        const lastUserMessage = userMessages[userMessages.length - 1];
+        
+        return {
+          id: conversation.id,
+          agentId: conversation.agentId,
+          agentName: agent?.name || '알 수 없는 에이전트',
+          userId: conversation.userId,
+          userName: user?.name || user?.username || '알 수 없는 사용자',
+          userUpperCategory: (user as any)?.upperCategory || '미분류',
+          userLowerCategory: (user as any)?.lowerCategory || '미분류',
+          userDetailCategory: (user as any)?.detailCategory || '미분류',
+          userPosition: (user as any)?.position || '일반 구성원',
+          lastUserMessage: lastUserMessage?.content || '메시지 없음',
+          messageCount: messages.length,
+          lastMessageAt: conversation.updatedAt,
+          createdAt: conversation.createdAt,
+          updatedAt: conversation.updatedAt
+        };
+      }));
+      
+      console.log(`Found ${enrichedConversations.length} conversations for QA logs`);
+      res.json(enrichedConversations);
+    } catch (error) {
+      console.error("Error getting all conversations:", error);
+      res.status(500).json({ message: "전체 대화 조회에 실패했습니다." });
+    }
+  });
+
   // Get user conversations endpoint for admin
   app.get("/api/admin/users/:userId/conversations", requireMasterAdmin, async (req, res) => {
     try {
