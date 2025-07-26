@@ -5773,15 +5773,29 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <div className="bg-blue-50 rounded-lg p-4 space-y-4">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-base font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setSelectedFiles([])}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300"
-                                  >
-                                    전체 삭제
-                                  </Button>
+                                  <div className="flex items-center space-x-2">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setSelectedFiles([])}
+                                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300"
+                                    >
+                                      전체 삭제
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="default"
+                                      size="sm"
+                                      onClick={() => {
+                                        // TODO: 파일 업로드 로직 구현
+                                        console.log('파일 업로드:', selectedFiles);
+                                      }}
+                                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                      업로드
+                                    </Button>
+                                  </div>
                                 </div>
                                 
                                 <div className="space-y-2">

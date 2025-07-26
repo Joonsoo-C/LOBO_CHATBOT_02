@@ -1026,6 +1026,7 @@ Changelog:
   * Implemented blue-themed selected files section matching document upload modal appearance
   * Enhanced file format support: pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif
   * File selection area appears only when files are selected with proper blue background styling
+  * Added upload button in selected files header alongside "전체 삭제" button for file upload functionality
   * Moved "파일 선택" button inside the drag box for better user guidance
   * Updated help text: "파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요. 지원 형식: jpg, png, gif, webp (최대 5MB)"
   * Implemented complete drag-and-drop functionality for image uploads
