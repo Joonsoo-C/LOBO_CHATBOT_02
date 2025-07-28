@@ -742,6 +742,10 @@ import {
   BrainCircuit,
   EyeOff,
   ImageIcon,
+  Info,
+  UserCog,
+  Share2,
+  FileUp,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -11324,6 +11328,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       
                       {/* 기본 정보 탭 */}
                       <TabsContent value="basic" className="space-y-6">
+                        {/* 탭 제목 */}
+                        <div className="flex items-center gap-3 mb-6">
+                          <Info className="w-5 h-5 text-blue-600" />
+                          <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">기본 정보</h3>
+                        </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField
@@ -11505,6 +11514,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                       {/* 페르소나 탭 */}
                       <TabsContent value="persona" className="space-y-6">
+                        {/* 탭 제목 */}
+                        <div className="flex items-center gap-3 mb-6">
+                          <UserCog className="w-5 h-5 text-blue-600" />
+                          <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">페르소나</h3>
+                        </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField
@@ -11711,6 +11725,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                       {/* 파일 업로드 탭 */}
                       <TabsContent value="upload" className="space-y-6">
+                        {/* 탭 제목 */}
+                        <div className="flex items-center gap-3 mb-6">
+                          <FileUp className="w-5 h-5 text-blue-600" />
+                          <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">업로드된 파일</h3>
+                        </div>
                         <div className="space-y-4">
                           {/* 문서 종류 드롭다운 */}
                           <div>
@@ -12144,6 +12163,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
                       {/* 공유 설정 탭 */}
                       <TabsContent value="sharing" className="space-y-6">
+                        {/* 탭 제목 */}
+                        <div className="flex items-center gap-3 mb-6">
+                          <Share2 className="w-5 h-5 text-blue-600" />
+                          <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">공개 설정</h3>
+                        </div>
                         <div className="space-y-4">
                           <div className="w-full">
                             <FormField
