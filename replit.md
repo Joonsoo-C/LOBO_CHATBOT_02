@@ -996,6 +996,10 @@ Changelog:
   * Removed amber warning message about master admin permissions for cleaner UI
   * Fixed component rendering errors that prevented proper modal display
   * Enhanced form layout consistency by maintaining single status section placement
+- July 28, 2025. Updated PersonaEditModal header icon to match dropdown menu design:
+  * Changed header icon from Bot to User icon to align with dropdown menu "페르소나" option
+  * Maintained consistent black/white color scheme matching existing design patterns
+  * Enhanced visual consistency between dropdown menu items and corresponding modal interfaces
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

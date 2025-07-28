@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X, Save, Bot } from "lucide-react";
+import { X, Save, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -141,7 +141,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
         {/* Header - 고정, 높이 50% 줄임 */}
         <div className="flex items-center justify-between p-3 border-b bg-white rounded-t-2xl flex-shrink-0">
           <div className="flex items-center space-x-2 pl-6">
-            <Bot className="w-5 h-5 text-black dark:text-white" />
+            <User className="w-5 h-5 text-black dark:text-white" />
             <h2 className="text-lg font-medium korean-text">페르소나 설정</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose}>
