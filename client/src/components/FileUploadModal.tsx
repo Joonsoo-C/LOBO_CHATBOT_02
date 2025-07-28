@@ -96,46 +96,52 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
   const uploadMutation = useMutation({
     mutationFn: async (files: File[]) => {
-      const formData = new FormData();
-      files.forEach((file, index) => {
-        formData.append('files', file);
-      });
-      formData.append('agentId', agent.id.toString());
-      formData.append('documentType', state.documentType);
-      formData.append('documentDescription', state.documentDescription);
-      formData.append('visibility', state.documentVisibility.toString());
+      const results = [];
+      
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('documentType', state.documentType);
+        formData.append('description', state.documentDescription);
+        formData.append('isVisible', state.documentVisibility.toString());
+        formData.append('status', '사용 중');
 
-      console.log("업로드 시작 - FormData:", {
-        files: files.length,
-        agentId: agent.id,
-        documentType: state.documentType,
-        description: state.documentDescription,
-        visibility: state.documentVisibility
-      });
+        console.log("업로드 시작 - FormData:", {
+          fileName: file.name,
+          agentId: agent.id,
+          documentType: state.documentType,
+          description: state.documentDescription,
+          visibility: state.documentVisibility
+        });
 
-      const response = await apiRequest('/api/documents/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        const response = await fetch(`/api/agents/${agent.id}/documents`, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '업로드 실패');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || '업로드 실패');
+        }
+
+        const result = await response.json();
+        results.push({ file, result });
       }
-
-      return response.json();
+      
+      return results;
     },
-    onSuccess: (data) => {
-      console.log("업로드 성공:", data);
+    onSuccess: (results: any[]) => {
+      console.log("업로드 성공:", results);
       toast({
         title: "성공",
-        description: "문서가 성공적으로 업로드되었습니다.",
+        description: `${results.length}개의 문서가 성공적으로 업로드되었습니다.`,
       });
       
-      queryClient.invalidateQueries({ queryKey: ['/api/documents', agent.id] });
+      queryClient.invalidateQueries({ queryKey: [`/api/agents/${agent.id}/documents`] });
       
       if (onSuccess) {
-        onSuccess(`${state.selectedFiles.length}개의 문서가 성공적으로 업로드되었습니다.`);
+        onSuccess(`${results.length}개의 문서가 성공적으로 업로드되었습니다.`);
       }
       
       onClose();
@@ -184,7 +190,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     <>
       {/* Main Upload Modal */}
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={onClose}>
-        <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] md:max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] md:max-h-[80vh] flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
           {/* Header - 고정 */}
           <div className="flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800 rounded-t-2xl flex-shrink-0">
             <div className="flex items-center space-x-2 pl-6">
@@ -368,7 +374,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   handleUpload();
                 }}
                 disabled={state.selectedFiles.length === 0 || !state.documentType || uploadMutation.isPending}
-                className="flex-1 korean-text"
+                className="flex-1 korean-text bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:text-gray-200"
               >
                 {uploadMutation.isPending ? (
                   <>
