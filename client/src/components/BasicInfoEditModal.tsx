@@ -257,110 +257,109 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             </div>
           )}
 
-          {/* Agent Type */}
-          <div className="space-y-2">
-            <Label className="korean-text">에이전트 유형 *</Label>
-            {isMasterAdmin ? (
-              <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
-                <SelectTrigger className="korean-text">
-                  <SelectValue placeholder="유형을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent className="z-[10000]">
-                  <SelectItem value="학교">학교</SelectItem>
-                  <SelectItem value="교수">교수</SelectItem>
-                  <SelectItem value="그룹">그룹</SelectItem>
-                  <SelectItem value="기능형">기능형</SelectItem>
-                </SelectContent>
-              </Select>
-            ) : (
-              <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
-                {basicInfoData.type}
-              </div>
-            )}
+          {/* Agent Type - Compact Display */}
+          <div className="space-y-3">
+            <Label className="korean-text text-base font-medium text-gray-900">에이전트 유형</Label>
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              {isMasterAdmin ? (
+                <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
+                  <SelectTrigger className="korean-text bg-white border-green-300">
+                    <SelectValue placeholder="유형을 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="학교">학교</SelectItem>
+                    <SelectItem value="교수">교수</SelectItem>
+                    <SelectItem value="그룹">그룹</SelectItem>
+                    <SelectItem value="기능형">기능형</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="px-4 py-3 bg-white border border-green-300 rounded-md korean-text text-gray-900 font-medium">
+                  {basicInfoData.type}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Organization Categories */}
-          <div className="grid grid-cols-1 gap-4">
-            {/* Upper Category */}
-            <div className="space-y-2">
-              <Label className="korean-text">소속 상위 조직 *</Label>
+          {/* Organization Categories - Compact Hierarchical Display */}
+          <div className="space-y-3">
+            <Label className="korean-text text-base font-medium text-gray-900">에이전트 소속 조직</Label>
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
               {isMasterAdmin ? (
-                <Select 
-                  value={basicInfoData.upperCategory} 
-                  onValueChange={(value) => {
-                    handleInputChange('upperCategory', value);
-                    // Reset lower and detail categories when upper category changes
-                    handleInputChange('lowerCategory', '전체');
-                    handleInputChange('detailCategory', '전체');
-                  }}
-                >
-                  <SelectTrigger className="korean-text">
-                    <SelectValue placeholder="상위 조직을 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[10000]">
-                    <SelectItem value="전체">전체</SelectItem>
-                    {upperCategories.map((category: string) => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
-                  {basicInfoData.upperCategory}
-                </div>
-              )}
-            </div>
+                <div className="space-y-3">
+                  {/* Upper Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm font-medium text-gray-700">상위 조직 *</Label>
+                    <Select 
+                      value={basicInfoData.upperCategory} 
+                      onValueChange={(value) => {
+                        handleInputChange('upperCategory', value);
+                        // Reset lower and detail categories when upper category changes
+                        handleInputChange('lowerCategory', '전체');
+                        handleInputChange('detailCategory', '전체');
+                      }}
+                    >
+                      <SelectTrigger className="korean-text bg-white border-green-300">
+                        <SelectValue placeholder="상위 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="전체">전체</SelectItem>
+                        {upperCategories.map((category: string) => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            {/* Lower Category */}
-            <div className="space-y-2">
-              <Label className="korean-text">하위 조직</Label>
-              {isMasterAdmin ? (
-                <Select 
-                  value={basicInfoData.lowerCategory} 
-                  onValueChange={(value) => {
-                    handleInputChange('lowerCategory', value);
-                    // Reset detail category when lower category changes
-                    handleInputChange('detailCategory', '전체');
-                  }}
-                >
-                  <SelectTrigger className="korean-text">
-                    <SelectValue placeholder="하위 조직을 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[10000]">
-                    <SelectItem value="전체">전체</SelectItem>
-                    {lowerCategories.map((category: string) => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
-                  {basicInfoData.lowerCategory}
-                </div>
-              )}
-            </div>
+                  {/* Lower Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm font-medium text-gray-700">하위 조직</Label>
+                    <Select 
+                      value={basicInfoData.lowerCategory} 
+                      onValueChange={(value) => {
+                        handleInputChange('lowerCategory', value);
+                        // Reset detail category when lower category changes
+                        handleInputChange('detailCategory', '전체');
+                      }}
+                    >
+                      <SelectTrigger className="korean-text bg-white border-green-300">
+                        <SelectValue placeholder="하위 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="전체">전체</SelectItem>
+                        {lowerCategories.map((category: string) => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            {/* Detail Category */}
-            <div className="space-y-2">
-              <Label className="korean-text">세부 조직</Label>
-              {isMasterAdmin ? (
-                <Select 
-                  value={basicInfoData.detailCategory} 
-                  onValueChange={(value) => handleInputChange('detailCategory', value)}
-                >
-                  <SelectTrigger className="korean-text">
-                    <SelectValue placeholder="세부 조직을 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[10000]">
-                    <SelectItem value="전체">전체</SelectItem>
-                    {detailCategories.map((category: string) => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {/* Detail Category */}
+                  <div className="space-y-2">
+                    <Label className="korean-text text-sm font-medium text-gray-700">세부 조직</Label>
+                    <Select 
+                      value={basicInfoData.detailCategory} 
+                      onValueChange={(value) => handleInputChange('detailCategory', value)}
+                    >
+                      <SelectTrigger className="korean-text bg-white border-green-300">
+                        <SelectValue placeholder="세부 조직을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="전체">전체</SelectItem>
+                        {detailCategories.map((category: string) => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               ) : (
-                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
-                  {basicInfoData.detailCategory}
+                <div className="px-4 py-3 bg-white border border-green-300 rounded-md korean-text text-gray-900 font-medium">
+                  {[
+                    basicInfoData.upperCategory !== "전체" ? basicInfoData.upperCategory : null,
+                    basicInfoData.lowerCategory !== "전체" ? basicInfoData.lowerCategory : null,
+                    basicInfoData.detailCategory !== "전체" ? basicInfoData.detailCategory : null
+                  ].filter(Boolean).join(" > ") || "전체"}
                 </div>
               )}
             </div>

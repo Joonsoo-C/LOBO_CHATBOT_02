@@ -5400,135 +5400,141 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         
                         {/* 기본 정보 탭 */}
                         <TabsContent value="basic" className="space-y-6">
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <FormField
-                                control={agentForm.control}
-                                name="name"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름*</FormLabel>
-                                    <FormControl>
-                                      <Input 
-                                        placeholder={t('agent.maxTwentyChars')} 
-                                        maxLength={20} 
-                                        className="focus:ring-2 focus:ring-blue-500"
-                                        {...field} 
-                                      />
-                                    </FormControl>
-                                    <div className="text-xs text-gray-500">{field.value?.length || 0}/20{t('common.characters')}</div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={agentForm.control}
-                                name="category"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                      <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                          <SelectValue placeholder={t('agent.selectType')} />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent className="z-[10000]">
-                                        <SelectItem value="학교">{t('agent.school')}</SelectItem>
-                                        <SelectItem value="교수">{t('agent.professor')}</SelectItem>
-                                        <SelectItem value="학생">{t('agent.student')}</SelectItem>
-                                        <SelectItem value="그룹">{t('agent.group')}</SelectItem>
-                                        <SelectItem value="기능형">{t('agent.functional')}</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                          <div className="space-y-6">
+                            {/* 에이전트 이름 */}
+                            <FormField
+                              control={agentForm.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름*</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      placeholder={t('agent.maxTwentyChars')} 
+                                      maxLength={20} 
+                                      className="focus:ring-2 focus:ring-blue-500"
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/20{t('common.characters')}</div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            {/* 에이전트 유형 - 컴팩트 디스플레이 */}
+                            <div className="space-y-3">
+                              <Label className="text-base font-medium text-gray-900">에이전트 유형</Label>
+                              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                                <FormField
+                                  control={agentForm.control}
+                                  name="category"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                          <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
+                                            <SelectValue placeholder={t('agent.selectType')} />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent className="z-[10000]">
+                                          <SelectItem value="학교">{t('agent.school')}</SelectItem>
+                                          <SelectItem value="교수">{t('agent.professor')}</SelectItem>
+                                          <SelectItem value="학생">{t('agent.student')}</SelectItem>
+                                          <SelectItem value="그룹">{t('agent.group')}</SelectItem>
+                                          <SelectItem value="기능형">{t('agent.functional')}</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
                             </div>
                             
-                            {/* 소속 조직 선택 (순차적) */}
-                            <div className="space-y-4">
-                              <Label className="text-sm font-medium text-gray-700">소속 조직</Label>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <FormField
-                                  control={agentForm.control}
-                                  name="upperCategory"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">상위 조직 *</FormLabel>
-                                      <Select 
-                                        onValueChange={(value) => {
-                                          field.onChange(value);
-                                          agentForm.setValue('lowerCategory', '');
-                                          agentForm.setValue('detailCategory', '');
-                                        }} 
-                                        defaultValue={field.value}
-                                      >
-                                        <FormControl>
-                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder={t('org.selectUpper')} />
-                                          </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent className="z-[10000]">
-                                          {getUpperCategories().map((category, index) => (
-                                            <SelectItem key={category} value={category}>
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={agentForm.control}
-                                  name="lowerCategory"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">{t('org.lowerOrganization')}</FormLabel>
-                                      <Select 
-                                        onValueChange={(value) => {
-                                          field.onChange(value);
-                                          agentForm.setValue('detailCategory', '');
-                                        }} 
-                                        defaultValue={field.value}
-                                        disabled={!agentForm.watch('upperCategory')}
-                                      >
-                                        <FormControl>
-                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder={t('org.selectLower')} />
-                                          </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent className="z-[10000]">
-                                          {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
-                                            <SelectItem key={category} value={category}>
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={agentForm.control}
-                                  name="detailCategory"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-xs text-gray-600">{t('org.detailOrganization')}</FormLabel>
-                                      <Select 
-                                        onValueChange={field.onChange} 
-                                        defaultValue={field.value}
-                                        disabled={!agentForm.watch('upperCategory') || !agentForm.watch('lowerCategory')}
-                                      >
-                                        <FormControl>
-                                          <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder={t('org.selectDetail')} />
-                                          </SelectTrigger>
-                                        </FormControl>
+                            {/* 소속 조직 - 컴팩트 계층형 디스플레이 */}
+                            <div className="space-y-3">
+                              <Label className="text-base font-medium text-gray-900">에이전트 소속 조직</Label>
+                              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                                <div className="space-y-3">
+                                  <FormField
+                                    control={agentForm.control}
+                                    name="upperCategory"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700">상위 조직 *</FormLabel>
+                                        <Select 
+                                          onValueChange={(value) => {
+                                            field.onChange(value);
+                                            agentForm.setValue('lowerCategory', '');
+                                            agentForm.setValue('detailCategory', '');
+                                          }} 
+                                          defaultValue={field.value}
+                                        >
+                                          <FormControl>
+                                            <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
+                                              <SelectValue placeholder={t('org.selectUpper')} />
+                                            </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent className="z-[10000]">
+                                            {getUpperCategories().map((category, index) => (
+                                              <SelectItem key={category} value={category}>
+                                                {category}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={agentForm.control}
+                                    name="lowerCategory"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700">{t('org.lowerOrganization')}</FormLabel>
+                                        <Select 
+                                          onValueChange={(value) => {
+                                            field.onChange(value);
+                                            agentForm.setValue('detailCategory', '');
+                                          }} 
+                                          defaultValue={field.value}
+                                          disabled={!agentForm.watch('upperCategory')}
+                                        >
+                                          <FormControl>
+                                            <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
+                                              <SelectValue placeholder={t('org.selectLower')} />
+                                            </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent className="z-[10000]">
+                                            {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
+                                              <SelectItem key={category} value={category}>
+                                                {category}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={agentForm.control}
+                                    name="detailCategory"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-sm font-medium text-gray-700">{t('org.detailOrganization')}</FormLabel>
+                                        <Select 
+                                          onValueChange={field.onChange} 
+                                          defaultValue={field.value}
+                                          disabled={!agentForm.watch('upperCategory') || !agentForm.watch('lowerCategory')}
+                                        >
+                                          <FormControl>
+                                            <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
+                                              <SelectValue placeholder={t('org.selectDetail')} />
+                                            </SelectTrigger>
+                                          </FormControl>
                                         <SelectContent className="z-[10000]">
                                           {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category, index) => (
                                             <SelectItem key={category} value={category}>
@@ -5541,11 +5547,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     </FormItem>
                                   )}
                                 />
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-4">
                             <FormField
                               control={agentForm.control}
                               name="description"
@@ -5570,7 +5575,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 </FormItem>
                               )}
                             />
-
                           </div>
                         </TabsContent>
 
@@ -11338,63 +11342,69 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <Info className="w-5 h-5 text-blue-600" />
                           <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">기본 정보</h3>
                         </div>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                              control={agentForm.control}
-                              name="name"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      placeholder="최대 20자" 
-                                      maxLength={20} 
-                                      className="focus:ring-2 focus:ring-blue-500"
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={agentForm.control}
-                              name="category"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형 *</FormLabel>
-                                  <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
-                                        <SelectValue placeholder={t('admin.typeSelection')} />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="z-[10000]">
-                                      <SelectItem value="학교">학교</SelectItem>
-                                      <SelectItem value="교수">교수</SelectItem>
-                                      <SelectItem value="학생">학생</SelectItem>
-                                      <SelectItem value="그룹">그룹</SelectItem>
-                                      <SelectItem value="기능형">기능형</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                        <div className="space-y-6">
+                          {/* 에이전트 이름 */}
+                          <FormField
+                            control={agentForm.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="최대 20자" 
+                                    maxLength={20} 
+                                    className="focus:ring-2 focus:ring-blue-500"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* 에이전트 유형 - 컴팩트 디스플레이 */}
+                          <div className="space-y-3">
+                            <Label className="text-base font-medium text-gray-900">에이전트 유형</Label>
+                            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                              <FormField
+                                control={agentForm.control}
+                                name="category"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
+                                          <SelectValue placeholder={t('admin.typeSelection')} />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent className="z-[10000]">
+                                        <SelectItem value="학교">학교</SelectItem>
+                                        <SelectItem value="교수">교수</SelectItem>
+                                        <SelectItem value="학생">학생</SelectItem>
+                                        <SelectItem value="그룹">그룹</SelectItem>
+                                        <SelectItem value="기능형">기능형</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
                           </div>
                           
-                          {/* 소속 조직 선택 (순차적) */}
-                          <div className="space-y-4">
-                            <Label className="text-sm font-medium text-gray-700">소속 조직</Label>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {/* 소속 조직 - 컴팩트 계층형 디스플레이 */}
+                          <div className="space-y-3">
+                            <Label className="text-base font-medium text-gray-900">에이전트 소속 조직</Label>
+                            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                              <div className="space-y-3">
                               <FormField
                                 control={agentForm.control}
                                 name="upperCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">상위 조직 *</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">상위 조직 *</FormLabel>
                                     <Select 
                                       onValueChange={(value) => {
                                         field.onChange(value);
@@ -11404,7 +11414,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       value={field.value}
                                     >
                                       <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
                                           <SelectValue placeholder="상위 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
@@ -11425,7 +11435,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="lowerCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">하위 조직</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">하위 조직</FormLabel>
                                     <Select 
                                       onValueChange={(value) => {
                                         field.onChange(value);
@@ -11435,7 +11445,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       disabled={!agentForm.watch('upperCategory')}
                                     >
                                       <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
                                           <SelectValue placeholder="하위 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
@@ -11456,14 +11466,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 name="detailCategory"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-xs text-gray-600">세부 조직</FormLabel>
+                                    <FormLabel className="text-sm font-medium text-gray-700">세부 조직</FormLabel>
                                     <Select 
                                       onValueChange={field.onChange} 
                                       value={field.value}
                                       disabled={!agentForm.watch('lowerCategory')}
                                     >
                                       <FormControl>
-                                        <SelectTrigger className="focus:ring-2 focus:ring-blue-500">
+                                        <SelectTrigger className="bg-white border-green-300 focus:ring-2 focus:ring-blue-500">
                                           <SelectValue placeholder="세부 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
@@ -11479,6 +11489,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   </FormItem>
                                 )}
                               />
+                              </div>
                             </div>
                           </div>
                           
