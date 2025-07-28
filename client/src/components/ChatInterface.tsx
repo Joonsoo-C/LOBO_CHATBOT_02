@@ -44,7 +44,8 @@ import {
   Brain,
   BrainCircuit,
   Globe,
-  LogOut
+  LogOut,
+  Image
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
