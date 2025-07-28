@@ -1017,11 +1017,12 @@ Changelog:
   * Applied consistent text color (text-black dark:text-white) for icon to match other modal headers
   * Enhanced header styling with p-3 padding and flex-shrink-0 to prevent scrolling interference
   * Document management modal now follows standardized header design across all modal interfaces
-- July 28, 2025. Replaced FileText icons with Monitor (screenshot) icons for basic info functionality:
-  * Updated dropdown menu "기본 정보" item in ChatInterface.tsx to use Monitor icon instead of FileText
-  * Changed BasicInfoEditModal header icon from FileText to Monitor for visual consistency
-  * Applied screenshot icon theme as requested matching provided design specifications
+- July 28, 2025. Replaced FileText icons with Bot (robot) icons for basic info functionality:
+  * Updated dropdown menu "기본 정보" item in ChatInterface.tsx to use Bot icon instead of FileText
+  * Changed BasicInfoEditModal header icon from FileText to Bot for visual consistency
+  * Applied robot icon theme matching the existing agent management system design
   * Maintained consistent icon sizing (w-4 h-4 for dropdown, w-5 h-5 for modal header) and text color matching
+  * Bot icon now consistent across basic info modal and agent management interface
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

@@ -1046,7 +1046,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                                 addSystemMessage("기본 정보 편집 창을 열었습니다. 에이전트 이름, 설명, 카테고리 등을 수정할 수 있습니다.");
                               }}
                             >
-                              <Monitor className="w-4 h-4 mr-2" />
+                              <Bot className="w-4 h-4 mr-2" />
                               {t('agent.basicInfo')}
                             </Button>
                             <Button 
