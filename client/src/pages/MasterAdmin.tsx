@@ -8714,7 +8714,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 )}
               </CardContent>
             </Card>
-
             </div>
           </TabsContent>
 
