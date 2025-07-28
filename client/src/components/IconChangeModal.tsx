@@ -369,7 +369,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         {/* Fixed Header */}
         <div className="flex items-center justify-between p-3 border-b border-border flex-shrink-0">
           <div className="flex items-center space-x-2 pl-6">
-            <Image className="w-5 h-5 text-blue-600" />
+            <Image className="w-5 h-5 text-black dark:text-white" />
             <h3 className="text-lg font-medium text-foreground korean-text">아이콘 변경</h3>
           </div>
           <Button 

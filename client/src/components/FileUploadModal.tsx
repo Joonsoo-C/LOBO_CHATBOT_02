@@ -269,7 +269,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             {/* Modal Header - 고정, 높이 50% 줄임 */}
             <div className="flex items-center justify-between p-3 border-b bg-background rounded-t-lg flex-shrink-0">
               <div className="flex items-center space-x-2 pl-6">
-                <FileText className="w-5 h-5 text-blue-600" />
+                <FileText className="w-5 h-5 text-black dark:text-white" />
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
