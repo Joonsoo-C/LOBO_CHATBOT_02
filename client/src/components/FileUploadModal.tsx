@@ -444,11 +444,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             
             {/* 고정 버튼 영역 */}
             <div className="border-t p-3 flex-shrink-0">
-              <div className="flex justify-between space-x-3">
+              <div className="flex space-x-3">
                 <Button
                   variant="outline"
                   onClick={onClose}
-                  className="korean-text"
+                  className="flex-1 p-3 korean-text"
                   disabled={uploadMutation.isPending}
                 >
                   취소
@@ -456,7 +456,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Button
                   onClick={handleUpload}
                   disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
-                  className="bg-red-600 hover:bg-red-700 text-white korean-text"
+                  className="flex-1 p-3 bg-red-600 hover:bg-red-700 text-white korean-text"
                 >
                   {uploadMutation.isPending ? (
                     <>
