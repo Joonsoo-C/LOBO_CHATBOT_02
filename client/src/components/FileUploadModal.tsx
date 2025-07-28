@@ -397,7 +397,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   handleUpload();
                 }}
                 disabled={state.selectedFiles.length === 0 || !state.documentType || uploadMutation.isPending}
-                className="flex-1 korean-text bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:text-gray-200"
+                className="flex-1 korean-text"
+                type="submit"
               >
                 {uploadMutation.isPending ? (
                   <>
@@ -443,7 +444,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               <div className="flex justify-center">
                 <Button
                   onClick={() => setState(prev => ({ ...prev, showErrorModal: false, errorMessage: "" }))}
-                  className="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg"
+                  className="korean-text px-8"
                 >
                   확인
                 </Button>

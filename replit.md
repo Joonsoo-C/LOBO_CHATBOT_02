@@ -980,6 +980,11 @@ Changelog:
   * Fixed font size and color consistency for agent type and organization text elements to match other form fields
   * Standardized label styling: removed text-base font-medium text-gray-900 classes, using standard Label component styling
   * Enhanced BasicInfoEditModal with proper status field integration and TypeScript error fixes
+- July 28, 2025. Standardized button styling across all modal interfaces:
+  * Updated FileUploadModal "업로드 시작" button to use consistent component styling matching other modals
+  * Removed custom blue background classes from upload button, using standard Button component design
+  * Standardized error confirmation modal "확인" button styling to match other modal action buttons
+  * All modal buttons now use consistent Korean text class and standard button variants for unified UX
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators
