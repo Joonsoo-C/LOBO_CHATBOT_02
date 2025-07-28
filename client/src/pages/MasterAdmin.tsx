@@ -5367,14 +5367,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Button>
               </div>
               <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
+                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] flex flex-col relative">
+                  <DialogHeader className="flex-shrink-0">
                     <DialogTitle>{t('agent.createNewAgent')}</DialogTitle>
                   </DialogHeader>
                   
                   {/* 탭 네비게이션 */}
-                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="w-full">
-                    <TabsList className="grid w-full grid-cols-6 mb-6">
+                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="flex flex-col flex-1 overflow-hidden">
+                    <TabsList className="grid w-full grid-cols-6 mb-6 flex-shrink-0">
                       <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
                         {t('agent.basicInfo')}
                       </TabsTrigger>
@@ -5396,7 +5396,9 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </TabsList>
 
                     <Form {...agentForm}>
-                      <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="space-y-6">
+                      <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="flex flex-col flex-1 overflow-hidden">
+                        {/* 탭 콘텐츠 영역 - 고정 높이 설정 */}
+                        <div className="flex-1 overflow-y-auto min-h-0 pb-20">
                         
                         {/* 기본 정보 탭 */}
                         <TabsContent value="basic" className="space-y-6">
@@ -6552,8 +6554,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-                        {/* 하단 버튼 */}
-                        <div className="flex justify-between pt-6 border-t">
+                        </div>
+
+                        {/* 하단 버튼 - 고정 위치 */}
+                        <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-4 pb-6 px-6 bg-white border-t flex-shrink-0">
                           <div className="flex space-x-2">
                             {agentCreationTab !== 'basic' && (
                               <Button 
