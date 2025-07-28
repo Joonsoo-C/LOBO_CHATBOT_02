@@ -276,26 +276,17 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     setSelectedFiles([]);
   };
 
-  if (!isOpen) return null;
-
   return (
     <>
       {/* Main Upload Modal */}
-      <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm" onClick={onClose}>
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8">
-          <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg flex flex-col max-h-[90vh] md:max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header - 고정, 높이 50% 줄임 */}
-            <div className="flex items-center justify-between p-3 border-b bg-background rounded-t-lg flex-shrink-0">
-              <div className="flex items-center space-x-2 pl-6">
-                <FileText className="w-5 h-5 text-black dark:text-white" />
-                <h3 className="text-lg font-medium text-foreground korean-text">
-                  문서 파일 업로드
-                </h3>
-              </div>
-              <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
-                <X className="w-10 h-10" />
-              </Button>
-            </div>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-2xl max-h-[90vh] md:max-h-[80vh] flex flex-col p-0" onClick={(e) => e.stopPropagation()}>
+          <DialogHeader className="p-4 border-b">
+            <DialogTitle className="flex items-center space-x-2 text-lg font-medium">
+              <FileText className="w-5 h-5" />
+              <span className="korean-text">문서 파일 업로드</span>
+            </DialogTitle>
+          </DialogHeader>
 
             {/* Modal Content - 스크롤 가능 */}
             <div className="flex-1 overflow-y-auto">
@@ -460,48 +451,47 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </div>
             </div>
             
-            {/* 고정 버튼 영역 */}
-            <div className="border-t p-3 flex-shrink-0">
-              <div className="flex space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={onClose}
-                  className="flex-1 p-3 korean-text"
-                  disabled={uploadMutation.isPending}
-                >
-                  취소
-                </Button>
-                <Button
-                  onClick={() => {
-                    console.log("업로드 버튼 클릭됨 - 선택된 파일:", selectedFiles.length, "문서 타입:", documentType);
-                    console.log("업로드 버튼 disabled 조건:", {
-                      filesLength: selectedFiles.length,
-                      noFiles: selectedFiles.length === 0,
-                      noDocType: !documentType,
-                      uploading: uploadMutation.isPending
-                    });
-                    handleUpload();
-                  }}
-                  disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
-                  className="flex-1 p-3 korean-text"
-                >
-                  {uploadMutation.isPending ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      업로드 중...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="w-4 h-4 mr-2" />
-                      업로드 시작
-                    </>
-                  )}
-                </Button>
-              </div>
+          {/* 고정 버튼 영역 */}
+          <div className="border-t p-4 flex-shrink-0">
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                className="flex-1 korean-text"
+                disabled={uploadMutation.isPending}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={() => {
+                  console.log("업로드 버튼 클릭됨 - 선택된 파일:", selectedFiles.length, "문서 타입:", documentType);
+                  console.log("업로드 버튼 disabled 조건:", {
+                    filesLength: selectedFiles.length,
+                    noFiles: selectedFiles.length === 0,
+                    noDocType: !documentType,
+                    uploading: uploadMutation.isPending
+                  });
+                  handleUpload();
+                }}
+                disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
+                className="flex-1 korean-text"
+              >
+                {uploadMutation.isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    업로드 중...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    업로드 시작
+                  </>
+                )}
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
       
       {/* Error Modal */}
       <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
