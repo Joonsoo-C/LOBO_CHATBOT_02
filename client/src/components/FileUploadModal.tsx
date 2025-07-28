@@ -170,6 +170,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    console.log("파일 선택됨:", files.length, "개");
+    
     if (files.length > 0) {
       const newValidFiles: File[] = [];
       
@@ -186,13 +188,19 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         
         if (validateFile(file)) {
           newValidFiles.push(file);
+          console.log("유효한 파일 추가됨:", file.name);
         }
       }
       
       if (newValidFiles.length > 0) {
-        setSelectedFiles(prev => [...prev, ...newValidFiles]);
+        setSelectedFiles(prev => {
+          const updated = [...prev, ...newValidFiles];
+          console.log("선택된 파일 업데이트됨:", updated.length);
+          return updated;
+        });
         if (documentType === "") {
           setDocumentType("기타");
+          console.log("문서 타입 자동 설정: 기타");
         }
       }
     }
@@ -454,7 +462,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                   취소
                 </Button>
                 <Button
-                  onClick={handleUpload}
+                  onClick={() => {
+                    console.log("업로드 버튼 클릭됨 - 선택된 파일:", selectedFiles.length, "문서 타입:", documentType);
+                    handleUpload();
+                  }}
                   disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
                   className="flex-1 p-3 bg-red-600 hover:bg-red-700 text-white korean-text"
                 >
