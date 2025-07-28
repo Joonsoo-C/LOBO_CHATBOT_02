@@ -33,6 +33,14 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 현재 사용자 정보 가져오기
+  const { data: currentUser } = useQuery({
+    queryKey: ["/api/user"],
+  });
+  
+  // 마스터 관리자 권한 확인
+  const isMasterAdmin = currentUser?.systemRole === 'master_admin';
+  
   // 원본 데이터 (초기값)
   const [originalData, setOriginalData] = useState<BasicInfoData>({
     name: agent.name || "",
@@ -54,8 +62,15 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
     status: agent.status || "active"
   });
 
-  // 변경사항 감지
-  const hasChanges = useFormChanges(basicInfoData, originalData);
+  // 변경사항 감지 (마스터 관리자가 아닌 경우 조직 정보 변경은 제외)
+  const filteredDataForChanges = isMasterAdmin ? basicInfoData : {
+    ...basicInfoData,
+    type: originalData.type,
+    upperCategory: originalData.upperCategory,
+    lowerCategory: originalData.lowerCategory,
+    detailCategory: originalData.detailCategory
+  };
+  const hasChanges = useFormChanges(filteredDataForChanges, originalData);
 
   // Fetch organization categories
   const { data: organizationCategories = [] } = useQuery<any[]>({
@@ -234,20 +249,34 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             <p className="text-xs text-gray-500">* 소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.</p>
           </div>
 
+          {!isMasterAdmin && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
+              <p className="text-sm text-amber-700 korean-text">
+                <span className="font-medium">참고:</span> 에이전트 유형과 소속 조직 정보는 마스터 관리자만 수정할 수 있습니다.
+              </p>
+            </div>
+          )}
+
           {/* Agent Type */}
           <div className="space-y-2">
             <Label className="korean-text">에이전트 유형 *</Label>
-            <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="유형을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent className="z-[10000]">
-                <SelectItem value="학교">학교</SelectItem>
-                <SelectItem value="교수">교수</SelectItem>
-                <SelectItem value="그룹">그룹</SelectItem>
-                <SelectItem value="기능형">기능형</SelectItem>
-              </SelectContent>
-            </Select>
+            {isMasterAdmin ? (
+              <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
+                <SelectTrigger className="korean-text">
+                  <SelectValue placeholder="유형을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  <SelectItem value="학교">학교</SelectItem>
+                  <SelectItem value="교수">교수</SelectItem>
+                  <SelectItem value="그룹">그룹</SelectItem>
+                  <SelectItem value="기능형">기능형</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
+                {basicInfoData.type}
+              </div>
+            )}
           </div>
 
           {/* Organization Categories */}
@@ -255,67 +284,85 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             {/* Upper Category */}
             <div className="space-y-2">
               <Label className="korean-text">소속 상위 조직 *</Label>
-              <Select 
-                value={basicInfoData.upperCategory} 
-                onValueChange={(value) => {
-                  handleInputChange('upperCategory', value);
-                  // Reset lower and detail categories when upper category changes
-                  handleInputChange('lowerCategory', '전체');
-                  handleInputChange('detailCategory', '전체');
-                }}
-              >
-                <SelectTrigger className="korean-text">
-                  <SelectValue placeholder="상위 조직을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent className="z-[10000]">
-                  <SelectItem value="전체">전체</SelectItem>
-                  {upperCategories.map((category: string) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isMasterAdmin ? (
+                <Select 
+                  value={basicInfoData.upperCategory} 
+                  onValueChange={(value) => {
+                    handleInputChange('upperCategory', value);
+                    // Reset lower and detail categories when upper category changes
+                    handleInputChange('lowerCategory', '전체');
+                    handleInputChange('detailCategory', '전체');
+                  }}
+                >
+                  <SelectTrigger className="korean-text">
+                    <SelectValue placeholder="상위 조직을 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="전체">전체</SelectItem>
+                    {upperCategories.map((category: string) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
+                  {basicInfoData.upperCategory}
+                </div>
+              )}
             </div>
 
             {/* Lower Category */}
             <div className="space-y-2">
               <Label className="korean-text">하위 조직</Label>
-              <Select 
-                value={basicInfoData.lowerCategory} 
-                onValueChange={(value) => {
-                  handleInputChange('lowerCategory', value);
-                  // Reset detail category when lower category changes
-                  handleInputChange('detailCategory', '전체');
-                }}
-              >
-                <SelectTrigger className="korean-text">
-                  <SelectValue placeholder="하위 조직을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent className="z-[10000]">
-                  <SelectItem value="전체">전체</SelectItem>
-                  {lowerCategories.map((category: string) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isMasterAdmin ? (
+                <Select 
+                  value={basicInfoData.lowerCategory} 
+                  onValueChange={(value) => {
+                    handleInputChange('lowerCategory', value);
+                    // Reset detail category when lower category changes
+                    handleInputChange('detailCategory', '전체');
+                  }}
+                >
+                  <SelectTrigger className="korean-text">
+                    <SelectValue placeholder="하위 조직을 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="전체">전체</SelectItem>
+                    {lowerCategories.map((category: string) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
+                  {basicInfoData.lowerCategory}
+                </div>
+              )}
             </div>
 
             {/* Detail Category */}
             <div className="space-y-2">
               <Label className="korean-text">세부 조직</Label>
-              <Select 
-                value={basicInfoData.detailCategory} 
-                onValueChange={(value) => handleInputChange('detailCategory', value)}
-              >
-                <SelectTrigger className="korean-text">
-                  <SelectValue placeholder="세부 조직을 선택하세요" />
-                </SelectTrigger>
-                <SelectContent className="z-[10000]">
-                  <SelectItem value="전체">전체</SelectItem>
-                  {detailCategories.map((category: string) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isMasterAdmin ? (
+                <Select 
+                  value={basicInfoData.detailCategory} 
+                  onValueChange={(value) => handleInputChange('detailCategory', value)}
+                >
+                  <SelectTrigger className="korean-text">
+                    <SelectValue placeholder="세부 조직을 선택하세요" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="전체">전체</SelectItem>
+                    {detailCategories.map((category: string) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md korean-text text-gray-700">
+                  {basicInfoData.detailCategory}
+                </div>
+              )}
             </div>
           </div>
 

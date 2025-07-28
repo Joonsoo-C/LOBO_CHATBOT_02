@@ -972,6 +972,14 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 28, 2025. Implemented role-based access control for agent basic information editing:
+  * Added user permission checking to determine master administrator status in BasicInfoEditModal
+  * Made agent type and organization fields read-only for non-master administrators
+  * Only master administrators can modify agent type (학교, 교수, 그룹, 기능형) and organization data
+  * Non-master users see read-only gray boxes displaying current values instead of dropdown selectors
+  * Added informational notice for non-master users explaining permission restrictions
+  * Enhanced change detection to exclude organization fields for non-master users to prevent false positive changes
+  * Maintains existing functionality while enforcing hierarchical permission structure
 - July 28, 2025. Completed universal change detection system across all modal interfaces:
   * Successfully implemented useFormChanges custom hook throughout all modal components
   * Added change detection to IconChangeModal with icon/color tracking and proper button state management
