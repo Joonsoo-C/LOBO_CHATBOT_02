@@ -1000,6 +1000,10 @@ Changelog:
   * Changed header icon from Bot to User icon to align with dropdown menu "페르소나" option
   * Maintained consistent black/white color scheme matching existing design patterns
   * Enhanced visual consistency between dropdown menu items and corresponding modal interfaces
+- July 28, 2025. Fixed BasicInfoEditModal header icon color consistency:
+  * Changed FileText icon color from blue (text-blue-600) to match text color (text-black dark:text-white)
+  * Ensured visual consistency between icon and text elements in modal header
+  * Applied same color scheme as PersonaEditModal for unified design approach
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators
