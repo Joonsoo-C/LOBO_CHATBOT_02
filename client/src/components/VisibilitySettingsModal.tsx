@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Globe, X, Save, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useFormChanges } from "@/hooks/useFormChanges";
 
 interface VisibilitySettingsModalProps {
   isOpen: boolean;
@@ -17,11 +18,32 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 원본 데이터 (초기값)
+  const [originalData, setOriginalData] = useState({
+    visibility: agent?.visibility || "public",
+    isVisible: agent?.isActive !== false,
+    selectedUpperCategory: agent?.upperCategory || "",
+    selectedLowerCategory: agent?.lowerCategory || "",
+    selectedDetailCategory: agent?.detailCategory || ""
+  });
+  
   const [visibility, setVisibility] = useState<"public" | "group">("public");
   const [isVisible, setIsVisible] = useState(true);
   const [selectedUpperCategory, setSelectedUpperCategory] = useState("");
   const [selectedLowerCategory, setSelectedLowerCategory] = useState("");
   const [selectedDetailCategory, setSelectedDetailCategory] = useState("");
+
+  // 현재 상태 객체 (변경사항 감지용)
+  const currentData = {
+    visibility,
+    isVisible,
+    selectedUpperCategory,
+    selectedLowerCategory,
+    selectedDetailCategory
+  };
+
+  // 변경사항 감지
+  const hasChanges = useFormChanges(currentData, originalData);
 
   // Fetch current user data
   const { data: user } = useQuery({
@@ -39,6 +61,15 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
   // Initialize settings from agent data
   useEffect(() => {
     if (agent) {
+      const newOriginalData = {
+        visibility: agent.visibility || "public",
+        isVisible: agent.isActive !== false,
+        selectedUpperCategory: agent.upperCategory || "",
+        selectedLowerCategory: agent.lowerCategory || "",
+        selectedDetailCategory: agent.detailCategory || ""
+      };
+      
+      setOriginalData(newOriginalData);
       setVisibility(agent.visibility || "public");
       setIsVisible(agent.isActive !== false);
       setSelectedUpperCategory(agent.upperCategory || "");
@@ -49,7 +80,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
 
   // Helper functions for category filtering
   const getUpperCategories = () => {
-    const categories = [...new Set((organizationCategories as any[]).map((org: any) => org.upperCategory))];
+    const categories = Array.from(new Set((organizationCategories as any[]).map((org: any) => org.upperCategory)));
     return categories.filter(Boolean);
   };
 
@@ -58,7 +89,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
     const categories = (organizationCategories as any[])
       .filter((org: any) => org.upperCategory === upperCategory)
       .map((org: any) => org.lowerCategory);
-    return [...new Set(categories)].filter(Boolean);
+    return Array.from(new Set(categories)).filter(Boolean);
   };
 
   const getDetailCategories = (upperCategory: string, lowerCategory: string) => {
@@ -69,7 +100,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
         org.lowerCategory === lowerCategory
       )
       .map((org: any) => org.detailCategory);
-    return [...new Set(categories)].filter(Boolean);
+    return Array.from(new Set(categories)).filter(Boolean);
   };
 
   // Update visibility settings mutation
@@ -332,7 +363,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
               </Button>
               <Button
                 type="submit"
-                disabled={updateVisibilityMutation.isPending || (isMasterAdmin && visibility === "group" && !selectedUpperCategory)}
+                disabled={updateVisibilityMutation.isPending || !hasChanges || (isMasterAdmin && visibility === "group" && !selectedUpperCategory)}
                 className="flex-1 korean-text"
               >
                 {updateVisibilityMutation.isPending ? (
