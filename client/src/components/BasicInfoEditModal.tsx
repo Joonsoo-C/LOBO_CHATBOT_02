@@ -136,11 +136,17 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   if (!isOpen) return null;
 
   // Get unique categories with proper filtering
+  console.log("DEBUG - Organization categories:", organizationCategories?.length);
+  console.log("DEBUG - Current upperCategory:", basicInfoData.upperCategory);
+  console.log("DEBUG - Current lowerCategory:", basicInfoData.lowerCategory);
+  
   const upperCategories = Array.from(new Set(
     (organizationCategories || [])
       .map(org => org.upperCategory)
       .filter(Boolean)
   )).sort();
+  
+  console.log("DEBUG - Upper categories:", upperCategories);
 
   const lowerCategories = Array.from(new Set(
     (organizationCategories || [])
@@ -151,6 +157,8 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
       .map(org => org.lowerCategory)
       .filter(Boolean)
   )).sort();
+  
+  console.log("DEBUG - Lower categories for", basicInfoData.upperCategory, ":", lowerCategories);
 
   const detailCategories = Array.from(new Set(
     (organizationCategories || [])
@@ -165,6 +173,8 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
       .map(org => org.detailCategory)
       .filter(Boolean)
   )).sort();
+  
+  console.log("DEBUG - Detail categories for", basicInfoData.upperCategory, "/", basicInfoData.lowerCategory, ":", detailCategories);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
