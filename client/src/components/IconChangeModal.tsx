@@ -455,58 +455,6 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 className="hidden"
                 id="image-upload-drop"
               />
-              
-              {/* File drop area */}
-              <div 
-                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-400 transition-colors"
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onDragEnter={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onDragLeave={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  const files = Array.from(e.dataTransfer.files);
-                  if (files.length > 0) {
-                    const file = files[0];
-                    if (file.type.startsWith('image/')) {
-                      const event = {
-                        target: { files: [file] }
-                      } as any;
-                      handleFileChange(event);
-                    }
-                  }
-                }}
-              >
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    지원 형식: jpg, png, gif, webp (최대 5MB)
-                  </p>
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      document.getElementById('image-upload-drop')?.click();
-                    }}
-                  >
-                    파일 선택
-                  </Button>
-                </div>
-              </div>
             </div>
           )}
 
