@@ -9774,9 +9774,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             <div className="space-y-6">
               {/* 탭 제목 */}
               <div className="flex items-center gap-3 mb-6">
-                <Palette className="w-5 h-5 text-blue-600" />
+                <Edit className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">아이콘 변경</h3>
               </div>
+
               {/* 아이콘 미리보기 */}
               <div className="flex justify-center">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500 overflow-hidden`}>
@@ -9795,14 +9796,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               </div>
 
-              {/* 아이콘 유형 선택 */}
-              <div>
-                <h3 className="text-sm font-medium mb-3">아이콘 유형</h3>
-                <div className="flex space-x-2">
-                  <Button 
-                    variant={!isUsingCustomImage ? "default" : "outline"} 
-                    size="sm"
-                    className="flex-1"
+              {/* 탭 메뉴 */}
+              <Tabs value={isUsingCustomImage ? "upload" : "default"} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger 
+                    value="default" 
                     onClick={() => {
                       setIsUsingCustomImage(false);
                       setCustomImageFile(null);
@@ -9811,135 +9809,115 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     }}
                   >
                     기본 아이콘
-                  </Button>
-                  <Button 
-                    variant={isUsingCustomImage ? "default" : "outline"}
-                    size="sm" 
-                    className="flex-1"
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="upload"
                     onClick={() => {
                       setIsUsingCustomImage(true);
                     }}
                   >
                     이미지 업로드
-                  </Button>
-                </div>
-              </div>
+                  </TabsTrigger>
+                </TabsList>
 
-              {/* 이미지 업로드 영역 */}
-              {isUsingCustomImage && (
-                <div>
-                  <input
-                    type="file"
-                    id="custom-image-upload"
-                    accept="image/jpeg,image/png,image/gif,image/webp"
-                    onChange={handleCustomImageChange}
-                    style={{ display: 'none' }}
-                  />
-                  <div 
-                    className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
-                    onDragOver={handleDragOver}
-                    onDragEnter={handleDragEnter}
-                    onDragLeave={handleDragLeave}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const files = Array.from(e.dataTransfer.files);
-                      if (files.length > 0) {
-                        const file = files[0];
-                        if (file.type.startsWith('image/')) {
-                          const event = {
-                            target: { files: [file] }
-                          } as any;
-                          handleCustomImageChange(event);
-                        }
-                      }
-                    }}
-                    onClick={() => document.getElementById('custom-image-upload')?.click()}
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        지원 형식: jpg, png, gif, webp (최대 5MB)
-                      </p>
-                      <Button 
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          document.getElementById('custom-image-upload')?.click();
-                        }}
-                      >
-                        파일 선택
-                      </Button>
+                {/* 기본 아이콘 탭 */}
+                <TabsContent value="default" className="space-y-4 mt-4">
+                  {/* 기본 아이콘 선택 영역 */}
+                  <div>
+                    <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
+                    <div className="grid grid-cols-5 gap-2">
+                      {Object.keys(iconMap).map((iconName) => {
+                        const IconComponent = iconMap[iconName as keyof typeof iconMap];
+                        const isSelected = selectedIcon === iconName;
+                        return (
+                          <button
+                            key={iconName}
+                            className={`p-2 rounded-lg border-2 transition-colors ${
+                              isSelected 
+                                ? 'border-blue-500 bg-blue-50' 
+                                : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                            onClick={() => setSelectedIcon(iconName)}
+                          >
+                            <IconComponent className="w-6 h-6 text-gray-600" />
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                </div>
-              )}
+                  
+                  {/* 배경색 선택 */}
+                  <div>
+                    <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
+                    <div className="grid grid-cols-5 gap-2">
+                      {["blue", "green", "red", "purple", "yellow", "pink", "indigo", "gray", "orange", "teal"].map((color) => (
+                        <button
+                          key={color}
+                          className={`w-8 h-8 rounded-lg border-2 transition-all ${
+                            selectedBgColor === color 
+                              ? 'border-gray-900 scale-110' 
+                              : 'border-gray-200 hover:border-gray-400'
+                          } bg-${color}-500`}
+                          onClick={() => setSelectedBgColor(color)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
 
-              {/* 아이콘 선택 - 기본 아이콘이 선택된 경우에만 표시 */}
-              {!isUsingCustomImage && (
-                <div>
-                  <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
-                  <div className="grid grid-cols-5 gap-2">
-                  {[
-                    { icon: "User" },
-                    { icon: "GraduationCap" },
-                    { icon: "BookOpen" },
-                    { icon: "Shield" },
-                    { icon: "Brain" },
-                    { icon: "Zap" },
-                    { icon: "Target" },
-                    { icon: "Coffee" },
-                    { icon: "Music" },
-                    { icon: "Heart" }
-                  ].map(({ icon }) => {
-                    const IconComponent = iconMap[icon as keyof typeof iconMap];
-                    return (
-                      <Button
-                        key={icon}
-                        variant={selectedIcon === icon ? "default" : "outline"}
-                        size="sm"
-                        className="h-12 w-12 p-0"
-                        onClick={() => setSelectedIcon(icon)}
-                      >
-                        <IconComponent className="w-5 h-5" />
-                      </Button>
-                    );
-                  })}
-                </div>
-                </div>
-              )}
-
-              {/* 배경색 선택 */}
-              <div>
-                <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
-                <div className="grid grid-cols-5 gap-2">
-                  {[
-                    { color: "blue", class: "bg-blue-500" },
-                    { color: "green", class: "bg-green-500" },
-                    { color: "purple", class: "bg-purple-500" },
-                    { color: "red", class: "bg-red-500" },
-                    { color: "orange", class: "bg-orange-500" },
-                    { color: "pink", class: "bg-pink-500" },
-                    { color: "yellow", class: "bg-yellow-500" },
-                    { color: "cyan", class: "bg-cyan-500" },
-                    { color: "gray", class: "bg-gray-500" },
-                    { color: "indigo", class: "bg-indigo-500" }
-                  ].map(({ color, class: bgClass }) => (
-                    <Button
-                      key={color}
-                      variant="outline"
-                      size="sm"
-                      className={`h-12 w-12 p-0 border-2 ${selectedBgColor === color ? 'border-black' : 'border-gray-200'}`}
-                      onClick={() => setSelectedBgColor(color)}
+                {/* 이미지 업로드 탭 */}
+                <TabsContent value="upload" className="space-y-4 mt-4">
+                  <div>
+                    <input
+                      type="file"
+                      id="custom-image-upload"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      onChange={handleCustomImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div 
+                      className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                      onDragOver={handleDragOver}
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const files = Array.from(e.dataTransfer.files);
+                        if (files.length > 0) {
+                          const file = files[0];
+                          if (file.type.startsWith('image/')) {
+                            const event = {
+                              target: { files: [file] }
+                            } as any;
+                            handleCustomImageChange(event);
+                          }
+                        }
+                      }}
+                      onClick={() => document.getElementById('custom-image-upload')?.click()}
                     >
-                      <div className={`w-8 h-8 rounded ${bgClass}`}></div>
-                    </Button>
-                  ))}
-                </div>
-              </div>
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          지원 형식: jpg, png, gif, webp (최대 5MB)
+                        </p>
+                        <Button 
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            document.getElementById('custom-image-upload')?.click();
+                          }}
+                        >
+                          파일 선택
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
 
               {/* 버튼 */}
               <div className="flex justify-end space-x-2 pt-4">
