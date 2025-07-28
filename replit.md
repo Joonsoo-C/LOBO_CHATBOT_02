@@ -980,6 +980,13 @@ Changelog:
   * Added informational notice for non-master users explaining permission restrictions
   * Enhanced change detection to exclude organization fields for non-master users to prevent false positive changes
   * Maintains existing functionality while enforcing hierarchical permission structure
+- July 28, 2025. Reverted new agent creation modal file upload tab to previous simple design:
+  * Simplified file drag-and-drop area with cleaner gray background and reduced padding
+  * Streamlined selected file list display with smaller file cards and simplified file type labels
+  * Removed blue background container for selected files in favor of clean white layout
+  * Updated file upload area padding from p-16 to p-12 for more compact appearance
+  * Standardized file type display to show "DOCUMENT" instead of specific format names
+  * Design now matches user-provided screenshot reference with minimal, clean interface
 - July 28, 2025. Completed universal change detection system across all modal interfaces:
   * Successfully implemented useFormChanges custom hook throughout all modal components
   * Added change detection to IconChangeModal with icon/color tracking and proper button state management

@@ -5850,7 +5850,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             
                             {/* 파일 드래그 앤 드롭 영역 */}
                             <div 
-                              className="border-2 border-dashed border-gray-300 rounded-lg p-16 text-center bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+                              className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
                               onClick={handleAgentFileSelect}
                               onDragOver={(e) => {
                                 e.preventDefault();
@@ -5869,33 +5869,32 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 }
                               }}
                             >
-                              <div className="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                <FileText className="w-10 h-10 text-blue-600" />
+                              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                                <FileText className="w-8 h-8 text-blue-600" />
                               </div>
-                              <div className="space-y-4">
-                                <p className="text-xl font-medium text-gray-900">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
+                              <div className="space-y-2">
+                                <p className="text-lg font-medium text-gray-900">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
                                 <p className="text-sm text-gray-500">지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif</p>
                                 <p className="text-sm text-gray-500">(최대 8개 / 파일당 최대 50MB)</p>
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="lg" 
-                                  className="bg-white hover:bg-gray-50 border-gray-300"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAgentFileSelect();
-                                  }}
-                                >
-                                  파일 선택
-                                </Button>
                               </div>
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                className="mt-4 bg-white hover:bg-gray-50 border-gray-300"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAgentFileSelect();
+                                }}
+                              >
+                                파일 선택
+                              </Button>
                             </div>
                             
                             {/* 선택된 파일 목록 */}
                             {selectedFiles.length > 0 && (
-                              <div className="bg-blue-50 rounded-lg p-4 space-y-4">
+                              <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                  <Label className="text-base font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
+                                  <Label className="text-sm font-medium text-gray-900">선택된 파일 ({selectedFiles.length}개)</Label>
                                   <div className="flex items-center space-x-2">
                                     <Button
                                       type="button"
@@ -5965,7 +5964,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         }
                                       }}
                                       disabled={isAgentFileUploading || selectedFiles.length === 0}
-                                      className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
+                                      className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                       {isAgentFileUploading ? (
                                         <div className="flex items-center space-x-2">
@@ -5981,18 +5980,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 
                                 <div className="space-y-2">
                                   {selectedFiles.map((file, index) => (
-                                    <div key={index} className="bg-white rounded-lg p-4 flex items-center justify-between border border-gray-200">
+                                    <div key={index} className="bg-white rounded-lg p-3 flex items-center justify-between border border-gray-200">
                                       <div className="flex items-center space-x-3">
                                         <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
                                           <FileText className="w-4 h-4 text-blue-600" />
                                         </div>
                                         <div>
                                           <p className="font-medium text-gray-900 text-sm">{file.name}</p>
-                                          <p className="text-xs text-blue-600">
+                                          <p className="text-xs text-gray-500">
                                             {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type.includes('pdf') ? 'PDF' : 
-                                             file.type.includes('word') || file.name.includes('.doc') ? 'WORD DOCUMENT' : 
-                                             file.type.includes('sheet') || file.name.includes('.xls') ? 'EXCEL DOCUMENT' : 
-                                             file.type.includes('presentation') || file.name.includes('.ppt') ? 'POWERPOINT DOCUMENT' : 
+                                             file.type.includes('word') || file.name.includes('.doc') ? 'DOCUMENT' : 
+                                             file.type.includes('sheet') || file.name.includes('.xls') ? 'DOCUMENT' : 
+                                             file.type.includes('presentation') || file.name.includes('.ppt') ? 'DOCUMENT' : 
                                              'DOCUMENT'}
                                           </p>
                                         </div>
