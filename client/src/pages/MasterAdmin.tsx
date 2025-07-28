@@ -9767,16 +9767,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 아이콘 변경 다이얼로그 */}
         <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>아이콘 변경</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6">
+          <DialogContent className="max-w-md h-[90vh] md:h-[80vh] flex flex-col p-0">
+            {/* 고정 헤더 */}
+            <div className="border-b p-6 flex-shrink-0">
+              <DialogHeader>
+                <DialogTitle>아이콘 변경</DialogTitle>
+              </DialogHeader>
               {/* 탭 제목 */}
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mt-4">
                 <Edit className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">아이콘 변경</h3>
               </div>
+            </div>
+            
+            {/* 스크롤 가능한 컨텐츠 영역 */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-6">
 
               {/* 아이콘 미리보기 */}
               <div className="flex justify-center">
@@ -9918,9 +9924,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </div>
                 </TabsContent>
               </Tabs>
-
-              {/* 버튼 */}
-              <div className="flex justify-end space-x-2 pt-4">
+              </div>
+            </div>
+            
+            {/* 고정 버튼 영역 */}
+            <div className="border-t p-6 flex-shrink-0">
+              <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setIsIconChangeDialogOpen(false)}>
                   취소
                 </Button>
