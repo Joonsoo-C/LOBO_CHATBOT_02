@@ -20,17 +20,19 @@ interface FileUploadModalProps {
 }
 
 export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: FileUploadModalProps) {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [documentType, setDocumentType] = useState<string>("기타"); // 기본값 설정
-  const [documentDescription, setDocumentDescription] = useState<string>("");
-  const [documentVisibility, setDocumentVisibility] = useState(true);
+  const [state, setState] = useState({
+    selectedFiles: [] as File[],
+    isDragOver: false,
+    documentType: "기타",
+    documentDescription: "",
+    documentVisibility: true,
+    showErrorModal: false,
+    errorMessage: "",
+    forceRender: 0
+  });
 
   // 디버깅: 컴포넌트 렌더링 시 상태 로그
-  console.log("FileUploadModal 렌더링 - selectedFiles:", selectedFiles.length, "documentType:", documentType, "isOpen:", isOpen);
-
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  console.log("FileUploadModal 렌더링 - selectedFiles:", state.selectedFiles.length, "documentType:", state.documentType, "isOpen:", isOpen, "forceRender:", state.forceRender);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -38,12 +40,16 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   // 모달이 열릴 때마다 상태 초기화
   useEffect(() => {
     if (isOpen) {
-      setSelectedFiles([]);
-      setDocumentType("기타");
-      setDocumentDescription("");
-      setDocumentVisibility(true);
-      setShowErrorModal(false);
-      setErrorMessage("");
+      setState({
+        selectedFiles: [],
+        isDragOver: false,
+        documentType: "기타",
+        documentDescription: "",
+        documentVisibility: true,
+        showErrorModal: false,
+        errorMessage: "",
+        forceRender: 0
+      });
       console.log("FileUploadModal 상태 초기화됨");
     }
   }, [isOpen]);
@@ -72,9 +78,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       for (const file of files) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("documentType", documentType);
-        formData.append("description", documentDescription);
-        formData.append("isVisible", documentVisibility.toString());
+        formData.append("documentType", state.documentType);
+        formData.append("description", state.documentDescription);
+        formData.append("isVisible", state.documentVisibility.toString());
         formData.append("status", "사용 중");
 
         const controller = new AbortController();
@@ -135,10 +141,13 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       });
 
       // Reset form and close modal
-      setSelectedFiles([]);
-      setDocumentType("");
-      setDocumentDescription("");
-      setDocumentVisibility(true);
+      setState(prev => ({
+        ...prev,
+        selectedFiles: [],
+        documentType: "기타",
+        documentDescription: "",
+        documentVisibility: true
+      }));
       onClose();
     },
     onError: (error: any) => {
@@ -149,8 +158,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         return;
       }
       
-      setErrorMessage(error.message || '파일 업로드 중 오류가 발생했습니다.');
-      setShowErrorModal(true);
+      setState(prev => ({
+        ...prev,
+        errorMessage: error.message || '파일 업로드 중 오류가 발생했습니다.',
+        showErrorModal: true
+      }));
     }
   });
 
@@ -209,11 +221,21 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       }
       
       if (newValidFiles.length > 0) {
-        const updatedFiles = [...selectedFiles, ...newValidFiles];
-        setSelectedFiles(updatedFiles);
-        console.log("선택된 파일 업데이트됨:", updatedFiles.length);
-        console.log("현재 문서 타입:", documentType);
-        console.log("업데이트된 파일 목록:", updatedFiles.map(f => f.name));
+        const updatedFiles = [...state.selectedFiles, ...newValidFiles];
+        console.log("파일 선택 전 상태:", state.selectedFiles.length);
+        console.log("새로 선택된 파일:", newValidFiles.map(f => f.name));
+        console.log("업데이트될 파일 목록:", updatedFiles.map(f => f.name));
+        
+        setState(prev => ({
+          ...prev,
+          selectedFiles: updatedFiles,
+          forceRender: prev.forceRender + 1
+        }));
+        
+        // 상태 업데이트 확인을 위한 지연된 로그
+        setTimeout(() => {
+          console.log("상태 업데이트 후 selectedFiles 길이:", updatedFiles.length);
+        }, 100);
       }
     }
     
@@ -223,17 +245,17 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(true);
+    setState(prev => ({ ...prev, isDragOver: true }));
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(false);
+    setState(prev => ({ ...prev, isDragOver: false }));
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(false);
+    setState(prev => ({ ...prev, isDragOver: false }));
     
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
@@ -241,7 +263,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       
       for (const file of files) {
         // 최대 8개까지만 허용
-        if (selectedFiles.length + newValidFiles.length >= 8) {
+        if (state.selectedFiles.length + newValidFiles.length >= 8) {
           toast({
             title: "파일 개수 제한",
             description: "최대 8개까지만 선택할 수 있습니다.",
@@ -256,26 +278,46 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       }
       
       if (newValidFiles.length > 0) {
-        const updatedFiles = [...selectedFiles, ...newValidFiles];
-        setSelectedFiles(updatedFiles);
-        console.log("드래그 앤 드롭으로 파일 추가됨:", updatedFiles.length);
-        console.log("현재 문서 타입:", documentType);
+        const updatedFiles = [...state.selectedFiles, ...newValidFiles];
+        console.log("드래그 앤 드롭 전 상태:", state.selectedFiles.length);
+        console.log("드래그로 추가된 파일:", newValidFiles.map(f => f.name));
+        
+        setState(prev => ({
+          ...prev,
+          selectedFiles: updatedFiles,
+          forceRender: prev.forceRender + 1
+        }));
+        
+        setTimeout(() => {
+          console.log("드래그 후 상태 업데이트:", updatedFiles.length);
+        }, 100);
       }
     }
   };
 
   const handleUpload = () => {
-    if (selectedFiles.length > 0) {
-      uploadMutation.mutate(selectedFiles);
+    if (state.selectedFiles.length > 0) {
+      uploadMutation.mutate(state.selectedFiles);
     }
   };
   
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    const updatedFiles = state.selectedFiles.filter((_, i) => i !== index);
+    setState(prev => ({
+      ...prev,
+      selectedFiles: updatedFiles,
+      forceRender: prev.forceRender + 1
+    }));
+    console.log("파일 제거됨, 남은 파일:", updatedFiles.length);
   };
   
   const clearAllFiles = () => {
-    setSelectedFiles([]);
+    setState(prev => ({
+      ...prev,
+      selectedFiles: [],
+      forceRender: prev.forceRender + 1
+    }));
+    console.log("모든 파일 제거됨");
   };
 
   return (
@@ -299,7 +341,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 {/* File Upload Section */}
                 <div 
                   className={`p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
-                    isDragOver 
+                    state.isDragOver 
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
                       : ''
                   }`}
@@ -341,11 +383,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 </div>
 
                 {/* Selected Files Display */}
-                {selectedFiles.length > 0 && (
-                  <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
+                {state.selectedFiles.length > 0 && (
+                  <div key={`files-${state.forceRender}-${state.selectedFiles.length}`} className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
-                        선택된 파일 ({selectedFiles.length}개)
+                        선택된 파일 ({state.selectedFiles.length}개)
                       </h3>
                       <Button
                         variant="outline"
@@ -357,7 +399,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       </Button>
                     </div>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {selectedFiles.map((file, index) => (
+                      {state.selectedFiles.map((file, index) => (
                         <div key={index} className="flex items-center justify-between bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md p-3">
                           <div className="flex items-center space-x-3 flex-1 min-w-0">
                             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
@@ -366,9 +408,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                                 <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
                                   {file.name}
                                 </p>
-                                {documentType && (
+                                {state.documentType && (
                                   <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">
-                                    {documentType}
+                                    {state.documentType}
                                   </span>
                                 )}
                               </div>
@@ -379,10 +421,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => setDocumentVisibility(!documentVisibility)}
+                                  onClick={() => setState(prev => ({ ...prev, documentVisibility: !prev.documentVisibility }))}
                                   className="p-1 h-6 w-6 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
                                 >
-                                  {documentVisibility ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                  {state.documentVisibility ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
                                 </Button>
                               </div>
                             </div>
@@ -408,7 +450,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       <Label htmlFor="document-type" className="text-sm font-medium korean-text">
                         문서 종류 *
                       </Label>
-                      <Select value={documentType} onValueChange={setDocumentType}>
+                      <Select value={state.documentType} onValueChange={(value) => setState(prev => ({ ...prev, documentType: value }))}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="문서 종류를 선택하세요" />
                         </SelectTrigger>
@@ -427,7 +469,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       <Label htmlFor="document-visibility" className="text-sm font-medium korean-text">
                         문서 공개 설정
                       </Label>
-                      <Select value={documentVisibility.toString()} onValueChange={(value) => setDocumentVisibility(value === 'true')}>
+                      <Select value={state.documentVisibility.toString()} onValueChange={(value) => setState(prev => ({ ...prev, documentVisibility: value === 'true' }))}>
                         <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
@@ -446,8 +488,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     <Textarea
                       id="document-description"
                       placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                      value={documentDescription}
-                      onChange={(e) => setDocumentDescription(e.target.value)}
+                      value={state.documentDescription}
+                      onChange={(e) => setState(prev => ({ ...prev, documentDescription: e.target.value }))}
                       className="resize-none korean-text"
                       rows={3}
                     />
@@ -469,16 +511,16 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </Button>
               <Button
                 onClick={() => {
-                  console.log("업로드 버튼 클릭됨 - 선택된 파일:", selectedFiles.length, "문서 타입:", documentType);
+                  console.log("업로드 버튼 클릭됨 - 선택된 파일:", state.selectedFiles.length, "문서 타입:", state.documentType);
                   console.log("업로드 버튼 disabled 조건:", {
-                    filesLength: selectedFiles.length,
-                    noFiles: selectedFiles.length === 0,
-                    noDocType: !documentType,
+                    filesLength: state.selectedFiles.length,
+                    noFiles: state.selectedFiles.length === 0,
+                    noDocType: !state.documentType,
                     uploading: uploadMutation.isPending
                   });
                   handleUpload();
                 }}
-                disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
+                disabled={state.selectedFiles.length === 0 || !state.documentType || uploadMutation.isPending}
                 className="flex-1 korean-text"
               >
                 {uploadMutation.isPending ? (
@@ -499,7 +541,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       </Dialog>
       
       {/* Error Modal */}
-      <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
+      <Dialog open={state.showErrorModal} onOpenChange={(open) => setState(prev => ({ ...prev, showErrorModal: open }))}>
         <DialogContent className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl">
           <DialogHeader className="text-center">
             <div className="flex justify-center mb-4">
@@ -516,14 +558,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           </DialogHeader>
           <div className="px-6 pb-6">
             <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
-              {errorMessage}
+              {state.errorMessage}
             </p>
             <div className="flex justify-center">
               <Button
-                onClick={() => {
-                  setShowErrorModal(false);
-                  setErrorMessage("");
-                }}
+                onClick={() => setState(prev => ({ ...prev, showErrorModal: false, errorMessage: "" }))}
                 className="bg-red-600 hover:bg-red-700 text-white px-8 py-2 rounded-lg"
               >
                 확인
