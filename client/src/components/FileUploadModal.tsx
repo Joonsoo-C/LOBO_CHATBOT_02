@@ -205,7 +205,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       
       for (const file of files) {
         // 최대 8개까지만 허용
-        if (selectedFiles.length + newValidFiles.length >= 8) {
+        if (state.selectedFiles.length + newValidFiles.length >= 8) {
           toast({
             title: "파일 개수 제한",
             description: "최대 8개까지만 선택할 수 있습니다.",
