@@ -1011,6 +1011,12 @@ Changelog:
   * Implemented checkbox-based visibility control with blue background styling
   * Added informative text explaining administrator-only access when unchecked
   * Enhanced UI layout consistency with other modal interfaces throughout the system
+- July 28, 2025. Enhanced agent document management modal header with fixed positioning and icon:
+  * Added fixed header with bottom border and white background to agent detail modal
+  * Integrated Clipboard icon next to title "에이전트 상세 정보" matching dropdown menu design patterns
+  * Applied consistent text color (text-black dark:text-white) for icon to match other modal headers
+  * Enhanced header styling with p-3 padding and flex-shrink-0 to prevent scrolling interference
+  * Document management modal now follows standardized header design across all modal interfaces
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

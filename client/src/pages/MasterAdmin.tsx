@@ -11196,8 +11196,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         <Dialog open={isAgentDetailDialogOpen} onOpenChange={setIsAgentDetailDialogOpen}>
           <DialogContent className="max-w-4xl h-[90vh] md:h-[80vh] flex flex-col">
             {/* 고정 헤더 */}
-            <DialogHeader className="flex-shrink-0 border-b pb-4">
-              <DialogTitle>에이전트 상세 정보</DialogTitle>
+            <DialogHeader className="flex-shrink-0 border-b pb-3 p-3 bg-white dark:bg-gray-800">
+              <div className="flex items-center space-x-2">
+                <Clipboard className="w-5 h-5 text-black dark:text-white" />
+                <DialogTitle>에이전트 상세 정보</DialogTitle>
+              </div>
             </DialogHeader>
             
             {/* 스크롤 가능한 콘텐츠 */}
