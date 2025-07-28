@@ -566,18 +566,18 @@ export default function TabletLayout() {
             </DropdownMenu>
           </div>
           
-          {/* Apple Messages Tab Navigation */}
-          <div className="apple-nav-tabs">
-            <div 
-              className={`apple-nav-tab ${activeTab === "chat" ? "active" : ""}`}
-              onClick={() => {
-                setActiveTab("chat");
-                navigate("/");
-              }}
-            >
-              {t('agent.chat')}
-            </div>
-            {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
+          {/* Tab Navigation - Only show if user has management privileges */}
+          {(user?.role === 'agent_admin' || user?.role === 'master_admin') && (
+            <div className="apple-nav-tabs">
+              <div 
+                className={`apple-nav-tab ${activeTab === "chat" ? "active" : ""}`}
+                onClick={() => {
+                  setActiveTab("chat");
+                  navigate("/");
+                }}
+              >
+                {t('agent.chat')}
+              </div>
               <div 
                 className={`apple-nav-tab ${activeTab === "management" ? "active" : ""}`}
                 onClick={() => {
@@ -587,8 +587,8 @@ export default function TabletLayout() {
               >
                 {t('agent.management')}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Agent List */}
