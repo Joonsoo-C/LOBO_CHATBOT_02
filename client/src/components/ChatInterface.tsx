@@ -1070,7 +1070,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
                                 addSystemMessage("아이콘 변경 창을 열었습니다. 에이전트의 아이콘과 배경색을 변경할 수 있습니다.");
                               }}
                             >
-                              <Edit className="w-4 h-4 mr-2" />
+                              <Image className="w-4 h-4 mr-2" />
                               {t('agent.iconChange')}
                             </Button>
                             <Button 

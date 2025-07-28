@@ -985,6 +985,11 @@ Changelog:
   * Removed custom blue background classes from upload button, using standard Button component design
   * Standardized error confirmation modal "확인" button styling to match other modal action buttons
   * All modal buttons now use consistent Korean text class and standard button variants for unified UX
+- July 28, 2025. Standardized icon consistency across management dropdown and modal interfaces:
+  * Changed dropdown menu "아이콘 변경" icon from Edit to Image icon to match modal functionality
+  * Updated BasicInfoEditModal header icon from User to FileText icon to match dropdown menu design
+  * Enhanced visual consistency between dropdown menu items and their corresponding modal interfaces
+  * Icon changes provide clearer visual association between menu options and modal content
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

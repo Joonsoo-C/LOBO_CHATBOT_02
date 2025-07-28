@@ -215,7 +215,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
         {/* Header - 고정, 높이 50% 줄임 */}
         <div className="flex items-center justify-between p-3 border-b bg-white rounded-t-2xl flex-shrink-0">
           <div className="flex items-center space-x-2 pl-6">
-            <User className="w-5 h-5 text-blue-600" />
+            <FileText className="w-5 h-5 text-blue-600" />
             <h2 className="text-lg font-medium korean-text">기본 정보</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose}>
