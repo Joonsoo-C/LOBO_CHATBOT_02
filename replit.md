@@ -1004,6 +1004,13 @@ Changelog:
   * Changed FileText icon color from blue (text-blue-600) to match text color (text-black dark:text-white)
   * Ensured visual consistency between icon and text elements in modal header
   * Applied same color scheme as PersonaEditModal for unified design approach
+- July 28, 2025. Enhanced FileUploadModal with UI improvements and layout redesign:
+  * Fixed header FileText icon color to match text color (text-black dark:text-white) for consistency
+  * Redesigned layout below drag box to match provided screenshot design
+  * Restructured document settings into three separate sections: 문서 종류, 문서 설명, 문서 노출 설정
+  * Implemented checkbox-based visibility control with blue background styling
+  * Added informative text explaining administrator-only access when unchecked
+  * Enhanced UI layout consistency with other modal interfaces throughout the system
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

@@ -201,7 +201,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           {/* Header - 고정 */}
           <div className="flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800 rounded-t-2xl flex-shrink-0">
             <div className="flex items-center space-x-2 pl-6">
-              <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <FileText className="w-5 h-5 text-black dark:text-white" />
               <h2 className="text-lg font-medium korean-text">문서 파일 업로드</h2>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -316,59 +316,65 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 </div>
               )}
 
-              {/* Document Settings Section */}
+              {/* Document Type Section */}
+              <div className="space-y-2">
+                <Label htmlFor="document-type" className="text-sm font-medium korean-text text-gray-900 dark:text-gray-100">
+                  문서 종류
+                </Label>
+                <Select value={state.documentType} onValueChange={(value) => setState(prev => ({ ...prev, documentType: value }))}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    <SelectItem value="강의 자료">강의 자료</SelectItem>
+                    <SelectItem value="교육과정">교육과정</SelectItem>
+                    <SelectItem value="정책 문서">정책 문서</SelectItem>
+                    <SelectItem value="매뉴얼">매뉴얼</SelectItem>
+                    <SelectItem value="양식">양식</SelectItem>
+                    <SelectItem value="공지사항">공지사항</SelectItem>
+                    <SelectItem value="기타">기타</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Document Description Section */}
+              <div className="space-y-2">
+                <Label htmlFor="document-description" className="text-sm font-medium korean-text text-gray-900 dark:text-gray-100">
+                  문서 설명
+                </Label>
+                <Textarea
+                  id="document-description"
+                  placeholder="업로드하는 문서에 대한 설명을 입력하세요"
+                  value={state.documentDescription}
+                  onChange={(e) => setState(prev => ({ ...prev, documentDescription: e.target.value }))}
+                  className="resize-none korean-text h-20"
+                  rows={3}
+                />
+              </div>
+
+              {/* Document Visibility Section */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">문서 설정</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="document-type" className="text-sm font-medium korean-text">
-                      문서 종류 *
-                    </Label>
-                    <Select value={state.documentType} onValueChange={(value) => setState(prev => ({ ...prev, documentType: value }))}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="강의 자료">강의 자료</SelectItem>
-                        <SelectItem value="교육과정">교육과정</SelectItem>
-                        <SelectItem value="정책 문서">정책 문서</SelectItem>
-                        <SelectItem value="매뉴얼">매뉴얼</SelectItem>
-                        <SelectItem value="양식">양식</SelectItem>
-                        <SelectItem value="공지사항">공지사항</SelectItem>
-                        <SelectItem value="기타">기타</SelectItem>
-                      </SelectContent>
-                    </Select>
+                <Label className="text-sm font-medium korean-text text-gray-900 dark:text-gray-100">
+                  문서 노출 설정
+                </Label>
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <input
+                      type="checkbox"
+                      id="document-visibility"
+                      checked={state.documentVisibility}
+                      onChange={(e) => setState(prev => ({ ...prev, documentVisibility: e.target.checked }))}
+                      className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div className="flex-1">
+                      <label htmlFor="document-visibility" className="text-sm font-medium text-gray-900 dark:text-gray-100 korean-text">
+                        일반 사용자에게 이 문서를 표시
+                      </label>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 korean-text">
+                        체크 해제 시 관리자만 해당 문서에 접근할 수 있습니다.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="document-visibility" className="text-sm font-medium korean-text">
-                      공개 범위 *
-                    </Label>
-                    <Select value={state.documentVisibility.toString()} onValueChange={(value) => setState(prev => ({ ...prev, documentVisibility: value === 'true' }))}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="true">공개</SelectItem>
-                        <SelectItem value="false">비공개</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="document-description" className="text-sm font-medium korean-text">
-                    문서 설명 (선택)
-                  </Label>
-                  <Textarea
-                    id="document-description"
-                    placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                    value={state.documentDescription}
-                    onChange={(e) => setState(prev => ({ ...prev, documentDescription: e.target.value }))}
-                    className="resize-none korean-text"
-                    rows={3}
-                  />
                 </div>
               </div>
             </div>
