@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useFormChanges } from "@/hooks/useFormChanges";
 import type { Agent } from "@/types/agent";
 
 interface BasicInfoEditModalProps {
@@ -32,6 +33,17 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 원본 데이터 (초기값)
+  const [originalData, setOriginalData] = useState<BasicInfoData>({
+    name: agent.name || "",
+    description: agent.description || "",
+    upperCategory: agent.upperCategory || "전체",
+    lowerCategory: agent.lowerCategory || "전체", 
+    detailCategory: agent.detailCategory || "전체",
+    type: agent.category || "기능형",
+    status: agent.status || "active"
+  });
+  
   const [basicInfoData, setBasicInfoData] = useState<BasicInfoData>({
     name: agent.name || "",
     description: agent.description || "",
@@ -42,6 +54,9 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
     status: agent.status || "active"
   });
 
+  // 변경사항 감지
+  const hasChanges = useFormChanges(basicInfoData, originalData);
+
   // Fetch organization categories
   const { data: organizationCategories = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/organization-categories"],
@@ -49,7 +64,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
   // Update form data when agent changes
   useEffect(() => {
-    setBasicInfoData({
+    const newData = {
       name: agent.name || "",
       description: agent.description || "",
       upperCategory: agent.upperCategory || "전체",
@@ -57,7 +72,10 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
       detailCategory: agent.detailCategory || "전체", 
       type: agent.category || "기능형",
       status: agent.status || "active"
-    });
+    };
+    
+    setOriginalData(newData);
+    setBasicInfoData(newData);
   }, [agent]);
 
   const updateBasicInfoMutation = useMutation({
@@ -334,7 +352,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               form="basic-info-form"
               type="submit" 
               className="flex-1 korean-text"
-              disabled={updateBasicInfoMutation.isPending}
+              disabled={updateBasicInfoMutation.isPending || !hasChanges}
             >
               <Save className="w-4 h-4 mr-2" />
               {updateBasicInfoMutation.isPending ? "저장 중..." : "저장"}

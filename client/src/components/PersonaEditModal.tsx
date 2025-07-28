@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useFormChanges } from "@/hooks/useFormChanges";
 import type { Agent } from "@/types/agent";
 
 interface PersonaEditModalProps {
@@ -30,6 +31,16 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 원본 데이터 (초기값)
+  const [originalData, setOriginalData] = useState<PersonaData>({
+    nickname: agent.name || "",
+    speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
+    knowledgeArea: agent.description || "",
+    personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
+    additionalPrompt: agent.additionalPrompt || "",
+    extraPrompt: agent.extraPrompt || ""
+  });
+  
   const [personaData, setPersonaData] = useState<PersonaData>({
     nickname: agent.name || "",
     speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
@@ -39,16 +50,22 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
     extraPrompt: agent.extraPrompt || ""
   });
 
+  // 변경사항 감지
+  const hasChanges = useFormChanges(personaData, originalData);
+
   // Update form data when agent changes
   useEffect(() => {
-    setPersonaData({
+    const newData = {
       nickname: agent.name || "",
       speechStyle: agent.speechStyle || "친근하고 도움이 되는 말투",
       knowledgeArea: agent.description || "",
       personality: agent.personality || "친절하고 전문적인 성격으로 정확한 정보를 제공",
       additionalPrompt: agent.additionalPrompt || "",
       extraPrompt: agent.extraPrompt || ""
-    });
+    };
+    
+    setOriginalData(newData);
+    setPersonaData(newData);
   }, [agent]);
 
   const updatePersonaMutation = useMutation({
@@ -230,7 +247,7 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               form="persona-form"
               type="submit" 
               className="flex-1 korean-text"
-              disabled={updatePersonaMutation.isPending}
+              disabled={updatePersonaMutation.isPending || !hasChanges}
             >
               <Save className="w-4 h-4 mr-2" />
               {updatePersonaMutation.isPending ? "저장 중..." : "저장"}

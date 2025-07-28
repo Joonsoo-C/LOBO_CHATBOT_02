@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useFormChanges } from "@/hooks/useFormChanges";
 import type { Agent } from "@/types/agent";
 
 interface ChatbotSettingsModalProps {
@@ -76,6 +77,19 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 원본 데이터 (초기값)
+  const [originalSettings, setOriginalSettings] = useState<ChatbotSettings>({
+    llmModel: (agent as any).llmModel || "gpt-4o",
+    chatbotType: (agent as any).chatbotType || "general-llm",
+    visibility: (agent as any).visibility || "public",
+    upperCategory: (agent as any).upperCategory || "",
+    lowerCategory: (agent as any).lowerCategory || "",
+    detailCategory: (agent as any).detailCategory || "",
+    webSearchEnabled: (agent as any).webSearchEnabled || false,
+    searchEngine: (agent as any).searchEngine || "bing",
+    bingApiKey: (agent as any).bingApiKey || ""
+  });
+  
   // Initialize settings first
   const [settings, setSettings] = useState<ChatbotSettings>({
     llmModel: (agent as any).llmModel || "gpt-4o",
@@ -88,6 +102,27 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
     searchEngine: (agent as any).searchEngine || "bing",
     bingApiKey: (agent as any).bingApiKey || ""
   });
+
+  // 변경사항 감지
+  const hasChanges = useFormChanges(settings, originalSettings);
+
+  // Update settings when agent changes
+  useEffect(() => {
+    const newSettings = {
+      llmModel: (agent as any).llmModel || "gpt-4o",
+      chatbotType: (agent as any).chatbotType || "general-llm",
+      visibility: (agent as any).visibility || "public",
+      upperCategory: (agent as any).upperCategory || "",
+      lowerCategory: (agent as any).lowerCategory || "",
+      detailCategory: (agent as any).detailCategory || "",
+      webSearchEnabled: (agent as any).webSearchEnabled || false,
+      searchEngine: (agent as any).searchEngine || "bing",
+      bingApiKey: (agent as any).bingApiKey || ""
+    };
+    
+    setOriginalSettings(newSettings);
+    setSettings(newSettings);
+  }, [agent]);
 
   // Fetch organization categories
   const { data: organizationCategories = [], isLoading: isLoadingOrgs } = useQuery({
@@ -438,7 +473,7 @@ export default function ChatbotSettingsModal({ agent, isOpen, onClose, onSuccess
             </Button>
             <Button
               type="submit"
-              disabled={updateSettingsMutation.isPending}
+              disabled={updateSettingsMutation.isPending || !hasChanges}
               className="flex-1 korean-text"
             >
               {updateSettingsMutation.isPending ? (
