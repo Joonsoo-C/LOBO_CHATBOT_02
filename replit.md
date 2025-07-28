@@ -990,6 +990,11 @@ Changelog:
   * Updated BasicInfoEditModal header icon from User to FileText icon to match dropdown menu design
   * Enhanced visual consistency between dropdown menu items and their corresponding modal interfaces
   * Icon changes provide clearer visual association between menu options and modal content
+- July 28, 2025. Fixed BasicInfoEditModal UI issues and icon import errors:
+  * Added missing Image and FileText icon imports to resolve dropdown menu white screen issue
+  * Removed duplicate status dropdown section at bottom of BasicInfoEditModal form
+  * Fixed component rendering errors that prevented proper modal display
+  * Enhanced form layout consistency by maintaining single status section placement
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

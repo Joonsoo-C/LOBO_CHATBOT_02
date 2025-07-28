@@ -380,20 +380,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             </div>
           </div>
 
-          {/* Status */}
-          <div className="space-y-2">
-            <Label className="korean-text">상태</Label>
-            <Select value={basicInfoData.status} onValueChange={(value) => handleInputChange('status', value)}>
-              <SelectTrigger className="korean-text">
-                <SelectValue placeholder="상태를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent className="z-[10000]">
-                <SelectItem value="active">활성</SelectItem>
-                <SelectItem value="inactive">비활성</SelectItem>
-                <SelectItem value="pending">대기</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
 
           </form>
         </div>
