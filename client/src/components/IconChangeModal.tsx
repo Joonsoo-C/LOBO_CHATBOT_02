@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// Dialog 컴포넌트 제거 - 사용자 정의 모달로 교체
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -330,21 +330,22 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const SelectedIconComponent = selectedIconComponent;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md korean-text">
-        <DialogHeader className="text-left">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 pl-6">
-              <Image className="w-5 h-5 text-blue-600" />
-              <DialogTitle className="text-left">아이콘 변경</DialogTitle>
-            </div>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="w-10 h-10" />
-            </Button>
+    <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-background border border-border rounded-2xl max-w-md w-full max-h-[90vh] md:max-h-[80vh] flex flex-col shadow-lg" onClick={(e) => e.stopPropagation()}>
+        {/* Fixed Header */}
+        <div className="flex items-center justify-between p-3 border-b border-border flex-shrink-0">
+          <div className="flex items-center space-x-2 pl-6">
+            <Image className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-medium text-foreground korean-text">아이콘 변경</h3>
           </div>
-        </DialogHeader>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="w-10 h-10" />
+          </Button>
+        </div>
         
-        <div className="space-y-6">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="space-y-6">
           {/* Preview */}
           <div className="flex justify-center">
             <div 
@@ -389,6 +390,13 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
                 }`}
                 onClick={() => {
                   setIsUsingCustomImage(true);
+                  // 이미지 업로드 탭 클릭 시 자동으로 파일 선택 창 열기
+                  setTimeout(() => {
+                    const fileInput = document.getElementById('image-upload-drop') as HTMLInputElement;
+                    if (fileInput) {
+                      fileInput.click();
+                    }
+                  }, 100);
                 }}
               >
                 이미지 업로드
@@ -512,21 +520,23 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-3">
-            <Button type="button" variant="outline" onClick={onClose} disabled={updateIconMutation.isPending}>
-              취소
-            </Button>
-            <Button 
-              type="button"
-              onClick={handleSubmit} 
-              disabled={updateIconMutation.isPending}
-            >
-              {updateIconMutation.isPending ? "변경 중..." : "변경하기"}
-            </Button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+        
+        {/* Fixed Footer */}
+        <div className="flex justify-end space-x-3 p-6 border-t border-border flex-shrink-0">
+          <Button type="button" variant="outline" onClick={onClose} disabled={updateIconMutation.isPending}>
+            취소
+          </Button>
+          <Button 
+            type="button"
+            onClick={handleSubmit} 
+            disabled={updateIconMutation.isPending}
+          >
+            {updateIconMutation.isPending ? "변경 중..." : "변경하기"}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
