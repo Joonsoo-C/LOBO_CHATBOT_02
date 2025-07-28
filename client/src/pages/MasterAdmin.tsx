@@ -8435,6 +8435,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 토큰 관리 */}
           <TabsContent value="tokens" className="space-y-4">
+            <div>
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
             {/* 요약 카드 - 한 줄 컴팩트 스타일 */}
@@ -8713,6 +8714,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 )}
               </CardContent>
             </Card>
+
             </div>
           </TabsContent>
 
