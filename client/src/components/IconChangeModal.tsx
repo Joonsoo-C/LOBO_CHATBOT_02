@@ -559,22 +559,36 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         </div>
         
         {/* Fixed Footer */}
-        <div className="flex justify-end space-x-3 p-6 border-t border-border flex-shrink-0">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={handleCancelClick} 
-            disabled={updateIconMutation.isPending}
-          >
-            취소
-          </Button>
-          <Button 
-            type="button"
-            onClick={handleSubmit} 
-            disabled={updateIconMutation.isPending}
-          >
-            {updateIconMutation.isPending ? "변경 중..." : "아이콘 변경"}
-          </Button>
+        <div className="border-t p-3 flex-shrink-0">
+          <div className="flex space-x-3">
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="flex-1 korean-text"
+              onClick={handleCancelClick} 
+              disabled={updateIconMutation.isPending}
+            >
+              취소
+            </Button>
+            <Button 
+              type="button"
+              className="flex-1 korean-text"
+              onClick={handleSubmit} 
+              disabled={updateIconMutation.isPending}
+            >
+              {updateIconMutation.isPending ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>변경 중...</span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Image className="w-4 h-4" />
+                  <span>아이콘 변경</span>
+                </div>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
