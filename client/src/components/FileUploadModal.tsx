@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
@@ -25,6 +25,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
   const [documentType, setDocumentType] = useState<string>("기타"); // 기본값 설정
   const [documentDescription, setDocumentDescription] = useState<string>("");
   const [documentVisibility, setDocumentVisibility] = useState(true);
+
+  // 디버깅: 컴포넌트 렌더링 시 상태 로그
+  console.log("FileUploadModal 렌더링 - selectedFiles:", selectedFiles.length, "documentType:", documentType, "isOpen:", isOpen);
 
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -206,13 +209,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       }
       
       if (newValidFiles.length > 0) {
-        setSelectedFiles(prev => {
-          const updated = [...prev, ...newValidFiles];
-          console.log("선택된 파일 업데이트됨:", updated.length);
-          return updated;
-        });
-        // documentType이 이미 "기타"로 기본 설정되어 있으므로 별도 설정 불필요
+        const updatedFiles = [...selectedFiles, ...newValidFiles];
+        setSelectedFiles(updatedFiles);
+        console.log("선택된 파일 업데이트됨:", updatedFiles.length);
         console.log("현재 문서 타입:", documentType);
+        console.log("업데이트된 파일 목록:", updatedFiles.map(f => f.name));
       }
     }
     
@@ -255,9 +256,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       }
       
       if (newValidFiles.length > 0) {
-        setSelectedFiles(prev => [...prev, ...newValidFiles]);
-        // documentType이 이미 "기타"로 기본 설정되어 있으므로 별도 설정 불필요
-        console.log("드래그 파일 추가됨, 현재 문서 타입:", documentType);
+        const updatedFiles = [...selectedFiles, ...newValidFiles];
+        setSelectedFiles(updatedFiles);
+        console.log("드래그 앤 드롭으로 파일 추가됨:", updatedFiles.length);
+        console.log("현재 문서 타입:", documentType);
       }
     }
   };
@@ -286,6 +288,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               <FileText className="w-5 h-5" />
               <span className="korean-text">문서 파일 업로드</span>
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              에이전트에 문서를 업로드하는 모달입니다.
+            </DialogDescription>
           </DialogHeader>
 
             {/* Modal Content - 스크롤 가능 */}
@@ -505,6 +510,9 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
             <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               업로드 실패
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              파일 업로드 중 오류가 발생했습니다.
+            </DialogDescription>
           </DialogHeader>
           <div className="px-6 pb-6">
             <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
