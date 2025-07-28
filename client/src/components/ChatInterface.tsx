@@ -1797,15 +1797,17 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
         onClose={() => setShowSettingsModal(false)}
         agent={agent}
       />
-      <IconChangeModal
-        isOpen={showIconModal}
-        onClose={() => {
-          console.log("ChatInterface: IconChangeModal onClose called, setting showIconModal to false");
-          setShowIconModal(false);
-        }}
-        agent={agent}
-        onSuccess={addSystemMessage}
-      />
+      {showIconModal && (
+        <IconChangeModal
+          isOpen={showIconModal}
+          onClose={() => {
+            console.log("ChatInterface: IconChangeModal onClose called, setting showIconModal to false");
+            setShowIconModal(false);
+          }}
+          agent={agent}
+          onSuccess={addSystemMessage}
+        />
+      )}
       <VisibilitySettingsModal
         isOpen={showVisibilityModal}
         onClose={() => setShowVisibilityModal(false)}
