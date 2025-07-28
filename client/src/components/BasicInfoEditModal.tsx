@@ -264,13 +264,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             </Select>
           </div>
 
-          {!isMasterAdmin && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
-              <p className="text-sm text-amber-700 korean-text">
-                <span className="font-medium">참고:</span> 에이전트 유형과 소속 조직 정보는 마스터 관리자만 수정할 수 있습니다.
-              </p>
-            </div>
-          )}
+
 
           {/* Agent Type - Compact Display */}
           <div className="space-y-2">

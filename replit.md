@@ -993,6 +993,7 @@ Changelog:
 - July 28, 2025. Fixed BasicInfoEditModal UI issues and icon import errors:
   * Added missing Image and FileText icon imports to resolve dropdown menu white screen issue
   * Removed duplicate status dropdown section at bottom of BasicInfoEditModal form
+  * Removed amber warning message about master admin permissions for cleaner UI
   * Fixed component rendering errors that prevented proper modal display
   * Enhanced form layout consistency by maintaining single status section placement
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
