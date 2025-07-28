@@ -1051,6 +1051,20 @@ function MasterAdmin() {
   const [improvementComment, setImprovementComment] = useState('');
   const [isLoadingComment, setIsLoadingComment] = useState(false);
 
+  // Manager tab 상태 (에이전트 상세 모달에서 사용)
+  const [currentManagerTab, setCurrentManagerTab] = useState<'agent' | 'document' | 'qa'>('agent');
+
+  // Manager tab change handler with search state reset
+  const handleManagerTabChange = (value: 'agent' | 'document' | 'qa') => {
+    setCurrentManagerTab(value);
+    // Reset search states when switching tabs
+    setManagerSearchQuery('');
+    setManagerFilterUpperCategory('all');
+    setManagerFilterLowerCategory('all'); 
+    setManagerFilterDetailCategory('all');
+    setManagerCurrentPage(1);
+  };
+
   // QA 개선 코멘트 관련 뮤테이션
   const saveQACommentMutation = useMutation({
     mutationFn: async ({ conversationId, comment }: { conversationId: number; comment: string }) => {
