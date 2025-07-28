@@ -89,7 +89,7 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
       refetchFiles();
       setSelectedFiles([]);
       
-      const totalUploaded = Array.isArray(data) ? data.length : data.createdCount || data.agentCount || 0;
+      const totalUploaded = Array.isArray(data) ? data.length : (data as any)?.createdCount || (data as any)?.agentCount || 0;
       toast({
         title: t('agent.uploadComplete'),
         description: `${totalUploaded}개의 파일이 업로드되었습니다.`,
@@ -292,22 +292,22 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={handleClose}>
-      <div className="bg-background border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-lg" onClick={(e) => e.stopPropagation()}>
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+      <div className="bg-background border border-border rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-lg" onClick={(e) => e.stopPropagation()}>
+        {/* Modal Header - 고정, 높이 50% 줄임 */}
+        <div className="flex items-center justify-between p-3 border-b border-border flex-shrink-0">
           <div>
             <h3 className="text-lg font-medium text-foreground korean-text">
               에이전트 파일 업로드
             </h3>
-            <div className="text-sm text-gray-600 mt-2">파일을 업로드해 여러 에이전트를 일괄 등록할 수 있습니다.</div>
+            <div className="text-sm text-gray-600 mt-1">파일을 업로드해 여러 에이전트를 일괄 등록할 수 있습니다.</div>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose} className="p-2">
             <X className="w-5 h-5" />
           </Button>
         </div>
 
-        {/* Modal Content */}
-        <div className="p-6 max-h-[75vh] overflow-y-auto">
+        {/* Modal Content - 스크롤 가능 */}
+        <div className="p-6 flex-1 overflow-y-auto">
           {/* File Upload Section */}
           <div 
             className={`mb-6 p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
@@ -565,6 +565,10 @@ export default function AgentFileUploadModal({ isOpen, onClose }: AgentFileUploa
             </div>
           )}
 
+        </div>
+        
+        {/* 고정 버튼 영역 */}
+        <div className="border-t p-3 flex-shrink-0">
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={handleClose}>
               취소

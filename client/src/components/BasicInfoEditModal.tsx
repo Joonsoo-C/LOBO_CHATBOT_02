@@ -169,8 +169,8 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] md:max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        {/* Header - 고정 */}
-        <div className="flex items-center justify-between p-6 border-b bg-white rounded-t-2xl sticky top-0 z-10">
+        {/* Header - 고정, 높이 50% 줄임 */}
+        <div className="flex items-center justify-between p-3 border-b bg-white rounded-t-2xl flex-shrink-0">
           <h2 className="text-lg font-medium korean-text">기본 정보</h2>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
@@ -179,7 +179,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
 
         {/* Content - 스크롤 가능 */}
         <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6" id="basic-info-form">
           {/* Agent Name - Read Only */}
           <div className="space-y-2">
             <Label className="korean-text">에이전트 이름</Label>
@@ -303,8 +303,12 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
             </Select>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3 pt-4">
+          </form>
+        </div>
+        
+        {/* 고정 버튼 영역 */}
+        <div className="border-t p-3 flex-shrink-0">
+          <div className="flex space-x-3">
             <Button 
               type="button" 
               variant="outline" 
@@ -314,6 +318,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               취소
             </Button>
             <Button 
+              form="basic-info-form"
               type="submit" 
               className="flex-1 korean-text"
               disabled={updateBasicInfoMutation.isPending}
@@ -322,7 +327,6 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               {updateBasicInfoMutation.isPending ? "저장 중..." : "저장"}
             </Button>
           </div>
-          </form>
         </div>
       </div>
     </div>

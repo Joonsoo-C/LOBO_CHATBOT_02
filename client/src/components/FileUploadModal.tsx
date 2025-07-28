@@ -266,8 +266,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm" onClick={onClose}>
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8">
           <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg flex flex-col max-h-[90vh] md:max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header - 고정 */}
-            <div className="flex items-center justify-between p-4 md:p-6 border-b bg-background rounded-t-lg sticky top-0 z-10">
+            {/* Modal Header - 고정, 높이 50% 줄임 */}
+            <div className="flex items-center justify-between p-3 border-b bg-background rounded-t-lg flex-shrink-0">
               <div className="flex items-center space-x-3">
                 <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
                 <h3 className="text-lg font-medium text-foreground korean-text">
@@ -439,35 +439,37 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     />
                   </div>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-between space-x-3">
-                  <Button
-                    variant="outline"
-                    onClick={onClose}
-                    className="korean-text"
-                    disabled={uploadMutation.isPending}
-                  >
-                    취소
-                  </Button>
-                  <Button
-                    onClick={handleUpload}
-                    disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
-                    className="bg-red-600 hover:bg-red-700 text-white korean-text"
-                  >
-                    {uploadMutation.isPending ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                        업로드 중...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4 mr-2" />
-                        업로드 시작
-                      </>
-                    )}
-                  </Button>
-                </div>
+              </div>
+            </div>
+            
+            {/* 고정 버튼 영역 */}
+            <div className="border-t p-3 flex-shrink-0">
+              <div className="flex justify-between space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  className="korean-text"
+                  disabled={uploadMutation.isPending}
+                >
+                  취소
+                </Button>
+                <Button
+                  onClick={handleUpload}
+                  disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
+                  className="bg-red-600 hover:bg-red-700 text-white korean-text"
+                >
+                  {uploadMutation.isPending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      업로드 중...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      업로드 시작
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
           </div>
