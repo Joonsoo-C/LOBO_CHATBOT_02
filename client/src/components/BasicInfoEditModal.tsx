@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { X, Save, User, FileText } from "lucide-react";
+import { X, Save, User, FileText, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -215,7 +215,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
         {/* Header - 고정, 높이 50% 줄임 */}
         <div className="flex items-center justify-between p-3 border-b bg-white rounded-t-2xl flex-shrink-0">
           <div className="flex items-center space-x-2 pl-6">
-            <FileText className="w-5 h-5 text-black dark:text-white" />
+            <Monitor className="w-5 h-5 text-black dark:text-white" />
             <h2 className="text-lg font-medium korean-text">기본 정보</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={handleClose}>
