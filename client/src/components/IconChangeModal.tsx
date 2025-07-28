@@ -58,6 +58,11 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
+  
+  // Debug: Log isOpen state
+  useEffect(() => {
+    console.log(`IconChangeModal: isOpen=${isOpen}, agentId=${agent.id}`);
+  }, [isOpen, agent.id]);
 
   // Reset state when modal opens/closes or agent changes
   useEffect(() => {
@@ -330,7 +335,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const SelectedIconComponent = selectedIconComponent;
 
   const handleClose = React.useCallback((e?: React.MouseEvent) => {
-    console.log("handleClose called");
+    console.log("IconChangeModal handleClose called");
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -339,14 +344,14 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   }, [onClose]);
 
   const handleCancelClick = React.useCallback((e: React.MouseEvent) => {
-    console.log("Cancel button clicked");
+    console.log("IconChangeModal Cancel button clicked");
     e.preventDefault();
     e.stopPropagation();
     onClose();
   }, [onClose]);
 
   const handleXClick = React.useCallback((e: React.MouseEvent) => {
-    console.log("X button clicked");
+    console.log("IconChangeModal X button clicked");
     e.preventDefault();
     e.stopPropagation();
     onClose();

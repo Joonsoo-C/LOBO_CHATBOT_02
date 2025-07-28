@@ -96,6 +96,11 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>(({ agent, isManagement
   const [showPersonaModal, setShowPersonaModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showIconModal, setShowIconModal] = useState(false);
+  
+  // Debug: Log showIconModal state changes
+  useEffect(() => {
+    console.log(`ChatInterface: showIconModal state changed to: ${showIconModal}, isManagementMode: ${isManagementMode}, agentId: ${agent.id}`);
+  }, [showIconModal, isManagementMode, agent.id]);
 
   const [showFileListModal, setShowFileListModal] = useState(false);
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
@@ -1794,7 +1799,10 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
       />
       <IconChangeModal
         isOpen={showIconModal}
-        onClose={() => setShowIconModal(false)}
+        onClose={() => {
+          console.log("ChatInterface: IconChangeModal onClose called, setting showIconModal to false");
+          setShowIconModal(false);
+        }}
         agent={agent}
         onSuccess={addSystemMessage}
       />
