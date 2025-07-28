@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 // Dialog 컴포넌트 제거 - 사용자 정의 모달로 교체
@@ -329,17 +329,32 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const selectedIconComponent = availableIcons.find(icon => icon.value === selectedIcon)?.icon || User;
   const SelectedIconComponent = selectedIconComponent;
 
-  const handleClose = (e?: React.MouseEvent) => {
+  const handleClose = React.useCallback((e?: React.MouseEvent) => {
+    console.log("handleClose called");
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     onClose();
-  };
+  }, [onClose]);
+
+  const handleCancelClick = React.useCallback((e: React.MouseEvent) => {
+    console.log("Cancel button clicked");
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+  }, [onClose]);
+
+  const handleXClick = React.useCallback((e: React.MouseEvent) => {
+    console.log("X button clicked");
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+  }, [onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      handleClose(e);
+      onClose();
     }
   };
 
@@ -355,7 +370,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleClose}
+            onClick={handleXClick}
             type="button"
           >
             <X className="w-10 h-10" />
@@ -543,7 +558,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
           <Button 
             type="button" 
             variant="outline" 
-            onClick={handleClose} 
+            onClick={handleCancelClick} 
             disabled={updateIconMutation.isPending}
           >
             취소
