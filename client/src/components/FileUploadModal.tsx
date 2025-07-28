@@ -268,14 +268,14 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg flex flex-col max-h-[90vh] md:max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header - 고정, 높이 50% 줄임 */}
             <div className="flex items-center justify-between p-3 border-b bg-background rounded-t-lg flex-shrink-0">
-              <div className="flex items-center space-x-3">
-                <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
+              <div className="flex items-center space-x-2 pl-6">
+                <FileText className="w-5 h-5 text-blue-600" />
                 <h3 className="text-lg font-medium text-foreground korean-text">
                   문서 파일 업로드
                 </h3>
               </div>
               <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
-                <X className="w-5 h-5" />
+                <X className="w-10 h-10" />
               </Button>
             </div>
 

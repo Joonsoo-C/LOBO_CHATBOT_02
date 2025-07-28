@@ -11,7 +11,8 @@ import { eventBus, EVENTS } from "@/utils/eventBus";
 import { 
   User, GraduationCap, Code, Bot, FlaskRound, 
   Map, Languages, Dumbbell, Database, Lightbulb, 
-  Heart, Calendar, Pen, FileText, Camera 
+  Heart, Calendar, Pen, FileText, Camera, 
+  X, Image 
 } from "lucide-react";
 
 interface IconChangeModalProps {
@@ -332,7 +333,15 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md korean-text">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-left">아이콘 변경</DialogTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2 pl-6">
+              <Image className="w-5 h-5 text-blue-600" />
+              <DialogTitle className="text-left">아이콘 변경</DialogTitle>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-10 h-10" />
+            </Button>
+          </div>
         </DialogHeader>
         
         <div className="space-y-6">
