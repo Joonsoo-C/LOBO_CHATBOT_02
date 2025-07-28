@@ -9772,6 +9772,11 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
               <DialogTitle>아이콘 변경</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
+              {/* 탭 제목 */}
+              <div className="flex items-center gap-3 mb-6">
+                <Palette className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">아이콘 변경</h3>
+              </div>
               {/* 아이콘 미리보기 */}
               <div className="flex justify-center">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500 overflow-hidden`}>
