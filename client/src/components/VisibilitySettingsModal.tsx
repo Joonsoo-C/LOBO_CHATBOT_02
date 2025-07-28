@@ -159,7 +159,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-3 border-b">
           <div className="flex items-center space-x-3">
             <Globe className="w-5 h-5 text-gray-900" />
             <h2 className="text-lg font-medium korean-text">공개 설정</h2>
