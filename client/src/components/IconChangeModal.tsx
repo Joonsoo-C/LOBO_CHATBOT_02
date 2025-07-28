@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useFormChanges } from "@/hooks/useFormChanges";
 import { Agent } from "@/types/agent";
 import { eventBus, EVENTS } from "@/utils/eventBus";
 import { 
@@ -53,11 +54,30 @@ const colorOptions = [
 ];
 
 export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: IconChangeModalProps) {
+  // 원본 데이터 (초기값)
+  const [originalData, setOriginalData] = useState({
+    icon: agent.icon || "User",
+    backgroundColor: agent.backgroundColor || "#3b82f6",
+    isUsingCustomImage: agent.isCustomIcon || false,
+    customImage: agent.isCustomIcon ? agent.icon : null
+  });
+  
   const [selectedIcon, setSelectedIcon] = useState(agent.icon || "User");
   const [selectedColor, setSelectedColor] = useState(agent.backgroundColor || "#3b82f6");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
+
+  // 현재 상태 객체 (변경사항 감지용)
+  const currentData = {
+    icon: isUsingCustomImage ? (customImage || imageFile?.name) : selectedIcon,
+    backgroundColor: selectedColor,
+    isUsingCustomImage,
+    customImage: isUsingCustomImage ? (customImage || imageFile?.name) : null
+  };
+
+  // 변경사항 감지
+  const hasChanges = useFormChanges(currentData, originalData);
   
   // Debug: Log isOpen state
   useEffect(() => {
@@ -67,6 +87,14 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   // Reset state when modal opens/closes or agent changes
   useEffect(() => {
     if (isOpen) {
+      const newOriginalData = {
+        icon: agent.icon || "User",
+        backgroundColor: agent.backgroundColor || "#3b82f6",
+        isUsingCustomImage: agent.isCustomIcon || false,
+        customImage: agent.isCustomIcon ? agent.icon : null
+      };
+      
+      setOriginalData(newOriginalData);
       setSelectedIcon(agent.icon || "User");
       setSelectedColor(agent.backgroundColor || "#3b82f6");
       // Always start with basic icon tab
@@ -522,7 +550,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
               type="button"
               className="flex-1 korean-text"
               onClick={handleSubmit} 
-              disabled={updateIconMutation.isPending}
+              disabled={updateIconMutation.isPending || !hasChanges}
             >
               {updateIconMutation.isPending ? (
                 <div className="flex items-center space-x-2">
