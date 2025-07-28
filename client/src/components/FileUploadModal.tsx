@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { X, FileText, Upload, AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ interface FileUploadModalProps {
 }
 
 export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: FileUploadModalProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState({
     selectedFiles: [] as File[],
     isDragOver: false,
@@ -52,6 +53,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
         errorMessage: "",
         forceRender: prev.forceRender + 1
       }));
+      
+      // 파일 입력 요소도 초기화
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+        console.log("파일 입력 요소 초기화됨");
+      }
     }
   }, [isOpen]);
 
@@ -217,10 +224,11 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 onDrop={handleDrop}
                 onClick={() => {
                   console.log("드롭 존 클릭됨");
-                  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-                  if (fileInput) {
-                    fileInput.click();
+                  if (fileInputRef.current) {
+                    fileInputRef.current.click();
                     console.log("드롭 존에서 파일 입력 클릭 실행됨");
+                  } else {
+                    console.error("파일 입력 ref가 없음");
                   }
                 }}
               >
@@ -235,11 +243,26 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                       (최대 8개 / 파일당 최대 50MB)
                     </p>
                   </div>
-                  <Button variant="default" type="button" className="korean-text bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button 
+                    variant="default" 
+                    type="button" 
+                    className="korean-text bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("파일 선택 버튼 클릭됨");
+                      if (fileInputRef.current) {
+                        fileInputRef.current.click();
+                        console.log("파일 input 클릭 실행됨");
+                      } else {
+                        console.error("파일 input ref가 없음");
+                      }
+                    }}
+                  >
                     파일 선택
                   </Button>
                 </div>
                 <input
+                  ref={fileInputRef}
                   id="file-upload"
                   type="file"
                   multiple
