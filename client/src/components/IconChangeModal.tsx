@@ -329,8 +329,22 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   const selectedIconComponent = availableIcons.find(icon => icon.value === selectedIcon)?.icon || User;
   const SelectedIconComponent = selectedIconComponent;
 
+  const handleClose = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    onClose();
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose(e);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={handleBackdropClick}>
       <div className="bg-background border border-border rounded-2xl max-w-md w-full max-h-[90vh] md:max-h-[80vh] flex flex-col shadow-lg" onClick={(e) => e.stopPropagation()}>
         {/* Fixed Header */}
         <div className="flex items-center justify-between p-3 border-b border-border flex-shrink-0">
@@ -338,7 +352,12 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             <Image className="w-5 h-5 text-blue-600" />
             <h3 className="text-lg font-medium text-foreground korean-text">아이콘 변경</h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleClose}
+            type="button"
+          >
             <X className="w-10 h-10" />
           </Button>
         </div>
@@ -521,7 +540,12 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
         
         {/* Fixed Footer */}
         <div className="flex justify-end space-x-3 p-6 border-t border-border flex-shrink-0">
-          <Button type="button" variant="outline" onClick={onClose} disabled={updateIconMutation.isPending}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={handleClose} 
+            disabled={updateIconMutation.isPending}
+          >
             취소
           </Button>
           <Button 
