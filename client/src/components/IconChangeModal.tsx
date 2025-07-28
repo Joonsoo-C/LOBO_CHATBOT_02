@@ -331,8 +331,8 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md korean-text">
-        <DialogHeader>
-          <DialogTitle>아이콘 변경</DialogTitle>
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-left">아이콘 변경</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">

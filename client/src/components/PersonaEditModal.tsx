@@ -120,17 +120,18 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={handleClose}>
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] md:max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        {/* Header - 고정 */}
+        <div className="flex items-center justify-between p-6 border-b bg-white rounded-t-2xl sticky top-0 z-10">
           <h2 className="text-lg font-medium korean-text">페르소나 설정</h2>
           <Button variant="ghost" size="sm" onClick={handleClose}>
             <X className="w-5 h-5" />
           </Button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        {/* Content - 스크롤 가능 */}
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Nickname */}
           <div className="space-y-2">
             <Label htmlFor="nickname" className="korean-text">닉네임</Label>
@@ -227,7 +228,8 @@ export default function PersonaEditModal({ agent, isOpen, onClose, onSuccess, on
               {updatePersonaMutation.isPending ? "저장 중..." : "저장"}
             </Button>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

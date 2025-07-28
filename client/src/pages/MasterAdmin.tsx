@@ -11286,10 +11286,14 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 에이전트 상세 정보 대화상자 */}
         <Dialog open={isAgentDetailDialogOpen} onOpenChange={setIsAgentDetailDialogOpen}>
-          <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl h-[90vh] md:h-[80vh] flex flex-col">
+            {/* 고정 헤더 */}
+            <DialogHeader className="flex-shrink-0 border-b pb-4">
               <DialogTitle>에이전트 상세 정보</DialogTitle>
             </DialogHeader>
+            
+            {/* 스크롤 가능한 콘텐츠 */}
+            <div className="flex-1 overflow-y-auto">{/* 콘텐츠가 여기에 이동됩니다 */}
             {selectedAgent && (
               <>
                 {/* 탭 네비게이션 */}
@@ -12423,6 +12427,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Tabs>
               </>
             )}
+            </div>
           </DialogContent>
         </Dialog>
 
@@ -12484,13 +12489,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 질문응답 상세정보 모달 */}
         <Dialog open={showQADetailModal} onOpenChange={setShowQADetailModal}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl h-[90vh] md:h-[80vh] flex flex-col">
+            {/* 고정 헤더 */}
+            <DialogHeader className="flex-shrink-0 border-b pb-4">
               <DialogTitle>질문응답 상세정보</DialogTitle>
               <DialogDescription>
                 질문응답의 상세 내용을 확인할 수 있습니다.
               </DialogDescription>
             </DialogHeader>
+            
+            {/* 스크롤 가능한 콘텐츠 */}
+            <div className="flex-1 overflow-y-auto">
             
             {selectedQALog ? (
               <div className="space-y-6">
@@ -12715,6 +12724,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 <p className="text-gray-500">선택된 질문응답 로그가 없습니다.</p>
               </div>
             )}
+            </div>
           </DialogContent>
         </Dialog>
 
@@ -12722,12 +12732,15 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
         {/* 에이전트 검색 모달 */}
         <Dialog open={isAgentSearchDialogOpen} onOpenChange={setIsAgentSearchDialogOpen}>
-          <DialogContent className="max-w-6xl h-[80vh] flex flex-col">
-            <DialogHeader>
+          <DialogContent className="max-w-6xl h-[90vh] md:h-[80vh] flex flex-col">
+            {/* 고정 헤더 */}
+            <DialogHeader className="flex-shrink-0 border-b pb-4">
               <DialogTitle>에이전트 검색</DialogTitle>
               <DialogDescription>조직별 에이전트를 검색하고 관리할 수 있습니다.</DialogDescription>
             </DialogHeader>
             
+            {/* 스크롤 가능한 콘텐츠 */}
+            <div className="flex-1 overflow-y-auto">
             <div className="flex-1 flex flex-col space-y-4">
               {/* 검색 필터 영역 */}
               <div className="grid grid-cols-3 gap-4">
@@ -12927,15 +12940,20 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </div>
               )}
             </div>
+            </div>
           </DialogContent>
         </Dialog>
 
         {/* 토큰 사용량 상세 정보 모달 */}
         <Dialog open={isTokenDetailDialogOpen} onOpenChange={setIsTokenDetailDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl h-[90vh] md:h-[80vh] flex flex-col">
+            {/* 고정 헤더 */}
+            <DialogHeader className="flex-shrink-0 border-b pb-4">
               <DialogTitle className="text-xl font-semibold">토큰 사용량 상세 정보</DialogTitle>
             </DialogHeader>
+            
+            {/* 스크롤 가능한 콘텐츠 */}
+            <div className="flex-1 overflow-y-auto">
             
             {selectedTokenDetail && (
               <div className="space-y-6">
@@ -13075,6 +13093,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </Card>
               </div>
             )}
+            </div>
           </DialogContent>
         </Dialog>
 
