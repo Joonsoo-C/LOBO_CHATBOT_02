@@ -15,6 +15,7 @@ import Management from "@/pages/Management";
 import MasterAdmin from "@/pages/MasterAdmin";
 import TabletLayout from "@/components/TabletLayout";
 import NotFound from "@/pages/not-found";
+import StyleDemo from "@/components/StyleDemo";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -46,6 +47,7 @@ function Router() {
       ) : (
         <>
           <Route path="/master-admin" component={MasterAdmin} />
+          <Route path="/style-demo" component={StyleDemo} />
           
           {isTablet ? (
             <>

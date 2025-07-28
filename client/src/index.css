@@ -11,6 +11,56 @@
   }
 }
 
+/* Text Style Classes */
+@layer components {
+  /* Typography Styles */
+  .text-h1 {
+    @apply text-[32px] font-bold leading-tight;
+  }
+  
+  .text-h2 {
+    @apply text-[24px] font-semibold leading-tight;
+  }
+  
+  .text-subtitle {
+    @apply text-[18px] font-medium leading-relaxed;
+  }
+  
+  .text-body {
+    @apply text-[16px] font-normal leading-normal;
+  }
+  
+  .text-caption {
+    @apply text-[12px] font-light text-gray-500 dark:text-gray-400 leading-relaxed;
+  }
+  
+  .text-button {
+    @apply text-[14px] font-bold uppercase tracking-wide;
+  }
+
+  /* Button Component Styles */
+  .button {
+    @apply inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white bg-[#1F75FE] rounded-lg transition-all duration-200 hover:bg-[#1660D4] focus:outline-none focus:ring-2 focus:ring-[#1F75FE] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1F75FE];
+    padding: 10px 16px;
+    border-radius: 8px;
+  }
+  
+  .button-primary {
+    @apply inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white bg-[#0F4FBF] rounded-lg transition-all duration-200 hover:bg-[#0A3D99] focus:outline-none focus:ring-2 focus:ring-[#0F4FBF] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#0F4FBF] shadow-md hover:shadow-lg;
+    padding: 10px 16px;
+    border-radius: 8px;
+  }
+  
+  /* Active and pressed states */
+  .button:active {
+    @apply transform scale-95;
+  }
+  
+  .button-primary:active {
+    @apply transform scale-95;
+  }
+}
+
 /* Neumorphism 테마 색상 정의 */
 :root {
   /* Neumorphism Color Palette */
