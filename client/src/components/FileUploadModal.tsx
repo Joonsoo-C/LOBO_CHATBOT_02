@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { X, FileText, Upload, AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ interface FileUploadModalProps {
 export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: FileUploadModalProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [documentType, setDocumentType] = useState<string>("");
+  const [documentType, setDocumentType] = useState<string>("기타"); // 기본값 설정
   const [documentDescription, setDocumentDescription] = useState<string>("");
   const [documentVisibility, setDocumentVisibility] = useState(true);
 
@@ -31,6 +31,19 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  // 모달이 열릴 때마다 상태 초기화
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedFiles([]);
+      setDocumentType("기타");
+      setDocumentDescription("");
+      setDocumentVisibility(true);
+      setShowErrorModal(false);
+      setErrorMessage("");
+      console.log("FileUploadModal 상태 초기화됨");
+    }
+  }, [isOpen]);
 
   // Broadcast notification mutation for document uploads
   const broadcastMutation = useMutation({
@@ -198,10 +211,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
           console.log("선택된 파일 업데이트됨:", updated.length);
           return updated;
         });
-        if (documentType === "") {
-          setDocumentType("기타");
-          console.log("문서 타입 자동 설정: 기타");
-        }
+        // documentType이 이미 "기타"로 기본 설정되어 있으므로 별도 설정 불필요
+        console.log("현재 문서 타입:", documentType);
       }
     }
     
@@ -245,9 +256,8 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       
       if (newValidFiles.length > 0) {
         setSelectedFiles(prev => [...prev, ...newValidFiles]);
-        if (documentType === "") {
-          setDocumentType("기타");
-        }
+        // documentType이 이미 "기타"로 기본 설정되어 있으므로 별도 설정 불필요
+        console.log("드래그 파일 추가됨, 현재 문서 타입:", documentType);
       }
     }
   };
@@ -406,7 +416,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="문서 종류를 선택하세요" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="강의 자료">강의 자료</SelectItem>
                           <SelectItem value="교육과정">교육과정</SelectItem>
                           <SelectItem value="정책 문서">정책 문서</SelectItem>
@@ -425,7 +435,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                         <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="true">공개</SelectItem>
                           <SelectItem value="false">비공개</SelectItem>
                         </SelectContent>
@@ -464,6 +474,12 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                 <Button
                   onClick={() => {
                     console.log("업로드 버튼 클릭됨 - 선택된 파일:", selectedFiles.length, "문서 타입:", documentType);
+                    console.log("업로드 버튼 disabled 조건:", {
+                      filesLength: selectedFiles.length,
+                      noFiles: selectedFiles.length === 0,
+                      noDocType: !documentType,
+                      uploading: uploadMutation.isPending
+                    });
                     handleUpload();
                   }}
                   disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
