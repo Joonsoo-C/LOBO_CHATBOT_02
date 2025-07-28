@@ -972,6 +972,14 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 28, 2025. Completed comprehensive agent management modal UI restructuring:
+  * Removed all reference message areas (yellow/blue info boxes) from both new agent creation and edit modals
+  * Added status dropdown menus to replace reference messages with proper ordering (status appears before agent type and organization)
+  * Successfully reordered layout so agent type and organization information appear last in the modal sequence
+  * Applied consistent compact organization info display design across all modals using hierarchical format
+  * Fixed font size and color consistency for agent type and organization text elements to match other form fields
+  * Standardized label styling: removed text-base font-medium text-gray-900 classes, using standard Label component styling
+  * Enhanced BasicInfoEditModal with proper status field integration and TypeScript error fixes
 - July 28, 2025. Implemented role-based access control for agent basic information editing:
   * Added user permission checking to determine master administrator status in BasicInfoEditModal
   * Made agent type and organization fields read-only for non-master administrators

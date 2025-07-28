@@ -39,7 +39,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
   });
   
   // 마스터 관리자 권한 확인
-  const isMasterAdmin = currentUser?.systemRole === 'master_admin';
+  const isMasterAdmin = (currentUser as any)?.systemRole === 'master_admin';
   
   // 원본 데이터 (초기값)
   const [originalData, setOriginalData] = useState<BasicInfoData>({
@@ -246,7 +246,22 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               rows={3}
               maxLength={200}
             />
-            <p className="text-xs text-gray-500">* 소개에 입력된 내용은 사용자들을 위한 안내 메시지에 활용됩니다.</p>
+            <div className="text-xs text-gray-500">{basicInfoData.description.length}/200</div>
+          </div>
+
+          {/* Status */}
+          <div className="space-y-2">
+            <Label htmlFor="status" className="korean-text">상태</Label>
+            <Select value={basicInfoData.status} onValueChange={(value) => handleInputChange('status', value)}>
+              <SelectTrigger className="korean-text">
+                <SelectValue placeholder="상태를 선택하세요" />
+              </SelectTrigger>
+              <SelectContent className="z-[10000]">
+                <SelectItem value="active">활성</SelectItem>
+                <SelectItem value="inactive">비활성</SelectItem>
+                <SelectItem value="pending">대기</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {!isMasterAdmin && (
@@ -258,8 +273,8 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
           )}
 
           {/* Agent Type - Compact Display */}
-          <div className="space-y-3">
-            <Label className="korean-text text-base font-medium text-gray-900">에이전트 유형</Label>
+          <div className="space-y-2">
+            <Label className="korean-text">에이전트 유형</Label>
             <div className="bg-green-50 rounded-lg p-4 border border-green-200">
               {isMasterAdmin ? (
                 <Select value={basicInfoData.type} onValueChange={(value) => handleInputChange('type', value)}>
@@ -282,8 +297,8 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
           </div>
 
           {/* Organization Categories - Compact Hierarchical Display */}
-          <div className="space-y-3">
-            <Label className="korean-text text-base font-medium text-gray-900">에이전트 소속 조직</Label>
+          <div className="space-y-2">
+            <Label className="korean-text">에이전트 소속 조직</Label>
             <div className="bg-green-50 rounded-lg p-4 border border-green-200">
               {isMasterAdmin ? (
                 <div className="space-y-3">
