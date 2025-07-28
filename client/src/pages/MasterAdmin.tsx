@@ -7308,10 +7308,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </div>
           </TabsContent>
 
-          {/* 토큰 관리 */}
-          <TabsContent value="tokens" className="space-y-6">
-          </TabsContent>
-
           {/* 조직 관리 */}
           <TabsContent value="categories" className="space-y-6">
             <div className="flex justify-between items-center">
@@ -8717,11 +8713,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 )}
               </CardContent>
             </Card>
+            </div>
           </TabsContent>
 
-
         </Tabs>
-      </div>
 
         {/* 새 에이전트 생성 모달 */}
         <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
