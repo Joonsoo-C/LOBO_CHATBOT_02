@@ -123,54 +123,48 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       setDocumentType("");
       setDocumentDescription("");
       setDocumentVisibility(true);
-
       onClose();
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      console.error('Upload error:', error);
+      
       if (isUnauthorizedError(error)) {
-        setErrorMessage("인증이 만료되었습니다. 다시 로그인해주세요.");
-        setShowErrorModal(true);
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 2000);
-      } else {
-        setErrorMessage(error.message || "파일 업로드에 실패했습니다. 다시 시도해주세요.");
-        setShowErrorModal(true);
+        console.log('Unauthorized - redirecting to login');
+        return;
       }
-    },
+      
+      setErrorMessage(error.message || '파일 업로드 중 오류가 발생했습니다.');
+      setShowErrorModal(true);
+    }
   });
 
-  const validateFile = (file: File) => {
+  const validateFile = (file: File): boolean => {
     const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'text/plain',
-      'text/csv',
-      'application/vnd.hancom.hwp',
-      'image/jpeg',
-      'image/png',
-      'image/gif'
+      '.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx', '.xlsx', '.csv', '.hwp',
+      '.jpg', '.jpeg', '.png', '.gif'
     ];
-
+    
+    const extension = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+    
+    if (!allowedTypes.includes(extension)) {
+      toast({
+        title: "지원되지 않는 파일 형식",
+        description: `${file.name}: 지원되는 형식은 ${allowedTypes.join(', ')} 입니다.`,
+        variant: "destructive",
+      });
+      return false;
+    }
+    
     const maxSize = 50 * 1024 * 1024; // 50MB
-
-    if (!allowedTypes.includes(file.type)) {
-      setErrorMessage("지원하지 않는 파일 형식입니다. PDF, DOC, DOCX, TXT, PPT, PPTX, XLSX, CSV, HWP, JPG, PNG, GIF 파일만 업로드 가능합니다.");
-      setShowErrorModal(true);
-      return false;
-    }
-
     if (file.size > maxSize) {
-      setErrorMessage("파일 크기가 너무 큽니다. 최대 50MB까지 업로드 가능합니다.");
-      setShowErrorModal(true);
+      toast({
+        title: "파일 크기 초과",
+        description: `${file.name}: 파일 크기는 50MB를 초과할 수 없습니다.`,
+        variant: "destructive",
+      });
       return false;
     }
-
+    
     return true;
   };
 
@@ -270,10 +264,10 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
     <>
       {/* Main Upload Modal */}
       <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm" onClick={onClose}>
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8">
+          <div className="w-full max-w-2xl bg-background border rounded-lg shadow-lg flex flex-col max-h-[90vh] md:max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header - 고정 */}
+            <div className="flex items-center justify-between p-4 md:p-6 border-b bg-background rounded-t-lg sticky top-0 z-10">
               <div className="flex items-center space-x-3">
                 <FileText className="w-5 h-5 text-gray-900 dark:text-white" />
                 <h3 className="text-lg font-medium text-foreground korean-text">
@@ -285,204 +279,201 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
               </Button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-6 space-y-6">
-              {/* File Upload Section */}
-              <div 
-                className={`p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
-                  isDragOver 
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                    : ''
-                }`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => {
-                  console.log("드롭 존 클릭됨");
-                  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-                  if (fileInput) {
-                    fileInput.click();
-                    console.log("드롭 존에서 파일 입력 클릭 실행됨");
-                  }
-                }}
-              >
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                    <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
-                    <p className="text-sm text-gray-500 mt-2 korean-text">
-                      지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif<br />
-                      (최대 8개 / 파일당 최대 50MB)
-                    </p>
-                  </div>
-                  <Button variant="default" type="button" className="korean-text bg-blue-600 hover:bg-blue-700 text-white">
-                    파일 선택
-                  </Button>
-                </div>
-                <input
-                  id="file-upload"
-                  type="file"
-                  multiple
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xlsx,.csv,.hwp,.jpg,.jpeg,.png,.gif"
-                  onChange={handleFileSelect}
-                />
-              </div>
-
-              {/* Selected Files Display */}
-              {selectedFiles.length > 0 && (
-                <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
-                      선택된 파일 ({selectedFiles.length}개)
-                    </h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearAllFiles}
-                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      전체 삭제
+            {/* Modal Content - 스크롤 가능 */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-4 md:p-6 space-y-6">
+                {/* File Upload Section */}
+                <div 
+                  className={`p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center cursor-pointer hover:border-blue-400 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
+                    isDragOver 
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                      : ''
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => {
+                    console.log("드롭 존 클릭됨");
+                    const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                    if (fileInput) {
+                      fileInput.click();
+                      console.log("드롭 존에서 파일 입력 클릭 실행됨");
+                    }
+                  }}
+                >
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                      <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-medium text-gray-900 dark:text-gray-100 korean-text">파일을 여기로 드래그하거나 클릭하여 업로드하세요</p>
+                      <p className="text-sm text-gray-500 mt-2 korean-text">
+                        지원 파일 : pdf, doc, docx, txt, ppt, pptx, xls, xlsx, csv, hwp, jpg, png, gif<br />
+                        (최대 8개 / 파일당 최대 50MB)
+                      </p>
+                    </div>
+                    <Button variant="default" type="button" className="korean-text bg-blue-600 hover:bg-blue-700 text-white">
+                      파일 선택
                     </Button>
                   </div>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {selectedFiles.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md p-3">
-                        <div className="flex items-center space-x-3 flex-1 min-w-0">
-                          <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
-                                {file.name}
-                              </p>
-                              {documentType && (
-                                <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">
-                                  {documentType}
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-xs text-blue-600 dark:text-blue-400">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB
-                              </p>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setDocumentVisibility(!documentVisibility)}
-                                className="p-1 h-6 w-6 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
-                              >
-                                {documentVisibility ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
-                              </Button>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    multiple
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xlsx,.csv,.hwp,.jpg,.jpeg,.png,.gif"
+                    onChange={handleFileSelect}
+                  />
+                </div>
 
+                {/* Selected Files Display */}
+                {selectedFiles.length > 0 && (
+                  <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 korean-text">
+                        선택된 파일 ({selectedFiles.length}개)
+                      </h3>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearAllFiles}
+                        className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        전체 삭제
+                      </Button>
+                    </div>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {selectedFiles.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between bg-white dark:bg-blue-950 border border-blue-200 dark:border-blue-700 rounded-md p-3">
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="font-medium text-blue-900 dark:text-blue-100 text-sm truncate">
+                                  {file.name}
+                                </p>
+                                {documentType && (
+                                  <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">
+                                    {documentType}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <p className="text-xs text-blue-600 dark:text-blue-400">
+                                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setDocumentVisibility(!documentVisibility)}
+                                  className="p-1 h-6 w-6 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
+                                >
+                                  {documentVisibility ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                </Button>
+                              </div>
                             </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeFile(index)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 ml-2"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFile(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-1 ml-2"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Document Details Form */}
-              <div className="space-y-4">
-                <Label htmlFor="document-type" className="korean-text">문서 종류</Label>
-                <Select value={documentType} onValueChange={setDocumentType}>
-                  <SelectTrigger className="korean-text">
-                    <SelectValue placeholder="문서 종류를 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="강의자료">강의자료</SelectItem>
-                    <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
-                    <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
-                    <SelectItem value="서식·양식">서식·양식</SelectItem>
-                    <SelectItem value="공지·안내">공지·안내</SelectItem>
-                    <SelectItem value="교육과정">교육과정</SelectItem>
-                    <SelectItem value="FAQ·Q&A">FAQ·Q&A</SelectItem>
-                    <SelectItem value="연구자료">연구자료</SelectItem>
-                    <SelectItem value="회의·내부자료">회의·내부자료</SelectItem>
-                    <SelectItem value="기타">기타</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="document-description" className="korean-text">문서 설명</Label>
-                <Textarea
-                  id="document-description"
-                  placeholder="문서에 대한 간단한 설명을 입력하세요..."
-                  value={documentDescription}
-                  onChange={(e) => setDocumentDescription(e.target.value)}
-                  className="korean-text"
-                  rows={3}
-                />
-              </div>
-
-              {/* Document Settings */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg space-y-4">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 korean-text">문서 설정</h4>
-                
-                {/* Document Visibility Setting */}
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="agent-document-visible" 
-                      className="rounded" 
-                      checked={documentVisibility}
-                      onChange={(e) => setDocumentVisibility(e.target.checked)}
+                {/* Document Information Section */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="document-type" className="text-sm font-medium korean-text">
+                        문서 종류 *
+                      </Label>
+                      <Select value={documentType} onValueChange={setDocumentType}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="문서 종류를 선택하세요" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="강의 자료">강의 자료</SelectItem>
+                          <SelectItem value="교육과정">교육과정</SelectItem>
+                          <SelectItem value="정책 문서">정책 문서</SelectItem>
+                          <SelectItem value="매뉴얼">매뉴얼</SelectItem>
+                          <SelectItem value="양식">양식</SelectItem>
+                          <SelectItem value="공지사항">공지사항</SelectItem>
+                          <SelectItem value="기타">기타</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="document-visibility" className="text-sm font-medium korean-text">
+                        문서 공개 설정
+                      </Label>
+                      <Select value={documentVisibility.toString()} onValueChange={(value) => setDocumentVisibility(value === 'true')}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="true">공개</SelectItem>
+                          <SelectItem value="false">비공개</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="document-description" className="text-sm font-medium korean-text">
+                      문서 설명 (선택)
+                    </Label>
+                    <Textarea
+                      id="document-description"
+                      placeholder="문서에 대한 간단한 설명을 입력하세요..."
+                      value={documentDescription}
+                      onChange={(e) => setDocumentDescription(e.target.value)}
+                      className="resize-none korean-text"
+                      rows={3}
                     />
-                    <Label htmlFor="agent-document-visible" className="korean-text">일반 사용자에게 이 문서를 표시</Label>
                   </div>
-                  <p className="text-xs text-blue-700 dark:text-blue-300 ml-6 korean-text">
-                    체크 해제 시 관리자만 해당 문서에 접근할 수 있습니다.
-                  </p>
                 </div>
 
-
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-between space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={onClose}
-                  className="korean-text"
-                  disabled={uploadMutation.isPending}
-                >
-                  취소
-                </Button>
-                <Button
-                  onClick={handleUpload}
-                  disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
-                  className="bg-red-600 hover:bg-red-700 text-white korean-text"
-                >
-                  {uploadMutation.isPending ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      업로드 중...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="w-4 h-4 mr-2" />
-                      업로드 시작
-                    </>
-                  )}
-                </Button>
+                {/* Action Buttons */}
+                <div className="flex justify-between space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={onClose}
+                    className="korean-text"
+                    disabled={uploadMutation.isPending}
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    onClick={handleUpload}
+                    disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700 text-white korean-text"
+                  >
+                    {uploadMutation.isPending ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        업로드 중...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        업로드 시작
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      
       {/* Error Modal */}
       <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
         <DialogContent className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl">
