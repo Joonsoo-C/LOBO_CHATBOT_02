@@ -972,6 +972,13 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 28, 2025. Fixed new agent creation modal height stability issues:
+  * Implemented fixed height container for tab content area to prevent UI jumping when switching tabs
+  * Applied flex layout with overflow-y-auto to tab content container (flex-1, min-h-0, pb-20)
+  * Positioned bottom button area with absolute positioning for consistent placement
+  * Added relative positioning to DialogContent to support absolute positioned children
+  * Converted all tab labels from translation keys to direct Korean text for consistent display
+  * Modal now maintains stable 80vh height regardless of tab content size variations
 - July 28, 2025. Completed comprehensive agent management modal UI restructuring:
   * Removed all reference message areas (yellow/blue info boxes) from both new agent creation and edit modals
   * Added status dropdown menus to replace reference messages with proper ordering (status appears before agent type and organization)

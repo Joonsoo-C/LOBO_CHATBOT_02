@@ -5376,22 +5376,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="flex flex-col flex-1 overflow-hidden">
                     <TabsList className="grid w-full grid-cols-6 mb-6 flex-shrink-0">
                       <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.basicInfo')}
+                        기본 정보
                       </TabsTrigger>
                       <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.persona')}
+                        페르소나
                       </TabsTrigger>
                       <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.modelSettings')}
+                        모델 및 응답 설정
                       </TabsTrigger>
                       <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.fileUpload')}
+                        파일 업로드
                       </TabsTrigger>
                       <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.managerSelection')}
+                        관리자 선정
                       </TabsTrigger>
                       <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                        {t('agent.sharingSettings')}
+                        공유 설정
                       </TabsTrigger>
                     </TabsList>
 
