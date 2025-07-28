@@ -972,6 +972,10 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 28, 2025. Fixed document upload modal button styling inconsistency:
+  * Removed red inline styling (bg-red-600 hover:bg-red-700) from FileUploadModal "업로드 시작" button
+  * Standardized to use default Button component styling matching other modals (PersonaEditModal, BasicInfoEditModal, ChatbotSettingsModal)
+  * All modal buttons now have consistent visual appearance across the application
 - July 25, 2025. Enhanced document management with guidance text:
   * Added comprehensive guidance text to document file upload modal in master admin system
   * Added informative description: "공통 문서를 한 번에 업로드하고, 다양한 에이전트에 연동하세요."

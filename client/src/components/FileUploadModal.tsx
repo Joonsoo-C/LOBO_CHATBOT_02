@@ -483,7 +483,7 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
                     handleUpload();
                   }}
                   disabled={selectedFiles.length === 0 || !documentType || uploadMutation.isPending}
-                  className="flex-1 p-3 bg-red-600 hover:bg-red-700 text-white korean-text"
+                  className="flex-1 p-3 korean-text"
                 >
                   {uploadMutation.isPending ? (
                     <>
