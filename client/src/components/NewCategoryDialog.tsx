@@ -143,7 +143,7 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
                 <SelectTrigger>
                   <SelectValue placeholder={t('org.selectUpperCategory')} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[10000]">
                   {categories.upper.map((category) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -157,7 +157,7 @@ export function NewCategoryDialog({ open, onOpenChange, onSubmit }: NewCategoryD
                     <SelectTrigger>
                       <SelectValue placeholder={t('org.selectMiddleCategory')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       {getLowerCategories(upperCategory).map((category) => (
                         <SelectItem key={category} value={category}>{category}</SelectItem>
                       ))}

@@ -1495,7 +1495,7 @@ function MasterAdmin() {
             <SelectTrigger className="text-sm">
               <SelectValue placeholder="상위 조직" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="z-[10000]">
               <SelectItem value="all">전체</SelectItem>
               {getUpperCategories().map((cat) => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -5050,7 +5050,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       {upperCategories.map((category, index) => (
                         <SelectItem key={`upper-${category}-${index}`} value={category}>
@@ -5070,7 +5070,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       {lowerCategories.map((category, index) => (
                         <SelectItem key={`lower-${category}-${index}`} value={category}>
@@ -5090,7 +5090,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       {detailCategories.map((category, index) => (
                         <SelectItem key={`detail-${category}-${index}`} value={category}>
@@ -5118,7 +5118,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       <SelectItem value="active">활성</SelectItem>
                       <SelectItem value="inactive">비활성</SelectItem>
@@ -5134,7 +5134,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       <SelectItem value="user">일반 사용자</SelectItem>
                       <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
@@ -5419,7 +5419,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue placeholder={t('agent.selectType')} />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="학교">{t('agent.school')}</SelectItem>
                                         <SelectItem value="교수">{t('agent.professor')}</SelectItem>
                                         <SelectItem value="학생">{t('agent.student')}</SelectItem>
@@ -5456,7 +5456,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                             <SelectValue placeholder={t('org.selectUpper')} />
                                           </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className="z-[10000]">
                                           {getUpperCategories().map((category, index) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
@@ -5487,7 +5487,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                             <SelectValue placeholder={t('org.selectLower')} />
                                           </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className="z-[10000]">
                                           {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
@@ -5515,7 +5515,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                             <SelectValue placeholder={t('org.selectDetail')} />
                                           </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className="z-[10000]">
                                           {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category, index) => (
                                             <SelectItem key={category} value={category}>
                                               {category}
@@ -5652,7 +5652,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="gpt-4o">GPT-4o</SelectItem>
                                         <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
                                         <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
@@ -5675,7 +5675,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="strict-doc">
                                           <div className="flex flex-col">
                                             <div className="font-medium">문서 기반 전용</div>
@@ -5743,7 +5743,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                                   <SelectValue placeholder="검색 엔진을 선택하세요" />
                                                 </SelectTrigger>
                                               </FormControl>
-                                              <SelectContent>
+                                              <SelectContent className="z-[10000]">
                                                 <SelectItem value="bing">Bing Search API</SelectItem>
                                               </SelectContent>
                                             </Select>
@@ -6007,7 +6007,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectTrigger className="w-full">
                                   <SelectValue placeholder="선택" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="z-[10000]">
                                   <SelectItem value="강의 자료">강의 자료</SelectItem>
                                   <SelectItem value="교육과정">교육과정</SelectItem>
                                   <SelectItem value="정책 문서">정책 문서</SelectItem>
@@ -6162,7 +6162,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectTrigger className="h-10">
                                         <SelectValue placeholder="전체" />
                                       </SelectTrigger>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="all">전체</SelectItem>
                                         {getUpperCategories().map((cat) => (
                                           <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6181,7 +6181,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectTrigger className="h-10">
                                         <SelectValue placeholder="전체" />
                                       </SelectTrigger>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="all">전체</SelectItem>
                                         {getLowerCategories(managerFilterUpperCategory).map((cat) => (
                                           <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6199,7 +6199,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectTrigger className="h-10">
                                         <SelectValue placeholder="전체" />
                                       </SelectTrigger>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="all">전체</SelectItem>
                                         {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
                                           <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6220,7 +6220,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectTrigger className="h-10">
                                         <SelectValue placeholder="전체" />
                                       </SelectTrigger>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="all">전체</SelectItem>
                                         <SelectItem value="active">활성</SelectItem>
                                         <SelectItem value="inactive">비활성</SelectItem>
@@ -6237,7 +6237,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                       <SelectTrigger className="h-10">
                                         <SelectValue placeholder="전체" />
                                       </SelectTrigger>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="all">전체</SelectItem>
                                         <SelectItem value="master_admin">마스터 관리자</SelectItem>
                                         <SelectItem value="agent_admin">에이전트 관리자</SelectItem>
@@ -6388,7 +6388,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
                                         <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
                                         <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
@@ -6416,7 +6416,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="상위 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       {getUpperCategories().map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                       ))}
@@ -6434,7 +6434,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="하위 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="none">{t('admin.none')}</SelectItem>
                                       {getLowerCategories(selectedUpperCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6450,7 +6450,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="세부 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="none">{t('admin.none')}</SelectItem>
                                       {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6538,7 +6538,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="상위 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="all">전체</SelectItem>
                                       {getUpperCategories().map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6550,7 +6550,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="하위 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="all">전체</SelectItem>
                                       {getLowerCategories(userFilterUpperCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6562,7 +6562,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                     <SelectTrigger className="text-xs">
                                       <SelectValue placeholder="세부 조직" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="all">전체</SelectItem>
                                       {getDetailCategories(userFilterUpperCategory, userFilterLowerCategory).map((cat) => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -6760,7 +6760,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {uniqueUpperCategories.map((category, index) => (
                           <SelectItem key={category} value={category}>
@@ -6785,7 +6785,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {getLowerCategories(agentFilterUpperCategory).map((category, index) => (
                           <SelectItem key={category} value={category}>
@@ -6809,7 +6809,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {getDetailCategories(agentFilterUpperCategory, agentFilterLowerCategory).map((category, index) => (
                           <SelectItem key={category} value={category}>
@@ -6832,7 +6832,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="학교">학교</SelectItem>
                         <SelectItem value="교수">교수</SelectItem>
@@ -6851,7 +6851,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="active">활성</SelectItem>
                         <SelectItem value="inactive">비활성</SelectItem>
@@ -7162,7 +7162,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {qaUniqueUpperCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7178,7 +7178,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {qaFilteredLowerCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7198,7 +7198,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${qaSelectedLowerCategory === 'all' || qaSelectedUpperCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {qaFilteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7222,7 +7222,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="student">학생</SelectItem>
                       <SelectItem value="faculty">교직원</SelectItem>
@@ -7236,7 +7236,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="오늘" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="today">오늘</SelectItem>
                       <SelectItem value="week">최근 1주일</SelectItem>
                       <SelectItem value="month">최근 1개월</SelectItem>
@@ -7579,7 +7579,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       {uniqueUpperCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7595,7 +7595,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder={t('org.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('org.all')}</SelectItem>
                       {filteredLowerCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7615,7 +7615,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className={`h-10 ${selectedCollege === 'all' || selectedUniversity === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       <SelectValue placeholder={t("org.selectOption")} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t("org.all")}</SelectItem>
                       {filteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
@@ -7640,7 +7640,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="활성">활성</SelectItem>
                       <SelectItem value="비활성">비활성</SelectItem>
@@ -7885,7 +7885,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectValue placeholder="상위 조직 선택" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="z-[10000]">
                                 <SelectItem value="none">없음</SelectItem>
                                 {uniqueUpperCategories.map((category, index) => (
                                   <SelectItem key={category} value={category}>
@@ -7911,7 +7911,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectValue placeholder="하위 조직 선택" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="z-[10000]">
                                 <SelectItem value="none">없음</SelectItem>
                                 {Array.from(new Set(organizations?.map(org => org.lowerCategory).filter(Boolean))).map((category, index) => (
                                   <SelectItem key={category} value={category}>
@@ -7937,7 +7937,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectValue placeholder="세부 조직 선택" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="z-[10000]">
                                 <SelectItem value="none">없음</SelectItem>
                                 {Array.from(new Set(organizations?.map(org => org.detailCategory).filter(Boolean))).map((category, index) => (
                                   <SelectItem key={category} value={category}>
@@ -7964,7 +7964,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue placeholder="상태 선택" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="활성">활성</SelectItem>
                               <SelectItem value="비활성">비활성</SelectItem>
                               <SelectItem value="등록 승인 대기중">등록 승인 대기중</SelectItem>
@@ -8219,7 +8219,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('common.all')}</SelectItem>
                       <SelectItem value="lecture">{t('admin.lectureData')}</SelectItem>
                       <SelectItem value="policy">{t('admin.policyDoc')}</SelectItem>
@@ -8238,7 +8238,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('common.all')}</SelectItem>
                       <SelectItem value="pdf">PDF</SelectItem>
                       <SelectItem value="word">Word</SelectItem>
@@ -8256,7 +8256,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger className="h-10">
                       <SelectValue placeholder={t('admin.selectOption')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">{t('common.all')}</SelectItem>
                       <SelectItem value="today">{t('admin.today')}</SelectItem>
                       <SelectItem value="week">{t('admin.oneWeek')}</SelectItem>
@@ -8690,7 +8690,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {uniqueUpperCategories.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -8713,7 +8713,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className={`h-10 ${tokenUpperCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {filteredTokenLowerCategories.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -8732,7 +8732,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         {filteredTokenDetailCategories.map(category => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -8763,7 +8763,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="최근 1개월" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="today">오늘</SelectItem>
                         <SelectItem value="week">최근 1주일</SelectItem>
                         <SelectItem value="month">최근 1개월</SelectItem>
@@ -8778,7 +8778,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                       <SelectTrigger className="h-10">
                         <SelectValue placeholder="전체" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[10000]">
                         <SelectItem value="all">전체</SelectItem>
                         <SelectItem value="gpt-4o">GPT-4o</SelectItem>
                         <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
@@ -8923,7 +8923,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="LMS 선택" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="blackboard">Blackboard</SelectItem>
                       <SelectItem value="moodle">Moodle</SelectItem>
                       <SelectItem value="canvas">Canvas</SelectItem>
@@ -8957,7 +8957,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="동기화 주기 선택" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="1h">1시간마다</SelectItem>
                       <SelectItem value="6h">6시간마다</SelectItem>
                       <SelectItem value="daily">매일</SelectItem>
@@ -9023,7 +9023,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="전체">전체</SelectItem>
                           <SelectItem value="인문대학">인문대학</SelectItem>
                           <SelectItem value="공과대학">공과대학</SelectItem>
@@ -9037,7 +9037,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="전체">전체</SelectItem>
                           <SelectItem value="국문학과">국문학과</SelectItem>
                           <SelectItem value="영문학과">영문학과</SelectItem>
@@ -9050,7 +9050,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger>
                           <SelectValue placeholder="전체" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="전체">전체</SelectItem>
                           <SelectItem value="1학년">1학년</SelectItem>
                           <SelectItem value="2학년">2학년</SelectItem>
@@ -9261,7 +9261,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[10000]">
                     <SelectItem value="강의 자료">강의 자료</SelectItem>
                     <SelectItem value="교육과정">교육과정</SelectItem>
                     <SelectItem value="정책 문서">정책 문서</SelectItem>
@@ -9346,7 +9346,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[10000]">
                     <SelectItem value="상위 카테고리 (예: 인문대학)">상위 카테고리 (예: 인문대학)</SelectItem>
                     <SelectItem value="하위 카테고리 (예: 국어국문학과)">하위 카테고리 (예: 국어국문학과)</SelectItem>
                     <SelectItem value="세부 카테고리 (예: 현대문학전공)">세부 카테고리 (예: 현대문학전공)</SelectItem>
@@ -9977,7 +9977,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger className="mt-1">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="visible">일반 사용자에게 표시</SelectItem>
                           <SelectItem value="hidden">관리자만 접근 가능</SelectItem>
                         </SelectContent>
@@ -9997,7 +9997,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger className="mt-1">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="active">사용 중</SelectItem>
                           <SelectItem value="inactive">미사용</SelectItem>
                         </SelectContent>
@@ -10009,7 +10009,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                         <SelectTrigger className="mt-1">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[10000]">
                           <SelectItem value="강의자료">강의자료</SelectItem>
                           <SelectItem value="정책·규정 문서">정책·규정 문서</SelectItem>
                           <SelectItem value="매뉴얼·가이드">매뉴얼·가이드</SelectItem>
@@ -10104,7 +10104,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[10000]">
                             <SelectItem value="all">전체</SelectItem>
                             {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category, index) => (
                               <SelectItem key={category} value={category}>
@@ -10121,7 +10121,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[10000]">
                             <SelectItem value="all">전체</SelectItem>
                             {Array.from(new Set(
                               organizations
@@ -10143,7 +10143,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[10000]">
                             <SelectItem value="all">전체</SelectItem>
                             {Array.from(new Set(
                               organizations
@@ -10171,7 +10171,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           <SelectTrigger className="mt-1">
                             <SelectValue placeholder="전체" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[10000]">
                             <SelectItem value="all">전체</SelectItem>
                             <SelectItem value="학교">학교</SelectItem>
                             <SelectItem value="교수">교수</SelectItem>
@@ -10658,7 +10658,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue placeholder="유형 선택" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="student">학생</SelectItem>
                               <SelectItem value="faculty">교직원</SelectItem>
                               <SelectItem value="other">기타</SelectItem>
@@ -10715,7 +10715,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
@@ -10734,7 +10734,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => !affiliation.upperCategory || org.upperCategory === affiliation.upperCategory)
@@ -10758,7 +10758,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => 
@@ -10787,7 +10787,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="학생">학생</SelectItem>
                               <SelectItem value="교수">교수</SelectItem>
                               <SelectItem value="직원">직원</SelectItem>
@@ -10819,7 +10819,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectTrigger>
                                   <SelectValue placeholder="역할 선택" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="z-[10000]">
                                   <SelectItem value="user">일반 사용자</SelectItem>
                                   <SelectItem value="master_admin">마스터 관리자</SelectItem>
                                   <SelectItem value="operation_admin">운영 관리자</SelectItem>
@@ -10880,7 +10880,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="active">활성</SelectItem>
                               <SelectItem value="inactive">비활성</SelectItem>
                             </SelectContent>
@@ -11020,7 +11020,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue placeholder="유형 선택" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="student">학생</SelectItem>
                               <SelectItem value="faculty">교직원</SelectItem>
                               <SelectItem value="other">기타</SelectItem>
@@ -11081,7 +11081,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(organizations.map(org => org.upperCategory).filter(Boolean))).sort().map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
@@ -11100,7 +11100,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => !affiliation.upperCategory || org.upperCategory === affiliation.upperCategory)
@@ -11124,7 +11124,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               {Array.from(new Set(
                                 organizations
                                   .filter(org => 
@@ -11153,7 +11153,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             <SelectTrigger>
                               <SelectValue placeholder="선택" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="학생">학생</SelectItem>
                               <SelectItem value="교수">교수</SelectItem>
                               <SelectItem value="직원">직원</SelectItem>
@@ -11191,7 +11191,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectValue placeholder="역할 선택" />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="user">일반 사용자</SelectItem>
                                       <SelectItem value="master_admin">마스터 관리자</SelectItem>
                                       <SelectItem value="operation_admin">운영 관리자</SelectItem>
@@ -11237,7 +11237,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                 <SelectValue placeholder="상태 선택" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="z-[10000]">
                               <SelectItem value="active">활성</SelectItem>
                               <SelectItem value="inactive">비활성</SelectItem>
                             </SelectContent>
@@ -11358,7 +11358,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectValue placeholder={t('admin.typeSelection')} />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="학교">학교</SelectItem>
                                       <SelectItem value="교수">교수</SelectItem>
                                       <SelectItem value="학생">학생</SelectItem>
@@ -11395,7 +11395,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue placeholder="상위 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         {getUpperCategories().map((category, index) => (
                                           <SelectItem key={category} value={category}>
                                             {category}
@@ -11426,7 +11426,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue placeholder="하위 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         {getLowerCategories(agentForm.watch('upperCategory') || '').map((category, index) => (
                                           <SelectItem key={category} value={category}>
                                             {category}
@@ -11454,7 +11454,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                           <SelectValue placeholder="세부 조직 선택" />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="z-[10000]">
                                         {getDetailCategories(agentForm.watch('upperCategory') || '', agentForm.watch('lowerCategory') || '').map((category, index) => (
                                           <SelectItem key={category} value={category}>
                                             {category}
@@ -11599,7 +11599,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectValue />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="gpt-4o-mini">GPT-4o Mini (빠름)</SelectItem>
                                       <SelectItem value="gpt-4o">GPT-4o (균형)</SelectItem>
                                       <SelectItem value="gpt-4-turbo">GPT-4 Turbo (정확)</SelectItem>
@@ -11622,7 +11622,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectValue />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="doc-fallback-llm">문서 우선 + LLM 보완</SelectItem>
                                       <SelectItem value="strict-doc">문서 기반 전용</SelectItem>
                                       <SelectItem value="general-llm">자유 대화형</SelectItem>
@@ -11677,7 +11677,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                               <SelectValue placeholder="검색 엔진을 선택하세요" />
                                             </SelectTrigger>
                                           </FormControl>
-                                          <SelectContent>
+                                          <SelectContent className="z-[10000]">
                                             <SelectItem value="bing">Bing Search API</SelectItem>
                                           </SelectContent>
                                         </Select>
@@ -11732,7 +11732,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                               <SelectTrigger className="mt-1">
                                 <SelectValue placeholder="문서 종류 선택" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="z-[10000]">
                                 <SelectItem value="lecture">강의자료</SelectItem>
                                 <SelectItem value="policy">정책·규정 문서</SelectItem>
                                 <SelectItem value="manual">매뉴얼·가이드</SelectItem>
@@ -11977,7 +11977,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="h-8 text-xs">
                                     <SelectValue placeholder="상위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getUpperCategories().map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -11992,7 +11992,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="h-8 text-xs">
                                     <SelectValue placeholder="하위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getLowerCategories(managerFilterUpperCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12006,7 +12006,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="h-8 text-xs">
                                     <SelectValue placeholder="세부 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getDetailCategories(managerFilterUpperCategory, managerFilterLowerCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12174,7 +12174,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                         <SelectValue />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="z-[10000]">
                                       <SelectItem value="organization">조직 전체 - 소속 조직의 모든 구성원이 사용 가능</SelectItem>
                                       <SelectItem value="group">그룹 지정 - 특정 그룹만 사용 가능</SelectItem>
                                       <SelectItem value="custom">사용자 지정 - 개별 사용자 선택</SelectItem>
@@ -12202,7 +12202,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="상위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     {getUpperCategories().map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                     ))}
@@ -12220,7 +12220,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="하위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="none">{t('admin.none')}</SelectItem>
                                     {getLowerCategories(selectedUpperCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12236,7 +12236,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="세부 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="none">{t('admin.none')}</SelectItem>
                                     {getDetailCategories(selectedUpperCategory, selectedLowerCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12324,7 +12324,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="상위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getUpperCategories().map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12336,7 +12336,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="하위 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getLowerCategories(userFilterUpperCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12348,7 +12348,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                                   <SelectTrigger className="text-xs">
                                     <SelectValue placeholder="세부 조직" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="z-[10000]">
                                     <SelectItem value="all">전체</SelectItem>
                                     {getDetailCategories(userFilterUpperCategory, userFilterLowerCategory).map((cat) => (
                                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -12767,7 +12767,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {organizationCategories && Array.from(new Set(
                         organizationCategories.map((org: any) => org.upperCategory)
@@ -12787,7 +12787,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {selectedUniversity !== 'all' && organizationCategories && Array.from(new Set(
                         organizationCategories
@@ -12809,7 +12809,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       {selectedCollege !== 'all' && organizationCategories && Array.from(new Set(
                         organizationCategories
@@ -12836,7 +12836,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="학교">학교</SelectItem>
                       <SelectItem value="교수">교수</SelectItem>
@@ -12853,7 +12853,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     <SelectTrigger>
                       <SelectValue placeholder="전체" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[10000]">
                       <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="활성">활성</SelectItem>
                       <SelectItem value="비활성">비활성</SelectItem>

@@ -213,7 +213,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               <SelectTrigger className="korean-text">
                 <SelectValue placeholder="유형을 선택하세요" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[10000]">
                 <SelectItem value="학교">학교</SelectItem>
                 <SelectItem value="교수">교수</SelectItem>
                 <SelectItem value="그룹">그룹</SelectItem>
@@ -239,7 +239,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 <SelectTrigger className="korean-text">
                   <SelectValue placeholder="상위 조직을 선택하세요" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[10000]">
                   <SelectItem value="전체">전체</SelectItem>
                   {upperCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -262,7 +262,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 <SelectTrigger className="korean-text">
                   <SelectValue placeholder="하위 조직을 선택하세요" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[10000]">
                   <SelectItem value="전체">전체</SelectItem>
                   {lowerCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -281,7 +281,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
                 <SelectTrigger className="korean-text">
                   <SelectValue placeholder="세부 조직을 선택하세요" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[10000]">
                   <SelectItem value="전체">전체</SelectItem>
                   {detailCategories.map((category: string) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
@@ -298,7 +298,7 @@ export default function BasicInfoEditModal({ agent, isOpen, onClose, onSuccess, 
               <SelectTrigger className="korean-text">
                 <SelectValue placeholder="상태를 선택하세요" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[10000]">
                 <SelectItem value="active">활성</SelectItem>
                 <SelectItem value="inactive">비활성</SelectItem>
                 <SelectItem value="pending">대기</SelectItem>
