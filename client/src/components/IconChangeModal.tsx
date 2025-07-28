@@ -471,54 +471,50 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             </div>
           )}
 
-          {/* Icon Selection - Only show for basic icons */}
-          {!isUsingCustomImage && (
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">아이콘 선택</Label>
-              <div className="grid grid-cols-5 gap-2">
-                {availableIcons.map((iconOption) => {
-                  const IconComponent = iconOption.icon;
-                  return (
-                    <Button
-                      type="button"
-                      key={iconOption.value}
-                      variant={selectedIcon === iconOption.value ? "default" : "outline"}
-                      size="sm"
-                      className="h-12 w-12 p-0"
-                      onClick={() => setSelectedIcon(iconOption.value)}
-                    >
-                      <IconComponent className="w-5 h-5" />
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Color Selection - Only show for basic icons */}
-          {!isUsingCustomImage && (
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">배경색 선택</Label>
-              <div className="grid grid-cols-5 gap-2">
-                {colorOptions.map((colorOption) => (
+          {/* Icon Selection - Always show */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">아이콘 선택</Label>
+            <div className="grid grid-cols-5 gap-2">
+              {availableIcons.map((iconOption) => {
+                const IconComponent = iconOption.icon;
+                return (
                   <Button
                     type="button"
-                    key={colorOption.value}
-                    variant="outline"
+                    key={iconOption.value}
+                    variant={selectedIcon === iconOption.value ? "default" : "outline"}
                     size="sm"
-                    className={`h-12 w-12 p-0 border-2 ${
-                      selectedColor === colorOption.value ? "border-foreground" : "border-border"
-                    }`}
-                    onClick={() => setSelectedColor(colorOption.value)}
+                    className="h-12 w-12 p-0"
+                    onClick={() => setSelectedIcon(iconOption.value)}
                   >
-                    <div 
-                      className={`w-8 h-8 rounded ${colorOption.bgClass}`}
-                    />
+                    <IconComponent className="w-5 h-5" />
                   </Button>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+
+          {/* Color Selection - Always show */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">배경색 선택</Label>
+            <div className="grid grid-cols-5 gap-2">
+              {colorOptions.map((colorOption) => (
+                <Button
+                  type="button"
+                  key={colorOption.value}
+                  variant="outline"
+                  size="sm"
+                  className={`h-12 w-12 p-0 border-2 ${
+                    selectedColor === colorOption.value ? "border-foreground" : "border-border"
+                  }`}
+                  onClick={() => setSelectedColor(colorOption.value)}
+                >
+                  <div 
+                    className={`w-8 h-8 rounded ${colorOption.bgClass}`}
+                  />
+                </Button>
+              ))}
+            </div>
+          </div>
 
           </div>
         </div>
@@ -533,7 +529,7 @@ export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: I
             onClick={handleSubmit} 
             disabled={updateIconMutation.isPending}
           >
-            {updateIconMutation.isPending ? "변경 중..." : "변경하기"}
+            {updateIconMutation.isPending ? "변경 중..." : "아이콘 변경"}
           </Button>
         </div>
       </div>
