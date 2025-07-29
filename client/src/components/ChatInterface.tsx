@@ -1436,7 +1436,7 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]" onClick={() => setShowFileListModal(false)}>
           <div className="bg-background border border-border rounded-xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col shadow-lg" onClick={(e) => e.stopPropagation()}>
             {/* Fixed Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border flex-shrink-0 bg-background rounded-t-xl">
+            <div className="flex items-center justify-between p-3 border-b border-border flex-shrink-0 bg-background rounded-t-xl">
               <div className="flex items-center space-x-2">
                 <FileText className="w-5 h-5 text-black dark:text-white" />
                 <h3 className="text-lg font-semibold korean-text">업로드된 파일</h3>

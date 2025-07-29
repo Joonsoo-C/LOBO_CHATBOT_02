@@ -972,6 +972,10 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 30, 2025. Removed duplicate tab titles in agent detail modal:
   * Fixed critical white screen issue in master admin agent detail modal by adding missing Clipboard icon import
+- July 30, 2025. Achieved UI consistency across modal headers:
+  * Reduced "업로드된 파일" (Uploaded Files) modal header padding from p-6 to p-3
+  * FileListModal header now matches "페르소나 설정" (Persona Settings) modal header height
+  * Consistent modal header design pattern established across all modal interfaces
   * Removed duplicate tab titles from all agent detail modal tabs (기본 정보, 페르소나, 파일 업로드, 공유 설정)
   * Enhanced UI consistency by showing only tab navigation without redundant content titles
   * Agent detail modal now displays clean interface without visual duplication
