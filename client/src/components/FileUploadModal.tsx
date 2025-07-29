@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { X, FileText, Upload, AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { X, FileText, Upload, AlertTriangle, CheckCircle, Eye, EyeOff, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -199,14 +199,17 @@ export default function FileUploadModal({ agent, isOpen, onClose, onSuccess }: F
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={onClose}>
         <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] md:max-h-[80vh] flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
           {/* Header - 고정 */}
-          <div className="flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800 rounded-t-2xl flex-shrink-0">
-            <div className="flex items-center space-x-2 pl-6">
-              <FileText className="w-5 h-5 text-black dark:text-white" />
-              <h2 className="text-lg font-medium korean-text">문서 파일 업로드</h2>
+          <div className="border-b p-6 flex-shrink-0 bg-white dark:bg-gray-800 rounded-t-2xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-black dark:text-white" />
+                <h2 className="text-lg font-medium korean-text">문서 관리</h2>
+                <MoreVertical className="w-4 h-4 text-gray-400 ml-2" />
+              </div>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="w-5 h-5" />
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="w-10 h-10" />
-            </Button>
           </div>
 
           {/* Content - 스크롤 가능 */}
