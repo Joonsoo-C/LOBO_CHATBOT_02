@@ -5366,6 +5366,39 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   )}
                 </Button>
               </div>
+              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+                <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] flex flex-col relative">
+                  <DialogHeader className="flex-shrink-0">
+                    <DialogTitle>{t('agent.createNewAgent')}</DialogTitle>
+                  </DialogHeader>
+                  
+                  {/* 탭 네비게이션 */}
+                  <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="flex flex-col flex-1 overflow-hidden">
+                    <TabsList className="grid w-full grid-cols-6 mb-6 flex-shrink-0">
+                      <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        기본 정보
+                      </TabsTrigger>
+                      <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        페르소나
+                      </TabsTrigger>
+                      <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        모델 및 응답 설정
+                      </TabsTrigger>
+                      <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        파일 업로드
+                      </TabsTrigger>
+                      <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        관리자 선정
+                      </TabsTrigger>
+                      <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
+                        공유 설정
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <Form {...agentForm}>
+                      <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="flex flex-col flex-1 overflow-hidden">
+                        {/* 탭 콘텐츠 영역 - 고정 높이 설정 */}
+                        <div className="flex-1 overflow-y-auto min-h-0 pb-20">
                         
                         {/* 기본 정보 탭 */}
                         <TabsContent value="basic" className="space-y-6">
@@ -6521,8 +6554,77 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                           </div>
                         </TabsContent>
 
-          {/* 에이전트 관리 */}
-          <TabsContent value="agents" className="space-y-6">
+                        </div>
+
+                        {/* 하단 버튼 - 고정 위치 */}
+                        <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-4 pb-6 px-6 bg-white border-t flex-shrink-0">
+                          <div className="flex space-x-2">
+                            {agentCreationTab !== 'basic' && (
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex > 0) {
+                                    setAgentCreationTab(tabs[currentIndex - 1] as any);
+                                  }
+                                }}
+                              >
+                                ← 이전
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => {
+                                // 폼 상태 초기화
+                                agentForm.reset();
+                                setSelectedAgentManagers([]);
+                                setSelectedDocumentManagers([]);
+                                setSelectedQaManagers([]);
+                                setSelectedFiles([]);
+                                setManagerSearchQuery('');
+                                setAgentCreationTab('basic');
+                                setUploadedAgentDocuments([]);
+                                setAgentDocumentType('기타');
+                                setAgentDocumentDescription('');
+                                setAgentDocumentVisible(true);
+                                setIsAgentDialogOpen(false);
+                              }}
+                            >
+                              취소
+                            </Button>
+                            {agentCreationTab !== 'sharing' ? (
+                              <Button 
+                                type="button" 
+                                onClick={() => {
+                                  const tabs = ['basic', 'persona', 'model', 'upload', 'sharing'];
+                                  const currentIndex = tabs.indexOf(agentCreationTab);
+                                  if (currentIndex < tabs.length - 1) {
+                                    setAgentCreationTab(tabs[currentIndex + 1] as any);
+                                  }
+                                }}
+                                disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
+                              >
+                                다음 →
+                              </Button>
+                            ) : (
+                              <Button type="submit" disabled={createAgentMutation.isPending}>
+                                {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </Form>
+                  </Tabs>
+                </DialogContent>
+              </Dialog>
+            </div>
+
             {/* 에이전트 관리 액션 버튼들 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Card 
@@ -6911,7 +7013,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             )}
-
           </TabsContent>
 
           {/* 질문 응답 로그 */}
@@ -7306,6 +7407,10 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* 토큰 관리 */}
+          <TabsContent value="tokens" className="space-y-6">
           </TabsContent>
 
           {/* 조직 관리 */}
@@ -8435,7 +8540,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
 
           {/* 토큰 관리 */}
           <TabsContent value="tokens" className="space-y-4">
-            <div>
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
             {/* 요약 카드 - 한 줄 컴팩트 스타일 */}
@@ -8714,570 +8818,12 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                 )}
               </CardContent>
             </Card>
-            </div>
           </TabsContent>
+
+
         </Tabs>
 
-        {/* 새 에이전트 생성 모달 */}
-        <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
-          <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] flex flex-col relative">
-            <DialogHeader className="flex-shrink-0">
-              <DialogTitle>새 에이전트 생성</DialogTitle>
-            </DialogHeader>
-            
-            {/* 탭 네비게이션 */}
-            <Tabs value={agentCreationTab} onValueChange={(value) => setAgentCreationTab(value as AgentCreationTab)} className="flex flex-col flex-1 overflow-hidden">
-              <TabsList className="grid w-full grid-cols-6 mb-6 flex-shrink-0">
-                <TabsTrigger value="basic" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  기본 정보
-                </TabsTrigger>
-                <TabsTrigger value="persona" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  페르소나
-                </TabsTrigger>
-                <TabsTrigger value="model" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  모델 및 응답 설정
-                </TabsTrigger>
-                <TabsTrigger value="upload" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  파일 업로드
-                </TabsTrigger>
-                <TabsTrigger value="managers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  관리자 선정
-                </TabsTrigger>
-                <TabsTrigger value="sharing" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-xs">
-                  공유 설정
-                </TabsTrigger>
-              </TabsList>
 
-              <Form {...agentForm}>
-                <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="flex flex-col flex-1 overflow-hidden">
-                  {/* 탭 콘텐츠 영역 - 고정 높이 설정 */}
-                  <div className="flex-1 overflow-y-auto min-h-0 pb-20">
-                  
-                  {/* 기본 정보 탭 */}
-                  <TabsContent value="basic" className="space-y-6">
-                    <div className="space-y-6">
-                      {/* 에이전트 이름 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름*</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="예: 민지, 도우미, 상담봇" 
-                                maxLength={20} 
-                                className="focus:ring-2 focus:ring-blue-500"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <div className="text-xs text-gray-500">{field.value?.length || 0}/20자</div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">에이전트 소개</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="에이전트의 역할이나 기능을 간단히 소개해 주세요."
-                                maxLength={200}
-                                className="min-h-[80px] focus:ring-2 focus:ring-blue-500"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <div className="text-xs text-gray-500">{field.value?.length || 0}/200자</div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* 상태 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="status"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">상태*</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="상태를 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="active">활성</SelectItem>
-                                <SelectItem value="inactive">비활성</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* 에이전트 유형 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="category"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">에이전트 유형*</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="유형을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="학교">학교</SelectItem>
-                                <SelectItem value="교수">교수</SelectItem>
-                                <SelectItem value="학생">학생</SelectItem>
-                                <SelectItem value="그룹">그룹</SelectItem>
-                                <SelectItem value="기능형">기능형</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* 상위 조직 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="upperCategory"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">소속 상위 조직*</FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              agentForm.setValue('lowerCategory', '');
-                              agentForm.setValue('detailCategory', '');
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="상위 조직을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {uniqueUpperCategories.map((category) => (
-                                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* 하위 조직 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="lowerCategory"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">소속 하위 조직</FormLabel>
-                            <Select 
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                                agentForm.setValue('detailCategory', '');
-                              }} 
-                              defaultValue={field.value}
-                              disabled={!agentForm.watch('upperCategory')}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="하위 조직을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {getLowerCategories(agentForm.watch('upperCategory')).map((category) => (
-                                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* 세부 조직 */}
-                      <FormField
-                        control={agentForm.control}
-                        name="detailCategory"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">소속 세부 조직</FormLabel>
-                            <Select 
-                              onValueChange={field.onChange} 
-                              defaultValue={field.value}
-                              disabled={!agentForm.watch('lowerCategory')}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="세부 조직을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {getDetailCategories(agentForm.watch('upperCategory'), agentForm.watch('lowerCategory')).map((category) => (
-                                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  {/* 페르소나 탭 */}
-                  <TabsContent value="persona" className="space-y-6">
-                    <div className="space-y-6">
-                      <FormField
-                        control={agentForm.control}
-                        name="personaNickname"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="예: 민지, 도우미, 상담봇"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="speechStyle"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">말투 스타일</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="예: 친구처럼 편안한 말투로 말해주세요."
-                                className="min-h-[80px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="expertiseArea"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">지식/전문 분야</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="예: 입학상담, 진로코칭, 프로그래밍, 영어 에세이 등"
-                                className="min-h-[80px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="personality"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">성격 특성</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="예: 친절하고 인내심 있는 성격, 논리적인 사고, 유머감각 있음 등"
-                                className="min-h-[80px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="additionalPrompt"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">추가 프롬프트</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="예: 간단하고 정중한 말투로, 최대 5줄 이내 요약"
-                                className="min-h-[80px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  {/* 모델 및 응답 설정 탭 */}
-                  <TabsContent value="model" className="space-y-6">
-                    <div className="space-y-6">
-                      <FormField
-                        control={agentForm.control}
-                        name="llmModel"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">LLM 모델</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="모델을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                                <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                                <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                                <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={agentForm.control}
-                        name="chatbotType"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">챗봇 유형</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="챗봇 유형을 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="strict-doc">문서 기반 응답만</SelectItem>
-                                <SelectItem value="doc-fallback-llm">문서 우선, LLM 보조</SelectItem>
-                                <SelectItem value="general-llm">자유 대화형</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  {/* 파일 업로드 탭 */}
-                  <TabsContent value="upload" className="space-y-6">
-                    <div className="space-y-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          문서 업로드
-                        </label>
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                          <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                          <div className="mt-4">
-                            <label htmlFor="agent-files" className="cursor-pointer">
-                              <span className="mt-2 block text-sm font-medium text-gray-900">
-                                파일을 드래그하거나 클릭하여 업로드
-                              </span>
-                              <input
-                                id="agent-files"
-                                name="agent-files"
-                                type="file"
-                                multiple
-                                className="sr-only"
-                                onChange={(e) => {
-                                  const files = Array.from(e.target.files || []);
-                                  setSelectedFiles(files);
-                                }}
-                              />
-                            </label>
-                            <p className="mt-1 text-xs text-gray-500">
-                              TXT, DOC, DOCX, PPT, PPTX (최대 10MB)
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {selectedFiles.length > 0 && (
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-medium text-gray-700">선택된 파일:</h4>
-                          {selectedFiles.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                              <span className="text-sm text-gray-600">{file.name}</span>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  {/* 관리자 선정 탭 */}
-                  <TabsContent value="managers" className="space-y-6">
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-700 mb-4">에이전트 관리자 선정</h4>
-                        <div className="space-y-4">
-                          <Input
-                            placeholder="관리자 검색..."
-                            value={managerSearchQuery}
-                            onChange={(e) => setManagerSearchQuery(e.target.value)}
-                          />
-                          <div className="max-h-48 overflow-y-auto border rounded">
-                            {users?.filter(user => 
-                              (user as any).role === 'agent_admin' || (user as any).role === 'master_admin'
-                            ).filter(user => 
-                              !managerSearchQuery || 
-                              (user as any).name?.toLowerCase().includes(managerSearchQuery.toLowerCase()) ||
-                              user.id?.toLowerCase().includes(managerSearchQuery.toLowerCase())
-                            ).map(user => (
-                              <div key={user.id} className="flex items-center p-2 hover:bg-gray-50">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedAgentManagers.includes(user.id)}
-                                  onChange={(e) => {
-                                    if (e.target.checked) {
-                                      setSelectedAgentManagers([...selectedAgentManagers, user.id]);
-                                    } else {
-                                      setSelectedAgentManagers(selectedAgentManagers.filter(id => id !== user.id));
-                                    }
-                                  }}
-                                  className="mr-3"
-                                />
-                                <div>
-                                  <div className="font-medium">{(user as any).name}</div>
-                                  <div className="text-sm text-gray-500">{user.email}</div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-
-                  {/* 공유 설정 탭 */}
-                  <TabsContent value="sharing" className="space-y-6">
-                    <div className="space-y-6">
-                      <FormField
-                        control={agentForm.control}
-                        name="visibility"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">공개 범위</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="공개 범위를 선택하세요" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="public">전체 공개</SelectItem>
-                                <SelectItem value="organization">조직 내 공개</SelectItem>
-                                <SelectItem value="private">비공개</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  </div>
-
-                  {/* 하단 버튼 - 고정 위치 */}
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-4 pb-6 px-6 bg-white border-t flex-shrink-0">
-                    <div className="flex space-x-2">
-                      {agentCreationTab !== 'basic' && (
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => {
-                            const tabs = ['basic', 'persona', 'model', 'upload', 'managers', 'sharing'];
-                            const currentIndex = tabs.indexOf(agentCreationTab);
-                            if (currentIndex > 0) {
-                              setAgentCreationTab(tabs[currentIndex - 1] as any);
-                            }
-                          }}
-                        >
-                          ← 이전
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => {
-                          // 폼 상태 초기화
-                          agentForm.reset();
-                          setSelectedAgentManagers([]);
-                          setSelectedDocumentManagers([]);
-                          setSelectedQaManagers([]);
-                          setSelectedFiles([]);
-                          setManagerSearchQuery('');
-                          setAgentCreationTab('basic');
-                          setUploadedAgentDocuments([]);
-                          setAgentDocumentType('기타');
-                          setAgentDocumentDescription('');
-                          setAgentDocumentVisible(true);
-                          setIsAgentDialogOpen(false);
-                        }}
-                      >
-                        취소
-                      </Button>
-                      {agentCreationTab !== 'sharing' ? (
-                        <Button 
-                          type="button" 
-                          onClick={() => {
-                            const tabs = ['basic', 'persona', 'model', 'upload', 'managers', 'sharing'];
-                            const currentIndex = tabs.indexOf(agentCreationTab);
-                            if (currentIndex < tabs.length - 1) {
-                              setAgentCreationTab(tabs[currentIndex + 1] as any);
-                            }
-                          }}
-                          disabled={agentCreationTab === 'basic' && (!agentForm.watch('name') || !agentForm.watch('category') || !agentForm.watch('upperCategory'))}
-                        >
-                          다음 →
-                        </Button>
-                      ) : (
-                        <Button type="submit" disabled={createAgentMutation.isPending}>
-                          {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </form>
-              </Form>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
 
         {/* LMS 연동 다이얼로그 */}
         <Dialog open={isLmsDialogOpen} onOpenChange={setIsLmsDialogOpen}>
@@ -13524,8 +13070,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
         />
-        
-        </Tabs>
       </main>
     </div>
   );
