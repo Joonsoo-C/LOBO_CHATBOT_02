@@ -972,6 +972,12 @@ Changelog:
   * All search interfaces now follow consistent design pattern matching user management section
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
+- July 29, 2025. Enhanced modal consistency across agent management interfaces:
+  * Improved FileListModal (문서 관리) in ChatInterface with fixed header design and proper scrolling behavior
+  * Added FileText icon to modal header and implemented bottom border for visual consistency
+  * Restructured modal layout with fixed header section and scrollable content area below the border
+  * Applied consistent text styling (text-gray-900 font-medium) across all modal interfaces for uniform appearance
+  * Modal headers now remain fixed during scrolling with clean separation between header and content areas
 - July 28, 2025. Fixed new agent creation modal height stability issues:
   * Implemented fixed height container for tab content area to prevent UI jumping when switching tabs
   * Applied flex layout with overflow-y-auto to tab content container (flex-1, min-h-0, pb-20)

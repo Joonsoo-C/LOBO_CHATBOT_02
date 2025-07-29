@@ -1434,9 +1434,13 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
       {/* File List Modal */}
       {showFileListModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]" onClick={() => setShowFileListModal(false)}>
-          <div className="bg-background border border-border rounded-xl p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold korean-text">업로드된 파일</h3>
+          <div className="bg-background border border-border rounded-xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col shadow-lg" onClick={(e) => e.stopPropagation()}>
+            {/* Fixed Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border flex-shrink-0 bg-background rounded-t-xl">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-black dark:text-white" />
+                <h3 className="text-lg font-semibold korean-text">업로드된 파일</h3>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
@@ -1445,6 +1449,9 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
                 <X className="w-4 h-4" />
               </Button>
             </div>
+            
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6">
             
             {Array.isArray(documents) && documents.length > 0 ? (
               <div className="space-y-3">
@@ -1646,6 +1653,7 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
                 <p className="text-muted-foreground korean-text">업로드된 파일이 없습니다</p>
               </div>
             )}
+            </div>
           </div>
         </div>
       )}
