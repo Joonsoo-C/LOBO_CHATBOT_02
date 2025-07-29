@@ -1062,6 +1062,11 @@ function MasterAdmin() {
     }
   }, [showQADetailModal, selectedQALog]);
 
+  // 토큰 상세 모달 상태
+  const [isTokenDetailDialogOpen, setIsTokenDetailDialogOpen] = useState(false);
+  const [selectedTokenDetail, setSelectedTokenDetail] = useState<any>(null);
+  const [tokenDetailMessages, setTokenDetailMessages] = useState<any[]>([]);
+
   // 토큰 상세 모달 상태 추적
   React.useEffect(() => {
     if (isTokenDetailDialogOpen && selectedTokenDetail?.id) {
@@ -1298,9 +1303,6 @@ function MasterAdmin() {
   const [selectedDocumentType, setSelectedDocumentType] = useState('all');
   const [selectedDocumentPeriod, setSelectedDocumentPeriod] = useState('all');
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
-  const [isTokenDetailDialogOpen, setIsTokenDetailDialogOpen] = useState(false);
-  const [selectedTokenDetail, setSelectedTokenDetail] = useState<any>(null);
-  const [tokenDetailMessages, setTokenDetailMessages] = useState<any[]>([]);
 
   // IconChangeModal states (새로운 모달 시스템)
   const [showIconChangeModal, setShowIconChangeModal] = useState(false);
