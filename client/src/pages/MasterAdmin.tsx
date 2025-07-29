@@ -29,6 +29,7 @@ import { ko } from "date-fns/locale";
 import { NewCategoryDialog } from "@/components/NewCategoryDialog";
 import { usePagination } from "@/hooks/usePagination";
 import AgentFileUploadModal from "@/components/AgentFileUploadModal";
+import IconChangeModal from "@/components/IconChangeModal";
 
 // AgentDocumentList component
 interface AgentDocumentListProps {
@@ -1253,7 +1254,7 @@ function MasterAdmin() {
   const [isAgentDialogOpen, setIsAgentDialogOpen] = useState(false);
   const [isAgentDetailDialogOpen, setIsAgentDetailDialogOpen] = useState(false);
 
-  const [isIconChangeDialogOpen, setIsIconChangeDialogOpen] = useState(false);
+
   const [isLmsDialogOpen, setIsLmsDialogOpen] = useState(false);
   const [isUserDetailDialogOpen, setIsUserDetailDialogOpen] = useState(false);
   const [userSortField, setUserSortField] = useState<string>('name');
@@ -1278,12 +1279,11 @@ function MasterAdmin() {
   const [isTokenDetailDialogOpen, setIsTokenDetailDialogOpen] = useState(false);
   const [selectedTokenDetail, setSelectedTokenDetail] = useState<any>(null);
 
-  const [iconChangeAgent, setIconChangeAgent] = useState<Agent | null>(null);
-  const [selectedIcon, setSelectedIcon] = useState("User");
-  const [selectedBgColor, setSelectedBgColor] = useState("blue");
-  const [isUsingCustomImage, setIsUsingCustomImage] = useState(false);
-  const [customImageFile, setCustomImageFile] = useState<File | null>(null);
-  const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
+  // IconChangeModal states (새로운 모달 시스템)
+  const [showIconChangeModal, setShowIconChangeModal] = useState(false);
+  const [selectedAgentForIconChange, setSelectedAgentForIconChange] = useState<Agent | null>(null);
+  
+
   
 
   
@@ -3250,129 +3250,9 @@ function MasterAdmin() {
     }
   };
 
-  // 커스텀 이미지 파일 핸들러
-  const handleCustomImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // 파일 크기 체크 (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "파일 크기 오류",
-          description: "이미지 파일은 5MB 이하여야 합니다.",
-          variant: "destructive",
-        });
-        return;
-      }
 
-      // 파일 타입 체크
-      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
-        toast({
-          title: "파일 형식 오류",
-          description: "JPG, PNG, GIF, WEBP 형식만 지원됩니다.",
-          variant: "destructive",
-        });
-        return;
-      }
 
-      setCustomImageFile(file);
-      setIsUsingCustomImage(true);
 
-      // 미리보기 생성
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCustomImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // 아이콘 변경 뮤테이션
-  const changeIconMutation = useMutation({
-    mutationFn: async ({ agentId, icon, backgroundColor, customImageFile }: { 
-      agentId: number, 
-      icon?: string, 
-      backgroundColor: string,
-      customImageFile?: File 
-    }) => {
-      if (customImageFile) {
-        // 커스텀 이미지 업로드
-        const formData = new FormData();
-        formData.append('customImageFile', customImageFile);
-        formData.append('backgroundColor', backgroundColor);
-
-        const response = await fetch(`/api/admin/agents/${agentId}/icon`, {
-          method: 'PATCH',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('아이콘 변경에 실패했습니다');
-        }
-        return response.json();
-      } else {
-        // 기본 아이콘 사용
-        const response = await apiRequest("PATCH", `/api/admin/agents/${agentId}/icon`, { icon, backgroundColor });
-        return response.json();
-      }
-    },
-    onSuccess: () => {
-      // 강력한 캐시 무효화 - 모든 에이전트 관련 쿼리
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/agents/managed'] });
-      queryClient.invalidateQueries({ predicate: (query) => 
-        query.queryKey[0] === '/api/agents' || 
-        query.queryKey[0] === '/api/admin/agents' 
-      });
-      
-      // 강제로 데이터 다시 가져오기
-      setTimeout(async () => {
-        await Promise.all([
-          queryClient.refetchQueries({ queryKey: ['/api/admin/agents'], type: "all" }),
-          queryClient.refetchQueries({ queryKey: ['/api/agents'], type: "all" }),
-          queryClient.refetchQueries({ queryKey: ['/api/agents/managed'], type: "all" })
-        ]);
-        console.log("Icon change: All agent queries forcefully refetched");
-      }, 100);
-      
-      toast({
-        title: "성공",
-        description: "아이콘이 변경되었습니다.",
-      });
-      setIsIconChangeDialogOpen(false);
-      setIconChangeAgent(null);
-      // 상태 초기화
-      setIsUsingCustomImage(false);
-      setCustomImageFile(null);
-      setCustomImagePreview(null);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "오류",
-        description: "아이콘 변경에 실패했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleIconChange = () => {
-    if (iconChangeAgent) {
-      if (isUsingCustomImage && customImageFile) {
-        changeIconMutation.mutate({
-          agentId: iconChangeAgent.id,
-          backgroundColor: selectedBgColor,
-          customImageFile: customImageFile
-        });
-      } else {
-        changeIconMutation.mutate({
-          agentId: iconChangeAgent.id,
-          icon: selectedIcon,
-          backgroundColor: selectedBgColor
-        });
-      }
-    }
-  };
 
   // 문서 파일 선택 핸들러
   const handleDocumentFileSelect = () => {
@@ -4258,12 +4138,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
     setIsAgentDialogOpen(true);
   };
 
-  const openIconChangeDialog = (agent: Agent) => {
-    setIconChangeAgent(agent);
-    setSelectedIcon(agent.icon);
-    setSelectedBgColor(agent.backgroundColor);
-    setIsIconChangeDialogOpen(true);
-  };
+
 
   // 에이전트 삭제 뮤테이션
   const deleteAgentMutation = useMutation({
@@ -9682,181 +9557,21 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 아이콘 변경 다이얼로그 */}
-        <Dialog open={isIconChangeDialogOpen} onOpenChange={setIsIconChangeDialogOpen}>
-          <DialogContent className="max-w-md h-[90vh] md:h-[80vh] flex flex-col p-0">
-            {/* 고정 헤더 */}
-            <div className="border-b p-6 flex-shrink-0">
-              <DialogHeader>
-                <DialogTitle>아이콘 변경</DialogTitle>
-              </DialogHeader>
-              {/* 탭 제목 */}
-              <div className="flex items-center gap-3 mt-4">
-                <Edit className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold border-b border-gray-300 pb-1">아이콘 변경</h3>
-              </div>
-            </div>
-            
-            {/* 스크롤 가능한 컨텐츠 영역 */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="space-y-6">
+        {/* 새로운 IconChangeModal */}
+        <IconChangeModal
+          agent={selectedAgentForIconChange}
+          isOpen={showIconChangeModal}
+          onClose={() => {
+            setShowIconChangeModal(false);
+            setSelectedAgentForIconChange(null);
+          }}
+          onIconChange={(newIcon, newBackgroundColor) => {
+            // 에이전트 정보 업데이트 후 캐시 무효화
+            queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+            queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+          }}
+        />
 
-              {/* 아이콘 미리보기 */}
-              <div className="flex justify-center">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white bg-${selectedBgColor}-500 overflow-hidden`}>
-                  {isUsingCustomImage && customImagePreview ? (
-                    <img 
-                      src={customImagePreview} 
-                      alt="Custom icon preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    (() => {
-                      const IconComponent = iconMap[selectedIcon as keyof typeof iconMap] || User;
-                      return <IconComponent className="w-6 h-6 text-white" />;
-                    })()
-                  )}
-                </div>
-              </div>
-
-              {/* 탭 메뉴 */}
-              <Tabs value={isUsingCustomImage ? "upload" : "default"} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger 
-                    value="default" 
-                    onClick={() => {
-                      setIsUsingCustomImage(false);
-                      setCustomImageFile(null);
-                      setCustomImagePreview(null);
-                      setSelectedIcon("User");
-                    }}
-                  >
-                    기본 아이콘
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="upload"
-                    onClick={() => {
-                      setIsUsingCustomImage(true);
-                    }}
-                  >
-                    이미지 업로드
-                  </TabsTrigger>
-                </TabsList>
-
-                {/* 기본 아이콘 탭 */}
-                <TabsContent value="default" className="space-y-4 mt-4">
-                  {/* 기본 아이콘 선택 영역 */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-3">아이콘 선택</h3>
-                    <div className="grid grid-cols-5 gap-2">
-                      {Object.keys(iconMap).map((iconName) => {
-                        const IconComponent = iconMap[iconName as keyof typeof iconMap];
-                        const isSelected = selectedIcon === iconName;
-                        return (
-                          <button
-                            key={iconName}
-                            className={`p-2 rounded-lg border-2 transition-colors ${
-                              isSelected 
-                                ? 'border-blue-500 bg-blue-50' 
-                                : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                            onClick={() => setSelectedIcon(iconName)}
-                          >
-                            <IconComponent className="w-6 h-6 text-gray-600" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
-                  {/* 배경색 선택 */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-3">배경색 선택</h3>
-                    <div className="grid grid-cols-5 gap-2">
-                      {["blue", "green", "red", "purple", "yellow", "pink", "indigo", "gray", "orange", "teal"].map((color) => (
-                        <button
-                          key={color}
-                          className={`w-8 h-8 rounded-lg border-2 transition-all ${
-                            selectedBgColor === color 
-                              ? 'border-gray-900 scale-110' 
-                              : 'border-gray-200 hover:border-gray-400'
-                          } bg-${color}-500`}
-                          onClick={() => setSelectedBgColor(color)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* 이미지 업로드 탭 */}
-                <TabsContent value="upload" className="space-y-4 mt-4">
-                  <div>
-                    <input
-                      type="file"
-                      id="custom-image-upload"
-                      accept="image/jpeg,image/png,image/gif,image/webp"
-                      onChange={handleCustomImageChange}
-                      style={{ display: 'none' }}
-                    />
-                    <div 
-                      className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
-                      onDragOver={handleDragOver}
-                      onDragEnter={handleDragEnter}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const files = Array.from(e.dataTransfer.files);
-                        if (files.length > 0) {
-                          const file = files[0];
-                          if (file.type.startsWith('image/')) {
-                            const event = {
-                              target: { files: [file] }
-                            } as any;
-                            handleCustomImageChange(event);
-                          }
-                        }
-                      }}
-                      onClick={() => document.getElementById('custom-image-upload')?.click()}
-                    >
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          파일을 여기로 드래그하거나 파일을 클릭하여 업로드하세요.
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          지원 형식: jpg, png, gif, webp (최대 5MB)
-                        </p>
-                        <Button 
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            document.getElementById('custom-image-upload')?.click();
-                          }}
-                        >
-                          파일 선택
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-              </div>
-            </div>
-            
-            {/* 고정 버튼 영역 */}
-            <div className="border-t p-6 flex-shrink-0">
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsIconChangeDialogOpen(false)}>
-                  취소
-                </Button>
-                <Button onClick={handleIconChange} disabled={changeIconMutation.isPending}>
-                  {changeIconMutation.isPending ? "변경 중..." : "변경하기"}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
 
         {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
         <Dialog open={isDocumentDetailOpen} onOpenChange={setIsDocumentDetailOpen}>
@@ -11247,7 +10962,22 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             name="name"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
+                                <div className="flex items-center justify-between">
+                                  <FormLabel className="text-sm font-medium text-gray-700">에이전트 이름 *</FormLabel>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedAgentForIconChange(selectedAgent);
+                                      setShowIconChangeModal(true);
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1 text-xs"
+                                  >
+                                    <ImageIcon className="w-4 h-4" />
+                                    아이콘 변경
+                                  </Button>
+                                </div>
                                 <FormControl>
                                   <Input 
                                     placeholder="최대 20자" 
@@ -11437,18 +11167,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                             </div>
                           </div>
                           
-                          {/* 아이콘 변경 버튼 추가 */}
-                          <div className="pt-4 border-t">
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              onClick={() => openIconChangeDialog(selectedAgent)}
-                              className="flex items-center space-x-2"
-                            >
-                              <ImageIcon className="h-4 w-4" />
-                              <span>아이콘 변경</span>
-                            </Button>
-                          </div>
+
                         </div>
                       </TabsContent>
 
@@ -13051,6 +12770,18 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
         />
+
+        {/* 아이콘 변경 모달 */}
+        {selectedAgentForIconChange && (
+          <IconChangeModal
+            isOpen={showIconChangeModal}
+            onClose={() => {
+              setShowIconChangeModal(false);
+              setSelectedAgentForIconChange(null);
+            }}
+            agent={selectedAgentForIconChange}
+          />
+        )}
       </main>
     </div>
   );
