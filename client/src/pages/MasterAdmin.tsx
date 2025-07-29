@@ -8716,7 +8716,6 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
             </Card>
             </div>
           </TabsContent>
-
         </Tabs>
 
         {/* 새 에이전트 생성 모달 */}
@@ -13525,6 +13524,8 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           isOpen={isAgentFileUploadModalOpen}
           onClose={() => setIsAgentFileUploadModalOpen(false)}
         />
+        
+        </Tabs>
       </main>
     </div>
   );
