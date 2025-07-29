@@ -175,7 +175,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
             {/* Agent Organization Info */}
             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <h3 className="font-medium korean-text text-sm mb-3">에이전트 소속 조직</h3>
-              <div className="bg-white p-3 rounded border text-sm korean-text">
+              <div className="px-4 py-3 bg-white border border-green-300 rounded-md korean-text text-gray-900 font-medium">
                 {(user as any)?.upperCategory || "인문대학"} &gt; {(user as any)?.lowerCategory || "국어국문학과"} &gt; {(user as any)?.detailCategory || "현대 문학 전공"}
               </div>
             </div>
@@ -193,7 +193,7 @@ const VisibilitySettingsModal = ({ isOpen, onClose, agent }: VisibilitySettingsM
                 {visibility === "group" && selectedUpperCategory && (
                   <div className="space-y-2">
                     <span className="text-sm text-gray-600 korean-text">공개 대상:</span>
-                    <div className="bg-white p-3 rounded border text-sm korean-text">
+                    <div className="px-4 py-3 bg-white border border-green-300 rounded-md korean-text text-gray-900 font-medium">
                       {selectedUpperCategory}
                       {selectedLowerCategory && ` > ${selectedLowerCategory}`}
                       {selectedDetailCategory && ` > ${selectedDetailCategory}`}
