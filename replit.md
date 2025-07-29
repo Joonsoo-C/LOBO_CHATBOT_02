@@ -970,6 +970,11 @@ Changelog:
   * Applied consistent search button styling with variant="outline" and h-10 w-full classes
   * Fixed separate AGENTS_PER_PAGE and usersPerPage constants to use unified 15 items per page
   * All search interfaces now follow consistent design pattern matching user management section
+- July 30, 2025. Removed duplicate tab titles in agent detail modal:
+  * Fixed critical white screen issue in master admin agent detail modal by adding missing Clipboard icon import
+  * Removed duplicate tab titles from all agent detail modal tabs (기본 정보, 페르소나, 파일 업로드, 공유 설정)
+  * Enhanced UI consistency by showing only tab navigation without redundant content titles
+  * Agent detail modal now displays clean interface without visual duplication
 - July 9, 2025. Implemented consistent filter reset button styling across all management sections:
   * Applied variant="outline" and h-10 w-full styling to all filter reset buttons
 - July 29, 2025. Enhanced modal consistency across agent management interfaces:
