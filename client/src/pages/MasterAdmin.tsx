@@ -9557,20 +9557,7 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
           </DialogContent>
         </Dialog>
 
-        {/* 새로운 IconChangeModal */}
-        <IconChangeModal
-          agent={selectedAgentForIconChange}
-          isOpen={showIconChangeModal}
-          onClose={() => {
-            setShowIconChangeModal(false);
-            setSelectedAgentForIconChange(null);
-          }}
-          onIconChange={(newIcon, newBackgroundColor) => {
-            // 에이전트 정보 업데이트 후 캐시 무효화
-            queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
-            queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
-          }}
-        />
+
 
 
         {/* 문서 상세 정보 및 에이전트 연결 팝업 */}
@@ -12774,12 +12761,17 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
         {/* 아이콘 변경 모달 */}
         {selectedAgentForIconChange && (
           <IconChangeModal
+            agent={selectedAgentForIconChange}
             isOpen={showIconChangeModal}
             onClose={() => {
               setShowIconChangeModal(false);
               setSelectedAgentForIconChange(null);
             }}
-            agent={selectedAgentForIconChange}
+            onSuccess={() => {
+              // 에이전트 정보 업데이트 후 캐시 무효화
+              queryClient.invalidateQueries({ queryKey: ['/api/admin/agents'] });
+              queryClient.invalidateQueries({ queryKey: ['/api/agents'] });
+            }}
           />
         )}
       </main>

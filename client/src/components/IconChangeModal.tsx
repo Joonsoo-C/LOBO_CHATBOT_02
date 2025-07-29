@@ -54,6 +54,11 @@ const colorOptions = [
 ];
 
 export default function IconChangeModal({ agent, isOpen, onClose, onSuccess }: IconChangeModalProps) {
+  // Early return if agent is not available
+  if (!agent) {
+    return null;
+  }
+
   // 원본 데이터 (초기값)
   const [originalData, setOriginalData] = useState({
     icon: agent.icon || "User",
