@@ -746,6 +746,7 @@ import {
   UserCog,
   Share2,
   FileUp,
+  Clipboard,
 } from "lucide-react";
 import { Link } from "wouter";
 
