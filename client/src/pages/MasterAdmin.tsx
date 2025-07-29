@@ -1035,6 +1035,19 @@ function MasterAdmin() {
     }
   };
   
+  // 토큰 상세 모달에서 대화 메시지 가져오기
+  const fetchTokenDetailMessages = async (conversationId: number) => {
+    try {
+      const response = await fetch(`/api/admin/conversations/${conversationId}/messages`);
+      if (!response.ok) throw new Error('Failed to fetch messages');
+      const messages = await response.json();
+      setTokenDetailMessages(messages);
+    } catch (error) {
+      console.error('Error fetching token detail messages:', error);
+      setTokenDetailMessages([]);
+    }
+  };
+
   // 디버깅을 위한 모달 상태 추적
   React.useEffect(() => {
     console.log('QA Modal State Changed:', { showQADetailModal, selectedQALog: !!selectedQALog });
@@ -1048,6 +1061,15 @@ function MasterAdmin() {
       setImprovementComment('');
     }
   }, [showQADetailModal, selectedQALog]);
+
+  // 토큰 상세 모달 상태 추적
+  React.useEffect(() => {
+    if (isTokenDetailDialogOpen && selectedTokenDetail?.id) {
+      fetchTokenDetailMessages(selectedTokenDetail.id);
+    } else {
+      setTokenDetailMessages([]);
+    }
+  }, [isTokenDetailDialogOpen, selectedTokenDetail]);
   
   // 개선요청 및 코멘트 모달 상태
   const [improvementComment, setImprovementComment] = useState('');
@@ -1278,6 +1300,7 @@ function MasterAdmin() {
   const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
   const [isTokenDetailDialogOpen, setIsTokenDetailDialogOpen] = useState(false);
   const [selectedTokenDetail, setSelectedTokenDetail] = useState<any>(null);
+  const [tokenDetailMessages, setTokenDetailMessages] = useState<any[]>([]);
 
   // IconChangeModal states (새로운 모달 시스템)
   const [showIconChangeModal, setShowIconChangeModal] = useState(false);
@@ -1816,8 +1839,12 @@ function MasterAdmin() {
       const orgIndex = index % (organizations?.length || 1);
       const org = organizations?.[orgIndex];
 
+      // 사용자 정보 생성 (실제 사용자 중 랜덤 선택)
+      const userIndex = index % (users?.length || 1);
+      const selectedUser = users?.[userIndex] || users?.[0];
+      
       tokenData.push({
-        id: `token_qa_${index}`,
+        id: index + 1, // For conversation lookup
         timestamp: timestamp.toISOString(),
         agentName: agent.name,
         question,
@@ -1830,11 +1857,19 @@ function MasterAdmin() {
         upperCategory: org?.upperCategory,
         lowerCategory: org?.lowerCategory,
         detailCategory: org?.detailCategory,
+        // 기본 정보 섹션용 추가 필드들
+        userName: selectedUser ? `${selectedUser.firstName || ''} ${selectedUser.lastName || ''}`.trim() || selectedUser.username : '사용자',
+        userUpperCategory: selectedUser?.upperCategory || org?.upperCategory || '대학본부',
+        userLowerCategory: selectedUser?.lowerCategory || org?.lowerCategory || '총장실',
+        userDetailCategory: selectedUser?.detailCategory || org?.detailCategory || '총장비서실',
+        llmModel: model,
+        responseTime: ((index * 137) % 240 + 10) / 100, // 0.1 ~ 2.5초 일관된 응답시간
+        estimatedCost: Math.round((inputTokens + outputTokens + indexTokens + preprocessingTokens) * 0.087)
       });
     });
 
     return tokenData.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }, [agents, organizations]);
+  }, [agents, organizations, users]);
 
   // 토큰 데이터 필터링
   const filteredTokenData = useMemo(() => {
@@ -12620,33 +12655,43 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">시간:</span>
+                        <span className="text-sm text-gray-600">에이전트</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.agentName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">대화 시각</span>
                         <span className="text-sm font-medium">
                           {new Date(selectedTokenDetail.timestamp).toLocaleString('ko-KR', {
                             year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            weekday: 'short',
                             hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
+                            minute: '2-digit'
                           })}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">에이전트:</span>
-                        <span className="text-sm font-medium">{selectedTokenDetail.agentName}</span>
+                        <span className="text-sm text-gray-600">소속 조직</span>
+                        <span className="text-sm font-medium">
+                          {selectedTokenDetail.userUpperCategory} &gt; {selectedTokenDetail.userLowerCategory} &gt; {selectedTokenDetail.userDetailCategory}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">에이전트 유형:</span>
-                        <span className="text-sm font-medium">{selectedTokenDetail.agentType}</span>
+                        <span className="text-sm text-gray-600">응답 상태</span>
+                        <span className="text-sm">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            성공
+                          </span>
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">LLM 모델:</span>
+                        <span className="text-sm text-gray-600">응답 시간</span>
+                        <span className="text-sm font-medium">{selectedTokenDetail.responseTime}초</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">LLM 모델</span>
                         <span className="text-sm font-medium">{selectedTokenDetail.model}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">사용자:</span>
-                        <span className="text-sm font-medium">{selectedTokenDetail.userName}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -12692,60 +12737,28 @@ admin001,최,관리자,choi.admin@example.com,faculty`;
                   </Card>
                 </div>
 
-                {/* 질문 및 답변 섹션 */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">대화 내용</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                {/* 질문/응답 섹션 */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 질문</Label>
-                      <div className="bg-gray-50 p-3 rounded-lg border">
+                      <h3 className="text-base font-medium text-gray-900 mb-3">질문 내용</h3>
+                      <div className="bg-gray-50 p-4 rounded-lg border min-h-[120px]">
                         <p className="text-sm text-gray-800 whitespace-pre-wrap">
-                          {selectedTokenDetail.question}
+                          {tokenDetailMessages.find(m => m.isFromUser)?.content || "어떤 것을 도와줄 수 있나?"}
                         </p>
                       </div>
                     </div>
                     
                     <div>
-                      <Label className="text-sm font-medium text-gray-700 mb-2 block">AI 응답</Label>
-                      <div className="bg-blue-50 p-3 rounded-lg border">
+                      <h3 className="text-base font-medium text-gray-900 mb-3">에이전트 응답</h3>
+                      <div className="bg-gray-50 p-4 rounded-lg border min-h-[120px]">
                         <p className="text-sm text-gray-800 whitespace-pre-wrap">
-                          {selectedTokenDetail.response}
+                          {tokenDetailMessages.find(m => !m.isFromUser)?.content || "안녕하세요! 궁금한 것이 있으면 언제든지 물어보세요."}
                         </p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* 성능 지표 섹션 */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">성능 지표</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600">
-                          {selectedTokenDetail.responseTime}초
-                        </div>
-                        <div className="text-xs text-gray-600">응답 시간</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                          ₩{Math.round(selectedTokenDetail.totalTokens * 0.087)}
-                        </div>
-                        <div className="text-xs text-gray-600">예상 비용</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-purple-600">
-                          {selectedTokenDetail.efficiency}%
-                        </div>
-                        <div className="text-xs text-gray-600">토큰 효율성</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
             )}
             </div>
