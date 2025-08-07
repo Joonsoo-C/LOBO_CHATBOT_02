@@ -3904,23 +3904,41 @@ function MasterAdmin() {
     }
   };
 
-  // 샘플 사용자 파일 다운로드 핸들러
-  const handleDownloadSampleFile = () => {
-    const csvContent = `username,firstName,lastName,email,userType
-2024001001,김,학생,kim.student@example.com,student
-2024001002,이,철수,lee.cs@example.com,student
-prof001,박,교수,park.prof@example.com,faculty
-admin001,최,관리자,choi.admin@example.com,faculty`;
+  // 샘플 사용자 파일 다운로드 핸들러 (엑셀 형식)
+  const handleDownloadSampleFile = async () => {
+    try {
+      const response = await fetch('/api/admin/users/sample', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'sample_users.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      if (!response.ok) {
+        throw new Error('샘플 파일 다운로드에 실패했습니다');
+      }
+
+      // 파일 다운로드
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '사용자_등록_샘플.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "다운로드 완료",
+        description: "사용자 등록 샘플 파일이 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('Sample file download error:', error);
+      toast({
+        title: "다운로드 실패",
+        description: "샘플 파일 다운로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   // 샘플 조직 카테고리 파일 다운로드 핸들러

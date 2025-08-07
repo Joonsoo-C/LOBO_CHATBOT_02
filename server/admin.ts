@@ -1518,6 +1518,127 @@ export function setupAdminRoutes(app: Express) {
     }
   });
 
+  // Download sample user Excel file
+  app.get("/api/admin/users/sample", requireMasterAdmin, async (req, res) => {
+    try {
+      // Sample user data for Excel template
+      const sampleData = [
+        {
+          'username': '2024001001',
+          'firstName': '김',
+          'lastName': '학생',
+          'email': 'kim.student@example.com',
+          'userType': 'student',
+          'upperCategory': '공과대학',
+          'lowerCategory': '컴퓨터공학부',
+          'detailCategory': '컴퓨터공학과',
+          'position': '학부생',
+          'role': 'user',
+          'status': 'active'
+        },
+        {
+          'username': '2024001002',
+          'firstName': '이',
+          'lastName': '철수',
+          'email': 'lee.cs@example.com',
+          'userType': 'student',
+          'upperCategory': '공과대학',
+          'lowerCategory': '컴퓨터공학부',
+          'detailCategory': '컴퓨터공학과',
+          'position': '학부생',
+          'role': 'user',
+          'status': 'active'
+        },
+        {
+          'username': 'prof001',
+          'firstName': '박',
+          'lastName': '교수',
+          'email': 'park.prof@example.com',
+          'userType': 'faculty',
+          'upperCategory': '공과대학',
+          'lowerCategory': '컴퓨터공학부',
+          'detailCategory': '컴퓨터공학과',
+          'position': '교수',
+          'role': 'agent_admin',
+          'status': 'active'
+        },
+        {
+          'username': 'admin001',
+          'firstName': '최',
+          'lastName': '관리자',
+          'email': 'choi.admin@example.com',
+          'userType': 'faculty',
+          'upperCategory': '대학본부',
+          'lowerCategory': '총장실',
+          'detailCategory': '전산팀',
+          'position': '팀장',
+          'role': 'operation_admin',
+          'status': 'active'
+        }
+      ];
+
+      // Create workbook and worksheet
+      const { default: XLSX } = await import('xlsx');
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(sampleData);
+
+      // Auto-size columns
+      const colWidths = [
+        { wch: 15 }, // username
+        { wch: 10 }, // firstName
+        { wch: 10 }, // lastName
+        { wch: 25 }, // email
+        { wch: 12 }, // userType
+        { wch: 15 }, // upperCategory
+        { wch: 20 }, // lowerCategory
+        { wch: 20 }, // detailCategory
+        { wch: 15 }, // position
+        { wch: 15 }, // role
+        { wch: 10 }  // status
+      ];
+      worksheet['!cols'] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, '사용자_샘플_데이터');
+
+      // Set workbook properties
+      workbook.Props = {
+        Title: "사용자 등록 샘플 파일",
+        Subject: "LoBo AI 관리자 센터 사용자 등록용 샘플 파일",
+        Author: "LoBo AI Admin Center",
+        CreatedDate: new Date(),
+        ModifiedDate: new Date(),
+        Application: "LoBo AI Admin Center",
+        Company: "LoBo University"
+      };
+
+      // Generate Excel file buffer
+      const excelBuffer = XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx',
+        compression: true,
+        bookSST: false
+      });
+
+      // Set response headers for file download
+      const fileName = `사용자_등록_샘플.xlsx`;
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+      res.setHeader('Content-Length', excelBuffer.length.toString());
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+
+      // Send file
+      res.send(excelBuffer);
+
+    } catch (error) {
+      console.error("Error generating sample user Excel file:", error);
+      res.status(500).json({ message: "샘플 파일 생성에 실패했습니다" });
+    }
+  });
+
   // Export organizations to Excel
   app.get("/api/admin/organizations/export", requireMasterAdmin, async (req, res) => {
     try {
