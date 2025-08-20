@@ -46,7 +46,7 @@ function Router() {
         </>
       ) : (
         <>
-          <Route path="/master-admin" component={() => <div className="p-8"><h1 className="text-2xl font-bold">Master Admin</h1><p className="text-gray-600 mt-4">Master Admin functionality is temporarily disabled due to maintenance.</p></div>} />
+          <Route path="/master-admin" component={MasterAdmin} />
           <Route path="/style-demo" component={StyleDemo} />
           
           {isTablet ? (
