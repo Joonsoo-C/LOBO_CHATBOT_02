@@ -5297,7 +5297,9 @@ function MasterAdmin() {
                   )}
                 </Button>
               </div>
-              <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+              
+            {/* 새 에이전트 생성 모달 */}
+            <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
                 <DialogContent className="max-w-4xl h-[80vh] max-h-[80vh] flex flex-col relative">
                   <DialogHeader className="flex-shrink-0">
                     <DialogTitle>{t('agent.createNewAgent')}</DialogTitle>
@@ -6560,7 +6562,11 @@ function MasterAdmin() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Card 
                 className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setIsAgentDialogOpen(true)}
+                onClick={() => {
+                  console.log('에이전트 수동 추가 버튼 클릭됨');
+                  setIsAgentDialogOpen(true);
+                  console.log('isAgentDialogOpen 상태 변경 요청됨');
+                }}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center">
@@ -12807,6 +12813,153 @@ function MasterAdmin() {
             }}
           />
         )}
+
+        {/* 새 에이전트 생성 모달 */}
+        <Dialog open={isAgentDialogOpen} onOpenChange={setIsAgentDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>새 에이전트 생성</DialogTitle>
+            </DialogHeader>
+            <Form {...agentForm}>
+              <form onSubmit={agentForm.handleSubmit((data) => createAgentMutation.mutate(data))} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>에이전트 이름 <span className="text-red-500">*</span></Label>
+                    <FormField
+                      control={agentForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="에이전트 이름을 입력하세요"
+                              {...field}
+                              className="korean-text"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>카테고리 <span className="text-red-500">*</span></Label>
+                    <FormField
+                      control={agentForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="korean-text">
+                                <SelectValue placeholder="카테고리 선택" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="학교">학교</SelectItem>
+                              <SelectItem value="교수">교수</SelectItem>
+                              <SelectItem value="기능">기능</SelectItem>
+                              <SelectItem value="학과">학과</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>상위 조직 <span className="text-red-500">*</span></Label>
+                  <FormField
+                    control={agentForm.control}
+                    name="upperCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="korean-text">
+                              <SelectValue placeholder="상위 조직 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="대학본부">대학본부</SelectItem>
+                            <SelectItem value="인문대학">인문대학</SelectItem>
+                            <SelectItem value="자연과학대학">자연과학대학</SelectItem>
+                            <SelectItem value="공과대학">공과대학</SelectItem>
+                            <SelectItem value="경영대학">경영대학</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>설명</Label>
+                  <FormField
+                    control={agentForm.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            placeholder="에이전트에 대한 설명을 입력하세요"
+                            className="korean-text min-h-[100px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>상태</Label>
+                  <FormField
+                    control={agentForm.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} value={field.value || "active"}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="active">활성</SelectItem>
+                            <SelectItem value="inactive">비활성</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      agentForm.reset();
+                      setIsAgentDialogOpen(false);
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" disabled={createAgentMutation.isPending}>
+                    {createAgentMutation.isPending ? "생성 중..." : "에이전트 생성"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
