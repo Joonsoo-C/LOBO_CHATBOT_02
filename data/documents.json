@@ -132,11 +132,11 @@
       "id": 110,
       "createdAt": "2025-06-29T16:19:42.059Z",
       "isVisibleToUsers": true,
-      "updatedAt": "2025-08-18T21:03:40.370Z",
+      "updatedAt": "2025-08-05T00:44:15.357Z",
       "status": "active",
       "type": "Word",
       "description": "",
-      "isUsedForTraining": false
+      "isUsedForTraining": true
     },
     {
       "agentId": 146,
