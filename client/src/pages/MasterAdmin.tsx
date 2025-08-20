@@ -5380,31 +5380,6 @@ function MasterAdmin() {
                               )}
                             />
 
-                            {/* 상태 */}
-                            <FormField
-                              control={agentForm.control}
-                              name="status"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm font-medium text-gray-700">상태</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="상태 선택" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="활성">활성</SelectItem>
-                                      <SelectItem value="비활성">비활성</SelectItem>
-                                      <SelectItem value="대기">대기</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-
                           </div>
                         </TabsContent>
 
