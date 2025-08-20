@@ -5340,78 +5340,9 @@ function MasterAdmin() {
                 <CardTitle>에이전트 목록</CardTitle>
               </CardHeader>
               <CardContent>
-                                </div>
-                                
-                                {/* 사용자 목록 테이블 */}
-                                <div className="max-h-64 overflow-y-auto border rounded bg-white">
-                                  <table className="w-full text-xs">
-                                    <thead className="bg-gray-50 sticky top-0">
-                                      <tr>
-                                        <th className="px-2 py-2 text-left">선택</th>
-                                        <th className="px-2 py-2 text-left">이름</th>
-                                        <th className="px-2 py-2 text-left">ID</th>
-                                        <th className="px-2 py-2 text-left">이메일</th>
-                                        <th className="px-2 py-2 text-left">소속</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {/* 필터링된 사용자 목록 표시 */}
-                                      {users?.filter(user => {
-                                        const matchesSearch = !userFilterSearchQuery || 
-                                          (user as any).name?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
-                                          user.id?.toLowerCase().includes(userFilterSearchQuery.toLowerCase()) ||
-                                          user.email?.toLowerCase().includes(userFilterSearchQuery.toLowerCase());
-                                        
-                                        const matchesUpper = !userFilterUpperCategory || userFilterUpperCategory === "all" || (user as any).upperCategory === userFilterUpperCategory;
-                                        const matchesLower = !userFilterLowerCategory || userFilterLowerCategory === "all" || (user as any).lowerCategory === userFilterLowerCategory;
-                                        const matchesDetail = !userFilterDetailCategory || userFilterDetailCategory === "all" || (user as any).detailCategory === userFilterDetailCategory;
-                                        
-                                        return matchesSearch && matchesUpper && matchesLower && matchesDetail;
-                                      }).slice(0, 50).map((user) => (
-                                        <tr key={user.id} className="hover:bg-gray-50">
-                                          <td className="px-2 py-2">
-                                            <input 
-                                              type="checkbox" 
-                                              checked={selectedUsers.includes(user.id)}
-                                              onChange={(e) => {
-                                                if (e.target.checked) {
-                                                  setSelectedUsers([...selectedUsers, user.id]);
-                                                } else {
-                                                  setSelectedUsers(selectedUsers.filter(id => id !== user.id));
-                                                }
-                                              }}
-                                              className="rounded"
-                                            />
-                                          </td>
-                                          <td className="px-2 py-2">{(user as any).name}</td>
-                                          <td className="px-2 py-2">{user.id}</td>
-                                          <td className="px-2 py-2">{user.email}</td>
-                                          <td className="px-2 py-2">
-                                            {[(user as any).upperCategory, (user as any).lowerCategory, (user as any).detailCategory].filter(Boolean).join(' > ')}
-                                          </td>
-                                        </tr>
-                                      )) || []}
-                                      {(!users || users.length === 0) && (
-                                        <tr>
-                                          <td colSpan={5} className="px-2 py-4 text-center text-gray-500">
-                                            사용자가 없습니다
-                                          </td>
-                                        </tr>
-                                      )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                
-                                {/* 선택된 사용자 수 표시 */}
-                                <div className="text-sm text-gray-600">
-                                  선택된 사용자: {selectedUsers.length}명
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </TabsContent>
-
-                        </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">에이전트 관리 기능은 여기에 구현됩니다.</p>
+              </CardContent>
+            </Card>
 
                         {/* 하단 버튼 - 고정 위치 */}
                         <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-4 pb-6 px-6 bg-white border-t flex-shrink-0">
