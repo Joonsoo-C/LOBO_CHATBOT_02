@@ -2964,6 +2964,17 @@ function MasterAdmin() {
     return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
   };
 
+  // 토큰용 기간 필터 pill 텍스트 생성
+  const getTokenPeriodPillText = () => {
+    const { start, end, isRange } = calculateDateRange(tokenPeriodFilter);
+    
+    if (!isRange) {
+      return formatDateForPill(start);
+    }
+    
+    return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
+  };
+
   const handleQALogsExcelExport = async () => {
     try {
       const response = await fetch('/api/admin/qa-logs/export', {
@@ -8883,10 +8894,16 @@ function MasterAdmin() {
 
             {/* 토큰 사용량 테이블 */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 목록</CardTitle>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredTokenData?.length || 0}개 토큰 기록 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {filteredTokenData?.length || 0}개 토큰 기록 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
+                    <span className="text-gray-500 dark:text-gray-400">📅</span>
+                    <span>{getTokenPeriodPillText()}</span>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
