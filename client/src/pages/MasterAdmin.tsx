@@ -8862,7 +8862,7 @@ function MasterAdmin() {
 
             {/* 종량제 요약 카드 - 상단 4개 */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
-              {/* 사용량 초과 위험 학생 수 */}
+              {/* 초과 위험 학생 수 */}
               <div 
                 className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => {
@@ -8874,7 +8874,7 @@ function MasterAdmin() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Users className="h-4 w-4 text-amber-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">위험 학생 수</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">초과 위험 학생 수</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">{usageRiskStats.riskStudents.total}명</div>
@@ -8887,11 +8887,11 @@ function MasterAdmin() {
                 </div>
               </div>
 
-              {/* 사용량 초과 위험 조직 수 */}
+              {/* 초과 위험 조직 수 */}
               <div 
                 className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => {
-                  // 드릴다운: 위험 조직 목록으로 이동
+                  // 드릴다운: 초과 위험 조직 목록으로 이동
                   setTokenDrilldownTab('organizations');
                   setOrgRiskFilter('all');
                 }}
@@ -8899,7 +8899,7 @@ function MasterAdmin() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Building className="h-4 w-4 text-orange-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">위험 조직 수</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">초과 위험 조직 수</span>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-gray-900 dark:text-white">{usageRiskStats.riskOrganizations.total}개</div>
