@@ -8960,16 +8960,6 @@ function MasterAdmin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('timestamp')}
-                            title={getTokenSortTooltip('timestamp', '시간')}>
-                          <div className="flex items-center justify-between">
-                            <span>시간</span>
-                            <span className={`ml-1 ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('timestamp')}
-                            </span>
-                          </div>
-                        </th>
                         <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
                             onClick={() => handleTokenSort('agentName')}
                             title={getTokenSortTooltip('agentName', '에이전트명')}>
@@ -9040,6 +9030,16 @@ function MasterAdmin() {
                             </span>
                           </div>
                         </th>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('timestamp')}
+                            title={getTokenSortTooltip('timestamp', '대화 시각')}>
+                          <div className="flex items-center justify-between">
+                            <span>대화 시각</span>
+                            <span className={`ml-1 ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('timestamp')}
+                            </span>
+                          </div>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -9052,14 +9052,6 @@ function MasterAdmin() {
                             setIsTokenDetailDialogOpen(true);
                           }}
                         >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {new Date(token.timestamp).toLocaleString('ko-KR', {
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{token.agentName}</td>
                           <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 max-w-[200px] truncate" title={token.question}>
                             {token.question}
@@ -9069,6 +9061,14 @@ function MasterAdmin() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-purple-600 dark:text-purple-400">{token.indexTokens.toLocaleString()}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-orange-600 dark:text-orange-400">{token.preprocessingTokens.toLocaleString()}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-gray-900 dark:text-gray-100">{token.totalTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                            {new Date(token.timestamp).toLocaleString('ko-KR', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
