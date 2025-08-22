@@ -6936,9 +6936,8 @@ function MasterAdmin() {
               </Card>
             </div>
 
-            {/* {t('admin.agentSearchAndManagement')} */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
-              <h3 className="font-semibold text-[20px]">{t('admin.agentSearch')}</h3>
+              <h3 className="font-semibold text-[20px]">에이전트 검색</h3>
                 {/* 필터 행 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
