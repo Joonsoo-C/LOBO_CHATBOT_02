@@ -9289,10 +9289,10 @@ function MasterAdmin() {
             {/* 토큰 사용량 테이블 */}
             <Card>
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 목록</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">조직별 토큰 사용량 목록</CardTitle>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {filteredTokenData?.length || 0}개 토큰 기록 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
+                    전체 {filteredTokenData?.length || 0}개 조직 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
                   </div>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
                     <span className="text-gray-500 dark:text-gray-400">📅</span>
@@ -9305,117 +9305,63 @@ function MasterAdmin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('agentName')}
-                            title={getTokenSortTooltip('agentName', '에이전트명')}>
-                          <div className="flex items-center justify-between">
-                            <span>에이전트명</span>
-                            <span className={`ml-1 ${tokenSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('agentName')}
-                            </span>
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          상위 조직
                         </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'question' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('question')}
-                            title={getTokenSortTooltip('question', '질문')}>
-                          <div className="flex items-center justify-between">
-                            <span>질문</span>
-                            <span className={`ml-1 ${tokenSortField === 'question' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('question')}
-                            </span>
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          하위 조직
                         </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'inputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('inputTokens')}
-                            title={getTokenSortTooltip('inputTokens', '입력 토큰')}>
-                          <div className="flex items-center justify-between">
-                            <span>입력</span>
-                            <span className={`ml-1 ${tokenSortField === 'inputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('inputTokens')}
-                            </span>
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          세부 조직
                         </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'outputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('outputTokens')}
-                            title={getTokenSortTooltip('outputTokens', '출력 토큰')}>
-                          <div className="flex items-center justify-between">
-                            <span>출력</span>
-                            <span className={`ml-1 ${tokenSortField === 'outputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('outputTokens')}
-                            </span>
-                          </div>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          개별 조직
                         </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'indexTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('indexTokens')}
-                            title={getTokenSortTooltip('indexTokens', '인덱스 토큰')}>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'avgUsagePercent' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('avgUsagePercent')}
+                            title={getTokenSortTooltip('avgUsagePercent', '평균 토큰 사용량')}>
                           <div className="flex items-center justify-between">
-                            <span>인덱스</span>
-                            <span className={`ml-1 ${tokenSortField === 'indexTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('indexTokens')}
-                            </span>
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'preprocessingTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('preprocessingTokens')}
-                            title={getTokenSortTooltip('preprocessingTokens', '읽기 토큰')}>
-                          <div className="flex items-center justify-between">
-                            <span>읽기</span>
-                            <span className={`ml-1 ${tokenSortField === 'preprocessingTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('preprocessingTokens')}
-                            </span>
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'totalTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('totalTokens')}
-                            title={getTokenSortTooltip('totalTokens', '총 토큰')}>
-                          <div className="flex items-center justify-between">
-                            <span>합계</span>
-                            <span className={`ml-1 ${tokenSortField === 'totalTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('totalTokens')}
-                            </span>
-                          </div>
-                        </th>
-                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
-                            onClick={() => handleTokenSort('timestamp')}
-                            title={getTokenSortTooltip('timestamp', '대화 시각')}>
-                          <div className="flex items-center justify-between">
-                            <span>대화 시각</span>
-                            <span className={`ml-1 ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
-                              {getTokenSortIcon('timestamp')}
+                            <span>평균 토큰 사용량(%)</span>
+                            <span className={`ml-1 ${tokenSortField === 'avgUsagePercent' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('avgUsagePercent')}
                             </span>
                           </div>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {paginatedTokenData.map((token) => (
-                        <tr 
-                          key={token.id} 
-                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
-                          onClick={() => {
-                            setSelectedTokenDetail(token);
-                            setIsTokenDetailDialogOpen(true);
-                          }}
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{token.agentName}</td>
-                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 max-w-[200px] truncate" title={token.question}>
-                            {token.question}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-blue-600 dark:text-blue-400">{token.inputTokens.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-green-600 dark:text-green-400">{token.outputTokens.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-purple-600 dark:text-purple-400">{token.indexTokens.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-orange-600 dark:text-orange-400">{token.preprocessingTokens.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-gray-900 dark:text-gray-100">{token.totalTokens.toLocaleString()}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {new Date(token.timestamp).toLocaleString('ko-KR', {
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </td>
-                        </tr>
-                      ))}
+                      {[
+                        { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 85.2 },
+                        { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 92.4 },
+                        { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 78.9 },
+                        { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 95.7 },
+                        { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 67.3 },
+                        { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
+                        { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
+                        { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
+                      ].map((org) => {
+                        const getUsageColor = (percent: number) => {
+                          if (percent >= 100) return 'text-red-600 dark:text-red-400 font-bold';
+                          if (percent >= 90) return 'text-orange-600 dark:text-orange-400 font-semibold';
+                          if (percent >= 80) return 'text-amber-600 dark:text-amber-400';
+                          return 'text-green-600 dark:text-green-400';
+                        };
+                        
+                        return (
+                          <tr 
+                            key={org.id} 
+                            className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.upperCategory}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.lowerCategory}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.detailCategory}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{org.organizationName}</td>
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${getUsageColor(org.avgUsagePercent)}`}>
+                              {org.avgUsagePercent}%
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -9428,7 +9374,7 @@ function MasterAdmin() {
                     onPageChange={setTokenCurrentPage}
                     totalItems={filteredTokenData.length}
                     itemsPerPage={ITEMS_PER_PAGE}
-                    itemName="토큰 기록"
+                    itemName="조직"
                     showItemCount={false}
                   />
                 )}
