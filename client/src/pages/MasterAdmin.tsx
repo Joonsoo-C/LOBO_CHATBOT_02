@@ -9030,7 +9030,7 @@ function MasterAdmin() {
               </CardHeader>
               <CardContent>
                 {/* 상위 - 하위 - 세부 - 조직명 (상단) */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
                     <Select 
@@ -9085,8 +9085,6 @@ function MasterAdmin() {
                       value={tokenDetailCategoryFilter} 
                       onValueChange={(value) => {
                         setTokenDetailCategoryFilter(value);
-                        // 세부 조직 변경 시 조직명 초기화
-                        setTokenOrganizationNameFilter("all");
                       }}
                       disabled={tokenLowerCategoryFilter === 'all'}
                     >
@@ -9102,24 +9100,6 @@ function MasterAdmin() {
                     </Select>
                   </div>
 
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
-                    <Select 
-                      value={tokenOrganizationNameFilter} 
-                      onValueChange={setTokenOrganizationNameFilter}
-                      disabled={tokenDetailCategoryFilter === 'all'}
-                    >
-                      <SelectTrigger className={`h-10 ${tokenDetailCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredTokenOrganizationNames.map(name => (
-                          <SelectItem key={name} value={name}>{name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                   
                   <div>
                     <Button onClick={() => {
@@ -9127,7 +9107,6 @@ function MasterAdmin() {
                       setTokenUpperCategoryFilter("all");
                       setTokenLowerCategoryFilter("all");
                       setTokenDetailCategoryFilter("all");
-                      setTokenOrganizationNameFilter("all");
                       setTokenKeywordFilter("");
                       setTokenModelFilter("all");
                     }} className="h-10 w-full">
