@@ -974,6 +974,7 @@ function MasterAdmin() {
   const [tokenUpperCategoryFilter, setTokenUpperCategoryFilter] = useState("all");
   const [tokenLowerCategoryFilter, setTokenLowerCategoryFilter] = useState("all");
   const [tokenDetailCategoryFilter, setTokenDetailCategoryFilter] = useState("all");
+  const [tokenOrganizationNameFilter, setTokenOrganizationNameFilter] = useState("all");
   const [tokenKeywordFilter, setTokenKeywordFilter] = useState("");
   const [tokenModelFilter, setTokenModelFilter] = useState("all");
   const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
@@ -1950,6 +1951,13 @@ function MasterAdmin() {
       filtered = filtered.filter(token => token.detailCategory === tokenDetailCategoryFilter);
     }
 
+    // 조직명 필터링 (임시: organizationName 속성이 없으므로 빈 구현)
+    if (tokenOrganizationNameFilter !== 'all') {
+      // 토큰 데이터에 조직명 속성이 없으므로 임시로 모든 데이터를 통과시킴
+      // 실제 구현시에는 토큰 데이터에 organizationName 필드를 추가하거나
+      // agent와 organization 데이터를 조인해서 필터링해야 함
+    }
+
     // 키워드 필터링
     if (tokenKeywordFilter.trim()) {
       const keyword = tokenKeywordFilter.toLowerCase();
@@ -2013,7 +2021,7 @@ function MasterAdmin() {
     }
 
     return filtered;
-  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
+  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenOrganizationNameFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
 
   // 토큰 사용량 통계 계산
   const tokenStats = useMemo(() => {
@@ -2268,6 +2276,25 @@ function MasterAdmin() {
     const categories = Array.from(new Set(filtered.map(org => org.detailCategory).filter(Boolean)));
     return categories.sort();
   }, [tokenUpperCategoryFilter, tokenLowerCategoryFilter, organizations]);
+
+  // 토큰 필터용 조직명 목록
+  const filteredTokenOrganizationNames = useMemo(() => {
+    if (tokenUpperCategoryFilter === 'all' || tokenLowerCategoryFilter === 'all' || tokenDetailCategoryFilter === 'all') {
+      return [];
+    }
+    let filtered = organizations || [];
+    if (tokenUpperCategoryFilter !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === tokenUpperCategoryFilter);
+    }
+    if (tokenLowerCategoryFilter !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === tokenLowerCategoryFilter);
+    }
+    if (tokenDetailCategoryFilter !== 'all') {
+      filtered = filtered.filter(org => org.detailCategory === tokenDetailCategoryFilter);
+    }
+    const names = Array.from(new Set(filtered.map(org => org.name).filter(Boolean)));
+    return names.sort();
+  }, [tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, organizations]);
 
   // Q&A 로그 섹션 전용 조직 필터링 로직
   const qaUniqueUpperCategories = useMemo(() => {
@@ -8805,20 +8832,21 @@ function MasterAdmin() {
             {/* 조직 검색 */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">조직 검색</CardTitle>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 검색</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* 상위 - 하위 - 세부 조직 (상단) */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                {/* 상위 - 하위 - 세부 - 조직명 (상단) */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위조직</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
                     <Select 
                       value={tokenUpperCategoryFilter} 
                       onValueChange={(value) => {
                         setTokenUpperCategoryFilter(value);
-                        // 상위 조직 변경 시 하위 및 세부 조직 초기화
+                        // 상위 조직 변경 시 하위, 세부 조직, 조직명 초기화
                         setTokenLowerCategoryFilter("all");
                         setTokenDetailCategoryFilter("all");
+                        setTokenOrganizationNameFilter("all");
                       }}
                     >
                       <SelectTrigger className="h-10">
@@ -8834,13 +8862,14 @@ function MasterAdmin() {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위조직</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직 카테고리</Label>
                     <Select 
                       value={tokenLowerCategoryFilter} 
                       onValueChange={(value) => {
                         setTokenLowerCategoryFilter(value);
-                        // 하위 조직 변경 시 세부 조직 초기화
+                        // 하위 조직 변경 시 세부 조직, 조직명 초기화
                         setTokenDetailCategoryFilter("all");
+                        setTokenOrganizationNameFilter("all");
                       }}
                       disabled={tokenUpperCategoryFilter === 'all'}
                     >
@@ -8857,10 +8886,14 @@ function MasterAdmin() {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부조직</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직 카테고리</Label>
                     <Select 
                       value={tokenDetailCategoryFilter} 
-                      onValueChange={setTokenDetailCategoryFilter}
+                      onValueChange={(value) => {
+                        setTokenDetailCategoryFilter(value);
+                        // 세부 조직 변경 시 조직명 초기화
+                        setTokenOrganizationNameFilter("all");
+                      }}
                       disabled={tokenLowerCategoryFilter === 'all'}
                     >
                       <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
@@ -8874,6 +8907,25 @@ function MasterAdmin() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
+                    <Select 
+                      value={tokenOrganizationNameFilter} 
+                      onValueChange={setTokenOrganizationNameFilter}
+                      disabled={tokenDetailCategoryFilter === 'all'}
+                    >
+                      <SelectTrigger className={`h-10 ${tokenDetailCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredTokenOrganizationNames.map(name => (
+                          <SelectItem key={name} value={name}>{name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
                   <div>
                     <Button onClick={() => {
@@ -8881,6 +8933,7 @@ function MasterAdmin() {
                       setTokenUpperCategoryFilter("all");
                       setTokenLowerCategoryFilter("all");
                       setTokenDetailCategoryFilter("all");
+                      setTokenOrganizationNameFilter("all");
                       setTokenKeywordFilter("");
                       setTokenModelFilter("all");
                     }} className="h-10 w-full">
