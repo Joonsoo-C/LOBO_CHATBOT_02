@@ -2822,6 +2822,69 @@ function MasterAdmin() {
     setQaLogCurrentPage(1); // 페이지 리셋
   };
 
+  // 기간 필터에 따른 날짜 범위 계산
+  const calculateDateRange = (periodFilter: string) => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const date = today.getDate();
+
+    switch (periodFilter) {
+      case 'today':
+        return {
+          start: today,
+          end: today,
+          isRange: false
+        };
+      case 'week':
+        const weekStart = new Date(year, month, date - 6);
+        return {
+          start: weekStart,
+          end: today,
+          isRange: true
+        };
+      case 'month':
+        const monthStart = new Date(year, month - 1, date);
+        return {
+          start: monthStart,
+          end: today,
+          isRange: true
+        };
+      case 'quarter':
+        const quarterStart = new Date(year, month - 3, date);
+        return {
+          start: quarterStart,
+          end: today,
+          isRange: true
+        };
+      default:
+        return {
+          start: today,
+          end: today,
+          isRange: false
+        };
+    }
+  };
+
+  // 날짜를 YYYY.MM.DD 형식으로 포맷
+  const formatDateForPill = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  };
+
+  // 기간 필터 pill 텍스트 생성
+  const getPeriodPillText = () => {
+    const { start, end, isRange } = calculateDateRange(qaPeriodFilter);
+    
+    if (!isRange) {
+      return formatDateForPill(start);
+    }
+    
+    return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
+  };
+
   // 질의응답 상세보기 모달 열기 함수
   const openQADetailModal = (log: any) => {
     console.log('QA Detail Modal opened with log:', log);
@@ -7091,10 +7154,16 @@ function MasterAdmin() {
 
             {/* 질문/응답 로그 테이블 */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredConversationLogs?.length || 0}개 질문응답 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {filteredConversationLogs?.length || 0}개 질문응답 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
+                    <span className="text-gray-500 dark:text-gray-400">📅</span>
+                    <span>{getPeriodPillText()}</span>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
