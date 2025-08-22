@@ -1007,11 +1007,30 @@ function MasterAdmin() {
   // Q&A 로그 정렬 함수
   const handleQASort = (field: string) => {
     if (qaSortField === field) {
-      setQaSortDirection(qaSortDirection === 'asc' ? 'desc' : 'asc');
+      if (qaSortDirection === 'asc') {
+        setQaSortDirection('desc');
+      } else {
+        // 내림차순에서 기본 순서(정렬 없음)로 변경
+        setQaSortField('');
+        setQaSortDirection('asc');
+      }
     } else {
       setQaSortField(field);
-      setQaSortDirection('desc');
+      setQaSortDirection('asc');
     }
+  };
+
+  // 정렬 아이콘 반환 함수
+  const getSortIcon = (field: string) => {
+    if (qaSortField !== field) return '▭'; // 기본(중립)
+    return qaSortDirection === 'asc' ? '▲' : '▼';
+  };
+
+  // 정렬 툴팁 텍스트 반환 함수  
+  const getSortTooltip = (field: string, label: string) => {
+    if (qaSortField !== field) return `${label}으로 정렬`;
+    if (qaSortDirection === 'asc') return `${label} 내림차순 정렬`;
+    return `${label} 정렬 해제`;
   };
   
   // 질의응답 상세보기 모달 상태
@@ -2397,6 +2416,11 @@ function MasterAdmin() {
             aValue = ((aSeed * 137) % 240 + 10) / 100; // 0.1 ~ 2.5초
             bValue = ((bSeed * 137) % 240 + 10) / 100;
             break;
+          case 'createdAt':
+            // 대화 시작 시각별 정렬
+            aValue = new Date(a.createdAt || 0);
+            bValue = new Date(b.createdAt || 0);
+            break;
           default:
             return 0;
         }
@@ -2413,6 +2437,11 @@ function MasterAdmin() {
         // 숫자 정렬
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return qaSortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        
+        // 날짜 정렬
+        if (aValue instanceof Date && bValue instanceof Date) {
+          return qaSortDirection === 'asc' ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
         }
         
         return 0;
@@ -7284,20 +7313,45 @@ function MasterAdmin() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.question')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                            onClick={() => handleQASort('responseMethod')}>
-                          응답 방식 {qaSortField === 'responseMethod' && (qaSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${qaSortField === 'responseMethod' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleQASort('responseMethod')}
+                            title={getSortTooltip('responseMethod', '응답 방식')}>
+                          <div className="flex items-center justify-between">
+                            <span>응답 방식</span>
+                            <span className={`ml-1 ${qaSortField === 'responseMethod' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getSortIcon('responseMethod')}
+                            </span>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                            onClick={() => handleQASort('responseStatus')}>
-                          응답 상태 {qaSortField === 'responseStatus' && (qaSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${qaSortField === 'responseStatus' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleQASort('responseStatus')}
+                            title={getSortTooltip('responseStatus', '응답 상태')}>
+                          <div className="flex items-center justify-between">
+                            <span>응답 상태</span>
+                            <span className={`ml-1 ${qaSortField === 'responseStatus' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getSortIcon('responseStatus')}
+                            </span>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                            onClick={() => handleQASort('responseTime')}>
-                          {t('admin.responseTime')} {qaSortField === 'responseTime' && (qaSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${qaSortField === 'responseTime' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleQASort('responseTime')}
+                            title={getSortTooltip('responseTime', '응답 시간')}>
+                          <div className="flex items-center justify-between">
+                            <span>{t('admin.responseTime')}</span>
+                            <span className={`ml-1 ${qaSortField === 'responseTime' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getSortIcon('responseTime')}
+                            </span>
+                          </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          대화 시각
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${qaSortField === 'createdAt' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleQASort('createdAt')}
+                            title={getSortTooltip('createdAt', '대화 시각')}>
+                          <div className="flex items-center justify-between">
+                            <span>대화 시각</span>
+                            <span className={`ml-1 ${qaSortField === 'createdAt' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getSortIcon('createdAt')}
+                            </span>
+                          </div>
                         </th>
                       </tr>
                     </thead>
