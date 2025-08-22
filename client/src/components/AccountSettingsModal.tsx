@@ -22,7 +22,10 @@ import {
   X,
   CheckCircle,
   Sun,
-  Moon
+  Moon,
+  BarChart3,
+  AlertTriangle,
+  RefreshCw
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -30,6 +33,8 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserData {
   id: string;
@@ -48,6 +53,14 @@ interface UserData {
   createdAt?: string;
   lastLoginAt?: string;
   userMemo?: string;
+}
+
+interface TokenUsageData {
+  used: number;
+  limit: number;
+  usedRatio: number;
+  resetDate: string;
+  period: string;
 }
 
 interface AccountSettingsModalProps {
@@ -74,6 +87,12 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
   const { data: user, isLoading, refetch } = useQuery<UserData>({
     queryKey: ['/api/user'],
+    enabled: isOpen,
+  });
+
+  // Token usage query
+  const { data: tokenUsage, isLoading: isTokenLoading, error: tokenError, refetch: refetchTokenUsage } = useQuery<TokenUsageData>({
+    queryKey: ['/api/user/token-usage'],
     enabled: isOpen,
   });
 
@@ -208,13 +227,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
       position?: string;
       userMemo?: string;
     }) => {
-      return apiRequest('/api/user/profile', {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return apiRequest('PATCH', '/api/user/profile', data);
     },
     onSuccess: () => {
       toast({
@@ -239,13 +252,7 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
       currentPassword: string;
       newPassword: string;
     }) => {
-      return apiRequest('/api/user/password', {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return apiRequest('PATCH', '/api/user/password', data);
     },
     onSuccess: () => {
       toast({
@@ -310,6 +317,134 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
 
   const toggleTheme = () => {
     setTheme(actualTheme === 'dark' ? 'light' : 'dark');
+  };
+
+  // Token usage helper functions
+  const getTokenUsageColor = (ratio: number) => {
+    if (ratio >= 0.9) return { color: 'bg-red-500', textColor: 'text-red-600 dark:text-red-400' };
+    if (ratio >= 0.7) return { color: 'bg-orange-500', textColor: 'text-orange-600 dark:text-orange-400' };
+    return { color: 'bg-green-500', textColor: 'text-green-600 dark:text-green-400' };
+  };
+
+  const formatResetDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      if (language === 'ko') {
+        return format(date, "yyyy-MM-dd", { locale: ko });
+      } else {
+        return format(date, "MMM dd, yyyy");
+      }
+    } catch {
+      return dateString;
+    }
+  };
+
+  const TokenUsageSection = () => {
+    if (isTokenLoading) {
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-blue-500" />
+            <h3 className="text-lg font-semibold korean-text">
+              {language === 'ko' ? '토큰 사용 현황' : 'Token Usage'}
+            </h3>
+          </div>
+          
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-3">
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <Skeleton className="h-2 w-full" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        </div>
+      );
+    }
+
+    if (tokenError) {
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-blue-500" />
+            <h3 className="text-lg font-semibold korean-text">
+              {language === 'ko' ? '토큰 사용 현황' : 'Token Usage'}
+            </h3>
+          </div>
+          
+          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="text-center space-y-2">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {language === 'ko' ? '사용량을 불러올 수 없습니다.' : 'Unable to load usage data.'}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => refetchTokenUsage()}
+                className="korean-text text-xs"
+              >
+                <RefreshCw className="w-3 h-3 mr-1" />
+                {language === 'ko' ? '새로고침' : 'Refresh'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (!tokenUsage) return null;
+
+    const usagePercentage = Math.round(tokenUsage.usedRatio * 100);
+    const cappedPercentage = Math.min(usagePercentage, 100);
+    const { color, textColor } = getTokenUsageColor(tokenUsage.usedRatio);
+    const isHighUsage = tokenUsage.usedRatio >= 0.9;
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-blue-500" />
+          <h3 className="text-lg font-semibold korean-text">
+            {language === 'ko' ? '토큰 사용 현황' : 'Token Usage'}
+          </h3>
+        </div>
+        
+        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {language === 'ko' ? '사용량' : 'Usage'}
+            </span>
+            <div className="flex items-center gap-2">
+              {isHighUsage && (
+                <AlertTriangle className="w-4 h-4 text-red-500" />
+              )}
+              <span className={`text-sm font-medium ${textColor}`}>
+                {cappedPercentage}% {language === 'ko' ? '사용' : 'used'}
+              </span>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <Progress 
+              value={cappedPercentage} 
+              className="h-2"
+              // Custom progress bar color based on usage level
+              style={{
+                background: 'var(--muted)',
+              }}
+            />
+            <div 
+              className={`absolute top-0 left-0 h-2 rounded-full transition-all ${color}`}
+              style={{ width: `${cappedPercentage}%` }}
+            />
+          </div>
+          
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {language === 'ko' ? '다음 리셋: ' : 'Next reset: '}
+            {formatResetDate(tokenUsage.resetDate)}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (isLoading) {
@@ -478,6 +613,11 @@ export function AccountSettingsModal({ isOpen, onClose }: AccountSettingsModalPr
               {/* This structure supports multiple organization memberships */}
             </div>
           </div>
+
+          <Separator />
+
+          {/* Token Usage Section */}
+          <TokenUsageSection />
 
           <Separator />
 

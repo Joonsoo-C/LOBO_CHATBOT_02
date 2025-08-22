@@ -1409,6 +1409,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Token usage endpoint
+  app.get('/api/user/token-usage', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      
+      // Mock token usage data - in production, this would come from actual usage tracking
+      const currentDate = new Date();
+      const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      
+      // Simulate different usage levels based on user ID
+      const usageMultiplier = parseInt(userId.slice(-1)) || 1;
+      const baseUsage = 25000 + (usageMultiplier * 7500); // Base usage between 25k-100k tokens
+      const monthlyLimit = 150000; // 150k tokens per month
+      
+      const usageData = {
+        used: Math.min(baseUsage, monthlyLimit),
+        limit: monthlyLimit,
+        usedRatio: Math.min(baseUsage / monthlyLimit, 1),
+        resetDate: nextMonth.toISOString().split('T')[0], // YYYY-MM-DD format
+        period: 'monthly'
+      };
+      
+      res.json(usageData);
+    } catch (error) {
+      console.error("Token usage fetch error:", error);
+      res.status(500).json({ message: "Failed to fetch token usage" });
+    }
+  });
+
   // Setup admin routes
   setupAdminRoutes(app);
 
