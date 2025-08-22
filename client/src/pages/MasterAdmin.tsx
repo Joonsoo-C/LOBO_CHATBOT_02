@@ -7565,8 +7565,8 @@ function MasterAdmin() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
-                <div>
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mt-6">
+                <div className="md:col-span-1">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">사용자 유형</Label>
                   <Select value={qaUserTypeFilter} onValueChange={setQaUserTypeFilter}>
                     <SelectTrigger className="h-10">
@@ -7580,7 +7580,7 @@ function MasterAdmin() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className="md:col-span-1">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                   <Select value={qaPeriodFilter} onValueChange={setQaPeriodFilter}>
                     <SelectTrigger className="h-10">
@@ -7594,7 +7594,7 @@ function MasterAdmin() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className="md:col-span-3">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                   <Input 
                     placeholder={language === 'ko' ? '질문 키워드 또는 에이전트 이름으로 검색하세요.' : 'Search by question content or agent name...'}
@@ -7608,7 +7608,7 @@ function MasterAdmin() {
                     질문 내용이나 에이전트 이름을 입력하여 Q&A 로그를 검색할 수 있습니다.
                   </div>
                 </div>
-                <div>
+                <div className="md:col-span-1">
                   <Button className="h-10 w-full">
                     검색
                   </Button>
@@ -9137,8 +9137,8 @@ function MasterAdmin() {
                 </div>
 
                 {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
-                  <div>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mt-6">
+                  <div className="md:col-span-1">
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
                     <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
                       <SelectTrigger className="h-10">
@@ -9153,7 +9153,7 @@ function MasterAdmin() {
                     </Select>
                   </div>
 
-                  <div>
+                  <div className="md:col-span-1">
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
                     <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
                       <SelectTrigger className="h-10">
@@ -9169,7 +9169,7 @@ function MasterAdmin() {
                     </Select>
                   </div>
 
-                  <div>
+                  <div className="md:col-span-3">
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                     <Input
                       placeholder="에이전트명 또는 질문 키워드로 검색하세요"
@@ -9179,7 +9179,7 @@ function MasterAdmin() {
                     />
                   </div>
                   
-                  <div>
+                  <div className="md:col-span-1">
                     <Button className="h-10 w-full">
                       검색
                     </Button>
