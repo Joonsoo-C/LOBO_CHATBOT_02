@@ -748,6 +748,7 @@ import {
   Share2,
   FileUp,
   Clipboard,
+  Building,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -2022,6 +2023,73 @@ function MasterAdmin() {
 
     return filtered;
   }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenOrganizationNameFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
+
+  // 종량제 필터링 및 드릴다운 상태
+  const [tokenDrilldownTab, setTokenDrilldownTab] = useState('tokens');
+  const [userRiskFilter, setUserRiskFilter] = useState('all');
+  const [orgRiskFilter, setOrgRiskFilter] = useState('all');
+  const [selectedOrgForDrilldown, setSelectedOrgForDrilldown] = useState('');
+
+  // 사용량 위험 통계 계산 (샘플 데이터)
+  const usageRiskStats = useMemo(() => {
+    // 실제 구현에서는 사용자별 한도/사용량 데이터를 기반으로 계산
+    const sampleUserUsageData = [
+      { userId: 'user1', limit: 100000, used: 95000, org: '총장비서실' },
+      { userId: 'user2', limit: 80000, used: 72000, org: '기획예산팀' },
+      { userId: 'user3', limit: 120000, used: 125000, org: '홍보팀' },
+      { userId: 'user4', limit: 90000, used: 78000, org: '교무팀' },
+      { userId: 'user5', limit: 110000, used: 105000, org: '학생지원팀' },
+    ];
+
+    // 위험 구간 계산 (80-89%=경고, 90-99%=높음, ≥100%=초과)
+    const riskStudents = sampleUserUsageData.reduce((acc, user) => {
+      const usagePercent = (user.used / user.limit) * 100;
+      if (usagePercent >= 100) acc.over++;
+      else if (usagePercent >= 90) acc.high++;
+      else if (usagePercent >= 80) acc.warning++;
+      return acc;
+    }, { warning: 0, high: 0, over: 0, total: 0 });
+    riskStudents.total = riskStudents.warning + riskStudents.high + riskStudents.over;
+
+    // 조직별 위험도 계산 (샘플)
+    const riskOrganizations = { warning: 2, high: 1, over: 1, total: 4 };
+
+    // 월말 초과 예상 (단순 추정)
+    const monthEndPrediction = { students: 8, organizations: 3 };
+
+    // 잔여 한도 10% 이하 (사용률 90% 이상)
+    const criticalUsers = sampleUserUsageData.filter(user => (user.used / user.limit) >= 0.9).length;
+
+    return {
+      riskStudents,
+      riskOrganizations,
+      monthEndPrediction,
+      criticalUsers
+    };
+  }, []);
+
+  // 조직별 사용률 Top 5
+  const topOrganizationsByUsage = useMemo(() => {
+    // 실제 구현에서는 조직별 집계 데이터 사용
+    return [
+      { name: '홍보팀', usagePercent: 104.2, totalUsers: 5, totalUsed: 521000, totalLimit: 500000 },
+      { name: '기획예산팀', usagePercent: 97.8, totalUsers: 8, totalUsed: 782400, totalLimit: 800000 },
+      { name: '교무팀', usagePercent: 89.5, totalUsers: 12, totalUsed: 1074000, totalLimit: 1200000 },
+      { name: '학생지원팀', usagePercent: 86.7, totalUsers: 10, totalUsed: 867000, totalLimit: 1000000 },
+      { name: '총장비서실', usagePercent: 78.4, totalUsers: 3, totalUsed: 235200, totalLimit: 300000 }
+    ].sort((a, b) => b.usagePercent - a.usagePercent);
+  }, []);
+
+  // 한도 초과 조직 Top 5
+  const overLimitOrganizations = useMemo(() => {
+    return [
+      { name: '홍보팀', overLimitUsers: 3, totalUsers: 5, totalOverage: 21000 },
+      { name: '연구지원팀', overLimitUsers: 2, totalUsers: 6, totalOverage: 15000 },
+      { name: '대외협력팀', overLimitUsers: 1, totalUsers: 4, totalOverage: 8500 },
+      { name: 'IT지원팀', overLimitUsers: 2, totalUsers: 8, totalOverage: 12000 },
+      { name: '인사팀', overLimitUsers: 1, totalUsers: 5, totalOverage: 5200 }
+    ].sort((a, b) => b.totalOverage - a.totalOverage);
+  }, []);
 
   // 토큰 사용량 통계 계산
   const tokenStats = useMemo(() => {
@@ -8792,46 +8860,192 @@ function MasterAdmin() {
           <TabsContent value="tokens" className="space-y-4">
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
-            {/* 요약 카드 - 한 줄 컴팩트 스타일 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+            {/* 종량제 요약 카드 - 상단 4개 */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+              {/* 사용량 초과 위험 학생 수 */}
+              <div 
+                className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => {
+                  // 드릴다운: 위험 사용자 목록으로 이동
+                  setTokenDrilldownTab('users');
+                  setUserRiskFilter('all');
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">월간 사용량</span>
+                    <Users className="h-4 w-4 text-amber-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">위험 학생 수</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">{Math.round(tokenStats.monthly / 1000000 * 10) / 10}M 토큰</div>
-                    <div className="text-xs text-green-600">73% 사용</div>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{usageRiskStats.riskStudents.total}명</div>
+                    <div className="flex space-x-1 text-xs">
+                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded">경고 {usageRiskStats.riskStudents.warning}</span>
+                      <span className="px-1.5 py-0.5 bg-orange-100 text-orange-800 rounded">높음 {usageRiskStats.riskStudents.high}</span>
+                      <span className="px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded">초과 {usageRiskStats.riskStudents.over}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+
+              {/* 사용량 초과 위험 조직 수 */}
+              <div 
+                className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => {
+                  // 드릴다운: 위험 조직 목록으로 이동
+                  setTokenDrilldownTab('organizations');
+                  setOrgRiskFilter('all');
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <BarChart3 className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">일일 평균</span>
+                    <Building className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">위험 조직 수</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">{(tokenStats.dailyAverage / 1000).toFixed(1)}K</div>
-                    <div className="text-xs text-green-600">↑ 12% 지난 주 대비</div>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{usageRiskStats.riskOrganizations.total}개</div>
+                    <div className="flex space-x-1 text-xs">
+                      <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded">경고 {usageRiskStats.riskOrganizations.warning}</span>
+                      <span className="px-1.5 py-0.5 bg-orange-100 text-orange-800 rounded">높음 {usageRiskStats.riskOrganizations.high}</span>
+                      <span className="px-1.5 py-0.5 bg-rose-100 text-rose-800 rounded">초과 {usageRiskStats.riskOrganizations.over}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
+
+              {/* 월말 초과 예상 */}
+              <div 
+                className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
+                title="최근 7일 일평균 × 잔여일 기반 단순 추정"
+                onClick={() => {
+                  // 드릴다운: 예상 초과 사용자 목록으로 이동
+                  setTokenDrilldownTab('predictions');
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">예상 비용</span>
+                    <TrendingUp className="h-4 w-4 text-red-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">월말 초과 예상</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">₩{tokenStats.estimatedCost.toLocaleString()}</div>
-                    <div className="text-xs text-green-600">이번 달 예상 비용</div>
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">학생 {usageRiskStats.monthEndPrediction.students}</div>
+                    <div className="text-xs text-red-600">조직 {usageRiskStats.monthEndPrediction.organizations}</div>
                   </div>
                 </div>
               </div>
+
+              {/* 잔여 한도 10% 이하 */}
+              <div 
+                className="bg-white dark:bg-gray-800 rounded-lg border p-3 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => {
+                  // 드릴다운: 사용률 90% 이상 사용자 목록으로 이동
+                  setTokenDrilldownTab('users');
+                  setUserRiskFilter('critical');
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4 text-rose-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">잔여 한도 10% 이하</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white">{usageRiskStats.criticalUsers}명</div>
+                    <div className="text-xs text-rose-600">사용률 ≥90%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 하단 2개 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* 조직별 사용 퍼센트 Top 5 */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold">조직별 사용률 Top 5</CardTitle>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        setTokenDrilldownTab('organizations');
+                        // 사용률 내림차순 정렬 적용
+                      }}
+                    >
+                      모두 보기
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {topOrganizationsByUsage.slice(0, 5).map((org, index) => (
+                    <div 
+                      key={org.name}
+                      className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                      onClick={() => {
+                        // 드릴다운: 해당 조직의 사용자 목록으로 이동
+                        setTokenDrilldownTab('users');
+                        setSelectedOrgForDrilldown(org.name);
+                      }}
+                      title="조직 소속 사용자들의 월 한도 대비 누적 사용률"
+                    >
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{org.name}</div>
+                        <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-1">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              org.usagePercent >= 100 ? 'bg-rose-500' :
+                              org.usagePercent >= 90 ? 'bg-orange-500' :
+                              org.usagePercent >= 80 ? 'bg-amber-500' : 'bg-green-500'
+                            }`}
+                            style={{ width: `${Math.min(org.usagePercent, 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="ml-3 text-right">
+                        <div className={`text-sm font-bold ${
+                          org.usagePercent >= 100 ? 'text-rose-600' :
+                          org.usagePercent >= 90 ? 'text-orange-600' :
+                          org.usagePercent >= 80 ? 'text-amber-600' : 'text-green-600'
+                        }`}>
+                          {org.usagePercent.toFixed(1)}%
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* 한도 초과 조직 Top 5 */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold">한도 초과 조직 Top 5</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {overLimitOrganizations.slice(0, 5).map((org, index) => (
+                    <div 
+                      key={org.name}
+                      className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                      onClick={() => {
+                        // 드릴다운: 해당 조직의 90% 이상/초과 사용자 목록으로 이동
+                        setTokenDrilldownTab('users');
+                        setSelectedOrgForDrilldown(org.name);
+                        setUserRiskFilter('high-over');
+                      }}
+                    >
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{org.name}</div>
+                        <div className="text-xs text-gray-500">
+                          초과 사용자 {org.overLimitUsers} / 전체 {org.totalUsers}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-rose-600">
+                          +{(org.totalOverage / 1000).toFixed(1)}K
+                        </div>
+                        <div className="text-xs text-gray-500">초과량</div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
             </div>
 
             {/* 조직 검색 */}
