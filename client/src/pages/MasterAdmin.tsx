@@ -993,6 +993,7 @@ function MasterAdmin() {
   const [qaSelectedUpperCategory, setQASelectedUpperCategory] = useState('all');
   const [qaSelectedLowerCategory, setQASelectedLowerCategory] = useState('all');
   const [qaSelectedDetailCategory, setQASelectedDetailCategory] = useState('all');
+  const [qaSelectedOrganizationName, setQASelectedOrganizationName] = useState('all');
   
   // Q&A 로그 추가 필터 상태
   const [qaUserTypeFilter, setQaUserTypeFilter] = useState('all');
@@ -2236,6 +2237,28 @@ function MasterAdmin() {
     return categories.sort();
   }, [qaSelectedUpperCategory, qaSelectedLowerCategory, organizations]);
 
+  const qaFilteredOrganizationNames = useMemo(() => {
+    if (qaSelectedDetailCategory === 'all') {
+      if (qaSelectedUpperCategory === 'all' && qaSelectedLowerCategory === 'all') {
+        const names = Array.from(new Set((organizations || []).map(org => org.name).filter(Boolean)));
+        return names.sort();
+      }
+      return [];
+    }
+    let filtered = organizations || [];
+    if (qaSelectedUpperCategory !== 'all') {
+      filtered = filtered.filter(org => org.upperCategory === qaSelectedUpperCategory);
+    }
+    if (qaSelectedLowerCategory !== 'all') {
+      filtered = filtered.filter(org => org.lowerCategory === qaSelectedLowerCategory);
+    }
+    if (qaSelectedDetailCategory !== 'all') {
+      filtered = filtered.filter(org => org.detailCategory === qaSelectedDetailCategory);
+    }
+    const names = Array.from(new Set(filtered.map(org => org.name).filter(Boolean)));
+    return names.sort();
+  }, [qaSelectedUpperCategory, qaSelectedLowerCategory, qaSelectedDetailCategory, organizations]);
+
   // Q&A 로그 완전한 필터링 로직
   const filteredConversationLogs = useMemo(() => {
     if (!conversationLogs) {
@@ -2325,6 +2348,20 @@ function MasterAdmin() {
     // 세부 조직 필터링
     if (qaSelectedDetailCategory !== 'all') {
       filtered = filtered.filter(log => log.userDetailCategory === qaSelectedDetailCategory);
+    }
+    
+    // 조직명 필터링
+    if (qaSelectedOrganizationName !== 'all') {
+      filtered = filtered.filter(log => {
+        // 조직 카테고리 데이터에서 해당 조직명 찾기
+        const organization = organizationCategories?.find(org => org.name === qaSelectedOrganizationName);
+        if (organization) {
+          return log.userUpperCategory === organization.upperCategory &&
+                 log.userLowerCategory === organization.lowerCategory &&
+                 log.userDetailCategory === organization.detailCategory;
+        }
+        return false;
+      });
     }
     
     // Q&A 로그 정렬 적용
@@ -2800,15 +2837,22 @@ function MasterAdmin() {
     setQASelectedUpperCategory(value);
     setQASelectedLowerCategory('all');
     setQASelectedDetailCategory('all');
+    setQASelectedOrganizationName('all');
   };
 
   const handleQALowerCategoryChange = (value: string) => {
     setQASelectedLowerCategory(value);
     setQASelectedDetailCategory('all');
+    setQASelectedOrganizationName('all');
   };
 
   const handleQADetailCategoryChange = (value: string) => {
     setQASelectedDetailCategory(value);
+    setQASelectedOrganizationName('all'); // 세부 조직 변경 시 조직명 초기화
+  };
+
+  const handleQAOrganizationNameChange = (value: string) => {
+    setQASelectedOrganizationName(value);
   };
 
   // Q&A 로그 필터 초기화 함수
@@ -2816,6 +2860,7 @@ function MasterAdmin() {
     setQASelectedUpperCategory('all');
     setQASelectedLowerCategory('all');
     setQASelectedDetailCategory('all');
+    setQASelectedOrganizationName('all');
     setQaUserTypeFilter('all');
     setQaPeriodFilter('today');
     setQaSearchQuery('');
@@ -7046,7 +7091,7 @@ function MasterAdmin() {
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
               <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직</Label>
                   <Select value={qaSelectedUpperCategory} onValueChange={handleQAUpperCategoryChange}>
@@ -7094,6 +7139,26 @@ function MasterAdmin() {
                       {qaFilteredDetailCategories.map((category, index) => (
                         <SelectItem key={category} value={category}>
                           {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
+                  <Select 
+                    value={qaSelectedOrganizationName} 
+                    onValueChange={handleQAOrganizationNameChange}
+                    disabled={qaSelectedDetailCategory === 'all'}
+                  >
+                    <SelectTrigger className={`h-10 ${qaSelectedDetailCategory === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[10000]">
+                      <SelectItem value="all">전체</SelectItem>
+                      {qaFilteredOrganizationNames.map((name, index) => (
+                        <SelectItem key={name} value={name}>
+                          {name}
                         </SelectItem>
                       ))}
                     </SelectContent>
