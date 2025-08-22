@@ -9177,6 +9177,50 @@ function MasterAdmin() {
 
             {/* 월말 토큰 초과 예상 요약 카드 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 월말 토큰 초과 예상 조직 */}
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</CardTitle>
+                    <Building className="h-5 w-5 text-orange-600" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {/* 예상 초과 조직 목록 (샘플 데이터) */}
+                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">홍보팀</div>
+                        <div className="text-xs text-orange-700 dark:text-orange-300">5명 중 3명 초과 예상</div>
+                      </div>
+                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
+                        <div className="font-semibold">현재 104%</div>
+                        <div>예상 115%</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">기획예산팀</div>
+                        <div className="text-xs text-orange-700 dark:text-orange-300">8명 중 2명 초과 예상</div>
+                      </div>
+                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
+                        <div className="font-semibold">현재 98%</div>
+                        <div>예상 109%</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-700">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-orange-700 dark:text-orange-300">총 예상 초과 조직</span>
+                      <span className="font-bold text-orange-900 dark:text-orange-100">3개</span>
+                    </div>
+                    <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                      * 소속 구성원들의 평균 사용량 증가율 적용
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* 월말 토큰 초과 예상 사용자 */}
               <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
                 <CardHeader className="pb-3">
@@ -9220,50 +9264,6 @@ function MasterAdmin() {
                     </div>
                     <div className="text-xs text-red-600 dark:text-red-400 mt-1">
                       * 최근 7일 평균 사용량 기준 예측
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 월말 토큰 초과 예상 조직 */}
-              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</CardTitle>
-                    <Building className="h-5 w-5 text-orange-600" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {/* 예상 초과 조직 목록 (샘플 데이터) */}
-                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">홍보팀</div>
-                        <div className="text-xs text-orange-700 dark:text-orange-300">5명 중 3명 초과 예상</div>
-                      </div>
-                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
-                        <div className="font-semibold">현재 104%</div>
-                        <div>예상 115%</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">기획예산팀</div>
-                        <div className="text-xs text-orange-700 dark:text-orange-300">8명 중 2명 초과 예상</div>
-                      </div>
-                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
-                        <div className="font-semibold">현재 98%</div>
-                        <div>예상 109%</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-700">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-orange-700 dark:text-orange-300">총 예상 초과 조직</span>
-                      <span className="font-bold text-orange-900 dark:text-orange-100">3개</span>
-                    </div>
-                    <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                      * 소속 구성원들의 평균 사용량 증가율 적용
                     </div>
                   </div>
                 </CardContent>
@@ -9329,7 +9329,12 @@ function MasterAdmin() {
                         { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
                         { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
                         { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
-                      ].map((org, index) => {
+                      ].sort((a, b) => {
+                        if (tokenSortField === 'avgUsagePercent') {
+                          return tokenSortDirection === 'asc' ? a.avgUsagePercent - b.avgUsagePercent : b.avgUsagePercent - a.avgUsagePercent;
+                        }
+                        return 0;
+                      }).map((org, index) => {
                         const getUsageColor = (percent: number) => {
                           if (percent >= 100) return 'text-red-600 dark:text-red-400 font-bold';
                           if (percent >= 90) return 'text-orange-600 dark:text-orange-400 font-semibold';
