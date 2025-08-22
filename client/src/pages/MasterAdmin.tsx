@@ -9023,6 +9023,266 @@ function MasterAdmin() {
           <TabsContent value="tokens" className="space-y-4">
             <h2 className="text-2xl font-bold">{t('admin.tokenManagement')}</h2>
 
+            {/* 토큰 사용량 검색 - 최우선 배치 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 검색</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* 상위 - 하위 - 세부 - 조직명 (상단) */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
+                    <Select 
+                      value={tokenUpperCategoryFilter} 
+                      onValueChange={(value) => {
+                        setTokenUpperCategoryFilter(value);
+                        // 상위 조직 변경 시 하위, 세부 조직, 조직명 초기화
+                        setTokenLowerCategoryFilter("all");
+                        setTokenDetailCategoryFilter("all");
+                        setTokenOrganizationNameFilter("all");
+                      }}
+                    >
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        {uniqueUpperCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직 카테고리</Label>
+                    <Select 
+                      value={tokenLowerCategoryFilter} 
+                      onValueChange={(value) => {
+                        setTokenLowerCategoryFilter(value);
+                        // 하위 조직 변경 시 세부 조직, 조직명 초기화
+                        setTokenDetailCategoryFilter("all");
+                        setTokenOrganizationNameFilter("all");
+                      }}
+                      disabled={tokenUpperCategoryFilter === 'all'}
+                    >
+                      <SelectTrigger className={`h-10 ${tokenUpperCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredTokenLowerCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직 카테고리</Label>
+                    <Select 
+                      value={tokenDetailCategoryFilter} 
+                      onValueChange={(value) => {
+                        setTokenDetailCategoryFilter(value);
+                        // 세부 조직 변경 시 조직명 초기화
+                        setTokenOrganizationNameFilter("all");
+                      }}
+                      disabled={tokenLowerCategoryFilter === 'all'}
+                    >
+                      <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredTokenDetailCategories.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
+                    <Select 
+                      value={tokenOrganizationNameFilter} 
+                      onValueChange={setTokenOrganizationNameFilter}
+                      disabled={tokenDetailCategoryFilter === 'all'}
+                    >
+                      <SelectTrigger className={`h-10 ${tokenDetailCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        {filteredTokenOrganizationNames.map(name => (
+                          <SelectItem key={name} value={name}>{name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Button onClick={() => {
+                      setTokenPeriodFilter("month");
+                      setTokenUpperCategoryFilter("all");
+                      setTokenLowerCategoryFilter("all");
+                      setTokenDetailCategoryFilter("all");
+                      setTokenOrganizationNameFilter("all");
+                      setTokenKeywordFilter("");
+                      setTokenModelFilter("all");
+                    }} className="h-10 w-full">
+                      필터 초기화
+                    </Button>
+                  </div>
+                </div>
+
+                {/* 기간, 모델, 키워드 (하단) */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
+                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="최근 1개월" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="today">오늘</SelectItem>
+                        <SelectItem value="week">최근 1주일</SelectItem>
+                        <SelectItem value="month">최근 1개월</SelectItem>
+                        <SelectItem value="quarter">최근 3개월</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
+                    <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder="전체" />
+                      </SelectTrigger>
+                      <SelectContent className="z-[10000]">
+                        <SelectItem value="all">전체</SelectItem>
+                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
+                    <Input
+                      placeholder="에이전트명 또는 질문 키워드로 검색하세요"
+                      value={tokenKeywordFilter}
+                      onChange={(e) => setTokenKeywordFilter(e.target.value)}
+                      className="h-10"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Button className="h-10 w-full">
+                      검색
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 월말 토큰 초과 예상 요약 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 월말 토큰 초과 예상 사용자 */}
+              <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold text-red-800 dark:text-red-200">월말 토큰 초과 예상 사용자</CardTitle>
+                    <Users className="h-5 w-5 text-red-600" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {/* 예상 초과 사용자 목록 (샘플 데이터) */}
+                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-red-900 dark:text-red-100">홍보팀 김*호</span>
+                      </div>
+                      <div className="text-xs text-red-700 dark:text-red-300">
+                        <span className="font-semibold">92%</span> → 예상 <span className="font-semibold">108%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-red-900 dark:text-red-100">기획예산팀 이*수</span>
+                      </div>
+                      <div className="text-xs text-red-700 dark:text-red-300">
+                        <span className="font-semibold">88%</span> → 예상 <span className="font-semibold">105%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-red-900 dark:text-red-100">교무팀 박*영</span>
+                      </div>
+                      <div className="text-xs text-red-700 dark:text-red-300">
+                        <span className="font-semibold">85%</span> → 예상 <span className="font-semibold">102%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-red-200 dark:border-red-700">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-red-700 dark:text-red-300">총 예상 초과 사용자</span>
+                      <span className="font-bold text-red-900 dark:text-red-100">8명</span>
+                    </div>
+                    <div className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      * 최근 7일 평균 사용량 기준 예측
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 월말 토큰 초과 예상 조직 */}
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</CardTitle>
+                    <Building className="h-5 w-5 text-orange-600" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {/* 예상 초과 조직 목록 (샘플 데이터) */}
+                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">홍보팀</div>
+                        <div className="text-xs text-orange-700 dark:text-orange-300">5명 중 3명 초과 예상</div>
+                      </div>
+                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
+                        <div className="font-semibold">현재 104%</div>
+                        <div>예상 115%</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">기획예산팀</div>
+                        <div className="text-xs text-orange-700 dark:text-orange-300">8명 중 2명 초과 예상</div>
+                      </div>
+                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
+                        <div className="font-semibold">현재 98%</div>
+                        <div>예상 109%</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-700">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-orange-700 dark:text-orange-300">총 예상 초과 조직</span>
+                      <span className="font-bold text-orange-900 dark:text-orange-100">3개</span>
+                    </div>
+                    <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                      * 소속 구성원들의 평균 사용량 증가율 적용
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* 종량제 요약 카드 - 상단 4개 */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
               {/* 초과 위험 학생 수 */}
@@ -9211,170 +9471,6 @@ function MasterAdmin() {
               </Card>
             </div>
 
-            {/* 조직 검색 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-semibold tracking-tight text-[20px]">토큰 사용량 검색</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {/* 상위 - 하위 - 세부 - 조직명 (상단) */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">상위 조직 카테고리</Label>
-                    <Select 
-                      value={tokenUpperCategoryFilter} 
-                      onValueChange={(value) => {
-                        setTokenUpperCategoryFilter(value);
-                        // 상위 조직 변경 시 하위, 세부 조직, 조직명 초기화
-                        setTokenLowerCategoryFilter("all");
-                        setTokenDetailCategoryFilter("all");
-                        setTokenOrganizationNameFilter("all");
-                      }}
-                    >
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        {uniqueUpperCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">하위 조직 카테고리</Label>
-                    <Select 
-                      value={tokenLowerCategoryFilter} 
-                      onValueChange={(value) => {
-                        setTokenLowerCategoryFilter(value);
-                        // 하위 조직 변경 시 세부 조직, 조직명 초기화
-                        setTokenDetailCategoryFilter("all");
-                        setTokenOrganizationNameFilter("all");
-                      }}
-                      disabled={tokenUpperCategoryFilter === 'all'}
-                    >
-                      <SelectTrigger className={`h-10 ${tokenUpperCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredTokenLowerCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">세부 조직 카테고리</Label>
-                    <Select 
-                      value={tokenDetailCategoryFilter} 
-                      onValueChange={(value) => {
-                        setTokenDetailCategoryFilter(value);
-                        // 세부 조직 변경 시 조직명 초기화
-                        setTokenOrganizationNameFilter("all");
-                      }}
-                      disabled={tokenLowerCategoryFilter === 'all'}
-                    >
-                      <SelectTrigger className={`h-10 ${tokenLowerCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredTokenDetailCategories.map(category => (
-                          <SelectItem key={category} value={category}>{category}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
-                    <Select 
-                      value={tokenOrganizationNameFilter} 
-                      onValueChange={setTokenOrganizationNameFilter}
-                      disabled={tokenDetailCategoryFilter === 'all'}
-                    >
-                      <SelectTrigger className={`h-10 ${tokenDetailCategoryFilter === 'all' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        {filteredTokenOrganizationNames.map(name => (
-                          <SelectItem key={name} value={name}>{name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Button onClick={() => {
-                      setTokenPeriodFilter("month");
-                      setTokenUpperCategoryFilter("all");
-                      setTokenLowerCategoryFilter("all");
-                      setTokenDetailCategoryFilter("all");
-                      setTokenOrganizationNameFilter("all");
-                      setTokenKeywordFilter("");
-                      setTokenModelFilter("all");
-                    }} className="h-10 w-full">
-                      필터 초기화
-                    </Button>
-                  </div>
-                </div>
-
-                {/* 기간, 모델, 키워드 (하단) */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-6">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
-                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="최근 1개월" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="today">오늘</SelectItem>
-                        <SelectItem value="week">최근 1주일</SelectItem>
-                        <SelectItem value="month">최근 1개월</SelectItem>
-                        <SelectItem value="quarter">최근 3개월</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">모델</Label>
-                    <Select value={tokenModelFilter} onValueChange={setTokenModelFilter}>
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="전체" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
-                    <Input
-                      placeholder="에이전트명 또는 질문 키워드로 검색하세요"
-                      value={tokenKeywordFilter}
-                      onChange={(e) => setTokenKeywordFilter(e.target.value)}
-                      className="h-10"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Button className="h-10 w-full">
-                      검색
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* 토큰 사용량 테이블 */}
             <Card>
