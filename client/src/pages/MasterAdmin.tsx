@@ -982,11 +982,30 @@ function MasterAdmin() {
   // 토큰 정렬 함수
   const handleTokenSort = (field: string) => {
     if (tokenSortField === field) {
-      setTokenSortDirection(tokenSortDirection === 'asc' ? 'desc' : 'asc');
+      if (tokenSortDirection === 'asc') {
+        setTokenSortDirection('desc');
+      } else {
+        // 내림차순에서 기본 순서(정렬 없음)로 변경
+        setTokenSortField('timestamp' as keyof TokenUsage);
+        setTokenSortDirection('desc');
+      }
     } else {
       setTokenSortField(field as keyof TokenUsage);
-      setTokenSortDirection('desc');
+      setTokenSortDirection('asc');
     }
+  };
+
+  // 토큰 정렬 아이콘 반환 함수
+  const getTokenSortIcon = (field: string) => {
+    if (tokenSortField !== field) return '▭'; // 기본(중립)
+    return tokenSortDirection === 'asc' ? '▲' : '▼';
+  };
+
+  // 토큰 정렬 툴팁 텍스트 반환 함수  
+  const getTokenSortTooltip = (field: string, label: string) => {
+    if (tokenSortField !== field) return `${label}으로 정렬`;
+    if (tokenSortDirection === 'asc') return `${label} 내림차순 정렬`;
+    return `${label} 정렬 해제`;
   };
 
   // Q&A 로그 조직 상태
@@ -1946,20 +1965,50 @@ function MasterAdmin() {
     }
 
     // 정렬
-    if (tokenSortField) {
+    if (tokenSortField && tokenSortField !== 'timestamp') {
       filtered.sort((a, b) => {
-        let aValue: any = a[tokenSortField as keyof TokenUsage];
-        let bValue: any = b[tokenSortField as keyof TokenUsage];
+        let aValue: any;
+        let bValue: any;
         
+        switch (tokenSortField) {
+          case 'timestamp':
+            aValue = new Date(a.timestamp);
+            bValue = new Date(b.timestamp);
+            break;
+          case 'agentName':
+            aValue = a.agentName || '';
+            bValue = b.agentName || '';
+            break;
+          case 'question':
+            aValue = a.question || '';
+            bValue = b.question || '';
+            break;
+          default:
+            aValue = a[tokenSortField as keyof TokenUsage];
+            bValue = b[tokenSortField as keyof TokenUsage];
+            break;
+        }
+        
+        // 숫자 정렬
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return tokenSortDirection === 'asc' ? aValue - bValue : bValue - aValue;
         }
         
-        // 문자열이나 다른 타입의 경우
-        if (tokenSortDirection === 'asc') {
-          return aValue > bValue ? 1 : -1;
+        // 날짜 정렬
+        if (aValue instanceof Date && bValue instanceof Date) {
+          return tokenSortDirection === 'asc' ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
         }
-        return aValue < bValue ? 1 : -1;
+        
+        // 문자열 정렬
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          if (tokenSortDirection === 'asc') {
+            return aValue.localeCompare(bValue);
+          } else {
+            return bValue.localeCompare(aValue);
+          }
+        }
+        
+        return 0;
       });
     }
 
@@ -8908,55 +8957,102 @@ function MasterAdmin() {
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-3 font-medium">시간</th>
-                        <th className="text-left p-3 font-medium">에이전트명</th>
-                        <th className="text-left p-3 font-medium">질문</th>
-                        <th 
-                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleTokenSort('inputTokens')}
-                        >
-                          입력 {tokenSortField === 'inputTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                  <table className="w-full">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('timestamp')}
+                            title={getTokenSortTooltip('timestamp', '시간')}>
+                          <div className="flex items-center justify-between">
+                            <span>시간</span>
+                            <span className={`ml-1 ${tokenSortField === 'timestamp' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('timestamp')}
+                            </span>
+                          </div>
                         </th>
-                        <th 
-                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleTokenSort('outputTokens')}
-                        >
-                          출력 {tokenSortField === 'outputTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('agentName')}
+                            title={getTokenSortTooltip('agentName', '에이전트명')}>
+                          <div className="flex items-center justify-between">
+                            <span>에이전트명</span>
+                            <span className={`ml-1 ${tokenSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('agentName')}
+                            </span>
+                          </div>
                         </th>
-                        <th 
-                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleTokenSort('indexTokens')}
-                        >
-                          인덱스 {tokenSortField === 'indexTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'question' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('question')}
+                            title={getTokenSortTooltip('question', '질문')}>
+                          <div className="flex items-center justify-between">
+                            <span>질문</span>
+                            <span className={`ml-1 ${tokenSortField === 'question' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('question')}
+                            </span>
+                          </div>
                         </th>
-                        <th 
-                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleTokenSort('preprocessingTokens')}
-                        >
-                          읽기 {tokenSortField === 'preprocessingTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'inputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('inputTokens')}
+                            title={getTokenSortTooltip('inputTokens', '입력 토큰')}>
+                          <div className="flex items-center justify-between">
+                            <span>입력</span>
+                            <span className={`ml-1 ${tokenSortField === 'inputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('inputTokens')}
+                            </span>
+                          </div>
                         </th>
-                        <th 
-                          className="text-left p-3 font-medium cursor-pointer hover:bg-muted/50"
-                          onClick={() => handleTokenSort('totalTokens')}
-                        >
-                          합계 {tokenSortField === 'totalTokens' && (tokenSortDirection === 'asc' ? '↑' : '↓')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'outputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('outputTokens')}
+                            title={getTokenSortTooltip('outputTokens', '출력 토큰')}>
+                          <div className="flex items-center justify-between">
+                            <span>출력</span>
+                            <span className={`ml-1 ${tokenSortField === 'outputTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('outputTokens')}
+                            </span>
+                          </div>
+                        </th>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'indexTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('indexTokens')}
+                            title={getTokenSortTooltip('indexTokens', '인덱스 토큰')}>
+                          <div className="flex items-center justify-between">
+                            <span>인덱스</span>
+                            <span className={`ml-1 ${tokenSortField === 'indexTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('indexTokens')}
+                            </span>
+                          </div>
+                        </th>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'preprocessingTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('preprocessingTokens')}
+                            title={getTokenSortTooltip('preprocessingTokens', '읽기 토큰')}>
+                          <div className="flex items-center justify-between">
+                            <span>읽기</span>
+                            <span className={`ml-1 ${tokenSortField === 'preprocessingTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('preprocessingTokens')}
+                            </span>
+                          </div>
+                        </th>
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'totalTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleTokenSort('totalTokens')}
+                            title={getTokenSortTooltip('totalTokens', '총 토큰')}>
+                          <div className="flex items-center justify-between">
+                            <span>합계</span>
+                            <span className={`ml-1 ${tokenSortField === 'totalTokens' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getTokenSortIcon('totalTokens')}
+                            </span>
+                          </div>
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {paginatedTokenData.map((token) => (
                         <tr 
                           key={token.id} 
-                          className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
                           onClick={() => {
                             setSelectedTokenDetail(token);
                             setIsTokenDetailDialogOpen(true);
                           }}
                         >
-                          <td className="p-3 text-xs">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {new Date(token.timestamp).toLocaleString('ko-KR', {
                               month: 'short',
                               day: 'numeric',
@@ -8964,15 +9060,15 @@ function MasterAdmin() {
                               minute: '2-digit'
                             })}
                           </td>
-                          <td className="p-3 text-xs font-medium">{token.agentName}</td>
-                          <td className="p-3 text-xs max-w-xs truncate" title={token.question}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{token.agentName}</td>
+                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 max-w-[200px] truncate" title={token.question}>
                             {token.question}
                           </td>
-                          <td className="p-3 text-xs text-right">{token.inputTokens.toLocaleString()}</td>
-                          <td className="p-3 text-xs text-right">{token.outputTokens.toLocaleString()}</td>
-                          <td className="p-3 text-xs text-right">{token.indexTokens.toLocaleString()}</td>
-                          <td className="p-3 text-xs text-right">{token.preprocessingTokens.toLocaleString()}</td>
-                          <td className="p-3 text-xs text-right font-medium">{token.totalTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-blue-600 dark:text-blue-400">{token.inputTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-green-600 dark:text-green-400">{token.outputTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-purple-600 dark:text-purple-400">{token.indexTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-orange-600 dark:text-orange-400">{token.preprocessingTokens.toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-gray-900 dark:text-gray-100">{token.totalTokens.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
