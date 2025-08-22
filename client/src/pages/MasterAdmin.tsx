@@ -2421,6 +2421,11 @@ function MasterAdmin() {
             aValue = new Date(a.createdAt || 0);
             bValue = new Date(b.createdAt || 0);
             break;
+          case 'agentName':
+            // 에이전트명별 정렬
+            aValue = a.agentName || '';
+            bValue = b.agentName || '';
+            break;
           default:
             return 0;
         }
@@ -7307,8 +7312,15 @@ function MasterAdmin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('admin.agentName')}
+                        <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${qaSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleQASort('agentName')}
+                            title={getSortTooltip('agentName', '에이전트명')}>
+                          <div className="flex items-center justify-between">
+                            <span>{t('admin.agentName')}</span>
+                            <span className={`ml-1 ${qaSortField === 'agentName' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {getSortIcon('agentName')}
+                            </span>
+                          </div>
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.question')}
@@ -7483,8 +7495,12 @@ function MasterAdmin() {
             {/* 인기 질문 분석 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.popularQuestionsTop10')}</CardTitle>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
+                    <span className="text-gray-500 dark:text-gray-400">📅</span>
+                    <span>{getPeriodPillText()}</span>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
