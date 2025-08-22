@@ -8087,6 +8087,9 @@ function MasterAdmin() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           세부 조직
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          개별 조직
+                        </th>
                         <th 
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
                           onClick={() => handleOrganizationSort('personnelCount')}
@@ -8131,7 +8134,7 @@ function MasterAdmin() {
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredOrganizationCategories.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="px-6 py-12 text-center">
+                          <td colSpan={8} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Database className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">검색 결과 없음</p>
@@ -8190,6 +8193,11 @@ function MasterAdmin() {
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900 dark:text-white">
                                   {category.detailCategory || "-"}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {category.name || "-"}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -9296,6 +9304,9 @@ function MasterAdmin() {
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                           개별 조직
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          소속 인원
+                        </th>
                         <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${tokenSortField === 'avgUsagePercent' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
                             onClick={() => handleTokenSort('avgUsagePercent')}
                             title={getTokenSortTooltip('avgUsagePercent', '평균 토큰 사용량')}>
@@ -9318,13 +9329,16 @@ function MasterAdmin() {
                         { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
                         { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
                         { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
-                      ].map((org) => {
+                      ].map((org, index) => {
                         const getUsageColor = (percent: number) => {
                           if (percent >= 100) return 'text-red-600 dark:text-red-400 font-bold';
                           if (percent >= 90) return 'text-orange-600 dark:text-orange-400 font-semibold';
                           if (percent >= 80) return 'text-amber-600 dark:text-amber-400';
                           return 'text-green-600 dark:text-green-400';
                         };
+                        
+                        // 소속 인원 샘플 데이터
+                        const personnelCount = [12, 8, 15, 11, 23, 19, 7, 14][index] || 10;
                         
                         return (
                           <tr 
@@ -9335,6 +9349,7 @@ function MasterAdmin() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.lowerCategory}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.detailCategory}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{org.organizationName}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-center">{personnelCount}명</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${getUsageColor(org.avgUsagePercent)}`}>
                               {org.avgUsagePercent}%
                             </td>
