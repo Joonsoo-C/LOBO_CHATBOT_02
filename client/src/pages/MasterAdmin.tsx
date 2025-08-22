@@ -7366,11 +7366,16 @@ function MasterAdmin() {
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">검색어</Label>
                   <Input 
-                    placeholder={language === 'ko' ? '질문 키워드로 검색하세요.' : 'Search by question content...'}
+                    placeholder={language === 'ko' ? '질문 키워드 또는 에이전트 이름으로 검색하세요.' : 'Search by question content or agent name...'}
                     className="h-10" 
                     value={qaSearchQuery}
                     onChange={(e) => setQaSearchQuery(e.target.value)}
+                    aria-label="Q&A 로그 검색어 입력"
+                    aria-describedby="qa-search-help"
                   />
+                  <div id="qa-search-help" className="sr-only">
+                    질문 내용이나 에이전트 이름을 입력하여 Q&A 로그를 검색할 수 있습니다.
+                  </div>
                 </div>
                 <div>
                   <Button className="h-10 w-full">
