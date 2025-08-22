@@ -15,6 +15,7 @@ import { insertMessageSchema, insertDocumentSchema, conversations, agents } from
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 import { organizationCategories } from './organization-categories';
+import ExcelJS from 'exceljs';
 
 // Configure multer for document uploads
 const upload = multer({
@@ -2074,6 +2075,118 @@ export async function setupDocumentFix(app: Express) {
     } catch (error) {
       console.error("Error fetching popular questions:", error);
       res.status(500).json({ message: "Failed to fetch popular questions" });
+    }
+  });
+
+  // Admin endpoint to export QA logs to Excel
+  app.get('/api/admin/qa-logs/export', async (req, res) => {
+    try {
+      const userId = (req as any).session?.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.role !== 'master_admin') {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+
+      console.log('Exporting QA logs to Excel...');
+
+      // Get all conversations
+      const conversations = await storage.getAllConversations();
+      
+      // Create Excel workbook
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('질문응답로그');
+
+      // Define columns
+      worksheet.columns = [
+        { header: '번호', key: 'id', width: 8 },
+        { header: '사용자명', key: 'userName', width: 15 },
+        { header: '사용자유형', key: 'userType', width: 12 },
+        { header: '상위조직', key: 'upperCategory', width: 15 },
+        { header: '하위조직', key: 'lowerCategory', width: 15 },
+        { header: '세부조직', key: 'detailCategory', width: 15 },
+        { header: '에이전트명', key: 'agentName', width: 20 },
+        { header: '에이전트분류', key: 'agentCategory', width: 12 },
+        { header: '메시지수', key: 'messageCount', width: 10 },
+        { header: '사용자메시지수', key: 'userMessageCount', width: 15 },
+        { header: 'AI메시지수', key: 'aiMessageCount', width: 12 },
+        { header: '평균응답시간', key: 'avgResponseTime', width: 15 },
+        { header: '마지막메시지', key: 'lastUserMessage', width: 30 },
+        { header: '생성일시', key: 'createdAt', width: 20 },
+        { header: '마지막활동', key: 'lastMessageAt', width: 20 }
+      ];
+
+      // Style header row
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE6E6E6' }
+        };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+
+      // Add data rows
+      conversations.forEach((conversation, index) => {
+        const userTypeMap: { [key: string]: string } = {
+          'student': '학생',
+          'faculty': '교직원',
+          'admin': '관리자',
+          'master_admin': '마스터관리자',
+          'agent_admin': '에이전트관리자'
+        };
+
+        worksheet.addRow({
+          id: conversation.id,
+          userName: conversation.userName || '',
+          userType: userTypeMap[conversation.userType] || conversation.userType,
+          upperCategory: conversation.upperCategory || '',
+          lowerCategory: conversation.lowerCategory || '',
+          detailCategory: conversation.detailCategory || '',
+          agentName: conversation.agentName || '',
+          agentCategory: conversation.agentCategory || '',
+          messageCount: conversation.messageCount || 0,
+          userMessageCount: conversation.userMessageCount || 0,
+          aiMessageCount: conversation.aiMessageCount || 0,
+          avgResponseTime: conversation.avgResponseTime ? `${conversation.avgResponseTime}초` : '',
+          lastUserMessage: conversation.lastUserMessage || '',
+          createdAt: conversation.createdAt ? new Date(conversation.createdAt).toLocaleString('ko-KR') : '',
+          lastMessageAt: conversation.lastMessageAt ? new Date(conversation.lastMessageAt).toLocaleString('ko-KR') : ''
+        });
+      });
+
+      // Auto-fit columns
+      worksheet.columns.forEach(column => {
+        if (column.eachCell) {
+          let maxLength = 0;
+          column.eachCell({ includeEmpty: true }, (cell) => {
+            const columnLength = cell.value ? cell.value.toString().length : 10;
+            if (columnLength > maxLength) {
+              maxLength = columnLength;
+            }
+          });
+          column.width = maxLength < 10 ? 10 : maxLength + 2;
+        }
+      });
+
+      // Set response headers for file download
+      const fileName = `질문응답로그_${new Date().toISOString().split('T')[0]}.xlsx`;
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+
+      // Write to response
+      await workbook.xlsx.write(res);
+      console.log('QA logs Excel export completed');
+      
+    } catch (error) {
+      console.error('QA logs export error:', error);
+      res.status(500).json({ message: 'Export failed' });
     }
   });
 }

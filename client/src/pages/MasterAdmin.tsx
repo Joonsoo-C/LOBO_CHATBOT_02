@@ -2930,6 +2930,40 @@ function MasterAdmin() {
     return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
   };
 
+  const handleQALogsExcelExport = async () => {
+    try {
+      const response = await fetch('/api/admin/qa-logs/export', {
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Export failed');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `질문응답로그_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "다운로드 완료",
+        description: "질문 응답 로그가 성공적으로 다운로드되었습니다.",
+      });
+    } catch (error) {
+      console.error('QA logs Excel export error:', error);
+      toast({
+        variant: "destructive",
+        title: "다운로드 실패",
+        description: "질문 응답 로그 다운로드 중 오류가 발생했습니다.",
+      });
+    }
+  };
+
   // 질의응답 상세보기 모달 열기 함수
   const openQADetailModal = (log: any) => {
     console.log('QA Detail Modal opened with log:', log);
@@ -7040,6 +7074,14 @@ function MasterAdmin() {
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">질문 응답 로그</h2>
               <div className="flex space-x-2">
+                <Button 
+                  variant="outline"
+                  onClick={handleQALogsExcelExport}
+                  className="flex items-center space-x-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>질문 응답 로그 다운로드</span>
+                </Button>
               </div>
             </div>
 
