@@ -7306,135 +7306,6 @@ function MasterAdmin() {
               </div>
             </div>
 
-            {/* Q&A 분석 카드 섹션 */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-              {/* 카드 1: 최다 질문 에이전트 TOP3 */}
-              <Card className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">최다 질문 에이전트 TOP3</h3>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      // 드릴다운: 에이전트 순위 전체 화면으로 이동
-                      setActiveTab('agents');
-                    }}
-                    className="text-xs"
-                  >
-                    모두 보기
-                  </Button>
-                </div>
-                <div className="space-y-3">
-                  {qaAnalyticsData.topAgents.map((agent, index) => (
-                    <div 
-                      key={agent.id}
-                      className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                      onClick={() => {
-                        // 드릴다운: 해당 에이전트로 필터된 질문 응답 목록
-                        setQaSearchQuery(agent.name);
-                      }}
-                      title={`${agent.name}의 질문 목록 보기`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm">
-                          {agent.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {agent.name}
-                          </div>
-                          <div className="text-xs text-gray-500">{agent.category}</div>
-                        </div>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <Badge variant="secondary" className="text-xs">
-                          {agent.questionCount}건
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              {/* 카드 2: 인기 질문 키워드 TOP5 */}
-              <Card className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 키워드 TOP5</h3>
-                  <Badge variant="outline" className="text-xs">
-                    {qaPeriodFilter === 'today' ? '오늘' : 
-                     qaPeriodFilter === 'week' ? '이번 주' : 
-                     qaPeriodFilter === 'month' ? '이번 달' : '전체'}
-                  </Badge>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {qaAnalyticsData.popularKeywords.slice(0, 5).map((keyword, index) => (
-                    <button
-                      key={keyword.keyword}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
-                      onClick={() => {
-                        // 드릴다운: 검색창에 해당 키워드 자동 입력 후 질문 응답 목록 갱신
-                        setQaSearchQuery(keyword.keyword);
-                      }}
-                      title={`${keyword.keyword} 키워드로 검색`}
-                    >
-                      #{keyword.keyword}
-                      <span className="ml-1 px-1.5 py-0.5 bg-blue-200 dark:bg-blue-700 rounded text-xs">
-                        {keyword.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                {qaAnalyticsData.popularKeywords.length > 5 && (
-                  <div className="mt-2 text-xs text-gray-500">
-                    + {qaAnalyticsData.popularKeywords.length - 5}개 더
-                  </div>
-                )}
-              </Card>
-
-              {/* 카드 3: 신규 질문 유형 */}
-              <Card className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 유형</h3>
-                  <Badge variant="outline" className="text-xs text-green-600 border-green-200">
-                    이번 주 신규
-                  </Badge>
-                </div>
-                <div className="space-y-2">
-                  {qaAnalyticsData.newKeywords.length > 0 ? (
-                    <>
-                      <div className="flex flex-wrap gap-2">
-                        {qaAnalyticsData.newKeywords.slice(0, 4).map((keyword, index) => (
-                          <button
-                            key={keyword.keyword}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
-                            onClick={() => {
-                              // 드릴다운: 해당 키워드로 질문 목록 필터 (기간은 "이번 주"로 고정)
-                              setQaPeriodFilter('week');
-                              setQaSearchQuery(keyword.keyword);
-                            }}
-                            title={`${keyword.keyword} 신규 키워드로 검색 (이번 주)`}
-                          >
-                            {keyword.keyword}
-                            <span className="ml-1 px-1 py-0.5 bg-green-200 dark:bg-green-700 rounded text-xs">
-                              {keyword.count}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                      {qaAnalyticsData.newKeywords.length > 4 && (
-                        <div className="text-xs text-gray-500">
-                          , +{qaAnalyticsData.newKeywords.length - 4}개 더...
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-sm text-gray-500 text-center py-2">
-                      이번 주 신규 질문 유형이 없습니다
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </div>
 
             {/* 기존 통계 카드 - 한 줄 컴팩트 레이아웃 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -7613,6 +7484,91 @@ function MasterAdmin() {
                   </Button>
                 </div>
               </div>
+            </div>
+
+            {/* Q&A 분석 카드 섹션 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+              {/* 카드 1: 인기 질문 키워드 TOP5 */}
+              <Card className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 키워드 TOP5</h3>
+                  <Badge variant="outline" className="text-xs">
+                    {qaPeriodFilter === 'today' ? '오늘' : 
+                     qaPeriodFilter === 'week' ? '이번 주' : 
+                     qaPeriodFilter === 'month' ? '이번 달' : '전체'}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {qaAnalyticsData.popularKeywords.slice(0, 5).map((keyword, index) => (
+                    <button
+                      key={keyword.keyword}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                      onClick={() => {
+                        // 드릴다운: 검색창에 해당 키워드 자동 입력 후 질문 응답 목록 갱신
+                        setQaSearchQuery(keyword.keyword);
+                      }}
+                      title={`${keyword.keyword} 키워드로 검색`}
+                    >
+                      #{keyword.keyword}
+                      <span className="ml-1 px-1.5 py-0.5 bg-blue-200 dark:bg-blue-700 rounded text-xs">
+                        {keyword.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                {qaAnalyticsData.popularKeywords.length > 5 && (
+                  <div className="mt-2 text-xs text-gray-500">
+                    + {qaAnalyticsData.popularKeywords.length - 5}개 더
+                  </div>
+                )}
+              </Card>
+
+              {/* 카드 2: 신규 질문 유형 */}
+              <Card className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 유형</h3>
+                  <Badge variant="outline" className="text-xs text-green-600 border-green-200">
+                    {qaPeriodFilter === 'today' ? '오늘 신규' : 
+                     qaPeriodFilter === 'week' ? '이번 주 신규' : 
+                     qaPeriodFilter === 'month' ? '이번 달 신규' : '신규'}
+                  </Badge>
+                </div>
+                <div className="space-y-2">
+                  {qaAnalyticsData.newKeywords.length > 0 ? (
+                    <>
+                      <div className="flex flex-wrap gap-2">
+                        {qaAnalyticsData.newKeywords.slice(0, 4).map((keyword, index) => (
+                          <button
+                            key={keyword.keyword}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
+                            onClick={() => {
+                              // 드릴다운: 해당 키워드로 질문 목록 필터
+                              setQaSearchQuery(keyword.keyword);
+                            }}
+                            title={`${keyword.keyword} 신규 키워드로 검색`}
+                          >
+                            {keyword.keyword}
+                            <span className="ml-1 px-1 py-0.5 bg-green-200 dark:bg-green-700 rounded text-xs">
+                              {keyword.count}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      {qaAnalyticsData.newKeywords.length > 4 && (
+                        <div className="text-xs text-gray-500">
+                          , +{qaAnalyticsData.newKeywords.length - 4}개 더...
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-sm text-gray-500 text-center py-2">
+                      {qaPeriodFilter === 'today' ? '오늘' : 
+                       qaPeriodFilter === 'week' ? '이번 주' : 
+                       qaPeriodFilter === 'month' ? '이번 달' : '해당 기간'} 신규 질문 유형이 없습니다
+                    </div>
+                  )}
+                </div>
+              </Card>
             </div>
 
             {/* 질문/응답 로그 테이블 */}
