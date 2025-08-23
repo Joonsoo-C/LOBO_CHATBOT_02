@@ -2692,13 +2692,19 @@ function MasterAdmin() {
     
     let filtered = [...organizations];
     
+    // 개별 조직 정보가 있는 항목만 표시
+    filtered = filtered.filter(category => 
+      category.name && category.name.trim() !== ""
+    );
+    
     // 검색어 필터링
     if (userSearchQuery.trim()) {
       const query = userSearchQuery.toLowerCase();
       filtered = filtered.filter(category => 
         (category.upperCategory && category.upperCategory.toLowerCase().includes(query)) ||
         (category.lowerCategory && category.lowerCategory.toLowerCase().includes(query)) ||
-        (category.detailCategory && category.detailCategory.toLowerCase().includes(query))
+        (category.detailCategory && category.detailCategory.toLowerCase().includes(query)) ||
+        (category.name && category.name.toLowerCase().includes(query))
       );
     }
     
@@ -8239,6 +8245,25 @@ function MasterAdmin() {
                         )}
                       />
                     </div>
+
+                    {/* 개별 조직 입력창 */}
+                    <FormField
+                      control={orgCategoryEditForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>개별 조직</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="개별 조직명을 입력하세요"
+                              {...field}
+                              className="mt-[8px] mb-[8px]"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     <FormField
                       control={orgCategoryEditForm.control}
