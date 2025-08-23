@@ -7307,49 +7307,6 @@ function MasterAdmin() {
             </div>
 
 
-            {/* 기존 통계 카드 - 한 줄 컴팩트 레이아웃 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <MessageSquare className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.todayQuestionsTitle')}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">247</div>
-                    <div className="text-xs text-green-600">+12%</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Activity className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.avgResponseTimeTitle')}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">2.3초</div>
-                    <div className="text-xs text-green-600">-0.3초</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <XCircle className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('admin.responseFailureTitle')}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-gray-900 dark:text-white">3.2%</div>
-                    <div className="text-xs text-green-600">전월 대비</div>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
 
             {/* 필터링 옵션 */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
