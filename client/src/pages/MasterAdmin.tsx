@@ -2113,22 +2113,74 @@ function MasterAdmin() {
       { id: 3, name: '수강신청 도우미', icon: '📝', questionCount: 634, category: '기능' }
     ];
 
-    // 인기 질문 키워드 TOP5 (샘플 데이터)
-    const popularKeywords = [
-      { keyword: '수강신청', count: 256 },
-      { keyword: '졸업요건', count: 189 },
-      { keyword: '학점인정', count: 167 },
-      { keyword: '등록금', count: 134 },
-      { keyword: '장학금', count: 112 }
-    ];
+    // 학교 에이전트의 질의응답만 필터링
+    const schoolAgentLogs = conversationLogs?.filter(log => log.agentCategory === '학교') || [];
+    
+    // 기간 필터 적용
+    const now = new Date();
+    const filteredLogs = schoolAgentLogs.filter(log => {
+      const logDate = new Date(log.lastMessageAt || log.createdAt);
+      switch (qaPeriodFilter) {
+        case 'today':
+          return logDate.toDateString() === now.toDateString();
+        case 'week':
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return logDate >= weekAgo;
+        case 'month':
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return logDate >= monthAgo;
+        default:
+          return true;
+      }
+    });
 
-    // 신규 질문 유형 (이번 주 신규 키워드, 샘플 데이터)
-    const newKeywords = [
-      { keyword: '장학금 신청', count: 8, isNew: true },
-      { keyword: '기숙사 입주', count: 6, isNew: true },
-      { keyword: '교환학생', count: 5, isNew: true },
-      { keyword: '학회활동', count: 4, isNew: true }
-    ];
+    // 메시지에서 키워드 추출 (사용자 메시지만)
+    const userMessages = filteredLogs.flatMap(log => 
+      (log.messages || []).filter(msg => msg.isFromUser).map(msg => msg.content)
+    );
+
+    // 간단한 키워드 추출 (한국어 단어 기준)
+    const keywordCount: { [key: string]: number } = {};
+    const commonKeywords = ['수강신청', '졸업요건', '학점인정', '등록금', '장학금', '기숙사', '교환학생', '학회활동', '연구실', '학과사무실', '과제', '시험', '성적', '휴학', '복학', '전과', '취업', '인턴십'];
+    
+    userMessages.forEach(message => {
+      commonKeywords.forEach(keyword => {
+        if (message.includes(keyword)) {
+          keywordCount[keyword] = (keywordCount[keyword] || 0) + 1;
+        }
+      });
+    });
+
+    // 인기 질문 키워드 TOP5
+    const popularKeywords = Object.entries(keywordCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([keyword, count]) => ({ keyword, count }));
+
+    // 신규 질문 유형 (기간별 새로운 키워드)
+    const recentLogs = schoolAgentLogs.filter(log => {
+      const logDate = new Date(log.lastMessageAt || log.createdAt);
+      const recentPeriod = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 최근 1주일
+      return logDate >= recentPeriod;
+    });
+
+    const recentMessages = recentLogs.flatMap(log => 
+      (log.messages || []).filter(msg => msg.isFromUser).map(msg => msg.content)
+    );
+
+    const recentKeywordCount: { [key: string]: number } = {};
+    recentMessages.forEach(message => {
+      commonKeywords.forEach(keyword => {
+        if (message.includes(keyword)) {
+          recentKeywordCount[keyword] = (recentKeywordCount[keyword] || 0) + 1;
+        }
+      });
+    });
+
+    const newKeywords = Object.entries(recentKeywordCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 4)
+      .map(([keyword, count]) => ({ keyword, count, isNew: true }));
 
     return {
       topAgents,
