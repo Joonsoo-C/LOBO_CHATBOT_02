@@ -7449,11 +7449,6 @@ function MasterAdmin() {
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 키워드 TOP5</h3>
-                  <Badge variant="outline" className="text-xs">
-                    {qaPeriodFilter === 'today' ? '오늘' : 
-                     qaPeriodFilter === 'week' ? '이번 주' : 
-                     qaPeriodFilter === 'month' ? '이번 달' : '전체'}
-                  </Badge>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {qaAnalyticsData.popularKeywords.slice(0, 5).map((keyword, index) => (
@@ -7484,11 +7479,6 @@ function MasterAdmin() {
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 유형</h3>
-                  <Badge variant="outline" className="text-xs text-green-600 border-green-200">
-                    {qaPeriodFilter === 'today' ? '오늘 신규' : 
-                     qaPeriodFilter === 'week' ? '이번 주 신규' : 
-                     qaPeriodFilter === 'month' ? '이번 달 신규' : '신규'}
-                  </Badge>
                 </div>
                 <div className="space-y-2">
                   {qaAnalyticsData.newKeywords.length > 0 ? (
@@ -7531,14 +7521,16 @@ function MasterAdmin() {
             {/* 질문/응답 로그 테이블 */}
             <Card>
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {filteredConversationLogs?.length || 0}개 질문응답 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
-                  </div>
+                  <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
                     <span className="text-gray-500 dark:text-gray-400">📅</span>
                     <span>{getPeriodPillText()}</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    전체 {filteredConversationLogs?.length || 0}개 질문응답 중 {((qaLogCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(qaLogCurrentPage * ITEMS_PER_PAGE, filteredConversationLogs?.length || 0)}개 표시
                   </div>
                 </div>
               </CardHeader>
