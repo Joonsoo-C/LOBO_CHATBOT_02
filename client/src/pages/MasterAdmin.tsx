@@ -1330,6 +1330,7 @@ function MasterAdmin() {
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedIndividualOrganization, setSelectedIndividualOrganization] = useState('all');
   const [selectedOrgStatus, setSelectedOrgStatus] = useState('all');
   const [selectedAgentType, setSelectedAgentType] = useState('all');
   const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -12991,7 +12992,7 @@ function MasterAdmin() {
             <div className="flex-1 overflow-y-auto">
             <div className="flex-1 flex flex-col space-y-4">
               {/* 검색 필터 영역 */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 {/* 상위 조직 */}
                 <div>
                   <Label>상위 조직</Label>
@@ -13058,6 +13059,33 @@ function MasterAdmin() {
                     </SelectContent>
                   </Select>
                 </div>
+                
+                {/* 개별 조직 */}
+                <div>
+                  <Label>개별 조직</Label>
+                  <Select value={selectedIndividualOrganization} onValueChange={setSelectedIndividualOrganization}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전체" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[10000]">
+                      <SelectItem value="all">전체</SelectItem>
+                      {selectedDepartment !== 'all' && organizationCategories && Array.from(new Set(
+                        organizationCategories
+                          .filter((org: any) => 
+                            org.upperCategory === selectedUniversity && 
+                            org.lowerCategory === selectedCollege &&
+                            org.detailCategory === selectedDepartment &&
+                            org.name && org.name.trim() !== ""
+                          )
+                          .map((org: any) => org.name)
+                      )).map((name: string) => (
+                        <SelectItem key={name} value={name}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               
               {/* 유형 및 상태 필터 */}
@@ -13112,6 +13140,7 @@ function MasterAdmin() {
                     setSelectedUniversity('all');
                     setSelectedCollege('all');
                     setSelectedDepartment('all');
+                    setSelectedIndividualOrganization('all');
                     setSelectedAgentType('all');
                     setSelectedAgentStatus('all');
                     setAgentSearchQuery('');
