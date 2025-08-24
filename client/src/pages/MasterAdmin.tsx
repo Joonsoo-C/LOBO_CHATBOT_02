@@ -2709,10 +2709,6 @@ function MasterAdmin() {
     
     let filtered = [...organizations];
     
-    // 개별 조직 정보가 있는 항목만 표시
-    filtered = filtered.filter(category => 
-      category.name && category.name.trim() !== ""
-    );
     
     // 검색어 필터링
     if (userSearchQuery.trim()) {
@@ -8103,7 +8099,7 @@ function MasterAdmin() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {category.name || "-"}
+                                  {category.name || ""}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -13114,7 +13110,7 @@ function MasterAdmin() {
                             org.upperCategory === selectedUniversity && 
                             org.lowerCategory === selectedCollege &&
                             org.detailCategory === selectedDepartment &&
-                            org.name && org.name.trim() !== ""
+                            true
                           )
                           .map((org: any) => org.name)
                       )).map((name: string) => (
