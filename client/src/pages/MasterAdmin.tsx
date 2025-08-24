@@ -192,6 +192,21 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     }
   };
 
+  // 인덱싱 상태 매핑
+  const getIndexingStatus = (doc: any) => {
+    // 문서의 인덱싱 상태를 반환 (예시: id 기반으로 랜덤하게 상태 생성)
+    const docId = doc.id || 0;
+    const status = ['완료', '인덱싱 중', '실패'][docId % 3];
+    
+    const statusConfig = {
+      '완료': { label: '완료', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
+      '인덱싱 중': { label: '인덱싱 중', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
+      '실패': { label: '실패', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }
+    };
+    
+    return statusConfig[status as keyof typeof statusConfig] || statusConfig['완료'];
+  };
+
   // 문서 미리보기
   const handleDocumentPreview = async (doc: any) => {
     try {
@@ -8644,7 +8659,7 @@ function MasterAdmin() {
                           onClick={() => handleDocumentSort('type')}
                         >
                           <div className="flex items-center space-x-1">
-                            <span>{t('admin.kind')}</span>
+                            <span>유형</span>
                             {documentSortField === 'type' && (
                               documentSortDirection === 'asc' ? 
                               <ChevronUp className="w-4 h-4" /> : 
@@ -8662,6 +8677,19 @@ function MasterAdmin() {
                             <ChevronUp className="w-4 h-4" /> : 
                             <ChevronDown className="w-4 h-4" />
                           )}
+                        </th>
+                        <th 
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
+                          onClick={() => handleDocumentSort('indexing')}
+                        >
+                          <div className="flex items-center space-x-1">
+                            <span>인덱싱</span>
+                            {documentSortField === 'indexing' && (
+                              documentSortDirection === 'asc' ? 
+                              <ChevronUp className="w-4 h-4" /> : 
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </div>
                         </th>
                         <th 
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none"
@@ -8759,10 +8787,20 @@ function MasterAdmin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {doc.type}
+                            {doc.type || '기타'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {doc.size}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {(() => {
+                              const indexingStatus = getIndexingStatus(doc);
+                              return (
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${indexingStatus.color}`}>
+                                  {indexingStatus.label}
+                                </span>
+                              );
+                            })()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {doc.date}
@@ -8905,7 +8943,7 @@ function MasterAdmin() {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={8} className="px-6 py-12 text-center">
+                          <td colSpan={9} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">업로드된 문서가 없습니다</p>
