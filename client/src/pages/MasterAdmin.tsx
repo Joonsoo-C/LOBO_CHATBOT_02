@@ -192,20 +192,6 @@ const AgentDocumentList: React.FC<AgentDocumentListProps> = ({ agentId }) => {
     }
   };
 
-  // 인덱싱 상태 매핑
-  const getIndexingStatus = (doc: any) => {
-    // 문서의 인덱싱 상태를 반환 (예시: id 기반으로 랜덤하게 상태 생성)
-    const docId = doc.id || 0;
-    const status = ['완료', '인덱싱 중', '실패'][docId % 3];
-    
-    const statusConfig = {
-      '완료': { label: '완료', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
-      '인덱싱 중': { label: '인덱싱 중', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
-      '실패': { label: '실패', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }
-    };
-    
-    return statusConfig[status as keyof typeof statusConfig] || statusConfig['완료'];
-  };
 
   // 문서 미리보기
   const handleDocumentPreview = async (doc: any) => {
@@ -935,6 +921,21 @@ function MasterAdmin() {
   const ITEMS_PER_PAGE = 15;
 
   // 헬퍼 함수들
+  // 인덱싱 상태 매핑
+  const getIndexingStatus = (doc: any) => {
+    // 문서의 인덱싱 상태를 반환 (예시: id 기반으로 랜덤하게 상태 생성)
+    const docId = doc.id || 0;
+    const status = ['완료', '인덱싱 중', '실패'][docId % 3];
+    
+    const statusConfig = {
+      '완료': { label: '완료', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
+      '인덱싱 중': { label: '인덱싱 중', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
+      '실패': { label: '실패', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }
+    };
+    
+    return statusConfig[status as keyof typeof statusConfig] || statusConfig['완료'];
+  };
+
   const getUserRoleForAgent = (userData: any, agent: any) => {
     if (!userData || !agent) return 'user';
     
