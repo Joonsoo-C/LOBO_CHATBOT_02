@@ -784,13 +784,13 @@
     "name": "경영전략전공",
     "upperCategory": "경영대학",
     "lowerCategory": "경영학과",
-    "detailCategory": "경영전략전공",
+    "detailCategory": "none",
     "description": "세부 조직 (활성)",
     "isActive": true,
     "status": "활성",
     "manager": null,
     "createdAt": "2025-06-29T10:11:14.568Z",
-    "updatedAt": "2025-06-29T10:11:14.568Z"
+    "updatedAt": "2025-08-24T13:33:29.338Z"
   },
   {
     "id": 62,

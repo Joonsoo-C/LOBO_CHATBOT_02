@@ -46,7 +46,8 @@ import {
   Monitor,
   Globe,
   LogOut,
-  Image
+  Image,
+  File
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1393,6 +1394,14 @@ ${data.insights.map((insight: string) => `- ${insight}`).join('\n')}
             target.style.height = Math.min(target.scrollHeight, 120) + 'px';
           }}
         />
+        <button
+          className="file-attach-button"
+          onClick={() => setShowFileModal(true)}
+          disabled={sendMessageMutation.isPending}
+          title="파일 첨부"
+        >
+          <File className="w-4 h-4" />
+        </button>
         <button
           className="minimal-send-button"
           onClick={handleSendMessage}
