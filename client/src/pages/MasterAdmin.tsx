@@ -8251,24 +8251,6 @@ function MasterAdmin() {
                       />
                     </div>
 
-                    {/* 개별 조직 입력창 */}
-                    <FormField
-                      control={orgCategoryEditForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>개별 조직</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="개별 조직명을 입력하세요"
-                              {...field}
-                              className="mt-[8px] mb-[8px]"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
                     <FormField
                       control={orgCategoryEditForm.control}
