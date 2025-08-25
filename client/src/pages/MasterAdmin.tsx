@@ -9142,7 +9142,7 @@ function MasterAdmin() {
                   </div>
                   
                   <div className="md:col-span-1">
-                    <Button className="h-10 w-full">
+                    <Button variant="outline" className="h-10 w-full border-gray-300 bg-white hover:bg-gray-50">
                       검색
                     </Button>
                   </div>
