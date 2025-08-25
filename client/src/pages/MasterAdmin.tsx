@@ -5223,10 +5223,7 @@ function MasterAdmin() {
                   <Clock className="h-4 w-4 text-green-600" />
                 </div>
               </Card>
-            </div>
 
-            {/* 하단 부가 지표 - 5개 카드를 2행으로 배치 */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
               <Card className="p-2 border-green-200 bg-green-50 dark:bg-green-900/20">
                 <div className="flex items-center justify-between">
                   <div>
@@ -5237,15 +5234,18 @@ function MasterAdmin() {
                   <CheckCircle className="h-4 w-4 text-green-600" />
                 </div>
               </Card>
+            </div>
 
-              <Card className="p-2">
+            {/* 하단 부가 지표 - 4개 카드를 1행으로 배치 */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+              <Card className="p-2 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-0.5">문서 총 용량</div>
-                    <div className="text-base font-bold">0.1M</div>
-                    <div className="text-xs text-muted-foreground">토큰</div>
+                    <div className="text-xs text-orange-600 mb-0.5">문서 총 용량</div>
+                    <div className="text-base font-bold text-orange-900 dark:text-orange-100">0.1M</div>
+                    <div className="text-xs text-orange-700 dark:text-orange-300">토큰</div>
                   </div>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <FileText className="h-4 w-4 text-orange-600" />
                 </div>
               </Card>
 
