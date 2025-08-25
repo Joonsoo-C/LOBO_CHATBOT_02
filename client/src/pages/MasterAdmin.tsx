@@ -7521,7 +7521,7 @@ function MasterAdmin() {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 주제 TOP10</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">학생들이 가장 많이 질문하는 주제들을 순위별로 보여줍니다</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">학생들이 가장 많이 한 질문 주제</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -7555,7 +7555,7 @@ function MasterAdmin() {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 주제</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">최근 새롭게 등장한 질문 주제들을 최대 10개까지 보여줍니다</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">새롭게 등장한 질문 주제</p>
                   </div>
                 </div>
                 <div className="space-y-2">
