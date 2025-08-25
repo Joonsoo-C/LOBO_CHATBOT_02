@@ -7420,7 +7420,7 @@ function MasterAdmin() {
 
 
             {/* 필터링 옵션 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 space-y-4">
+            <div className="space-y-4">
               <h3 className="font-semibold mb-4 text-[20px]">로그 검색</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -7554,6 +7554,14 @@ function MasterAdmin() {
               </div>
             </div>
 
+            {/* 기간 날짜 정보 */}
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
+                <span className="text-gray-500 dark:text-gray-400">📅</span>
+                <span>{getPeriodPillText()}</span>
+              </div>
+            </div>
+
             {/* Q&A 분석 카드 섹션 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
               {/* 카드 1: 인기 질문 키워드 TOP5 */}
@@ -7642,10 +7650,6 @@ function MasterAdmin() {
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-3">
                   <CardTitle className="font-semibold tracking-tight text-[20px]">{t('admin.questionAnswerList')}</CardTitle>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
-                    <span className="text-gray-500 dark:text-gray-400">📅</span>
-                    <span>{getPeriodPillText()}</span>
-                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-sm text-gray-600 dark:text-gray-400">
