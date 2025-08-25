@@ -9141,22 +9141,22 @@ function MasterAdmin() {
               </CardContent>
             </Card>
 
-            {/* 월말 토큰 초과 예상 요약 카드 */}
+            {/* 이번 달 토큰 부족 예상 요약 카드 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 월말 토큰 초과 예상 조직 */}
+              {/* 이번 달 토큰 부족 예상 조직 */}
               <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Building className="h-6 w-6 text-orange-600" />
                       <div>
-                        <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</h3>
+                        <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">이번 달 토큰 부족 예상 조직</h3>
                         <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">평균 사용량 증가율 기준</p>
                       </div>
                     </div>
                     <button
                       onClick={() => {
-                        setTokenKeywordFilter('월말 토큰 초과 예상 조직');
+                        setTokenKeywordFilter('이번 달 토큰 부족 예상 조직');
                         // 조직 목록으로 스크롤 이동
                         const tokenTable = document.querySelector('[data-testid="token-usage-table"]');
                         if (tokenTable) {
@@ -9172,14 +9172,14 @@ function MasterAdmin() {
                 </CardContent>
               </Card>
 
-              {/* 월말 토큰 초과 예상 사용자 */}
+              {/* 이번 달 토큰 부족 예상 사용자 */}
               <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Users className="h-6 w-6 text-red-600" />
                       <div>
-                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">월말 토큰 초과 예상 사용자</h3>
+                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">이번 달 토큰 부족 예상 사용자</h3>
                         <p className="text-xs text-red-600 dark:text-red-400 mt-1">최근 7일 평균 사용량 기준</p>
                       </div>
                     </div>
