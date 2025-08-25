@@ -749,7 +749,8 @@ import {
   Share2,
   FileUp,
   Clipboard,
-  Building
+  Building,
+  BarChart3
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -11138,6 +11139,32 @@ function MasterAdmin() {
                         </FormItem>
                       )}
                     />
+                  </div>
+                </div>
+
+                {/* 토큰 사용현황 */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <BarChart3 className="h-4 w-4 text-blue-600" />
+                    <Label className="text-sm font-medium">토큰 사용 현황</Label>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-300">사용량</span>
+                      <span className="text-sm font-medium text-green-600">22% 사용</span>
+                    </div>
+                    
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: '22%' }}
+                      ></div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      다음 리셋: 2025-08-31
+                    </div>
                   </div>
                 </div>
 

@@ -8,7 +8,7 @@
     "lastName": "Admin",
     "name": "Master Admin",
     "email": "admin@lobo.edu",
-    "userType": "admin",
+    "userType": "faculty",
     "createdAt": "2025-06-29T03:38:07.033Z",
     "lastLoginAt": "2025-06-29T03:38:07.034Z",
     "isActive": true,
@@ -20,7 +20,7 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "LoBo AI 챗봇 통합 관리자 센터 마스터 계정",
-    "updatedAt": "2025-07-01T03:42:51.103Z"
+    "updatedAt": "2025-08-25T06:33:54.515Z"
   },
   {
     "id": "user1081",
@@ -49,7 +49,7 @@
     "id": "user1082",
     "username": "user1082",
     "password": "$2b$10$aXsDNokW66v1jl0NGmhsE.W9UA/zD6nmvoQ0ffntsA0eM4MPpEGuq",
-    "role": "agent_admin",
+    "role": "student",
     "firstName": "장",
     "lastName": "지훈",
     "name": "장지훈",
@@ -66,7 +66,7 @@
     "organizationAffiliations": 0,
     "agentPermissions": 0,
     "userMemo": "인문대학 국어국문학과 현대문학전공 학생",
-    "updatedAt": "2025-07-26T04:01:20.460Z"
+    "updatedAt": "2025-07-01T03:42:51.103Z"
   },
   {
     "id": "agent_admin_001",
