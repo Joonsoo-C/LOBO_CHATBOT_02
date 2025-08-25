@@ -9145,6 +9145,14 @@ function MasterAdmin() {
               </CardContent>
             </Card>
 
+            {/* 기간 날짜 정보 */}
+            <div className="flex justify-start">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-base font-medium">
+                <span className="text-gray-500 dark:text-gray-400">📅</span>
+                <span>{getTokenPeriodPillText()}</span>
+              </div>
+            </div>
+
             {/* 토큰 소비량 요약 카드 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               {/* 토큰 소비량 일일 평균 */}
@@ -9253,14 +9261,8 @@ function MasterAdmin() {
             <Card data-testid="token-usage-table">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">조직별 토큰 사용량 목록</CardTitle>
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    전체 {filteredTokenData?.length || 0}개 조직 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
-                  </div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
-                    <span className="text-gray-500 dark:text-gray-400">📅</span>
-                    <span>{getTokenPeriodPillText()}</span>
-                  </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  전체 {filteredTokenData?.length || 0}개 조직 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
                 </div>
               </CardHeader>
               <CardContent>
