@@ -7497,7 +7497,7 @@ function MasterAdmin() {
                   </Select>
                 </div>
                 <div>
-                  <Button className="h-10 w-full" onClick={resetQAFilters}>
+                  <Button variant="outline" className="h-10 w-full border-gray-300 bg-white hover:bg-gray-50" onClick={resetQAFilters}>
                     필터 초기화
                   </Button>
                 </div>
@@ -7547,7 +7547,7 @@ function MasterAdmin() {
                   </div>
                 </div>
                 <div className="md:col-span-1">
-                  <Button className="h-10 w-full">
+                  <Button className="h-10 w-full bg-blue-600 hover:bg-blue-700 text-white">
                     검색
                   </Button>
                 </div>
