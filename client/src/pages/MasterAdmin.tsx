@@ -9145,6 +9145,51 @@ function MasterAdmin() {
               </CardContent>
             </Card>
 
+            {/* 토큰 소비량 요약 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* 토큰 소비량 일일 평균 */}
+              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
+                        <Zap className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200">토큰 소비량 일일 평균</h3>
+                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">최근 30일 평균 기준</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">247K</div>
+                      <div className="text-xs text-blue-700 dark:text-blue-300">토큰/일</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 이번 달 예상 토큰 소비량 */}
+              <Card className="border-green-200 bg-green-50 dark:bg-green-900/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
+                        <Zap className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">이번 달 예상 토큰 소비량</h3>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">현재 사용량 추세 기준</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-green-900 dark:text-green-100">7.6M</div>
+                      <div className="text-xs text-green-700 dark:text-green-300">토큰/월</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* 이번 달 토큰 부족 예상 요약 카드 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* 이번 달 토큰 부족 예상 조직 */}
