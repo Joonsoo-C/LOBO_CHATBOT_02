@@ -2051,11 +2051,7 @@ function MasterAdmin() {
   const [showTokenLimitModal, setShowTokenLimitModal] = useState(false);
   const [selectedOrgForTokenLimit, setSelectedOrgForTokenLimit] = useState<any>(null);
   const [tokenLimitSettings, setTokenLimitSettings] = useState({
-    dailyLimit: '',
-    weeklyLimit: '',
     monthlyLimit: '',
-    enableDailyLimit: false,
-    enableWeeklyLimit: false,
     enableMonthlyLimit: false
   });
 
@@ -13604,55 +13600,6 @@ function MasterAdmin() {
             </DialogHeader>
 
             <div className="space-y-6">
-              {/* 일일 한도 */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="enableDailyLimit"
-                    checked={tokenLimitSettings.enableDailyLimit}
-                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableDailyLimit: e.target.checked }))}
-                    className="rounded border-gray-300"
-                  />
-                  <Label htmlFor="enableDailyLimit" className="text-sm font-medium">일일 토큰 한도</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    type="number"
-                    placeholder="예: 10000"
-                    value={tokenLimitSettings.dailyLimit}
-                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, dailyLimit: e.target.value }))}
-                    disabled={!tokenLimitSettings.enableDailyLimit}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-gray-500">토큰</span>
-                </div>
-              </div>
-
-              {/* 주간 한도 */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="enableWeeklyLimit"
-                    checked={tokenLimitSettings.enableWeeklyLimit}
-                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableWeeklyLimit: e.target.checked }))}
-                    className="rounded border-gray-300"
-                  />
-                  <Label htmlFor="enableWeeklyLimit" className="text-sm font-medium">주간 토큰 한도</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    type="number"
-                    placeholder="예: 50000"
-                    value={tokenLimitSettings.weeklyLimit}
-                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, weeklyLimit: e.target.value }))}
-                    disabled={!tokenLimitSettings.enableWeeklyLimit}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-gray-500">토큰</span>
-                </div>
-              </div>
 
               {/* 월간 한도 */}
               <div className="space-y-3">
@@ -13692,11 +13639,7 @@ function MasterAdmin() {
                 onClick={() => {
                   setShowTokenLimitModal(false);
                   setTokenLimitSettings({
-                    dailyLimit: '',
-                    weeklyLimit: '',
                     monthlyLimit: '',
-                    enableDailyLimit: false,
-                    enableWeeklyLimit: false,
                     enableMonthlyLimit: false
                   });
                 }}
@@ -13712,11 +13655,7 @@ function MasterAdmin() {
                   });
                   setShowTokenLimitModal(false);
                   setTokenLimitSettings({
-                    dailyLimit: '',
-                    weeklyLimit: '',
                     monthlyLimit: '',
-                    enableDailyLimit: false,
-                    enableWeeklyLimit: false,
                     enableMonthlyLimit: false
                   });
                 }}
