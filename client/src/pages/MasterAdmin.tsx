@@ -2168,13 +2168,13 @@ function MasterAdmin() {
       });
     });
 
-    // 인기 질문 키워드 TOP5
-    const popularKeywords = Object.entries(keywordCount)
+    // 인기 질문 주제 TOP10 (전체 질문에서 주제 추출)
+    const popularTopics = Object.entries(keywordCount)
       .sort(([,a], [,b]) => b - a)
-      .slice(0, 5)
-      .map(([keyword, count]) => ({ keyword, count }));
+      .slice(0, 10)
+      .map(([keyword, count]) => ({ topic: keyword, count }));
 
-    // 신규 질문 유형 (기간별 새로운 키워드)
+    // 신규 질문 주제 (기간별 새로운 주제들)
     const recentLogs = schoolAgentLogs.filter(log => {
       const logDate = new Date(log.lastMessageAt || log.createdAt);
       const recentPeriod = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 최근 1주일
@@ -2194,15 +2194,15 @@ function MasterAdmin() {
       });
     });
 
-    const newKeywords = Object.entries(recentKeywordCount)
+    const newTopics = Object.entries(recentKeywordCount)
       .sort(([,a], [,b]) => b - a)
-      .slice(0, 4)
-      .map(([keyword, count]) => ({ keyword, count, isNew: true }));
+      .slice(0, 10)
+      .map(([keyword, count]) => ({ topic: keyword, count, isNew: true }));
 
     return {
       topAgents,
-      popularKeywords,
-      newKeywords
+      popularTopics,
+      newTopics
     };
   }, [conversationLogs, qaPeriodFilter]);
 
@@ -7519,62 +7519,70 @@ function MasterAdmin() {
               {/* 카드 1: 인기 질문 키워드 TOP5 */}
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 키워드 TOP5</h3>
+                  <div>
+                    <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 주제 TOP10</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">학생들이 가장 많이 질문하는 주제들을 순위별로 보여줍니다</p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {qaAnalyticsData.popularKeywords.slice(0, 5).map((keyword, index) => (
+                  {qaAnalyticsData.popularTopics.slice(0, 10).map((topic, index) => (
                     <button
-                      key={keyword.keyword}
+                      key={topic.topic}
                       className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs font-medium hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
                       onClick={() => {
-                        // 드릴다운: 검색창에 해당 키워드 자동 입력 후 질문 응답 목록 갱신
-                        setQaSearchQuery(keyword.keyword);
+                        // 드릴다운: 검색창에 해당 주제 자동 입력 후 질문 응답 목록 갱신
+                        setQaSearchQuery(topic.topic);
                       }}
-                      title={`${keyword.keyword} 키워드로 검색`}
+                      title={`${topic.topic} 주제로 검색`}
                     >
-                      #{keyword.keyword}
-                      <span className="ml-1 px-1.5 py-0.5 bg-blue-200 dark:bg-blue-700 rounded text-xs">
-                        {keyword.count}
+                      <span className="w-5 h-5 rounded-full bg-blue-600 dark:bg-blue-400 text-white text-xs flex items-center justify-center font-bold">
+                        {index + 1}
                       </span>
+                      {topic.topic}
+                      <span className="text-blue-600 dark:text-blue-400 font-bold">({topic.count})</span>
                     </button>
                   ))}
                 </div>
-                {qaAnalyticsData.popularKeywords.length > 5 && (
-                  <div className="mt-2 text-xs text-gray-500">
-                    + {qaAnalyticsData.popularKeywords.length - 5}개 더
+                {qaAnalyticsData.popularTopics.length > 10 && (
+                  <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    + {qaAnalyticsData.popularTopics.length - 10}개 더
                   </div>
                 )}
               </Card>
 
-              {/* 카드 2: 신규 질문 유형 */}
+              {/* 카드 2: 신규 질문 주제 */}
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 유형</h3>
+                  <div>
+                    <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 주제</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">최근 새롭게 등장한 질문 주제들을 최대 10개까지 보여줍니다</p>
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  {qaAnalyticsData.newKeywords.length > 0 ? (
+                  {qaAnalyticsData.newTopics.length > 0 ? (
                     <>
                       <div className="flex flex-wrap gap-2">
-                        {qaAnalyticsData.newKeywords.slice(0, 4).map((keyword, index) => (
+                        {qaAnalyticsData.newTopics.slice(0, 10).map((topic, index) => (
                           <button
-                            key={keyword.keyword}
+                            key={topic.topic}
                             className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                             onClick={() => {
-                              // 드릴다운: 해당 키워드로 질문 목록 필터
-                              setQaSearchQuery(keyword.keyword);
+                              // 드릴다운: 해당 주제로 질문 목록 필터
+                              setQaSearchQuery(topic.topic);
                             }}
-                            title={`${keyword.keyword} 신규 키워드로 검색`}
+                            title={`${topic.topic} 신규 주제로 검색`}
                           >
-                            {keyword.keyword}
-                            <span className="ml-1 px-1 py-0.5 bg-green-200 dark:bg-green-700 rounded text-xs">
-                              {keyword.count}
+                            <span className="w-4 h-4 rounded-full bg-green-600 dark:bg-green-400 text-white text-xs flex items-center justify-center font-bold">
+                              {index + 1}
                             </span>
+                            {topic.topic}
+                            <span className="text-green-600 dark:text-green-400 font-bold">({topic.count})</span>
                           </button>
                         ))}
                       </div>
-                      {qaAnalyticsData.newKeywords.length > 4 && (
+                      {qaAnalyticsData.newTopics.length > 10 && (
                         <div className="text-xs text-gray-500">
-                          , +{qaAnalyticsData.newKeywords.length - 4}개 더...
+                          + {qaAnalyticsData.newTopics.length - 10}개 더
                         </div>
                       )}
                     </>
@@ -7582,7 +7590,7 @@ function MasterAdmin() {
                     <div className="text-sm text-gray-500 text-center py-2">
                       {qaPeriodFilter === 'today' ? '오늘' : 
                        qaPeriodFilter === 'week' ? '이번 주' : 
-                       qaPeriodFilter === 'month' ? '이번 달' : '해당 기간'} 신규 질문 유형이 없습니다
+                       qaPeriodFilter === 'month' ? '이번 달' : '해당 기간'} 신규 질문 주제가 없습니다
                     </div>
                   )}
                 </div>
