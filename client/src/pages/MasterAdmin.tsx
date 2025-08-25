@@ -2047,6 +2047,18 @@ function MasterAdmin() {
   const [orgRiskFilter, setOrgRiskFilter] = useState('all');
   const [selectedOrgForDrilldown, setSelectedOrgForDrilldown] = useState('');
 
+  // 토큰 한도 설정 팝업 상태
+  const [showTokenLimitModal, setShowTokenLimitModal] = useState(false);
+  const [selectedOrgForTokenLimit, setSelectedOrgForTokenLimit] = useState<any>(null);
+  const [tokenLimitSettings, setTokenLimitSettings] = useState({
+    dailyLimit: '',
+    weeklyLimit: '',
+    monthlyLimit: '',
+    enableDailyLimit: false,
+    enableWeeklyLimit: false,
+    enableMonthlyLimit: false
+  });
+
   // 사용량 위험 통계 계산 (샘플 데이터)
   const usageRiskStats = useMemo(() => {
     // 실제 구현에서는 사용자별 한도/사용량 데이터를 기반으로 계산
@@ -9244,6 +9256,9 @@ function MasterAdmin() {
                             </span>
                           </div>
                         </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+                          설정
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -9284,6 +9299,21 @@ function MasterAdmin() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-center">{personnelCount}명</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${getUsageColor(org.avgUsagePercent)}`}>
                               {org.avgUsagePercent}%
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                              <button
+                                onClick={() => {
+                                  setSelectedOrgForTokenLimit(org);
+                                  setShowTokenLimitModal(true);
+                                }}
+                                className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                title="토큰 사용량 한도 설정"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                              </button>
                             </td>
                           </tr>
                         );
@@ -13537,6 +13567,140 @@ function MasterAdmin() {
                 </div>
               </form>
             </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* 토큰 한도 설정 팝업 */}
+        <Dialog open={showTokenLimitModal} onOpenChange={setShowTokenLimitModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>토큰 사용량 한도 설정</DialogTitle>
+              <DialogDescription>
+                {selectedOrgForTokenLimit?.organizationName}의 토큰 사용량 한도를 설정합니다.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6">
+              {/* 일일 한도 */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="enableDailyLimit"
+                    checked={tokenLimitSettings.enableDailyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableDailyLimit: e.target.checked }))}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="enableDailyLimit" className="text-sm font-medium">일일 토큰 한도</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="number"
+                    placeholder="예: 10000"
+                    value={tokenLimitSettings.dailyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, dailyLimit: e.target.value }))}
+                    disabled={!tokenLimitSettings.enableDailyLimit}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-gray-500">토큰</span>
+                </div>
+              </div>
+
+              {/* 주간 한도 */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="enableWeeklyLimit"
+                    checked={tokenLimitSettings.enableWeeklyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableWeeklyLimit: e.target.checked }))}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="enableWeeklyLimit" className="text-sm font-medium">주간 토큰 한도</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="number"
+                    placeholder="예: 50000"
+                    value={tokenLimitSettings.weeklyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, weeklyLimit: e.target.value }))}
+                    disabled={!tokenLimitSettings.enableWeeklyLimit}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-gray-500">토큰</span>
+                </div>
+              </div>
+
+              {/* 월간 한도 */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="enableMonthlyLimit"
+                    checked={tokenLimitSettings.enableMonthlyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableMonthlyLimit: e.target.checked }))}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="enableMonthlyLimit" className="text-sm font-medium">월간 토큰 한도</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="number"
+                    placeholder="예: 200000"
+                    value={tokenLimitSettings.monthlyLimit}
+                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, monthlyLimit: e.target.value }))}
+                    disabled={!tokenLimitSettings.enableMonthlyLimit}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-gray-500">토큰</span>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  설정된 한도를 초과하면 해당 조직의 사용자에게 알림이 전송되고, 필요시 사용을 제한할 수 있습니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowTokenLimitModal(false);
+                  setTokenLimitSettings({
+                    dailyLimit: '',
+                    weeklyLimit: '',
+                    monthlyLimit: '',
+                    enableDailyLimit: false,
+                    enableWeeklyLimit: false,
+                    enableMonthlyLimit: false
+                  });
+                }}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={() => {
+                  // 토큰 한도 설정 저장 로직
+                  console.log('토큰 한도 설정:', {
+                    organization: selectedOrgForTokenLimit,
+                    settings: tokenLimitSettings
+                  });
+                  setShowTokenLimitModal(false);
+                  setTokenLimitSettings({
+                    dailyLimit: '',
+                    weeklyLimit: '',
+                    monthlyLimit: '',
+                    enableDailyLimit: false,
+                    enableWeeklyLimit: false,
+                    enableMonthlyLimit: false
+                  });
+                }}
+              >
+                설정 저장
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </main>
