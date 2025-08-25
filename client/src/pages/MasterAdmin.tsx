@@ -749,8 +749,7 @@ import {
   Share2,
   FileUp,
   Clipboard,
-  Building,
-  BarChart3
+  Building
 } from "lucide-react";
 import { Link } from "wouter";
 
