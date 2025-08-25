@@ -5283,9 +5283,9 @@ function MasterAdmin() {
               </Card>
             </div>
 
-            {/* 추가 경고 카드 - 토큰 부족 예상 조직 */}
-            <div className="grid grid-cols-1 gap-3">
-              <Card className="p-2 border-red-200 bg-red-50 dark:bg-red-900/20 lg:col-span-5">
+            {/* 추가 경고 카드 - 토큰 부족 예상 조직/사용자 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+              <Card className="p-2 border-red-200 bg-red-50 dark:bg-red-900/20">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-xs text-red-600 mb-0.5">이번 달 토큰 부족 예상 조직</div>
@@ -5293,6 +5293,17 @@ function MasterAdmin() {
                     <div className="text-xs text-red-700 dark:text-red-300">현재 사용량 기준 예상</div>
                   </div>
                   <Building className="h-4 w-4 text-red-600" />
+                </div>
+              </Card>
+
+              <Card className="p-2 border-red-200 bg-red-50 dark:bg-red-900/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-red-600 mb-0.5">이번 달 토큰 부족 예상 사용자</div>
+                    <div className="text-base font-bold text-red-900 dark:text-red-100">73명 사용자</div>
+                    <div className="text-xs text-red-700 dark:text-red-300">월 한도 초과 예상</div>
+                  </div>
+                  <Users className="h-4 w-4 text-red-600" />
                 </div>
               </Card>
             </div>
