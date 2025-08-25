@@ -2586,14 +2586,15 @@ function MasterAdmin() {
     // 사용자 유형 필터링
     if (qaUserTypeFilter !== 'all') {
       filtered = filtered.filter(log => {
+        const userType = log.userType?.toLowerCase() || '';
         const position = log.userPosition?.toLowerCase() || '';
         switch (qaUserTypeFilter) {
           case 'student':
-            return position.includes('학생') || position.includes('대학원생') || position.includes('학부생');
+            return userType === 'student' || position.includes('학생') || position.includes('대학원생') || position.includes('학부생');
           case 'faculty':
-            return position.includes('교수') || position.includes('직원') || position.includes('연구원');
+            return userType === 'faculty' || position.includes('교수') || position.includes('직원') || position.includes('연구원');
           case 'admin':
-            return position.includes('관리자') || position.includes('마스터');
+            return userType.includes('admin') || position.includes('관리자') || position.includes('마스터');
           default:
             return true;
         }
@@ -2602,17 +2603,17 @@ function MasterAdmin() {
     
     // 상위 조직 필터링
     if (qaSelectedUpperCategory !== 'all') {
-      filtered = filtered.filter(log => log.userUpperCategory === qaSelectedUpperCategory);
+      filtered = filtered.filter(log => log.upperCategory === qaSelectedUpperCategory);
     }
     
     // 하위 조직 필터링
     if (qaSelectedLowerCategory !== 'all') {
-      filtered = filtered.filter(log => log.userLowerCategory === qaSelectedLowerCategory);
+      filtered = filtered.filter(log => log.lowerCategory === qaSelectedLowerCategory);
     }
     
     // 세부 조직 필터링
     if (qaSelectedDetailCategory !== 'all') {
-      filtered = filtered.filter(log => log.userDetailCategory === qaSelectedDetailCategory);
+      filtered = filtered.filter(log => log.detailCategory === qaSelectedDetailCategory);
     }
     
     // 조직명 필터링
@@ -2621,9 +2622,9 @@ function MasterAdmin() {
         // 조직 카테고리 데이터에서 해당 조직명 찾기
         const organization = organizationCategories?.find(org => org.name === qaSelectedOrganizationName);
         if (organization) {
-          return log.userUpperCategory === organization.upperCategory &&
-                 log.userLowerCategory === organization.lowerCategory &&
-                 log.userDetailCategory === organization.detailCategory;
+          return log.upperCategory === organization.upperCategory &&
+                 log.lowerCategory === organization.lowerCategory &&
+                 log.detailCategory === organization.detailCategory;
         }
         return false;
       });
