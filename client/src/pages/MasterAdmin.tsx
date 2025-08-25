@@ -997,6 +997,10 @@ function MasterAdmin() {
   const [tokenSortField, setTokenSortField] = useState<keyof TokenUsage>('timestamp');
   const [tokenSortDirection, setTokenSortDirection] = useState<'asc' | 'desc'>('desc');
 
+  // 토큰 월별 캘린더 상태
+  const [tokenCalendarYear, setTokenCalendarYear] = useState(new Date().getFullYear());
+  const [tokenSelectedMonth, setTokenSelectedMonth] = useState<number | null>(new Date().getMonth() + 1);
+
   // 토큰 정렬 함수
   const handleTokenSort = (field: string) => {
     if (tokenSortField === field) {
@@ -9097,17 +9101,48 @@ function MasterAdmin() {
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mt-6">
                   <div className="md:col-span-1">
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">기간</Label>
-                    <Select value={tokenPeriodFilter} onValueChange={setTokenPeriodFilter}>
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="최근 1개월" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[10000]">
-                        <SelectItem value="today">오늘</SelectItem>
-                        <SelectItem value="week">최근 1주일</SelectItem>
-                        <SelectItem value="month">최근 1개월</SelectItem>
-                        <SelectItem value="quarter">최근 3개월</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="border rounded-md p-3 bg-white dark:bg-gray-800 h-auto min-h-[80px]">
+                      {/* 연도 헤더 */}
+                      <div className="flex items-center justify-between mb-3">
+                        <button
+                          onClick={() => setTokenCalendarYear(prev => prev - 1)}
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                          type="button"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <span className="text-base font-medium">{tokenCalendarYear}</span>
+                        <button
+                          onClick={() => setTokenCalendarYear(prev => prev + 1)}
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                          type="button"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                      
+                      {/* 월 그리드 */}
+                      <div className="grid grid-cols-3 gap-1 text-xs">
+                        {['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'].map((monthName, index) => (
+                          <button
+                            key={monthName}
+                            onClick={() => {
+                              const monthNum = index + 1;
+                              setTokenSelectedMonth(monthNum);
+                              setTokenPeriodFilter(`${tokenCalendarYear}-${String(monthNum).padStart(2, '0')}`);
+                            }}
+                            className={`p-2 text-center rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors ${
+                              tokenSelectedMonth === index + 1 
+                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium'
+                                : 'text-gray-600 dark:text-gray-400'
+                            }`}
+                            type="button"
+                          >
+                            {monthName}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="md:col-span-1">
