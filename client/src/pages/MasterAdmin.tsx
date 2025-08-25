@@ -2051,8 +2051,7 @@ function MasterAdmin() {
   const [showTokenLimitModal, setShowTokenLimitModal] = useState(false);
   const [selectedOrgForTokenLimit, setSelectedOrgForTokenLimit] = useState<any>(null);
   const [tokenLimitSettings, setTokenLimitSettings] = useState({
-    monthlyLimit: '',
-    enableMonthlyLimit: false
+    monthlyLimit: ''
   });
 
   // 사용량 위험 통계 계산 (샘플 데이터)
@@ -13604,14 +13603,7 @@ function MasterAdmin() {
               {/* 월간 한도 */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="enableMonthlyLimit"
-                    checked={tokenLimitSettings.enableMonthlyLimit}
-                    onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, enableMonthlyLimit: e.target.checked }))}
-                    className="rounded border-gray-300"
-                  />
-                  <Label htmlFor="enableMonthlyLimit" className="text-sm font-medium">월간 토큰 한도</Label>
+                  <Label className="text-sm font-medium">월간 토큰 한도</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Input
@@ -13619,7 +13611,6 @@ function MasterAdmin() {
                     placeholder="예: 200000"
                     value={tokenLimitSettings.monthlyLimit}
                     onChange={(e) => setTokenLimitSettings(prev => ({ ...prev, monthlyLimit: e.target.value }))}
-                    disabled={!tokenLimitSettings.enableMonthlyLimit}
                     className="flex-1"
                   />
                   <span className="text-sm text-gray-500">토큰</span>
@@ -13639,8 +13630,7 @@ function MasterAdmin() {
                 onClick={() => {
                   setShowTokenLimitModal(false);
                   setTokenLimitSettings({
-                    monthlyLimit: '',
-                    enableMonthlyLimit: false
+                    monthlyLimit: ''
                   });
                 }}
               >
@@ -13655,8 +13645,7 @@ function MasterAdmin() {
                   });
                   setShowTokenLimitModal(false);
                   setTokenLimitSettings({
-                    monthlyLimit: '',
-                    enableMonthlyLimit: false
+                    monthlyLimit: ''
                   });
                 }}
               >
