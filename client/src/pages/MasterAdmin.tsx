@@ -7560,7 +7560,7 @@ function MasterAdmin() {
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">인기 질문 주제 TOP10</h3>
+                    <h3 className="font-semibold text-[20px] text-gray-800 dark:text-gray-200">인기 질문 주제 TOP10</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">학생들이 가장 많이 한 질문 주제</p>
                   </div>
                 </div>
@@ -7594,7 +7594,7 @@ function MasterAdmin() {
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200">신규 질문 주제</h3>
+                    <h3 className="font-semibold text-[20px] text-gray-800 dark:text-gray-200">신규 질문 주제</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">새롭게 등장한 질문 주제</p>
                   </div>
                 </div>
