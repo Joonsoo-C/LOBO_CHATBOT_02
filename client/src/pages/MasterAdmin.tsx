@@ -5192,24 +5192,15 @@ function MasterAdmin() {
               <Card className="p-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">{t('admin.totalConversations')}</div>
-                    <div className="text-lg font-bold">{stats?.totalConversations || 0}</div>
-                    <div className="text-xs text-[#16a34a]">{t('admin.totalMessages')}: {stats?.totalMessages || 0}</div>
+                    <div className="text-xs text-muted-foreground mb-1">총 조직</div>
+                    <div className="text-lg font-bold">124</div>
+                    <div className="text-xs text-[#16a34a]">활성 조직: 98</div>
                   </div>
-                  <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                  <Building className="h-5 w-5 text-muted-foreground" />
                 </div>
               </Card>
 
-              <Card className="p-3 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs text-blue-600 mb-1">{t('admin.todayActivity')}</div>
-                    <div className="text-lg font-bold text-blue-900 dark:text-blue-100">{stats?.todayMessages || 0}</div>
-                    <div className="text-xs text-blue-700 dark:text-blue-300">{t('admin.weeklyGrowth')}: +{stats?.weeklyGrowth || 0}%</div>
-                  </div>
-                  <Activity className="h-5 w-5 text-blue-600" />
-                </div>
-              </Card>
+
 
               <Card className="p-3 border-green-200 bg-green-50 dark:bg-green-900/20">
                 <div className="flex items-center justify-between">
@@ -5247,6 +5238,17 @@ function MasterAdmin() {
                 </div>
               </Card>
 
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">문서 총 용량</div>
+                    <div className="text-lg font-bold">0.1M</div>
+                    <div className="text-xs text-muted-foreground">토큰</div>
+                  </div>
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                </div>
+              </Card>
+
               <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
@@ -5261,22 +5263,36 @@ function MasterAdmin() {
               <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-orange-600 mb-1">{t('admin.tokenEstimatedCostTitle')}</div>
-                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">₩6,761</div>
-                    <div className="text-xs text-orange-700 dark:text-orange-300">{t('admin.monthlyEstimated')}</div>
+                    <div className="text-xs text-orange-600 mb-1">토큰 소비량 월 평균</div>
+                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">78K</div>
+                    <div className="text-xs text-orange-700 dark:text-orange-300">전월 대비</div>
                   </div>
-                  <DollarSign className="h-5 w-5 text-orange-600" />
+                  <Zap className="h-5 w-5 text-orange-600" />
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">문서 총 용량</div>
-                    <div className="text-lg font-bold">0.1M</div>
-                    <div className="text-xs text-muted-foreground">토큰</div>
+                    <div className="text-xs text-orange-600 mb-1">이번 달 예상 토큰 소비량</div>
+                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">2.4M</div>
+                    <div className="text-xs text-orange-700 dark:text-orange-300">월말 예상</div>
                   </div>
-                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <Zap className="h-5 w-5 text-orange-600" />
+                </div>
+              </Card>
+            </div>
+
+            {/* 추가 경고 카드 - 토큰 부족 예상 조직 */}
+            <div className="grid grid-cols-1 gap-3">
+              <Card className="p-3 border-red-200 bg-red-50 dark:bg-red-900/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-red-600 mb-1">이번 달 토큰 부족 예상 조직</div>
+                    <div className="text-lg font-bold text-red-900 dark:text-red-100">15개 조직</div>
+                    <div className="text-xs text-red-700 dark:text-red-300">현재 사용량 기준 예상</div>
+                  </div>
+                  <Building className="h-5 w-5 text-red-600" />
                 </div>
               </Card>
             </div>
