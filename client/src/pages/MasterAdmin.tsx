@@ -749,7 +749,7 @@ import {
   Share2,
   FileUp,
   Clipboard,
-  Building,
+  Building
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -9118,92 +9118,53 @@ function MasterAdmin() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* 월말 토큰 초과 예상 조직 */}
               <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
-                <CardHeader className="pb-3">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</CardTitle>
-                    <Building className="h-5 w-5 text-orange-600" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {/* 예상 초과 조직 목록 (샘플 데이터) */}
-                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">홍보팀</div>
-                        <div className="text-xs text-orange-700 dark:text-orange-300">5명 중 3명 초과 예상</div>
-                      </div>
-                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
-                        <div className="font-semibold">현재 104%</div>
-                        <div>예상 115%</div>
+                    <div className="flex items-center space-x-3">
+                      <Building className="h-6 w-6 text-orange-600" />
+                      <div>
+                        <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">월말 토큰 초과 예상 조직</h3>
+                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">평균 사용량 증가율 기준</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between p-2 rounded bg-orange-100 dark:bg-orange-800">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-orange-900 dark:text-orange-100">기획예산팀</div>
-                        <div className="text-xs text-orange-700 dark:text-orange-300">8명 중 2명 초과 예상</div>
-                      </div>
-                      <div className="text-xs text-orange-700 dark:text-orange-300 text-right">
-                        <div className="font-semibold">현재 98%</div>
-                        <div>예상 109%</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-700">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-orange-700 dark:text-orange-300">총 예상 초과 조직</span>
-                      <span className="font-bold text-orange-900 dark:text-orange-100">3개</span>
-                    </div>
-                    <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                      * 소속 구성원들의 평균 사용량 증가율 적용
-                    </div>
+                    <button
+                      onClick={() => {
+                        setTokenKeywordFilter('월말 토큰 초과 예상 조직');
+                        // 조직 목록으로 스크롤 이동
+                        const tokenTable = document.querySelector('[data-testid="token-usage-table"]');
+                        if (tokenTable) {
+                          tokenTable.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="text-2xl font-bold text-orange-900 dark:text-orange-100 hover:text-orange-700 dark:hover:text-orange-300 transition-colors cursor-pointer"
+                      title="클릭하여 해당 조직 목록 보기"
+                    >
+                      3개
+                    </button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* 월말 토큰 초과 예상 사용자 */}
               <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
-                <CardHeader className="pb-3">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold text-red-800 dark:text-red-200">월말 토큰 초과 예상 사용자</CardTitle>
-                    <Users className="h-5 w-5 text-red-600" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {/* 예상 초과 사용자 목록 (샘플 데이터) */}
-                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-red-900 dark:text-red-100">홍보팀 김*호</span>
-                      </div>
-                      <div className="text-xs text-red-700 dark:text-red-300">
-                        <span className="font-semibold">92%</span> → 예상 <span className="font-semibold">108%</span>
+                    <div className="flex items-center space-x-3">
+                      <Users className="h-6 w-6 text-red-600" />
+                      <div>
+                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">월말 토큰 초과 예상 사용자</h3>
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">최근 7일 평균 사용량 기준</p>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-red-900 dark:text-red-100">기획예산팀 이*수</span>
-                      </div>
-                      <div className="text-xs text-red-700 dark:text-red-300">
-                        <span className="font-semibold">88%</span> → 예상 <span className="font-semibold">105%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-2 rounded bg-red-100 dark:bg-red-800">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-red-900 dark:text-red-100">교무팀 박*영</span>
-                      </div>
-                      <div className="text-xs text-red-700 dark:text-red-300">
-                        <span className="font-semibold">85%</span> → 예상 <span className="font-semibold">102%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-red-200 dark:border-red-700">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-red-700 dark:text-red-300">총 예상 초과 사용자</span>
-                      <span className="font-bold text-red-900 dark:text-red-100">8명</span>
-                    </div>
-                    <div className="text-xs text-red-600 dark:text-red-400 mt-1">
-                      * 최근 7일 평균 사용량 기준 예측
-                    </div>
+                    <button
+                      onClick={() => {
+                        setActiveTab('users');
+                      }}
+                      className="text-2xl font-bold text-red-900 dark:text-red-100 hover:text-red-700 dark:hover:text-red-300 transition-colors cursor-pointer"
+                      title="클릭하여 사용자 목록 보기"
+                    >
+                      8명
+                    </button>
                   </div>
                 </CardContent>
               </Card>
@@ -9213,7 +9174,7 @@ function MasterAdmin() {
 
 
             {/* 토큰 사용량 테이블 */}
-            <Card>
+            <Card data-testid="token-usage-table">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">조직별 토큰 사용량 목록</CardTitle>
                 <div className="flex flex-wrap items-center gap-3">
