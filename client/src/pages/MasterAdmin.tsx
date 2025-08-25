@@ -7569,7 +7569,12 @@ function MasterAdmin() {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-[20px] text-gray-800 dark:text-gray-200">인기 질문 주제 TOP10</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">학생들이 가장 많이 한 질문 주제</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {qaUserTypeFilter === 'student' ? '학생들이 가장 많이 한 질문 주제' :
+                       qaUserTypeFilter === 'faculty' ? '교직원들이 가장 많이 한 질문 주제' :
+                       qaUserTypeFilter === 'admin' ? '관리자들이 가장 많이 한 질문 주제' :
+                       '가장 많이 한 질문 주제'}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
