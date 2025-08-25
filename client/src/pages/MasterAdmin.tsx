@@ -5166,144 +5166,144 @@ function MasterAdmin() {
           {/* 대시보드 */}
           <TabsContent value="dashboard" className="space-y-4">
             {/* 상단 주요 지표 - 6개 카드를 2행으로 배치 */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-              <Card className="p-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+              <Card className="p-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">{t('admin.totalUsers')}</div>
-                    <div className="text-lg font-bold">{stats?.totalUsers || 0}</div>
+                    <div className="text-xs text-muted-foreground mb-0.5">{t('admin.totalUsers')}</div>
+                    <div className="text-base font-bold">{stats?.totalUsers || 0}</div>
                     <div className="text-xs text-[#16a34a]">{t('admin.activeUsers')}: {stats?.activeUsers || 0}</div>
                   </div>
-                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <Users className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card className="p-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">{t('admin.totalAgents')}</div>
-                    <div className="text-lg font-bold">{stats?.totalAgents || 0}</div>
+                    <div className="text-xs text-muted-foreground mb-0.5">{t('admin.totalAgents')}</div>
+                    <div className="text-base font-bold">{stats?.totalAgents || 0}</div>
                     <div className="text-xs text-[#16a34a]">{t('admin.activeAgents')}: {stats?.activeAgents || 0}</div>
                   </div>
-                  <Bot className="h-5 w-5 text-muted-foreground" />
+                  <Bot className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card className="p-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">총 조직</div>
-                    <div className="text-lg font-bold">124</div>
+                    <div className="text-xs text-muted-foreground mb-0.5">총 조직</div>
+                    <div className="text-base font-bold">124</div>
                     <div className="text-xs text-[#16a34a]">활성 조직: 98</div>
                   </div>
-                  <Building className="h-5 w-5 text-muted-foreground" />
+                  <Building className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Card>
 
 
 
-              <Card className="p-3 border-green-200 bg-green-50 dark:bg-green-900/20">
+              <Card className="p-2 border-green-200 bg-green-50 dark:bg-green-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-green-600 mb-1">{t('admin.todayQuestionsTitle')}</div>
-                    <div className="text-lg font-bold text-green-900 dark:text-green-100">247</div>
+                    <div className="text-xs text-green-600 mb-0.5">{t('admin.todayQuestionsTitle')}</div>
+                    <div className="text-base font-bold text-green-900 dark:text-green-100">247</div>
                     <div className="text-xs text-green-700 dark:text-green-300">+12%</div>
                   </div>
-                  <MessageSquare className="h-5 w-5 text-green-600" />
+                  <MessageSquare className="h-4 w-4 text-green-600" />
                 </div>
               </Card>
 
-              <Card className="p-3 border-green-200 bg-green-50 dark:bg-green-900/20">
+              <Card className="p-2 border-green-200 bg-green-50 dark:bg-green-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-green-600 mb-1">{t('admin.avgResponseTimeTitle')}</div>
-                    <div className="text-lg font-bold text-green-900 dark:text-green-100">2.3초</div>
+                    <div className="text-xs text-green-600 mb-0.5">{t('admin.avgResponseTimeTitle')}</div>
+                    <div className="text-base font-bold text-green-900 dark:text-green-100">2.3초</div>
                     <div className="text-xs text-green-700 dark:text-green-300">-0.3초</div>
                   </div>
-                  <Clock className="h-5 w-5 text-green-600" />
+                  <Clock className="h-4 w-4 text-green-600" />
                 </div>
               </Card>
             </div>
 
-            {/* 하단 부가 지표 - 4개 카드를 1행으로 배치 */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <Card className="p-3 border-green-200 bg-green-50 dark:bg-green-900/20">
+            {/* 하단 부가 지표 - 5개 카드를 2행으로 배치 */}
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
+              <Card className="p-2 border-green-200 bg-green-50 dark:bg-green-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-green-600 mb-1">{t('admin.responseSuccessTitle')}</div>
-                    <div className="text-lg font-bold text-green-900 dark:text-green-100">96.8%</div>
+                    <div className="text-xs text-green-600 mb-0.5">{t('admin.responseSuccessTitle')}</div>
+                    <div className="text-base font-bold text-green-900 dark:text-green-100">96.8%</div>
                     <div className="text-xs text-green-700 dark:text-green-300">{t('admin.dailyImprovement')}</div>
                   </div>
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card className="p-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1">문서 총 용량</div>
-                    <div className="text-lg font-bold">0.1M</div>
+                    <div className="text-xs text-muted-foreground mb-0.5">문서 총 용량</div>
+                    <div className="text-base font-bold">0.1M</div>
                     <div className="text-xs text-muted-foreground">토큰</div>
                   </div>
-                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <FileText className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Card>
 
-              <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+              <Card className="p-2 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-orange-600 mb-1">{t('admin.tokenDailyAvgTitle')}</div>
-                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">2.6K</div>
+                    <div className="text-xs text-orange-600 mb-0.5">{t('admin.tokenDailyAvgTitle')}</div>
+                    <div className="text-base font-bold text-orange-900 dark:text-orange-100">2.6K</div>
                     <div className="text-xs text-orange-700 dark:text-orange-300">{t('admin.weeklyCompared')}</div>
                   </div>
-                  <Zap className="h-5 w-5 text-orange-600" />
+                  <Zap className="h-4 w-4 text-orange-600" />
                 </div>
               </Card>
 
-              <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+              <Card className="p-2 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-orange-600 mb-1">토큰 소비량 월 평균</div>
-                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">78K</div>
+                    <div className="text-xs text-orange-600 mb-0.5">토큰 소비량 월 평균</div>
+                    <div className="text-base font-bold text-orange-900 dark:text-orange-100">78K</div>
                     <div className="text-xs text-orange-700 dark:text-orange-300">전월 대비</div>
                   </div>
-                  <Zap className="h-5 w-5 text-orange-600" />
+                  <Zap className="h-4 w-4 text-orange-600" />
                 </div>
               </Card>
 
-              <Card className="p-3 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+              <Card className="p-2 border-orange-200 bg-orange-50 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-orange-600 mb-1">이번 달 예상 토큰 소비량</div>
-                    <div className="text-lg font-bold text-orange-900 dark:text-orange-100">2.4M</div>
+                    <div className="text-xs text-orange-600 mb-0.5">이번 달 예상 토큰 소비량</div>
+                    <div className="text-base font-bold text-orange-900 dark:text-orange-100">2.4M</div>
                     <div className="text-xs text-orange-700 dark:text-orange-300">월말 예상</div>
                   </div>
-                  <Zap className="h-5 w-5 text-orange-600" />
+                  <Zap className="h-4 w-4 text-orange-600" />
                 </div>
               </Card>
             </div>
 
             {/* 추가 경고 카드 - 토큰 부족 예상 조직 */}
             <div className="grid grid-cols-1 gap-3">
-              <Card className="p-3 border-red-200 bg-red-50 dark:bg-red-900/20">
+              <Card className="p-2 border-red-200 bg-red-50 dark:bg-red-900/20 lg:col-span-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-red-600 mb-1">이번 달 토큰 부족 예상 조직</div>
-                    <div className="text-lg font-bold text-red-900 dark:text-red-100">15개 조직</div>
+                    <div className="text-xs text-red-600 mb-0.5">이번 달 토큰 부족 예상 조직</div>
+                    <div className="text-base font-bold text-red-900 dark:text-red-100">15개 조직</div>
                     <div className="text-xs text-red-700 dark:text-red-300">현재 사용량 기준 예상</div>
                   </div>
-                  <Building className="h-5 w-5 text-red-600" />
+                  <Building className="h-4 w-4 text-red-600" />
                 </div>
               </Card>
             </div>
 
             {/* 하단 인기 질문과 시스템 상태 - 1행으로 배치 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               {/* 인기 질문 TOP 5 카드 - 보라색 계열 */}
-              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-900/20 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm text-purple-800 dark:text-purple-200">{t('admin.popularQuestionsTop5')}</h3>
-                  <TrendingUp className="h-4 w-4 text-purple-600" />
+              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-900/20 p-2">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-xs text-purple-800 dark:text-purple-200">{t('admin.popularQuestionsTop5')}</h3>
+                  <TrendingUp className="h-3 w-3 text-purple-600" />
                 </div>
                 {popularQuestionsLoading ? (
                   <div className="text-center py-2">
@@ -5316,18 +5316,18 @@ function MasterAdmin() {
                 ) : popularQuestions && popularQuestions.length > 0 ? (
                   <div className="space-y-2">
                     {popularQuestions.slice(0, 5).map((question: any) => (
-                      <div key={question.rank} className="flex items-center justify-between p-2 bg-white/60 dark:bg-gray-800/60 rounded">
+                      <div key={question.rank} className="flex items-center justify-between p-1.5 bg-white/60 dark:bg-gray-800/60 rounded">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <Badge variant="outline" className="text-xs font-bold">#{question.rank}</Badge>
+                          <div className="flex items-center space-x-1 mb-0.5">
+                            <Badge variant="outline" className="text-xs font-bold px-1 py-0">#{question.rank}</Badge>
                             <span className="text-xs text-muted-foreground truncate">{question.agentName}</span>
                           </div>
                           <p className="text-xs font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
                             {question.question}
                           </p>
                         </div>
-                        <div className="text-right flex-shrink-0 ml-2">
-                          <div className="text-sm font-bold text-[#16a34a]">{question.count}</div>
+                        <div className="text-right flex-shrink-0 ml-1">
+                          <div className="text-xs font-bold text-[#16a34a]">{question.count}</div>
                         </div>
                       </div>
                     ))}
@@ -5340,33 +5340,33 @@ function MasterAdmin() {
               </Card>
 
               {/* 시스템 상태 */}
-              <Card className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-sm">{t('admin.systemStatus')}</h3>
+              <Card className="p-2">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-xs">{t('admin.systemStatus')}</h3>
                   <div className="h-2 w-2 bg-green-500 rounded-full"></div>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center justify-between py-0.5">
                     <span className="text-xs">{t('admin.database')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-2 py-0">
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-1 py-0">
                       {t('admin.status.healthy')}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center justify-between py-0.5">
                     <span className="text-xs">{t('admin.openaiApi')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-2 py-0">
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-1 py-0">
                       {t('admin.status.healthy')}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center justify-between py-0.5">
                     <span className="text-xs">{t('admin.sessionStore')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-2 py-0">
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-1 py-0">
                       {t('admin.status.healthy')}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center justify-between py-0.5">
                     <span className="text-xs">{t('admin.fileUpload')}</span>
-                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-2 py-0">
+                    <Badge variant="default" className="bg-green-100 text-green-800 text-xs px-1 py-0">
                       {t('admin.status.healthy')}
                     </Badge>
                   </div>
