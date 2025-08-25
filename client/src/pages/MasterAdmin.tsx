@@ -7477,7 +7477,7 @@ function MasterAdmin() {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">조직명</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">개별 조직</Label>
                   <Select 
                     value={qaSelectedOrganizationName} 
                     onValueChange={handleQAOrganizationNameChange}
