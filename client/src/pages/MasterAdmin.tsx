@@ -1802,6 +1802,21 @@ function MasterAdmin() {
           aValue = (a as any).upperCategory || '';
           bValue = (b as any).upperCategory || '';
           break;
+        case 'avgTokenUsage':
+          // 평균 토큰 사용량 정렬
+          const tokenUsageData = [
+            { username: 'master_admin', usage: 85.2 },
+            { username: 'user1082', usage: 67.3 },
+            { username: 'prof001', usage: 92.4 },
+            { username: 'student001', usage: 73.1 },
+            { username: 'admin001', usage: 88.6 },
+            { username: 'faculty001', usage: 78.9 },
+            { username: 'user123', usage: 95.7 },
+            { username: 'staff001', usage: 82.3 }
+          ];
+          aValue = tokenUsageData.find(data => data.username === a.username)?.usage || 75;
+          bValue = tokenUsageData.find(data => data.username === b.username)?.usage || 75;
+          break;
         default:
           return 0;
       }
@@ -5671,6 +5686,16 @@ function MasterAdmin() {
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.email')}
                         </th>
+                        <th className={`px-6 py-3 text-center text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none ${userSortField === 'avgTokenUsage' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500'}`}
+                            onClick={() => handleUserSort('avgTokenUsage')}
+                            title="평균 토큰 사용량으로 정렬">
+                          <div className="flex items-center justify-center">
+                            <span>평균 토큰 사용량(%)</span>
+                            <span className={`ml-1 ${userSortField === 'avgTokenUsage' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-400'}`}>
+                              {userSortField === 'avgTokenUsage' ? (userSortDirection === 'asc' ? '▲' : '▼') : '▭'}
+                            </span>
+                          </div>
+                        </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           {t('admin.status')}
                         </th>
@@ -5682,7 +5707,7 @@ function MasterAdmin() {
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredUsers?.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="px-6 py-12 text-center">
+                          <td colSpan={7} className="px-6 py-12 text-center">
                             <div className="text-gray-500 dark:text-gray-400">
                               <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p className="text-lg font-medium mb-2">{t('admin.noSearchResults')}</p>
@@ -5751,6 +5776,37 @@ function MasterAdmin() {
                               <div className="max-w-48 truncate">
                                 {user.email || `${user.username}@university.ac.kr`}
                               </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                              {(() => {
+                                // 사용자별 평균 토큰 사용량 샘플 데이터
+                                const tokenUsageData = [
+                                  { username: 'master_admin', usage: 85.2 },
+                                  { username: 'user1082', usage: 67.3 },
+                                  { username: 'prof001', usage: 92.4 },
+                                  { username: 'student001', usage: 73.1 },
+                                  { username: 'admin001', usage: 88.6 },
+                                  { username: 'faculty001', usage: 78.9 },
+                                  { username: 'user123', usage: 95.7 },
+                                  { username: 'staff001', usage: 82.3 }
+                                ];
+                                
+                                const userUsage = tokenUsageData.find(data => data.username === user.username)?.usage || 
+                                                Math.floor(Math.random() * 40 + 60); // 60-100% 범위의 랜덤값
+                                
+                                const getUsageColor = (percent: number) => {
+                                  if (percent >= 100) return 'text-red-600 dark:text-red-400 font-bold';
+                                  if (percent >= 90) return 'text-orange-600 dark:text-orange-400 font-semibold';
+                                  if (percent >= 80) return 'text-amber-600 dark:text-amber-400';
+                                  return 'text-green-600 dark:text-green-400';
+                                };
+                                
+                                return (
+                                  <span className={`text-sm font-mono ${getUsageColor(userUsage)}`}>
+                                    {userUsage}%
+                                  </span>
+                                );
+                              })()}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center">
                               <Badge 
