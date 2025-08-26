@@ -1955,27 +1955,39 @@ function MasterAdmin() {
   const filteredTokenData = useMemo(() => {
     let filtered = [...sampleTokenData];
 
-    // 기간 필터링
+    // 기간 필터링 (캘린더 선택 월 우선)
     const now = new Date();
-    switch (tokenPeriodFilter) {
-      case 'today':
-        filtered = filtered.filter(token => {
-          const tokenDate = new Date(token.timestamp);
-          return tokenDate.toDateString() === now.toDateString();
-        });
-        break;
-      case 'week':
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(token => new Date(token.timestamp) >= weekAgo);
-        break;
-      case 'month':
-        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(token => new Date(token.timestamp) >= monthAgo);
-        break;
-      case 'quarter':
-        const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(token => new Date(token.timestamp) >= quarterAgo);
-        break;
+    
+    if (tokenSelectedMonth && tokenCalendarYear) {
+      // 캘린더에서 특정 월을 선택한 경우
+      const startDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
+      const endDate = new Date(tokenCalendarYear, tokenSelectedMonth, 0);
+      filtered = filtered.filter(token => {
+        const tokenDate = new Date(token.timestamp);
+        return tokenDate >= startDate && tokenDate <= endDate;
+      });
+    } else {
+      // 기본 기간 필터링
+      switch (tokenPeriodFilter) {
+        case 'today':
+          filtered = filtered.filter(token => {
+            const tokenDate = new Date(token.timestamp);
+            return tokenDate.toDateString() === now.toDateString();
+          });
+          break;
+        case 'week':
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          filtered = filtered.filter(token => new Date(token.timestamp) >= weekAgo);
+          break;
+        case 'month':
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          filtered = filtered.filter(token => new Date(token.timestamp) >= monthAgo);
+          break;
+        case 'quarter':
+          const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+          filtered = filtered.filter(token => new Date(token.timestamp) >= quarterAgo);
+          break;
+      }
     }
 
     // 조직 필터링
@@ -2059,7 +2071,7 @@ function MasterAdmin() {
     }
 
     return filtered;
-  }, [sampleTokenData, tokenPeriodFilter, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenOrganizationNameFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
+  }, [sampleTokenData, tokenPeriodFilter, tokenSelectedMonth, tokenCalendarYear, tokenUpperCategoryFilter, tokenLowerCategoryFilter, tokenDetailCategoryFilter, tokenOrganizationNameFilter, tokenKeywordFilter, tokenModelFilter, tokenSortField, tokenSortDirection]);
 
   // 종량제 필터링 및 드릴다운 상태
   const [tokenDrilldownTab, setTokenDrilldownTab] = useState('tokens');
@@ -9491,7 +9503,17 @@ function MasterAdmin() {
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <CardTitle className="font-semibold tracking-tight text-[20px]">조직별 토큰 사용량 목록</CardTitle>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  전체 {filteredTokenData?.length || 0}개 조직 중 {((tokenCurrentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(tokenCurrentPage * ITEMS_PER_PAGE, filteredTokenData?.length || 0)}개 표시
+                  {(() => {
+                    const organizationStats = new Map();
+                    filteredTokenData.forEach(token => {
+                      const key = `${token.upperCategory}-${token.lowerCategory}-${token.detailCategory}`;
+                      if (!organizationStats.has(key)) {
+                        organizationStats.set(key, true);
+                      }
+                    });
+                    const uniqueOrgsCount = organizationStats.size;
+                    return `전체 ${uniqueOrgsCount}개 조직 표시 (질문 ${filteredTokenData?.length || 0}건 기준)`;
+                  })()}
                 </div>
               </CardHeader>
               <CardContent>
@@ -9531,47 +9553,71 @@ function MasterAdmin() {
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                       {(() => {
-                        // 현재 월인지 특정 월인지 확인
-                        const isCurrentMonth = tokenSelectedMonth && tokenCalendarYear && 
-                                              new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() === new Date(new Date().getFullYear(), new Date().getMonth()).getTime();
+                        // filteredTokenData를 기반으로 조직별 토큰 사용량 집계
+                        const organizationStats = new Map();
                         
-                        // 선택된 월에 따라 다른 데이터 반환
-                        const getOrganizationData = () => {
-                          if (isCurrentMonth) {
-                            // 현재 월 데이터
-                            return [
-                              { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 85.2 },
-                              { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 92.4 },
-                              { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 78.9 },
-                              { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 95.7 },
-                              { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 67.3 },
-                              { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
-                              { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
-                              { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
-                            ];
-                          } else {
-                            // 특정 월 데이터 (예: 7월)
-                            return [
-                              { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 76.8 },
-                              { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 84.1 },
-                              { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 71.5 },
-                              { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 89.3 },
-                              { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 62.7 },
-                              { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 68.4 },
-                              { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 98.7 },
-                              { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 81.9 },
-                              { id: 9, upperCategory: '경영대학', lowerCategory: '경영학과', detailCategory: '마케팅전공', organizationName: '마케팅전공', avgUsagePercent: 77.2 },
-                              { id: 10, upperCategory: '사회과학대학', lowerCategory: '심리학과', detailCategory: '임상심리전공', organizationName: '임상심리전공', avgUsagePercent: 65.8 }
-                            ];
+                        filteredTokenData.forEach(token => {
+                          const key = `${token.upperCategory}-${token.lowerCategory}-${token.detailCategory}`;
+                          if (!organizationStats.has(key)) {
+                            organizationStats.set(key, {
+                              upperCategory: token.upperCategory || '미분류',
+                              lowerCategory: token.lowerCategory || '미분류', 
+                              detailCategory: token.detailCategory || '미분류',
+                              totalTokens: 0,
+                              count: 0,
+                              userSet: new Set()
+                            });
                           }
-                        };
+                          
+                          const stats = organizationStats.get(key);
+                          stats.totalTokens += token.totalTokens;
+                          stats.count++;
+                          stats.userSet.add(token.userName);
+                        });
                         
-                        return getOrganizationData().sort((a, b) => {
-                        if (tokenSortField === 'avgUsagePercent') {
-                          return tokenSortDirection === 'asc' ? a.avgUsagePercent - b.avgUsagePercent : b.avgUsagePercent - a.avgUsagePercent;
+                        // Map을 배열로 변환하고 사용률 계산
+                        const organizationArray = Array.from(organizationStats.entries()).map(([key, stats]) => {
+                          // 토큰 사용률 계산 (토큰 수에 따른 백분율)
+                          const avgUsagePercent = Math.min(100, Math.max(0, (stats.totalTokens / 10000) * 100));
+                          
+                          return {
+                            id: key,
+                            upperCategory: stats.upperCategory,
+                            lowerCategory: stats.lowerCategory,
+                            detailCategory: stats.detailCategory,
+                            organizationName: stats.detailCategory,
+                            totalTokens: stats.totalTokens,
+                            avgUsagePercent: Math.round(avgUsagePercent * 10) / 10, // 소수점 1자리
+                            personnelCount: stats.userSet.size,
+                            questionCount: stats.count
+                          };
+                        });
+                        
+                        // 정렬 적용
+                        const sortedOrganizations = organizationArray.sort((a, b) => {
+                          if (tokenSortField === 'avgUsagePercent') {
+                            return tokenSortDirection === 'asc' ? a.avgUsagePercent - b.avgUsagePercent : b.avgUsagePercent - a.avgUsagePercent;
+                          }
+                          return 0;
+                        });
+                        
+                        // 빈 결과 처리
+                        if (sortedOrganizations.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={7} className="px-6 py-12 text-center">
+                                <div className="text-gray-500 dark:text-gray-400">
+                                  <Building className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                                  <p className="text-lg font-medium mb-2">조건에 맞는 조직이 없습니다</p>
+                                  <p className="text-sm">
+                                    다른 조직 카테고리나 기간을 선택해보세요.
+                                  </p>
+                                </div>
+                              </td>
+                            </tr>
+                          );
                         }
-                        return 0;
-                      }).map((org, index) => {
+                        
                         const getUsageColor = (percent: number) => {
                           if (percent >= 100) return 'text-red-600 dark:text-red-400 font-bold';
                           if (percent >= 90) return 'text-orange-600 dark:text-orange-400 font-semibold';
@@ -9579,12 +9625,7 @@ function MasterAdmin() {
                           return 'text-green-600 dark:text-green-400';
                         };
                         
-                        // 소속 인원 샘플 데이터 (선택된 월에 따라 다름)
-                        const personnelCount = isCurrentMonth 
-                          ? [12, 8, 15, 11, 23, 19, 7, 14][index] || 10
-                          : [11, 7, 14, 10, 21, 17, 6, 13, 9, 16][index] || 8;
-                        
-                        return (
+                        return sortedOrganizations.map((org) => (
                           <tr 
                             key={org.id} 
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -9593,7 +9634,7 @@ function MasterAdmin() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.lowerCategory}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{org.detailCategory}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{org.organizationName}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-center">{personnelCount}명</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-center">{org.personnelCount}명</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm font-mono ${getUsageColor(org.avgUsagePercent)}`}>
                               {org.avgUsagePercent}%
                             </td>
@@ -9613,8 +9654,7 @@ function MasterAdmin() {
                               </button>
                             </td>
                           </tr>
-                        );
-                        });
+                        ));
                       })()}
                     </tbody>
                   </table>
