@@ -9431,16 +9431,43 @@ function MasterAdmin() {
                       </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                      {[
-                        { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 85.2 },
-                        { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 92.4 },
-                        { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 78.9 },
-                        { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 95.7 },
-                        { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 67.3 },
-                        { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
-                        { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
-                        { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
-                      ].sort((a, b) => {
+                      {(() => {
+                        // 현재 월인지 특정 월인지 확인
+                        const isCurrentMonth = tokenSelectedMonth && tokenCalendarYear && 
+                                              new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() === new Date(new Date().getFullYear(), new Date().getMonth()).getTime();
+                        
+                        // 선택된 월에 따라 다른 데이터 반환
+                        const getOrganizationData = () => {
+                          if (isCurrentMonth) {
+                            // 현재 월 데이터
+                            return [
+                              { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 85.2 },
+                              { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 92.4 },
+                              { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 78.9 },
+                              { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 95.7 },
+                              { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 67.3 },
+                              { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 73.1 },
+                              { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 103.2 },
+                              { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 88.6 }
+                            ];
+                          } else {
+                            // 특정 월 데이터 (예: 7월)
+                            return [
+                              { id: 1, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '총장비서실', organizationName: '총장비서실', avgUsagePercent: 76.8 },
+                              { id: 2, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '대외협력팀', organizationName: '대외협력팀', avgUsagePercent: 84.1 },
+                              { id: 3, upperCategory: '대학본부', lowerCategory: '총장실', detailCategory: '홍보팀', organizationName: '홍보팀', avgUsagePercent: 71.5 },
+                              { id: 4, upperCategory: '대학본부', lowerCategory: '기획처', detailCategory: '기획예산팀', organizationName: '기획예산팀', avgUsagePercent: 89.3 },
+                              { id: 5, upperCategory: '인문대학', lowerCategory: '국어국문학과', detailCategory: '현대문학전공', organizationName: '현대문학전공', avgUsagePercent: 62.7 },
+                              { id: 6, upperCategory: '인문대학', lowerCategory: '영어영문학과', detailCategory: '영미문학전공', organizationName: '영미문학전공', avgUsagePercent: 68.4 },
+                              { id: 7, upperCategory: '자연과학대학', lowerCategory: '컴퓨터과학과', detailCategory: '소프트웨어공학전공', organizationName: '소프트웨어공학전공', avgUsagePercent: 98.7 },
+                              { id: 8, upperCategory: '공과대학', lowerCategory: '전기전자공학과', detailCategory: '전자공학전공', organizationName: '전자공학전공', avgUsagePercent: 81.9 },
+                              { id: 9, upperCategory: '경영대학', lowerCategory: '경영학과', detailCategory: '마케팅전공', organizationName: '마케팅전공', avgUsagePercent: 77.2 },
+                              { id: 10, upperCategory: '사회과학대학', lowerCategory: '심리학과', detailCategory: '임상심리전공', organizationName: '임상심리전공', avgUsagePercent: 65.8 }
+                            ];
+                          }
+                        };
+                        
+                        return getOrganizationData().sort((a, b) => {
                         if (tokenSortField === 'avgUsagePercent') {
                           return tokenSortDirection === 'asc' ? a.avgUsagePercent - b.avgUsagePercent : b.avgUsagePercent - a.avgUsagePercent;
                         }
@@ -9453,8 +9480,10 @@ function MasterAdmin() {
                           return 'text-green-600 dark:text-green-400';
                         };
                         
-                        // 소속 인원 샘플 데이터
-                        const personnelCount = [12, 8, 15, 11, 23, 19, 7, 14][index] || 10;
+                        // 소속 인원 샘플 데이터 (선택된 월에 따라 다름)
+                        const personnelCount = isCurrentMonth 
+                          ? [12, 8, 15, 11, 23, 19, 7, 14][index] || 10
+                          : [11, 7, 14, 10, 21, 17, 6, 13, 9, 16][index] || 8;
                         
                         return (
                           <tr 
@@ -9486,7 +9515,8 @@ function MasterAdmin() {
                             </td>
                           </tr>
                         );
-                      })}
+                        });
+                      })()}
                     </tbody>
                   </table>
                 </div>
