@@ -3269,8 +3269,28 @@ function MasterAdmin() {
     return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
   };
 
-  // 선택된 월에 따른 요약 카드 텍스트 생성
+  // 선택된 월과 조직 카테고리에 따른 요약 카드 텍스트 생성
   const getTokenCardText = () => {
+    // 조직 카테고리 필터 상태 확인
+    const hasUpperFilter = tokenUpperCategoryFilter !== 'all';
+    const hasLowerFilter = tokenLowerCategoryFilter !== 'all';
+    const hasDetailFilter = tokenDetailCategoryFilter !== 'all';
+    
+    // 선택된 조직 카테고리 이름 생성
+    const getOrgCategoryText = () => {
+      if (hasDetailFilter) {
+        return tokenDetailCategoryFilter;
+      } else if (hasLowerFilter) {
+        return tokenLowerCategoryFilter;
+      } else if (hasUpperFilter) {
+        return tokenUpperCategoryFilter;
+      }
+      return '';
+    };
+    
+    const orgCategoryText = getOrgCategoryText();
+    const isFiltered = hasUpperFilter || hasLowerFilter || hasDetailFilter;
+    
     if (tokenSelectedMonth && tokenCalendarYear) {
       const currentDate = new Date();
       const selectedDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
@@ -3279,39 +3299,39 @@ function MasterAdmin() {
       
       if (isCurrentMonth) {
         return {
-          dailyAverage: "토큰 소비량 일일 평균",
-          monthlyPredicted: "이번 달 예상 토큰 소비량",
-          shortageOrganizations: "이번 달 토큰 부족 예상 조직",
-          shortageUsers: "이번 달 토큰 부족 예상 사용자",
-          dailyAverageDescription: "최근 30일 평균 기준",
-          monthlyPredictedDescription: "현재 사용량 추세 기준",
-          shortageOrganizationsDescription: "평균 사용량 증가율 기준",
-          shortageUsersDescription: "최근 7일 평균 사용량 기준"
+          dailyAverage: isFiltered ? `${orgCategoryText} 토큰 소비량 일일 평균` : "토큰 소비량 일일 평균",
+          monthlyPredicted: isFiltered ? `${orgCategoryText} 이번 달 예상 토큰 소비량` : "이번 달 예상 토큰 소비량",
+          shortageOrganizations: isFiltered ? `${orgCategoryText} 토큰 부족 예상 조직` : "이번 달 토큰 부족 예상 조직",
+          shortageUsers: isFiltered ? `${orgCategoryText} 토큰 부족 예상 사용자` : "이번 달 토큰 부족 예상 사용자",
+          dailyAverageDescription: isFiltered ? `${orgCategoryText} 최근 30일 평균 기준` : "최근 30일 평균 기준",
+          monthlyPredictedDescription: isFiltered ? `${orgCategoryText} 현재 사용량 추세 기준` : "현재 사용량 추세 기준",
+          shortageOrganizationsDescription: isFiltered ? `${orgCategoryText} 평균 사용량 증가율 기준` : "평균 사용량 증가율 기준",
+          shortageUsersDescription: isFiltered ? `${orgCategoryText} 최근 7일 평균 사용량 기준` : "최근 7일 평균 사용량 기준"
         };
       } else {
         const yearSuffix = String(tokenCalendarYear).slice(-2);
         return {
-          dailyAverage: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량 일일 평균`,
-          monthlyPredicted: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량`,
-          shortageOrganizations: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 조직`,
-          shortageUsers: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 예상 사용자`,
-          dailyAverageDescription: `${tokenSelectedMonth}월 전체 평균 기준`,
-          monthlyPredictedDescription: `${tokenSelectedMonth}월 실제 사용량`,
-          shortageOrganizationsDescription: `${tokenSelectedMonth}월 한도 초과 조직`,
-          shortageUsersDescription: `${tokenSelectedMonth}월 한도 초과 예상`
+          dailyAverage: isFiltered ? `${orgCategoryText} ${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량 일일 평균` : `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량 일일 평균`,
+          monthlyPredicted: isFiltered ? `${orgCategoryText} ${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량` : `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량`,
+          shortageOrganizations: isFiltered ? `${orgCategoryText} ${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 조직` : `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 조직`,
+          shortageUsers: isFiltered ? `${orgCategoryText} ${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 사용자` : `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 예상 사용자`,
+          dailyAverageDescription: isFiltered ? `${orgCategoryText} ${tokenSelectedMonth}월 전체 평균 기준` : `${tokenSelectedMonth}월 전체 평균 기준`,
+          monthlyPredictedDescription: isFiltered ? `${orgCategoryText} ${tokenSelectedMonth}월 실제 사용량` : `${tokenSelectedMonth}월 실제 사용량`,
+          shortageOrganizationsDescription: isFiltered ? `${orgCategoryText} ${tokenSelectedMonth}월 한도 초과 조직` : `${tokenSelectedMonth}월 한도 초과 조직`,
+          shortageUsersDescription: isFiltered ? `${orgCategoryText} ${tokenSelectedMonth}월 한도 초과 예상` : `${tokenSelectedMonth}월 한도 초과 예상`
         };
       }
     }
     
     return {
-      dailyAverage: "토큰 소비량 일일 평균",
-      monthlyPredicted: "이번 달 예상 토큰 소비량",
-      shortageOrganizations: "이번 달 토큰 부족 예상 조직",
-      shortageUsers: "이번 달 토큰 부족 예상 사용자",
-      dailyAverageDescription: "최근 30일 평균 기준",
-      monthlyPredictedDescription: "현재 사용량 추세 기준",
-      shortageOrganizationsDescription: "평균 사용량 증가율 기준",
-      shortageUsersDescription: "최근 7일 평균 사용량 기준"
+      dailyAverage: isFiltered ? `${orgCategoryText} 토큰 소비량 일일 평균` : "토큰 소비량 일일 평균",
+      monthlyPredicted: isFiltered ? `${orgCategoryText} 이번 달 예상 토큰 소비량` : "이번 달 예상 토큰 소비량",
+      shortageOrganizations: isFiltered ? `${orgCategoryText} 토큰 부족 예상 조직` : "이번 달 토큰 부족 예상 조직",
+      shortageUsers: isFiltered ? `${orgCategoryText} 토큰 부족 예상 사용자` : "이번 달 토큰 부족 예상 사용자",
+      dailyAverageDescription: isFiltered ? `${orgCategoryText} 최근 30일 평균 기준` : "최근 30일 평균 기준",
+      monthlyPredictedDescription: isFiltered ? `${orgCategoryText} 현재 사용량 추세 기준` : "현재 사용량 추세 기준",
+      shortageOrganizationsDescription: isFiltered ? `${orgCategoryText} 평균 사용량 증가율 기준` : "평균 사용량 증가율 기준",
+      shortageUsersDescription: isFiltered ? `${orgCategoryText} 최근 7일 평균 사용량 기준` : "최근 7일 평균 사용량 기준"
     };
   };
 
@@ -9344,9 +9364,15 @@ function MasterAdmin() {
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                        {tokenSelectedMonth && tokenCalendarYear && 
-                         new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
-                         ? '186K' : '247K'}
+                        {(() => {
+                          const totalTokens = filteredTokenData.reduce((sum, token) => sum + token.totalTokens, 0);
+                          const avgDaily = Math.floor(totalTokens / 30 / 1000);
+                          const baseValue = tokenSelectedMonth && tokenCalendarYear && 
+                            new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                            ? 186 : 247;
+                          const calculatedValue = filteredTokenData.length > 0 ? avgDaily : baseValue;
+                          return `${calculatedValue}K`;
+                        })()}
                       </div>
                       <div className="text-xs text-blue-700 dark:text-blue-300">토큰/일</div>
                     </div>
@@ -9369,9 +9395,15 @@ function MasterAdmin() {
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-green-900 dark:text-green-100">
-                        {tokenSelectedMonth && tokenCalendarYear && 
-                         new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
-                         ? '5.8M' : '7.6M'}
+                        {(() => {
+                          const totalTokens = filteredTokenData.reduce((sum, token) => sum + token.totalTokens, 0);
+                          const monthlyPredicted = Math.floor(totalTokens / 1000000 * 1.2); // 20% 증가 예상
+                          const baseValue = tokenSelectedMonth && tokenCalendarYear && 
+                            new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                            ? 5.8 : 7.6;
+                          const calculatedValue = filteredTokenData.length > 0 ? Math.max(monthlyPredicted, 1) : baseValue;
+                          return `${calculatedValue}M`;
+                        })()}
                       </div>
                       <div className="text-xs text-green-700 dark:text-green-300">토큰/월</div>
                     </div>
@@ -9405,9 +9437,14 @@ function MasterAdmin() {
                       className="text-2xl font-bold text-orange-900 dark:text-orange-100 hover:text-orange-700 dark:hover:text-orange-300 transition-colors cursor-pointer"
                       title="클릭하여 해당 조직 목록 보기"
                     >
-                      {tokenSelectedMonth && tokenCalendarYear && 
-                       new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
-                       ? '2개' : '3개'}
+                      {(() => {
+                        const shortageOrgs = filteredTokenData.filter(token => token.usagePercentage >= 90).length;
+                        const baseValue = tokenSelectedMonth && tokenCalendarYear && 
+                          new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                          ? 2 : 3;
+                        const calculatedValue = filteredTokenData.length > 0 ? shortageOrgs : baseValue;
+                        return `${calculatedValue}개`;
+                      })()}
                     </button>
                   </div>
                 </CardContent>
@@ -9431,9 +9468,15 @@ function MasterAdmin() {
                       className="text-2xl font-bold text-red-900 dark:text-red-100 hover:text-red-700 dark:hover:text-red-300 transition-colors cursor-pointer"
                       title="클릭하여 사용자 목록 보기"
                     >
-                      {tokenSelectedMonth && tokenCalendarYear && 
-                       new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
-                       ? '5명' : '8명'}
+                      {(() => {
+                        // 필터된 데이터에서 토큰 부족 예상 사용자 수 계산 (임시 로직)
+                        const estimatedUsers = Math.floor(filteredTokenData.reduce((sum, token) => sum + token.totalTokens, 0) / 100000);
+                        const baseValue = tokenSelectedMonth && tokenCalendarYear && 
+                          new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                          ? 5 : 8;
+                        const calculatedValue = filteredTokenData.length > 0 ? Math.max(estimatedUsers, 1) : baseValue;
+                        return `${calculatedValue}명`;
+                      })()}
                     </button>
                   </div>
                 </CardContent>
