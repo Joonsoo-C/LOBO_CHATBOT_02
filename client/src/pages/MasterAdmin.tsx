@@ -3227,6 +3227,24 @@ function MasterAdmin() {
 
   // 토큰용 기간 필터 pill 텍스트 생성
   const getTokenPeriodPillText = () => {
+    if (tokenSelectedMonth && tokenCalendarYear) {
+      const currentDate = new Date();
+      const selectedDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
+      const isCurrentMonth = selectedDate.getMonth() === currentDate.getMonth() && 
+                            selectedDate.getFullYear() === currentDate.getFullYear();
+      
+      if (isCurrentMonth) {
+        // 현재 월인 경우: 1일부터 오늘까지
+        const startDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
+        return `${formatDateForPill(startDate)} ~ ${formatDateForPill(currentDate)}`;
+      } else {
+        // 특정 월인 경우: 해당 월의 1일부터 마지막 날까지
+        const startDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
+        const endDate = new Date(tokenCalendarYear, tokenSelectedMonth, 0); // 해당 월의 마지막 날
+        return `${formatDateForPill(startDate)} ~ ${formatDateForPill(endDate)}`;
+      }
+    }
+    
     const { start, end, isRange } = calculateDateRange(tokenPeriodFilter);
     
     if (!isRange) {
@@ -3234,6 +3252,52 @@ function MasterAdmin() {
     }
     
     return `${formatDateForPill(start)} ~ ${formatDateForPill(end)}`;
+  };
+
+  // 선택된 월에 따른 요약 카드 텍스트 생성
+  const getTokenCardText = () => {
+    if (tokenSelectedMonth && tokenCalendarYear) {
+      const currentDate = new Date();
+      const selectedDate = new Date(tokenCalendarYear, tokenSelectedMonth - 1, 1);
+      const isCurrentMonth = selectedDate.getMonth() === currentDate.getMonth() && 
+                            selectedDate.getFullYear() === currentDate.getFullYear();
+      
+      if (isCurrentMonth) {
+        return {
+          dailyAverage: "토큰 소비량 일일 평균",
+          monthlyPredicted: "이번 달 예상 토큰 소비량",
+          shortageOrganizations: "이번 달 토큰 부족 예상 조직",
+          shortageUsers: "이번 달 토큰 부족 예상 사용자",
+          dailyAverageDescription: "최근 30일 평균 기준",
+          monthlyPredictedDescription: "현재 사용량 추세 기준",
+          shortageOrganizationsDescription: "평균 사용량 증가율 기준",
+          shortageUsersDescription: "최근 7일 평균 사용량 기준"
+        };
+      } else {
+        const yearSuffix = String(tokenCalendarYear).slice(-2);
+        return {
+          dailyAverage: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량 일일 평균`,
+          monthlyPredicted: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 소비량`,
+          shortageOrganizations: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 조직`,
+          shortageUsers: `${yearSuffix}년 ${tokenSelectedMonth}월 토큰 부족 예상 사용자`,
+          dailyAverageDescription: `${tokenSelectedMonth}월 전체 평균 기준`,
+          monthlyPredictedDescription: `${tokenSelectedMonth}월 실제 사용량`,
+          shortageOrganizationsDescription: `${tokenSelectedMonth}월 한도 초과 조직`,
+          shortageUsersDescription: `${tokenSelectedMonth}월 한도 초과 예상`
+        };
+      }
+    }
+    
+    return {
+      dailyAverage: "토큰 소비량 일일 평균",
+      monthlyPredicted: "이번 달 예상 토큰 소비량",
+      shortageOrganizations: "이번 달 토큰 부족 예상 조직",
+      shortageUsers: "이번 달 토큰 부족 예상 사용자",
+      dailyAverageDescription: "최근 30일 평균 기준",
+      monthlyPredictedDescription: "현재 사용량 추세 기준",
+      shortageOrganizationsDescription: "평균 사용량 증가율 기준",
+      shortageUsersDescription: "최근 7일 평균 사용량 기준"
+    };
   };
 
   const handleQALogsExcelExport = async () => {
@@ -9218,12 +9282,16 @@ function MasterAdmin() {
                         <Zap className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200">토큰 소비량 일일 평균</h3>
-                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">최근 30일 평균 기준</p>
+                        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200">{getTokenCardText().dailyAverage}</h3>
+                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">{getTokenCardText().dailyAverageDescription}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">247K</div>
+                      <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                        {tokenSelectedMonth && tokenCalendarYear && 
+                         new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                         ? '186K' : '247K'}
+                      </div>
                       <div className="text-xs text-blue-700 dark:text-blue-300">토큰/일</div>
                     </div>
                   </div>
@@ -9239,12 +9307,16 @@ function MasterAdmin() {
                         <Zap className="h-6 w-6 text-green-600" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">이번 달 예상 토큰 소비량</h3>
-                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">현재 사용량 추세 기준</p>
+                        <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">{getTokenCardText().monthlyPredicted}</h3>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">{getTokenCardText().monthlyPredictedDescription}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-green-900 dark:text-green-100">7.6M</div>
+                      <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+                        {tokenSelectedMonth && tokenCalendarYear && 
+                         new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                         ? '5.8M' : '7.6M'}
+                      </div>
                       <div className="text-xs text-green-700 dark:text-green-300">토큰/월</div>
                     </div>
                   </div>
@@ -9261,13 +9333,13 @@ function MasterAdmin() {
                     <div className="flex items-center space-x-3">
                       <Building className="h-6 w-6 text-orange-600" />
                       <div>
-                        <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">이번 달 토큰 부족 예상 조직</h3>
-                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">평균 사용량 증가율 기준</p>
+                        <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200">{getTokenCardText().shortageOrganizations}</h3>
+                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">{getTokenCardText().shortageOrganizationsDescription}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => {
-                        setTokenKeywordFilter('이번 달 토큰 부족 예상 조직');
+                        setTokenKeywordFilter('토큰 부족 예상 조직');
                         // 조직 목록으로 스크롤 이동
                         const tokenTable = document.querySelector('[data-testid="token-usage-table"]');
                         if (tokenTable) {
@@ -9277,7 +9349,9 @@ function MasterAdmin() {
                       className="text-2xl font-bold text-orange-900 dark:text-orange-100 hover:text-orange-700 dark:hover:text-orange-300 transition-colors cursor-pointer"
                       title="클릭하여 해당 조직 목록 보기"
                     >
-                      3개
+                      {tokenSelectedMonth && tokenCalendarYear && 
+                       new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                       ? '2개' : '3개'}
                     </button>
                   </div>
                 </CardContent>
@@ -9290,8 +9364,8 @@ function MasterAdmin() {
                     <div className="flex items-center space-x-3">
                       <Users className="h-6 w-6 text-red-600" />
                       <div>
-                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">이번 달 토큰 부족 예상 사용자</h3>
-                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">최근 7일 평균 사용량 기준</p>
+                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">{getTokenCardText().shortageUsers}</h3>
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-1">{getTokenCardText().shortageUsersDescription}</p>
                       </div>
                     </div>
                     <button
@@ -9301,7 +9375,9 @@ function MasterAdmin() {
                       className="text-2xl font-bold text-red-900 dark:text-red-100 hover:text-red-700 dark:hover:text-red-300 transition-colors cursor-pointer"
                       title="클릭하여 사용자 목록 보기"
                     >
-                      8명
+                      {tokenSelectedMonth && tokenCalendarYear && 
+                       new Date(tokenCalendarYear, tokenSelectedMonth - 1).getTime() !== new Date(new Date().getFullYear(), new Date().getMonth()).getTime() 
+                       ? '5명' : '8명'}
                     </button>
                   </div>
                 </CardContent>
