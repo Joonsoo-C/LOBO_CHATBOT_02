@@ -916,9 +916,11 @@ function MasterAdmin() {
   const [qaLogCurrentPage, setQaLogCurrentPage] = useState(1);
   const [tokenCurrentPage, setTokenCurrentPage] = useState(1);
   const [documentAgentCurrentPage, setDocumentAgentCurrentPage] = useState(1);
+  const [orgTokenCurrentPage, setOrgTokenCurrentPage] = useState(1); // 조직별 토큰 사용량 목록 페이지네이션
   
   // 페이지네이션 설정 (모든 관리 섹션에 일관된 15개 항목)
   const ITEMS_PER_PAGE = 15;
+  const ORG_TOKENS_PER_PAGE = 10; // 조직별 토큰 사용량 목록은 10개 항목
 
   // 헬퍼 함수들
   // 인덱싱 상태 매핑
@@ -9558,7 +9560,12 @@ function MasterAdmin() {
                       }
                     });
                     const uniqueOrgsCount = Object.keys(organizationStats).length;
-                    return `전체 ${uniqueOrgsCount}개 조직 표시 (질문 ${filteredTokenData?.length || 0}건 기준)`;
+                    const startIndex = (orgTokenCurrentPage - 1) * ORG_TOKENS_PER_PAGE + 1;
+                    const endIndex = Math.min(orgTokenCurrentPage * ORG_TOKENS_PER_PAGE, uniqueOrgsCount);
+                    
+                    return uniqueOrgsCount > 0 
+                      ? `전체 ${uniqueOrgsCount}개 조직 중 ${startIndex}-${endIndex}개 표시`
+                      : '표시할 조직이 없습니다';
                   })()}
                 </div>
               </CardHeader>
@@ -9649,8 +9656,13 @@ function MasterAdmin() {
                           return 0;
                         });
                         
+                        // 페이지네이션 적용
+                        const orgTokenStartIndex = (orgTokenCurrentPage - 1) * ORG_TOKENS_PER_PAGE;
+                        const orgTokenEndIndex = orgTokenStartIndex + ORG_TOKENS_PER_PAGE;
+                        const paginatedOrganizations = sortedOrganizations.slice(orgTokenStartIndex, orgTokenEndIndex);
+                        
                         // 빈 결과 처리
-                        if (sortedOrganizations.length === 0) {
+                        if (paginatedOrganizations.length === 0 && sortedOrganizations.length === 0) {
                           return (
                             <tr>
                               <td colSpan={7} className="px-6 py-12 text-center">
@@ -9673,7 +9685,24 @@ function MasterAdmin() {
                           return 'text-green-600 dark:text-green-400';
                         };
                         
-                        return sortedOrganizations.map((org) => (
+                        // 페이지네이션이 적용되어 빈 페이지인 경우 처리
+                        if (paginatedOrganizations.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={7} className="px-6 py-12 text-center">
+                                <div className="text-gray-500 dark:text-gray-400">
+                                  <Building className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                                  <p className="text-lg font-medium mb-2">해당 페이지에 표시할 조직이 없습니다</p>
+                                  <p className="text-sm">
+                                    이전 페이지로 이동하거나 다른 조건을 선택해보세요.
+                                  </p>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        }
+                        
+                        return paginatedOrganizations.map((org) => (
                           <tr 
                             key={org.id} 
                             className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -9708,18 +9737,29 @@ function MasterAdmin() {
                   </table>
                 </div>
 
-                {/* 페이지네이션 */}
-                {tokenTotalPages > 1 && (
-                  <PaginationComponent
-                    currentPage={tokenCurrentPage}
-                    totalPages={tokenTotalPages}
-                    onPageChange={setTokenCurrentPage}
-                    totalItems={filteredTokenData.length}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    itemName="조직"
-                    showItemCount={false}
-                  />
-                )}
+                {/* 조직별 토큰 사용량 페이지네이션 */}
+                {(() => {
+                  const organizationStats = {};
+                  filteredTokenData.forEach(token => {
+                    const key = `${token.upperCategory}-${token.lowerCategory}-${token.detailCategory}`;
+                    if (!organizationStats[key]) {
+                      organizationStats[key] = true;
+                    }
+                  });
+                  const totalOrgTokenPages = Math.ceil(Object.keys(organizationStats).length / ORG_TOKENS_PER_PAGE);
+                  
+                  return totalOrgTokenPages > 1 && (
+                    <PaginationComponent
+                      currentPage={orgTokenCurrentPage}
+                      totalPages={totalOrgTokenPages}
+                      onPageChange={setOrgTokenCurrentPage}
+                      totalItems={Object.keys(organizationStats).length}
+                      itemsPerPage={ORG_TOKENS_PER_PAGE}
+                      itemName="조직"
+                      showItemCount={false}
+                    />
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>
