@@ -14032,7 +14032,7 @@ function MasterAdmin() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
 
               {/* 토큰 사용 현황 */}
               <div className="space-y-3">
@@ -14041,7 +14041,9 @@ function MasterAdmin() {
                     <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
-                    <Label className="text-sm font-medium">토큰 사용 현황</Label>
+                    <Label className="text-sm font-medium">
+                      {selectedOrgForTokenLimit?.detailCategory || selectedOrgForTokenLimit?.organizationName} 사용자들의 평균 사용 현황
+                    </Label>
                   </div>
                   <div className="text-sm font-semibold text-green-600 dark:text-green-400">
                     {(() => {
@@ -14056,12 +14058,12 @@ function MasterAdmin() {
                         if (orgTokenData.length > 0) {
                           const avgUsage = orgTokenData.reduce((sum, token) => sum + token.totalTokens, 0) / orgTokenData.length / 100;
                           const percentage = Math.min(100, Math.max(0, avgUsage));
-                          return `${percentage.toFixed(1)}% 사용`;
+                          return `평균 ${percentage.toFixed(1)}% 사용`;
                         }
                       }
                       
                       // 기본값
-                      return "27% 사용";
+                      return "평균 27% 사용";
                     })()}
                   </div>
                 </div>
@@ -14106,7 +14108,7 @@ function MasterAdmin() {
               {/* 월간 한도 */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Label className="text-sm font-medium">월간 토큰 한도</Label>
+                  <Label className="text-sm font-medium">소속 사용자들의 월간 토큰 한도</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Input
